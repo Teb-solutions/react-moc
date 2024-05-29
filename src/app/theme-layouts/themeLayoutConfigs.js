@@ -1,12 +1,9 @@
-import layout1 from './layout1/Layout1Config';
-import layout2 from './layout2/Layout2Config';
-import layout3 from './layout3/Layout3Config';
+import layout1 from "./layout1/Layout1Config";
+
 /**
  * The theme layout configs.
  */
 const themeLayoutConfigs = {
-	layout1,
-	layout2,
-	layout3
+  layout1,
 };
 export default themeLayoutConfigs;
