@@ -25,13 +25,13 @@ const navigationConfig = [
         icon: "heroicons-outline:chart-pie",
         url: "/dashboards/project",
       },
-      // {
-      // 	id: 'dashboards.analytics',
-      // 	title: 'Analytics',
-      // 	type: 'item',
-      // 	icon: 'heroicons-outline:chart-pie',
-      // 	url: '/dashboards/analytics'
-      // },
+      {
+      	id: 'moc.request',
+      	title: ' MOC Requests',
+      	type: 'item',
+      	icon: 'heroicons-outline:collection',
+      	url: '/moc/requests'
+      },
       // {
       // 	id: 'dashboards.finance',
       // 	title: 'Finance',
