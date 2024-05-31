@@ -59,14 +59,14 @@ const handleError = async (error) => {
 };
 
 export const apiClient = axios.create({
-	baseURL: `${process.env.REACT_APP_API_BASE_URL}/admins`,
+	baseURL: `https://mocapi.tebs.co.in/api`,
 	headers: {
 		Accept: 'application/json'
 	}
 });
 
 export const apiAuth = axios.create({
-	baseURL: process.env.VITE_APP_API_BASE_URL,
+	baseURL: 'https://mocapi.tebs.co.in/api',
 	headers: {
 		Accept: 'application/json'
 	}

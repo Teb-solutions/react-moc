@@ -1,6 +1,7 @@
 import { lazy } from 'react';
 
 const MocApp = lazy(() => import('./Moc'));
+// const DocApp = lazy(() => import('./docevaluation/Doc'));
 /**
  * The ProjectDashboardApp configuration.
  */
@@ -12,7 +13,7 @@ const MocConfig = {
 	},
 	routes: [
 		{
-			path: 'moc/requests',
+			path: 'moc',
 			element: <MocApp />
 		}
 	]

@@ -7,8 +7,7 @@ import Stepper from '@mui/material/Stepper';
 import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import SwipeableViews from 'react-swipeable-views';
-import { Step, StepContent, StepLabel } from '@mui/material';
-import Divider from '@mui/material/Divider';
+import { Accordion, AccordionDetails, AccordionSummary, Step, StepContent, StepLabel } from '@mui/material';
 import Button from '@mui/material/Button';
 import FuseSvgIcon from '@fuse/core/FuseSvgIcon';
 import ButtonGroup from '@mui/material/ButtonGroup';
@@ -16,7 +15,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import useThemeMediaQuery from '@fuse/hooks/useThemeMediaQuery';
 import FuseLoading from '@fuse/core/FuseLoading';
-import CourseInfo from '../CourseInfo';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { apiAuth } from 'src/utils/http';
 import CourseProgress from '../CourseProgress';
 import Error404Page from '../../../404/Error404Page';
 import { useGetAcademyCourseQuery, useUpdateAcademyCourseMutation } from '../AcademyApi';
@@ -48,8 +48,8 @@ function Course() {
 		}
 	}, [course]);
 	useEffect(() => {
-		setLeftSidebarOpen(!isMobile);
-	}, [isMobile]);
+		getRecords();
+	}, []);
 	const currentStep = course?.progress?.currentStep || 0;
 
 	function updateCurrentStep(index) {
@@ -58,6 +58,12 @@ function Course() {
 		}
 
 		updateCourse({ courseId, data: { progress: { currentStep: index } } });
+	}
+
+	function getRecords() {
+		apiAuth.get('/Activity/RequestLifecycle/d73b2f52-522f-4860-b886-a640e6b6371e').then((resp) => {
+			console.log(resp, '890');
+		});
 	}
 
 	function handleNext() {
@@ -205,78 +211,130 @@ function Course() {
 			leftSidebarWidth={300}
 			leftSidebarContent={
 				<>
-					<div className="p-32">
-						<Button
-							to="/apps/academy/courses"
-							component={Link}
-							className="mb-24"
-							color="secondary"
-							variant="text"
-							startIcon={
-								<FuseSvgIcon size={20}>
-									{theme.direction === 'ltr'
-										? 'heroicons-outline:arrow-sm-left'
-										: 'heroicons-outline:arrow-sm-right'}
-								</FuseSvgIcon>
-							}
+					<Accordion>
+						<AccordionSummary
+							expandIcon={<ExpandMoreIcon />}
+							aria-controls="panel1-content"
+							id="panel1-header"
 						>
-							Back to courses
-						</Button>
-
-						<CourseInfo course={course} />
-					</div>
-					<Divider />
-					<Stepper
-						classes={{ root: 'p-32' }}
-						activeStep={activeStep - 1}
-						orientation="vertical"
-					>
-						{course.steps.map((step, index) => {
-							return (
-								<Step
-									key={index}
-									sx={{
-										'& .MuiStepLabel-root, & .MuiStepContent-root': {
-											cursor: 'pointer!important'
-										},
-										'& .MuiStepContent-root': {
-											color: 'text.secondary',
-											fontSize: 13
-										}
-									}}
-									onClick={() => handleStepChange(step.order)}
-									expanded
-								>
-									<StepLabel
-										className="font-medium"
-										sx={{
-											'& .MuiSvgIcon-root': {
-												color: 'background.default',
-												'& .MuiStepIcon-text': {
-													fill: (_theme) => _theme.palette.text.secondary
+							Accordion 1
+						</AccordionSummary>
+						<AccordionDetails>
+							<Stepper
+								classes={{ root: 'p-32' }}
+								activeStep={activeStep - 1}
+								orientation="vertical"
+							>
+								{course.steps.slice(0, 2).map((step, index) => {
+									return (
+										<Step
+											key={index}
+											sx={{
+												'& .MuiStepLabel-root, & .MuiStepContent-root': {
+													cursor: 'pointer!important'
 												},
-												'&.Mui-completed': {
-													color: 'secondary.main',
-													'& .MuiStepIcon-text ': {
-														fill: (_theme) => _theme.palette.secondary.contrastText
-													}
-												},
-												'&.Mui-active': {
-													color: 'secondary.main',
-													'& .MuiStepIcon-text ': {
-														fill: (_theme) => _theme.palette.secondary.contrastText
-													}
+												'& .MuiStepContent-root': {
+													color: 'text.secondary',
+													fontSize: 13
 												}
-											}
-										}}
-									>
-										{step.title}
-									</StepLabel>
-									<StepContent>{step.subtitle}</StepContent>
-								</Step>
-							);
-						})}
-					</Stepper>
+											}}
+											onClick={() => handleStepChange(step.order)}
+											expanded
+										>
+											<StepLabel
+												className="font-medium"
+												sx={{
+													'& .MuiSvgIcon-root': {
+														color: 'background.default',
+														'& .MuiStepIcon-text': {
+															fill: (_theme) => _theme.palette.text.secondary
+														},
+														'&.Mui-completed': {
+															color: 'secondary.main',
+															'& .MuiStepIcon-text ': {
+																fill: (_theme) => _theme.palette.secondary.contrastText
+															}
+														},
+														'&.Mui-active': {
+															color: 'secondary.main',
+															'& .MuiStepIcon-text ': {
+																fill: (_theme) => _theme.palette.secondary.contrastText
+															}
+														}
+													}
+												}}
+											>
+												{step.title}
+											</StepLabel>
+											<StepContent>{step.subtitle}</StepContent>
+										</Step>
+									);
+								})}
+							</Stepper>
+						</AccordionDetails>
+					</Accordion>
+					<Accordion>
+						<AccordionSummary
+							expandIcon={<ExpandMoreIcon />}
+							aria-controls="panel1-content"
+							id="panel1-header"
+						>
+							Accordion 1
+						</AccordionSummary>
+						<AccordionDetails>
+							<Stepper
+								classes={{ root: 'p-32' }}
+								activeStep={activeStep - 1}
+								orientation="vertical"
+							>
+								{course.steps.slice(0, 2).map((step, index) => {
+									return (
+										<Step
+											key={index}
+											sx={{
+												'& .MuiStepLabel-root, & .MuiStepContent-root': {
+													cursor: 'pointer!important'
+												},
+												'& .MuiStepContent-root': {
+													color: 'text.secondary',
+													fontSize: 13
+												}
+											}}
+											onClick={() => handleStepChange(step.order)}
+											expanded
+										>
+											<StepLabel
+												className="font-medium"
+												sx={{
+													'& .MuiSvgIcon-root': {
+														color: 'background.default',
+														'& .MuiStepIcon-text': {
+															fill: (_theme) => _theme.palette.text.secondary
+														},
+														'&.Mui-completed': {
+															color: 'secondary.main',
+															'& .MuiStepIcon-text ': {
+																fill: (_theme) => _theme.palette.secondary.contrastText
+															}
+														},
+														'&.Mui-active': {
+															color: 'secondary.main',
+															'& .MuiStepIcon-text ': {
+																fill: (_theme) => _theme.palette.secondary.contrastText
+															}
+														}
+													}
+												}}
+											>
+												{step.title}
+											</StepLabel>
+											<StepContent>{step.subtitle}</StepContent>
+										</Step>
+									);
+								})}
+							</Stepper>
+						</AccordionDetails>
+					</Accordion>
 				</>
 			}
 			scroll="content"

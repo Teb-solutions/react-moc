@@ -30,7 +30,7 @@ const navigationConfig = [
       	title: ' MOC Requests',
       	type: 'item',
       	icon: 'heroicons-outline:collection',
-      	url: '/moc/requests'
+      	url: '/moc'
       },
       // {
       // 	id: 'dashboards.finance',
