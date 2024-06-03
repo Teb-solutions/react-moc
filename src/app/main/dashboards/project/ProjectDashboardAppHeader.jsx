@@ -2,7 +2,7 @@ import Avatar from "@mui/material/Avatar";
 // import Menu from '@mui/material/Menu';
 // import MenuItem from '@mui/material/MenuItem';
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import _ from "@lodash";
 import Button from "@mui/material/Button";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
@@ -10,18 +10,32 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import { darken } from "@mui/material/styles";
 import { selectUser } from "src/app/auth/user/store/userSlice";
 import { useAppSelector } from "app/store/hooks";
-// import { useGetProjectDashboardProjectsQuery } from "./ProjectDashboardApi";
+import { useGetProjectDashboardProjectsQuery } from "./ProjectDashboardApi";
+import { Dashboard } from "../../../../../api/Api";
 
 /**
  * The ProjectDashboardAppHeader page.
  */
 function ProjectDashboardAppHeader() {
-  // const { data: projects, isLoading } = useGetProjectDashboardProjectsQuery();
+  const { data: projects, isLoading } = useGetProjectDashboardProjectsQuery();
   const user = useAppSelector(selectUser);
+
   const [selectedProject, setSelectedProject] = useState({
     id: 1,
     menuEl: null,
   });
+
+  const fetchdataSetting = useCallback(async () => {
+    try {
+      const banners = await Dashboard();
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchdataSetting();
+  }, []);
 
   function handleChangeProject(id) {
     setSelectedProject({
@@ -66,7 +80,8 @@ function ProjectDashboardAppHeader() {
           </Avatar>
           <div className="flex flex-col min-w-0 mx-16">
             <Typography className="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">
-              {/* {`Welcome back, ${user.data.displayName}!`} */}
+              {/* {`Welcome back, ${user.data.displayName}!`} */}Welcome back,
+              Sreenivas Sathyamurthy
             </Typography>
 
             <div className="flex items-center">

@@ -29,3 +29,7 @@ axios.interceptors.response.use(
 export const Evalution = (params) => {
   return axios.get(`${API.evaluation}`, params, { headers: authHeader() });
 };
+
+export const Dashboard = (params) => {
+  return axios.get(`${API.dashboard}`, params, { headers: authHeader() });
+};

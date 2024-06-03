@@ -40,7 +40,7 @@ function UserMenu() {
       >
         <div className="mx-4 hidden flex-col items-end md:flex">
           <Typography component="span" className="flex font-semibold">
-            {user.data.displayName}
+            {/* {user.data.displayName} */}
           </Typography>
           <Typography
             className="text-11 font-medium capitalize"
@@ -53,7 +53,7 @@ function UserMenu() {
           </Typography>
         </div>
 
-        {user.data.photoURL ? (
+        {/* {user.data.photoURL ? (
           <Avatar
             sx={{
               background: (theme) => theme.palette.background.default,
@@ -74,7 +74,7 @@ function UserMenu() {
           >
             {user?.data?.displayName?.[0]}
           </Avatar>
-        )}
+        )} */}
       </Button>
 
       <Popover

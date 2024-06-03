@@ -1,5 +1,5 @@
 export default function authHeader() {
-  const userData = localStorage.getItem("token");
+  const userData = localStorage.getItem("jwt_access_token");
 
   if (userData) {
     return {
