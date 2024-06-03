@@ -30,6 +30,8 @@ import {
   useGetAcademyCourseQuery,
   useUpdateAcademyCourseMutation,
 } from "../AcademyApi";
+import { Evalution } from "../../../../../../../api/Api";
+import { useCallback } from "react";
 
 /**
  * The Course page.
@@ -58,7 +60,7 @@ function Course() {
     }
   }, [course]);
   useEffect(() => {
-    getRecords();
+    // getRecords();
   }, []);
   const currentStep = course?.progress?.currentStep || 0;
 
@@ -70,13 +72,26 @@ function Course() {
     updateCourse({ courseId, data: { progress: { currentStep: index } } });
   }
 
-  function getRecords() {
-    apiAuth
-      .get("/Activity/RequestLifecycle/d73b2f52-522f-4860-b886-a640e6b6371e")
-      .then((resp) => {
-        console.log(resp, "890");
-      });
-  }
+  const fetchdataSetting = useCallback(async () => {
+    try {
+      const banners = await Evalution();
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchdataSetting();
+    document.body.style.position = "";
+  }, []);
+
+  // function getRecords() {
+  //   apiAuth
+  //     .get("/Activity/RequestLifecycle/d73b2f52-522f-4860-b886-a640e6b6371e")
+  //     .then((resp) => {
+  //       console.log(resp, "890");
+  //     });
+  // }
 
   function handleNext() {
     updateCurrentStep(currentStep + 1);
