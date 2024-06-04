@@ -25,11 +25,11 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { apiAuth } from "src/utils/http";
 import CourseProgress from "../../../moc/CourseProgress";
-import Error404Page from "../../../../404/Error404Page";
-import {
-  useGetAcademyCourseQuery,
-  useUpdateAcademyCourseMutation,
-} from "../AcademyApi";
+// import Error404Page from "../../../../404/Error404Page";
+// import {
+//   useGetAcademyCourseQuery,
+//   useUpdateAcademyCourseMutation,
+// } from "../AcademyApi";
 import { Evalution } from "../../../../../../../api/Api";
 import { useCallback } from "react";
 
@@ -37,89 +37,90 @@ import { useCallback } from "react";
  * The Course page.
  */
 function Course() {
-  const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
+  // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const theme = useTheme();
   const pageLayout = useRef(null);
-  const [leftSidebarOpen, setLeftSidebarOpen] = useState(!isMobile);
-  const routeParams = useParams();
-  const { courseId } = routeParams;
-  const { data: course, isLoading } = useGetAcademyCourseQuery(
-    { courseId },
-    {
-      skip: !courseId,
-    }
-  );
-  const [updateCourse] = useUpdateAcademyCourseMutation();
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
+  // const routeParams = useParams();
+  // const { courseId } = routeParams;
+  const [content, setContent] = useState([])
+  // const { data: course, isLoading } = useGetAcademyCourseQuery(
+  //   { courseId },
+  //   {
+  //     skip: !courseId,
+  //   }
+  // );
+  // const [updateCourse] = useUpdateAcademyCourseMutation();
+  // useEffect(() => {
+  //   /**
+  //    * If the course is opened for the first time
+  //    * Change ActiveStep to 1
+  //    */
+  //   if (course && course?.progress?.currentStep === 0) {
+  //     updateCourse({ courseId, data: { progress: { currentStep: 1 } } });
+  //   }
+  // }, [course]);
   useEffect(() => {
-    /**
-     * If the course is opened for the first time
-     * Change ActiveStep to 1
-     */
-    if (course && course?.progress?.currentStep === 0) {
-      updateCourse({ courseId, data: { progress: { currentStep: 1 } } });
-    }
-  }, [course]);
-  useEffect(() => {
-    // getRecords();
+    getRecords();
   }, []);
-  const currentStep = course?.progress?.currentStep || 0;
+  // const currentStep = course?.progress?.currentStep || 0;
 
-  function updateCurrentStep(index) {
-    if (course && (index > course.totalSteps || index < 0)) {
-      return;
-    }
+  // function updateCurrentStep(index) {
+  //   if (course && (index > course.totalSteps || index < 0)) {
+  //     return;
+  //   }
 
-    updateCourse({ courseId, data: { progress: { currentStep: index } } });
-  }
-
-  const fetchdataSetting = useCallback(async () => {
-    try {
-      const banners = await Evalution();
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchdataSetting();
-    document.body.style.position = "";
-  }, []);
-
-  // function getRecords() {
-  //   apiAuth
-  //     .get("/Activity/RequestLifecycle/d73b2f52-522f-4860-b886-a640e6b6371e")
-  //     .then((resp) => {
-  //       console.log(resp, "890");
-  //     });
+  //   updateCourse({ courseId, data: { progress: { currentStep: index } } });
   // }
 
-  function handleNext() {
-    updateCurrentStep(currentStep + 1);
+  // const fetchdataSetting = useCallback(async () => {
+  //   try {
+  //     const banners = await Evalution();
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   fetchdataSetting();
+  //   document.body.style.position = "";
+  // }, []);
+
+  function getRecords() {
+    apiAuth
+      .get("/Activity/RequestLifecycle/d73b2f52-522f-4860-b886-a640e6b6371e")
+      .then((resp) => {
+        setContent(resp.data.data.phases);
+      });
   }
 
-  function handleBack() {
-    updateCurrentStep(currentStep - 1);
-  }
+  // function handleNext() {
+  //   updateCurrentStep(currentStep + 1);
+  // }
 
-  function handleStepChange(index) {
-    updateCurrentStep(index + 1);
-  }
+  // function handleBack() {
+  //   updateCurrentStep(currentStep - 1);
+  // }
 
-  const activeStep = currentStep !== 0 ? currentStep : 1;
+  // function handleStepChange(index) {
+  //   updateCurrentStep(index + 1);
+  // }
 
-  if (isLoading) {
-    return <FuseLoading />;
-  }
+  // const activeStep = currentStep !== 0 ? currentStep : 1;
 
-  if (!course) {
-    return <Error404Page />;
-  }
+  // if (isLoading) {
+  //   return <FuseLoading />;
+  // }
+
+  // if (!course) {
+  //   return <Error404Page />;
+  // }
 
   return (
     <FusePageSimple
       content={
         <div className="w-full">
-          <Hidden lgDown>
+          {/* <Hidden lgDown>
             <CourseProgress className="sticky top-0 z-10" course={course} />
           </Hidden>
 
@@ -140,14 +141,14 @@ function Course() {
                 {course.title}
               </Typography>
             </Paper>
-          </Hidden>
+          </Hidden> */}
 
           <SwipeableViews
-            index={activeStep - 1}
+            // index={activeStep - 1}
             enableMouseEvents
-            onChangeIndex={handleStepChange}
+            // onChangeIndex={handleStepChange}
           >
-            {course.steps.map((step, index) => (
+            {content.map((step, index) => (
               <div
                 className="flex justify-center p-16 pb-64 sm:p-24 sm:pb-64 md:p-48 md:pb-64"
                 key={index}
@@ -164,7 +165,7 @@ function Course() {
             ))}
           </SwipeableViews>
 
-          <Hidden lgDown>
+          {/* <Hidden lgDown>
             <div className="flex justify-center w-full sticky bottom-0 p-16 pb-32 z-10">
               <ButtonGroup
                 variant="contained"
@@ -229,32 +230,29 @@ function Course() {
                 <FuseSvgIcon>heroicons-outline:arrow-narrow-right</FuseSvgIcon>
               </IconButton>
             </Box>
-          </Hidden>
+          </Hidden> */}
         </div>
       }
-      leftSidebarOpen={leftSidebarOpen}
-      leftSidebarOnClose={() => {
-        setLeftSidebarOpen(false);
-      }}
       leftSidebarWidth={300}
+      leftSidebarOpen={leftSidebarOpen}
       leftSidebarContent={
         <>
-          <Accordion>
+        {content.map((resp, respIndex)=>(
+          <Accordion key={respIndex}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1-content"
               id="panel1-header"
             >
-              Accordion 1
+              {resp.name}
             </AccordionSummary>
             <AccordionDetails>
               <Stepper
                 classes={{ root: "p-32" }}
-                activeStep={activeStep - 1}
+                // activeStep={activeStep - 1}
                 orientation="vertical"
               >
-                {course.steps.slice(0, 2).map((step, index) => {
-                  return (
+                {resp.activities.map((step, index) => (
                     <Step
                       key={index}
                       sx={{
@@ -266,7 +264,7 @@ function Course() {
                           fontSize: 13,
                         },
                       }}
-                      onClick={() => handleStepChange(step.order)}
+                      // onClick={() => handleStepChange(step.order)}
                       expanded
                     >
                       <StepLabel
@@ -294,79 +292,16 @@ function Course() {
                           },
                         }}
                       >
-                        {step.title}
+                        {step.name}
                       </StepLabel>
-                      <StepContent>{step.subtitle}</StepContent>
+                      <StepContent>{step.status}</StepContent>
                     </Step>
-                  );
-                })}
+  ))}
               </Stepper>
             </AccordionDetails>
           </Accordion>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-            >
-              Accordion 1
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stepper
-                classes={{ root: "p-32" }}
-                activeStep={activeStep - 1}
-                orientation="vertical"
-              >
-                {course.steps.slice(0, 2).map((step, index) => {
-                  return (
-                    <Step
-                      key={index}
-                      sx={{
-                        "& .MuiStepLabel-root, & .MuiStepContent-root": {
-                          cursor: "pointer!important",
-                        },
-                        "& .MuiStepContent-root": {
-                          color: "text.secondary",
-                          fontSize: 13,
-                        },
-                      }}
-                      onClick={() => handleStepChange(step.order)}
-                      expanded
-                    >
-                      <StepLabel
-                        className="font-medium"
-                        sx={{
-                          "& .MuiSvgIcon-root": {
-                            color: "background.default",
-                            "& .MuiStepIcon-text": {
-                              fill: (_theme) => _theme.palette.text.secondary,
-                            },
-                            "&.Mui-completed": {
-                              color: "secondary.main",
-                              "& .MuiStepIcon-text ": {
-                                fill: (_theme) =>
-                                  _theme.palette.secondary.contrastText,
-                              },
-                            },
-                            "&.Mui-active": {
-                              color: "secondary.main",
-                              "& .MuiStepIcon-text ": {
-                                fill: (_theme) =>
-                                  _theme.palette.secondary.contrastText,
-                              },
-                            },
-                          },
-                        }}
-                      >
-                        {step.title}
-                      </StepLabel>
-                      <StepContent>{step.subtitle}</StepContent>
-                    </Step>
-                  );
-                })}
-              </Stepper>
-            </AccordionDetails>
-          </Accordion>
+          
+        ))}
         </>
       }
       scroll="content"
