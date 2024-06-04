@@ -14,6 +14,8 @@ import CourseProgress from "./CourseProgress";
 function CourseCard(props) {
   const { course } = props;
 
+  console.log(course, ";;");
+
   function buttonStatus() {
     switch (course.activeStep) {
       case course.totalSteps:
@@ -41,7 +43,7 @@ function CourseCard(props) {
         }}
       >
         <Button
-          to={`/moc/evaluation/${course.id}/${course.slug}`}
+          to={`/moc/evaluation/${course.token}`}
           component={Link}
           className="px-16 min-w-128"
           color="secondary"

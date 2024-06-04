@@ -23,7 +23,7 @@ const AcademyAppConfig = {
           element: <Navigate to="/moc/evaluation" />,
         },
         {
-          path: ":courseId/*",
+          path: ":evaluationId/*",
           element: <Course />,
         },
         {

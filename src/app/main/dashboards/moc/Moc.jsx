@@ -22,6 +22,7 @@ import {
   useGetAcademyCoursesQuery,
 } from "./evaluation/AcademyApi";
 import CourseCard from "./CourseCard";
+import { apiAuth } from "src/utils/http";
 
 const Root = styled(FusePageCarded)({
   "& .FusePageCarded-header": {},
@@ -57,34 +58,47 @@ function MocApp() {
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [hideCompleted, setHideCompleted] = useState(false);
+  // useEffect(() => {
+  //   function getFilteredArray() {
+  //     if (
+  //       courses &&
+  //       searchText.length === 0 &&
+  //       selectedCategory === "all" &&
+  //       !hideCompleted
+  //     ) {
+  //       return courses;
+  //     }
+
+  //     return _.filter(courses, (item) => {
+  //       if (selectedCategory !== "all" && item.category !== selectedCategory) {
+  //         return false;
+  //       }
+
+  //       if (hideCompleted && item.progress.completed > 0) {
+  //         return false;
+  //       }
+
+  //       return item.title.toLowerCase().includes(searchText.toLowerCase());
+  //     });
+  //   }
+
+  //   if (courses) {
+  //     setFilteredData(getFilteredArray());
+  //   }
+  // }, [courses, hideCompleted, sext, selectedCategory]);
+  // archTe;
+
+  function getRecords() {
+    apiAuth.get("/ChangeRequest/List").then((resp) => {
+      // setContent(resp.data.data.phases);
+      console.log(resp.data.data);
+      setFilteredData(resp.data.data);
+    });
+  }
+
   useEffect(() => {
-    function getFilteredArray() {
-      if (
-        courses &&
-        searchText.length === 0 &&
-        selectedCategory === "all" &&
-        !hideCompleted
-      ) {
-        return courses;
-      }
-
-      return _.filter(courses, (item) => {
-        if (selectedCategory !== "all" && item.category !== selectedCategory) {
-          return false;
-        }
-
-        if (hideCompleted && item.progress.completed > 0) {
-          return false;
-        }
-
-        return item.title.toLowerCase().includes(searchText.toLowerCase());
-      });
-    }
-
-    if (courses) {
-      setFilteredData(getFilteredArray());
-    }
-  }, [courses, hideCompleted, searchText, selectedCategory]);
+    getRecords();
+  }, []);
 
   function handleSelectedCategory(event) {
     setSelectedCategory(event.target.value);

@@ -32,6 +32,7 @@ import CourseProgress from "../../../moc/CourseProgress";
 // } from "../AcademyApi";
 import { Evalution } from "../../../../../../../api/Api";
 import { useCallback } from "react";
+import axios from "axios";
 
 /**
  * The Course page.
@@ -41,9 +42,12 @@ function Course() {
   const theme = useTheme();
   const pageLayout = useRef(null);
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
-  // const routeParams = useParams();
-  // const { courseId } = routeParams;
-  const [content, setContent] = useState([])
+  const routeParams = useParams();
+  const { evaluationId } = routeParams;
+  const [content, setContent] = useState([]);
+  const [contentDetails, setContentDetails] = useState({});
+  const [expandedPanel, setExpandedPanel] = useState(null);
+
   // const { data: course, isLoading } = useGetAcademyCourseQuery(
   //   { courseId },
   //   {
@@ -87,11 +91,9 @@ function Course() {
   // }, []);
 
   function getRecords() {
-    apiAuth
-      .get("/Activity/RequestLifecycle/d73b2f52-522f-4860-b886-a640e6b6371e")
-      .then((resp) => {
-        setContent(resp.data.data.phases);
-      });
+    apiAuth.get(`/Activity/RequestLifecycle/${evaluationId}`).then((resp) => {
+      setContent(resp.data.data.phases);
+    });
   }
 
   // function handleNext() {
@@ -102,9 +104,67 @@ function Course() {
   //   updateCurrentStep(currentStep - 1);
   // }
 
-  // function handleStepChange(index) {
-  //   updateCurrentStep(index + 1);
+  // function handleStepChange(e, uid) {
+  //   e.preventDefault();
+  //   console.log("====================================", uid);
+
+  //   apiAuth
+  //     .get(`/ChangeRequest/Get?id=d73b2f52-522f-4860-b886-a640e6b6371e`)
+  //     .then((resp) => {
+  //       setContentDetails(resp.data?.data);
+  //     });
   // }
+
+  function handleStepChange(e, phaseName, uid, code, version, refVersion) {
+    e.preventDefault();
+    console.log("Clicked Phase:", phaseName, "UID:", uid);
+
+    switch (phaseName) {
+      case "Initiation":
+        axios.get(`/ChangeRequest/Get?id=${evaluationId}`).then((resp) => {
+          setContentDetails(resp.data?.data);
+        });
+        break;
+      case "Evaluation":
+        axios
+          .get(`/ChangeEvaluation/Get/${evaluationId}/null/1`)
+          .then((resp) => {
+            const evaluationIds = resp.data.data.id;
+            axios
+              .get(
+                `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${evaluationIds}`
+              )
+              .then((resp) => {
+                setContentDetails(resp.data?.data);
+              });
+          });
+        break;
+      case "Approval":
+        axios
+          .get(
+            `/SummaryDetails/List?id=${evaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+          )
+          .then((resp) => {
+            setContentDetails(resp.data?.data);
+            axios.get(`/ApprovalManager/Remark/${uid}`).then((resp) => {
+              setContentDetails(resp.data?.data);
+            });
+          });
+        break;
+      case "Implementation":
+        axios.get(`/Implementation/Details?id=${uid}`).then((resp) => {
+          setContentDetails(resp.data?.data);
+        });
+        break;
+      default:
+        console.log("No matching phase found");
+        return;
+    }
+  }
+
+  useEffect(() => {
+    handleStepChange();
+  }, [input]);
 
   // const activeStep = currentStep !== 0 ? currentStep : 1;
 
@@ -148,21 +208,251 @@ function Course() {
             enableMouseEvents
             // onChangeIndex={handleStepChange}
           >
-            {content.map((step, index) => (
-              <div
-                className="flex justify-center p-16 pb-64 sm:p-24 sm:pb-64 md:p-48 md:pb-64"
-                key={index}
-              >
-                <Paper className="w-full max-w-lg mx-auto sm:my-8 lg:mt-16 p-24 sm:p-40 sm:py-48 rounded-16 shadow overflow-hidden">
+            <div className="flex justify-center p-16 pb-64 sm:p-24 sm:pb-64 md:pb-64">
+              <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24 sm:p-40 sm:py-48 rounded-16 shadow overflow-hidden">
+                <div
+                  _ngcontent-fyk-c288=""
+                  class="flex items-center w-full  border-b justify-between"
+                >
+                  <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+                    MOC Document Request
+                  </h2>
+                </div>
+                <div _ngcontent-fyk-c288="" class="px-6 mb-6 ng-star-inserted">
                   <div
-                    className="prose prose-sm dark:prose-invert w-full max-w-full"
-                    // eslint-disable-next-line react/no-danger
-                    dangerouslySetInnerHTML={{ __html: step.content }}
-                    dir={theme.direction}
-                  />
-                </Paper>
-              </div>
-            ))}
+                    _ngcontent-fyk-c288=""
+                    class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                  >
+                    <div _ngcontent-fyk-c288="">
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="mt-3 leading-6 text-secondary"
+                      >
+                        Request No{" "}
+                      </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="text-lg leading-6 font-medium"
+                      >
+                        {" "}
+                        {contentDetails?.requestNo}
+                      </div>
+                    </div>
+                    <div _ngcontent-fyk-c288="">
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="mt-3 leading-6 text-secondary"
+                      >
+                        Date
+                      </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="text-lg leading-6 font-medium"
+                      >
+                        {" "}
+                        {contentDetails?.requestDate}
+                      </div>
+                    </div>
+                    <div _ngcontent-fyk-c288="">
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="mt-3 leading-6 text-secondary"
+                      >
+                        Site In Charge
+                      </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="text-lg leading-6 font-medium"
+                      >
+                        {" "}
+                        {contentDetails?.siteInChargeName}
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                  >
+                    <div _ngcontent-fyk-c288="">
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="mt-3 leading-6 text-secondary"
+                      >
+                        Site
+                      </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="text-lg leading-6 font-medium"
+                      >
+                        {" "}
+                        {contentDetails?.siteName}
+                      </div>
+                    </div>
+                    <div _ngcontent-fyk-c288="">
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="mt-3 leading-6 text-secondary"
+                      >
+                        Division
+                      </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="text-lg leading-6 font-medium"
+                      >
+                        {" "}
+                        {contentDetails?.divisionName}
+                      </div>
+                    </div>
+                    <div _ngcontent-fyk-c288="">
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="mt-3 leading-6 text-secondary"
+                      >
+                        Function
+                      </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="text-lg leading-6 font-medium"
+                      >
+                        {" "}
+                        {contentDetails?.functionName}
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                  >
+                    <div _ngcontent-fyk-c288="">
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="mt-3 leading-6 text-secondary"
+                      >
+                        Type{" "}
+                      </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="text-lg leading-6 font-medium"
+                      >
+                        {" "}
+                        {contentDetails?.typeString}
+                      </div>
+                    </div>
+                  </div>
+                  <div _ngcontent-fyk-c288="" class="grid grid-cols-1w-full">
+                    <div _ngcontent-fyk-c288="">
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="mt-3 leading-6 text-secondary"
+                      >
+                        Document Name
+                      </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="text-lg leading-6 font-medium"
+                      >
+                        {" "}
+                        {contentDetails?.projectName}
+                      </div>
+                    </div>
+                    <div _ngcontent-fyk-c288="" class="grid grid-cols-1w-full">
+                      <div _ngcontent-fyk-c288="">
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="mt-3 leading-6 text-secondary"
+                        >
+                          Document Description
+                        </div>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="text-lg leading-6 font-medium"
+                        >
+                          {" "}
+                          {contentDetails?.projectDescription}
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                    >
+                      <div _ngcontent-fyk-c288="">
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="mt-3 leading-6 text-secondary"
+                        >
+                          Document Type
+                        </div>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="text-lg leading-6 font-medium"
+                        >
+                          {" "}
+                          {contentDetails?.documentType}
+                        </div>
+                      </div>
+                    </div>
+                    <div _ngcontent-fyk-c288="" class="grid grid-cols-1w-full">
+                      <div _ngcontent-fyk-c288="">
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="mt-3 leading-6 text-secondary ng-star-inserted"
+                        >
+                          Reason for New Document
+                        </div>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="text-lg leading-6 font-medium"
+                        >
+                          {" "}
+                          {contentDetails?.reasonForNewDocument}
+                        </div>
+                      </div>
+                    </div>
+                    <div _ngcontent-fyk-c288="" class="grid grid-cols-1w-full">
+                      <div _ngcontent-fyk-c288="">
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="mt-3 leading-6 text-secondary"
+                        >
+                          Doc Controller
+                        </div>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="text-lg leading-6 font-medium"
+                        >
+                          {" "}
+                          {contentDetails?.docControllerName}
+                        </div>
+                      </div>
+                    </div>
+                    <div _ngcontent-fyk-c288="" class="grid grid-cols-1w-full">
+                      <div _ngcontent-fyk-c288="">
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="mt-3 leading-6 text-secondary"
+                        >
+                          Document Url
+                        </div>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="text-lg leading-6 font-medium"
+                        >
+                          <a
+                            _ngcontent-fyk-c288=""
+                            target="_blank"
+                            class="text-blue-500 hover:text-blue-800"
+                            href={contentDetails?.documentUrl}
+                          >
+                            {contentDetails?.documentUrl}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Paper>
+            </div>
           </SwipeableViews>
 
           {/* <Hidden lgDown>
@@ -237,22 +527,23 @@ function Course() {
       leftSidebarOpen={leftSidebarOpen}
       leftSidebarContent={
         <>
-        {content.map((resp, respIndex)=>(
-          <Accordion key={respIndex}>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-            >
-              {resp.name}
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stepper
-                classes={{ root: "p-32" }}
-                // activeStep={activeStep - 1}
-                orientation="vertical"
+          {content.map((resp, respIndex) => (
+            <Accordion key={respIndex} style={{ margin: "0px" }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+                style={{ minHeight: "60px" }}
               >
-                {resp.activities.map((step, index) => (
+                {resp.name}
+              </AccordionSummary>
+              <AccordionDetails>
+                <Stepper
+                  // classes={{ root: "p-32" }}
+                  // activeStep={activeStep - 1}
+                  orientation="vertical"
+                >
+                  {resp.activities.map((step, index) => (
                     <Step
                       key={index}
                       sx={{
@@ -264,7 +555,16 @@ function Course() {
                           fontSize: 13,
                         },
                       }}
-                      // onClick={() => handleStepChange(step.order)}
+                      onClick={(e) =>
+                        handleStepChange(
+                          e,
+                          resp.name,
+                          step.uid,
+                          step.code,
+                          step.version,
+                          step.refVersion
+                        )
+                      }
                       expanded
                     >
                       <StepLabel
@@ -296,12 +596,11 @@ function Course() {
                       </StepLabel>
                       <StepContent>{step.status}</StepContent>
                     </Step>
-  ))}
-              </Stepper>
-            </AccordionDetails>
-          </Accordion>
-          
-        ))}
+                  ))}
+                </Stepper>
+              </AccordionDetails>
+            </Accordion>
+          ))}
         </>
       }
       scroll="content"

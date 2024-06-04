@@ -68,6 +68,10 @@ function jwtSignInTab() {
     });
   }, [setValue]);
 
+  useEffect(() => {
+    console.log("reAuth state has changed: ", reAuth);
+  }, [reAuth]);
+
   async function onSubmit(formData) {
     const { userName, password, mFAOtp } = formData;
     const params = {
@@ -82,8 +86,8 @@ function jwtSignInTab() {
       const user = await axiosService.signIn(params);
       if (user.statusCode === 202) {
         setReAuth(true);
+        console.log("reAuth set to true");
       }
-      console.log("---------", user);
       if (user.statusCode === 200) {
         localStorage.setItem("jwt_access_token", user.data.jwt);
         navigate("/dashboards/project");
@@ -174,6 +178,7 @@ function jwtSignInTab() {
             />
           )}
         />
+        {reAuth && <h1>hello</h1>}
 
         <div className="flex flex-col items-center mt-4 justify-center sm:flex-row sm:justify-between">
           <Controller
