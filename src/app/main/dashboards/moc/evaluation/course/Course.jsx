@@ -1,12 +1,16 @@
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { useTheme } from "@mui/material/styles";
-import Hidden from "@mui/material/Hidden";
-import IconButton from "@mui/material/IconButton";
+
 import Paper from "@mui/material/Paper";
 import Stepper from "@mui/material/Stepper";
+import Backdrop from "@mui/material/Backdrop";
+import Modal from "@mui/material/Modal";
+import Fade from "@mui/material/Fade";
+import Button from "@mui/material/Button";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import SwipeableViews from "react-swipeable-views";
+import { parseISO, format } from "date-fns";
 import {
   Accordion,
   AccordionDetails,
@@ -15,24 +19,15 @@ import {
   StepContent,
   StepLabel,
 } from "@mui/material";
-import Button from "@mui/material/Button";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import ButtonGroup from "@mui/material/ButtonGroup";
+
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
-import FuseLoading from "@fuse/core/FuseLoading";
+
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { apiAuth } from "src/utils/http";
 import CourseProgress from "../../../moc/CourseProgress";
-// import Error404Page from "../../../../404/Error404Page";
-// import {
-//   useGetAcademyCourseQuery,
-//   useUpdateAcademyCourseMutation,
-// } from "../AcademyApi";
-import { Evalution } from "../../../../../../../api/Api";
-import { useCallback } from "react";
-import axios from "axios";
+import MocHeader from "../../MocHeader";
 
 /**
  * The Course page.
@@ -47,48 +42,80 @@ function Course() {
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
   const [expandedPanel, setExpandedPanel] = useState(null);
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [activeAccordionIndex, setActiveAccordionIndex] = useState(-1);
+  const [expandedAccordionIndex, setExpandedAccordionIndex] = useState(-1);
+  const [actName, setActName] = useState("");
+  const [reqNo, setReqNo] = useState("");
+  const [currentPhase, setCurrentPhase] = useState("Initiation");
 
-  // const { data: course, isLoading } = useGetAcademyCourseQuery(
-  //   { courseId },
-  //   {
-  //     skip: !courseId,
-  //   }
-  // );
-  // const [updateCourse] = useUpdateAcademyCourseMutation();
-  // useEffect(() => {
-  //   /**
-  //    * If the course is opened for the first time
-  //    * Change ActiveStep to 1
-  //    */
-  //   if (course && course?.progress?.currentStep === 0) {
-  //     updateCourse({ courseId, data: { progress: { currentStep: 1 } } });
-  //   }
-  // }, [course]);
+  useEffect(() => {
+    let lastIndex = -1;
+    for (let i = content.length - 1; i >= 0; i--) {
+      if (content[i].activities.length > 0) {
+        lastIndex = i;
+        break;
+      }
+    }
+    setActiveAccordionIndex(lastIndex);
+    setExpandedAccordionIndex(lastIndex);
+    if (lastIndex !== -1 && content[lastIndex].activities.length > 0) {
+      const lastActivity = content[lastIndex].activities[0];
+      handleStepChange(
+        null,
+        content[lastIndex].name,
+        lastActivity.uid,
+        lastActivity.code,
+        lastActivity.version,
+        lastActivity.refVersion,
+        lastActivity.name
+      );
+    }
+  }, [content]);
+
+  const handleAccordionChange = (index, phaseName) => {
+    if (expandedAccordionIndex === index) {
+      setExpandedAccordionIndex(-1); // Collapse if already expanded
+    } else {
+      setExpandedAccordionIndex(index);
+      // Expand if collapsed or different accordion
+    }
+  };
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "1500px",
+    maxWidth: "80vw",
+    height: "65%",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+    p: 4,
+  };
+
   useEffect(() => {
     getRecords();
   }, []);
-  // const currentStep = course?.progress?.currentStep || 0;
 
-  // function updateCurrentStep(index) {
-  //   if (course && (index > course.totalSteps || index < 0)) {
-  //     return;
-  //   }
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return "Invalid date";
+    }
 
-  //   updateCourse({ courseId, data: { progress: { currentStep: index } } });
-  // }
-
-  // const fetchdataSetting = useCallback(async () => {
-  //   try {
-  //     const banners = await Evalution();
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   fetchdataSetting();
-  //   document.body.style.position = "";
-  // }, []);
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMMM dd, yyyy, h:mm:ss a");
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      return "Invalid date";
+    }
+  };
 
   function getRecords() {
     apiAuth.get(`/Activity/RequestLifecycle/${evaluationId}`).then((resp) => {
@@ -96,41 +123,32 @@ function Course() {
     });
   }
 
-  // function handleNext() {
-  //   updateCurrentStep(currentStep + 1);
-  // }
-
-  // function handleBack() {
-  //   updateCurrentStep(currentStep - 1);
-  // }
-
-  // function handleStepChange(e, uid) {
-  //   e.preventDefault();
-  //   console.log("====================================", uid);
-
-  //   apiAuth
-  //     .get(`/ChangeRequest/Get?id=d73b2f52-522f-4860-b886-a640e6b6371e`)
-  //     .then((resp) => {
-  //       setContentDetails(resp.data?.data);
-  //     });
-  // }
-
-  function handleStepChange(e, phaseName, uid, code, version, refVersion) {
-    e.preventDefault();
-    console.log("Clicked Phase:", phaseName, "UID:", uid);
+  function handleStepChange(
+    e,
+    phaseName,
+    uid,
+    code,
+    version,
+    refVersion,
+    activityname
+  ) {
+    setActName(activityname);
+    setCurrentPhase(phaseName);
 
     switch (phaseName) {
       case "Initiation":
-        axios.get(`/ChangeRequest/Get?id=${evaluationId}`).then((resp) => {
+        apiAuth.get(`/ChangeRequest/Get?id=${evaluationId}`).then((resp) => {
+          setReqNo(resp.data.data.requestNo);
+
           setContentDetails(resp.data?.data);
         });
         break;
       case "Evaluation":
-        axios
+        apiAuth
           .get(`/ChangeEvaluation/Get/${evaluationId}/null/1`)
           .then((resp) => {
             const evaluationIds = resp.data.data.id;
-            axios
+            apiAuth
               .get(
                 `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${evaluationIds}`
               )
@@ -140,20 +158,28 @@ function Course() {
           });
         break;
       case "Approval":
-        axios
+        apiAuth
           .get(
             `/SummaryDetails/List?id=${evaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
           )
           .then((resp) => {
+            setReqNo(resp.data.data.requestNo);
+
             setContentDetails(resp.data?.data);
-            axios.get(`/ApprovalManager/Remark/${uid}`).then((resp) => {
+            apiAuth.get(`/ApprovalManager/Remark/${uid}`).then((resp) => {
               setContentDetails(resp.data?.data);
             });
           });
         break;
       case "Implementation":
-        axios.get(`/Implementation/Details?id=${uid}`).then((resp) => {
+        apiAuth.get(`/ChangeRequest/Get?id=${evaluationId}`).then((resp) => {
+          setReqNo(resp.data.data.requestNo);
           setContentDetails(resp.data?.data);
+          apiAuth.get(`/Staff/LOV`).then((resp) => {
+            apiAuth
+              .get(`DocMoc/GetImplementation/${evaluationId}`)
+              .then((resp) => {});
+          });
         });
         break;
       default:
@@ -164,363 +190,450 @@ function Course() {
 
   useEffect(() => {
     handleStepChange();
-  }, [input]);
-
-  // const activeStep = currentStep !== 0 ? currentStep : 1;
-
-  // if (isLoading) {
-  //   return <FuseLoading />;
-  // }
-
-  // if (!course) {
-  //   return <Error404Page />;
-  // }
+  }, []);
 
   return (
     <FusePageSimple
+      header={<MocHeader activity={actName} reqno={reqNo} />}
       content={
         <div className="w-full">
-          {/* <Hidden lgDown>
-            <CourseProgress className="sticky top-0 z-10" course={course} />
-          </Hidden>
-
-          <Hidden lgUp>
-            <Paper
-              className="flex sticky top-0 z-10 items-center w-full px-16 py-8 border-b-1 shadow-0"
-              square
-            >
-              <IconButton to="/moc/evaluation/courses" component={Link}>
-                <FuseSvgIcon>
-                  {theme.direction === "ltr"
-                    ? "heroicons-outline:arrow-sm-left"
-                    : "heroicons-outline:arrow-sm-right"}
-                </FuseSvgIcon>
-              </IconButton>
-
-              <Typography className="text-13 font-medium tracking-tight mx-10">
-                {course.title}
-              </Typography>
-            </Paper>
-          </Hidden> */}
-
-          <SwipeableViews
-            // index={activeStep - 1}
-            enableMouseEvents
-            // onChangeIndex={handleStepChange}
-          >
+          <SwipeableViews enableMouseEvents>
             <div className="flex justify-center p-16 pb-64 sm:p-24 sm:pb-64 md:pb-64">
-              <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24 sm:p-40 sm:py-48 rounded-16 shadow overflow-hidden">
-                <div
-                  _ngcontent-fyk-c288=""
-                  class="flex items-center w-full  border-b justify-between"
-                >
-                  <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
-                    MOC Document Request
-                  </h2>
-                </div>
-                <div _ngcontent-fyk-c288="" class="px-6 mb-6 ng-star-inserted">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                  >
-                    <div _ngcontent-fyk-c288="">
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="mt-3 leading-6 text-secondary"
-                      >
-                        Request No{" "}
-                      </div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="text-lg leading-6 font-medium"
-                      >
-                        {" "}
-                        {contentDetails?.requestNo}
-                      </div>
-                    </div>
-                    <div _ngcontent-fyk-c288="">
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="mt-3 leading-6 text-secondary"
-                      >
-                        Date
-                      </div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="text-lg leading-6 font-medium"
-                      >
-                        {" "}
-                        {contentDetails?.requestDate}
-                      </div>
-                    </div>
-                    <div _ngcontent-fyk-c288="">
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="mt-3 leading-6 text-secondary"
-                      >
-                        Site In Charge
-                      </div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="text-lg leading-6 font-medium"
-                      >
-                        {" "}
-                        {contentDetails?.siteInChargeName}
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                  >
-                    <div _ngcontent-fyk-c288="">
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="mt-3 leading-6 text-secondary"
-                      >
-                        Site
-                      </div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="text-lg leading-6 font-medium"
-                      >
-                        {" "}
-                        {contentDetails?.siteName}
-                      </div>
-                    </div>
-                    <div _ngcontent-fyk-c288="">
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="mt-3 leading-6 text-secondary"
-                      >
-                        Division
-                      </div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="text-lg leading-6 font-medium"
-                      >
-                        {" "}
-                        {contentDetails?.divisionName}
-                      </div>
-                    </div>
-                    <div _ngcontent-fyk-c288="">
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="mt-3 leading-6 text-secondary"
-                      >
-                        Function
-                      </div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="text-lg leading-6 font-medium"
-                      >
-                        {" "}
-                        {contentDetails?.functionName}
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                  >
-                    <div _ngcontent-fyk-c288="">
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="mt-3 leading-6 text-secondary"
-                      >
-                        Type{" "}
-                      </div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="text-lg leading-6 font-medium"
-                      >
-                        {" "}
-                        {contentDetails?.typeString}
-                      </div>
-                    </div>
-                  </div>
-                  <div _ngcontent-fyk-c288="" class="grid grid-cols-1w-full">
-                    <div _ngcontent-fyk-c288="">
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="mt-3 leading-6 text-secondary"
-                      >
-                        Document Name
-                      </div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="text-lg leading-6 font-medium"
-                      >
-                        {" "}
-                        {contentDetails?.projectName}
-                      </div>
-                    </div>
-                    <div _ngcontent-fyk-c288="" class="grid grid-cols-1w-full">
-                      <div _ngcontent-fyk-c288="">
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="mt-3 leading-6 text-secondary"
-                        >
-                          Document Description
-                        </div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="text-lg leading-6 font-medium"
-                        >
-                          {" "}
-                          {contentDetails?.projectDescription}
-                        </div>
-                      </div>
+              {currentPhase === "Initiation" && (
+                <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
+                  <div>
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="flex items-center w-full  border-b justify-between"
+                    >
+                      <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+                        MOC Document Request
+                      </h2>
                     </div>
                     <div
                       _ngcontent-fyk-c288=""
-                      class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                      class="px-6 mb-6 ng-star-inserted"
                     >
-                      <div _ngcontent-fyk-c288="">
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="mt-3 leading-6 text-secondary"
-                        >
-                          Document Type
-                        </div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="text-lg leading-6 font-medium"
-                        >
-                          {" "}
-                          {contentDetails?.documentType}
-                        </div>
-                      </div>
-                    </div>
-                    <div _ngcontent-fyk-c288="" class="grid grid-cols-1w-full">
-                      <div _ngcontent-fyk-c288="">
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="mt-3 leading-6 text-secondary ng-star-inserted"
-                        >
-                          Reason for New Document
-                        </div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="text-lg leading-6 font-medium"
-                        >
-                          {" "}
-                          {contentDetails?.reasonForNewDocument}
-                        </div>
-                      </div>
-                    </div>
-                    <div _ngcontent-fyk-c288="" class="grid grid-cols-1w-full">
-                      <div _ngcontent-fyk-c288="">
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="mt-3 leading-6 text-secondary"
-                        >
-                          Doc Controller
-                        </div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="text-lg leading-6 font-medium"
-                        >
-                          {" "}
-                          {contentDetails?.docControllerName}
-                        </div>
-                      </div>
-                    </div>
-                    <div _ngcontent-fyk-c288="" class="grid grid-cols-1w-full">
-                      <div _ngcontent-fyk-c288="">
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="mt-3 leading-6 text-secondary"
-                        >
-                          Document Url
-                        </div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="text-lg leading-6 font-medium"
-                        >
-                          <a
+                      <div>&nbsp;</div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                      >
+                        <div _ngcontent-fyk-c288="">
+                          <div
                             _ngcontent-fyk-c288=""
-                            target="_blank"
-                            class="text-blue-500 hover:text-blue-800"
-                            href={contentDetails?.documentUrl}
+                            class="mt-3 leading-6 text-secondary"
                           >
-                            {contentDetails?.documentUrl}
-                          </a>
+                            Request No{" "}
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.requestNo}
+                          </div>
                         </div>
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Date
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.requestDate}
+                          </div>
+                        </div>
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Site In Charge
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.siteInChargeName}
+                          </div>
+                        </div>
+                      </div>
+                      <div>&nbsp;</div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                      >
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Site
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.siteName}
+                          </div>
+                        </div>
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Division
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.divisionName}
+                          </div>
+                        </div>
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Function
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.functionName}
+                          </div>
+                        </div>
+                      </div>
+                      <div>&nbsp;</div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                      >
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Type{" "}
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.typeString}
+                          </div>
+                        </div>
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Name
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.projectName}
+                          </div>
+                        </div>
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Description
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.projectDescription}
+                          </div>
+                        </div>
+                      </div>
+                      <div>&nbsp;</div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                      >
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Type
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.documentType}
+                          </div>
+                        </div>
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Reason for New Document
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.reasonForNewDocument}
+                          </div>
+                        </div>
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Doc Controller
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.docControllerName}
+                          </div>
+                        </div>
+                      </div>
+                      <div>&nbsp;</div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                      >
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Url
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            <a
+                              _ngcontent-fyk-c288=""
+                              target="_blank"
+                              class="text-blue-500 hover:text-blue-800"
+                              href={contentDetails?.documentUrl}
+                            >
+                              {contentDetails?.documentUrl}
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>&nbsp;</div>
+
+                    <div className="flex items-center justify-between w-full mt-8 px-6 py-3 border-t">
+                      <div>
+                        <button className="ml-1 sm:inline-flex cursor-pointer mat-button mat-stroked-button mat-button-base">
+                          <span className="mat-button-wrapper">
+                            <h1 className="mat-icon notranslate icon-size-4 mat-icon-no-color mr-3 justify-center" />
+                            <Button
+                              className="whitespace-nowrap mt-5"
+                              style={{
+                                border: "1px solid",
+                                backgroundColor: "#0000",
+                                color: "black",
+                                borderColor: "rgba(203,213,225)",
+                              }}
+                              variant="contained"
+                              color="warning"
+                              startIcon={
+                                <FuseSvgIcon size={20}>
+                                  heroicons-solid:upload
+                                </FuseSvgIcon>
+                              }
+                              onClick={handleOpen}
+                            >
+                              Document
+                            </Button>
+
+                            <Modal
+                              aria-labelledby="transition-modal-title"
+                              aria-describedby="transition-modal-description"
+                              open={open}
+                              onClose={handleClose}
+                              closeAfterTransition
+                              slots={{ backdrop: Backdrop }}
+                              slotProps={{
+                                backdrop: {
+                                  timeout: 500,
+                                },
+                              }}
+                            >
+                              <Fade in={open}>
+                                <Box sx={style}>
+                                  <Box>
+                                    <Typography
+                                      id="transition-modal-title"
+                                      variant="h6"
+                                      component="h2"
+                                      style={{
+                                        fontSize: "4rem",
+                                        fontWeight: "800px !important",
+                                      }}
+                                    >
+                                      File Manager
+                                    </Typography>
+                                    <Typography
+                                      id="transition-modal-description"
+                                      sx={{ mt: 2 }}
+                                    >
+                                      0 Fiels
+                                    </Typography>
+                                  </Box>
+                                  <Box>
+                                    <Typography
+                                      id="transition-modal-title"
+                                      variant="h6"
+                                      className="p-6 md:p-8 md:py-6 min-h-[435px] bg-[] max-h-120 space-y-8 overflow-y-auto"
+                                      component="h2"
+                                      style={{
+                                        backgroundColor: "#e3eeff80",
+                                      }}
+                                    >
+                                      File Manager
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                              </Fade>
+                            </Modal>
+                          </span>
+                        </button>
                       </div>
                     </div>
                   </div>
-                </div>
-              </Paper>
+                </Paper>
+              )}
+              {currentPhase === "Evaluation" && (
+                <>
+                  <Paper
+                    className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
+                    style={{ marginRight: "15px", width: "100%" }}
+                  >
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="flex items-center w-full  border-b justify-between"
+                    >
+                      <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+                        Evaluation
+                      </h2>
+                    </div>
+                  </Paper>
+                  <Paper
+                    className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
+                    style={{ width: "45%" }}
+                  >
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="flex items-center w-full  border-b justify-between"
+                    >
+                      <h2 _ngcontent-fyk-c288="" class="">
+                        Help
+                      </h2>
+                    </div>
+                    <div className="prose">
+                      <ul className="text-sm">
+                        <li>
+                          After stakeholders are added, a task is assigned to
+                          each stakeholder to review the document. Stakeholders
+                          can view the document by going to MOC details from
+                          Tasks page which contains the document share point
+                          link and they need to add their comments in the
+                          document uploaded in share point.
+                        </li>
+                        <li>
+                          Once they have reviewed the document, each stakeholder
+                          has to go to Tasks page and submit the task as an
+                          acknowledgement.
+                        </li>
+                        <li>
+                          Here information of each stakeholder having reviewed
+                          the document is available.
+                        </li>
+                        <li>
+                          Document author will call internal (Plant/office)
+                          stakeholders and conduct session to review the
+                          document uploaded in share point and confirm review of
+                          document.
+                        </li>
+                        <li>
+                          Document author will create clean version of the
+                          document incorporating all modifications / suggestions
+                          into same location in share point.
+                        </li>
+                        <li>
+                          Document author has to update the new consolidated
+                          document url here.
+                        </li>
+                        <li>Document author can then submit for approval.</li>
+                      </ul>
+                    </div>
+                  </Paper>
+                </>
+              )}
+              {currentPhase === "Approval" && (
+                <>
+                  <Paper
+                    className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
+                    style={{ marginRight: "15px", width: "100%" }}
+                  >
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="flex items-center w-full  border-b justify-between"
+                    >
+                      <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+                        Approval
+                      </h2>
+                    </div>
+                  </Paper>
+                </>
+              )}
+              {currentPhase === "Implementation" && (
+                <>
+                  <Paper
+                    className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
+                    style={{ marginRight: "15px", width: "100%" }}
+                  >
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="flex items-center w-full  border-b justify-between"
+                    >
+                      <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+                        Implementation
+                      </h2>
+                    </div>
+                  </Paper>
+                </>
+              )}
             </div>
           </SwipeableViews>
-
-          {/* <Hidden lgDown>
-            <div className="flex justify-center w-full sticky bottom-0 p-16 pb-32 z-10">
-              <ButtonGroup
-                variant="contained"
-                aria-label=""
-                className="rounded-full"
-                color="secondary"
-              >
-                <Button
-                  className="min-h-56 rounded-full"
-                  size="large"
-                  startIcon={
-                    <FuseSvgIcon>
-                      heroicons-outline:arrow-narrow-left
-                    </FuseSvgIcon>
-                  }
-                  onClick={handleBack}
-                >
-                  Prev
-                </Button>
-                <Button
-                  className="pointer-events-none min-h-56"
-                  size="large"
-                >{`${activeStep}/${course.totalSteps}`}</Button>
-                <Button
-                  className="min-h-56 rounded-full"
-                  size="large"
-                  endIcon={
-                    <FuseSvgIcon>
-                      heroicons-outline:arrow-narrow-right
-                    </FuseSvgIcon>
-                  }
-                  onClick={handleNext}
-                >
-                  Next
-                </Button>
-              </ButtonGroup>
-            </div>
-          </Hidden>
-
-          <Hidden lgUp>
-            <Box
-              sx={{ backgroundColor: "background.paper" }}
-              className="flex sticky bottom-0 z-10 items-center w-full p-16 border-t-1"
-            >
-              <IconButton
-                onClick={() => setLeftSidebarOpen(true)}
-                aria-label="open left sidebar"
-                size="large"
-              >
-                <FuseSvgIcon>heroicons-outline:view-list</FuseSvgIcon>
-              </IconButton>
-
-              <Typography className="mx-8">{`${activeStep}/${course.totalSteps}`}</Typography>
-
-              <CourseProgress className="flex flex-1 mx-8" course={course} />
-
-              <IconButton onClick={handleBack}>
-                <FuseSvgIcon>heroicons-outline:arrow-narrow-left</FuseSvgIcon>
-              </IconButton>
-
-              <IconButton onClick={handleNext}>
-                <FuseSvgIcon>heroicons-outline:arrow-narrow-right</FuseSvgIcon>
-              </IconButton>
-            </Box>
-          </Hidden> */}
         </div>
       }
       leftSidebarWidth={300}
@@ -528,7 +641,12 @@ function Course() {
       leftSidebarContent={
         <>
           {content.map((resp, respIndex) => (
-            <Accordion key={respIndex} style={{ margin: "0px" }}>
+            <Accordion
+              key={respIndex}
+              style={{ margin: "0px" }}
+              expanded={respIndex === expandedAccordionIndex}
+              onChange={() => handleAccordionChange(respIndex)}
+            >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 aria-controls="panel1-content"
@@ -538,11 +656,7 @@ function Course() {
                 {resp.name}
               </AccordionSummary>
               <AccordionDetails>
-                <Stepper
-                  // classes={{ root: "p-32" }}
-                  // activeStep={activeStep - 1}
-                  orientation="vertical"
-                >
+                <Stepper orientation="vertical">
                   {resp.activities.map((step, index) => (
                     <Step
                       key={index}
@@ -562,7 +676,8 @@ function Course() {
                           step.uid,
                           step.code,
                           step.version,
-                          step.refVersion
+                          step.refVersion,
+                          step.name
                         )
                       }
                       expanded
@@ -592,9 +707,37 @@ function Course() {
                           },
                         }}
                       >
-                        {step.name}
+                        {step.name} v{step.version}
                       </StepLabel>
-                      <StepContent>{step.status}</StepContent>
+                      <StepContent>
+                        <CourseProgress
+                          course={step.isComplete === true ? 100 : 0}
+                        />
+                      </StepContent>
+                      <StepContent
+                        style={{ fontSize: "10px" }}
+                        className="pt-4"
+                      >
+                        By{" "}
+                        <b>
+                          {step.targetUsers && step.targetUsers.length > 0
+                            ? step.targetUsers[0]
+                            : ""}
+                        </b>
+                      </StepContent>
+                      <StepContent style={{ fontSize: "10px" }}>
+                        Started at <b>{formatDate(step.actualStartDate)}</b>
+                      </StepContent>
+                      <StepContent style={{ fontSize: "10px" }}>
+                        {step.actualEndDate === null ? (
+                          ""
+                        ) : (
+                          <>
+                            {step.status} at{" "}
+                            <b>{formatDate(step.actualEndDate)}</b>
+                          </>
+                        )}
+                      </StepContent>
                     </Step>
                   ))}
                 </Stepper>

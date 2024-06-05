@@ -8,9 +8,9 @@ function CourseProgress(props) {
   const { course, className } = props;
   return (
     <LinearProgress
-      className={clsx("w-full h-2", className)}
+      className={clsx("w-full h-4", className)}
       variant="determinate"
-      value={course.completionPercent * 100}
+      value={course}
       color="secondary"
     />
   );

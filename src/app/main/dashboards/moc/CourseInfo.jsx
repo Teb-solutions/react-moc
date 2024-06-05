@@ -15,6 +15,20 @@ function CourseInfo(props) {
     return null;
   }
 
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return "Invalid date";
+    }
+
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMMM dd, yyyy");
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      return "Invalid date";
+    }
+  };
+
   return (
     <div className={clsx("w-full", className)}>
       <div className="flex items-center justify-between mb-16">
@@ -43,7 +57,7 @@ function CourseInfo(props) {
 
       <Typography className="text-13 mt-2 line-clamp-2" color="text.secondary">
         Initiated by <b>{course.initiatorName}</b> on{" "}
-        <b>{format(parseISO(course?.requestDate), "MMMM dd, yyyy")}</b>
+        <b> {formatDate(course?.requestDate)}</b>
       </Typography>
       <Divider className="w-48 my-24 border-1" light />
 
