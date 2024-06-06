@@ -9,7 +9,6 @@ import { Button } from "@mui/material";
  */
 function MocHeader(props) {
   const { activity, reqno } = props;
-  console.log(activity, "lll");
   const routeParams = useParams();
   function handleClick() {}
 

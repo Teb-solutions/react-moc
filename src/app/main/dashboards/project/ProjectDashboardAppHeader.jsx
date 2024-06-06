@@ -12,6 +12,7 @@ import { selectUser } from "src/app/auth/user/store/userSlice";
 import { useAppSelector } from "app/store/hooks";
 import { useGetProjectDashboardProjectsQuery } from "./ProjectDashboardApi";
 import { Dashboard } from "../../../../../api/Api";
+import { apiAuth } from "src/utils/http";
 
 /**
  * The ProjectDashboardAppHeader page.
@@ -27,7 +28,7 @@ function ProjectDashboardAppHeader() {
 
   const fetchdataSetting = useCallback(async () => {
     try {
-      const banners = await Dashboard();
+      apiAuth.get(`/Dashboard/Get`).then((resp) => {});
     } catch (err) {
       console.log(err);
     }
