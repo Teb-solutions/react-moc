@@ -1,8 +1,11 @@
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { Button } from "@mui/material";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { useState } from "react";
 
 /**
  * The DemoHeader component.
@@ -10,7 +13,17 @@ import { Button } from "@mui/material";
 function MocHeader(props) {
   const { activity, reqno } = props;
   const routeParams = useParams();
-  function handleClick() {}
+  const navigate = useNavigate();
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    navigate("/moc/activity");
+  };
 
   return (
     <div
@@ -53,20 +66,32 @@ function MocHeader(props) {
             {activity}
           </Typography>
 
-          {Object.keys(routeParams).length === 0 && (
-            <Button
-              className=""
-              variant="contained"
-              color="secondary"
-              to="/apps/e-commerce/products/new"
-            >
-              <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-              <span className="mx-4 sm:mx-8">Initiate New MOC Request</span>
-            </Button>
-          )}
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={handleClose}
+          >
+            <MenuItem onClick={handleClose}>Technical </MenuItem>
+            <MenuItem onClick={handleClose}>Document</MenuItem>
+            <MenuItem onClick={handleClose}>Organisation</MenuItem>
+          </Menu>
         </Breadcrumbs>
 
         <div className="flex sm:hidden" />
+      </div>
+      <div style={{ justifyContent: "end" }}>
+        {" "}
+        {Object.keys(routeParams).length === 0 && (
+          <Button
+            className=""
+            variant="contained"
+            color="secondary"
+            onClick={handleClick}
+          >
+            <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+            <span className="mx-4 sm:mx-8">Initiate New MOC Request</span>
+          </Button>
+        )}
       </div>
     </div>
   );

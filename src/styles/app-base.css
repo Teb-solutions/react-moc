@@ -177,3 +177,21 @@ input:-webkit-autofill:active {
 .muiltr-8ifrkm {
   border-bottom: none;
 }
+
+.muiltr-b10jnn .container {
+  margin-bottom: 30px;
+  border-radius: 25px;
+}
+
+.MuiBox-root.muiltr-m0mtpj {
+  margin: 0;
+  padding: 0;
+}
+
+.content {
+  width: 150px;
+  height: 150px;
+  background: white;
+  margin: 35px;
+  border-radius: 10px;
+}

@@ -1,6 +1,8 @@
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { useTheme } from "@mui/material/styles";
-
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 import Paper from "@mui/material/Paper";
 import Stepper from "@mui/material/Stepper";
 import Backdrop from "@mui/material/Backdrop";
@@ -11,6 +13,8 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import SwipeableViews from "react-swipeable-views";
 import { parseISO, format } from "date-fns";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 import {
   Accordion,
   AccordionDetails,
@@ -33,6 +37,8 @@ import MocHeader from "../../MocHeader";
 import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -73,6 +79,8 @@ function Course() {
   const { evaluationId } = routeParams;
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
+  const [changeEvaluationId, setChangeEvaluationId] = useState();
+  const [handelUrlChange, setHandelUrlChange] = useState("");
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -84,14 +92,108 @@ function Course() {
   const [searchTerm, setSearchTerm] = useState("");
   const [ChangeEvaluationDetail, setChangeEvaluationDetail] = useState([]);
   const [taskLists, setTaskLists] = useState([]);
+  const [taskListDetail, setTaskListDetail] = useState([]);
+
   const [CheckLists, setCheckLists] = useState([]);
-
+  const [evalActions, setEvalActions] = useState([]);
+  const [addStake, setAddStake] = useState(false);
+  const [docStaff, setDocStaff] = useState([]);
   const [ApprovalManager, setApprovalManager] = useState({});
+  const [forms, setForms] = useState([
+    { id: Date.now(), data: { consultedDate: null, consultedStaffId: "" } },
+  ]);
 
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+  const [data, setData] = useState({
+    consultedDate: null,
+    consultedStaffId: "",
+    changeEvaluationId: 0,
+    changeRequestId: 0,
+    comments: "",
+    consultedStaffDesignationId: "",
+    id: 0,
+    isActive: true,
+    isEditable: true,
+    taskReviewId: "",
+  });
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleChangeStaffDate = (id, date) => {
+    setForms(
+      forms.map((form) =>
+        form.id === id
+          ? { ...form, data: { ...form.data, consultedDate: date } }
+          : form
+      )
+    );
+  };
+
+  const handleChangeStaff = (id, event) => {
+    const { name, value } = event.target;
+    setForms(
+      forms.map((form) =>
+        form.id === id
+          ? { ...form, data: { ...form.data, [name]: value } }
+          : form
+      )
+    );
+  };
+
+  const handelSubmit = () => {
+    const formattedForms = forms.map((form) => {
+      const date = form.data.consultedDate;
+      let formattedDate = null;
+
+      if (date) {
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1); // Month is zero-based
+        const year = date.getFullYear();
+        formattedDate = `${month}/${day}/${year}`;
+      }
+
+      return {
+        ...data, // Assuming 'data' contains common fields
+        consultedDate: formattedDate,
+        consultedStaffId: form.data.consultedStaffId,
+      };
+    });
+
+    apiAuth
+      .post(
+        `/ChangeEvaluationConsultation/Create/${changeEvaluationId}/${evaluationId}`,
+        formattedForms
+      )
+      .then((response) => {
+        apiAuth
+          .get(
+            `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${changeEvaluationId}`
+          )
+          .then((resp) => {
+            setChangeEvaluationDetail(resp.data?.data);
+            setAddStake(false);
+          });
+      })
+      .catch((error) => {});
+  };
+
+  console.log(data, "data");
+
+  const handleAddForm = () => {
+    setForms([
+      ...forms,
+      { id: Date.now(), data: { consultedDate: null, consultedStaffId: "" } },
+    ]);
+  };
+
+  const handleRemoveForm = (id) => {
+    setForms(forms.filter((form) => form.id !== id));
+  };
+
+  const handelNewForm = () => {
+    handleAddForm();
   };
 
   const [currentPhase, setCurrentPhase] = useState("");
@@ -180,68 +282,139 @@ function Course() {
     canedit
   ) {
     setActName(activityname);
-    setCurrentPhase(phaseName);
     setCanEdits(canedit);
 
-    switch (phaseName) {
-      case "Initiation":
-        apiAuth.get(`/ChangeRequest/Get?id=${evaluationId}`).then((resp) => {
-          setReqNo(resp.data.data.requestNo);
+    // Find the phase and activity that match the clicked activity
+    const matchingPhase = content.find((phase) =>
+      phase.activities.some((activity) => activity.uid === uid)
+    );
 
-          setContentDetails(resp.data?.data);
-        });
-        break;
-      case "Evaluation":
-        apiAuth
-          .get(`/ChangeEvaluation/Get/${evaluationId}/null/1`)
-          .then((resp) => {
-            const evaluationIds = resp.data.data.id;
-            setContentDetails(resp.data?.data);
+    if (matchingPhase) {
+      const matchingActivity = matchingPhase.activities.find(
+        (activity) => activity.uid === uid
+      );
 
+      if (matchingActivity) {
+        // Determine the phase name based on the form ID
+        let actualPhaseName = phaseName;
+
+        switch (matchingActivity.form) {
+          case 9:
+            actualPhaseName = "Initiation";
+            break;
+          case 10:
+            actualPhaseName = "Evaluation";
+            break;
+          case 5:
+            actualPhaseName = "Approval";
+            break;
+          case 11:
+            actualPhaseName = "Implementation";
+            break;
+          default:
+            actualPhaseName = phaseName; // Fall back to the passed phase name if no match is found
+        }
+
+        setCurrentPhase(actualPhaseName);
+
+        switch (actualPhaseName) {
+          case "Initiation":
+            apiAuth
+              .get(`/ChangeRequest/Get?id=${evaluationId}`)
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp.data?.data);
+              });
+            break;
+          case "Evaluation":
+            apiAuth
+              .get(`/ChangeEvaluation/Get/${evaluationId}/null/1`)
+              .then((resp) => {
+                const evaluationIds = resp.data.data.id;
+                setContentDetails(resp.data?.data);
+                setChangeEvaluationId(resp.data?.data.id);
+
+                apiAuth
+                  .get(
+                    `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${evaluationIds}`
+                  )
+                  .then((resp) => {
+                    setChangeEvaluationDetail(resp.data?.data);
+                    apiAuth
+                      .get(`/Activity/ActivityDetails/${uid}`)
+                      .then((resp) => {
+                        setEvalActions(resp.data.data.actions);
+                      });
+                  });
+              });
+            break;
+          case "Approval":
             apiAuth
               .get(
-                `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${evaluationIds}`
+                `/SummaryDetails/List?id=${evaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
               .then((resp) => {
-                setChangeEvaluationDetail(resp.data?.data[0]);
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp.data?.data);
+                apiAuth.get(`/ApprovalManager/Remark/${uid}`).then((resp) => {
+                  setApprovalManager(resp.data?.data);
+                });
               });
-          });
-        break;
-      case "Approval":
-        apiAuth
-          .get(
-            `/SummaryDetails/List?id=${evaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
-          )
-          .then((resp) => {
-            setReqNo(resp.data.data.requestNo);
-
-            setContentDetails(resp.data?.data);
-            apiAuth.get(`/ApprovalManager/Remark/${uid}`).then((resp) => {
-              setApprovalManager(resp.data?.data);
-            });
-          });
-        break;
-      case "Implementation":
-        apiAuth.get(`/ChangeRequest/Get?id=${evaluationId}`).then((resp) => {
-          setReqNo(resp.data.data.requestNo);
-          setContentDetails(resp.data?.data);
-          apiAuth.get(`/Staff/LOV`).then((resp) => {
+            break;
+          case "Implementation":
             apiAuth
-              .get(`DocMoc/GetImplementation/${evaluationId}`)
+              .get(`/ChangeRequest/Get?id=${evaluationId}`)
               .then((resp) => {
-                setTaskLists(resp.data.data.taskList);
-                setCheckLists(resp.data.data.checkList);
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp.data?.data);
+                apiAuth.get(`/Staff/LOV`).then((resp) => {
+                  apiAuth
+                    .get(`DocMoc/GetImplementation/${evaluationId}`)
+                    .then((resp) => {
+                      setTaskLists(resp.data.data.taskList);
+                      setCheckLists(resp.data.data.checkList);
+                    });
+                });
               });
-          });
-        });
-        break;
-      default:
-        console.log("No matching phase found");
-        return;
+            break;
+          default:
+            console.log("No matching phase found");
+            return;
+        }
+      }
     }
   }
 
-  console.log(contentDetails);
+  // Update the onClick event to pass the necessary parameters
+
+  const handelUrlUpdate = () => {
+    apiAuth
+      .post(`/DocMoc/UpdateEvaluationDocumentDetails/${changeEvaluationId}`, {
+        ConsolidatedDocumentUrl: handelUrlChange,
+      })
+      .then((resp) => {});
+  };
+
+  const SubmitApprovel = () => {
+    apiAuth
+      .get(
+        `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${changeEvaluationId}`
+      )
+      .then((resp) => {});
+  };
+
+  const handelAddStake = () => {
+    setAddStake(true);
+
+    apiAuth
+      .get(`/ApprovalManager/LOV/${evaluationId}/1/Consultaion`)
+      .then((resp) => {
+        apiAuth.get(`/Staff/LOV`).then((resp) => {
+          setDocStaff(resp.data.data);
+          apiAuth.get(`/LookupData/Lov/5`).then((resp) => {});
+        });
+      });
+  };
 
   useEffect(() => {
     handleStepChange();
@@ -608,101 +781,425 @@ function Course() {
                         </h2>
                       </div>
                       <div>&nbsp;</div>
-                      <div className="mt-2 mb-4 p-6 py-2">
-                        <b>Stakeholders</b>
-                      </div>
-                      <Accordion style={{ margin: "0px" }}>
-                        <AccordionSummary
-                          expandIcon={<ExpandMoreIcon />}
-                          aria-controls="panel1-content"
-                          id="panel1-header"
-                          style={{ minHeight: "60px" }}
-                        >
-                          <div
-                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                            style={{ width: "40%" }}
+                      {!addStake ? (
+                        <div className="mt-2 mb-4 p-6 py-2">
+                          <b>Stakeholders</b>
+                        </div>
+                      ) : (
+                        <div className="font-semibold">
+                          <a
+                            rel="noopener noreferrer"
+                            onClick={() => setAddStake(false)}
                           >
-                            <div className="flex items-center">
-                              <img
-                                src="/assets/images/etc/userpic.png"
-                                alt="Card cover image"
-                                className="rounded-full mr-4"
-                                style={{ width: "4rem", height: "4rem" }}
-                              />
-                              <div className="flex flex-col">
-                                <span className="font-semibold leading-none">
-                                  {ChangeEvaluationDetail.staff}
-                                </span>
-                                <span className="text-sm text-secondary leading-none pt-5">
-                                  Consulted on{" "}
-                                  {formatDate(
-                                    ChangeEvaluationDetail?.consultedDate
-                                  )}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
-                            <div className="flex items-center">
+                            Back to Stakeholders List
+                          </a>
+                        </div>
+                      )}
+                      {canEdits &&
+                        !addStake &&
+                        ChangeEvaluationDetail.map((list) => (
+                          <Accordion style={{ margin: "0px" }}>
+                            <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel1-content"
+                              id="panel1-header"
+                              style={{ minHeight: "60px" }}
+                            >
                               <div
-                                className="py-0.5 px-3 rounded-full text-sm"
-                                style={{
-                                  backgroundColor: "rgba(134,239,172)",
-                                  padding: "5px",
-                                }}
+                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                style={{ width: "40%" }}
                               >
-                                Comments Added
-                              </div>
-                            </div>
-                          </div>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <Stepper orientation="vertical">
-                            <Step>
-                              <div className="mat-expansion-panel-body ng-tns-c137-15">
-                                <div className="mt-2 ng-tns-c137-15">
-                                  <div className="prose prose-sm max-w-5xl">
-                                    <div className="ng-star-inserted">
-                                      <span
-                                        className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
-                                        style={{
-                                          backgroundColor: "rgba(241,245,249)",
-                                          padding: "10px",
-                                        }}
-                                      >
-                                        Comments
-                                      </span>
-                                      <span>complete</span>
-                                    </div>
+                                <div className="flex items-center">
+                                  <img
+                                    src="/assets/images/etc/userpic.png"
+                                    alt="Card cover image"
+                                    className="rounded-full mr-4"
+                                    style={{ width: "4rem", height: "4rem" }}
+                                  />
+                                  <div className="flex flex-col">
+                                    <span className="font-semibold leading-none">
+                                      {list?.staff}
+                                    </span>
+                                    <span className="text-sm text-secondary leading-none pt-5">
+                                      Consulted on{" "}
+                                      {formatDate(list?.consultedDate)}
+                                    </span>
                                   </div>
                                 </div>
                               </div>
-                            </Step>
-                          </Stepper>
-                        </AccordionDetails>
-                      </Accordion>
-                      <div className="mt-5 mb-4 p-6 py-2">
-                        <h5>No stakeholders added</h5>
-                      </div>
-                      <div
-                        className=" mb-4 p-6 py-2"
-                        style={{ marginTop: "2.5rem" }}
-                      >
-                        <div className="flex row">
-                          <div className="ng-star-inserted">
-                            <div>Consolidated Document Url</div>
-                            <div className="font-semibold">
-                              <a
-                                href="https://consolidatedurl.com"
-                                rel="noopener noreferrer"
+
+                              <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                <div className="flex items-center">
+                                  <div
+                                    className="py-0.5 px-3 rounded-full text-sm"
+                                    style={{
+                                      backgroundColor:
+                                        list.comments === "" ||
+                                        list.comments === null
+                                          ? "rgba(252,165,165)"
+                                          : "rgba(134,239,172)",
+                                      padding: "5px",
+                                    }}
+                                  >
+                                    {list.comments === ""
+                                      ? "No Comments Added"
+                                      : list.comments}
+                                  </div>
+                                </div>
+                              </div>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              <Stepper orientation="vertical">
+                                <Step>
+                                  <div className="mat-expansion-panel-body ng-tns-c137-15">
+                                    <div className="mt-2 ng-tns-c137-15">
+                                      <div className="prose prose-sm max-w-5xl">
+                                        <div className="ng-star-inserted">
+                                          <span
+                                            className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                            style={{
+                                              padding: "10px",
+                                            }}
+                                          >
+                                            {list.comments === ""
+                                              ? "No Comments Added"
+                                              : list.comments}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Step>
+                              </Stepper>
+                            </AccordionDetails>
+                          </Accordion>
+                        ))}
+                      {!canEdits &&
+                        ChangeEvaluationDetail.map((list) => (
+                          <Accordion style={{ margin: "0px" }}>
+                            <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls="panel1-content"
+                              id="panel1-header"
+                              style={{ minHeight: "60px" }}
+                            >
+                              <div
+                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                style={{ width: "40%" }}
                               >
-                                {contentDetails?.remarks}
-                              </a>
+                                <div className="flex items-center">
+                                  <img
+                                    src="/assets/images/etc/userpic.png"
+                                    alt="Card cover image"
+                                    className="rounded-full mr-4"
+                                    style={{ width: "4rem", height: "4rem" }}
+                                  />
+                                  <div className="flex flex-col">
+                                    <span className="font-semibold leading-none">
+                                      {list?.staff}
+                                    </span>
+                                    <span className="text-sm text-secondary leading-none pt-5">
+                                      Consulted on{" "}
+                                      {formatDate(list?.consultedDate)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                <div className="flex items-center">
+                                  <div
+                                    className="py-0.5 px-3 rounded-full text-sm"
+                                    style={{
+                                      backgroundColor: "rgba(134,239,172)",
+                                      padding: "5px",
+                                    }}
+                                  >
+                                    Comments Added
+                                  </div>
+                                </div>
+                              </div>
+                            </AccordionSummary>
+                            <AccordionDetails>
+                              <Stepper orientation="vertical">
+                                <Step>
+                                  <div className="mat-expansion-panel-body ng-tns-c137-15">
+                                    <div className="mt-2 ng-tns-c137-15">
+                                      <div className="prose prose-sm max-w-5xl">
+                                        <div className="ng-star-inserted">
+                                          <span
+                                            className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                            style={{
+                                              backgroundColor:
+                                                "rgba(241,245,249)",
+                                              padding: "10px",
+                                            }}
+                                          >
+                                            Comments
+                                          </span>
+                                          <span>complete</span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </Step>
+                              </Stepper>
+                            </AccordionDetails>
+                          </Accordion>
+                        ))}
+                      {!ChangeEvaluationDetail.length && (
+                        <div className="mt-5 mb-4 p-6 py-2">
+                          <h5>No stakeholders added</h5>
+                        </div>
+                      )}
+                      <div>&nbsp;</div>
+                      {addStake &&
+                        forms.map((form) => (
+                          <div
+                            style={{
+                              marginTop: "30px",
+                              justifyContent: "space-start",
+                            }}
+                            className="flex flex-row "
+                            key={form.id}
+                          >
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                              <FormControl
+                                sx={{
+                                  marginLeft: "10px",
+                                }}
+                              >
+                                <Box sx={{}}>
+                                  <DatePicker
+                                    label="Validity Expires On *"
+                                    name="consultedDate"
+                                    value={form.data.consultedDate}
+                                    onChange={(date) =>
+                                      handleChangeStaffDate(form.id, date)
+                                    }
+                                    renderInput={(params) => (
+                                      <TextField fullWidth {...params} />
+                                    )}
+                                  />
+                                </Box>
+                              </FormControl>
+                            </LocalizationProvider>
+                            <Box
+                              sx={{
+                                width: 860,
+                                maxWidth: "50%",
+                                marginLeft: "5rem",
+                              }}
+                            >
+                              <FormControl fullWidth>
+                                <InputLabel id="division-label">
+                                  Search Staff
+                                </InputLabel>
+                                <Select
+                                  labelId="division-label"
+                                  id="consultedStaffId"
+                                  name="consultedStaffId"
+                                  value={form.data.consultedStaffId}
+                                  onChange={(event) =>
+                                    handleChangeStaff(form.id, event)
+                                  }
+                                >
+                                  <MenuItem value="">
+                                    <em>None</em>
+                                  </MenuItem>
+                                  {docStaff.map((option) => (
+                                    <MenuItem
+                                      key={option.id}
+                                      value={option.value}
+                                    >
+                                      {option.text}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                              </FormControl>
+                            </Box>
+                            <Button
+                              className="whitespace-nowrap mt-5"
+                              startIcon={
+                                <FuseSvgIcon size={20}>
+                                  heroicons-solid:trash
+                                </FuseSvgIcon>
+                              }
+                              onClick={() => handleRemoveForm(form.id)}
+                            ></Button>
+                          </div>
+                        ))}
+
+                      {addStake && (
+                        <>
+                          <div>&nbsp;</div>
+                          <div>&nbsp;</div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="flex items-center w-full  border-b justify-between"
+                          ></div>
+                          <div>&nbsp;</div>
+
+                          <div className="flex justify-between">
+                            <div>
+                              <Button
+                                className="whitespace-nowrap mt-5"
+                                style={{
+                                  border: "1px solid",
+                                  backgroundColor: "#0000",
+                                  color: "black",
+                                  borderColor: "rgba(203,213,225)",
+                                  marginLeft: "10px",
+                                  marginTop: "10px",
+                                }}
+                                variant="contained"
+                                color="warning"
+                                startIcon={
+                                  <FuseSvgIcon size={20}>
+                                    heroicons-solid:plus
+                                  </FuseSvgIcon>
+                                }
+                                onClick={handelNewForm}
+                              >
+                                Add New
+                              </Button>
+                            </div>
+                            <div>
+                              <Button
+                                className="whitespace-nowrap mt-5"
+                                style={{
+                                  border: "1px solid",
+                                  backgroundColor: "#0000",
+                                  color: "black",
+                                  borderColor: "rgba(203,213,225)",
+                                  marginLeft: "10px",
+                                  marginTop: "10px",
+                                }}
+                                variant="contained"
+                                onClick={() => setAddStake(false)}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                className="whitespace-nowrap  "
+                                variant="contained"
+                                color="secondary"
+                                style={{
+                                  marginLeft: " 10px",
+                                  marginTop: "8px",
+                                }}
+                                onClick={handelSubmit}
+                              >
+                                Submit
+                              </Button>
+                            </div>
+                          </div>
+                          <div>&nbsp;</div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="flex items-center w-full  border-b justify-between"
+                          ></div>
+                        </>
+                      )}
+
+                      {canEdits && (
+                        <>
+                          {!addStake && (
+                            <Button
+                              className="whitespace-nowrap mt-5"
+                              style={{
+                                border: "1px solid",
+                                backgroundColor: "#0000",
+                                color: "black",
+                                borderColor: "rgba(203,213,225)",
+                              }}
+                              variant="contained"
+                              color="warning"
+                              startIcon={
+                                <FuseSvgIcon size={20}>
+                                  heroicons-solid:plus
+                                </FuseSvgIcon>
+                              }
+                              onClick={handelAddStake}
+                            >
+                              Add Stakeholders
+                            </Button>
+                          )}
+                          <div>&nbsp;</div>
+
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                            }}
+                          >
+                            <FormControl fullWidth sx={{ m: 1 }}>
+                              <span> Consolidated Document Url *</span>
+
+                              <OutlinedInput
+                                id="documentUrl"
+                                onChange={(event) =>
+                                  setHandelUrlChange(event.target.value)
+                                }
+                              />
+                            </FormControl>
+                          </Box>
+                          <Button
+                            className="whitespace-nowrap ms-5 "
+                            variant="contained"
+                            color="secondary"
+                            style={{
+                              paddingLeft: " 40px",
+                              paddingRight: "40px",
+                            }}
+                            onClick={handelUrlUpdate}
+                          >
+                            Update
+                          </Button>
+                          <div>&nbsp;</div>
+                          <div>&nbsp;</div>
+                          <div>&nbsp;</div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="flex items-center w-full  border-b justify-between"
+                          ></div>
+                          <div className="flex justify-end ">
+                            {evalActions.map((btn) => (
+                              <Button
+                                className="whitespace-nowrap ms-5 "
+                                variant="contained"
+                                color="secondary"
+                                style={{
+                                  marginTop: "10px",
+                                }}
+                                onClick={SubmitApprovel}
+                              >
+                                {btn.name}
+                              </Button>
+                            ))}
+                          </div>
+                        </>
+                      )}
+                      {!canEdits && (
+                        <div
+                          className=" mb-4 p-6 py-2"
+                          style={{ marginTop: "2.5rem" }}
+                        >
+                          <div className="flex row">
+                            <div className="ng-star-inserted">
+                              <div>Consolidated Document Url</div>
+                              <div className="font-semibold">
+                                <a
+                                  href="https://consolidatedurl.com"
+                                  rel="noopener noreferrer"
+                                >
+                                  {contentDetails?.remarks}
+                                </a>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      )}
                     </Paper>
                     {canEdits && (
                       <Paper
@@ -1217,23 +1714,100 @@ function Course() {
                               <AccordionDetails>
                                 <Stepper orientation="vertical">
                                   <Step>
-                                    <div className="mat-expansion-panel-body">
-                                      <div className="mt-2">
-                                        <div className="prose prose-sm max-w-5xl">
-                                          <div>
-                                            <span
-                                              className="inline-flex bg-default rounded mr-5 text-secondary font-semibold"
-                                              style={{
-                                                backgroundColor:
-                                                  "rgba(241,245,249)",
-                                                padding: "10px",
-                                              }}
-                                            >
-                                              Comments
-                                            </span>
-                                            <span>{task.actionComments}</span>
+                                    <div style={{ alignItems: "flex-start" }}>
+                                      <div
+                                        className="rounded-lg"
+                                        style={{
+                                          backgroundColor: "rgba(219,234,254)",
+                                          padding: "10px",
+                                        }}
+                                      >
+                                        <b>{task?.assignedByStaff}</b>
+                                        <p>
+                                          What is the tsak : {task?.actionWhat}
+                                        </p>
+                                      </div>
+                                      <div
+                                        className="rounded-lg mt-5"
+                                        style={{
+                                          backgroundColor: "rgba(219,234,254)",
+                                          padding: "10px",
+                                        }}
+                                      >
+                                        <p>
+                                          How is Task done : {task?.actionHow}
+                                        </p>
+                                      </div>
+                                      {task?.particularName &&
+                                        task?.particularSubName && (
+                                          <div
+                                            className="rounded-lg mt-5"
+                                            style={{
+                                              backgroundColor:
+                                                "rgba(219,234,254)",
+                                              padding: "10px",
+                                            }}
+                                          >
+                                            <p>
+                                              Impact :{" "}
+                                              {`${task?.particularName} > ${task?.particularSubName}`}
+                                            </p>
                                           </div>
+                                        )}
+                                      <div
+                                        className="rounded-lgv mt-5"
+                                        style={{
+                                          backgroundColor: "rgba(219,234,254)",
+                                          padding: "10px",
+                                        }}
+                                      >
+                                        <p>
+                                          Due Date : {formatDate(task.dueDate)}
+                                        </p>
+                                      </div>
+                                      <div>&nbsp;</div>
+                                      <div className="flex items-center justify-center my-3">
+                                        <div className="flex-auto border-b"></div>
+                                        <div
+                                          className="flex-0 "
+                                          style={{ fontSize: "xx-small" }}
+                                        >
+                                          <b>{task?.assignedByStaff}</b> has
+                                          assigned task to{" "}
+                                          <b>{task?.assignedStaff}</b> on{" "}
+                                          {formatDate(task.assignedAt)}
                                         </div>
+                                        <div className="flex-auto border-b"></div>
+                                      </div>
+                                      <div>&nbsp;</div>
+
+                                      <div
+                                        className="rounded-lg mt-5"
+                                        style={{
+                                          backgroundColor: task.isCompleted
+                                            ? "rgba(241,245,249)"
+                                            : "rgba(219,234,254)",
+                                          padding: "10px",
+                                        }}
+                                      >
+                                        <b> {task?.assignedStaff}</b>
+                                        <p>completed</p>
+                                        <small>
+                                          Completed on {task?.completedAt}
+                                        </small>
+                                      </div>
+                                      <div
+                                        className="rounded-lgv mt-5"
+                                        style={{
+                                          backgroundColor: "rgba(219,234,254)",
+                                          padding: "10px",
+                                        }}
+                                      >
+                                        <b> {task?.assignedByStaff}</b>
+                                        <p>Approved </p>
+                                        <small>
+                                          Approved on Nov 28, 5:27 PM
+                                        </small>
                                       </div>
                                     </div>
                                   </Step>
