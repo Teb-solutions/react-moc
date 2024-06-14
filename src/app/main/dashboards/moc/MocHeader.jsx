@@ -21,7 +21,7 @@ function MocHeader(props) {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleOpenNewDoc = () => {
     navigate("/moc/activity");
   };
 
@@ -58,22 +58,26 @@ function MocHeader(props) {
           >
             MOC Requests
           </Link>
+          {reqno && (
+            <Typography className="font-medium" key="3" color="text.primary">
+              {reqno}
+            </Typography>
+          )}
 
-          <Typography className="font-medium" key="3" color="text.primary">
-            {reqno}
-          </Typography>
-          <Typography className="font-medium" key="3" color="text.primary">
-            {activity}
-          </Typography>
+          {activity && (
+            <Typography className="font-medium" key="3" color="text.primary">
+              {activity}
+            </Typography>
+          )}
 
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
-            onClose={handleClose}
+            onClose={handleOpenNewDoc}
           >
-            <MenuItem onClick={handleClose}>Technical </MenuItem>
-            <MenuItem onClick={handleClose}>Document</MenuItem>
-            <MenuItem onClick={handleClose}>Organisation</MenuItem>
+            <MenuItem>Technical </MenuItem>
+            <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
+            <MenuItem>Organisation</MenuItem>
           </Menu>
         </Breadcrumbs>
 

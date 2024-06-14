@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import authRoles from "../../../auth/authRoles";
 import DocRequest from "./activity/docRequest";
+import Task from "../task/Task";
 const MocApp = lazy(() => import("./Moc"));
 // const DocApp = lazy(() => import('./docevaluation/Doc'));
 /**

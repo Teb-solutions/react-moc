@@ -39,6 +39,7 @@ import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import DocPhasesEnum from "./docPhaseEnum";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -200,16 +201,51 @@ function Course() {
 
   useEffect(() => {
     let lastIndex = -1;
+    let lastActivity = null;
+
+    // Find the last non-empty activity array
     for (let i = content.length - 1; i >= 0; i--) {
       if (content[i].activities.length > 0) {
         lastIndex = i;
         break;
       }
     }
-    setActiveAccordionIndex(lastIndex);
-    setExpandedAccordionIndex(lastIndex);
-    if (lastIndex !== -1 && content[lastIndex].activities.length > 0) {
-      const lastActivity = content[lastIndex].activities[0];
+
+    if (lastIndex !== -1) {
+      const activities = content[lastIndex].activities;
+
+      // Find the last activity that is complete and has a non-null form
+      for (let j = activities.length - 1; j >= 0; j--) {
+        if (activities[j].isComplete === true && activities[j].form !== null) {
+          lastActivity = activities[j];
+          break;
+        }
+      }
+
+      // If no completed activity with a non-null form is found, search through all activities in all arrays
+      if (!lastActivity) {
+        for (let i = content.length - 1; i >= 0; i--) {
+          for (let j = content[i].activities.length - 1; j >= 0; j--) {
+            if (
+              content[i].activities[j].isComplete === true &&
+              content[i].activities[j].form !== null
+            ) {
+              lastIndex = i;
+              lastActivity = content[i].activities[j];
+              break;
+            }
+          }
+          if (lastActivity) break;
+        }
+      }
+
+      // If still no such activity is found, fall back to the last activity in the lastIndex
+      if (!lastActivity) {
+        lastActivity = activities[activities.length - 1];
+      }
+
+      setActiveAccordionIndex(lastIndex);
+      setExpandedAccordionIndex(lastIndex);
       handleStepChange(
         null,
         content[lastIndex].name,
@@ -296,20 +332,23 @@ function Course() {
 
       if (matchingActivity) {
         // Determine the phase name based on the form ID
-        let actualPhaseName = phaseName;
+        let actualPhaseName;
 
         switch (matchingActivity.form) {
-          case 9:
+          case DocPhasesEnum.INITIATION:
             actualPhaseName = "Initiation";
             break;
-          case 10:
+          case DocPhasesEnum.EVALUATION:
             actualPhaseName = "Evaluation";
             break;
-          case 5:
+          case DocPhasesEnum.APPROVAL:
             actualPhaseName = "Approval";
             break;
-          case 11:
+          case DocPhasesEnum.IMPLEMENTATION:
             actualPhaseName = "Implementation";
+            break;
+          case DocPhasesEnum.DOCIMPLCLOSURE:
+            actualPhaseName = "docimplclosure";
             break;
           default:
             actualPhaseName = phaseName; // Fall back to the passed phase name if no match is found
@@ -375,6 +414,19 @@ function Course() {
                       setCheckLists(resp.data.data.checkList);
                     });
                 });
+              });
+            break;
+          case "docimplclosure":
+            apiAuth
+              .get(
+                `/SummaryDetails/List?id=${evaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp.data?.data);
+                apiAuth
+                  .get(`/Activity/ActivityDetails/${uid}`)
+                  .then((resp) => {});
               });
             break;
           default:
@@ -616,7 +668,9 @@ function Course() {
                               class="text-lg leading-6 font-medium"
                             >
                               {" "}
-                              {contentDetails?.documentType}
+                              {contentDetails.isNewDocument == true
+                                ? "New"
+                                : "Existing"}
                             </div>
                           </div>
                           <div _ngcontent-fyk-c288="">
@@ -671,6 +725,7 @@ function Course() {
                                 _ngcontent-fyk-c288=""
                                 target="_blank"
                                 class="text-blue-500 hover:text-blue-800"
+                                style={{ background: "none", color: "blue" }}
                                 href={contentDetails?.documentUrl}
                               >
                                 {contentDetails?.documentUrl}
@@ -1433,30 +1488,50 @@ function Course() {
                         <div>&nbsp;</div>
                         <div
                           _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                         >
                           <div _ngcontent-fyk-c288="">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
                             >
-                              Document Url
+                              Validity Expiring On
                             </div>
                             <div
                               _ngcontent-fyk-c288=""
                               class="text-lg leading-6 font-medium"
                             >
                               {" "}
-                              <a
-                                _ngcontent-fyk-c288=""
-                                target="_blank"
-                                class="text-blue-500 hover:text-blue-800"
-                                href={contentDetails?.consolidatedDocumentUrl}
-                              >
-                                {contentDetails?.consolidatedDocumentUrl}
-                              </a>
+                              {formatDate(contentDetails?.docOldValidityDate)}
+                              New
                             </div>
                           </div>
+                        </div>
+                        <div>&nbsp;</div>
+
+                        <div _ngcontent-fyk-c288="">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Url
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            <a
+                              _ngcontent-fyk-c288=""
+                              target="_blank"
+                              class="text-blue-500 hover:text-blue-800"
+                              style={{ background: "none", color: "blue" }}
+                              href={contentDetails?.consolidatedDocumentUrl}
+                            >
+                              {contentDetails?.consolidatedDocumentUrl}
+                            </a>
+                          </div>
+
                           <div _ngcontent-fyk-c288="">
                             <div
                               _ngcontent-fyk-c288=""
@@ -1473,6 +1548,7 @@ function Course() {
                                 _ngcontent-fyk-c288=""
                                 target="_blank"
                                 class="text-blue-500 hover:text-blue-800"
+                                style={{ background: "none", color: "blue" }}
                                 href={contentDetails?.documentUrl}
                               >
                                 {contentDetails?.documentUrl}
@@ -1485,6 +1561,7 @@ function Course() {
                     </div>
                   </Paper>
                 )}
+
                 {currentPhase === "Implementation" && (
                   <>
                     <Paper
@@ -1617,8 +1694,11 @@ function Course() {
                             <TextField
                               variant="filled"
                               fullWidth
-                              placeholder="Search tasks"
-                              style={{ marginBottom: "15px" }}
+                              placeholder="Search"
+                              style={{
+                                marginBottom: "15px",
+                                backgroundColor: "white",
+                              }}
                               value={searchTerm}
                               InputProps={{
                                 startAdornment: (
@@ -1842,6 +1922,226 @@ function Course() {
                     </Paper>
                   </>
                 )}
+                {currentPhase === "docimplclosure" && (
+                  <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="flex items-center w-full  border-b justify-between"
+                    >
+                      <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+                        Closure by Doc Controller
+                      </h2>
+                    </div>
+                    <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="flex items-center w-full  border-b justify-between"
+                      >
+                        <h2
+                          _ngcontent-fyk-c288=""
+                          class="text-2xl font-semibold"
+                        >
+                          Summary Details
+                        </h2>
+                      </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="px-6 mb-6 ng-star-inserted"
+                      >
+                        <div>&nbsp;</div>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                        >
+                          <div _ngcontent-fyk-c288="">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Request No{" "}
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.requestNo}
+                            </div>
+                          </div>
+                          <div _ngcontent-fyk-c288="">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Initiator
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.initiatorName}
+                            </div>
+                          </div>
+                          <div _ngcontent-fyk-c288="">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Initiated On
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.requestDate}
+                            </div>
+                          </div>
+                        </div>
+                        <div>&nbsp;</div>
+
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                        >
+                          <div _ngcontent-fyk-c288="">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Type{" "}
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.requestTypeName}
+                            </div>
+                          </div>
+                          <div _ngcontent-fyk-c288="">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Document Name
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.projectName}
+                            </div>
+                          </div>
+                          <div _ngcontent-fyk-c288="">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Document Description
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.projectDescription}
+                            </div>
+                          </div>
+                        </div>
+                        <div>&nbsp;</div>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                        >
+                          <div _ngcontent-fyk-c288="">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Document Type
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.documentType}New
+                            </div>
+                          </div>
+                          <div _ngcontent-fyk-c288="">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Reason for New Document
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.reasonForNewDocument}
+                            </div>
+                          </div>
+                        </div>
+                        <div>&nbsp;</div>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                        >
+                          <div _ngcontent-fyk-c288="">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Document Url
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              <a
+                                _ngcontent-fyk-c288=""
+                                target="_blank"
+                                class="text-blue-500 hover:text-blue-800"
+                                href={contentDetails?.documentUrl}
+                              >
+                                {contentDetails?.documentUrl}
+                              </a>
+                            </div>
+                          </div>
+                          <div _ngcontent-fyk-c288="">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Consolidated Document Url
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              <a
+                                _ngcontent-fyk-c288=""
+                                target="_blank"
+                                class="text-blue-500 hover:text-blue-800"
+                                href={contentDetails?.consolidatedDocumentUrl}
+                              >
+                                {contentDetails?.consolidatedDocumentUrl}
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div>&nbsp;</div>
+                    </Paper>
+                  </Paper>
+                )}
               </div>
               <div className="flex justify-center p-16  pb-64 sm:p-24 ">
                 {currentPhase === "Approval" && (
@@ -1932,7 +2232,7 @@ function Course() {
                         style={{ width: "40%" }}
                       >
                         <span className="font-semibold leading-none">
-                          Approver Comment: {ApprovalManager.remark}
+                          Approver Comment: {ApprovalManager?.remark}
                         </span>
                       </div>
                     </Paper>

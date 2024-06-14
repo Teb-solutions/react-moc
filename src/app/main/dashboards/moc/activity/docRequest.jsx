@@ -21,22 +21,15 @@ import Backdrop from "@mui/material/Backdrop";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
-
+import { v4 as uuidv4 } from "uuid";
 import { apiAuth } from "src/utils/http";
 import { useState } from "react";
 import { useEffect } from "react";
 import { parseISO, format } from "date-fns";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import { useParams } from "react-router";
 
 function DocRequest() {
-  const Root = styled(FusePageCarded)({
-    "& .FusePageCarded-header": {},
-    "& .FusePageCarded-toolbar": {},
-    "& .FusePageCarded-content": {},
-    "& .FusePageCarded-sidebarHeader": {},
-    "& .FusePageCarded-sidebarContent": {},
-  });
-
   const style = {
     position: "absolute",
     top: "50%",
@@ -66,6 +59,11 @@ function DocRequest() {
     p: 4,
   };
 
+  const BoldLabel = styled("label")({
+    fontWeight: "bold",
+    color: "black",
+  });
+
   const drawerStyle = (open) => ({
     width: 350,
     bgcolor: "background.paper",
@@ -87,8 +85,17 @@ function DocRequest() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [openDocModal, setOpenDocModal] = useState(false);
-  const handleOpenDocModal = () => setOpenDocModal(true);
   const [listDocument, setListDocument] = useState([]);
+  const routeParams = useParams();
+
+  const handleOpenDocModal = () => {
+    setOpenDocModal(true);
+    const newGuid = uuidv4();
+    setSelectedFile((prevState) => ({
+      ...prevState,
+      documentId: newGuid,
+    }));
+  };
 
   const [documentState, setDocumentState] = useState({
     docControllerId: "",
@@ -99,16 +106,41 @@ function DocRequest() {
     reasonForNewDocument: "",
     docOldValidityDate: null,
   });
-  const [openDrawer, setOpenDrawer] = React.useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     description: "",
     type: "",
     document: "binary",
     documentType: "ChangeRequest",
-    documentId: "9efc1e9d-205e-4167-8592-f4e66dbaf961",
+    documentId: "",
     changeRequestToken: null,
   });
+  const [fileDetails, setFileDetails] = useState(false);
+  const [documenDowToken, setDocumenDowToken] = useState("");
+  const [fileUrl, setFileUrl] = useState("");
+  const [fileName, setFileName] = useState("");
+
+  const handleDownload = () => {
+    if (fileUrl) {
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+    apiAuth
+      .get(`/DocumentManager/download/${documenDowToken}`)
+      .then((response) => {});
+  };
+
+  const handelDetailDoc = (doc) => {
+    setSelectedDocument(doc);
+    setFileDetails(true);
+    setDocumenDowToken(doc.token);
+  };
 
   const handleOpenDocModalClose = () => {
     setOpenDocModal(false);
@@ -143,14 +175,19 @@ function DocRequest() {
   };
 
   const handelFileChange = (e) => {
-    console.log(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setFileUrl(url);
+      setFileName(file.name);
+    }
     setSelectedFile({
       name: e.target.files[0].name,
       description: "",
       type: e.target.files[0].type,
       document: e.target.files[0],
       documentType: "ChangeRequest",
-      documentId: "9efc1e9d-205e-4167-8592-f4e66dbaf961",
+      documentId: selectedFile.documentId,
       changeRequestToken: null,
     });
   };
@@ -176,6 +213,7 @@ function DocRequest() {
             `/DocumentManager/DocList/${selectedFile.documentId}/ChangeRequest?changeRequestToken=${selectedFile.changeRequestToken}`
           )
           .then((response) => {
+            setOpenDrawer(false);
             setListDocument(response?.data?.data);
           });
       })
@@ -183,7 +221,6 @@ function DocRequest() {
         console.error("There was an error uploading the document!", error);
       });
   };
-
   const handleRadioChange = (event) => {
     const { value } = event.target;
     setDocumentState((prevState) => ({
@@ -261,7 +298,7 @@ function DocRequest() {
         siteId: docContent.siteId,
         siteInchargeId: docContent.siteInchargeId,
         type: "Document",
-        documentId: "a18a0da0-b254-4862-a9b7-8caac0d620ec",
+        documentId: "9f3b2152-36f6-4cc2-86be-e17f96a0f81f",
         documentStatus: 2,
         documentType: 0,
         docType: "1",
@@ -271,7 +308,7 @@ function DocRequest() {
   }, [docContent]);
 
   return (
-    <Root
+    <FusePageCarded
       header={<MocHeader />}
       content={
         <form onSubmit={handleSubmit}>
@@ -389,7 +426,7 @@ function DocRequest() {
             <div style={{ marginTop: "20px" }}>
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                 <FormControl fullWidth sx={{ m: 1 }}>
-                  <InputLabel>Document Name *</InputLabel>
+                  <InputLabel htmlFor="projectName">Document Name *</InputLabel>
                   <OutlinedInput
                     id="projectName"
                     name="projectName"
@@ -650,19 +687,31 @@ function DocRequest() {
                             <Typography
                               id="transition-modal-title"
                               variant="h6"
-                              className="p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto"
-                              component="h2"
+                              className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                              component="div"
                               style={{
                                 backgroundColor: "#e3eeff80",
                               }}
                             >
-                              <div class="content">
-                                <img src="/assets/images/etc/icon.png" />
-                              </div>
+                              {listDocument.map((doc, index) => (
+                                <div className="content " key={index}>
+                                  <div
+                                    onClick={() => handelDetailDoc(doc)}
+                                    style={{ textAlign: "-webkit-center" }}
+                                  >
+                                    <img
+                                      src="/assets/images/etc/icon_N.png"
+                                      style={{}}
+                                    />
+                                    <h6>{doc?.name}</h6>
+                                    <h6>by {doc?.staffName}</h6>
+                                  </div>
+                                </div>
+                              ))}
                             </Typography>
                           </Box>
                         </Box>
-                        {openDrawer && (
+                        {openDrawer && !fileDetails && (
                           <Box sx={drawerStyle(openDrawer)}>
                             <div className="flex justify-end">
                               <Button
@@ -693,7 +742,7 @@ function DocRequest() {
                                   variant="contained"
                                   color="secondary"
                                   style={{
-                                    backgroundColor: "#3b82f680",
+                                    backgroundColor: "#24a0ed",
                                     borderRadius: "5px",
                                     paddingLeft: "50px",
                                     paddingRight: "50px",
@@ -718,7 +767,7 @@ function DocRequest() {
                               >
                                 <TextField
                                   id="standard-basic"
-                                  label="Information"
+                                  label={<BoldLabel>Information</BoldLabel>}
                                   variant="standard"
                                   disabled
                                 />
@@ -749,7 +798,7 @@ function DocRequest() {
                               >
                                 <TextField
                                   id="standard-basic"
-                                  label=" Description"
+                                  label={<BoldLabel>Description</BoldLabel>}
                                   name="description"
                                   variant="standard"
                                   onChange={handelFileDiscriptionChange}
@@ -787,6 +836,146 @@ function DocRequest() {
                                 onClick={handleSubmitDocument}
                               >
                                 Submit
+                              </Button>
+                            </div>
+                          </Box>
+                        )}
+
+                        {fileDetails && (
+                          <Box sx={drawerStyle(fileDetails)}>
+                            <div className="flex justify-end">
+                              <Button
+                                className=""
+                                variant="contained"
+                                style={{ backgroundColor: "white" }}
+                                onClick={() => setFileDetails(false)}
+                              >
+                                <FuseSvgIcon size={20}>
+                                  heroicons-outline:close
+                                </FuseSvgIcon>
+                                x
+                              </Button>
+                            </div>
+                            <div>&nbsp;</div>
+                            <div className="text-center">
+                              <input
+                                type="file"
+                                id="fileInput"
+                                style={{ display: "none" }}
+                                onChange={(e) => {
+                                  handelFileChange(e);
+                                }}
+                              />
+                              <label htmlFor="fileInput">
+                                <div className=" ">
+                                  <div
+                                    onClick={handelDetailDoc}
+                                    style={{ textAlign: "-webkit-center" }}
+                                  >
+                                    <img src="/assets/images/etc/icon_N.png" />
+                                  </div>
+                                </div>
+                              </label>
+                              <Box
+                                component="form"
+                                sx={{
+                                  "& > :not(style)": { m: 1, width: "25ch" },
+                                }}
+                                noValidate
+                                autoComplete="off"
+                              >
+                                <TextField
+                                  id="standard-basic"
+                                  label={<BoldLabel>Information</BoldLabel>}
+                                  variant="standard"
+                                  disabled
+                                />
+                              </Box>
+                              <Box
+                                component="form"
+                                sx={{
+                                  "& > :not(style)": { m: 1, width: "25ch" },
+                                }}
+                                noValidate
+                                autoComplete="off"
+                              >
+                                <TextField
+                                  id="selectedFileName"
+                                  label="Created By"
+                                  variant="standard"
+                                  disabled
+                                  value={selectedDocument.staffName}
+                                />
+                              </Box>
+                              <Box
+                                component="form"
+                                sx={{
+                                  "& > :not(style)": { m: 1, width: "25ch" },
+                                }}
+                                noValidate
+                                autoComplete="off"
+                              >
+                                <TextField
+                                  id="standard-basic"
+                                  label=" Created At"
+                                  name="description"
+                                  variant="standard"
+                                  disabled
+                                  value={formatDate(selectedDocument.createdAt)}
+                                />
+                              </Box>
+                              <Box
+                                component="form"
+                                sx={{
+                                  "& > :not(style)": { m: 1, width: "25ch" },
+                                }}
+                                noValidate
+                                autoComplete="off"
+                              >
+                                <TextField
+                                  id="standard-basic"
+                                  label={<BoldLabel>Description</BoldLabel>}
+                                  name="Description"
+                                  variant="standard"
+                                  disabled
+                                  value={
+                                    selectedDocument.description == null
+                                      ? ""
+                                      : selectedDocument.descritpion
+                                  }
+                                />
+                              </Box>
+                            </div>
+
+                            <div
+                              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                              style={{
+                                marginTop: "15px",
+                                justifyContent: "end",
+                                backgroundColor: " rgba(248,250,252)",
+                                padding: "10px",
+                              }}
+                            >
+                              <Button
+                                className="whitespace-nowrap"
+                                variant="contained"
+                                color="secondary"
+                                type="submit"
+                                onClick={handleDownload}
+                              >
+                                Download
+                              </Button>
+                              <Button
+                                className="whitespace-nowrap"
+                                variant="contained"
+                                color="primary"
+                                style={{
+                                  backgroundColor: "white",
+                                  color: "black",
+                                  border: "1px solid grey",
+                                }}
+                              >
+                                Delete
                               </Button>
                             </div>
                           </Box>
