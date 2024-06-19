@@ -244,6 +244,23 @@ input:-webkit-autofill:active {
 .sidebar.open {
   right: 0; /* Show sidebar */
 }
+.sidebar1 {
+  position: fixed;
+  /* top: 0; */
+  right: -100%; /* Initially hidden */
+  width: 600px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 30;
+  transition: right 0.3s ease; /* Smooth transition */
+  overflow-y: auto; /* Enable scrolling within the sidebar */
+  height: 500px;
+  min-height: 900px;
+}
+
+.sidebar1.open {
+  right: 0; /* Show sidebar */
+}
 .maincntainer {
   padding-right: 0;
   transition: all 0.3s ease;
@@ -251,8 +268,15 @@ input:-webkit-autofill:active {
 body.sidebar-open .maincntainer {
   padding-right: 500px;
 }
+body.sidebar1-open .maincntainer {
+  padding-right: 600px;
+}
 .flex-grow-1 {
   flex-grow: 1;
+}
+.flex-grow-2 {
+  flex-grow: 1;
+  display: flex;
 }
 .maincntainer .task_form_area > div {
   margin-left: 0 !important;
@@ -296,4 +320,34 @@ body.sidebar-open .maincntainer {
   100% {
     transform: rotate(360deg);
   }
+}
+
+.cardhover :hover {
+  background-color: rgba(238, 242, 255);
+}
+
+.uploadImg {
+  width: 150px;
+  height: 150px;
+  left: 70px !important;
+  position: absolute;
+  border-radius: 50%;
+  top: 91px;
+  border: 5px solid #fff;
+  background-color: rgb(54 54 54 / 80%);
+}
+
+.uploadImg1 {
+  width: 150px;
+  height: 150px;
+  left: 70px !important;
+  position: absolute;
+  border-radius: 50%;
+  top: 91px;
+  border: 5px solid #fff;
+  background-color: rgb(54 54 54 / 80%);
+}
+
+.sidebarMarg {
+  margin-top: 55px;
 }

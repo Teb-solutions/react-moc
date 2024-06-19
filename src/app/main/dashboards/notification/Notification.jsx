@@ -53,7 +53,7 @@ const Notification = () => {
                 <div className="flex flex-col flex-auto">
                   <div className="flex flex-col leading-5 text-md text-secondary space-y-2">
                     <div>
-                      <b style={{ fontSize: "15px", color: "black" }}>
+                      <b style={{ fontSize: "15px", color: "blacl" }}>
                         {list.notificationSubject}
                       </b>
                     </div>
