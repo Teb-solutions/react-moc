@@ -67,16 +67,14 @@ const Task = () => {
   const [functions, setFunction] = useState([]);
   const [role, setRole] = useState([]);
   const [staffData, SetStaffData] = useState([]);
-
   const [task, setTask] = useState({});
   const [sidebarOpen, setSidebarOpen] = useState(false); // State variable to control sidebar open/close
   const [comments, setComments] = useState("");
-  const router = useParams();
   const [open, setOpen] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
   const [handelUpdate, setHandelUpdate] = useState(false);
   const [personDetails, setPersonDetails] = useState({});
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [userNames, setUserName] = useState("");
   const [id, setId] = useState(0);
 
@@ -201,7 +199,7 @@ const Task = () => {
       documentStatus: task.documentStatus,
       photoUrl: task.photoUrl,
       image: "",
-      isActive: task.isActive, // handle image separately if necessary
+      isActive: task.isActive && task.isActive, // handle image separately if necessary
     });
   };
 
@@ -222,6 +220,18 @@ const Task = () => {
         console.error(error);
       });
   };
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredTaskList = taskList.filter((task) => {
+    return (
+      task.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.mobile.includes(searchTerm)
+    );
+  });
 
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -252,11 +262,12 @@ const Task = () => {
     formDatas.append("functionId", formData.functionId);
     formDatas.append("username", formData.username);
     formDatas.append("documentStatus", formData.documentStatus);
-    formDatas.append("isActive", formData.isActive);
+    // formDatas.append("isActive", formData.isActive && formData.isActive);
+    formDatas.append("image", formData.image);
 
     try {
       const path = value === "submit" ? "/Staff/Create" : `/staff/${id}`;
-      apiAuth.put(path, formDatas).then((response) => {});
+      apiAuth.post(path, formDatas).then((response) => {});
     } catch (error) {
       console.error("Error submitting the form:", error);
     }
@@ -291,7 +302,13 @@ const Task = () => {
         <div>&nbsp;</div>
 
         <Box className="flex-grow-2">
-          <TextField fullWidth label="Search by Task Name" id="fullWidth" />
+          <TextField
+            fullWidth
+            label="Search by Task Name"
+            id="search"
+            value={searchTerm}
+            onChange={handleSearch}
+          />
           <Button
             className="whitespace-nowrap"
             variant="contained"
@@ -313,7 +330,7 @@ const Task = () => {
         _ngcontent-fyk-c288=""
         class="flex items-center w-full  border-b justify-between"
       ></div>
-      {taskList.map((list) => (
+      {filteredTaskList.map((list) => (
         <div className="cardhover">
           <div
             className="relative  z-20 flex items-center px-6 py-4 md:px-8 cursor-pointer border-b staff-alert-type-success bg-primary-50 dark:bg-hover"
@@ -935,7 +952,7 @@ const Task = () => {
                               fullWidth
                               label="User Name *"
                               name="username"
-                              value={formData.firstName}
+                              value={formData.username}
                               onChange={handleChange}
                             />
                           </Box>
