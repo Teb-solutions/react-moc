@@ -24,6 +24,7 @@ import RiskFrequencyDetailsConfig from "./masters/riskfrequencydetails/RiskFrequ
 import RiskMatrixConfig from "./masters/riskmatrix/RiskMatrixConfig";
 import DesignationTaskConfig from "./masters/designationtask/DesignationTaskConfig";
 import StaffConfig from "./staff/StaffConfig";
+import ChangePasswordConfig from "./changepassword/ChangePasswordConfig";
 /**
  * Dashboards
  */
@@ -53,5 +54,6 @@ const dashboardsConfigs = [
   RiskFrequencyDetailsConfig,
   RiskMatrixConfig,
   DesignationTaskConfig,
+  ChangePasswordConfig,
 ];
 export default dashboardsConfigs;

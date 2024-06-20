@@ -19,6 +19,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  FormLabel,
   Step,
   StepContent,
   StepLabel,
@@ -93,18 +94,25 @@ function Course() {
   const [searchTerm, setSearchTerm] = useState("");
   const [ChangeEvaluationDetail, setChangeEvaluationDetail] = useState([]);
   const [taskLists, setTaskLists] = useState([]);
-  const [taskListDetail, setTaskListDetail] = useState([]);
-
   const [CheckLists, setCheckLists] = useState([]);
   const [evalActions, setEvalActions] = useState([]);
+  const [evalActivity, setEvalActivity] = useState({});
+  const [appActions, setAppActions] = useState([]);
+  const [appActivity, setAppActivity] = useState({});
+  const [impActions, setImpActions] = useState([]);
+  const [impActivity, setImpActivity] = useState({});
   const [addStake, setAddStake] = useState(false);
   const [docStaff, setDocStaff] = useState([]);
+  const [particular, setParticular] = useState([]);
+  const [particularSub, setParticularSub] = useState([]);
+  const [impComments, setImpComments] = useState([]);
+
   const [ApprovalManager, setApprovalManager] = useState({});
   const [forms, setForms] = useState([
     { id: Date.now(), data: { consultedDate: null, consultedStaffId: "" } },
   ]);
-
   const [value, setValue] = useState(0);
+  const [valueRemark, setValueRemark] = useState("");
   const [data, setData] = useState({
     consultedDate: null,
     consultedStaffId: "",
@@ -117,9 +125,71 @@ function Course() {
     isEditable: true,
     taskReviewId: "",
   });
+  const [taskAdd, setTaskAdd] = useState({
+    particular: 0,
+    particularSubCategory: 0,
+    impacHazards: "",
+    taskassignedto: "",
+    dueDate: null,
+    actionHow: "",
+    actionWhat: "",
+    audit: "",
+    assignedStaffId: 1,
+    otherDetail: "",
+    changeImpactHazard: "",
+
+    ChangeImapactId: 0,
+    changeEvaluationId: 0,
+    deadline: 1,
+    hazardDetail: "",
+    isShowDetail: "",
+    parentId: "0",
+  });
+  const [openImplemntationTask, setOpenImplemntationTask] = useState(false);
+  const [comments, setComments] = useState("");
+  const [reviewed, setReviewed] = useState(false);
+
+  const handleOpenImplemntationTask = () => {
+    setOpenImplemntationTask(true);
+    apiAuth.get(`Staff/LOV`).then((resp) => {
+      setDocStaff(resp.data.data);
+    });
+    apiAuth.get(`/LookupData/Lov/16`).then((resp) => {
+      setParticular(resp.data.data);
+    });
+    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {});
+  };
+
+  const handleCloseImplemntationTask = () => setOpenImplemntationTask(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleChangeAddTask = (e) => {
+    const { name, value } = e.target;
+    setTaskAdd((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+    if (e.target.name == "particular") {
+      apiAuth.get(`/LookupData/Lov/17/${e.target.value}`).then((resp) => {
+        setParticularSub(resp.data.data);
+      });
+    }
+  };
+
+  const handelTaskSubmit = (e) => {
+    apiAuth
+      .put(`ChangeImpact/Create/Task/${evaluationId}`, taskAdd)
+      .then((resp) => {
+        setOpenImplemntationTask(false);
+        getRecords();
+      });
+  };
+
+  const handleChangeRemark = (event) => {
+    setValueRemark(event.target.value);
   };
 
   const handleChangeStaffDate = (id, date) => {
@@ -130,6 +200,13 @@ function Course() {
           : form
       )
     );
+  };
+
+  const handleChangeTaskDate = (date) => {
+    setTaskAdd((prevState) => ({
+      ...prevState,
+      dueDate: date,
+    }));
   };
 
   const handleChangeStaff = (id, event) => {
@@ -168,6 +245,7 @@ function Course() {
         formattedForms
       )
       .then((response) => {
+        getRecords();
         apiAuth
           .get(
             `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${changeEvaluationId}`
@@ -179,8 +257,6 @@ function Course() {
       })
       .catch((error) => {});
   };
-
-  console.log(data, "data");
 
   const handleAddForm = () => {
     setForms([
@@ -198,6 +274,8 @@ function Course() {
   };
 
   const [currentPhase, setCurrentPhase] = useState("");
+  const [currentPhaseName, setCurrentPhaseName] = useState("");
+  const [lastActCode, setlastActCode] = useState("");
 
   useEffect(() => {
     let lastIndex = -1;
@@ -214,22 +292,19 @@ function Course() {
     if (lastIndex !== -1) {
       const activities = content[lastIndex].activities;
 
-      // Find the last activity that is complete and has a non-null form
+      // Find the last activity that has canView as true
       for (let j = activities.length - 1; j >= 0; j--) {
-        if (activities[j].isComplete === true && activities[j].form !== null) {
+        if (activities[j].canView === true) {
           lastActivity = activities[j];
           break;
         }
       }
 
-      // If no completed activity with a non-null form is found, search through all activities in all arrays
+      // If no such activity is found, search through all activities in all arrays
       if (!lastActivity) {
         for (let i = content.length - 1; i >= 0; i--) {
           for (let j = content[i].activities.length - 1; j >= 0; j--) {
-            if (
-              content[i].activities[j].isComplete === true &&
-              content[i].activities[j].form !== null
-            ) {
+            if (content[i].activities[j].canView === true) {
               lastIndex = i;
               lastActivity = content[i].activities[j];
               break;
@@ -238,7 +313,7 @@ function Course() {
           if (lastActivity) break;
         }
       }
-
+      setlastActCode(lastActivity);
       // If still no such activity is found, fall back to the last activity in the lastIndex
       if (!lastActivity) {
         lastActivity = activities[activities.length - 1];
@@ -254,7 +329,8 @@ function Course() {
         lastActivity.version,
         lastActivity.refVersion,
         lastActivity.name,
-        lastActivity.canEdit
+        lastActivity.canEdit,
+        lastActivity.canView
       );
     }
   }, [content]);
@@ -283,6 +359,21 @@ function Course() {
     p: 4,
   };
 
+  const styleImp = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "600px",
+    maxWidth: "80vw",
+    height: "74%",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+    p: 4,
+  };
+
   useEffect(() => {
     getRecords();
   }, []);
@@ -301,6 +392,16 @@ function Course() {
     }
   };
 
+  const formatDates = (date) => {
+    return new Date(date).toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+  };
+
   function getRecords() {
     apiAuth.get(`/Activity/RequestLifecycle/${evaluationId}`).then((resp) => {
       setContent(resp.data.data.phases);
@@ -315,7 +416,8 @@ function Course() {
     version,
     refVersion,
     activityname,
-    canedit
+    canedit,
+    canView
   ) {
     setActName(activityname);
     setCanEdits(canedit);
@@ -355,6 +457,7 @@ function Course() {
         }
 
         setCurrentPhase(actualPhaseName);
+        setCurrentPhaseName(phaseName);
 
         switch (actualPhaseName) {
           case "Initiation":
@@ -383,6 +486,7 @@ function Course() {
                       .get(`/Activity/ActivityDetails/${uid}`)
                       .then((resp) => {
                         setEvalActions(resp.data.data.actions);
+                        setEvalActivity(resp.data.data.activity);
                       });
                   });
               });
@@ -395,8 +499,13 @@ function Course() {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp.data?.data);
-                apiAuth.get(`/ApprovalManager/Remark/${uid}`).then((resp) => {
-                  setApprovalManager(resp.data?.data);
+
+                apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+                  setAppActions(resp.data.data.actions);
+                  setAppActivity(resp.data.data.activity);
+                  apiAuth.get(`/ApprovalManager/Remark/${uid}`).then((resp) => {
+                    setApprovalManager(resp.data?.data);
+                  });
                 });
               });
             break;
@@ -406,7 +515,12 @@ function Course() {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp.data?.data);
+                apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+                  setImpActions(resp.data.data.actions);
+                  setImpActivity(resp.data.data.activity);
+                });
                 apiAuth.get(`/Staff/LOV`).then((resp) => {
+                  setDocStaff(resp.data.data);
                   apiAuth
                     .get(`DocMoc/GetImplementation/${evaluationId}`)
                     .then((resp) => {
@@ -447,12 +561,54 @@ function Course() {
       .then((resp) => {});
   };
 
-  const SubmitApprovel = () => {
+  const SubmitApprovel = (e, uid) => {
     apiAuth
       .get(
         `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${changeEvaluationId}`
       )
-      .then((resp) => {});
+      .then((resp) => {
+        apiAuth
+          .post(`/DocMoc/EvaluationSubmitForApproval/${changeEvaluationId}`, {
+            actionUID: uid,
+            activityUID: evalActivity.uid,
+            formUID: changeEvaluationId,
+          })
+          .then((resp) => {});
+      });
+  };
+  const SubmitApprovelCreate = (e, uid, name, type) => {
+    apiAuth
+      .post(`/ApprovalManager/Create/${evaluationId}`, {
+        actionUID: uid,
+        activityUID: uid,
+        formUID: changeEvaluationId,
+        actionName: name,
+        actionType: type,
+        activityCode: appActivity.code,
+        activityId: appActivity.uid,
+        consultaioncomment: "",
+        formType: appActivity.form,
+        remark: valueRemark,
+        taskscomment: "",
+        version: appActivity.version,
+      })
+      .then((resp) => {
+        getRecords();
+      });
+  };
+  const SubmitImpCreate = (e, uid) => {
+    apiAuth.get(`/ChangeImpact/ListTask?id=${evaluationId}`).then((resp) => {
+      apiAuth
+        .post(`/DocMoc/ImplementationSubmit/${evaluationId}/22`, {
+          actionUID: uid,
+          activityUID: impActivity.uid,
+
+          formUID: impActivity.formUID,
+        })
+        .then((resp) => {
+          getRecords();
+        });
+    });
   };
 
   const handelAddStake = () => {
@@ -468,6 +624,68 @@ function Course() {
       });
   };
 
+  const handelComments = (e, taskid) => {
+    apiAuth
+      .get(
+        `ChangeImpact/ListTaskCommentst?id=${taskid}
+      `
+      )
+      .then((resp) => {
+        setImpComments(resp.data.data);
+      });
+  };
+
+  const handelApproveImpl = (e, task) => {
+    const updatedTask = {
+      ...task,
+      notes: comments,
+      submissionList: [impComments],
+      ChangeEvaluationId: 0,
+      ParentId: 0,
+      taskStatus: 3,
+    };
+
+    apiAuth
+      .post(`ChangeImpact/ActionTask?id=${evaluationId}`, updatedTask)
+      .then((response) => {
+        getRecords();
+        console.log(response);
+      })
+      .catch((error) => {
+        setOpen(false);
+        console.error(error);
+      });
+  };
+
+  const handleCheckboxChange = (id) => {
+    const updatedCheckList = CheckLists.map((item) => {
+      if (item.id === id) {
+        return { ...item, isChecked: !item.isChecked };
+      }
+      return item;
+    });
+    setCheckLists(updatedCheckList);
+  };
+
+  const saveChanges = () => {
+    apiAuth
+      .post(`/DocMoc/UpdateImplementationChecklist/${evaluationId}`, CheckLists)
+      .then((response) => {
+        setOpen(false);
+        console.log(response);
+      });
+  };
+  const handelreview = (id) => {
+    apiAuth
+      .put(`/SummaryDetails/ImpReviewStatus/${evaluationId}`, {
+        Task: [id],
+        ActivityCode: lastActCode.code,
+      })
+      .then((response) => {
+        setReviewed(true);
+        console.log(response);
+      });
+  };
   useEffect(() => {
     handleStepChange();
   }, []);
@@ -1227,7 +1445,7 @@ function Course() {
                                 style={{
                                   marginTop: "10px",
                                 }}
-                                onClick={SubmitApprovel}
+                                onClick={(e) => SubmitApprovel(e, btn.uid)}
                               >
                                 {btn.name}
                               </Button>
@@ -1658,8 +1876,8 @@ function Course() {
                             onChange={handleChange}
                             aria-label="basic tabs example"
                           >
-                            <Tab label="Item One" {...a11yProps(0)} />
-                            <Tab label="Item Two" {...a11yProps(1)} />
+                            <Tab label="Task" {...a11yProps(0)} />
+                            <Tab label="Check List" {...a11yProps(1)} />
                           </Tabs>
                         </Box>
                         <CustomTabPanel value={value} index={0}>
@@ -1675,8 +1893,25 @@ function Course() {
                               >
                                 {taskLists.length} Tasks
                               </h2>
+                              {!impActivity.isComplete &&
+                                impActivity.status === "Pending" && (
+                                  <Button
+                                    className="whitespace-nowrap mt-5 mb-5"
+                                    style={{
+                                      border: "1px solid",
+                                      backgroundColor: "#0000",
+                                      color: "black",
+                                      borderColor: "rgba(203,213,225)",
+                                    }}
+                                    variant="contained"
+                                    color="warning"
+                                    onClick={handleOpenImplemntationTask}
+                                  >
+                                    Add New Task
+                                  </Button>
+                                )}
                               <Button
-                                className="whitespace-nowrap mt-5 mb-5"
+                                className="whitespace-nowrap mt-5 mb-5 ms-5"
                                 style={{
                                   border: "1px solid",
                                   backgroundColor: "#0000",
@@ -1723,6 +1958,7 @@ function Course() {
                                 aria-controls={`panel${task.id}-content`}
                                 id={`panel${task.id}-header`}
                                 style={{ minHeight: "60px" }}
+                                onClick={(e) => handelComments(e, task.id)}
                               >
                                 <div
                                   className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
@@ -1737,11 +1973,22 @@ function Course() {
                                   className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
                                   style={{ width: "17%" }}
                                 >
-                                  <div
-                                    className="flex items-center"
-                                    style={{ color: "rgba(22,163,74)" }}
-                                  >
-                                    Approved
+                                  <div className="flex items-center" style={{}}>
+                                    {task.isCompleted &&
+                                    task.taskStatus === 3 ? (
+                                      <span className="text-green">
+                                        Approved
+                                      </span>
+                                    ) : task.isCompleted &&
+                                      task.taskStatus !== 3 ? (
+                                      <span className="text-red">
+                                        Awaiting Approval
+                                      </span>
+                                    ) : (
+                                      <span className="text-black">
+                                        Not Completed
+                                      </span>
+                                    )}
                                   </div>
                                 </div>
                                 <div
@@ -1795,55 +2042,64 @@ function Course() {
                                 <Stepper orientation="vertical">
                                   <Step>
                                     <div style={{ alignItems: "flex-start" }}>
-                                      <div
-                                        className="rounded-lg"
-                                        style={{
-                                          backgroundColor: "rgba(219,234,254)",
-                                          padding: "10px",
-                                        }}
-                                      >
-                                        <b>{task?.assignedByStaff}</b>
-                                        <p>
-                                          What is the tsak : {task?.actionWhat}
-                                        </p>
+                                      <div className="flex flex-col items-start mt-5">
+                                        <div
+                                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                          style={{
+                                            padding: "20px",
+                                            backgroundColor: "#EBF8FF",
+                                          }}
+                                        >
+                                          <b>{task?.assignedByStaff}</b>
+                                          <p>
+                                            What is the task :{" "}
+                                            {task?.actionWhat}
+                                          </p>
+                                        </div>
                                       </div>
-                                      <div
-                                        className="rounded-lg mt-5"
-                                        style={{
-                                          backgroundColor: "rgba(219,234,254)",
-                                          padding: "10px",
-                                        }}
-                                      >
-                                        <p>
-                                          How is Task done : {task?.actionHow}
-                                        </p>
+                                      <div className="flex flex-col items-start mt-5">
+                                        <div
+                                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                          style={{
+                                            padding: "20px",
+                                            backgroundColor: "#EBF8FF",
+                                          }}
+                                        >
+                                          <p>
+                                            How is Task done : {task?.actionHow}
+                                          </p>
+                                        </div>
                                       </div>
                                       {task?.particularName &&
                                         task?.particularSubName && (
-                                          <div
-                                            className="rounded-lg mt-5"
-                                            style={{
-                                              backgroundColor:
-                                                "rgba(219,234,254)",
-                                              padding: "10px",
-                                            }}
-                                          >
-                                            <p>
-                                              Impact :{" "}
-                                              {`${task?.particularName} > ${task?.particularSubName}`}
-                                            </p>
+                                          <div className="flex flex-col items-start mt-5">
+                                            <div
+                                              className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                              style={{
+                                                padding: "20px",
+                                                backgroundColor: "#EBF8FF",
+                                              }}
+                                            >
+                                              <p>
+                                                Impact :{" "}
+                                                {`${task?.particularName} > ${task?.particularSubName}`}
+                                              </p>
+                                            </div>
                                           </div>
                                         )}
-                                      <div
-                                        className="rounded-lgv mt-5"
-                                        style={{
-                                          backgroundColor: "rgba(219,234,254)",
-                                          padding: "10px",
-                                        }}
-                                      >
-                                        <p>
-                                          Due Date : {formatDate(task.dueDate)}
-                                        </p>
+                                      <div className="flex flex-col items-start mt-5">
+                                        <div
+                                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                          style={{
+                                            padding: "20px",
+                                            backgroundColor: "#EBF8FF",
+                                          }}
+                                        >
+                                          <p>
+                                            Due Date :{" "}
+                                            {formatDate(task.dueDate)}
+                                          </p>
+                                        </div>
                                       </div>
                                       <div>&nbsp;</div>
                                       <div className="flex items-center justify-center my-3">
@@ -1860,35 +2116,186 @@ function Course() {
                                         <div className="flex-auto border-b"></div>
                                       </div>
                                       <div>&nbsp;</div>
+                                      {impComments.map((msg) => (
+                                        <div
+                                          key={msg.id}
+                                          className="flex flex-col flex-wrap mb-2"
+                                        >
+                                          {msg.remark && (
+                                            <div className="flex flex-col items-start mt-5">
+                                              <div
+                                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
+                                                style={{ padding: "10px" }}
+                                              >
+                                                <div
+                                                  className="font-semibold"
+                                                  style={{
+                                                    fontSize: "smaller",
+                                                  }}
+                                                >
+                                                  {" "}
+                                                  {task.assignedStaff}{" "}
+                                                </div>
+                                                <div
+                                                  dangerouslySetInnerHTML={{
+                                                    __html: msg.remark,
+                                                  }}
+                                                ></div>
+                                                <div className="my-0.5 text-xs font-medium text-secondary">
+                                                  <small>
+                                                    {msg.startedDate &&
+                                                    !msg.workInProgressDate &&
+                                                    !msg.completedDate &&
+                                                    !msg.dueDate
+                                                      ? `Started on ${formatDates(msg.startedDate)}`
+                                                      : msg.workInProgressDate &&
+                                                          !msg.completedDate &&
+                                                          !msg.dueDate
+                                                        ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
+                                                        : msg.dueDate &&
+                                                            !msg.completedDate
+                                                          ? `Due on ${formatDates(msg.dueDate)}`
+                                                          : msg.completedDate
+                                                            ? `Completed on ${formatDates(msg.completedDate)}`
+                                                            : "Unknown"}
+                                                  </small>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          )}
+                                          {msg.comments && (
+                                            <div className="flex flex-col items-start mt-5">
+                                              <div
+                                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                                style={{
+                                                  padding: "10px",
+                                                  backgroundColor: "#EBF8FF",
+                                                }}
+                                              >
+                                                <div
+                                                  className="font-semibold"
+                                                  style={{
+                                                    fontSize: "smaller",
+                                                  }}
+                                                >
+                                                  {" "}
+                                                  {task.assignedByStaff}{" "}
+                                                </div>
+                                                <div
+                                                  className="min-w-4 leading-5 "
+                                                  dangerouslySetInnerHTML={{
+                                                    __html: msg.comments,
+                                                  }}
+                                                  style={{
+                                                    fontSize: "smaller",
+                                                  }}
+                                                ></div>
+                                                <div
+                                                  className="min-w-4 leading-5"
+                                                  style={{
+                                                    fontSize: "xx-small",
+                                                  }}
+                                                >
+                                                  {" "}
+                                                  {msg.approvalStatusDate && (
+                                                    <>
+                                                      {msg.approverId
+                                                        ? "Approved on"
+                                                        : "Rejected on"}{" "}
+                                                      {new Date(
+                                                        msg.approvalStatusDate
+                                                      ).toLocaleString(
+                                                        "en-US",
+                                                        {
+                                                          month: "short",
+                                                          day: "2-digit",
+                                                          hour: "numeric",
+                                                          minute: "numeric",
+                                                          hour12: true,
+                                                        }
+                                                      )}
+                                                    </>
+                                                  )}
+                                                </div>
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                      ))}
+                                      {task.isCompleted &&
+                                        task.taskStatus !== 3 && (
+                                          <>
+                                            <div>&nbsp;</div>
 
-                                      <div
-                                        className="rounded-lg mt-5"
-                                        style={{
-                                          backgroundColor: task.isCompleted
-                                            ? "rgba(241,245,249)"
-                                            : "rgba(219,234,254)",
-                                          padding: "10px",
-                                        }}
-                                      >
-                                        <b> {task?.assignedStaff}</b>
-                                        <p>completed</p>
-                                        <small>
-                                          Completed on {task?.completedAt}
-                                        </small>
-                                      </div>
-                                      <div
-                                        className="rounded-lgv mt-5"
-                                        style={{
-                                          backgroundColor: "rgba(219,234,254)",
-                                          padding: "10px",
-                                        }}
-                                      >
-                                        <b> {task?.assignedByStaff}</b>
-                                        <p>Approved </p>
-                                        <small>
-                                          Approved on Nov 28, 5:27 PM
-                                        </small>
-                                      </div>
+                                            <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                              <div
+                                                _ngcontent-fyk-c288=""
+                                                class="flex items-center w-full  border-b justify-between"
+                                              ></div>
+                                            </div>
+                                            <div
+                                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                              style={{ width: "100%" }}
+                                            >
+                                              <Box
+                                                sx={{
+                                                  display: "flex",
+                                                  flexWrap: "wrap",
+                                                }}
+                                              >
+                                                <FormControl
+                                                  fullWidth
+                                                  sx={{
+                                                    m: 1,
+                                                    maxWidth: "100%",
+                                                  }}
+                                                >
+                                                  <span className="font-semibold leading-none">
+                                                    Comments*
+                                                  </span>
+                                                  <OutlinedInput
+                                                    id="reasonForNewDocument"
+                                                    name="reasonForNewDocument"
+                                                    onChange={(e) =>
+                                                      setComments(
+                                                        e.target.value
+                                                      )
+                                                    }
+                                                    label="Reason For Change*"
+                                                    className="mt-5"
+                                                  />
+                                                </FormControl>
+                                              </Box>
+                                            </div>
+                                            <div className="flex justify-start ">
+                                              <Button
+                                                className="whitespace-nowrap ms-5 "
+                                                variant="contained"
+                                                color="secondary"
+                                                style={{
+                                                  marginTop: "10px",
+                                                  backgroundColor: "white",
+                                                  color: "black",
+                                                }}
+                                              >
+                                                Reject
+                                              </Button>
+                                              <Button
+                                                className="whitespace-nowrap ms-5 "
+                                                variant="contained"
+                                                color="secondary"
+                                                style={{
+                                                  marginTop: "10px",
+                                                }}
+                                                onClick={(e) =>
+                                                  handelApproveImpl(e, task)
+                                                }
+                                              >
+                                                Approve
+                                              </Button>
+                                            </div>
+                                          </>
+                                        )}
                                     </div>
                                   </Step>
                                 </Stepper>
@@ -1896,6 +2303,83 @@ function Course() {
                             </Accordion>
                           ))}
                         </CustomTabPanel>
+                        {!impActivity.isComplete &&
+                          impActivity.status === "Pending" &&
+                          value == 0 && (
+                            <div
+                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                              style={{ width: "100%" }}
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                }}
+                              >
+                                <FormControl
+                                  fullWidth
+                                  sx={{
+                                    m: 1,
+                                    maxWidth: "100%",
+                                  }}
+                                >
+                                  <span className="font-semibold leading-none">
+                                    Select Approver*
+                                  </span>
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      flexWrap: "wrap",
+                                      marginTop: "10px",
+                                    }}
+                                  >
+                                    <FormControl fullWidth sx={{ m: 1 }}>
+                                      <Select
+                                        labelId="functionName-label"
+                                        id="docControllerId"
+                                        name="docControllerId"
+                                        // value={documentState.docControllerId}
+                                        // onChange={handleChange}
+                                        label="Document Controller *"
+                                      >
+                                        {docStaff.map((option) => (
+                                          <MenuItem
+                                            key={option.id}
+                                            value={option.value}
+                                          >
+                                            {option.text}
+                                          </MenuItem>
+                                        ))}
+                                      </Select>
+                                    </FormControl>
+                                  </Box>
+                                </FormControl>
+                              </Box>
+                              <div>&nbsp;</div>
+
+                              <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                <div
+                                  _ngcontent-fyk-c288=""
+                                  class="flex items-center w-full  border-b justify-between"
+                                ></div>
+                              </div>
+                              <div className="flex justify-end ">
+                                {impActions.map((btn) => (
+                                  <Button
+                                    className="whitespace-nowrap ms-5 "
+                                    variant="contained"
+                                    color="secondary"
+                                    style={{
+                                      marginTop: "10px",
+                                    }}
+                                    onClick={(e) => SubmitImpCreate(e, btn.uid)}
+                                  >
+                                    {btn.name}
+                                  </Button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         <CustomTabPanel value={value} index={1}>
                           <div className="flex flex-col px-4 py-3 w-full border rounded">
                             <ul>
@@ -1907,19 +2391,404 @@ function Course() {
                                       checked={item.isChecked}
                                       style={{ margin: "5px" }}
                                       onChange={() => {
-                                        // Handle checkbox change if necessary
+                                        handleCheckboxChange(item.id);
                                       }}
                                     />
                                     {item.item}{" "}
-                                    {/* Assuming each item has a name property */}
                                   </label>
                                 </li>
                               ))}
+                              {!impActivity.isComplete &&
+                                impActivity.status === "Pending" &&
+                                value == 1 && (
+                                  <Button
+                                    className="whitespace-nowrap ms-5 "
+                                    variant="contained"
+                                    color="secondary"
+                                    style={{
+                                      marginTop: "10px",
+                                      width: "150px",
+                                      marginBottom: "5px",
+                                    }}
+                                    onClick={saveChanges}
+                                  >
+                                    Save
+                                  </Button>
+                                )}
                             </ul>
                           </div>
+                          <div>&nbsp;</div>
+                          {!impActivity.isComplete &&
+                            impActivity.status === "Pending" &&
+                            value == 1 && (
+                              <div
+                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                style={{ width: "100%" }}
+                              >
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                  }}
+                                >
+                                  <FormControl
+                                    fullWidth
+                                    sx={{
+                                      m: 1,
+                                      maxWidth: "100%",
+                                    }}
+                                  >
+                                    <span className="font-semibold leading-none">
+                                      Select Approver
+                                    </span>
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        marginTop: "10px",
+                                      }}
+                                    >
+                                      <FormControl fullWidth sx={{ m: 1 }}>
+                                        <Select
+                                          labelId="functionName-label"
+                                          id="docControllerId"
+                                          name="docControllerId"
+                                          // value={documentState.docControllerId}
+                                          // onChange={handleChange}
+                                          label="Document Controller *"
+                                        >
+                                          {docStaff.map((option) => (
+                                            <MenuItem
+                                              key={option.id}
+                                              value={option.value}
+                                            >
+                                              {option.text}
+                                            </MenuItem>
+                                          ))}
+                                        </Select>
+                                      </FormControl>
+                                    </Box>
+                                  </FormControl>
+                                </Box>
+                                <div>&nbsp;</div>
+
+                                <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                  <div
+                                    _ngcontent-fyk-c288=""
+                                    class="flex items-center w-full  border-b justify-between"
+                                  ></div>
+                                </div>
+                                <div className="flex justify-end ">
+                                  {impActions.map((btn) => (
+                                    <Button
+                                      className="whitespace-nowrap ms-5 "
+                                      variant="contained"
+                                      color="secondary"
+                                      style={{
+                                        marginTop: "10px",
+                                      }}
+                                      onClick={(e) =>
+                                        SubmitImpCreate(e, btn.uid)
+                                      }
+                                    >
+                                      {btn.name}
+                                    </Button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
                         </CustomTabPanel>
                       </Box>
                     </Paper>
+                    <Modal
+                      aria-labelledby="transition-modal-title"
+                      aria-describedby="transition-modal-description"
+                      open={openImplemntationTask}
+                      onClose={handleCloseImplemntationTask}
+                      closeAfterTransition
+                      slots={{ backdrop: Backdrop }}
+                      slotProps={{
+                        backdrop: {
+                          timeout: 500,
+                        },
+                      }}
+                    >
+                      <Fade in={openImplemntationTask}>
+                        <Box sx={styleImp}>
+                          <Box>
+                            <Typography
+                              id="transition-modal-title"
+                              variant="h6"
+                              component="h2"
+                              style={{
+                                fontSize: "2rem",
+                              }}
+                            >
+                              Add New Task
+                            </Typography>
+                            <Typography
+                              id="transition-modal-title"
+                              variant="h6"
+                              component="h2"
+                              style={{
+                                fontSize: "4rem",
+                                fontWeight: "800px !important",
+                              }}
+                            >
+                              <div className="flex-auto">
+                                <div className="flex flex-col-reverse">
+                                  <div
+                                    style={{
+                                      marginTop: "30px",
+                                      justifyContent: "space-between",
+                                      margin: "15px",
+                                    }}
+                                    className="flex flex-row "
+                                  >
+                                    <FormControl
+                                      sx={{
+                                        width: 380,
+                                        maxWidth: "48%",
+                                      }}
+                                    >
+                                      <FormLabel
+                                        className="font-medium text-14"
+                                        component="legend"
+                                      >
+                                        Impact Particular*
+                                      </FormLabel>
+                                      <Select
+                                        variant="outlined"
+                                        onChange={handleChangeAddTask}
+                                        name="particular"
+                                        value={taskAdd.particular}
+                                      >
+                                        {particular.map((option) => (
+                                          <MenuItem
+                                            key={option.id}
+                                            value={option.value}
+                                          >
+                                            {option.text}
+                                          </MenuItem>
+                                        ))}
+                                      </Select>
+                                    </FormControl>
+                                    <FormControl
+                                      sx={{
+                                        width: 380,
+                                        maxWidth: "48%",
+                                      }}
+                                    >
+                                      <FormLabel
+                                        className="font-medium text-14"
+                                        component="legend"
+                                      >
+                                        Impact Particular Subcategory*
+                                      </FormLabel>
+                                      <Select
+                                        variant="outlined"
+                                        onChange={handleChangeAddTask}
+                                        name="particularSubCategory"
+                                        value={taskAdd.particularSubCategory}
+                                      >
+                                        {particularSub.map((option) => (
+                                          <MenuItem
+                                            key={option.id}
+                                            value={option.value}
+                                          >
+                                            {option.text}
+                                          </MenuItem>
+                                        ))}
+                                      </Select>
+                                    </FormControl>
+                                  </div>
+                                </div>{" "}
+                                <div className="flex flex-col-reverse">
+                                  <div
+                                    style={{
+                                      marginTop: "30px",
+                                      justifyContent: "space-between",
+                                      margin: "15px",
+                                    }}
+                                    className="flex flex-row "
+                                  >
+                                    <Box
+                                      sx={{
+                                        width: 800,
+                                        maxWidth: "100%",
+                                      }}
+                                    >
+                                      <TextField
+                                        fullWidth
+                                        label="Impact Hazard Details *"
+                                        name="impacHazards"
+                                        onChange={handleChangeAddTask}
+                                        value={taskAdd.impacHazards}
+                                      />
+                                    </Box>
+                                  </div>
+                                </div>
+                                <div className="flex flex-col-reverse">
+                                  <div
+                                    style={{
+                                      marginTop: "30px",
+                                      justifyContent: "space-between",
+                                      margin: "15px",
+                                    }}
+                                    className="flex flex-row "
+                                  >
+                                    <Box
+                                      sx={{
+                                        width: 380,
+                                        maxWidth: "48%",
+                                      }}
+                                    >
+                                      <TextField
+                                        fullWidth
+                                        label="What is the Task"
+                                        name="actionWhat"
+                                        onChange={handleChangeAddTask}
+                                        value={taskAdd.actionWhat}
+                                      />
+                                    </Box>
+
+                                    <Box
+                                      sx={{
+                                        width: 380,
+                                        maxWidth: "48%",
+                                      }}
+                                    >
+                                      <TextField
+                                        fullWidth
+                                        label="How is the task done"
+                                        name="actionHow"
+                                        onChange={handleChangeAddTask}
+                                        value={taskAdd.actionHow}
+                                      />
+                                    </Box>
+                                  </div>
+                                </div>{" "}
+                                <div className="flex flex-col-reverse">
+                                  <div
+                                    style={{
+                                      marginTop: "30px",
+                                      justifyContent: "space-between",
+                                      margin: "15px",
+                                    }}
+                                    className="flex flex-row "
+                                  >
+                                    <FormControl
+                                      sx={{
+                                        width: 380,
+                                        maxWidth: "48%",
+                                      }}
+                                    >
+                                      <FormLabel
+                                        className="font-medium text-14"
+                                        component="legend"
+                                      >
+                                        Task Assigned to*
+                                      </FormLabel>
+                                      <Select
+                                        variant="outlined"
+                                        onChange={handleChangeAddTask}
+                                        value={taskAdd.taskassignedto}
+                                        name="taskassignedto"
+                                      >
+                                        {docStaff.map((option) => (
+                                          <MenuItem
+                                            key={option.id}
+                                            value={option.value}
+                                          >
+                                            {option.text}
+                                          </MenuItem>
+                                        ))}
+                                      </Select>
+                                    </FormControl>
+
+                                    <LocalizationProvider
+                                      dateAdapter={AdapterDateFns}
+                                    >
+                                      <FormControl
+                                        sx={{
+                                          marginLeft: "10px",
+                                        }}
+                                      >
+                                        <FormLabel
+                                          className="font-medium text-14"
+                                          component="legend"
+                                        >
+                                          Due Date*
+                                        </FormLabel>
+                                        <Box sx={{}}>
+                                          <DatePicker
+                                            label="Validity Expires On *"
+                                            name="dueDate"
+                                            value={taskAdd.dueDate}
+                                            onChange={(date) =>
+                                              handleChangeTaskDate(date)
+                                            }
+                                            renderInput={(params) => (
+                                              <TextField
+                                                fullWidth
+                                                {...params}
+                                              />
+                                            )}
+                                          />
+                                        </Box>
+                                      </FormControl>
+                                    </LocalizationProvider>
+                                  </div>
+                                </div>{" "}
+                                <div className="flex flex-col-reverse">
+                                  <div
+                                    style={{
+                                      marginTop: "30px",
+                                      justifyContent: "space-between",
+                                      margin: "15px",
+                                    }}
+                                    className="flex flex-row "
+                                  >
+                                    <Box
+                                      sx={{
+                                        width: 500,
+                                        maxWidth: "100%",
+                                      }}
+                                    >
+                                      <TextField
+                                        fullWidth
+                                        label="Audit Commnt"
+                                        id="fullWidth"
+                                        name="audit"
+                                        onChange={handleChangeAddTask}
+                                        value={taskAdd.audit}
+                                      />
+                                    </Box>
+                                  </div>
+                                </div>{" "}
+                                <h6>
+                                  If this task is based on Audit comments,
+                                  please select the Audit comment
+                                </h6>
+                              </div>
+                              <div className="flex justify-end ">
+                                <Button
+                                  className="whitespace-nowrap ms-5 "
+                                  variant="contained"
+                                  color="secondary"
+                                  style={{
+                                    marginTop: "10px",
+                                  }}
+                                  onClick={handelTaskSubmit}
+                                >
+                                  Submit
+                                </Button>
+                              </div>
+                            </Typography>
+                          </Box>
+                        </Box>
+                      </Fade>
+                    </Modal>
                   </>
                 )}
                 {currentPhase === "docimplclosure" && (
@@ -2143,70 +3012,286 @@ function Course() {
                   </Paper>
                 )}
               </div>
-              <div className="flex justify-center p-16  pb-64 sm:p-24 ">
-                {currentPhase === "Approval" && (
-                  <>
-                    <Paper
-                      className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
-                      style={{ marginRight: "15px", width: "100%" }}
-                    >
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
+              {currentPhase === "Approval" &&
+                currentPhaseName === "Approval" && (
+                  <div className="flex justify-center p-16  pb-64 sm:p-24 ">
+                    <>
+                      <Paper
+                        className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
+                        style={{ marginRight: "15px", width: "100%" }}
                       >
-                        <h2
+                        <div
                           _ngcontent-fyk-c288=""
-                          class="text-2xl font-semibold"
+                          class="flex items-center w-full  border-b justify-between"
                         >
-                          Stake Holders
-                        </h2>
-                        <TextField
-                          variant="filled"
-                          fullWidth
-                          placeholder="Search"
-                          style={{ marginBottom: "15px" }}
-                          value={searchTerm}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment
-                                position="start"
-                                style={{ marginTop: "0px" }}
-                              >
-                                <SearchIcon />
-                              </InputAdornment>
-                            ),
-                          }}
-                          sx={{ width: 320 }}
-                        />
-                      </div>
-                      <div>&nbsp;</div>
-
-                      <div
-                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        style={{ width: "40%" }}
-                      >
-                        <div className="flex items-center">
-                          <img
-                            src="/assets/images/etc/userpic.png"
-                            alt="Card cover image"
-                            className="rounded-full mr-4"
-                            style={{ width: "4rem", height: "4rem" }}
+                          <h2
+                            _ngcontent-fyk-c288=""
+                            class="text-2xl font-semibold"
+                          >
+                            Stake Holders
+                          </h2>
+                          <TextField
+                            variant="filled"
+                            fullWidth
+                            placeholder="Search"
+                            style={{ marginBottom: "15px" }}
+                            value={searchTerm}
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment
+                                  position="start"
+                                  style={{ marginTop: "0px" }}
+                                >
+                                  <SearchIcon />
+                                </InputAdornment>
+                              ),
+                            }}
+                            sx={{ width: 320 }}
                           />
-                          <div className="flex flex-col">
-                            <span className="font-semibold leading-none">
-                              {contentDetails.initiatorName}
-                            </span>
-                            <span className="text-sm text-secondary leading-none pt-5">
-                              Consulted on{" "}
-                              {formatDate(contentDetails?.requestDate)}
-                            </span>
+                        </div>
+                        <div>&nbsp;</div>
+
+                        <div
+                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                          style={{ width: "40%" }}
+                        >
+                          <div className="flex items-center">
+                            <img
+                              src="/assets/images/etc/userpic.png"
+                              alt="Card cover image"
+                              className="rounded-full mr-4"
+                              style={{ width: "4rem", height: "4rem" }}
+                            />
+                            <div className="flex flex-col">
+                              <span className="font-semibold leading-none">
+                                {contentDetails.initiatorName}
+                              </span>
+                              <span className="text-sm text-secondary leading-none pt-5">
+                                Consulted on{" "}
+                                {formatDate(contentDetails?.requestDate)}
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </Paper>
-                  </>
+                      </Paper>
+                    </>
+                  </div>
                 )}
-              </div>
+              {currentPhase === "Approval" &&
+                currentPhaseName == "Implementation" && (
+                  <div className="flex justify-center p-16  pb-64 sm:p-24 ">
+                    <>
+                      <Paper
+                        className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
+                        style={{ marginRight: "15px", width: "100%" }}
+                      >
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="flex items-center w-full  border-b justify-between"
+                        >
+                          <h2
+                            _ngcontent-fyk-c288=""
+                            class="text-2xl font-semibold"
+                          >
+                            Implementation Tasks
+                          </h2>
+                          <TextField
+                            variant="filled"
+                            fullWidth
+                            placeholder="Search"
+                            style={{ marginBottom: "15px" }}
+                            value={searchTerm}
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment
+                                  position="start"
+                                  style={{ marginTop: "0px" }}
+                                >
+                                  <SearchIcon />
+                                </InputAdornment>
+                              ),
+                            }}
+                            sx={{ width: 320 }}
+                          />
+                        </div>
+                        <div>&nbsp;</div>
+                        {contentDetails?.implementationTask?.map((imptsk) => (
+                          <table className="task-table mat-table">
+                            <thead
+                              className="task-table-header"
+                              style={{ display: "none" }}
+                            >
+                              {/* Empty header */}
+                            </thead>
+                            <tbody className="task-table-body">
+                              <tr className="task-table-row mat-row">
+                                <td className="task-table-cell mat-cell">
+                                  <div className="task-header flex items-center">
+                                    <div className="task-id flex flex-col">
+                                      <span className="task-id-text font-semibold text-xl leading-none">
+                                        Task #{imptsk?.id}
+                                      </span>
+                                    </div>
+                                    {}
+                                    <div className="task-button ml-auto">
+                                      <button
+                                        className="task-mark-reviewed-button mat-stroked-button"
+                                        onClick={() => handelreview(imptsk.id)}
+                                      >
+                                        {reviewed ? (
+                                          <span
+                                            className="mat-button-wrapper"
+                                            style={{
+                                              backgroundColor:
+                                                "rgba(220,252,231)",
+                                            }}
+                                          >
+                                            You have reviewed this just now
+                                          </span>
+                                        ) : (
+                                          <span className="mat-button-wrapper">
+                                            Click here to mark as reviewed
+                                          </span>
+                                        )}
+                                      </button>
+                                    </div>
+                                  </div>
+                                  <div className="task-details px-6 mt-2">
+                                    <div className="task-detail prose prose-sm max-w-5xl">
+                                      <div className="task-detail-item mt-3">
+                                        <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                          What is Task
+                                        </span>
+                                        <span className="task-detail-value">
+                                          {imptsk.actionWhat}
+                                        </span>
+                                      </div>
+                                      <div className="task-detail-item mt-5">
+                                        <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                          How is Task done
+                                        </span>
+                                        <span className="task-detail-value">
+                                          {imptsk.actionHow}
+                                        </span>
+                                      </div>
+                                      <div className="task-detail-item mt-5">
+                                        <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                          Assigned to
+                                        </span>
+                                        <span className="task-detail-value">
+                                          {imptsk.assignedStaff}
+                                        </span>
+                                        <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                                          Due Date
+                                        </span>
+                                        <span className="task-detail-value">
+                                          {formatDate(imptsk.dueDate)}
+                                        </span>
+                                        <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                                          Deadline
+                                        </span>
+                                        <span className="task-detail-value">
+                                          {imptsk?.deadlineDisplay}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    <div
+                                      className="inventory-grid grid items-center gap-4 mt-5 ms-5 py-3 px-2 md:px-2"
+                                      style={{ width: "40%" }}
+                                    >
+                                      <div className="flex items-center mt-5">
+                                        <img
+                                          src="/assets/images/etc/userpic.png"
+                                          alt="Card cover image"
+                                          className="rounded-full mr-4"
+                                          style={{
+                                            width: "3rem",
+                                            height: "3rem",
+                                          }}
+                                        />
+                                        <div className="flex flex-col">
+                                          <span
+                                            className="font-semibold leading-none"
+                                            style={{
+                                              fontSize: "smaller",
+                                              fontWeight: "400",
+                                            }}
+                                          >
+                                            <b>{imptsk.assignedStaff}</b>{" "}
+                                            {imptsk?.actionComments}
+                                          </span>
+
+                                          <span className="text-sm text-secondary leading-none pt-5">
+                                            Consulted on{" "}
+                                            {formatDate(imptsk?.completedAt)}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div>&nbsp;</div>
+                                    <div className="mat-form-field-wrapper">
+                                      <div className="mat-form-field-flex">
+                                        <img
+                                          src="/assets/images/etc/userpic.png"
+                                          alt="Card cover image"
+                                          className="rounded-full mr-4"
+                                          style={{
+                                            width: "5rem",
+                                            height: "5rem",
+                                          }}
+                                        />
+                                        <div className="mat-form-field-infix">
+                                          <textarea
+                                            rows="2"
+                                            className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                            placeholder="Write a comment..."
+                                            id="ImpTaskReview265"
+                                            data-placeholder="Write a comment..."
+                                            aria-invalid="false"
+                                            aria-required="false"
+                                            style={{ height: "36px" }}
+                                          ></textarea>
+                                          <button
+                                            className="mat-focus-indicator mat-raised-button mat-button-base"
+                                            style={{ float: "right" }}
+                                          >
+                                            <span className="mat-button-wrapper">
+                                              Save
+                                            </span>
+                                            <span className="mat-ripple mat-button-ripple"></span>
+                                            <span className="mat-button-focus-overlay"></span>
+                                          </button>
+                                          <span className="mat-form-field-label-wrapper"></span>
+                                        </div>
+                                      </div>
+
+                                      <div className="mat-form-field-subscript-wrapper">
+                                        <div
+                                          className="mat-form-field-hint-wrapper"
+                                          style={{
+                                            opacity: 1,
+                                            transform: "translateY(0%)",
+                                          }}
+                                        ></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                            <tfoot
+                              className="task-table-footer"
+                              style={{ display: "none", bottom: 0, zIndex: 10 }}
+                            >
+                              {/* Empty footer */}
+                            </tfoot>
+                          </table>
+                        ))}
+                      </Paper>
+                    </>
+                  </div>
+                )}
+
               <div className="flex justify-center p-16 pb-64 sm:p-24 ">
                 {currentPhase === "Approval" && (
                   <>
@@ -2226,15 +3311,70 @@ function Course() {
                         </h2>
                       </div>
                       <div>&nbsp;</div>
-
-                      <div
-                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        style={{ width: "40%" }}
-                      >
-                        <span className="font-semibold leading-none">
-                          Approver Comment: {ApprovalManager?.remark}
-                        </span>
-                      </div>
+                      {appActivity.isComplete &&
+                      appActivity.status != "Pending" ? (
+                        <div
+                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                          style={{ width: "40%" }}
+                        >
+                          <span className="font-semibold leading-none">
+                            Approver Comment: {ApprovalManager?.remark}
+                          </span>
+                        </div>
+                      ) : (
+                        <div
+                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                          style={{ width: "100%" }}
+                        >
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                            }}
+                          >
+                            <FormControl
+                              fullWidth
+                              sx={{
+                                m: 1,
+                                maxWidth: "100%",
+                              }}
+                            >
+                              <span className="font-semibold leading-none">
+                                Comment
+                              </span>
+                              <OutlinedInput
+                                id="reasonForNewDocument"
+                                name="reasonForNewDocument"
+                                onChange={handleChangeRemark}
+                                label="Reason For Change*"
+                                className="mt-5"
+                              />
+                            </FormControl>
+                          </Box>
+                          <div className="flex justify-end ">
+                            {appActions.map((btn) => (
+                              <Button
+                                className="whitespace-nowrap ms-5 "
+                                variant="contained"
+                                color="secondary"
+                                style={{
+                                  marginTop: "10px",
+                                }}
+                                onClick={(e) =>
+                                  SubmitApprovelCreate(
+                                    e,
+                                    btn.uid,
+                                    btn.name,
+                                    btn.type
+                                  )
+                                }
+                              >
+                                {btn.name}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </Paper>
                   </>
                 )}
@@ -2285,7 +3425,8 @@ function Course() {
                           step.version,
                           step.refVersion,
                           step.name,
-                          step.canEdit
+                          step.canEdit,
+                          step.canView
                         )
                       }
                       expanded

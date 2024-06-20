@@ -181,6 +181,16 @@ const Task = () => {
     }
   };
 
+  const formatDates = (date) => {
+    return new Date(date).toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+  };
+
   function handleSelectedCategory(event) {
     setSelectedCategory(event.target.value);
   }
@@ -774,40 +784,93 @@ const Task = () => {
                             <div className="flex-auto border-b"></div>
                           </div>
                           <div>&nbsp;</div>
-                          {task.completed && (
+                          {taskClick.map((msg) => (
                             <div
-                              className="flex flex-col flex-wrap items-start mb-2"
-                              style={{ alignItems: "end" }}
+                              key={msg.id}
+                              className="flex flex-col flex-wrap mb-2"
                             >
-                              <div
-                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
-                                style={{ padding: "20px" }}
-                              >
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html: task.notes,
-                                  }}
-                                ></div>
-                                <div className="my-0.5 text-xs font-medium text-secondary">
-                                  {" "}
-                                  {task.completedDate && (
-                                    <>
-                                      {new Date(
-                                        task.completedDate
-                                      ).toLocaleString("en-US", {
-                                        month: "short",
-                                        day: "2-digit",
-                                        hour: "numeric",
-                                        minute: "numeric",
-                                        hour12: true,
-                                      })}
-                                    </>
-                                  )}
+                              {/* Remark Section */}
+                              {msg.remark && (
+                                <div className="flex flex-col items-end">
+                                  <div
+                                    className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
+                                    style={{ padding: "20px" }}
+                                  >
+                                    <div
+                                      dangerouslySetInnerHTML={{
+                                        __html: msg.remark,
+                                      }}
+                                    ></div>
+                                    <div className="my-0.5 text-xs font-medium text-secondary">
+                                      <small>
+                                        {msg.startedDate &&
+                                        !msg.workInProgressDate &&
+                                        !msg.completedDate &&
+                                        !msg.dueDate
+                                          ? `Started on ${formatDates(msg.startedDate)}`
+                                          : msg.workInProgressDate &&
+                                              !msg.completedDate &&
+                                              !msg.dueDate
+                                            ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
+                                            : msg.dueDate && !msg.completedDate
+                                              ? `Due on ${formatDates(msg.dueDate)}`
+                                              : msg.completedDate
+                                                ? `Completed on ${formatDates(msg.completedDate)}`
+                                                : "Unknown"}
+                                      </small>
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
+                              )}
+
+                              {/* Comments Section */}
+                              {msg.comments && (
+                                <div className="flex flex-col items-start">
+                                  <div
+                                    className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                    style={{
+                                      padding: "20px",
+                                      backgroundColor: "#EBF8FF",
+                                    }}
+                                  >
+                                    <div className="font-semibold">
+                                      {" "}
+                                      {task.changeLeaderName}{" "}
+                                    </div>
+                                    <div
+                                      className="min-w-4 leading-5 "
+                                      dangerouslySetInnerHTML={{
+                                        __html: msg.comments,
+                                      }}
+                                      style={{ fontSize: "smaller" }}
+                                    ></div>
+                                    <div
+                                      className="min-w-4 leading-5"
+                                      style={{ fontSize: "xx-small" }}
+                                    >
+                                      {" "}
+                                      {msg.approvalStatusDate && (
+                                        <>
+                                          Rejected on{" "}
+                                          {new Date(
+                                            msg.approvalStatusDate
+                                          ).toLocaleString("en-US", {
+                                            month: "short",
+                                            day: "2-digit",
+                                            hour: "numeric",
+                                            minute: "numeric",
+                                            hour12: true,
+                                          })}
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          )}
-                          {taskClick.map(
+                          ))}
+
+                          {/* {taskClick.map(
                             (message) =>
                               message.comments && (
                                 <div className="flex flex-col flex-wrap items-start mb-2">
@@ -849,7 +912,7 @@ const Task = () => {
                                   </div>
                                 </div>
                               )
-                          )}
+                          )} */}
                         </>
                       )}
                     </div>
