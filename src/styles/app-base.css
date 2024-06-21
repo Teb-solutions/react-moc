@@ -232,7 +232,7 @@ input:-webkit-autofill:active {
 .sidebar {
   position: fixed;
   /* top: 0; */
-  right: -100%; /* Initially hidden */
+  right: -126%; /* Initially hidden */
   width: 500px;
   height: 100%;
   background-color: #fff;
@@ -478,7 +478,7 @@ body.sidebar1-open .maincntainer {
 
 .task-review-form {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .task-review-avatar {
@@ -490,7 +490,7 @@ body.sidebar1-open .maincntainer {
 
 .task-review-textarea-wrapper {
   display: flex;
-  align-items: start;
+  align-items: flex-start;
 }
 
 .task-review-textarea {
@@ -626,4 +626,7 @@ body.sidebar1-open .maincntainer {
   top: -4px;
   border: 5px solid #fff;
   background-color: rgb(54 54 54 / 30%);
+}
+.MuiFormControl-root.MuiTextField-root.muiltr-z3c6am-MuiFormControl-root-MuiTextField-root {
+  width: 100%;
 }

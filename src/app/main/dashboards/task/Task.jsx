@@ -9,11 +9,25 @@ import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
 import { useGetAcademyCategoriesQuery } from "../moc/evaluation/AcademyApi";
 import { useState } from "react";
-import { Button, FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import {
+  Button,
+  Container,
+  FormControlLabel,
+  Grid,
+  Radio,
+  RadioGroup,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { Box, Modal, Paper } from "@mui/material";
 import { apiAuth } from "src/utils/http";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const Task = () => {
   const style = {
@@ -37,7 +51,7 @@ const Task = () => {
     transform: "translate(-50%, -50%)",
     width: "1100px",
     maxWidth: "80vw",
-    height: "60%",
+    height: "55%",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -53,7 +67,9 @@ const Task = () => {
   const [task, setTask] = useState({});
   const [priority, setPriority] = useState(task.priority);
   const [sidebarOpen, setSidebarOpen] = useState(false); // State variable to control sidebar open/close
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("Pending");
+  const [selectedCategoryEvalImp, setSelectedCategoryEvalImp] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
   const [comments, setComments] = useState("");
   const router = useParams();
   const [open, setOpen] = useState(false);
@@ -128,12 +144,6 @@ const Task = () => {
     return days;
   }
 
-  // const handlePriorityChange = (event) => {
-  //   const newPriority = parseInt(event.target.value, 10);
-  //   setPriority(newPriority);
-  //   setTaskPriority(newPriority);
-  // };
-
   const handleSubmit = () => {
     const updatedTask = {
       ...task,
@@ -194,6 +204,55 @@ const Task = () => {
   function handleSelectedCategory(event) {
     setSelectedCategory(event.target.value);
   }
+  function handleSelectedCategoryEvalImp(event) {
+    setSelectedCategoryEvalImp(event.target.value);
+  }
+  const handleAll = (value) => {
+    setSelectedCategory(value);
+  };
+
+  const handleConsultationorImp = (value) => {
+    setSelectedCategoryEvalImp(value);
+  };
+
+  const handleSearchTerm = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filterTasks = (list) => {
+    let filteredTasks = list.taskList;
+
+    // Filter based on completion status
+    if (selectedCategory === "Complete") {
+      filteredTasks = filteredTasks.filter((task) => task.completed);
+    } else if (selectedCategory === "Pending") {
+      filteredTasks = filteredTasks.filter((task) => !task.completed);
+    }
+
+    // Filter based on task type
+    if (selectedCategoryEvalImp === "Evaluation Consultation") {
+      filteredTasks = filteredTasks.filter((task) => task.taskType === 1);
+    } else if (selectedCategoryEvalImp === "Evaluation Impacts Tasks") {
+      filteredTasks = filteredTasks.filter((task) => task.taskType === 2);
+    }
+
+    if (searchTerm) {
+      filteredTasks = filteredTasks.filter((task) =>
+        task.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    return filteredTasks;
+  };
+
+  const [reqDate, setReqDate] = React.useState(null);
+  const [commentss, setCommentss] = React.useState("");
+
+  const handleSubmits = () => {
+    // Handle the form submission logic
+    console.log("Request Date:", reqDate);
+    console.log("Comments:", comments);
+  };
 
   function handleSearchText(event) {
     setSearchText(event.target.value);
@@ -222,16 +281,18 @@ const Task = () => {
               value={selectedCategory}
               onChange={handleSelectedCategory}
             >
-              <MenuItem value="all">
+              <MenuItem value="All" onClick={(e) => handleAll("All")}>
                 <em> All </em>
               </MenuItem>
-              {categories?.map((category) => (
-                <MenuItem value={category.slug} key={category.id}>
-                  {category.title}
-                </MenuItem>
-              ))}
+              <MenuItem value="Complete" onClick={(e) => handleAll("Complete")}>
+                <em> Complete </em>
+              </MenuItem>
+              <MenuItem value="Pending" onClick={(e) => handleAll("Pending")}>
+                <em> Pending </em>
+              </MenuItem>
             </Select>
           </FormControl>
+
           <FormControl
             className="flex w-full sm:w-136 flex-grow-1"
             variant="outlined"
@@ -242,196 +303,211 @@ const Task = () => {
               labelId="category-select-label"
               id="category-select"
               label="Category"
-              value={selectedCategory}
-              onChange={handleSelectedCategory}
+              value={selectedCategoryEvalImp}
+              onChange={handleSelectedCategoryEvalImp}
             >
-              <MenuItem value="all">
-                <em> Pending </em>
+              <MenuItem
+                value="All"
+                onClick={(e) => handleConsultationorImp("All")}
+              >
+                <em> All </em>
               </MenuItem>
-              {categories?.map((category) => (
-                <MenuItem value={category.slug} key={category.id}>
-                  {category.title}
-                </MenuItem>
-              ))}
+              <MenuItem
+                value="Evaluation Consultation"
+                onClick={(e) =>
+                  handleConsultationorImp("Evaluation Consultation")
+                }
+              >
+                <em> Evaluation Consultation </em>
+              </MenuItem>
+              <MenuItem
+                value="Evaluation Impacts Tasks"
+                onClick={(e) =>
+                  handleConsultationorImp("Evaluation Impacts Tasks")
+                }
+              >
+                <em> Evaluation Impacts Tasks </em>
+              </MenuItem>
             </Select>
           </FormControl>
-          <Box
-            className="flex-grow-1"
-            sx={
-              {
-                //width: { xs: "100%", sm: 400, md: 600, lg: 1000 }, // Responsive width
-                //maxWidth: "100%", // Ensure it does not exceed 100%
-              }
-            }
-            style={{ backgroundColor: "white" }}
-          >
-            <TextField fullWidth label="Search by Task Name" id="fullWidth" />
+          <Box className="flex-grow-1" style={{ backgroundColor: "white" }}>
+            <TextField
+              fullWidth
+              label="Search by Task Name"
+              id="fullWidth"
+              value={searchTerm}
+              onChange={handleSearchTerm}
+            />
           </Box>
         </div>
       </div>
-      {taskList.map((list) => (
-        <Paper
-          className="  sm:my-8  p-24  rounded-16 shadow overflow-hidden"
-          style={{ margin: "20px" }}
-        >
-          <div className="flex flex-col p-4">
-            <div className="flex">
-              <div className="flex flex-col flex-auto">
-                <div className="flex items-center justify-between">
-                  <div
-                    className="py-0.5 px-3 mb-3 rounded-full text-sm font-semibold text-blue-800 bg-blue-100 dark:text-blue-50 dark:bg-blue-500"
-                    style={{ padding: "5px" }}
-                  >
-                    {`${list.requestTypeName}} / ${list.requestNo}}  / ${list.statusName}`}
-                  </div>
-                </div>
-                <div className="flex flex-col leading-5 text-md text-secondary space-y-2">
-                  <div>
-                    Initiated by <b>{list.initiatorName}</b> on{" "}
-                    <b>{formatDate(list.requestDate)}</b>
-                  </div>
-                  <div>
-                    Project Name: <b>{list.projectName}</b>
-                  </div>
-                  <div>
-                    Change Leader: <b>{list.changeLeaderName}</b>
-                  </div>
-                </div>
-              </div>
-              <div className="pl-4">
-                <div
-                  className="text-lg p-4 border rounded cursor-pointer text-blue-500"
-                  style={{ padding: "15px" }}
-                >
-                  <a
-                    className="flex items-center min-w-0 h-full w-full pr-7"
-                    href={`/moc/evaluation/${list.changeRequestToken}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    {" "}
-                    View MOC details
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div>&nbsp;</div>
-            <div className="cdk-drop-list divide-y border rounded mt-3">
-              <div className="w-full " style={{ padding: "2rem" }}>
-                <span className="font-semibold text-gray-500">
-                  {list?.taskList.length} Tasks
-                </span>
-              </div>
-              {list?.taskList?.map((task, index) => (
-                <Link to={`/task/${task.id}`} key={index}>
-                  <div
-                    className="group w-full select-none hover:bg-gray-100 dark:hover:bg-hover border-t h-20 text-lg font-semibold dark:bg-transparent"
-                    style={{ padding: "2.5rem" }}
-                  >
-                    <div
-                      className="relative flex items-center h-full pl-3"
-                      key={index}
-                    >
-                      <div className="z-10 absolute -top-px right-0 -bottom-px flex flex-0 w-1 bg-primary"></div>
+      {taskList.map((list) => {
+        const filteredTasks = filterTasks(list);
 
+        if (filteredTasks.length > 0) {
+          return (
+            <Paper
+              key={list.changeRequestId}
+              className="sm:my-8 p-24 rounded-16 shadow overflow-hidden"
+              style={{ margin: "20px" }}
+            >
+              <div className="flex flex-col p-4">
+                <div className="flex">
+                  <div className="flex flex-col flex-auto">
+                    <div className="flex items-center justify-between">
                       <div
-                        className="flex items-center mr-4"
-                        style={{ color: !task.completed ? "black" : "grey" }}
+                        className="py-0.5 px-3 mb-3 rounded-full text-sm font-semibold text-blue-800 bg-blue-100 dark:text-blue-50 dark:bg-blue-500"
+                        style={{ padding: "5px" }}
                       >
-                        {" "}
-                        # {task.sourceTaskId}{" "}
+                        {`${list.requestTypeName} / ${list.requestNo} / ${list.statusName}`}
                       </div>
-                      <div
-                        className="mr-4 truncate"
-                        style={{
-                          minWidth: "30%",
-                          width: "30%",
-                          border: "none",
-                        }}
+                    </div>
+                    <div className="flex flex-col leading-5 text-md text-secondary space-y-2">
+                      <div>
+                        Initiated by <b>{list.initiatorName}</b> on{" "}
+                        <b>{formatDate(list.requestDate)}</b>
+                      </div>
+                      <div>
+                        Project Name: <b>{list.projectName}</b>
+                      </div>
+                      <div>
+                        Change Leader: <b>{list.changeLeaderName}</b>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="pl-4">
+                    <div
+                      className="text-lg p-4 border rounded cursor-pointer text-blue-500"
+                      style={{ padding: "15px" }}
+                    >
+                      <a
+                        className="flex items-center min-w-0 h-full w-full pr-7"
+                        href={`/moc/evaluation/${list.changeRequestToken}`}
+                        style={{ textDecoration: "none" }}
                       >
-                        {task.title ? (
-                          <span
-                            style={{
-                              color: !task.completed ? "black" : "grey",
-                            }}
-                          >
-                            {task.title.toLowerCase()}
-                          </span>
-                        ) : (
-                          <span
-                            className="select-none text-hint"
-                            style={{
-                              color: !task.completed ? "black" : "grey",
-                            }}
-                          >
-                            {task.type.toLowerCase()} title
-                          </span>
-                        )}
-                      </div>
-                      {task.taskType == 2 &&
-                        task.completed &&
-                        task.taskApprovalStatus == 3 && (
+                        View MOC details
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div>&nbsp;</div>
+                <div className="cdk-drop-list divide-y border rounded mt-3">
+                  <div className="w-full" style={{ padding: "2rem" }}>
+                    <span className="font-semibold text-gray-500">
+                      {filteredTasks.length} Tasks
+                    </span>
+                  </div>
+                  {filteredTasks.map((task, index) => (
+                    <div
+                      key={index}
+                      className="group w-full select-none border-t h-20 text-lg font-semibold dark:bg-transparent hover:bg-gray-100 dark:hover:bg-hover"
+                      style={{ padding: "2.5rem" }}
+                      onClick={(e) => openSidebar(e, task)}
+                    >
+                      <Link
+                        to={`/task/${task.id}`}
+                        className="relative flex items-center h-full pl-3 w-full"
+                      >
+                        <div className="z-10 absolute -top-px right-0 -bottom-px flex flex-0 w-1 bg-primary"></div>
+                        <div
+                          className="flex items-center mr-4"
+                          style={{ color: !task.completed ? "black" : "grey" }}
+                        >
+                          # {task.sourceTaskId}
+                        </div>
+                        <div
+                          className="mr-4 truncate"
+                          style={{
+                            minWidth: "30%",
+                            width: "30%",
+                            border: "none",
+                          }}
+                        >
+                          {task.title ? (
+                            <span
+                              style={{
+                                color: !task.completed ? "black" : "grey",
+                              }}
+                            >
+                              {task.title.toLowerCase()}
+                            </span>
+                          ) : (
+                            <span
+                              className="select-none text-hint"
+                              style={{
+                                color: !task.completed ? "black" : "grey",
+                              }}
+                            >
+                              {task.type.toLowerCase()} title
+                            </span>
+                          )}
+                        </div>
+                        {task.taskType === 2 &&
+                          task.completed &&
+                          task.taskApprovalStatus === 3 && (
+                            <div
+                              className="flex items-center text-green-400 font-semibold"
+                              onClick={(e) => openSidebar(e, task)}
+                            >
+                              Approved
+                            </div>
+                          )}
+                        {task.taskType === 2 &&
+                          task.completed &&
+                          task.taskApprovalStatus !== 3 && (
+                            <div
+                              className="flex items-center text-blue-400 font-semibold"
+                              onClick={(e) => openSidebar(e, task)}
+                            >
+                              Awaiting Approval
+                            </div>
+                          )}
+                        {task.taskType === 1 && task.completed && (
                           <div
                             className="flex items-center text-green-400 font-semibold"
                             onClick={(e) => openSidebar(e, task)}
                           >
-                            Approved
+                            Completed
                           </div>
                         )}
-                      {task.taskType == 2 &&
-                        task.completed &&
-                        task.taskApprovalStatus != 3 && (
+                        {!task.completed && (
                           <div
-                            className="flex items-center text-blue-400 font-semibold"
+                            className="flex items-center text-red-600 font-semibold"
                             onClick={(e) => openSidebar(e, task)}
                           >
-                            Awaiting Approval
+                            Pending
                           </div>
                         )}
-                      {task.taskType == 1 && task.completed && (
-                        <div
-                          className="flex items-center text-green-400 font-semibold"
-                          onClick={(e) => openSidebar(e, task)}
-                        >
-                          Completed
-                        </div>
-                      )}
-                      {!task.completed && (
-                        <div
-                          className="flex items-center text-red-600 font-semibold"
-                          onClick={(e) => openSidebar(e, task)}
-                        >
-                          Pending{""}
-                        </div>
-                      )}
-
-                      {!task.completed &&
-                        task.taskType === 2 &&
-                        task.dueDate !== null && (
-                          <div onClick={(e) => openSidebar(e, task)}>
-                            {calculateDiff(task.dueDate) > 0 && (
-                              <span>
-                                due in {calculateDiff(task.dueDate)} days
-                              </span>
-                            )}
-                            {calculateDiff(task.dueDate) < 0 && (
-                              <span className="text-red-600">
-                                due exceeded by{" "}
-                                {calculateDiff(task.dueDate) * -1} days
-                              </span>
-                            )}
-                            {calculateDiff(task.dueDate) === 0 && (
-                              <span className="text-red-600">due today</span>
-                            )}
-                          </div>
-                        )}
+                        {!task.completed &&
+                          task.taskType === 2 &&
+                          task.dueDate !== null && (
+                            <div>
+                              {calculateDiff(task.dueDate) > 0 && (
+                                <span>
+                                  due in {calculateDiff(task.dueDate)} days
+                                </span>
+                              )}
+                              {calculateDiff(task.dueDate) < 0 && (
+                                <span className="text-red-600">
+                                  due exceeded by{" "}
+                                  {Math.abs(calculateDiff(task.dueDate))} days
+                                </span>
+                              )}
+                              {calculateDiff(task.dueDate) === 0 && (
+                                <span className="text-red-600">due today</span>
+                              )}
+                            </div>
+                          )}
+                      </Link>
                     </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </Paper>
-      ))}
+                  ))}
+                </div>
+              </div>
+            </Paper>
+          );
+        }
+        return null;
+      })}
 
       <Modal
         aria-labelledby="transition-modal-title"
@@ -549,26 +625,103 @@ const Task = () => {
                 borderTopRightRadius: "16px",
               }}
             ></Box>
-            {/* <div
-              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-              style={{
-                marginTop: "15px",
-                justifyContent: "end",
-                backgroundColor: " rgba(248,250,252)",
-                padding: "15px",
-              }}
-            >
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="secondary"
-                style={{ padding: "15px", backgroundColor: "blue" }}
-                type="submit"
-                onClick={handleSubmit}
-              >
-                Submit for Approval
-              </Button>
-            </div> */}
+
+            <Box sx={{ overflow: "auto", padding: "5px 30px 0 30px" }}>
+              <Grid container spacing={2} className="mt-5">
+                <Grid item xs={12}>
+                  <Table
+                    className="mat-elevatio demo-table col-span-12 mt-0 w-full"
+                    sx={{ width: "100%" }}
+                  >
+                    <TableHead
+                      sx={{
+                        borderBottom: "2px solid silver",
+                        fontSize: "medium",
+                      }}
+                    >
+                      <TableRow>
+                        <TableCell className="text-left pb-3">
+                          Actual Date
+                        </TableCell>
+                        <TableCell className="text-left pb-3">
+                          Request Comments
+                        </TableCell>
+                        <TableCell className="text-left pb-3">
+                          Request Date
+                        </TableCell>
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ width: "20%" }}
+                        >
+                          Approved Comments
+                        </TableCell>
+                        <TableCell className="text-left pb-3">
+                          Approved Date
+                        </TableCell>
+                        <TableCell className="text-left pb-3">Status</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>{/* Table rows will go here */}</TableBody>
+                  </Table>
+                </Grid>
+              </Grid>
+              <Grid container spacing={2} className="mt-5">
+                <Grid item xs={12}>
+                  <Typography variant="body1" className="font-semibold pt-4">
+                    Old Due Date
+                  </Typography>
+                  <Typography variant="body1" className="mt-2 cursor-pointer">
+                    November 15, 2023
+                  </Typography>
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
+                  style={{ maxWidth: "100%", flexBasis: "100%" }}
+                >
+                  <LocalizationProvider
+                    dateAdapter={AdapterDateFns}
+                    style={{ width: "100%" }}
+                  >
+                    <DatePicker
+                      label="Request Date*"
+                      value={reqDate}
+                      onChange={(newValue) => setReqDate(newValue)}
+                      renderInput={(params) => (
+                        <TextField {...params} fullWidth required />
+                      )}
+                      minDate={new Date("2023-11-15")}
+                    />
+                  </LocalizationProvider>
+                </Grid>
+                <Grid item xs={12} className="mt-5">
+                  <TextField
+                    label="Remark"
+                    multiline
+                    rows={1}
+                    fullWidth
+                    required
+                    value={comments}
+                    onChange={(e) => setCommentss(e.target.value)}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sx={{ paddingTop: "15px", paddingBottom: "20px" }}
+                >
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleSubmits}
+                    sx={{ float: "right" }}
+                  >
+                    Submit for Approval
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
           </Box>
         </Fade>
       </Modal>
