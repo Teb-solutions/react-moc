@@ -12,6 +12,7 @@ import { apiAuth } from "src/utils/http";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import { useRef } from "react";
 
 const Task = () => {
   const style = {
@@ -77,6 +78,9 @@ const Task = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [userNames, setUserName] = useState("");
   const [id, setId] = useState(0);
+  const [apiImage, setApiImage] = useState("");
+  const [editIconImage, setEditIconImage] = useState(false);
+  const [addIconImage, setAddIconImage] = useState(false);
 
   const [formData, setFormData] = useState({
     image: "",
@@ -126,8 +130,12 @@ const Task = () => {
   const openSidebar = (e, task) => {
     e.preventDefault();
     setOpenDetails(false);
+    setApiImage("");
+    setEditIconImage(false);
     setSidebarOpen(!sidebarOpen);
     setHandelUpdate(true);
+    setAddIconImage(true);
+    setPersonDetails("");
     setFormData({
       image: "",
       firstName: "",
@@ -160,6 +168,9 @@ const Task = () => {
   const openSidebarEdit = (e) => {
     setOpenDetails(false);
     setHandelUpdate(false);
+    setEditIconImage(true);
+    setAddIconImage(false);
+
     apiAuth.get(`/Staff/CreateData`).then((response) => {
       setSiteData(response.data.data.site);
       setDivision(response.data.data.division);
@@ -174,12 +185,30 @@ const Task = () => {
   const handelOpenProfile = (e, task) => {
     e.preventDefault();
     setOpenDetails(true);
+    setEditIconImage(false);
+    setAddIconImage(false);
+
     setSidebarOpen(!sidebarOpen);
     setId(task.staffId); // Set photoUrl to 'yes' when an image is uploaded, else ''
 
     apiAuth.get(`/Staff/GetDetails?id=${task.staffId}`).then((response) => {
       setUserName(response.data.data.userName);
       setPersonDetails(response.data.data);
+      if (response.data.data.photoUrl) {
+        const byteCharacters = atob(response.data.data.photoUrl);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: "image/jpeg" }); // Adjust the type according to your image type
+
+        // Create URL for the Blob object
+        const imageUrl = URL.createObjectURL(blob);
+        setApiImage(imageUrl);
+      } else {
+        setApiImage("");
+      }
     });
     setFormData({
       ...formData,
@@ -228,21 +257,22 @@ const Task = () => {
   const filteredTaskList = taskList.filter((task) => {
     return (
       task.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       task.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       task.mobile.includes(searchTerm)
     );
   });
-
+  console.log(formData, "formss");
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
 
     setFormData((prevState) => ({
       ...prevState,
-      photoUrl: file ? "yes" : "",
+      photoUrl: file ? "yes" : "yes",
       image: event.target.files[0], // Set photoUrl to 'yes' when an image is uploaded, else ''
     }));
   };
-
+  console.log(formData, "pppppp");
   const handleSubmitProfile = (e, value) => {
     e.preventDefault();
     const formDatas = new FormData();
@@ -251,7 +281,7 @@ const Task = () => {
     formDatas.append("lastName", formData.lastName);
     formDatas.append("email", formData.email);
     formDatas.append("mobile", formData.mobile);
-    formDatas.append("photoUrl", formData.photoUrl);
+    formDatas.append("photoUrl", "yes");
     formDatas.append("siteId", formData.siteId);
     formDatas.append("departmentId", formData.departmentId);
     formDatas.append("designationId", formData.designationId);
@@ -262,15 +292,28 @@ const Task = () => {
     formDatas.append("functionId", formData.functionId);
     formDatas.append("username", formData.username);
     formDatas.append("documentStatus", formData.documentStatus);
-    // formDatas.append("isActive", formData.isActive && formData.isActive);
-    formDatas.append("image", formData.image);
+
+    formDatas.append("image", formData.image ? formData.image : null);
 
     try {
       const path = value === "submit" ? "/Staff/Create" : `/staff/${id}`;
-      apiAuth.post(path, formDatas).then((response) => {});
+      if (value !== "submit") {
+        formDatas.append("isActive", formData.isActive && formData.isActive);
+      }
+      if (value === "submit") {
+        apiAuth.post(path, formDatas);
+      } else {
+        apiAuth.put(path, formDatas);
+      }
     } catch (error) {
       console.error("Error submitting the form:", error);
     }
+  };
+
+  const fileInputRef = useRef(null);
+
+  const handleIconClick = () => {
+    fileInputRef.current.click();
   };
 
   useEffect(() => {
@@ -437,28 +480,96 @@ const Task = () => {
                         width: "100%",
                       }}
                     />
-
+                    {apiImage != "" ? (
+                      <div
+                        className="uploadImg1"
+                        style={{
+                          backgroundColor: apiImage
+                            ? "rgb(56 54 54 / 55%)"
+                            : "",
+                        }}
+                      >
+                        <img className="upImg" src={apiImage} />
+                      </div>
+                    ) : (
+                      <div
+                        className="uploadImg1"
+                        style={{
+                          backgroundColor: apiImage
+                            ? "rgb(56 54 54 / 55%)"
+                            : "",
+                          display: "flex", // Added to center the text
+                          alignItems: "center", // Added to center the text vertically
+                          justifyContent: "center", // Added to center the text horizontally
+                          fontSize: "2rem", // Adjust as needed for desired text size
+                          color: "#fff", // Adjust as needed for desired text color
+                        }}
+                      >
+                        <h1 style={{ fontSize: "50px" }}>
+                          {personDetails?.name?.charAt(0).toUpperCase()}
+                        </h1>
+                      </div>
+                    )}
                     {formData.image && (
-                      <div className="uploadImg1">
+                      <div
+                        className="uploadImg1"
+                        style={{
+                          backgroundColor: apiImage
+                            ? "rgb(56 54 54 / 51%)"
+                            : "",
+                        }}
+                      >
                         <img
+                          className="upImg"
                           src={URL.createObjectURL(formData.image)}
-                          alt="Uploaded"
                         />
                       </div>
                     )}
-                    <div className="uploadImg">
-                      {/* {!openDetails && (
-                        // <input
-                        //   type="file"
-                        //   accept="image/*"
-                        //   onChange={handleImageUpload}
-                        // />
-                      )} */}
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:camera
-                      </FuseSvgIcon>
-                    </div>
+
+                    {editIconImage && (
+                      <div className="uploadImg">
+                        <FuseSvgIcon
+                          size={20}
+                          className="uplImg1"
+                          onClick={handleIconClick}
+                        >
+                          heroicons-outline:camera
+                        </FuseSvgIcon>
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          style={{ display: "none" }}
+                          onChange={handleImageUpload}
+                        />
+
+                        <FuseSvgIcon
+                          size={20}
+                          className="uplImg2"
+                          onClick={() => setApiImage("")}
+                        >
+                          heroicons-outline:trash
+                        </FuseSvgIcon>
+                      </div>
+                    )}
+                    {addIconImage && (
+                      <div className="uploadImg">
+                        <FuseSvgIcon
+                          size={20}
+                          className="uplImg3"
+                          onClick={handleIconClick}
+                        >
+                          heroicons-outline:camera
+                        </FuseSvgIcon>
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          style={{ display: "none" }}
+                          onChange={handleImageUpload}
+                        />
+                      </div>
+                    )}
                   </div>
+
                   {openDetails && (
                     <div style={styles.container}>
                       <Box className="flex-grow-2 justify-end">
@@ -484,12 +595,12 @@ const Task = () => {
                       <div style={styles.gridContainerSm}>
                         <div>
                           <div style={styles.textMd}>First Name</div>
-                          <div>{formData.firstName}</div>
+                          <div>{personDetails.firstName}</div>
                         </div>
                         <div>
                           <div style={styles.textMd}>Last Name</div>
                           <div style={styles.textSecondary}>
-                            {formData.lastName}
+                            {personDetails.lastName}
                           </div>
                         </div>
                       </div>
@@ -497,13 +608,13 @@ const Task = () => {
                         <div>
                           <div style={styles.textMd}>Email</div>
                           <div style={styles.textSecondary}>
-                            {formData.email}
+                            {personDetails.email}
                           </div>
                         </div>
                         <div>
                           <div style={styles.textMd}>Mobile</div>
                           <div style={styles.textSecondary}>
-                            {formData.mobile}
+                            {personDetails.mobile}
                           </div>
                         </div>
                       </div>
@@ -512,13 +623,13 @@ const Task = () => {
                         <div>
                           <div style={styles.textMd}>Site</div>
                           <div style={styles.textSecondary}>
-                            {formData.siteId}
+                            {personDetails.siteName}
                           </div>
                         </div>
                         <div>
                           <div style={styles.textMd}>Department</div>
                           <div style={styles.textSecondary}>
-                            {formData.departmentId}
+                            {personDetails.departmentName}
                           </div>
                         </div>
                       </div>
@@ -526,13 +637,13 @@ const Task = () => {
                         <div>
                           <div style={styles.textMd}>Division</div>
                           <div style={styles.textSecondary}>
-                            {formData.divisionId}
+                            {personDetails.divisionName}
                           </div>
                         </div>
                         <div>
                           <div style={styles.textMd}>Function</div>
                           <div style={styles.textSecondary}>
-                            {formData.functionId}
+                            {personDetails.functionName}
                           </div>
                         </div>
                       </div>
@@ -540,13 +651,13 @@ const Task = () => {
                         <div>
                           <div style={styles.textMd}>Designation</div>
                           <div style={styles.textSecondary}>
-                            {formData.designationId}
+                            {personDetails.designationName}
                           </div>
                         </div>
                         <div>
                           <div style={styles.textMd}>Role</div>
                           <div style={styles.textSecondary}>
-                            {formData.roleId}
+                            {personDetails.roleName}
                           </div>
                         </div>
                       </div>
@@ -554,13 +665,13 @@ const Task = () => {
                         <div>
                           <div style={styles.textMd}>Manager</div>
                           <div style={styles.textSecondary}>
-                            {formData.managerStaffId}
+                            {personDetails.managerStaff}
                           </div>
                         </div>
                         <div>
                           <div style={styles.textMd}>Reporting</div>
                           <div style={styles.textSecondary}>
-                            {formData.reportingStaffId}
+                            {personDetails.reportingStaff}
                           </div>
                         </div>
                       </div>
@@ -568,7 +679,8 @@ const Task = () => {
                         <div>
                           <div style={styles.textMd}>User Name</div>
                           <div style={styles.textSecondary}>
-                            {formData.firstName}
+                            {personDetails?.userName != undefined &&
+                              personDetails?.userName}
                           </div>
                         </div>
                       </div>
@@ -591,9 +703,12 @@ const Task = () => {
                               />
                             }
                           />
+                          <span style={{ paddingTop: "8px" }}>
+                            {personDetails.isActive ? "Active" : "Not Active"}
+                          </span>
                         </div>
                       )}
-                      <div className="flex-auto">
+                      <div className="flex-auto" style={{ margin: "18px" }}>
                         <div className="flex sidebarMarg flex-col-reverse">
                           <div
                             style={{
@@ -689,312 +804,338 @@ const Task = () => {
                         _ngcontent-fyk-c288=""
                         class="flex items-center w-full  border-b justify-between"
                       ></div>
-                      <div className="flex flex-col-reverse">
-                        <div
-                          style={{
-                            marginTop: "30px",
-                            justifyContent: "space-between",
-                            margin: "15px",
-                          }}
-                          className="flex flex-row "
-                        >
-                          <FormControl
-                            sx={{
-                              width: 380,
-                              maxWidth: "48%",
+                      <div className="flex-auto" style={{ margin: "18px" }}>
+                        <div className="flex flex-col-reverse">
+                          <div
+                            style={{
+                              marginTop: "30px",
+                              justifyContent: "space-between",
+                              margin: "15px",
                             }}
+                            className="flex flex-row "
                           >
-                            <FormLabel
-                              className="font-medium text-14"
-                              component="legend"
+                            <FormControl
+                              sx={{
+                                width: 380,
+                                maxWidth: "48%",
+                              }}
                             >
-                              Site *
-                            </FormLabel>
-                            <Select
-                              variant="outlined"
-                              value={formData.siteId}
-                              onChange={handleChange}
-                              name="siteId"
+                              <FormLabel
+                                className="font-medium text-14"
+                                component="legend"
+                              >
+                                Site *
+                              </FormLabel>
+                              <Select
+                                variant="outlined"
+                                value={formData.siteId}
+                                onChange={handleChange}
+                                name="siteId"
+                              >
+                                {site.map((option) => (
+                                  <MenuItem
+                                    key={option.id}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            <FormControl
+                              sx={{
+                                width: 380,
+                                maxWidth: "48%",
+                              }}
                             >
-                              {site.map((option) => (
-                                <MenuItem key={option.id} value={option.value}>
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          <FormControl
-                            sx={{
-                              width: 380,
-                              maxWidth: "48%",
+                              <FormLabel
+                                className="font-medium text-14"
+                                component="legend"
+                              >
+                                Department *
+                              </FormLabel>
+                              <Select
+                                variant="outlined"
+                                value={formData.departmentId}
+                                onChange={handleChange}
+                                name="departmentId"
+                              >
+                                {department.map((option) => (
+                                  <MenuItem
+                                    key={option.id}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </div>
+                        </div>{" "}
+                        <div className="flex flex-col-reverse">
+                          <div
+                            style={{
+                              marginTop: "30px",
+                              justifyContent: "space-between",
+                              margin: "15px",
                             }}
+                            className="flex flex-row "
                           >
-                            <FormLabel
-                              className="font-medium text-14"
-                              component="legend"
+                            <FormControl
+                              sx={{
+                                width: 380,
+                                maxWidth: "48%",
+                              }}
                             >
-                              Department *
-                            </FormLabel>
-                            <Select
-                              variant="outlined"
-                              value={formData.departmentId}
-                              onChange={handleChange}
-                              name="departmentId"
+                              <FormLabel
+                                className="font-medium text-14"
+                                component="legend"
+                              >
+                                Division *
+                              </FormLabel>
+                              <Select
+                                variant="outlined"
+                                value={formData.divisionId}
+                                onChange={handleChange}
+                                name="divisionId"
+                              >
+                                {division.map((option) => (
+                                  <MenuItem
+                                    key={option.id}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            <FormControl
+                              sx={{
+                                width: 380,
+                                maxWidth: "48%",
+                              }}
                             >
-                              {department.map((option) => (
-                                <MenuItem key={option.id} value={option.value}>
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
+                              <FormLabel
+                                className="font-medium text-14"
+                                component="legend"
+                              >
+                                Function *
+                              </FormLabel>
+                              <Select
+                                variant="outlined"
+                                value={formData.functionId}
+                                onChange={handleChange}
+                                name="functionId"
+                              >
+                                {functions.map((option) => (
+                                  <MenuItem
+                                    key={option.id}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </div>
+                        </div>{" "}
+                        <div className="flex flex-col-reverse">
+                          <div
+                            style={{
+                              marginTop: "30px",
+                              justifyContent: "space-between",
+                              margin: "15px",
+                            }}
+                            className="flex flex-row "
+                          >
+                            <FormControl
+                              sx={{
+                                width: 380,
+                                maxWidth: "48%",
+                              }}
+                            >
+                              <FormLabel
+                                className="font-medium text-14"
+                                component="legend"
+                              >
+                                Designation *
+                              </FormLabel>
+                              <Select
+                                variant="outlined"
+                                value={formData.designationId}
+                                onChange={handleChange}
+                                name="designationId"
+                              >
+                                {designation.map((option) => (
+                                  <MenuItem
+                                    key={option.id}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            <FormControl
+                              sx={{
+                                width: 380,
+                                maxWidth: "48%",
+                              }}
+                            >
+                              <FormLabel
+                                className="font-medium text-14"
+                                component="legend"
+                              >
+                                Role *
+                              </FormLabel>
+                              <Select
+                                variant="outlined"
+                                value={formData.roleId}
+                                onChange={handleChange}
+                                name="roleId"
+                              >
+                                {role.map((option) => (
+                                  <MenuItem
+                                    key={option.id}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </div>
+                        </div>{" "}
+                        <div className="flex flex-col-reverse">
+                          <div
+                            style={{
+                              marginTop: "30px",
+                              justifyContent: "space-between",
+                              margin: "15px",
+                            }}
+                            className="flex flex-row "
+                          >
+                            <FormControl
+                              sx={{
+                                width: 380,
+                                maxWidth: "48%",
+                              }}
+                            >
+                              <FormLabel
+                                className="font-medium text-14"
+                                component="legend"
+                              >
+                                Manager
+                              </FormLabel>
+                              <Select
+                                variant="outlined"
+                                value={formData.managerStaffId}
+                                onChange={handleChange}
+                                name="managerStaffId"
+                              >
+                                {staffData.map((option) => (
+                                  <MenuItem
+                                    key={option.id}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                            <FormControl
+                              sx={{
+                                width: 380,
+                                maxWidth: "48%",
+                              }}
+                            >
+                              <FormLabel
+                                className="font-medium text-14"
+                                component="legend"
+                              >
+                                Reporting
+                              </FormLabel>
+                              <Select
+                                variant="outlined"
+                                value={formData.reportingStaffId}
+                                onChange={handleChange}
+                                name="reportingStaffId"
+                              >
+                                {staffData.map((option) => (
+                                  <MenuItem
+                                    key={option.id}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                            </FormControl>
+                          </div>
+                        </div>{" "}
+                        <div className="flex flex-col-reverse">
+                          <div
+                            style={{
+                              marginTop: "30px",
+                              justifyContent: "space-between",
+                              margin: "15px",
+                            }}
+                            className="flex flex-row "
+                          >
+                            <Box
+                              sx={{
+                                width: 800,
+                                maxWidth: "100%",
+                              }}
+                            >
+                              <TextField
+                                fullWidth
+                                label="User Name *"
+                                name="username"
+                                value={formData.username}
+                                onChange={handleChange}
+                              />
+                            </Box>
+                          </div>
                         </div>
-                      </div>{" "}
-                      <div className="flex flex-col-reverse">
                         <div
+                          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                           style={{
-                            marginTop: "30px",
-                            justifyContent: "space-between",
-                            margin: "15px",
+                            marginTop: "15px",
+                            justifyContent: "end",
+                            backgroundColor: " rgba(248,250,252)",
+                            padding: "10px",
                           }}
-                          className="flex flex-row "
                         >
-                          <FormControl
-                            sx={{
-                              width: 380,
-                              maxWidth: "48%",
+                          <Button
+                            className="whitespace-nowrap"
+                            variant="contained"
+                            color="primary"
+                            style={{
+                              padding: "23px",
+                              backgroundColor: "white",
+                              color: "black",
+                              border: "1px solid grey",
                             }}
                           >
-                            <FormLabel
-                              className="font-medium text-14"
-                              component="legend"
-                            >
-                              Division *
-                            </FormLabel>
-                            <Select
-                              variant="outlined"
-                              value={formData.divisionId}
-                              onChange={handleChange}
-                              name="divisionId"
-                            >
-                              {division.map((option) => (
-                                <MenuItem key={option.id} value={option.value}>
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          <FormControl
-                            sx={{
-                              width: 380,
-                              maxWidth: "48%",
-                            }}
+                            Cancel
+                          </Button>
+                          <Button
+                            className="whitespace-nowrap"
+                            variant="contained"
+                            color="secondary"
+                            style={{ padding: "23px", backgroundColor: "blue" }}
+                            type="submit"
+                            onClick={(e) =>
+                              handleSubmitProfile(
+                                e,
+                                handelUpdate ? "submit" : "update"
+                              )
+                            }
                           >
-                            <FormLabel
-                              className="font-medium text-14"
-                              component="legend"
-                            >
-                              Function *
-                            </FormLabel>
-                            <Select
-                              variant="outlined"
-                              value={formData.functionId}
-                              onChange={handleChange}
-                              name="functionId"
-                            >
-                              {functions.map((option) => (
-                                <MenuItem key={option.id} value={option.value}>
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
+                            {handelUpdate ? "Submit" : "Update"}
+                          </Button>
                         </div>
-                      </div>{" "}
-                      <div className="flex flex-col-reverse">
-                        <div
-                          style={{
-                            marginTop: "30px",
-                            justifyContent: "space-between",
-                            margin: "15px",
-                          }}
-                          className="flex flex-row "
-                        >
-                          <FormControl
-                            sx={{
-                              width: 380,
-                              maxWidth: "48%",
-                            }}
-                          >
-                            <FormLabel
-                              className="font-medium text-14"
-                              component="legend"
-                            >
-                              Designation *
-                            </FormLabel>
-                            <Select
-                              variant="outlined"
-                              value={formData.designationId}
-                              onChange={handleChange}
-                              name="designationId"
-                            >
-                              {designation.map((option) => (
-                                <MenuItem key={option.id} value={option.value}>
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          <FormControl
-                            sx={{
-                              width: 380,
-                              maxWidth: "48%",
-                            }}
-                          >
-                            <FormLabel
-                              className="font-medium text-14"
-                              component="legend"
-                            >
-                              Role *
-                            </FormLabel>
-                            <Select
-                              variant="outlined"
-                              value={formData.roleId}
-                              onChange={handleChange}
-                              name="roleId"
-                            >
-                              {role.map((option) => (
-                                <MenuItem key={option.id} value={option.value}>
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </div>
-                      </div>{" "}
-                      <div className="flex flex-col-reverse">
-                        <div
-                          style={{
-                            marginTop: "30px",
-                            justifyContent: "space-between",
-                            margin: "15px",
-                          }}
-                          className="flex flex-row "
-                        >
-                          <FormControl
-                            sx={{
-                              width: 380,
-                              maxWidth: "48%",
-                            }}
-                          >
-                            <FormLabel
-                              className="font-medium text-14"
-                              component="legend"
-                            >
-                              Manager
-                            </FormLabel>
-                            <Select
-                              variant="outlined"
-                              value={formData.managerStaffId}
-                              onChange={handleChange}
-                              name="managerStaffId"
-                            >
-                              {staffData.map((option) => (
-                                <MenuItem key={option.id} value={option.value}>
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                          <FormControl
-                            sx={{
-                              width: 380,
-                              maxWidth: "48%",
-                            }}
-                          >
-                            <FormLabel
-                              className="font-medium text-14"
-                              component="legend"
-                            >
-                              Reporting
-                            </FormLabel>
-                            <Select
-                              variant="outlined"
-                              value={formData.reportingStaffId}
-                              onChange={handleChange}
-                              name="reportingStaffId"
-                            >
-                              {staffData.map((option) => (
-                                <MenuItem key={option.id} value={option.value}>
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </div>
-                      </div>{" "}
-                      <div className="flex flex-col-reverse">
-                        <div
-                          style={{
-                            marginTop: "30px",
-                            justifyContent: "space-between",
-                            margin: "15px",
-                          }}
-                          className="flex flex-row "
-                        >
-                          <Box
-                            sx={{
-                              width: 800,
-                              maxWidth: "100%",
-                            }}
-                          >
-                            <TextField
-                              fullWidth
-                              label="User Name *"
-                              name="username"
-                              value={formData.username}
-                              onChange={handleChange}
-                            />
-                          </Box>
-                        </div>
-                      </div>
-                      <div
-                        className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                        style={{
-                          marginTop: "15px",
-                          justifyContent: "end",
-                          backgroundColor: " rgba(248,250,252)",
-                          padding: "10px",
-                        }}
-                      >
-                        <Button
-                          className="whitespace-nowrap"
-                          variant="contained"
-                          color="primary"
-                          style={{
-                            padding: "23px",
-                            backgroundColor: "white",
-                            color: "black",
-                            border: "1px solid grey",
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          className="whitespace-nowrap"
-                          variant="contained"
-                          color="secondary"
-                          style={{ padding: "23px", backgroundColor: "blue" }}
-                          type="submit"
-                          onClick={(e) =>
-                            handleSubmitProfile(
-                              e,
-                              handelUpdate ? "submit" : "update"
-                            )
-                          }
-                        >
-                          {handelUpdate ? "Submit" : "Update"}
-                        </Button>
                       </div>
                     </>
                   )}

@@ -101,6 +101,8 @@ function Course() {
   const [appActivity, setAppActivity] = useState({});
   const [impActions, setImpActions] = useState([]);
   const [impActivity, setImpActivity] = useState({});
+  const [closeActions, setCloseActions] = useState([]);
+  const [closeActivity, setCloseActivity] = useState({});
   const [addStake, setAddStake] = useState(false);
   const [docStaff, setDocStaff] = useState([]);
   const [particular, setParticular] = useState([]);
@@ -453,7 +455,7 @@ function Course() {
             actualPhaseName = "docimplclosure";
             break;
           default:
-            actualPhaseName = phaseName; // Fall back to the passed phase name if no match is found
+            actualPhaseName = "docimplclosure"; // Fall back to the passed phase name if no match is found
         }
 
         setCurrentPhase(actualPhaseName);
@@ -538,9 +540,10 @@ function Course() {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp.data?.data);
-                apiAuth
-                  .get(`/Activity/ActivityDetails/${uid}`)
-                  .then((resp) => {});
+                apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+                  setCloseActions(resp.data.data.actions);
+                  setCloseActivity(resp.data.data.activity);
+                });
               });
             break;
           default:
@@ -684,6 +687,19 @@ function Course() {
       .then((response) => {
         setReviewed(true);
         console.log(response);
+      });
+  };
+
+  const handelCloseMoc = (uid) => {
+    apiAuth
+      .post(`/DocMoc/ImplementationSubmit/${evaluationId}/22`, {
+        actionUID: uid,
+        activityUID: closeActivity.uid,
+
+        formUID: closeActivity.formUID,
+      })
+      .then((resp) => {
+        getRecords();
       });
   };
   useEffect(() => {
@@ -3009,6 +3025,26 @@ function Course() {
                       </div>
                       <div>&nbsp;</div>
                     </Paper>
+                    <div>&nbsp;</div>
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="flex items-center w-full  border-b justify-between"
+                    ></div>
+                    <div className="flex justify-end ">
+                      {closeActions.map((btn) => {
+                        <Button
+                          className="whitespace-nowrap ms-5 "
+                          variant="contained"
+                          color="secondary"
+                          style={{
+                            marginTop: "10px",
+                          }}
+                          onClick={(e) => handelCloseMoc(btn.uid)}
+                        >
+                          {btn.name}
+                        </Button>;
+                      })}
+                    </div>
                   </Paper>
                 )}
               </div>
@@ -3132,7 +3168,7 @@ function Course() {
                                         Task #{imptsk?.id}
                                       </span>
                                     </div>
-                                    {}
+
                                     <div className="task-button ml-auto">
                                       <button
                                         className="task-mark-reviewed-button mat-stroked-button"
