@@ -329,12 +329,12 @@ body.sidebar1-open .maincntainer {
 .uploadImg {
   width: 150px;
   height: 150px;
-  left: 70px !important;
+  left: 71px !important;
   position: absolute;
   border-radius: 50%;
-  top: 91px;
+  top: 95px;
   border: 5px solid #fff;
-  background-color: rgb(54 54 54 / 80%);
+  background-color: rgb(54 54 54 / 30%);
 }
 
 .uploadImg1 {
@@ -345,7 +345,7 @@ body.sidebar1-open .maincntainer {
   border-radius: 50%;
   top: 91px;
   border: 5px solid #fff;
-  background-color: rgb(54 54 54 / 80%);
+  background-color: rgb(54 54 54 / 30%);
 }
 
 .sidebarMarg {
@@ -592,3 +592,38 @@ body.sidebar1-open .maincntainer {
 }
 
 /*imp task section end*/
+.uplImg1 {
+  background: none;
+  text-align: center;
+  position: relative;
+  left: 30%;
+  top: 43%;
+  color: #fff;
+}
+.uplImg2 {
+  background: none;
+  text-align: center;
+  position: relative;
+  left: 55%;
+  top: 28%;
+  color: #fff;
+}
+.uplImg3 {
+  background: none;
+  text-align: center;
+  position: relative;
+  left: 43%;
+  top: 44%;
+  color: #fff;
+}
+
+.upImg {
+  width: 150px;
+  height: 150px;
+  left: 0px !important;
+  position: absolute;
+  border-radius: 50%;
+  top: -4px;
+  border: 5px solid #fff;
+  background-color: rgb(54 54 54 / 30%);
+}
