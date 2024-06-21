@@ -1,4 +1,4 @@
-import React from "react";
+import { useRef, useCallback } from "react";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -12,7 +12,6 @@ import { apiAuth } from "src/utils/http";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import { useRef } from "react";
 
 const Task = () => {
   const style = {
@@ -81,7 +80,7 @@ const Task = () => {
   const [apiImage, setApiImage] = useState("");
   const [editIconImage, setEditIconImage] = useState(false);
   const [addIconImage, setAddIconImage] = useState(false);
-
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     image: "",
     firstName: "",
@@ -124,6 +123,9 @@ const Task = () => {
       ...prevState,
       [name]: value,
     }));
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
   };
 
   // Function to open sidebar
@@ -182,7 +184,7 @@ const Task = () => {
     });
   };
 
-  const handelOpenProfile = (e, task) => {
+  const handelOpenProfile = async (e, task) => {
     e.preventDefault();
     setOpenDetails(true);
     setEditIconImage(false);
@@ -191,45 +193,48 @@ const Task = () => {
     setSidebarOpen(!sidebarOpen);
     setId(task.staffId); // Set photoUrl to 'yes' when an image is uploaded, else ''
 
-    apiAuth.get(`/Staff/GetDetails?id=${task.staffId}`).then((response) => {
-      setUserName(response.data.data.userName);
-      setPersonDetails(response.data.data);
-      if (response.data.data.photoUrl) {
-        const byteCharacters = atob(response.data.data.photoUrl);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: "image/jpeg" }); // Adjust the type according to your image type
+    await apiAuth
+      .get(`/Staff/GetDetails?id=${task.staffId}`)
+      .then((response) => {
+        setUserName(response.data.data.userName);
 
-        // Create URL for the Blob object
-        const imageUrl = URL.createObjectURL(blob);
-        setApiImage(imageUrl);
-      } else {
-        setApiImage("");
-      }
-    });
-    setFormData({
-      ...formData,
-      firstName: task.firstName,
-      lastName: task.lastName,
-      email: task.email,
-      mobile: task.mobile,
-      siteId: task.siteId,
-      departmentId: task.departmentId,
-      designationId: task.designationId,
-      divisionId: task.divisionId,
-      managerStaffId: task.managerStaffId,
-      reportingStaffId: task.reportingStaffId,
-      roleId: task.roleId,
-      functionId: task.functionId,
-      username: userNames,
-      documentStatus: task.documentStatus,
-      photoUrl: task.photoUrl,
-      image: "",
-      isActive: task.isActive && task.isActive, // handle image separately if necessary
-    });
+        setPersonDetails(response.data.data);
+        if (response.data.data.photoUrl) {
+          const byteCharacters = atob(response.data.data.photoUrl);
+          const byteNumbers = new Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+          }
+          const byteArray = new Uint8Array(byteNumbers);
+          const blob = new Blob([byteArray], { type: "image/jpeg" }); // Adjust the type according to your image type
+
+          // Create URL for the Blob object
+          const imageUrl = URL.createObjectURL(blob);
+          setApiImage(imageUrl);
+        } else {
+          setApiImage("");
+        }
+        setFormData({
+          ...formData,
+          firstName: task.firstName,
+          lastName: task.lastName,
+          email: task.email,
+          mobile: task.mobile,
+          siteId: task.siteId,
+          departmentId: task.departmentId,
+          designationId: task.designationId,
+          divisionId: task.divisionId,
+          managerStaffId: task.managerStaffId,
+          reportingStaffId: task.reportingStaffId,
+          roleId: task.roleId,
+          functionId: task.functionId,
+          username: response.data.data.userName,
+          documentStatus: task.documentStatus,
+          photoUrl: task.photoUrl,
+          image: "",
+          isActive: task.isActive && task.isActive, // handle image separately if necessary
+        });
+      });
   };
 
   const handleSubmit = () => {
@@ -273,40 +278,63 @@ const Task = () => {
     }));
   };
   console.log(formData, "pppppp");
+
+  const validate = () => {
+    let tempErrors = {};
+    if (!formData.firstName) tempErrors.firstName = "First Name is required";
+    if (!formData.lastName) tempErrors.lastName = "Last Name is required";
+    if (!formData.email) tempErrors.email = "Email is required";
+    if (!formData.mobile) tempErrors.mobile = "Mobile is required";
+    if (!formData.siteId) tempErrors.siteId = "Site is required";
+    if (!formData.departmentId)
+      tempErrors.departmentId = "Department is required";
+    if (!formData.divisionId) tempErrors.divisionId = "Division is required";
+    if (!formData.functionId) tempErrors.functionId = "Function is required";
+    if (!formData.designationId)
+      tempErrors.designationId = "Designation is required";
+    if (!formData.roleId) tempErrors.roleId = "Role is required";
+    if (!formData.username) tempErrors.username = "Username is required";
+    // Add other validations here
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const handleSubmitProfile = (e, value) => {
     e.preventDefault();
-    const formDatas = new FormData();
+    if (validate()) {
+      const formDatas = new FormData();
 
-    formDatas.append("firstName", formData.firstName);
-    formDatas.append("lastName", formData.lastName);
-    formDatas.append("email", formData.email);
-    formDatas.append("mobile", formData.mobile);
-    formDatas.append("photoUrl", "yes");
-    formDatas.append("siteId", formData.siteId);
-    formDatas.append("departmentId", formData.departmentId);
-    formDatas.append("designationId", formData.designationId);
-    formDatas.append("divisionId", formData.divisionId);
-    formDatas.append("managerStaffId", formData.managerStaffId);
-    formDatas.append("reportingStaffId", formData.reportingStaffId);
-    formDatas.append("roleId", formData.roleId);
-    formDatas.append("functionId", formData.functionId);
-    formDatas.append("username", formData.username);
-    formDatas.append("documentStatus", formData.documentStatus);
+      formDatas.append("firstName", formData.firstName);
+      formDatas.append("lastName", formData.lastName);
+      formDatas.append("email", formData.email);
+      formDatas.append("mobile", formData.mobile);
+      formDatas.append("photoUrl", "yes");
+      formDatas.append("siteId", formData.siteId);
+      formDatas.append("departmentId", formData.departmentId);
+      formDatas.append("designationId", formData.designationId);
+      formDatas.append("divisionId", formData.divisionId);
+      formDatas.append("managerStaffId", formData.managerStaffId);
+      formDatas.append("reportingStaffId", formData.reportingStaffId);
+      formDatas.append("roleId", formData.roleId);
+      formDatas.append("functionId", formData.functionId);
+      formDatas.append("username", formData.username);
+      formDatas.append("documentStatus", formData.documentStatus);
 
-    formDatas.append("image", formData.image ? formData.image : null);
+      formDatas.append("image", formData.image ? formData.image : null);
 
-    try {
-      const path = value === "submit" ? "/Staff/Create" : `/staff/${id}`;
-      if (value !== "submit") {
-        formDatas.append("isActive", formData.isActive && formData.isActive);
+      try {
+        const path = value === "submit" ? "/Staff/Create" : `/staff/${id}`;
+        if (value !== "submit") {
+          formDatas.append("isActive", formData.isActive && formData.isActive);
+        }
+        if (value === "submit") {
+          apiAuth.post(path, formDatas);
+        } else {
+          apiAuth.put(path, formDatas);
+        }
+      } catch (error) {
+        console.error("Error submitting the form:", error);
       }
-      if (value === "submit") {
-        apiAuth.post(path, formDatas);
-      } else {
-        apiAuth.put(path, formDatas);
-      }
-    } catch (error) {
-      console.error("Error submitting the form:", error);
     }
   };
 
@@ -730,6 +758,8 @@ const Task = () => {
                                 name="firstName"
                                 value={formData.firstName}
                                 onChange={handleChange}
+                                error={!!errors.firstName}
+                                // helperText={errors.firstName}
                               />
                             </Box>
                             <Box
@@ -744,6 +774,8 @@ const Task = () => {
                                 name="lastName"
                                 value={formData.lastName}
                                 onChange={handleChange}
+                                error={!!errors.lastName}
+                                // helperText={errors.lastName}
                               />
                             </Box>
                           </div>
@@ -769,6 +801,8 @@ const Task = () => {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleChange}
+                                error={!!errors.email}
+                                // helperText={errors.email}
                               />
                             </Box>
                           </div>
@@ -794,6 +828,8 @@ const Task = () => {
                                 name="mobile"
                                 value={formData.mobile}
                                 onChange={handleChange}
+                                error={!!errors.mobile}
+                                // helperText={errors.mobile}
                               />
                             </Box>
                           </div>
@@ -831,6 +867,7 @@ const Task = () => {
                                 value={formData.siteId}
                                 onChange={handleChange}
                                 name="siteId"
+                                error={!!errors.siteId}
                               >
                                 {site.map((option) => (
                                   <MenuItem
@@ -841,6 +878,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
+                              {/* {errors.siteId && (
+                                <span style={{ color: "red" }}>
+                                  {errors.siteId}
+                                </span>
+                              )} */}
                             </FormControl>
                             <FormControl
                               sx={{
@@ -859,6 +901,7 @@ const Task = () => {
                                 value={formData.departmentId}
                                 onChange={handleChange}
                                 name="departmentId"
+                                error={!!errors.departmentId}
                               >
                                 {department.map((option) => (
                                   <MenuItem
@@ -869,6 +912,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
+                              {/* {errors.departmentId && (
+                                <span style={{ color: "red" }}>
+                                  {errors.departmentId}
+                                </span>
+                              )} */}
                             </FormControl>
                           </div>
                         </div>{" "}
@@ -898,6 +946,7 @@ const Task = () => {
                                 value={formData.divisionId}
                                 onChange={handleChange}
                                 name="divisionId"
+                                error={!!errors.divisionId}
                               >
                                 {division.map((option) => (
                                   <MenuItem
@@ -908,6 +957,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
+                              {/* {errors.divisionId && (
+                                <span style={{ color: "red" }}>
+                                  {errors.divisionId}
+                                </span>
+                              )} */}
                             </FormControl>
                             <FormControl
                               sx={{
@@ -926,6 +980,7 @@ const Task = () => {
                                 value={formData.functionId}
                                 onChange={handleChange}
                                 name="functionId"
+                                error={!!errors.functionId}
                               >
                                 {functions.map((option) => (
                                   <MenuItem
@@ -936,6 +991,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
+                              {/* {errors.functionId && (
+                                <span style={{ color: "red" }}>
+                                  {errors.functionId}
+                                </span>
+                              )} */}
                             </FormControl>
                           </div>
                         </div>{" "}
@@ -965,6 +1025,7 @@ const Task = () => {
                                 value={formData.designationId}
                                 onChange={handleChange}
                                 name="designationId"
+                                error={!!errors.designationId}
                               >
                                 {designation.map((option) => (
                                   <MenuItem
@@ -975,6 +1036,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
+                              {/* {errors.designationId && (
+                                <span style={{ color: "red" }}>
+                                  {errors.designationId}
+                                </span>
+                              )} */}
                             </FormControl>
                             <FormControl
                               sx={{
@@ -993,6 +1059,7 @@ const Task = () => {
                                 value={formData.roleId}
                                 onChange={handleChange}
                                 name="roleId"
+                                error={!!errors.roleId}
                               >
                                 {role.map((option) => (
                                   <MenuItem
@@ -1003,6 +1070,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
+                              {/* {errors.roleId && (
+                                <span style={{ color: "red" }}>
+                                  {errors.roleId}
+                                </span>
+                              )} */}
                             </FormControl>
                           </div>
                         </div>{" "}
@@ -1032,6 +1104,7 @@ const Task = () => {
                                 value={formData.managerStaffId}
                                 onChange={handleChange}
                                 name="managerStaffId"
+                                error={!!errors.managerStaffId}
                               >
                                 {staffData.map((option) => (
                                   <MenuItem
@@ -1094,6 +1167,8 @@ const Task = () => {
                                 name="username"
                                 value={formData.username}
                                 onChange={handleChange}
+                                error={!!errors.username}
+                                // helperText={errors.username}
                               />
                             </Box>
                           </div>
