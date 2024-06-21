@@ -210,25 +210,9 @@ const Task = () => {
   };
 
   function handleSelectedCategory(event) {
-    // alert(event.target.value);
     setSelectedCategory(event.target.value);
   }
 
-  const handleAll = () => {
-    // alert("All");
-    setSelectedCategory("All");
-    getRecords();
-  };
-  const handleComplete = () => {
-    // alert("Complete");
-    setSelectedCategory("Complete");
-    getComplete();
-  };
-  const handlePending = () => {
-    // alert("Pending");
-    setSelectedCategory("Pending");
-    getPending();
-  };
   function handleSearchText(event) {
     setSearchText(event.target.value);
   }
@@ -256,14 +240,8 @@ const Task = () => {
               value={selectedCategory}
               onChange={handleSelectedCategory}
             >
-              <MenuItem value="All" onClick={handleAll}>
+              <MenuItem value="All">
                 <em> All </em>
-              </MenuItem>
-              <MenuItem value="Complete" onClick={handleComplete}>
-                <em> Complete </em>
-              </MenuItem>
-              <MenuItem value="Pending" onClick={handlePending}>
-                <em> Pending </em>
               </MenuItem>
             </Select>
           </FormControl>
@@ -399,8 +377,7 @@ const Task = () => {
                       </div>
                       {task.taskType === 2 &&
                         task.completed &&
-                        task.taskApprovalStatus === 3 &&
-                        selectedCategory != "Pending" && (
+                        task.taskApprovalStatus === 3 && (
                           <div
                             className="flex items-center text-green-400 font-semibold"
                             onClick={(e) => openSidebar(e, task)}
@@ -426,7 +403,7 @@ const Task = () => {
                           Completed
                         </div>
                       )}
-                      {!task.completed && selectedCategory != "Complete" && (
+                      {!task.completed && (
                         <div
                           className="flex items-center text-red-600 font-semibold"
                           onClick={(e) => openSidebar(e, task)}
