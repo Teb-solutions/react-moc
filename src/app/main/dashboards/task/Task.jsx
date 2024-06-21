@@ -53,7 +53,7 @@ const Task = () => {
   const [task, setTask] = useState({});
   const [priority, setPriority] = useState(task.priority);
   const [sidebarOpen, setSidebarOpen] = useState(false); // State variable to control sidebar open/close
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [comments, setComments] = useState("");
   const router = useParams();
   const [open, setOpen] = useState(false);
@@ -84,11 +84,29 @@ const Task = () => {
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
-  function getRecords() {
+  const getRecords = () => {
     apiAuth.get(`/Task/List`).then((resp) => {
       setTaskList(resp.data.data);
     });
-  }
+  };
+
+  const getComplete = () => {
+    apiAuth.get(`/Task/List`).then((resp) => {
+      const completedTasks = resp?.data?.data?.filter((item) =>
+        item.taskList.some((task) => task.completed)
+      );
+      setTaskList(completedTasks);
+    });
+  };
+
+  const getPending = () => {
+    apiAuth.get(`/Task/List`).then((resp) => {
+      const IncompletedTasks = resp?.data?.data?.filter((item) =>
+        item.taskList.some((task) => !task.completed)
+      );
+      setTaskList(IncompletedTasks);
+    });
+  };
 
   useEffect(() => {
     getRecords();
@@ -192,9 +210,25 @@ const Task = () => {
   };
 
   function handleSelectedCategory(event) {
+    // alert(event.target.value);
     setSelectedCategory(event.target.value);
   }
 
+  const handleAll = () => {
+    // alert("All");
+    setSelectedCategory("All");
+    getRecords();
+  };
+  const handleComplete = () => {
+    // alert("Complete");
+    setSelectedCategory("Complete");
+    getComplete();
+  };
+  const handlePending = () => {
+    // alert("Pending");
+    setSelectedCategory("Pending");
+    getPending();
+  };
   function handleSearchText(event) {
     setSearchText(event.target.value);
   }
@@ -222,14 +256,15 @@ const Task = () => {
               value={selectedCategory}
               onChange={handleSelectedCategory}
             >
-              <MenuItem value="all">
+              <MenuItem value="All" onClick={handleAll}>
                 <em> All </em>
               </MenuItem>
-              {categories?.map((category) => (
-                <MenuItem value={category.slug} key={category.id}>
-                  {category.title}
-                </MenuItem>
-              ))}
+              <MenuItem value="Complete" onClick={handleComplete}>
+                <em> Complete </em>
+              </MenuItem>
+              <MenuItem value="Pending" onClick={handlePending}>
+                <em> Pending </em>
+              </MenuItem>
             </Select>
           </FormControl>
           <FormControl
@@ -246,13 +281,8 @@ const Task = () => {
               onChange={handleSelectedCategory}
             >
               <MenuItem value="all">
-                <em> Pending </em>
+                <em> All </em>
               </MenuItem>
-              {categories?.map((category) => (
-                <MenuItem value={category.slug} key={category.id}>
-                  {category.title}
-                </MenuItem>
-              ))}
             </Select>
           </FormControl>
           <Box
@@ -269,7 +299,7 @@ const Task = () => {
           </Box>
         </div>
       </div>
-      {taskList.map((list) => (
+      {taskList?.map((list) => (
         <Paper
           className="  sm:my-8  p-24  rounded-16 shadow overflow-hidden"
           style={{ margin: "20px" }}
@@ -367,9 +397,10 @@ const Task = () => {
                           </span>
                         )}
                       </div>
-                      {task.taskType == 2 &&
+                      {task.taskType === 2 &&
                         task.completed &&
-                        task.taskApprovalStatus == 3 && (
+                        task.taskApprovalStatus === 3 &&
+                        selectedCategory != "Pending" && (
                           <div
                             className="flex items-center text-green-400 font-semibold"
                             onClick={(e) => openSidebar(e, task)}
@@ -395,7 +426,7 @@ const Task = () => {
                           Completed
                         </div>
                       )}
-                      {!task.completed && (
+                      {!task.completed && selectedCategory != "Complete" && (
                         <div
                           className="flex items-center text-red-600 font-semibold"
                           onClick={(e) => openSidebar(e, task)}
@@ -406,7 +437,8 @@ const Task = () => {
 
                       {!task.completed &&
                         task.taskType === 2 &&
-                        task.dueDate !== null && (
+                        task.dueDate !== null &&
+                        selectedCategory != "Complete" && (
                           <div onClick={(e) => openSidebar(e, task)}>
                             {calculateDiff(task.dueDate) > 0 && (
                               <span>
