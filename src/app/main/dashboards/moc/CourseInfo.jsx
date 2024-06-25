@@ -4,6 +4,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import clsx from "clsx";
 import CourseCategory from "./CourseCategory";
 import { format, parseISO } from "date-fns";
+import CircleProgress from "./Progressbar";
 
 /**
  * The CourseInfo component.
@@ -61,20 +62,30 @@ function CourseInfo(props) {
       </Typography>
       <Divider className="w-48 my-24 border-1" light />
 
-      <Typography className="text-13 mt-2 line-clamp-2" color="text.secondary">
-        Document Name :
-      </Typography>
-      <span>{course?.projectName}</span>
-      <Divider className="w-48 my-24 border-1" light />
+      <div className="flex justify-between">
+        <div>
+          <Typography
+            className="text-13 mt-2 line-clamp-2"
+            color="text.secondary"
+          >
+            Document Name :
+          </Typography>
+          <span>{course?.projectName}</span>
+          <Divider className="w-48 my-24 border-1" light />
 
-      <Typography
-        className="flex items-center space-x-6 text-13"
-        color="text.secondary"
-      >
-        <span className="whitespace-nowrap leading-none">
-          Document Author :
-        </span>
-      </Typography>
+          <Typography
+            className="flex items-center space-x-6 text-13"
+            color="text.secondary"
+          >
+            <span className="whitespace-nowrap leading-none">
+              Document Author :
+            </span>
+          </Typography>
+        </div>
+        <div>
+          <CircleProgress progressbar={course?.completionPercent} />
+        </div>
+      </div>
       <span>
         {course?.changeLeaderName === null
           ? "Not assigned"

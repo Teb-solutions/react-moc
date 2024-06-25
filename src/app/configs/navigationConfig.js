@@ -188,6 +188,28 @@ const navigationConfig = [
           },
         ],
       },
+      {
+        id: "security.request",
+        title: "Security",
+        type: "collapse",
+        icon: "heroicons-outline:lock-closed",
+        children: [
+          {
+            id: "security.Role",
+            title: "Role",
+            type: "item",
+            url: "/security/role",
+            end: true,
+          },
+          {
+            id: "security.Access",
+            title: "Access",
+            type: "item",
+            url: "/security/access",
+            end: true,
+          },
+        ],
+      },
       // {
       // 	id: 'dashboards.finance',
       // 	title: 'Finance',

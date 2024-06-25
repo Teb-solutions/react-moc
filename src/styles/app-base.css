@@ -630,3 +630,126 @@ body.sidebar1-open .maincntainer {
 .MuiFormControl-root.MuiTextField-root.muiltr-z3c6am-MuiFormControl-root-MuiTextField-root {
   width: 100%;
 }
+
+@media (max-width: 767px) {
+  body.sidebar-open .maincntainer {
+    padding-right: 0;
+  }
+  .sidebar {
+    max-width: 100%;
+  }
+}
+
+.icon-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-color: white;
+  cursor: pointer;
+  outline: none;
+}
+
+.icon-button .count {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: blue;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+/*security*/
+.py-10 {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.mx-6 {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.tracking-tighter {
+  letter-spacing: -0.05em;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.flex {
+  display: flex;
+}
+
+.rounded-1xl {
+  border-radius: 0.75rem;
+}
+
+.fuse-vertical-navigation-item {
+  display: flex;
+  align-items: center;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.p-2 {
+  padding: 0.5rem;
+}
+
+.active {
+  background-color: #f0f0f0; /* Adjust this to match the active background color */
+}
+
+/*security end*/
+.muiltr-14sjh14 .FusePageSimple-contentWrapper {
+  background-color: white;
+}
+
+.sec_name {
+  margin-right: 16px;
+  font-weight: bold;
+}
+
+.accordion-container {
+  margin: 20px; /* Add margin between accordions */
+}
+
+.custom-accordion {
+  margin-bottom: 20px; /* Add margin between each accordion */
+  height: auto; /* Increase the height of the accordion */
+}
+
+.muiltr-14sjh14 {
+  min-height: auto;
+}

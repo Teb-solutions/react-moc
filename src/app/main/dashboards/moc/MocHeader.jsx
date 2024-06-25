@@ -1,5 +1,5 @@
 import Breadcrumbs from "@mui/material/Breadcrumbs";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { Button } from "@mui/material";
@@ -14,6 +14,8 @@ function MocHeader(props) {
   const { activity, reqno } = props;
   const routeParams = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const urlContainsMoc = location.pathname.includes("moc");
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -85,7 +87,7 @@ function MocHeader(props) {
       </div>
       <div style={{ justifyContent: "end" }}>
         {" "}
-        {Object.keys(routeParams).length === 0 && (
+        {urlContainsMoc && Object.keys(routeParams).length === 0 && (
           <Button
             className=""
             variant="contained"

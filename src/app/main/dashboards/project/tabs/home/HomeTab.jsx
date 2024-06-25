@@ -187,7 +187,7 @@ function HomeTab() {
           </div>
           <div className="text-center mt-8">
             <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500">
-              {data.tasksDue}
+              {data?.tasksDue}
             </Typography>
             <Typography className="text-lg font-medium text-blue-600 dark:text-blue-500">
               Pending Tasks
@@ -198,7 +198,7 @@ function HomeTab() {
             color="text.secondary"
           >
             <span className="truncate">Completed</span>:
-            <b className="px-8">{data.tasksCompleted}</b>
+            <b className="px-8">{data?.tasksCompleted}</b>
           </Typography>
         </Paper>
       </motion.div>
@@ -217,7 +217,7 @@ function HomeTab() {
           </div>
           <div className="text-center mt-8">
             <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500">
-              {data.tasksOverDue}
+              {data?.tasksOverDue}
             </Typography>
             <Typography className="text-lg font-medium text-red-600">
               Tasks
@@ -230,7 +230,7 @@ function HomeTab() {
             <span className="truncate">
               {/* {data.extra.name} */}From yesterday
             </span>
-            :<b className="px-8">{data.tasksOverDueYesterday}</b>
+            :<b className="px-8">{data?.tasksOverDueYesterday}</b>
           </Typography>
         </Paper>
       </motion.div>
@@ -250,7 +250,7 @@ function HomeTab() {
           </div>
           <div className="text-center mt-8">
             <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-amber-500">
-              {data.requestsOpen}
+              {data?.requestsOpen}
             </Typography>
             <Typography className="text-lg font-medium text-amber-600">
               Open
@@ -261,7 +261,7 @@ function HomeTab() {
             color="text.secondary"
           >
             <span className="truncate"> Closed today</span>:
-            <b className="px-8"> {data.requestsClosedToday}</b>
+            <b className="px-8"> {data?.requestsClosedToday}</b>
           </Typography>
         </Paper>
       </motion.div>
@@ -277,7 +277,7 @@ function HomeTab() {
           </div>
           <div className="text-center mt-8">
             <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500">
-              {data.approvalsPending}
+              {data?.approvalsPending}
             </Typography>
             <Typography className="text-lg font-medium text-green-600">
               Pending
@@ -288,7 +288,7 @@ function HomeTab() {
             color="text.secondary"
           >
             <span className="truncate">Due</span>:
-            <b className="px-8">{data.tasksDue}</b>
+            <b className="px-8">{data?.tasksDue}</b>
           </Typography>
         </Paper>
       </motion.div>
