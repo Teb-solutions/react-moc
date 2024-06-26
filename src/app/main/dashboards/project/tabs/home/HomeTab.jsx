@@ -1,27 +1,20 @@
 import { motion } from "framer-motion";
-import SummaryWidget from "./widgets/SummaryWidget";
-import OverdueWidget from "./widgets/OverdueWidget";
-import IssuesWidget from "./widgets/IssuesWidget";
-import FeaturesWidget from "./widgets/FeaturesWidget";
-import GithubIssuesWidget from "./widgets/GithubIssuesWidget";
-import TaskDistributionWidget from "./widgets/TaskDistributionWidget";
-import ScheduleWidget from "./widgets/ScheduleWidget";
-import { Paper, Typography } from "@mui/material";
+import {
+  Paper,
+  Typography,
+  Skeleton,
+  Button,
+  Box,
+  Tabs,
+  Tab,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Tab from "@mui/material/Tab";
-import Tabs from "@mui/material/Tabs";
-import Box from "@mui/material/Box";
-import FuseLoading from "@fuse/core/FuseLoading";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import { Button } from "@mui/material";
 import { apiAuth } from "src/utils/http";
 
-/**
- * The HomeTab component.
- */
 function HomeTab() {
   const [tabValue, setTabValue] = useState(0);
   const container = {
@@ -50,21 +43,15 @@ function HomeTab() {
     navigate("/moc/activity");
   };
 
-  const handleOpenMoc = (e) => {
+  const handleOpenMoc = () => {
     navigate("/moc");
   };
 
-  const fetchdataSetting = useCallback(async () => {
-    try {
-      await apiAuth.get(`/Dashboard/Get`).then((resp) => {
-        console.log(resp.data.data, "88888");
-        setData(resp.data.data);
-      });
-      console.log(data, "889");
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
+  const fetchdataSetting = () => {
+    apiAuth.get(`/Dashboard/Get`).then((resp) => {
+      setData(resp.data.data);
+    });
+  };
 
   useEffect(() => {
     fetchdataSetting();
@@ -85,12 +72,12 @@ function HomeTab() {
               <Menu
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
-                onClose={handleOpenNewDoc}
+                onClose={() => setAnchorEl(null)}
               >
-                <MenuItem>Technical </MenuItem>
+                <MenuItem>Technical</MenuItem>
                 <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
                 <MenuItem>Organisation</MenuItem>
-              </Menu>{" "}
+              </Menu>
               {Object.keys(routeParams).length === 0 && (
                 <Button
                   className="HomeButton"
@@ -172,6 +159,8 @@ function HomeTab() {
           </div>
         </Paper>
       </motion.div>
+      {/* {data.length > 0 ? (
+        <> */}
       <motion.div variants={item}>
         <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
           <div className="flex items-center justify-between px-8 pt-12">
@@ -181,24 +170,34 @@ function HomeTab() {
             >
               Summary
             </Typography>
-            {/* <IconButton aria-label="more" size="large">
-            <FuseSvgIcon>heroicons-outline:dots-vertical</FuseSvgIcon>
-          </IconButton> */}
           </div>
-          <div className="text-center mt-8">
-            <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500">
-              {data.tasksDue}
-            </Typography>
+          <Box
+            className="text-center mt-8"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            {data.tasksDue !== undefined ? (
+              <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500">
+                {data.tasksDue}
+              </Typography>
+            ) : (
+              <Skeleton variant="text" width={100} height={60} />
+            )}
             <Typography className="text-lg font-medium text-blue-600 dark:text-blue-500">
               Pending Tasks
             </Typography>
-          </div>
+          </Box>
           <Typography
             className="flex items-baseline justify-center w-full mt-20 mb-24"
             color="text.secondary"
           >
             <span className="truncate">Completed</span>:
-            <b className="px-8">{data.tasksCompleted}</b>
+            {data.tasksCompleted !== undefined ? (
+              <b className="px-8">{data.tasksCompleted}</b>
+            ) : (
+              <Skeleton variant="text" width={40} />
+            )}
           </Typography>
         </Paper>
       </motion.div>
@@ -211,26 +210,34 @@ function HomeTab() {
             >
               Overdue
             </Typography>
-            {/* <IconButton aria-label="more" size="large">
-            <FuseSvgIcon>heroicons-outline:dots-vertical</FuseSvgIcon>
-          </IconButton> */}
           </div>
-          <div className="text-center mt-8">
-            <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500">
-              {data.tasksOverDue}
-            </Typography>
+          <Box
+            className="text-center mt-8"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            {data.tasksOverDue !== undefined ? (
+              <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500">
+                {data.tasksOverDue}
+              </Typography>
+            ) : (
+              <Skeleton variant="text" width={100} height={60} />
+            )}
             <Typography className="text-lg font-medium text-red-600">
               Tasks
             </Typography>
-          </div>
+          </Box>
           <Typography
             className="flex items-baseline justify-center w-full mt-20 mb-24"
             color="text.secondary"
           >
-            <span className="truncate">
-              {/* {data.extra.name} */}From yesterday
-            </span>
-            :<b className="px-8">{data.tasksOverDueYesterday}</b>
+            <span className="truncate">From yesterday</span>:
+            {data.tasksOverDueYesterday !== undefined ? (
+              <b className="px-8">{data.tasksOverDueYesterday}</b>
+            ) : (
+              <Skeleton variant="text" width={40} />
+            )}
           </Typography>
         </Paper>
       </motion.div>
@@ -248,20 +255,33 @@ function HomeTab() {
               MOC Requests
             </Typography>
           </div>
-          <div className="text-center mt-8">
-            <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-amber-500">
-              {data.requestsOpen}
-            </Typography>
+          <Box
+            className="text-center mt-8"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            {data.requestsOpen !== undefined ? (
+              <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-amber-500">
+                {data.requestsOpen}
+              </Typography>
+            ) : (
+              <Skeleton variant="text" width={100} height={60} />
+            )}
             <Typography className="text-lg font-medium text-amber-600">
               Open
             </Typography>
-          </div>
+          </Box>
           <Typography
             className="flex items-baseline justify-center w-full mt-20 mb-24"
             color="text.secondary"
           >
-            <span className="truncate"> Closed today</span>:
-            <b className="px-8"> {data.requestsClosedToday}</b>
+            <span className="truncate">Closed today</span>:
+            {data.requestsClosedToday !== undefined ? (
+              <b className="px-8">{data.requestsClosedToday}</b>
+            ) : (
+              <Skeleton variant="text" width={40} />
+            )}
           </Typography>
         </Paper>
       </motion.div>
@@ -275,35 +295,49 @@ function HomeTab() {
               Approvals
             </Typography>
           </div>
-          <div className="text-center mt-8">
-            <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500">
-              {data.approvalsPending}
-            </Typography>
+          <Box
+            className="text-center mt-8"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            {data.approvalsPending !== undefined ? (
+              <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500">
+                {data.approvalsPending}
+              </Typography>
+            ) : (
+              <Skeleton variant="text" width={100} height={60} />
+            )}
             <Typography className="text-lg font-medium text-green-600">
               Pending
             </Typography>
-          </div>
+          </Box>
           <Typography
             className="flex items-baseline justify-center w-full mt-20 mb-24"
             color="text.secondary"
           >
             <span className="truncate">Due</span>:
-            <b className="px-8">{data.tasksDue}</b>
+            {data.tasksDue !== undefined ? (
+              <b className="px-8">{data.tasksDue}</b>
+            ) : (
+              <Skeleton variant="text" width={40} />
+            )}
           </Typography>
         </Paper>
       </motion.div>
-      {/* <motion.div
-				variants={item}
-				className="sm:col-span-2 md:col-span-4 lg:col-span-2"
-			>
-				<TaskDistributionWidget />
-			</motion.div>
-			<motion.div
-				variants={item}
-				className="sm:col-span-2 md:col-span-4 lg:col-span-2"
-			>
-				<ScheduleWidget />
-			</motion.div> */}
+      {/* </>
+      ) : (
+        <div className="ui_div12">
+          <div uk-grid="true">
+            {Array.from(new Array(6)).map((_, index) => (
+              <Box className="box_d12" key={index}>
+                <Skeleton variant="rectangular" width={210} height={218} />
+                <Skeleton />
+              </Box>
+            ))}
+          </div>
+        </div>
+      )} */}
     </motion.div>
   );
 }

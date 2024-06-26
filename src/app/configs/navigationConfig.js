@@ -6,10 +6,13 @@ import tr from "./navigation-i18n/tr";
 i18next.addResourceBundle("en", "navigation", en);
 i18next.addResourceBundle("tr", "navigation", tr);
 i18next.addResourceBundle("ar", "navigation", ar);
+
+const storedFeature = localStorage.getItem("features");
+const feature = storedFeature ? storedFeature : [];
 /**
  * The navigationConfig object is an array of navigation items for the Fuse application.
  */
-const navigationConfig = [
+const navigationConfig1 = [
   {
     id: "dashboards",
     // title: 'Dashboards',
@@ -31,6 +34,7 @@ const navigationConfig = [
         type: "item",
         icon: "heroicons-outline:collection",
         url: "/moc",
+        feature: "REQ",
       },
       {
         id: "task.request",
@@ -61,6 +65,7 @@ const navigationConfig = [
         type: "item",
         icon: "heroicons-outline:bell",
         url: "/staff",
+        feature: "STA",
       },
       {
         id: "masters.request",
@@ -205,4 +210,22 @@ const navigationConfig = [
     ],
   },
 ];
+
+const shouldIncludeItem = (item) => {
+  const defaultItems = [
+    "dashboards.project",
+    "session.request",
+    "notifications.request",
+  ];
+  return defaultItems.includes(item.id) || feature.includes(item.feature);
+};
+
+// Filter navigationConfig based on the features array and default items
+const navigationConfig = navigationConfig1
+  .map((group) => ({
+    ...group,
+    children: group.children.filter(shouldIncludeItem),
+  }))
+  .filter((group) => group.children.length > 0);
+
 export default navigationConfig;

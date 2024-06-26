@@ -90,6 +90,7 @@ function jwtSignInTab() {
       }
       if (user.statusCode === 200) {
         localStorage.setItem("jwt_access_token", user.data.jwt);
+        localStorage.setItem("features", user.data.features);
         navigate("/dashboards/project");
       }
 

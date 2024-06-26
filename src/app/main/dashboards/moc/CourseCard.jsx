@@ -32,7 +32,7 @@ function CourseCard(props) {
       <CardContent className="flex flex-col flex-auto p-24">
         <CourseInfo course={course} />
       </CardContent>
-      <CourseProgress course={course} />
+      {/* <CourseProgress course={course?.completionPercent} /> */}
       <CardActions
         className="items-center justify-end py-16 px-24"
         sx={{

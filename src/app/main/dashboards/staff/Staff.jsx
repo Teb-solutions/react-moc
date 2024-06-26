@@ -1,9 +1,11 @@
-import { useRef, useCallback } from "react";
+import React, { useRef, useCallback } from "react";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import { useState } from "react";
 import { Button, FormControlLabel, FormLabel, Switch } from "@mui/material";
@@ -358,6 +360,7 @@ const Task = () => {
 
   return (
     <>
+      <ToastContainer />
       <div className="" style={{ margin: "20px" }}>
         <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
@@ -759,7 +762,7 @@ const Task = () => {
                                 value={formData.firstName}
                                 onChange={handleChange}
                                 error={!!errors.firstName}
-                                // helperText={errors.firstName}
+                                helperText={errors.firstName}
                               />
                             </Box>
                             <Box
@@ -775,7 +778,7 @@ const Task = () => {
                                 value={formData.lastName}
                                 onChange={handleChange}
                                 error={!!errors.lastName}
-                                // helperText={errors.lastName}
+                                helperText={errors.lastName}
                               />
                             </Box>
                           </div>
@@ -802,7 +805,7 @@ const Task = () => {
                                 value={formData.email}
                                 onChange={handleChange}
                                 error={!!errors.email}
-                                // helperText={errors.email}
+                                helperText={errors.email}
                               />
                             </Box>
                           </div>
@@ -829,7 +832,7 @@ const Task = () => {
                                 value={formData.mobile}
                                 onChange={handleChange}
                                 error={!!errors.mobile}
-                                // helperText={errors.mobile}
+                                helperText={errors.mobile}
                               />
                             </Box>
                           </div>
@@ -878,11 +881,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
-                              {/* {errors.siteId && (
+                              {errors.siteId && (
                                 <span style={{ color: "red" }}>
                                   {errors.siteId}
                                 </span>
-                              )} */}
+                              )}
                             </FormControl>
                             <FormControl
                               sx={{
@@ -912,11 +915,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
-                              {/* {errors.departmentId && (
+                              {errors.departmentId && (
                                 <span style={{ color: "red" }}>
                                   {errors.departmentId}
                                 </span>
-                              )} */}
+                              )}
                             </FormControl>
                           </div>
                         </div>{" "}
@@ -957,11 +960,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
-                              {/* {errors.divisionId && (
+                              {errors.divisionId && (
                                 <span style={{ color: "red" }}>
                                   {errors.divisionId}
                                 </span>
-                              )} */}
+                              )}
                             </FormControl>
                             <FormControl
                               sx={{
@@ -991,11 +994,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
-                              {/* {errors.functionId && (
+                              {errors.functionId && (
                                 <span style={{ color: "red" }}>
                                   {errors.functionId}
                                 </span>
-                              )} */}
+                              )}
                             </FormControl>
                           </div>
                         </div>{" "}
@@ -1036,11 +1039,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
-                              {/* {errors.designationId && (
+                              {errors.designationId && (
                                 <span style={{ color: "red" }}>
                                   {errors.designationId}
                                 </span>
-                              )} */}
+                              )}
                             </FormControl>
                             <FormControl
                               sx={{
@@ -1070,11 +1073,11 @@ const Task = () => {
                                   </MenuItem>
                                 ))}
                               </Select>
-                              {/* {errors.roleId && (
+                              {errors.roleId && (
                                 <span style={{ color: "red" }}>
                                   {errors.roleId}
                                 </span>
-                              )} */}
+                              )}
                             </FormControl>
                           </div>
                         </div>{" "}
@@ -1168,7 +1171,7 @@ const Task = () => {
                                 value={formData.username}
                                 onChange={handleChange}
                                 error={!!errors.username}
-                                // helperText={errors.username}
+                                helperText={errors.username}
                               />
                             </Box>
                           </div>

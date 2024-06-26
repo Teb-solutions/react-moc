@@ -19,6 +19,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  FormHelperText,
   FormLabel,
   Step,
   StepContent,
@@ -109,6 +110,9 @@ function Course() {
   const [particularSub, setParticularSub] = useState([]);
   const [impComments, setImpComments] = useState([]);
 
+  const [errors, setErrors] = useState([]);
+  const [errorsUrl, setErrorsUrl] = useState({});
+
   const [ApprovalManager, setApprovalManager] = useState({});
   const [forms, setForms] = useState([
     { id: Date.now(), data: { consultedDate: null, consultedStaffId: "" } },
@@ -195,11 +199,16 @@ function Course() {
   };
 
   const handleChangeStaffDate = (id, date) => {
-    setForms(
-      forms.map((form) =>
+    setForms((prevForms) =>
+      prevForms.map((form) =>
         form.id === id
           ? { ...form, data: { ...form.data, consultedDate: date } }
           : form
+      )
+    );
+    setErrors((prevErrors) =>
+      prevErrors.map((error, index) =>
+        forms[index].id === id ? { ...error, consultedDate: "" } : error
       )
     );
   };
@@ -213,51 +222,74 @@ function Course() {
 
   const handleChangeStaff = (id, event) => {
     const { name, value } = event.target;
-    setForms(
-      forms.map((form) =>
+    setForms((prevForms) =>
+      prevForms.map((form) =>
         form.id === id
           ? { ...form, data: { ...form.data, [name]: value } }
           : form
       )
     );
+    setErrors((prevErrors) =>
+      prevErrors.map((error, index) =>
+        forms[index].id === id ? { ...error, [name]: "" } : error
+      )
+    );
   };
 
-  const handelSubmit = () => {
-    const formattedForms = forms.map((form) => {
-      const date = form.data.consultedDate;
-      let formattedDate = null;
+  const validate = () => {
+    let tempErrors = forms.map((form) => ({
+      consultedDate: !form.data.consultedDate
+        ? "Consulted Date is required"
+        : "",
+      consultedStaffId: !form.data.consultedStaffId ? "Staff is required" : "",
+    }));
 
-      if (date) {
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1); // Month is zero-based
-        const year = date.getFullYear();
-        formattedDate = `${month}/${day}/${year}`;
-      }
+    setErrors(tempErrors);
+    return tempErrors.every(
+      (error) => !error.consultedDate && !error.consultedStaffId
+    );
+  };
 
-      return {
-        ...data, // Assuming 'data' contains common fields
-        consultedDate: formattedDate,
-        consultedStaffId: form.data.consultedStaffId,
-      };
-    });
+  const handelSubmit = (e) => {
+    e.preventDefault();
+    debugger;
+    if (validate()) {
+      const formattedForms = forms.map((form) => {
+        const date = form.data.consultedDate;
+        let formattedDate = null;
 
-    apiAuth
-      .post(
-        `/ChangeEvaluationConsultation/Create/${changeEvaluationId}/${evaluationId}`,
-        formattedForms
-      )
-      .then((response) => {
-        getRecords();
-        apiAuth
-          .get(
-            `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${changeEvaluationId}`
-          )
-          .then((resp) => {
-            setChangeEvaluationDetail(resp.data?.data);
-            setAddStake(false);
-          });
-      })
-      .catch((error) => {});
+        if (date) {
+          const day = String(date.getDate()).padStart(2, "0");
+          const month = String(date.getMonth() + 1); // Month is zero-based
+          const year = date.getFullYear();
+          formattedDate = `${month}/${day}/${year}`;
+        }
+
+        return {
+          ...data, // Assuming 'data' contains common fields
+          consultedDate: formattedDate,
+          consultedStaffId: form.data.consultedStaffId,
+        };
+      });
+
+      apiAuth
+        .post(
+          `/ChangeEvaluationConsultation/Create/${changeEvaluationId}/${evaluationId}`,
+          formattedForms
+        )
+        .then((response) => {
+          getRecords();
+          apiAuth
+            .get(
+              `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${changeEvaluationId}`
+            )
+            .then((resp) => {
+              setChangeEvaluationDetail(resp.data?.data);
+              setAddStake(false);
+            });
+        })
+        .catch((error) => {});
+    }
   };
 
   const handleAddForm = () => {
@@ -555,13 +587,30 @@ function Course() {
   }
 
   // Update the onClick event to pass the necessary parameters
+  const handleUrlChange = (event) => {
+    setHandelUrlChange(event.target.value);
+    setErrorsUrl({});
+  };
 
-  const handelUrlUpdate = () => {
-    apiAuth
-      .post(`/DocMoc/UpdateEvaluationDocumentDetails/${changeEvaluationId}`, {
-        ConsolidatedDocumentUrl: handelUrlChange,
-      })
-      .then((resp) => {});
+  const validateUrl = () => {
+    let tempErrors = {};
+
+    if (!handelUrlChange) {
+      tempErrors.handelUrlChange = "Consolidated Document Url is required";
+    }
+
+    setErrorsUrl(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+  const handelUrlUpdate = (e) => {
+    e.preventDefault();
+    if (validateUrl()) {
+      apiAuth
+        .post(`/DocMoc/UpdateEvaluationDocumentDetails/${changeEvaluationId}`, {
+          ConsolidatedDocumentUrl: handelUrlChange,
+        })
+        .then((resp) => {});
+    }
   };
 
   const SubmitApprovel = (e, uid) => {
@@ -1243,14 +1292,14 @@ function Course() {
                       )}
                       <div>&nbsp;</div>
                       {addStake &&
-                        forms.map((form) => (
+                        forms.map((form, index) => (
                           <div
                             style={{
                               marginTop: "30px",
                               justifyContent: "space-start",
                             }}
                             className="flex flex-row "
-                            key={form.id}
+                            key={index}
                           >
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                               <FormControl
@@ -1267,10 +1316,19 @@ function Course() {
                                       handleChangeStaffDate(form.id, date)
                                     }
                                     renderInput={(params) => (
-                                      <TextField fullWidth {...params} />
+                                      <TextField
+                                        fullWidth
+                                        {...params}
+                                        error={!!errors[index]?.consultedDate}
+                                      />
                                     )}
                                   />
                                 </Box>
+                                {errors[index]?.consultedDate && (
+                                  <span style={{ color: "red" }}>
+                                    {errors[index].consultedDate}
+                                  </span>
+                                )}
                               </FormControl>
                             </LocalizationProvider>
                             <Box
@@ -1292,8 +1350,9 @@ function Course() {
                                   onChange={(event) =>
                                     handleChangeStaff(form.id, event)
                                   }
+                                  error={!!errors[index]?.consultedStaffId}
                                 >
-                                  <MenuItem value="">
+                                  <MenuItem value="" disabled>
                                     <em>None</em>
                                   </MenuItem>
                                   {docStaff.map((option) => (
@@ -1305,6 +1364,11 @@ function Course() {
                                     </MenuItem>
                                   ))}
                                 </Select>
+                                {errors[index]?.consultedStaffId && (
+                                  <span style={{ color: "red" }}>
+                                    {errors[index].consultedStaffId}
+                                  </span>
+                                )}
                               </FormControl>
                             </Box>
                             <Button
@@ -1422,15 +1486,22 @@ function Course() {
                               flexWrap: "wrap",
                             }}
                           >
-                            <FormControl fullWidth sx={{ m: 1 }}>
+                            <FormControl
+                              fullWidth
+                              sx={{ m: 1 }}
+                              error={!!errorsUrl.handelUrlChange}
+                            >
                               <span> Consolidated Document Url *</span>
-
                               <OutlinedInput
                                 id="documentUrl"
-                                onChange={(event) =>
-                                  setHandelUrlChange(event.target.value)
-                                }
+                                value={handelUrlChange}
+                                onChange={handleUrlChange}
                               />
+                              {!!errorsUrl.handelUrlChange && (
+                                <FormHelperText>
+                                  {errorsUrl.handelUrlChange}
+                                </FormHelperText>
+                              )}
                             </FormControl>
                           </Box>
                           <Button
