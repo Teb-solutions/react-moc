@@ -9,6 +9,7 @@ import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
 import { useGetAcademyCategoriesQuery } from "../moc/evaluation/AcademyApi";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import {
   Button,
   Container,
@@ -28,6 +29,8 @@ import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import { styled } from "@mui/material/styles";
 
 const Task = () => {
   const style = {
@@ -60,6 +63,26 @@ const Task = () => {
     padding: "0px",
   };
 
+  const BoldLabel = styled("label")({
+    fontWeight: "bold",
+    color: "black",
+  });
+
+  const drawerStyle = (open) => ({
+    width: 350,
+    bgcolor: "background.paper",
+    borderTopRightRadius: "16px",
+    borderBottomRightRadius: "16px",
+    boxShadow: 24,
+    p: 2,
+    position: "absolute",
+    top: 0,
+    right: open ? 0 : -250, // Move drawer out of view when closed
+    height: "100%",
+    zIndex: 10,
+    transition: "right 0.3s ease", // Smooth transition for opening/closing
+  });
+
   const { data: categories } = useGetAcademyCategoriesQuery();
   const [taskList, setTaskList] = useState([]);
   const [taskClick, setTaskClick] = useState([]);
@@ -74,6 +97,26 @@ const Task = () => {
   const router = useParams();
   const [open, setOpen] = useState(false);
   const [dateExtendopen, setDateExtendOpen] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [fileDetails, setFileDetails] = useState(false);
+
+  const [reqDate, setReqDate] = useState(null);
+  const [commentss, setCommentss] = useState("");
+  const [openDocModal, setOpenDocModal] = useState(false);
+  const [listDocument, setListDocument] = useState([]);
+  const [fileUrl, setFileUrl] = useState("");
+  const [fileName, setFileName] = useState("");
+  const [viewDoc, setviewDoc] = useState(false);
+  const [documentCounts, setDocumentCounts] = useState({});
+  const [selectedFile, setSelectedFile] = useState({
+    name: "",
+    description: "",
+    type: "",
+    document: "binary",
+    documentType: "ChangeRequest",
+    documentId: "",
+    changeRequestToken: "",
+  });
 
   const taskType = router["*"];
 
@@ -137,8 +180,20 @@ const Task = () => {
       apiAuth
         .get(`ChangeImpact/ListTaskCommentst?id=${task.sourceTaskId}`)
         .then((response) => {
-          setTaskClick(response.data.data);
-          console.log(response);
+          const comments = response.data.data;
+          setTaskClick(comments);
+          comments.forEach((comment) => {
+            const id = comment.id;
+            apiAuth
+              .get(`/DocumentManager/DocumentCount?id=${id}&documentType=Task`)
+              .then((documentResp) => {
+                const count = documentResp.data.data; // Assuming this is the count value
+                setDocumentCounts((prevCounts) => ({
+                  ...prevCounts,
+                  [id]: count,
+                }));
+              });
+          });
         })
         .catch((error) => {
           console.error(error);
@@ -166,6 +221,7 @@ const Task = () => {
     const updatedTask = {
       ...task,
       notes: comments,
+      documentId: selectedFile.documentId,
     };
 
     apiAuth
@@ -263,20 +319,482 @@ const Task = () => {
     return filteredTasks;
   };
 
-  const [reqDate, setReqDate] = React.useState(null);
-  const [commentss, setCommentss] = React.useState("");
+  const handleSubmits = (task) => {
+    let formattedReqDate = reqDate;
+    let formattedOldDate = task.dueDate;
 
-  const handleSubmits = () => {
-    // Handle the form submission logic
-    console.log("Request Date:", reqDate);
-    console.log("Comments:", comments);
+    if (reqDate instanceof Date) {
+      formattedReqDate = reqDate.toLocaleDateString("en-US");
+    }
+    if (task.dueDate instanceof Date) {
+      formattedOldDate = reqDate.toLocaleDateString("en-US");
+    }
+
+    apiAuth
+      .put(
+        `/Task/TaskDateUpdate/?requestToken=${task?.changeRequestToken}&&taskId=${task?.sourceTaskId}`,
+        {
+          OldDate: formattedOldDate,
+          RequestComments: commentss,
+          RequestDate: formattedReqDate,
+        }
+      )
+      .then((response) => {});
   };
 
-  function handleSearchText(event) {
-    setSearchText(event.target.value);
-  }
+  const handleOpenDocModal = (e, task) => {
+    e.preventDefault();
+    setOpenDocModal(true);
+    const newGuid = uuidv4();
+    setSelectedFile((prevState) => ({
+      ...prevState,
+      documentId: newGuid,
+      changeRequestToken: task?.changeRequestToken,
+    }));
+  };
+
+  const handleOpenDocModalClose = () => {
+    setOpenDocModal(false);
+    setOpenDrawer(false);
+  };
+  const toggleDrawer = (open) => () => {
+    setOpenDrawer(open);
+  };
+
+  const handelFileDiscriptionChange = (event) => {
+    const { name, value } = event.target;
+    setSelectedFile((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handelFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setFileUrl(url);
+      setFileName(file.name);
+    }
+    setSelectedFile({
+      name: e.target.files[0].name,
+      description: "",
+      type: e.target.files[0].type,
+      document: e.target.files[0],
+      documentType: "ChangeRequest",
+      documentId: selectedFile.documentId,
+      changeRequestToken: selectedFile.changeRequestToken,
+    });
+  };
+
+  const handleSubmitDocument = () => {
+    const formData = new FormData();
+    formData.append("name", selectedFile.name);
+    formData.append("descritpion", selectedFile.description);
+    formData.append("type", selectedFile.type);
+    formData.append("document", selectedFile.document);
+    formData.append("documentType", selectedFile.documentType);
+    formData.append("documentId", selectedFile.documentId);
+    formData.append("changeRequestToken", selectedFile.changeRequestToken);
+    apiAuth
+      .post("DocumentManager/Create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        apiAuth
+          .get(
+            `/DocumentManager/DocList/${selectedFile.documentId}/ChangeRequest?changeRequestToken=${selectedFile.changeRequestToken}`
+          )
+          .then((response) => {
+            setOpenDrawer(false);
+            setListDocument(response?.data?.data);
+          });
+      })
+      .catch((error) => {
+        console.error("There was an error uploading the document!", error);
+      });
+  };
+
+  const handelViewDocument = (e, id, task) => {
+    e.preventDefault();
+    setviewDoc(true);
+    setOpenDocModal(true);
+    apiAuth
+      .get(
+        `DocumentManager/DocList/${id}/Task?changeRequestToken=${task.changeRequestToken}`
+      )
+      .then((response) => {
+        setOpenDrawer(false);
+        setListDocument(response?.data?.data);
+      });
+  };
+  const [selectedDocument, setSelectedDocument] = useState(null);
+
+  const [documenDowToken, setDocumenDowToken] = useState("");
+
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = selectedDocument;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    apiAuth
+      .get(`/DocumentManager/download/${documenDowToken}`)
+      .then((response) => {});
+  };
+
+  const handelDetailDoc = (doc) => {
+    setSelectedDocument(doc);
+    setFileDetails(true);
+    setDocumenDowToken(doc.token);
+  };
   return (
     <>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openDocModal}
+        onClose={handleOpenDocModalClose}
+        closeAfterTransition
+        // Customize backdrop appearance
+        BackdropComponent={Backdrop}
+        // Props for backdrop customization
+        BackdropProps={{
+          timeout: 500, // Adjust as needed
+          style: {
+            // Add backdrop styles here
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+        }}
+      >
+        <Fade in={openDocModal}>
+          <Box sx={style1}>
+            <Box sx={{ flex: 1 }}>
+              <Box className="flex justify-between" style={{ margin: "30px" }}>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "3rem",
+                  }}
+                >
+                  File Manager
+                  {/* <Typography
+                                id="transition-modal-title"
+                                variant="h6"
+                                component="h2"
+                              >
+                                0 Files
+                              </Typography> */}
+                </Typography>
+                {!viewDoc && (
+                  <Box>
+                    <Button
+                      className=""
+                      variant="contained"
+                      color="secondary"
+                      onClick={toggleDrawer(true)}
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+              <Box>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                  component="div"
+                  style={{
+                    backgroundColor: "#e3eeff80",
+                  }}
+                >
+                  {listDocument.map((doc, index) => (
+                    <div className="content " key={index}>
+                      <div
+                        onClick={() => handelDetailDoc(doc)}
+                        style={{ textAlign: "-webkit-center" }}
+                      >
+                        <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        <h6>{doc?.name}</h6>
+                        <h6>by {doc?.staffName}</h6>
+                      </div>
+                    </div>
+                  ))}
+                </Typography>
+              </Box>
+            </Box>
+            {openDrawer && !fileDetails && (
+              <Box sx={drawerStyle(openDrawer)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setOpenDrawer(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <Button
+                      className=""
+                      variant="contained"
+                      color="secondary"
+                      style={{
+                        backgroundColor: "#24a0ed",
+                        borderRadius: "5px",
+                        paddingLeft: "50px",
+                        paddingRight: "50px",
+                      }}
+                      component="span"
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Selecte File"
+                      variant="standard"
+                      disabled
+                      value={selectedFile.name}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="description"
+                      variant="standard"
+                      onChange={handelFileDiscriptionChange}
+                      value={selectedFile.description}
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleSubmitDocument}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Box>
+            )}
+
+            {fileDetails && (
+              <Box sx={drawerStyle(fileDetails)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setFileDetails(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <div className=" ">
+                      <div
+                        onClick={handelDetailDoc}
+                        style={{ textAlign: "-webkit-center" }}
+                      >
+                        <img src="/assets/images/etc/icon_N.png" />
+                      </div>
+                      {selectedDocument.name}
+                    </div>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Created By"
+                      variant="standard"
+                      disabled
+                      value={selectedDocument.staffName}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label=" Created At"
+                      name="description"
+                      variant="standard"
+                      disabled
+                      value={formatDate(selectedDocument.createdAt)}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="Description"
+                      variant="standard"
+                      disabled
+                      value={selectedDocument.descritpion}
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleDownload}
+                  >
+                    Download
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </Box>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
       <div className="" style={{ margin: "30px" }}>
         <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
@@ -655,95 +1173,181 @@ const Task = () => {
                       sx={{
                         borderBottom: "2px solid silver",
                         fontSize: "medium",
+                        border: "1px solid black",
                       }}
                     >
                       <TableRow>
-                        <TableCell className="text-left pb-3">
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ border: "1px solid black" }}
+                        >
                           Actual Date
                         </TableCell>
-                        <TableCell className="text-left pb-3">
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ border: "1px solid black" }}
+                        >
                           Request Comments
                         </TableCell>
-                        <TableCell className="text-left pb-3">
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ border: "1px solid black" }}
+                        >
                           Request Date
                         </TableCell>
                         <TableCell
                           className="text-left pb-3"
-                          sx={{ width: "20%" }}
+                          sx={{ width: "20%", border: "1px solid black" }}
                         >
                           Approved Comments
                         </TableCell>
-                        <TableCell className="text-left pb-3">
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ border: "1px solid black" }}
+                        >
                           Approved Date
                         </TableCell>
-                        <TableCell className="text-left pb-3">Status</TableCell>
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ border: "1px solid black" }}
+                        >
+                          Status
+                        </TableCell>
                       </TableRow>
                     </TableHead>
-                    <TableBody>{/* Table rows will go here */}</TableBody>
+                    <TableBody>
+                      {task?.taskDateUpdates?.map((update) => (
+                        <TableRow key={update.id}>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {formatDates(update.oldDate)}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {update.requestComments}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {formatDates(update.requestDate)}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {update.approvedComments || "N/A"}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {update.approvedDate
+                              ? formatDates(update.approvedDate)
+                              : "N/A"}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {update.taskdateupdateStatus}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
                   </Table>
                 </Grid>
               </Grid>
-              <Grid container spacing={2} className="mt-5">
-                <Grid item xs={12}>
-                  <Typography variant="body1" className="font-semibold pt-4">
-                    Old Due Date
-                  </Typography>
-                  <Typography variant="body1" className="mt-2 cursor-pointer">
-                    November 15, 2023
-                  </Typography>
+              {task?.taskDateUpdates?.length != 0 && (
+                <Grid container spacing={2} className=" flex mt-5">
+                  <Grid item xs={12}>
+                    <Typography variant="body1" className="font-semibold pt-4">
+                      Request Date
+                    </Typography>
+                    <Typography variant="body1" className="mt-2 cursor-pointer">
+                      {formatDates(task?.taskDateUpdates?.[0].requestDate)}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body1" className="font-semibold pt-4">
+                      Request Comments
+                    </Typography>
+                    <Typography variant="body1" className="mt-2 cursor-pointer">
+                      {task.taskDateUpdates?.[0].requestComments}
+                    </Typography>
+                  </Grid>
                 </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sm={12}
-                  style={{ maxWidth: "100%", flexBasis: "100%" }}
-                >
-                  <LocalizationProvider
-                    dateAdapter={AdapterDateFns}
-                    style={{ width: "100%" }}
+              )}
+              {task?.taskDateUpdates?.length == 0 && (
+                <Grid container spacing={2} className="mt-5">
+                  <Grid item xs={12}>
+                    <Typography variant="body1" className="font-semibold pt-4">
+                      Old Due Date
+                    </Typography>
+                    <Typography variant="body1" className="mt-2 cursor-pointer">
+                      {formatDates(task.dueDate)}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={12}
+                    style={{ maxWidth: "100%", flexBasis: "100%" }}
                   >
-                    <DatePicker
-                      label="Request Date*"
-                      value={reqDate}
-                      onChange={(newValue) => setReqDate(newValue)}
-                      renderInput={(params) => (
-                        <TextField {...params} fullWidth required />
-                      )}
-                      minDate={new Date("2023-11-15")}
+                    <LocalizationProvider
+                      dateAdapter={AdapterDateFns}
+                      style={{ width: "100%" }}
+                    >
+                      <DatePicker
+                        label="Request Date*"
+                        value={reqDate}
+                        onChange={(newValue) => setReqDate(newValue)}
+                        renderInput={(params) => (
+                          <TextField {...params} fullWidth required />
+                        )}
+                        minDate={new Date("2023-11-15")}
+                      />
+                    </LocalizationProvider>
+                  </Grid>
+                  <Grid item xs={12} className="mt-5">
+                    <TextField
+                      label="Remark"
+                      multiline
+                      rows={1}
+                      fullWidth
+                      required
+                      value={commentss}
+                      onChange={(e) => setCommentss(e.target.value)}
                     />
-                  </LocalizationProvider>
-                </Grid>
-                <Grid item xs={12} className="mt-5">
-                  <TextField
-                    label="Remark"
-                    multiline
-                    rows={1}
-                    fullWidth
-                    required
-                    value={comments}
-                    onChange={(e) => setCommentss(e.target.value)}
-                  />
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  sx={{ paddingTop: "15px", paddingBottom: "20px" }}
-                >
-                  <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleSubmits}
-                    sx={{ float: "right" }}
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    sx={{ paddingTop: "15px", paddingBottom: "20px" }}
                   >
-                    Submit for Approval
-                  </Button>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleSubmits(task)}
+                      sx={{ float: "right" }}
+                    >
+                      Submit for Approval
+                    </Button>
+                  </Grid>
                 </Grid>
-              </Grid>
+              )}
             </Box>
           </Box>
         </Fade>
       </Modal>
-      <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
+      <div
+        className={`sidebar ${sidebarOpen ? "open" : ""}`}
+        style={{ overflow: "auto" }}
+      >
         {/* Add sidebar content here */}
         {/* <button onClick={closeSidebar}>Close Sidebar</button> */}
         <div className="flex flex-auto">
@@ -757,7 +1361,9 @@ const Task = () => {
             >
               <span className="pr-4 pl-3.5">
                 <div className="flex items-center justify-center">
-                  <span className="font-bold text-xl">Task #</span>
+                  <span className="font-bold text-xl">
+                    Task # {task.sourceTaskId}
+                  </span>
                 </div>
               </span>
 
@@ -991,6 +1597,23 @@ const Task = () => {
                                       </small>
                                     </div>
                                   </div>
+                                  <button
+                                    className="icon-button"
+                                    onClick={(e) =>
+                                      handelViewDocument(e, msg.id, task)
+                                    }
+                                    style={{
+                                      top: "-94px",
+                                      right: "-2px",
+                                    }}
+                                  >
+                                    <FuseSvgIcon size={20}>
+                                      heroicons-solid:document
+                                    </FuseSvgIcon>
+                                    <span className="count">
+                                      {documentCounts[msg.id]}
+                                    </span>
+                                  </button>
                                 </div>
                               )}
 
@@ -1093,24 +1716,40 @@ const Task = () => {
               <div>&nbsp;</div>
               {!task.completed && (
                 <div>
-                  <div className="w-full">
+                  <div style={{ position: "relative", margin: "5px" }}>
                     <textarea
                       rows="1"
                       placeholder="Write your comments *"
-                      className="w-full h-9  border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className="w-full border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-600"
                       spellCheck="false"
                       style={{
                         paddingTop: "1.2rem",
                         paddingBottom: "7.2rem",
-
                         paddingLeft: "1.3rem",
-                        paddingRight: "0.3rem",
-                        margin: "5px",
+                        paddingRight: "3rem", // Adjusted to make space for the button
                         height: "calc(1.2rem + 7.2rem)", // Adjust height to include padding
                         overflow: "hidden", // Prevent scrollbar
                       }}
                       onChange={(e) => setComments(e.target.value)}
+                      value={comments}
                     ></textarea>
+                    <button
+                      style={{
+                        position: "absolute",
+                        right: "10px",
+                        bottom: "32px",
+                        padding: "5px 10px",
+                        color: "black",
+                        border: "none",
+                        borderRadius: "5px",
+                        cursor: "pointer",
+                      }}
+                      onClick={(e) => handleOpenDocModal(e, task)}
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:document
+                      </FuseSvgIcon>
+                    </button>
                   </div>
                   {task.taskType == 2 && (
                     <RadioGroup

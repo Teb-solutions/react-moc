@@ -11,7 +11,7 @@ import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import { Select, MenuItem, ListItemText } from "@mui/material";
+import { Select, MenuItem, ListItemText, FormHelperText } from "@mui/material";
 import MocHeader from "../MocHeader";
 import { Button } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -27,7 +27,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { parseISO, format } from "date-fns";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 function DocRequest() {
   const style = {
@@ -82,11 +82,12 @@ function DocRequest() {
   const [docContent, setDocContent] = useState([]);
   const [docController, setDocController] = useState([]);
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+
   const handleClose = () => setOpen(false);
   const [openDocModal, setOpenDocModal] = useState(false);
   const [listDocument, setListDocument] = useState([]);
   const routeParams = useParams();
+  const navigate = useNavigate();
 
   const handleOpenDocModal = () => {
     setOpenDocModal(true);
@@ -165,6 +166,12 @@ function DocRequest() {
       ...documentState,
       [name]: value,
     });
+    if (event.target.name == "reasonForNewDocument") {
+      setFormValid(true);
+    }
+    if (!!errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
   };
 
   const handleChanges = (date) => {
@@ -190,6 +197,55 @@ function DocRequest() {
       documentId: selectedFile.documentId,
       changeRequestToken: null,
     });
+  };
+  const [errors, setErrors] = useState({});
+
+  const validate = () => {
+    let tempErrors = {};
+
+    if (!documentState.projectName)
+      tempErrors.projectName = "Document Name is required";
+    if (!documentState.documentUrl)
+      tempErrors.documentUrl = "Document Url is required";
+
+    if (!documentState.docControllerId)
+      tempErrors.docControllerId = "DoCument Controller is required";
+
+    if (documentState.isNewDocument === true) {
+      if (!documentState.reasonForNewDocument)
+        tempErrors.reasonForNewDocument = "Reason For New Document is required";
+    } else if (documentState.isNewDocument === false) {
+      if (!documentState.reasonForNewDocument)
+        tempErrors.reasonForNewDocument = "Reason For Change is required";
+    }
+
+    // Add other validations here
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+  const handleRadioChange = (event) => {
+    const { value } = event.target;
+    setDocumentState((prevState) => ({
+      ...prevState,
+      isNewDocument: value === "New",
+      reasonForNewDocument: "",
+      reasonForChange: "",
+    }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      reasonForNewDocument: "",
+      reasonForChange: "",
+    }));
+    setFormValid(true);
+  };
+
+  const handleOpen = () => {
+    if (!validate() || documentState.isNewDocument == null) {
+      setFormValid(false);
+      setOpen(false);
+    } else {
+      setOpen(true);
+    }
   };
   const handleSubmitDocument = () => {
     const formData = new FormData();
@@ -221,13 +277,8 @@ function DocRequest() {
         console.error("There was an error uploading the document!", error);
       });
   };
-  const handleRadioChange = (event) => {
-    const { value } = event.target;
-    setDocumentState((prevState) => ({
-      ...prevState,
-      isNewDocument: value === "New",
-    }));
-  };
+
+  const [formValid, setFormValid] = useState(true);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -246,12 +297,11 @@ function DocRequest() {
     apiAuth
       .post("/DocMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
-        console.log(response.data);
+        navigate("/dashboards/project");
         setOpen(false);
       })
       .catch((error) => {
         setOpen(true);
-        // Handle error (e.g., show an error message)
       });
   };
 
@@ -425,7 +475,11 @@ function DocRequest() {
             ></div>
             <div style={{ marginTop: "20px" }}>
               <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                <FormControl fullWidth sx={{ m: 1 }}>
+                <FormControl
+                  fullWidth
+                  sx={{ m: 1 }}
+                  error={!!errors.projectName}
+                >
                   <InputLabel htmlFor="projectName">Document Name *</InputLabel>
                   <OutlinedInput
                     id="projectName"
@@ -434,6 +488,9 @@ function DocRequest() {
                     onChange={handleChange}
                     label="Document Name *"
                   />
+                  {!!errors.projectName && (
+                    <FormHelperText>{errors.projectName}</FormHelperText>
+                  )}
                 </FormControl>
               </Box>
               <Box
@@ -461,7 +518,12 @@ function DocRequest() {
                 }}
               >
                 <FormControl>
-                  <FormLabel id="documentType">Document Type *</FormLabel>
+                  <FormLabel
+                    id="documentType"
+                    style={{ color: formValid ? "inherit" : "red" }}
+                  >
+                    Document Type *
+                  </FormLabel>
                   <RadioGroup
                     row
                     aria-labelledby="documentType"
@@ -492,7 +554,11 @@ function DocRequest() {
                 <Box
                   sx={{ display: "flex", flexWrap: "wrap", marginTop: "15px" }}
                 >
-                  <FormControl fullWidth sx={{ m: 1 }}>
+                  <FormControl
+                    fullWidth
+                    sx={{ m: 1 }}
+                    error={!!errors.reasonForNewDocument}
+                  >
                     <InputLabel htmlFor="newDocumentField">
                       Reason For New Document *
                     </InputLabel>
@@ -503,6 +569,11 @@ function DocRequest() {
                       onChange={handleChange}
                       label="Reason For New Document *"
                     />
+                    {!!errors.reasonForNewDocument && (
+                      <FormHelperText>
+                        {errors.reasonForNewDocument}
+                      </FormHelperText>
+                    )}
                   </FormControl>
                 </Box>
               )}
@@ -541,7 +612,11 @@ function DocRequest() {
                       marginTop: "15px",
                     }}
                   >
-                    <FormControl fullWidth sx={{ m: 1 }}>
+                    <FormControl
+                      fullWidth
+                      sx={{ m: 1 }}
+                      error={!!errors.reasonForNewDocument}
+                    >
                       <InputLabel htmlFor="existingDocumentField2">
                         Reason For Change*
                       </InputLabel>
@@ -552,6 +627,11 @@ function DocRequest() {
                         onChange={handleChange}
                         label="Reason For Change*"
                       />
+                      {!!errors.reasonForNewDocument && (
+                        <FormHelperText>
+                          {errors.reasonForNewDocument}
+                        </FormHelperText>
+                      )}
                     </FormControl>
                   </Box>
                 </>
@@ -559,7 +639,11 @@ function DocRequest() {
               <Box
                 sx={{ display: "flex", flexWrap: "wrap", marginTop: "15px" }}
               >
-                <FormControl fullWidth sx={{ m: 1 }}>
+                <FormControl
+                  fullWidth
+                  sx={{ m: 1 }}
+                  error={!!errors.documentUrl}
+                >
                   <InputLabel htmlFor="documentUrl">Document URL *</InputLabel>
                   <OutlinedInput
                     id="documentUrl"
@@ -568,12 +652,19 @@ function DocRequest() {
                     onChange={handleChange}
                     label="Document URL *"
                   />
+                  {!!errors.documentUrl && (
+                    <FormHelperText>{errors.documentUrl}</FormHelperText>
+                  )}
                 </FormControl>
               </Box>
               <Box
                 sx={{ display: "flex", flexWrap: "wrap", marginTop: "15px" }}
               >
-                <FormControl fullWidth sx={{ m: 1 }}>
+                <FormControl
+                  fullWidth
+                  sx={{ m: 1 }}
+                  error={!!errors.docControllerId}
+                >
                   <InputLabel id="functionName-label">
                     Document Controller *
                   </InputLabel>
@@ -591,6 +682,9 @@ function DocRequest() {
                       </MenuItem>
                     ))}
                   </Select>
+                  {!!errors.docControllerId && (
+                    <FormHelperText>{errors.docControllerId}</FormHelperText>
+                  )}
                 </FormControl>
               </Box>
             </div>

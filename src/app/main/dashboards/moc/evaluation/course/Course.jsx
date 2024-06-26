@@ -15,6 +15,7 @@ import SwipeableViews from "react-swipeable-views";
 import { parseISO, format } from "date-fns";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { styled } from "@mui/material/styles";
 import {
   Accordion,
   AccordionDetails,
@@ -84,8 +85,19 @@ function Course() {
   const [contentDetails, setContentDetails] = useState({});
   const [changeEvaluationId, setChangeEvaluationId] = useState();
   const [handelUrlChange, setHandelUrlChange] = useState("");
+  const [listDocument, setListDocument] = useState([]);
+
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = (id) => {
+    apiAuth
+      .get(
+        `DocumentManager/DocList/${id}/Task?changeRequestToken=${evaluationId}`
+      )
+      .then((response) => {
+        setListDocument(response?.data?.data);
+      });
+    setOpen(true);
+  };
   const handleClose = () => setOpen(false);
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(-1);
   const [expandedAccordionIndex, setExpandedAccordionIndex] = useState(-1);
@@ -109,6 +121,12 @@ function Course() {
   const [particular, setParticular] = useState([]);
   const [particularSub, setParticularSub] = useState([]);
   const [impComments, setImpComments] = useState([]);
+  const [currentActivityForm, setCurrentActivityForm] = useState({});
+  const [fileDetails, setFileDetails] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [documenDowToken, setDocumenDowToken] = useState("");
+  const [fileName, setFileName] = useState("");
+  const [documentCounts, setDocumentCounts] = useState({});
 
   const [errors, setErrors] = useState([]);
   const [errorsUrl, setErrorsUrl] = useState({});
@@ -378,19 +396,20 @@ function Course() {
     }
   };
 
-  const style = {
+  const style1 = {
     position: "absolute",
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "1500px",
+    width: "1100px",
     maxWidth: "80vw",
-    height: "65%",
+    height: "57%",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
     boxShadow: 24,
     p: 4,
+    padding: "0px",
   };
 
   const styleImp = {
@@ -407,6 +426,26 @@ function Course() {
     boxShadow: 24,
     p: 4,
   };
+
+  const BoldLabel = styled("label")({
+    fontWeight: "bold",
+    color: "black",
+  });
+
+  const drawerStyle = (open) => ({
+    width: 350,
+    bgcolor: "background.paper",
+    borderTopRightRadius: "16px",
+    borderBottomRightRadius: "16px",
+    boxShadow: 24,
+    p: 2,
+    position: "absolute",
+    top: 0,
+    right: open ? 0 : -250, // Move drawer out of view when closed
+    height: "100%",
+    zIndex: 10,
+    transition: "right 0.3s ease", // Smooth transition for opening/closing
+  });
 
   useEffect(() => {
     getRecords();
@@ -442,7 +481,7 @@ function Course() {
     });
   }
 
-  function handleStepChange(
+  const handleStepChange = (
     e,
     phaseName,
     uid,
@@ -452,11 +491,14 @@ function Course() {
     activityname,
     canedit,
     canView
-  ) {
+  ) => {
+    if (!canView) {
+      console.log("This activity cannot be viewed.");
+      return;
+    }
     setActName(activityname);
     setCanEdits(canedit);
 
-    // Find the phase and activity that match the clicked activity
     const matchingPhase = content.find((phase) =>
       phase.activities.some((activity) => activity.uid === uid)
     );
@@ -465,9 +507,9 @@ function Course() {
       const matchingActivity = matchingPhase.activities.find(
         (activity) => activity.uid === uid
       );
+      setCurrentActivityForm(matchingActivity);
 
       if (matchingActivity) {
-        // Determine the phase name based on the form ID
         let actualPhaseName;
 
         switch (matchingActivity.form) {
@@ -487,7 +529,7 @@ function Course() {
             actualPhaseName = "docimplclosure";
             break;
           default:
-            actualPhaseName = "docimplclosure"; // Fall back to the passed phase name if no match is found
+            actualPhaseName = "docimplclosure";
         }
 
         setCurrentPhase(actualPhaseName);
@@ -504,7 +546,9 @@ function Course() {
             break;
           case "Evaluation":
             apiAuth
-              .get(`/ChangeEvaluation/Get/${evaluationId}/null/1`)
+              .get(
+                `/ChangeEvaluation/Get/${evaluationId}/${matchingActivity.formUID}/${matchingActivity.version}`
+              )
               .then((resp) => {
                 const evaluationIds = resp.data.data.id;
                 setContentDetails(resp.data?.data);
@@ -537,9 +581,13 @@ function Course() {
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
-                  apiAuth.get(`/ApprovalManager/Remark/${uid}`).then((resp) => {
-                    setApprovalManager(resp.data?.data);
-                  });
+                  apiAuth
+                    .get(
+                      `/ApprovalManager/Remark/${resp.data.data.activity.uid}`
+                    )
+                    .then((resp) => {
+                      setApprovalManager(resp.data?.data);
+                    });
                 });
               });
             break;
@@ -584,7 +632,7 @@ function Course() {
         }
       }
     }
-  }
+  };
 
   // Update the onClick event to pass the necessary parameters
   const handleUrlChange = (event) => {
@@ -625,7 +673,9 @@ function Course() {
             activityUID: evalActivity.uid,
             formUID: changeEvaluationId,
           })
-          .then((resp) => {});
+          .then((resp) => {
+            location.reload();
+          });
       });
   };
   const SubmitApprovelCreate = (e, uid, name, type) => {
@@ -678,12 +728,25 @@ function Course() {
 
   const handelComments = (e, taskid) => {
     apiAuth
-      .get(
-        `ChangeImpact/ListTaskCommentst?id=${taskid}
-      `
-      )
+      .get(`ChangeImpact/ListTaskCommentst?id=${taskid}`)
       .then((resp) => {
-        setImpComments(resp.data.data);
+        const comments = resp.data.data;
+        setImpComments(comments);
+        comments.forEach((comment) => {
+          const id = comment.id;
+          apiAuth
+            .get(`/DocumentManager/DocumentCount?id=${id}&documentType=Task`)
+            .then((documentResp) => {
+              const count = documentResp.data.data; // Assuming this is the count value
+              setDocumentCounts((prevCounts) => ({
+                ...prevCounts,
+                [id]: count,
+              }));
+            });
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching task comments:", error);
       });
   };
 
@@ -697,6 +760,27 @@ function Course() {
       taskStatus: 3,
     };
 
+    apiAuth
+      .post(`ChangeImpact/ActionTask?id=${evaluationId}`, updatedTask)
+      .then((response) => {
+        getRecords();
+        console.log(response);
+      })
+      .catch((error) => {
+        setOpen(false);
+        console.error(error);
+      });
+  };
+
+  const handelRejectImpl = (e, task) => {
+    const updatedTask = {
+      ...task,
+      comments: comments,
+      submissionList: impComments,
+      ChangeEvaluationId: 0,
+      ParentId: 0,
+      taskStatus: 4,
+    };
     apiAuth
       .post(`ChangeImpact/ActionTask?id=${evaluationId}`, updatedTask)
       .then((response) => {
@@ -737,6 +821,26 @@ function Course() {
         setReviewed(true);
         console.log(response);
       });
+  };
+
+  const handelDetailDoc = (doc) => {
+    setSelectedDocument(doc);
+    setFileDetails(true);
+    setDocumenDowToken(doc.token);
+    setFileName(doc.name);
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = selectedDocument;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    apiAuth
+      .get(`/DocumentManager/download/${documenDowToken}`)
+      .then((response) => {});
   };
 
   const handelCloseMoc = (uid) => {
@@ -1044,7 +1148,7 @@ function Course() {
                                 Document
                               </Button>
 
-                              <Modal
+                              {/* <Modal
                                 aria-labelledby="transition-modal-title"
                                 aria-describedby="transition-modal-description"
                                 open={open}
@@ -1058,42 +1162,51 @@ function Course() {
                                 }}
                               >
                                 <Fade in={open}>
-                                  <Box sx={style}>
-                                    <Box>
-                                      <Typography
-                                        id="transition-modal-title"
-                                        variant="h6"
-                                        component="h2"
-                                        style={{
-                                          fontSize: "4rem",
-                                          fontWeight: "800px !important",
-                                        }}
+                                  <Box sx={style1}>
+                                    <Box sx={{ flex: 1 }}>
+                                      <Box
+                                        className="flex justify-between"
+                                        style={{ margin: "30px" }}
                                       >
-                                        File Manager
-                                      </Typography>
-                                      <Typography
-                                        id="transition-modal-description"
-                                        sx={{ mt: 2 }}
-                                      >
-                                        0 Fiels
-                                      </Typography>
-                                    </Box>
-                                    <Box>
-                                      <Typography
-                                        id="transition-modal-title"
-                                        variant="h6"
-                                        className="p-6 md:p-8 md:py-6 min-h-[435px] bg-[] max-h-120 space-y-8 overflow-y-auto"
-                                        component="h2"
-                                        style={{
-                                          backgroundColor: "#e3eeff80",
-                                        }}
-                                      >
-                                        File Manager
-                                      </Typography>
+                                        <Typography
+                                          id="transition-modal-title"
+                                          variant="h6"
+                                          component="h2"
+                                          style={{
+                                            fontSize: "3rem",
+                                          }}
+                                        >
+                                          File Manager
+                                        </Typography>
+                                      </Box>
+                                      <Box>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                  component="div"
+                  style={{
+                    backgroundColor: "#e3eeff80",
+                  }}
+                >
+                  {listDocument.map((doc, index) => (
+                    <div className="content " key={index}>
+                      <div
+                        onClick={() => handelDetailDoc(doc)}
+                        style={{ textAlign: "-webkit-center" }}
+                      >
+                        <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        <h6>{doc?.name}</h6>
+                        <h6>by {doc?.staffName}</h6>
+                      </div>
+                    </div>
+                  ))}
+                </Typography>
+              </Box>
                                     </Box>
                                   </Box>
                                 </Fade>
-                              </Modal>
+                              </Modal> */}
                             </span>
                           </button>
                         </div>
@@ -1918,39 +2031,187 @@ function Course() {
                           }}
                         >
                           <Fade in={open}>
-                            <Box sx={style}>
+                            <Box sx={style1}>
                               <Box>
-                                <Typography
-                                  id="transition-modal-title"
-                                  variant="h6"
-                                  component="h2"
-                                  style={{
-                                    fontSize: "4rem",
-                                    fontWeight: "800px !important",
-                                  }}
+                                <Box
+                                  className="flex justify-between"
+                                  style={{ margin: "30px" }}
                                 >
-                                  File Manager
-                                </Typography>
-                                <Typography
-                                  id="transition-modal-description"
-                                  sx={{ mt: 2 }}
-                                >
-                                  0 Fiels
-                                </Typography>
+                                  <Typography
+                                    id="transition-modal-title"
+                                    variant="h6"
+                                    component="h2"
+                                    style={{
+                                      fontSize: "4rem",
+                                      fontWeight: "800px !important",
+                                    }}
+                                  >
+                                    File Manager
+                                  </Typography>
+                                </Box>
                               </Box>
                               <Box>
                                 <Typography
                                   id="transition-modal-title"
                                   variant="h6"
-                                  className="p-6 md:p-8 md:py-6 min-h-[435px] bg-[] max-h-120 space-y-8 overflow-y-auto"
-                                  component="h2"
+                                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                                  component="div"
                                   style={{
                                     backgroundColor: "#e3eeff80",
                                   }}
                                 >
-                                  File Manager
+                                  {listDocument.map((doc, index) => (
+                                    <div className="content " key={index}>
+                                      <div
+                                        onClick={() => handelDetailDoc(doc)}
+                                        style={{ textAlign: "-webkit-center" }}
+                                      >
+                                        <img
+                                          src="/assets/images/etc/icon_N.png"
+                                          style={{}}
+                                        />
+                                        <h6>{doc?.name}</h6>
+                                        <h6>by {doc?.staffName}</h6>
+                                      </div>
+                                    </div>
+                                  ))}
                                 </Typography>
                               </Box>
+                              {fileDetails && (
+                                <Box sx={drawerStyle(fileDetails)}>
+                                  <div className="flex justify-end">
+                                    <Button
+                                      className=""
+                                      variant="contained"
+                                      style={{ backgroundColor: "white" }}
+                                      onClick={() => setFileDetails(false)}
+                                    >
+                                      <FuseSvgIcon size={20}>
+                                        heroicons-outline:close
+                                      </FuseSvgIcon>
+                                      x
+                                    </Button>
+                                  </div>
+                                  <div>&nbsp;</div>
+                                  <div className="text-center">
+                                    <label htmlFor="fileInput">
+                                      <div className=" ">
+                                        <div
+                                          onClick={handelDetailDoc}
+                                          style={{
+                                            textAlign: "-webkit-center",
+                                          }}
+                                        >
+                                          <img src="/assets/images/etc/icon_N.png" />
+                                        </div>
+                                        {selectedDocument?.name}
+                                      </div>
+                                    </label>
+                                    <Box
+                                      component="form"
+                                      sx={{
+                                        "& > :not(style)": {
+                                          m: 1,
+                                          width: "25ch",
+                                        },
+                                      }}
+                                      noValidate
+                                      autoComplete="off"
+                                    >
+                                      <TextField
+                                        id="standard-basic"
+                                        label={
+                                          <BoldLabel>Information</BoldLabel>
+                                        }
+                                        variant="standard"
+                                        disabled
+                                      />
+                                    </Box>
+                                    <Box
+                                      component="form"
+                                      sx={{
+                                        "& > :not(style)": {
+                                          m: 1,
+                                          width: "25ch",
+                                        },
+                                      }}
+                                      noValidate
+                                      autoComplete="off"
+                                    >
+                                      <TextField
+                                        id="selectedFileName"
+                                        label="Created By"
+                                        variant="standard"
+                                        disabled
+                                        value={selectedDocument.staffName}
+                                      />
+                                    </Box>
+                                    <Box
+                                      component="form"
+                                      sx={{
+                                        "& > :not(style)": {
+                                          m: 1,
+                                          width: "25ch",
+                                        },
+                                      }}
+                                      noValidate
+                                      autoComplete="off"
+                                    >
+                                      <TextField
+                                        id="standard-basic"
+                                        label=" Created At"
+                                        name="description"
+                                        variant="standard"
+                                        disabled
+                                        value={formatDate(
+                                          selectedDocument.createdAt
+                                        )}
+                                      />
+                                    </Box>
+                                    <Box
+                                      component="form"
+                                      sx={{
+                                        "& > :not(style)": {
+                                          m: 1,
+                                          width: "25ch",
+                                        },
+                                      }}
+                                      noValidate
+                                      autoComplete="off"
+                                    >
+                                      <TextField
+                                        id="standard-basic"
+                                        label={
+                                          <BoldLabel>Description</BoldLabel>
+                                        }
+                                        name="Description"
+                                        variant="standard"
+                                        disabled
+                                        value={selectedDocument.descritpion}
+                                      />
+                                    </Box>
+                                  </div>
+
+                                  <div
+                                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                                    style={{
+                                      marginTop: "15px",
+                                      justifyContent: "center",
+                                      backgroundColor: " rgba(248,250,252)",
+                                    }}
+                                  >
+                                    <Button
+                                      className="whitespace-nowrap"
+                                      variant="contained"
+                                      color="secondary"
+                                      type="submit"
+                                      onClick={handleDownload}
+                                    >
+                                      Download
+                                    </Button>
+                                  </div>
+                                </Box>
+                              )}
                             </Box>
                           </Fade>
                         </Modal>
@@ -2206,10 +2467,18 @@ function Course() {
                                       {impComments.map((msg) => (
                                         <div
                                           key={msg.id}
-                                          className="flex flex-col flex-wrap mb-2"
+                                          className="flex flex-row flex-wrap mb-2"
+                                          style={{
+                                            width: "auto",
+                                            display: "block",
+                                            clear: "both",
+                                          }}
                                         >
                                           {msg.remark && (
-                                            <div className="flex flex-col items-start mt-5">
+                                            <div
+                                              className="flex flex-row items-start mt-5"
+                                              style={{ position: "relative" }}
+                                            >
                                               <div
                                                 className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
                                                 style={{ padding: "10px" }}
@@ -2248,6 +2517,23 @@ function Course() {
                                                   </small>
                                                 </div>
                                               </div>
+                                              <button
+                                                className="icon-button"
+                                                onClick={() =>
+                                                  handleOpen(msg.id)
+                                                }
+                                                style={{
+                                                  top: "-15px",
+                                                  right: "-20px",
+                                                }}
+                                              >
+                                                <FuseSvgIcon size={20}>
+                                                  heroicons-solid:document
+                                                </FuseSvgIcon>
+                                                <span className="count">
+                                                  {documentCounts[msg.id]}
+                                                </span>
+                                              </button>
                                             </div>
                                           )}
                                           {msg.comments && (
@@ -2320,67 +2606,74 @@ function Course() {
                                                 class="flex items-center w-full  border-b justify-between"
                                               ></div>
                                             </div>
-                                            <div
-                                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                              style={{ width: "100%" }}
-                                            >
-                                              <Box
-                                                sx={{
-                                                  display: "flex",
-                                                  flexWrap: "wrap",
-                                                }}
+                                            {currentActivityForm.canEdit && (
+                                              <div
+                                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                                style={{ width: "100%" }}
                                               >
-                                                <FormControl
-                                                  fullWidth
+                                                <Box
                                                   sx={{
-                                                    m: 1,
-                                                    maxWidth: "100%",
+                                                    display: "flex",
+                                                    flexWrap: "wrap",
                                                   }}
                                                 >
-                                                  <span className="font-semibold leading-none">
-                                                    Comments*
-                                                  </span>
-                                                  <OutlinedInput
-                                                    id="reasonForNewDocument"
-                                                    name="reasonForNewDocument"
-                                                    onChange={(e) =>
-                                                      setComments(
-                                                        e.target.value
-                                                      )
-                                                    }
-                                                    label="Reason For Change*"
-                                                    className="mt-5"
-                                                  />
-                                                </FormControl>
-                                              </Box>
-                                            </div>
-                                            <div className="flex justify-start ">
-                                              <Button
-                                                className="whitespace-nowrap ms-5 "
-                                                variant="contained"
-                                                color="secondary"
-                                                style={{
-                                                  marginTop: "10px",
-                                                  backgroundColor: "white",
-                                                  color: "black",
-                                                }}
-                                              >
-                                                Reject
-                                              </Button>
-                                              <Button
-                                                className="whitespace-nowrap ms-5 "
-                                                variant="contained"
-                                                color="secondary"
-                                                style={{
-                                                  marginTop: "10px",
-                                                }}
-                                                onClick={(e) =>
-                                                  handelApproveImpl(e, task)
-                                                }
-                                              >
-                                                Approve
-                                              </Button>
-                                            </div>
+                                                  <FormControl
+                                                    fullWidth
+                                                    sx={{
+                                                      m: 1,
+                                                      maxWidth: "100%",
+                                                    }}
+                                                  >
+                                                    <span className="font-semibold leading-none">
+                                                      Comments*
+                                                    </span>
+                                                    <OutlinedInput
+                                                      id="reasonForNewDocument"
+                                                      name="reasonForNewDocument"
+                                                      onChange={(e) =>
+                                                        setComments(
+                                                          e.target.value
+                                                        )
+                                                      }
+                                                      label="Reason For Change*"
+                                                      className="mt-5"
+                                                    />
+                                                  </FormControl>
+                                                </Box>
+                                              </div>
+                                            )}
+                                            {currentActivityForm.canEdit && (
+                                              <div className="flex justify-start ">
+                                                <Button
+                                                  className="whitespace-nowrap ms-5 "
+                                                  variant="contained"
+                                                  color="secondary"
+                                                  style={{
+                                                    marginTop: "10px",
+                                                    backgroundColor: "white",
+                                                    color: "black",
+                                                  }}
+                                                  onClick={(e) =>
+                                                    handelRejectImpl(e, task)
+                                                  }
+                                                >
+                                                  Reject
+                                                </Button>
+                                                <Button
+                                                  className="whitespace-nowrap ms-5 "
+                                                  variant="contained"
+                                                  color="secondary"
+                                                  style={{
+                                                    marginTop: "10px",
+                                                  }}
+                                                  onClick={(e) =>
+                                                    handelApproveImpl(e, task)
+                                                  }
+                                                >
+                                                  Approve
+                                                </Button>
+                                              </div>
+                                            )}
                                           </>
                                         )}
                                     </div>
@@ -2397,51 +2690,53 @@ function Course() {
                               className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
                               style={{ width: "100%" }}
                             >
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  flexWrap: "wrap",
-                                }}
-                              >
-                                <FormControl
-                                  fullWidth
+                              {currentActivityForm.canEdit && (
+                                <Box
                                   sx={{
-                                    m: 1,
-                                    maxWidth: "100%",
+                                    display: "flex",
+                                    flexWrap: "wrap",
                                   }}
                                 >
-                                  <span className="font-semibold leading-none">
-                                    Select Approver*
-                                  </span>
-                                  <Box
+                                  <FormControl
+                                    fullWidth
                                     sx={{
-                                      display: "flex",
-                                      flexWrap: "wrap",
-                                      marginTop: "10px",
+                                      m: 1,
+                                      maxWidth: "100%",
                                     }}
                                   >
-                                    <FormControl fullWidth sx={{ m: 1 }}>
-                                      <Select
-                                        labelId="functionName-label"
-                                        id="docControllerId"
-                                        name="docControllerId"
-                                        // value={documentState.docControllerId}
-                                        // onChange={handleChange}
-                                        label="Document Controller *"
-                                      >
-                                        {docStaff.map((option) => (
-                                          <MenuItem
-                                            key={option.id}
-                                            value={option.value}
-                                          >
-                                            {option.text}
-                                          </MenuItem>
-                                        ))}
-                                      </Select>
-                                    </FormControl>
-                                  </Box>
-                                </FormControl>
-                              </Box>
+                                    <span className="font-semibold leading-none">
+                                      Select Approver*
+                                    </span>
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        marginTop: "10px",
+                                      }}
+                                    >
+                                      <FormControl fullWidth sx={{ m: 1 }}>
+                                        <Select
+                                          labelId="functionName-label"
+                                          id="docControllerId"
+                                          name="docControllerId"
+                                          // value={documentState.docControllerId}
+                                          // onChange={handleChange}
+                                          label="Document Controller *"
+                                        >
+                                          {docStaff.map((option) => (
+                                            <MenuItem
+                                              key={option.id}
+                                              value={option.value}
+                                            >
+                                              {option.text}
+                                            </MenuItem>
+                                          ))}
+                                        </Select>
+                                      </FormControl>
+                                    </Box>
+                                  </FormControl>
+                                </Box>
+                              )}
                               <div>&nbsp;</div>
 
                               <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
@@ -2450,21 +2745,25 @@ function Course() {
                                   class="flex items-center w-full  border-b justify-between"
                                 ></div>
                               </div>
-                              <div className="flex justify-end ">
-                                {impActions.map((btn) => (
-                                  <Button
-                                    className="whitespace-nowrap ms-5 "
-                                    variant="contained"
-                                    color="secondary"
-                                    style={{
-                                      marginTop: "10px",
-                                    }}
-                                    onClick={(e) => SubmitImpCreate(e, btn.uid)}
-                                  >
-                                    {btn.name}
-                                  </Button>
-                                ))}
-                              </div>
+                              {currentActivityForm.canExecute && (
+                                <div className="flex justify-end ">
+                                  {impActions.map((btn) => (
+                                    <Button
+                                      className="whitespace-nowrap ms-5 "
+                                      variant="contained"
+                                      color="secondary"
+                                      style={{
+                                        marginTop: "10px",
+                                      }}
+                                      onClick={(e) =>
+                                        SubmitImpCreate(e, btn.uid)
+                                      }
+                                    >
+                                      {btn.name}
+                                    </Button>
+                                  ))}
+                                </div>
+                              )}
                             </div>
                           )}
                         <CustomTabPanel value={value} index={1}>
@@ -2476,12 +2775,31 @@ function Course() {
                                     <input
                                       type="checkbox"
                                       checked={item.isChecked}
-                                      style={{ margin: "5px" }}
+                                      style={{
+                                        margin: "5px",
+                                        color:
+                                          currentActivityForm.canEdit == false
+                                            ? "grey"
+                                            : "black",
+                                      }}
+                                      disabled={
+                                        currentActivityForm.canEdit == false
+                                      }
                                       onChange={() => {
                                         handleCheckboxChange(item.id);
                                       }}
                                     />
-                                    {item.item}{" "}
+                                    <span
+                                      style={{
+                                        margin: "5px",
+                                        color:
+                                          currentActivityForm.canEdit == false
+                                            ? "grey"
+                                            : "black",
+                                      }}
+                                    >
+                                      {item.item}
+                                    </span>{" "}
                                   </label>
                                 </li>
                               ))}
@@ -3097,25 +3415,29 @@ function Course() {
                       <div>&nbsp;</div>
                     </Paper>
                     <div>&nbsp;</div>
-                    <div
-                      _ngcontent-fyk-c288=""
-                      class="flex items-center w-full  border-b justify-between"
-                    ></div>
-                    <div className="flex justify-end ">
-                      {closeActions.map((btn) => {
-                        <Button
-                          className="whitespace-nowrap ms-5 "
-                          variant="contained"
-                          color="secondary"
-                          style={{
-                            marginTop: "10px",
-                          }}
-                          onClick={(e) => handelCloseMoc(btn.uid)}
-                        >
-                          {btn.name}
-                        </Button>;
-                      })}
-                    </div>
+                    {currentActivityForm.canEdit && (
+                      <>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="flex items-center w-full  border-b justify-between"
+                        ></div>
+                        <div className="flex justify-end ">
+                          {closeActions.map((btn) => (
+                            <Button
+                              className="whitespace-nowrap ms-5 "
+                              variant="contained"
+                              color="secondary"
+                              style={{
+                                marginTop: "10px",
+                              }}
+                              onClick={(e) => handelCloseMoc(btn.uid)}
+                            >
+                              {btn.name}
+                            </Button>
+                          ))}
+                        </div>
+                      </>
+                    )}
                   </Paper>
                 )}
               </div>
@@ -3239,29 +3561,32 @@ function Course() {
                                         Task #{imptsk?.id}
                                       </span>
                                     </div>
-
-                                    <div className="task-button ml-auto">
-                                      <button
-                                        className="task-mark-reviewed-button mat-stroked-button"
-                                        onClick={() => handelreview(imptsk.id)}
-                                      >
-                                        {reviewed ? (
-                                          <span
-                                            className="mat-button-wrapper"
-                                            style={{
-                                              backgroundColor:
-                                                "rgba(220,252,231)",
-                                            }}
-                                          >
-                                            You have reviewed this just now
-                                          </span>
-                                        ) : (
-                                          <span className="mat-button-wrapper">
-                                            Click here to mark as reviewed
-                                          </span>
-                                        )}
-                                      </button>
-                                    </div>
+                                    {currentActivityForm.canEdit && (
+                                      <div className="task-button ml-auto">
+                                        <button
+                                          className="task-mark-reviewed-button mat-stroked-button"
+                                          onClick={() =>
+                                            handelreview(imptsk.id)
+                                          }
+                                        >
+                                          {reviewed ? (
+                                            <span
+                                              className="mat-button-wrapper"
+                                              style={{
+                                                backgroundColor:
+                                                  "rgba(220,252,231)",
+                                              }}
+                                            >
+                                              You have reviewed this just now
+                                            </span>
+                                          ) : (
+                                            <span className="mat-button-wrapper">
+                                              Click here to mark as reviewed
+                                            </span>
+                                          )}
+                                        </button>
+                                      </div>
+                                    )}
                                   </div>
                                   <div className="task-details px-6 mt-2">
                                     <div className="task-detail prose prose-sm max-w-5xl">
@@ -3336,52 +3661,54 @@ function Course() {
                                       </div>
                                     </div>
                                     <div>&nbsp;</div>
-                                    <div className="mat-form-field-wrapper">
-                                      <div className="mat-form-field-flex">
-                                        <img
-                                          src="/assets/images/etc/userpic.png"
-                                          alt="Card cover image"
-                                          className="rounded-full mr-4"
-                                          style={{
-                                            width: "5rem",
-                                            height: "5rem",
-                                          }}
-                                        />
-                                        <div className="mat-form-field-infix">
-                                          <textarea
-                                            rows="2"
-                                            className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                            placeholder="Write a comment..."
-                                            id="ImpTaskReview265"
-                                            data-placeholder="Write a comment..."
-                                            aria-invalid="false"
-                                            aria-required="false"
-                                            style={{ height: "36px" }}
-                                          ></textarea>
-                                          <button
-                                            className="mat-focus-indicator mat-raised-button mat-button-base"
-                                            style={{ float: "right" }}
-                                          >
-                                            <span className="mat-button-wrapper">
-                                              Save
-                                            </span>
-                                            <span className="mat-ripple mat-button-ripple"></span>
-                                            <span className="mat-button-focus-overlay"></span>
-                                          </button>
-                                          <span className="mat-form-field-label-wrapper"></span>
+                                    {currentActivityForm.canEdit && (
+                                      <div className="mat-form-field-wrapper">
+                                        <div className="mat-form-field-flex">
+                                          <img
+                                            src="/assets/images/etc/userpic.png"
+                                            alt="Card cover image"
+                                            className="rounded-full mr-4"
+                                            style={{
+                                              width: "5rem",
+                                              height: "5rem",
+                                            }}
+                                          />
+                                          <div className="mat-form-field-infix">
+                                            <textarea
+                                              rows="2"
+                                              className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                              placeholder="Write a comment..."
+                                              id="ImpTaskReview265"
+                                              data-placeholder="Write a comment..."
+                                              aria-invalid="false"
+                                              aria-required="false"
+                                              style={{ height: "36px" }}
+                                            ></textarea>
+                                            <button
+                                              className="mat-focus-indicator mat-raised-button mat-button-base"
+                                              style={{ float: "right" }}
+                                            >
+                                              <span className="mat-button-wrapper">
+                                                Save
+                                              </span>
+                                              <span className="mat-ripple mat-button-ripple"></span>
+                                              <span className="mat-button-focus-overlay"></span>
+                                            </button>
+                                            <span className="mat-form-field-label-wrapper"></span>
+                                          </div>
+                                        </div>
+
+                                        <div className="mat-form-field-subscript-wrapper">
+                                          <div
+                                            className="mat-form-field-hint-wrapper"
+                                            style={{
+                                              opacity: 1,
+                                              transform: "translateY(0%)",
+                                            }}
+                                          ></div>
                                         </div>
                                       </div>
-
-                                      <div className="mat-form-field-subscript-wrapper">
-                                        <div
-                                          className="mat-form-field-hint-wrapper"
-                                          style={{
-                                            opacity: 1,
-                                            transform: "translateY(0%)",
-                                          }}
-                                        ></div>
-                                      </div>
-                                    </div>
+                                    )}
                                   </div>
                                 </td>
                               </tr>
@@ -3433,53 +3760,57 @@ function Course() {
                           className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
                           style={{ width: "100%" }}
                         >
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexWrap: "wrap",
-                            }}
-                          >
-                            <FormControl
-                              fullWidth
+                          {currentActivityForm.canEdit && (
+                            <Box
                               sx={{
-                                m: 1,
-                                maxWidth: "100%",
+                                display: "flex",
+                                flexWrap: "wrap",
                               }}
                             >
-                              <span className="font-semibold leading-none">
-                                Comment
-                              </span>
-                              <OutlinedInput
-                                id="reasonForNewDocument"
-                                name="reasonForNewDocument"
-                                onChange={handleChangeRemark}
-                                label="Reason For Change*"
-                                className="mt-5"
-                              />
-                            </FormControl>
-                          </Box>
-                          <div className="flex justify-end ">
-                            {appActions.map((btn) => (
-                              <Button
-                                className="whitespace-nowrap ms-5 "
-                                variant="contained"
-                                color="secondary"
-                                style={{
-                                  marginTop: "10px",
+                              <FormControl
+                                fullWidth
+                                sx={{
+                                  m: 1,
+                                  maxWidth: "100%",
                                 }}
-                                onClick={(e) =>
-                                  SubmitApprovelCreate(
-                                    e,
-                                    btn.uid,
-                                    btn.name,
-                                    btn.type
-                                  )
-                                }
                               >
-                                {btn.name}
-                              </Button>
-                            ))}
-                          </div>
+                                <span className="font-semibold leading-none">
+                                  Comment
+                                </span>
+                                <OutlinedInput
+                                  id="reasonForNewDocument"
+                                  name="reasonForNewDocument"
+                                  onChange={handleChangeRemark}
+                                  label="Reason For Change*"
+                                  className="mt-5"
+                                />
+                              </FormControl>
+                            </Box>
+                          )}
+                          {currentActivityForm.canExecute && (
+                            <div className="flex justify-end ">
+                              {appActions.map((btn) => (
+                                <Button
+                                  className="whitespace-nowrap ms-5 "
+                                  variant="contained"
+                                  color="secondary"
+                                  style={{
+                                    marginTop: "10px",
+                                  }}
+                                  onClick={(e) =>
+                                    SubmitApprovelCreate(
+                                      e,
+                                      btn.uid,
+                                      btn.name,
+                                      btn.type
+                                    )
+                                  }
+                                >
+                                  {btn.name}
+                                </Button>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       )}
                     </Paper>
@@ -3570,30 +3901,33 @@ function Course() {
                           course={step.isComplete === true ? 100 : 0}
                         />
                       </StepContent>
-                      <StepContent
-                        style={{ fontSize: "10px" }}
-                        className="pt-4"
-                      >
-                        By{" "}
-                        <b>
-                          {step.targetUsers && step.targetUsers.length > 0
-                            ? step.targetUsers[0]
-                            : ""}
-                        </b>
-                      </StepContent>
-                      <StepContent style={{ fontSize: "10px" }}>
-                        Started at <b>{formatDate(step.actualStartDate)}</b>
-                      </StepContent>
-                      <StepContent style={{ fontSize: "10px" }}>
-                        {step.actualEndDate === null ? (
-                          ""
-                        ) : (
-                          <>
-                            {step.status} at{" "}
-                            <b>{formatDate(step.actualEndDate)}</b>
-                          </>
-                        )}
-                      </StepContent>
+
+                      <>
+                        <StepContent
+                          style={{ fontSize: "10px" }}
+                          className="pt-4"
+                        >
+                          By{" "}
+                          <b>
+                            {step.targetUsers && step.targetUsers.length > 0
+                              ? step.targetUsers[0]
+                              : ""}
+                          </b>
+                        </StepContent>
+                        <StepContent style={{ fontSize: "10px" }}>
+                          Started at <b>{formatDate(step.actualStartDate)}</b>
+                        </StepContent>
+                        <StepContent style={{ fontSize: "10px" }}>
+                          {step.actualEndDate === null ? (
+                            ""
+                          ) : (
+                            <>
+                              {step.status} at{" "}
+                              <b>{formatDate(step.actualEndDate)}</b>
+                            </>
+                          )}
+                        </StepContent>
+                      </>
                     </Step>
                   ))}
                 </Stepper>
