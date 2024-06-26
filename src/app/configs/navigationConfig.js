@@ -198,6 +198,7 @@ const navigationConfig1 = [
         title: "Security",
         type: "collapse",
         icon: "heroicons-outline:lock-closed",
+        feature: "RLE",
         children: [
           {
             id: "security.Role",
@@ -205,6 +206,7 @@ const navigationConfig1 = [
             type: "item",
             url: "/security/role",
             end: true,
+            feature: "RLE",
           },
           {
             id: "security.Access",
@@ -212,6 +214,7 @@ const navigationConfig1 = [
             type: "item",
             url: "/security/access",
             end: true,
+            feature: "ACC",
           },
         ],
       },
