@@ -547,7 +547,7 @@ function Course() {
           case "Evaluation":
             apiAuth
               .get(
-                `/ChangeEvaluation/Get/${evaluationId}/${matchingActivity.formUID}/${matchingActivity.version}`
+                `/ChangeEvaluation/Get/${evaluationId}/${matchingActivity?.formUID ? matchingActivity?.formUID : null}/${matchingActivity.version}`
               )
               .then((resp) => {
                 const evaluationIds = resp.data.data.id;
