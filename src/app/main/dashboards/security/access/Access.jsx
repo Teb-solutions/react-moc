@@ -80,7 +80,7 @@ const Access = () => {
       .post("/RoleFeature/Create", {
         featureId: featureId,
         roleId: roleId,
-        isActive: !isActive,
+        // isActive: !isActive,
       })
       .then((response) => {
         console.log("API response:", response.data);

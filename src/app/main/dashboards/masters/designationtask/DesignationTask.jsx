@@ -25,6 +25,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import SearchIcon from "@mui/icons-material/Search";
 import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
+import { FormControl } from "@mui/base";
 
 function createData(
   index,
@@ -112,6 +113,7 @@ export default function StickyHeadTable() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [particularList, setParticularList] = useState([]);
+  const [errors, setErrors] = useState({});
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
@@ -186,12 +188,16 @@ export default function StickyHeadTable() {
     getRecords();
   }, [dense]);
 
-  const handelAdd = (event) => {
+  const handleAdd = (event) => {
     const { name, value } = event.target;
     setLookUpAdd({
       ...lookupAdd,
       [name]: value,
     });
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
+    setErrors({});
   };
 
   const handleOpen = () => {
@@ -224,19 +230,34 @@ export default function StickyHeadTable() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const handleSubmit = () => {
-    if (lookupAdd.crudMode == "UPDATE") {
-      apiAuth.put(`/DesignationTask/${Id}`, lookupAdd).then((resp) => {
-        setOpen(false);
 
-        getRecords();
-      });
-    } else {
-      apiAuth.post(`/DesignationTask/Create`, lookupAdd).then((resp) => {
-        setOpen(false);
+  const validate = () => {
+    let tempErrors = {};
+    if (!lookupAdd.parentId) tempErrors.parentId = "Designation is required";
+    if (!lookupAdd.code) tempErrors.code = "Code is required";
+    if (!lookupAdd.description)
+      tempErrors.description = "Description is required";
 
-        getRecords();
-      });
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      if (lookupAdd.crudMode == "UPDATE") {
+        apiAuth.put(`/DesignationTask/${Id}`, lookupAdd).then((resp) => {
+          setOpen(false);
+
+          getRecords();
+        });
+      } else {
+        apiAuth.post(`/DesignationTask/Create`, lookupAdd).then((resp) => {
+          setOpen(false);
+
+          getRecords();
+        });
+      }
     }
   };
 
@@ -284,121 +305,126 @@ export default function StickyHeadTable() {
         }}
       >
         <Fade in={open}>
-          <Box sx={style}>
+          <Box
+            sx={{
+              width: 400,
+              bgcolor: "background.paper",
+              borderRadius: "16px",
+              boxShadow: 24,
+              p: 0,
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
             <Box
               style={{
-                padding: "30px",
+                padding: "20px",
                 backgroundColor: "#4f46e5",
                 borderTopLeftRadius: "16px",
                 borderTopRightRadius: "16px",
+                color: "white",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              <div className="flex justify-between text-white">
-                <span>{lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}</span>
-                <span onClick={handleClose}>X</span>
-              </div>
+              <span>{lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}</span>
+              <span onClick={handleClose} style={{ cursor: "pointer" }}>
+                X
+              </span>
             </Box>
-            <div style={{ textAlign: "center", marginTop: "30px" }}>
-              <Box
-                sx={{ display: "flex", flexWrap: "wrap", marginTop: "15px" }}
-              >
-                <Select
-                  labelId="functionName-label"
-                  id="designationId"
-                  name="designationId"
-                  value={lookupAdd.designationId}
-                  onChange={handelAdd}
-                  label="Particular"
-                >
-                  {particularList.map((option) => (
-                    <MenuItem key={option.id} value={option.value}>
-                      {option.text}
-                    </MenuItem>
-                  ))}
-                </Select>
+            <Box sx={{ p: 4 }}>
+              <Box sx={{ mb: 3 }}>
+                <FormControl sx={{ m: 1 }}>
+                  <InputLabel id="functionName-label">Designation *</InputLabel>
+
+                  <Select
+                    labelId="functionName-label"
+                    id="designationId"
+                    name="designationId"
+                    value={lookupAdd.designationId}
+                    onChange={handleAdd}
+                    label="Designation *"
+                    fullWidth
+                    error={!!errors.parentId}
+                  >
+                    {particularList.map((option) => (
+                      <MenuItem key={option.id} value={option.value}>
+                        {option.text}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.parentId && (
+                    <span style={{ color: "red" }}>{errors.parentId}</span>
+                  )}
+                </FormControl>
               </Box>
-              <Box
-                component="form"
-                sx={{
-                  "& > :not(style)": { m: 1 },
-                }}
-                noValidate
-                autoComplete="off"
-                sty
-              >
+              <Box sx={{ mb: 3 }}>
                 <TextField
-                  id="outlined-basic"
-                  className="flex-grow-1 "
-                  label="Name"
-                  name="name"
-                  value={lookupAdd.name}
+                  id="code"
+                  fullWidth
+                  label="Code *"
+                  name="code"
+                  value={lookupAdd.code}
                   variant="outlined"
-                  onChange={handelAdd}
+                  onChange={handleAdd}
+                  error={!!errors.code}
+                  helperText={errors.code}
                 />
               </Box>
-              <Box
-                component="form"
-                noValidate
-                autoComplete="off"
-                sx={{
-                  "& > :not(style)": { m: 1 },
-                }}
-              >
+              <Box>
                 <TextField
-                  id="outlined-basic"
-                  className="flex-grow-1 "
-                  label="Description"
+                  id="description"
+                  fullWidth
+                  label="Description *"
                   name="description"
                   value={lookupAdd.description}
                   variant="outlined"
-                  onChange={handelAdd}
+                  onChange={handleAdd}
+                  error={!!errors.description}
+                  helperText={errors.description}
                 />
               </Box>
-            </div>
-
-            <div
-              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-              style={{
-                marginTop: "25px",
-                marginBottom: "20px",
-
-                justifyContent: "end",
-                backgroundColor: " rgba(248,250,252)",
-                padding: "10px",
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                backgroundColor: "rgba(248, 250, 252)",
+                p: 2,
+                borderBottomLeftRadius: "16px",
+                borderBottomRightRadius: "16px",
               }}
             >
               <Button
-                className="whitespace-nowrap"
                 variant="contained"
-                color="primary"
                 style={{
-                  padding: "15px",
+                  marginRight: "8px",
+                  padding: "10px 20px",
                   backgroundColor: "white",
                   color: "black",
                   border: "1px solid grey",
-                  paddingLeft: "25px",
-                  paddingRight: "25px",
                 }}
                 onClick={handleClose}
               >
                 Cancel
               </Button>
               <Button
-                className="whitespace-nowrap"
                 variant="contained"
-                color="secondary"
+                color="primary"
                 style={{
-                  padding: "15px",
+                  padding: "10px 20px",
                   backgroundColor: "#4f46e5",
-                  paddingLeft: "25px",
-                  paddingRight: "25px",
+                  color: "white",
                 }}
                 type="submit"
                 onClick={handleSubmit}
               >
-                Update
+                Submit
               </Button>
-            </div>
+            </Box>
           </Box>
         </Fade>
       </Modal>

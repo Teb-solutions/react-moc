@@ -103,6 +103,7 @@ export default function StickyHeadTable() {
   const [dense, setDense] = useState(false);
   const [deletes, setDelete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [errors, setErrors] = useState({});
 
   const [Id, setId] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
@@ -180,12 +181,16 @@ export default function StickyHeadTable() {
     getRecords();
   }, [dense]);
 
-  const handelAdd = (event) => {
+  const handleAdd = (event) => {
     const { name, value } = event.target;
     setLookUpAdd({
       ...lookupAdd,
       [name]: value,
     });
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
+    setErrors({});
   };
 
   const handleOpen = () => {
@@ -215,19 +220,34 @@ export default function StickyHeadTable() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const handleSubmit = () => {
-    if (lookupAdd.crudMode == "UPDATE") {
-      apiAuth.put(`/LookupData/Update/${Id}`, lookupAdd).then((resp) => {
-        setOpen(false);
 
-        getRecords();
-      });
-    } else {
-      apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
-        setOpen(false);
+  const validate = () => {
+    let tempErrors = {};
 
-        getRecords();
-      });
+    if (!lookupAdd.code) tempErrors.code = "Code is required";
+    if (!lookupAdd.description)
+      tempErrors.description = "Description is required";
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validate()) {
+      if (lookupAdd.crudMode == "UPDATE") {
+        apiAuth.put(`/LookupData/Update/${Id}`, lookupAdd).then((resp) => {
+          setOpen(false);
+
+          getRecords();
+        });
+      } else {
+        apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
+          setOpen(false);
+
+          getRecords();
+        });
+      }
     }
   };
 
@@ -300,12 +320,14 @@ export default function StickyHeadTable() {
               >
                 <TextField
                   id="outlined-basic"
-                  label="Code"
+                  label="Code *"
                   className="flex-grow-1 "
                   name="code"
                   value={lookupAdd.code}
                   variant="outlined"
-                  onChange={handelAdd}
+                  onChange={handleAdd}
+                  error={!!errors.code}
+                  helperText={errors.code}
                 />
               </Box>
               <Box
@@ -319,11 +341,13 @@ export default function StickyHeadTable() {
                 <TextField
                   id="outlined-basic"
                   className="flex-grow-1 "
-                  label="Description"
+                  label="Description *"
                   name="description"
                   value={lookupAdd.description}
                   variant="outlined"
-                  onChange={handelAdd}
+                  onChange={handleAdd}
+                  error={!!errors.description}
+                  helperText={errors.description}
                 />
               </Box>
             </div>

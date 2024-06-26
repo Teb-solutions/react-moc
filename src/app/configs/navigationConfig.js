@@ -9,14 +9,13 @@ i18next.addResourceBundle("ar", "navigation", ar);
 
 const storedFeature = localStorage.getItem("features");
 const feature = storedFeature ? storedFeature : [];
+// console.log(feature, "888");
 /**
  * The navigationConfig object is an array of navigation items for the Fuse application.
  */
 const navigationConfig1 = [
   {
     id: "dashboards",
-    // title: 'Dashboards',
-    // subtitle: 'Unique dashboard designs',
     type: "group",
     icon: "heroicons-outline:home",
     translate: "DASHBOARDS",
@@ -44,7 +43,6 @@ const navigationConfig1 = [
         url: "/task",
         feature: "TASK",
       },
-
       {
         id: "session.request",
         title: " Session List",
@@ -81,18 +79,21 @@ const navigationConfig1 = [
             type: "item",
             url: "/masters/department",
             end: true,
+            feature: "MST",
           },
           {
             id: "masters.Designation",
             title: "Designation",
             type: "item",
             url: "/masters/designation",
+            feature: "MST",
           },
           {
             id: "masters.Division",
             title: "Division",
             type: "item",
             url: "/masters/division",
+            feature: "MST",
           },
           {
             id: "masters.Function",
@@ -100,96 +101,112 @@ const navigationConfig1 = [
             type: "item",
             url: "/masters/function",
             end: true,
+            feature: "MST",
           },
           {
             id: "masters.Location",
             title: "Location",
             type: "item",
             url: "/masters/location",
+            feature: "MST",
           },
           {
             id: "masters.activity",
             title: "Activity",
             type: "item",
             url: "/masters/activity",
+            feature: "MST",
           },
           {
             id: "masters.highrisk",
             title: "High Risk Activity",
             type: "item",
             url: "/masters/highriskactivity",
+            feature: "MST",
           },
           {
             id: "masters.changeevaluation",
             title: "Change Evaluation",
             type: "item",
             url: "/masters/changeevaluation",
+            feature: "MST",
           },
           {
             id: "masters.particular",
             title: "Particular",
             type: "item",
             url: "/masters/particular",
+            feature: "MST",
           },
           {
             id: "masters.particularsubcategory",
             title: "Particular Sub Category ",
             type: "item",
             url: "/masters/particularsubcategory",
+            feature: "MST",
           },
           {
             id: "masters.changeimpacthazards",
             title: "Change Impact Hazards",
             type: "item",
             url: "/masters/changeimpacthazards",
+            feature: "MST",
           },
           {
             id: "masters.Site",
             title: "Site",
             type: "item",
             url: "/masters/site",
+            feature: "MST",
           },
           {
             id: "masters.ImplementationReview",
             title: "Implementation Review",
             type: "item",
             url: "/masters/implementationreview",
+            feature: "MST",
           },
           {
             id: "masters.PSSRCategory",
             title: "PSSR Category",
             type: "item",
             url: "/masters/pssrcategory",
+            feature: "MST",
           },
           {
             id: "masters.PSSRSubCategory",
             title: "PSSR Sub Category",
             type: "item",
             url: "/masters/pssrsubcategory",
+            feature: "MST",
           },
           {
             id: "masters.RiskTime",
             title: "Risk Time",
             type: "item",
             url: "/masters/risktime",
+            feature: "MST",
           },
           {
             id: "masters.RiskFrequencyDetails",
             title: "Risk Frequency Details",
             type: "item",
             url: "/masters/riskfrequencydetails",
+            feature: "MST",
           },
           {
             id: "masters.RistMatrix",
             title: "Risk Matrix",
             type: "item",
             url: "/masters/riskmatrix",
+            feature: "MST",
           },
           {
             id: "masters.DesignationTask",
             title: "Designation Task",
             type: "item",
             url: "/masters/designationtask",
+            feature: "MST",
           },
         ],
       },
@@ -198,7 +215,7 @@ const navigationConfig1 = [
         title: "Security",
         type: "collapse",
         icon: "heroicons-outline:lock-closed",
-        feature: "RLE",
+        feature: "RLE,ACC",
         children: [
           {
             id: "security.Role",
@@ -218,20 +235,6 @@ const navigationConfig1 = [
           },
         ],
       },
-      // {
-      // 	id: 'dashboards.finance',
-      // 	title: 'Finance',
-      // 	type: 'item',
-      // 	icon: 'heroicons-outline:cash',
-      // 	url: '/dashboards/finance'
-      // },
-      // {
-      // 	id: 'dashboards.crypto',
-      // 	title: 'Crypto',
-      // 	type: 'item',
-      // 	icon: 'heroicons-outline:currency-dollar',
-      // 	url: '/dashboards/crypto'
-      // }
     ],
   },
 ];
@@ -242,15 +245,43 @@ const shouldIncludeItem = (item) => {
     "session.request",
     "notifications.request",
   ];
-  return defaultItems.includes(item.id) || feature.includes(item.feature);
+
+  if (defaultItems.includes(item.id)) {
+    return true;
+  }
+
+  if (item.feature) {
+    const itemFeatures = item.feature.split(",");
+    return itemFeatures.some((f) => feature.includes(f.trim()));
+  }
+
+  if (item.children) {
+    return item.children.some(shouldIncludeItem);
+  }
+
+  return false;
 };
 
 // Filter navigationConfig based on the features array and default items
-const navigationConfig = navigationConfig1
-  .map((group) => ({
-    ...group,
-    children: group.children.filter(shouldIncludeItem),
-  }))
-  .filter((group) => group.children.length > 0);
+const filterNavigation = (config) => {
+  return config
+    .map((group) => ({
+      ...group,
+      children: group.children
+        .map((item) => {
+          if (item.children) {
+            return {
+              ...item,
+              children: item.children.filter(shouldIncludeItem),
+            };
+          }
+          return item;
+        })
+        .filter(shouldIncludeItem),
+    }))
+    .filter((group) => group.children.length > 0);
+};
+
+const navigationConfig = filterNavigation(navigationConfig1);
 
 export default navigationConfig;
