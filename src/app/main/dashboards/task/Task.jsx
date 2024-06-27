@@ -117,9 +117,11 @@ const Task = () => {
     documentId: "",
     changeRequestToken: "",
   });
+  console.log(selectedFile);
 
   const taskType = router["*"];
 
+  console.log(selectedFile.documentId, "seleee");
   useEffect(() => {
     setPriority(task.priority);
   }, [task]);
@@ -216,25 +218,6 @@ const Task = () => {
     );
     return days;
   }
-
-  const handleSubmit = () => {
-    const updatedTask = {
-      ...task,
-      notes: comments,
-      documentId: selectedFile.documentId,
-    };
-
-    apiAuth
-      .put(`/Task/Update?id=${taskType}`, updatedTask)
-      .then((response) => {
-        setOpen(false);
-        console.log(response);
-      })
-      .catch((error) => {
-        setOpen(false);
-        console.error(error);
-      });
-  };
 
   useEffect(() => {
     if (sidebarOpen) {
@@ -342,7 +325,36 @@ const Task = () => {
       .then((response) => {});
   };
 
+  const handleSubmit = () => {
+    const updatedTask = {
+      ...task,
+      notes: comments,
+      documentId: selectedFile.documentId,
+      taskStatus: 2,
+      startedDate: "0001-01-01T00:00:00",
+    };
+    console.log("Payload before API call:", updatedTask);
+    apiAuth
+      .put(`/Task/Update?id=${taskType}`, updatedTask)
+      .then((response) => {
+        setOpen(false);
+        console.log(response);
+      })
+      .catch((error) => {
+        setOpen(false);
+        console.error(error);
+      });
+  };
+
   const handleOpenDocModal = (e, task) => {
+    setFileDetails(false);
+    setSelectedFile({
+      name: "",
+      description: "",
+      type: "",
+      document: "binary",
+      documentType: "ChangeRequest",
+    });
     e.preventDefault();
     setOpenDocModal(true);
     const newGuid = uuidv4();
@@ -376,18 +388,23 @@ const Task = () => {
       setFileUrl(url);
       setFileName(file.name);
     }
+    const fileType = file.type.startsWith("image/")
+      ? file.type.split("/")[1]
+      : file.type;
+
     setSelectedFile({
-      name: e.target.files[0].name,
+      name: file.name,
       description: "",
-      type: e.target.files[0].type,
-      document: e.target.files[0],
-      documentType: "ChangeRequest",
+      type: fileType,
+      document: file,
+      documentType: "Task",
       documentId: selectedFile.documentId,
       changeRequestToken: selectedFile.changeRequestToken,
     });
   };
 
   const handleSubmitDocument = () => {
+    console.log(selectedFile.documentId, "seleee");
     const formData = new FormData();
     formData.append("name", selectedFile.name);
     formData.append("descritpion", selectedFile.description);
@@ -406,7 +423,7 @@ const Task = () => {
         console.log(response.data);
         apiAuth
           .get(
-            `/DocumentManager/DocList/${selectedFile.documentId}/ChangeRequest?changeRequestToken=${selectedFile.changeRequestToken}`
+            `/DocumentManager/DocList/${selectedFile.documentId}/Task?changeRequestToken=${selectedFile.changeRequestToken}`
           )
           .then((response) => {
             setOpenDrawer(false);
@@ -436,19 +453,28 @@ const Task = () => {
   const [documenDowToken, setDocumenDowToken] = useState("");
 
   const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = selectedDocument;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
     apiAuth
-      .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => {});
+      .get(`/DocumentManager/download/${documenDowToken}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", fileName); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed", error);
+      });
   };
 
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);
+    console.log(doc, "doccc");
     setFileDetails(true);
     setDocumenDowToken(doc.token);
   };

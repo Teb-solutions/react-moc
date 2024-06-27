@@ -127,13 +127,16 @@ function Course() {
   const [documenDowToken, setDocumenDowToken] = useState("");
   const [fileName, setFileName] = useState("");
   const [documentCounts, setDocumentCounts] = useState({});
-
+  const [errorsAddTask, setErrorsAddTask] = useState({});
   const [errors, setErrors] = useState([]);
   const [errorsUrl, setErrorsUrl] = useState({});
 
   const [ApprovalManager, setApprovalManager] = useState({});
   const [forms, setForms] = useState([
-    { id: Date.now(), data: { consultedDate: null, consultedStaffId: "" } },
+    {
+      id: Date.now(),
+      data: { consultedDate: new Date(), consultedStaffId: "" },
+    },
   ]);
   const [value, setValue] = useState(0);
   const [valueRemark, setValueRemark] = useState("");
@@ -149,12 +152,13 @@ function Course() {
     isEditable: true,
     taskReviewId: "",
   });
+
   const [taskAdd, setTaskAdd] = useState({
     particular: 0,
     particularSubCategory: 0,
     impacHazards: "",
     taskassignedto: "",
-    dueDate: null,
+    dueDate: new Date(),
     actionHow: "",
     actionWhat: "",
     audit: "",
@@ -169,9 +173,11 @@ function Course() {
     isShowDetail: "",
     parentId: "0",
   });
+
   const [openImplemntationTask, setOpenImplemntationTask] = useState(false);
   const [comments, setComments] = useState("");
   const [reviewed, setReviewed] = useState(false);
+  const [errorss, setErrorStake] = useState("");
 
   const handleOpenImplemntationTask = () => {
     setOpenImplemntationTask(true);
@@ -196,6 +202,11 @@ function Course() {
       ...prevState,
       [name]: value,
     }));
+
+    if (!!errorsAddTask[name]) {
+      setErrorsAddTask({ ...errorsAddTask, [name]: "" });
+    }
+
     if (e.target.name == "particular") {
       apiAuth.get(`/LookupData/Lov/17/${e.target.value}`).then((resp) => {
         setParticularSub(resp.data.data);
@@ -203,13 +214,37 @@ function Course() {
     }
   };
 
+  const validateAddTask = () => {
+    let tempErrors = {};
+
+    if (!taskAdd.particular)
+      tempErrors.particular = "Particular Name is required";
+    if (!taskAdd.particularSubCategory)
+      tempErrors.particularSubCategory = "particular SubCategory  is required";
+    if (!taskAdd.impacHazards)
+      tempErrors.impacHazards = "impact Hazards  is required";
+    if (!taskAdd.actionHow) tempErrors.actionHow = "  Action How  is required";
+    if (!taskAdd.actionWhat)
+      tempErrors.actionWhat = "  Action What is required";
+    if (!taskAdd.taskassignedto)
+      tempErrors.taskassignedto = "Task Assigned Field is required";
+    if (!taskAdd.dueDate) tempErrors.dueDate = "Date Field is required";
+    if (!taskAdd.audit) tempErrors.audit = "Audit Field is required";
+
+    // Add other validations here
+    setErrorsAddTask(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const handelTaskSubmit = (e) => {
-    apiAuth
-      .put(`ChangeImpact/Create/Task/${evaluationId}`, taskAdd)
-      .then((resp) => {
-        setOpenImplemntationTask(false);
-        getRecords();
-      });
+    if (validateAddTask()) {
+      apiAuth
+        .put(`ChangeImpact/Create/Task/${evaluationId}`, taskAdd)
+        .then((resp) => {
+          setOpenImplemntationTask(false);
+          getRecords();
+        });
+    }
   };
 
   const handleChangeRemark = (event) => {
@@ -311,14 +346,21 @@ function Course() {
   };
 
   const handleAddForm = () => {
-    setForms([
+    const newForms = [
       ...forms,
       { id: Date.now(), data: { consultedDate: null, consultedStaffId: "" } },
-    ]);
+    ];
+    setForms(newForms);
+    if (newForms.length > 1) {
+      setErrorStake("");
+    }
   };
 
   const handleRemoveForm = (id) => {
-    setForms(forms.filter((form) => form.id !== id));
+    const newForms = forms.filter((form) => form.id !== id);
+    setForms(newForms);
+    if (newForms.length <= 1)
+      setErrorStake("At least one stakeholder is required.");
   };
 
   const handelNewForm = () => {
@@ -662,6 +704,9 @@ function Course() {
   };
 
   const SubmitApprovel = (e, uid) => {
+    if (forms.length <= 1) {
+      setErrorStake("At least one stakeholder is required.");
+    }
     apiAuth
       .get(
         `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${changeEvaluationId}`
@@ -674,7 +719,7 @@ function Course() {
             formUID: changeEvaluationId,
           })
           .then((resp) => {
-            location.reload();
+            // location.reload();
           });
       });
   };
@@ -695,6 +740,7 @@ function Course() {
         version: appActivity.version,
       })
       .then((resp) => {
+        setValueRemark("");
         getRecords();
       });
   };
@@ -714,6 +760,8 @@ function Course() {
   };
 
   const handelAddStake = () => {
+    setErrorStake("");
+
     setAddStake(true);
 
     apiAuth
@@ -831,16 +879,23 @@ function Course() {
   };
 
   const handleDownload = () => {
-    const link = document.createElement("a");
-    link.href = selectedDocument;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
     apiAuth
-      .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => {});
+      .get(`/DocumentManager/download/${documenDowToken}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", fileName); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed", error);
+      });
   };
 
   const handelCloseMoc = (uid) => {
@@ -1285,8 +1340,8 @@ function Course() {
                                     className="py-0.5 px-3 rounded-full text-sm"
                                     style={{
                                       backgroundColor:
-                                        list.comments === "" ||
-                                        list.comments === null
+                                        list.comments == "" ||
+                                        list.comments == null
                                           ? "rgba(252,165,165)"
                                           : "rgba(134,239,172)",
                                       padding: "5px",
@@ -1362,11 +1417,17 @@ function Course() {
                                   <div
                                     className="py-0.5 px-3 rounded-full text-sm"
                                     style={{
-                                      backgroundColor: "rgba(134,239,172)",
+                                      backgroundColor:
+                                        list.comments == "" ||
+                                        list.comments == null
+                                          ? "rgba(252,165,165)"
+                                          : "rgba(134,239,172)",
                                       padding: "5px",
                                     }}
                                   >
-                                    Comments Added
+                                    {list.comments === ""
+                                      ? "No Comments Added"
+                                      : "Comments Added"}
                                   </div>
                                 </div>
                               </div>
@@ -1377,19 +1438,34 @@ function Course() {
                                   <div className="mat-expansion-panel-body ng-tns-c137-15">
                                     <div className="mt-2 ng-tns-c137-15">
                                       <div className="prose prose-sm max-w-5xl">
-                                        <div className="ng-star-inserted">
-                                          <span
-                                            className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
-                                            style={{
-                                              backgroundColor:
-                                                "rgba(241,245,249)",
-                                              padding: "10px",
-                                            }}
-                                          >
-                                            Comments
-                                          </span>
-                                          <span>complete</span>
-                                        </div>
+                                        {list.comments ? (
+                                          <div className="ng-star-inserted">
+                                            <span
+                                              className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                              style={{
+                                                backgroundColor:
+                                                  "rgba(241,245,249)",
+                                                padding: "10px",
+                                              }}
+                                            >
+                                              Comments
+                                            </span>
+                                            <span>complete</span>
+                                          </div>
+                                        ) : (
+                                          <div className="ng-star-inserted">
+                                            <span
+                                              className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                              style={{
+                                                backgroundColor:
+                                                  "rgba(241,245,249)",
+                                                padding: "10px",
+                                              }}
+                                            >
+                                              No Comments Added
+                                            </span>
+                                          </div>
+                                        )}
                                       </div>
                                     </div>
                                   </div>
@@ -1400,7 +1476,13 @@ function Course() {
                         ))}
                       {!ChangeEvaluationDetail.length && (
                         <div className="mt-5 mb-4 p-6 py-2">
-                          <h5>No stakeholders added</h5>
+                          <h5>
+                            {errorss ? (
+                              <b className="text-red">{errorss}</b>
+                            ) : (
+                              "No stakeholders added"
+                            )}
+                          </h5>
                         </div>
                       )}
                       <div>&nbsp;</div>
@@ -2955,6 +3037,7 @@ function Course() {
                                         width: 380,
                                         maxWidth: "48%",
                                       }}
+                                      error={!!errorsAddTask.particular}
                                     >
                                       <FormLabel
                                         className="font-medium text-14"
@@ -2977,12 +3060,20 @@ function Course() {
                                           </MenuItem>
                                         ))}
                                       </Select>
+                                      {!!errorsAddTask.particular && (
+                                        <FormHelperText>
+                                          {errorsAddTask.particular}
+                                        </FormHelperText>
+                                      )}
                                     </FormControl>
                                     <FormControl
                                       sx={{
                                         width: 380,
                                         maxWidth: "48%",
                                       }}
+                                      error={
+                                        !!errorsAddTask.particularSubCategory
+                                      }
                                     >
                                       <FormLabel
                                         className="font-medium text-14"
@@ -3005,6 +3096,11 @@ function Course() {
                                           </MenuItem>
                                         ))}
                                       </Select>
+                                      {!!errorsAddTask.particularSubCategory && (
+                                        <FormHelperText>
+                                          {errorsAddTask.particularSubCategory}
+                                        </FormHelperText>
+                                      )}
                                     </FormControl>
                                   </div>
                                 </div>{" "}
@@ -3029,6 +3125,8 @@ function Course() {
                                         name="impacHazards"
                                         onChange={handleChangeAddTask}
                                         value={taskAdd.impacHazards}
+                                        error={!!errorsAddTask.impacHazards}
+                                        helperText={errorsAddTask.impacHazards}
                                       />
                                     </Box>
                                   </div>
@@ -3054,6 +3152,8 @@ function Course() {
                                         name="actionWhat"
                                         onChange={handleChangeAddTask}
                                         value={taskAdd.actionWhat}
+                                        error={!!errorsAddTask.actionWhat}
+                                        helperText={errorsAddTask.actionWhat}
                                       />
                                     </Box>
 
@@ -3069,6 +3169,8 @@ function Course() {
                                         name="actionHow"
                                         onChange={handleChangeAddTask}
                                         value={taskAdd.actionHow}
+                                        error={!!errorsAddTask.actionHow}
+                                        helperText={errorsAddTask.actionHow}
                                       />
                                     </Box>
                                   </div>
@@ -3087,6 +3189,7 @@ function Course() {
                                         width: 380,
                                         maxWidth: "48%",
                                       }}
+                                      error={!!errorsAddTask.taskassignedto}
                                     >
                                       <FormLabel
                                         className="font-medium text-14"
@@ -3109,6 +3212,11 @@ function Course() {
                                           </MenuItem>
                                         ))}
                                       </Select>
+                                      {!!errorsAddTask.taskassignedto && (
+                                        <FormHelperText>
+                                          {errorsAddTask.taskassignedto}
+                                        </FormHelperText>
+                                      )}
                                     </FormControl>
 
                                     <LocalizationProvider
@@ -3118,6 +3226,7 @@ function Course() {
                                         sx={{
                                           marginLeft: "10px",
                                         }}
+                                        error={!!errorsAddTask.dueDate}
                                       >
                                         <FormLabel
                                           className="font-medium text-14"
@@ -3141,6 +3250,11 @@ function Course() {
                                             )}
                                           />
                                         </Box>
+                                        {!!errorsAddTask.dueDate && (
+                                          <FormHelperText>
+                                            {errorsAddTask.dueDate}
+                                          </FormHelperText>
+                                        )}
                                       </FormControl>
                                     </LocalizationProvider>
                                   </div>
@@ -3167,6 +3281,8 @@ function Course() {
                                         name="audit"
                                         onChange={handleChangeAddTask}
                                         value={taskAdd.audit}
+                                        error={!!errorsAddTask.audit}
+                                        helperText={errorsAddTask.audit}
                                       />
                                     </Box>
                                   </div>
@@ -3186,7 +3302,7 @@ function Course() {
                                   }}
                                   onClick={handelTaskSubmit}
                                 >
-                                  Submit
+                                  Save
                                 </Button>
                               </div>
                             </Typography>
