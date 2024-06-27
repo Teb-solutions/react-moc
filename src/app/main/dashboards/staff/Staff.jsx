@@ -16,6 +16,9 @@ import { useParams } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 
 const Task = () => {
+  const storedFeature = localStorage.getItem("features");
+  const feature = storedFeature ? storedFeature : [];
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -361,7 +364,7 @@ const Task = () => {
   return (
     <>
       <ToastContainer />
-      <div className="" style={{ margin: "20px" }}>
+      <div style={{ margin: "20px" }}>
         <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
             id="category-select-label"
@@ -371,10 +374,8 @@ const Task = () => {
           </InputLabel>
         </div>
         <div>&nbsp;</div>
-
         <b style={{ fontSize: "x-large" }}>113 staffs</b>
         <div>&nbsp;</div>
-
         <Box className="flex-grow-2">
           <TextField
             fullWidth
@@ -383,23 +384,26 @@ const Task = () => {
             value={searchTerm}
             onChange={handleSearch}
           />
-          <Button
-            className="whitespace-nowrap"
-            variant="contained"
-            color="secondary"
-            style={{
-              padding: "23px",
-              backgroundColor: "blue",
-              marginLeft: "10px",
-            }}
-            type="submit"
-            onClick={(e) => openSidebar(e, task)}
-          >
-            <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-            Add
-          </Button>
+          {feature.includes("STAC") && (
+            <Button
+              className="whitespace-nowrap"
+              variant="contained"
+              color="secondary"
+              style={{
+                padding: "23px",
+                backgroundColor: "blue",
+                marginLeft: "10px",
+              }}
+              type="submit"
+              onClick={(e) => openSidebar(e, task)}
+            >
+              <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+              Add
+            </Button>
+          )}
         </Box>
       </div>
+
       <div
         _ngcontent-fyk-c288=""
         class="flex items-center w-full  border-b justify-between"
@@ -604,24 +608,26 @@ const Task = () => {
                   {openDetails && (
                     <div style={styles.container}>
                       <Box className="flex-grow-2 justify-end">
-                        <Button
-                          className="whitespace-nowrap"
-                          variant="contained"
-                          style={{
-                            paddingLeft: "23px",
-                            paddingRight: "23px",
-                            backgroundColor: "white",
-                            border: "1px solid black",
-                            marginLeft: "10px",
-                          }}
-                          type="submit"
-                          onClick={(e) => openSidebarEdit(e)}
-                        >
-                          <FuseSvgIcon size={20}>
-                            heroicons-outline:plus
-                          </FuseSvgIcon>
-                          Edit
-                        </Button>
+                        {feature.includes("STAU") && (
+                          <Button
+                            className="whitespace-nowrap"
+                            variant="contained"
+                            style={{
+                              paddingLeft: "23px",
+                              paddingRight: "23px",
+                              backgroundColor: "white",
+                              border: "1px solid black",
+                              marginLeft: "10px",
+                            }}
+                            type="submit"
+                            onClick={(e) => openSidebarEdit(e)}
+                          >
+                            <FuseSvgIcon size={20}>
+                              heroicons-outline:plus
+                            </FuseSvgIcon>
+                            Edit
+                          </Button>
+                        )}
                       </Box>
                       <div style={styles.gridContainerSm}>
                         <div>
