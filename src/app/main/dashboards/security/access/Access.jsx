@@ -71,21 +71,30 @@ const Access = () => {
   };
 
   const handleSwitchChange = (featureId, roleId, isActive) => {
+    // Update the state optimistically
     const updatedList = roleIdList.map((item) =>
       item.featureId === featureId ? { ...item, isActive: !isActive } : item
     );
     setRoleIdList(updatedList);
 
+    // Make the API call
     apiAuth
       .post("/RoleFeature/Create", {
         featureId: featureId,
         roleId: roleId,
-        // isActive: !isActive,
+        isActive: !isActive, // Send the new state to the server
       })
       .then((response) => {
         console.log("API response:", response.data);
+        // Optionally update the state based on the response if needed
+      })
+      .catch((error) => {
+        console.error("API error:", error);
+        // Optionally revert the state update if the API call fails
+        setRoleIdList(roleIdList); // Revert to the original state
       });
   };
+
   return (
     <>
       <div
@@ -194,7 +203,7 @@ const Access = () => {
                                 <FormControlLabel
                                   control={
                                     <Switch
-                                      defaultChecked={detailItem.isActive}
+                                      checked={detailItem.isActive} // Control the Switch with state
                                       onChange={() =>
                                         handleSwitchChange(
                                           detailItem.featureId,
