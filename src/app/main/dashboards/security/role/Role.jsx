@@ -26,6 +26,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
 import { ToastContainer, toast } from "react-toastify";
+import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 
 function createData(
   index,
@@ -38,6 +39,9 @@ function createData(
 }
 
 export default function StickyHeadTable() {
+  const storedFeature = decryptFeature();
+  const feature = storedFeature ? storedFeature : [];
+
   const columns = [
     { id: "index", label: "No", minWidth: 50 },
     {
@@ -56,16 +60,22 @@ export default function StickyHeadTable() {
       format: (value) => value.toFixed(2),
       render: (row) => (
         <div>
-          <Button
-            onClick={() => handleEdit(row)}
-            endIcon={
-              <FuseSvgIcon size={20}>heroicons-solid:pencil</FuseSvgIcon>
-            }
-          ></Button>
-          <Button
-            onClick={() => handleDelete(row)}
-            endIcon={<FuseSvgIcon size={20}>heroicons-solid:trash</FuseSvgIcon>}
-          ></Button>
+          {feature.includes("RLCU") && (
+            <Button
+              onClick={() => handleEdit(row)}
+              endIcon={
+                <FuseSvgIcon size={20}>heroicons-solid:pencil</FuseSvgIcon>
+              }
+            ></Button>
+          )}
+          {feature.includes("RLD") && (
+            <Button
+              onClick={() => handleDelete(row)}
+              endIcon={
+                <FuseSvgIcon size={20}>heroicons-solid:trash</FuseSvgIcon>
+              }
+            ></Button>
+          )}
         </div>
       ),
     },
@@ -454,10 +464,16 @@ export default function StickyHeadTable() {
             <b>Role</b>
           </InputLabel>
           <div className="flex items-center justify-between mt-4">
-            <Button variant="contained" color="secondary" onClick={handleOpen}>
-              <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-              <span className="mx-4 sm:mx-8">Add</span>
-            </Button>
+            {feature.includes("RLC") && (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleOpen}
+              >
+                <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+                <span className="mx-4 sm:mx-8">Add</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>

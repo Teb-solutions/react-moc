@@ -24,6 +24,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import SearchIcon from "@mui/icons-material/Search";
 import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
+import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 
 function createData(index, location, activity, riskevaluation) {
   return { index, location, activity, riskevaluation };

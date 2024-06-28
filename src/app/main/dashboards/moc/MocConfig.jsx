@@ -3,12 +3,13 @@ import authRoles from "../../../auth/authRoles";
 import DocRequest from "./activity/docRequest";
 import Task from "../task/Task";
 import Error404Page from "../../404/Error404Page";
+import { decryptFeature } from "../../sign-in/tabs/featureEncryption";
 const MocApp = lazy(() => import("./Moc"));
 // const DocApp = lazy(() => import('./docevaluation/Doc'));
 /**
  * The ProjectDashboardApp configuration.
  */
-const storedFeature = localStorage.getItem("features");
+const storedFeature = decryptFeature();
 const feature = storedFeature ? storedFeature : [];
 const MocConfig1 = {
   settings: {

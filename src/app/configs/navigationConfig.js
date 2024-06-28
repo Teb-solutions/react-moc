@@ -10,7 +10,6 @@ i18next.addResourceBundle("ar", "navigation", ar);
 
 const storedFeature = decryptFeature();
 const feature = storedFeature ? storedFeature : [];
-console.log("features", feature);
 
 const navigationConfig1 = [
   {

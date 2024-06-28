@@ -26,6 +26,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
 import { FormControl } from "@mui/base";
+import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 
 function createData(
   index,
@@ -52,7 +53,7 @@ function createData(
 }
 
 export default function StickyHeadTable() {
-  const storedFeature = localStorage.getItem("features");
+  const storedFeature = decryptFeature();
   const feature = storedFeature ? storedFeature : [];
   const columns = [
     { id: "index", label: "#", minWidth: 50 },

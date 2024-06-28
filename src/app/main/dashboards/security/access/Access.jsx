@@ -13,6 +13,7 @@ import { List, ListItem, Divider } from "@mui/material";
 import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
 import MocHeader from "../../moc/MocHeader";
+import { encryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 
 const Access = () => {
   const pageLayout = useRef(null);
@@ -22,6 +23,27 @@ const Access = () => {
   const [roleIdList, setRoleIdList] = useState([]);
   const [allExpanded, setAllExpanded] = useState(false);
   const [expandedAccordions, setExpandedAccordions] = useState([]);
+
+  const featureMap = [
+    { id: 1, code: "MST", description: "Master", parentId: 0 },
+    { id: 2, code: "MCRT", description: "Master_Create", parentId: 1 },
+    { id: 3, code: "MUPT", description: "Master_Update", parentId: 1 },
+    { id: 4, code: "MDEL", description: "Master_Delete", parentId: 1 },
+    { id: 5, code: "ACC", description: "Access", parentId: 0 },
+    { id: 6, code: "ACCC", description: "Access_Management", parentId: 5 },
+    { id: 7, code: "RLE", description: "Role", parentId: 0 },
+    { id: 8, code: "RLC", description: "Role_Create", parentId: 7 },
+    { id: 9, code: "RLCU", description: "Role_Update", parentId: 7 },
+    { id: 10, code: "RLD", description: "Role_Delete", parentId: 7 },
+    { id: 11, code: "STA", description: "Staff", parentId: 0 },
+    { id: 12, code: "STAC", description: "Staff_Create", parentId: 11 },
+    { id: 13, code: "STAU", description: "Staff_Update", parentId: 11 },
+    { id: 14, code: "STAD", description: "Staff_Delete", parentId: 11 },
+    { id: 15, code: "REQ", description: "Request", parentId: 0 },
+    { id: 16, code: "REQC", description: "Request_Create", parentId: 15 },
+    { id: 17, code: "TASK", description: "Task", parentId: 0 },
+    { id: 18, code: "TSK", description: "Tasks", parentId: 17 },
+  ];
 
   const handleToggleAll = () => {
     if (allExpanded) {
@@ -63,6 +85,51 @@ const Access = () => {
     getRecords();
   }, []);
 
+  const getFeatureShortForms = (updatedList) => {
+    return updatedList
+      .filter((item) => item.isActive)
+      .map((item) => {
+        const feature = featureMap.find((f) => f.id === item.featureId);
+        return feature ? feature.code : null;
+      })
+      .filter(Boolean); // Remove undefined values
+  };
+
+  const updateFeaturesInCookies = (updatedList) => {
+    // Get short forms from updatedList
+    let activeShortForms = getFeatureShortForms(updatedList);
+
+    // Check and remove parent features if all children are deactivated
+    const parentFeatures = featureMap.filter((f) => f.parentId === 0);
+
+    parentFeatures.forEach((parent) => {
+      const childFeatures = featureMap.filter((f) => f.parentId === parent.id);
+      const allChildrenInactive = childFeatures.every(
+        (child) =>
+          !updatedList.find(
+            (item) => item.featureId === child.id && item.isActive
+          )
+      );
+
+      if (allChildrenInactive) {
+        activeShortForms = activeShortForms.filter(
+          (code) => code !== parent.code
+        );
+      } else {
+        // Add parent if at least one child is active and parent is not already included
+        if (!activeShortForms.includes(parent.code)) {
+          activeShortForms.push(parent.code);
+        }
+      }
+    });
+
+    console.log("updatedList", updatedList);
+    console.log("activeShortForms", activeShortForms);
+
+    // Encrypt and store the active short forms in cookies
+    encryptFeature(activeShortForms);
+  };
+
   const handelRole = (role) => {
     setActiveRole(role.name);
     apiAuth.get(`/RoleFeature/List?roleId=${role.roleId}`).then((resp) => {
@@ -71,13 +138,6 @@ const Access = () => {
   };
 
   const handleSwitchChange = (featureId, roleId, isActive) => {
-    // Update the state optimistically
-    const updatedList = roleIdList.map((item) =>
-      item.featureId === featureId ? { ...item, isActive: !isActive } : item
-    );
-    setRoleIdList(updatedList);
-
-    // Make the API call
     apiAuth
       .post("/RoleFeature/Create", {
         featureId: featureId,
@@ -86,6 +146,15 @@ const Access = () => {
       })
       .then((response) => {
         console.log("API response:", response.data);
+        if (response) {
+          const updatedList = roleIdList.map((item) =>
+            item.featureId === featureId
+              ? { ...item, isActive: !isActive }
+              : item
+          );
+          setRoleIdList(updatedList);
+          updateFeaturesInCookies(updatedList);
+        }
         // Optionally update the state based on the response if needed
       })
       .catch((error) => {

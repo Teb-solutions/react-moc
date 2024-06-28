@@ -14,9 +14,10 @@ import { apiAuth } from "src/utils/http";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import { decryptFeature } from "../../sign-in/tabs/featureEncryption";
 
 const Task = () => {
-  const storedFeature = localStorage.getItem("features");
+  const storedFeature = decryptFeature();
   const feature = storedFeature ? storedFeature : [];
 
   const style = {

@@ -14,8 +14,11 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { apiAuth } from "src/utils/http";
+import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 
 function HomeTab() {
+  const storedFeature = decryptFeature();
+  const feature = storedFeature ? storedFeature : [];
   const [tabValue, setTabValue] = useState(0);
   const container = {
     show: {
@@ -78,27 +81,30 @@ function HomeTab() {
                 <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
                 <MenuItem>Organisation</MenuItem>
               </Menu>
-              {Object.keys(routeParams).length === 0 && (
-                <Button
-                  className="HomeButton"
-                  variant="contained"
-                  sx={{
-                    backgroundColor: "#fff !important",
-                    color: "#1e293b",
-                    boxShadow:
-                      "0 3px 2px -2px #0003, 0 2px 2px 0 #00000024, 0 1px 5px 0 #0000001f",
-                    border: "1px solid #c6c6c6",
-                    marginLeft: "10px",
-                    "&:hover": {
-                      backgroundColor: "#eaebee  !important",
-                    },
-                  }}
-                  onClick={handleClick}
-                >
-                  <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-                  <span className="mx-4 sm:mx-8">Initiate New MOC Request</span>
-                </Button>
-              )}
+              {Object.keys(routeParams).length === 0 &&
+                feature.includes("REQ") && (
+                  <Button
+                    className="HomeButton"
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#fff !important",
+                      color: "#1e293b",
+                      boxShadow:
+                        "0 3px 2px -2px #0003, 0 2px 2px 0 #00000024, 0 1px 5px 0 #0000001f",
+                      border: "1px solid #c6c6c6",
+                      marginLeft: "10px",
+                      "&:hover": {
+                        backgroundColor: "#eaebee  !important",
+                      },
+                    }}
+                    onClick={handleClick}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+                    <span className="mx-4 sm:mx-8">
+                      Initiate New MOC Request
+                    </span>
+                  </Button>
+                )}
             </Typography>
             <div className="mt-12 sm:mt-0 sm:ml-8">
               <Tabs

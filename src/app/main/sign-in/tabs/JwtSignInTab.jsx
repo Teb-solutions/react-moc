@@ -97,7 +97,7 @@ function jwtSignInTab() {
         } catch (error) {
           console.error("Encryption/Decryption error:", error);
         }
-        // navigate("/dashboards/project");
+        navigate("/dashboards/project");
       }
 
       // You can now use the user data as needed

@@ -1,8 +1,9 @@
 import { authRoles } from "src/app/auth";
 import RiskMatrix from "./RiskMatrix";
 import Error404Page from "src/app/main/404/Error404Page";
+import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 
-const storedFeature = localStorage.getItem("features");
+const storedFeature = decryptFeature();
 const feature = storedFeature ? storedFeature : [];
 
 const RiskMatrixConfig = {

@@ -1,8 +1,9 @@
 import { authRoles } from "src/app/auth";
 import Staff from "./Staff";
 import Error404Page from "../../404/Error404Page";
+import { decryptFeature } from "../../sign-in/tabs/featureEncryption";
 
-const storedFeature = localStorage.getItem("features");
+const storedFeature = decryptFeature();
 const feature = storedFeature ? storedFeature : [];
 
 const StaffConfig = {
