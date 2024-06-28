@@ -130,8 +130,14 @@ function Course() {
   const [errorsAddTask, setErrorsAddTask] = useState({});
   const [errors, setErrors] = useState([]);
   const [errorsUrl, setErrorsUrl] = useState({});
-
+  const [handelCommentRemark, setHandelCommentRemark] = useState("");
   const [ApprovalManager, setApprovalManager] = useState({});
+  const [expanded, setExpanded] = useState(false);
+  const [comment, setComment] = useState("");
+
+  const handleExpansionChange = () => {
+    setExpanded(!expanded);
+  };
   const [forms, setForms] = useState([
     {
       id: Date.now(),
@@ -176,7 +182,7 @@ function Course() {
 
   const [openImplemntationTask, setOpenImplemntationTask] = useState(false);
   const [comments, setComments] = useState("");
-  const [reviewed, setReviewed] = useState(false);
+  const [reviewed, setReviewed] = useState({});
   const [errorss, setErrorStake] = useState("");
 
   const handleOpenImplemntationTask = () => {
@@ -242,8 +248,21 @@ function Course() {
         .put(`ChangeImpact/Create/Task/${evaluationId}`, taskAdd)
         .then((resp) => {
           setOpenImplemntationTask(false);
-          getRecords();
+          setTaskAdd({
+            particular: "",
+            particularSubCategory: "",
+            impacHazards: "",
+            taskassignedto: "",
+            dueDate: new Date(),
+            actionHow: "",
+            actionWhat: "",
+            audit: "",
+            assignedStaffId: "",
+            otherDetail: "",
+            changeImpactHazard: "",
+          });
         });
+      getRecords();
     }
   };
 
@@ -520,6 +539,7 @@ function Course() {
   function getRecords() {
     apiAuth.get(`/Activity/RequestLifecycle/${evaluationId}`).then((resp) => {
       setContent(resp.data.data.phases);
+      setValueRemark("");
     });
   }
 
@@ -719,11 +739,12 @@ function Course() {
             formUID: changeEvaluationId,
           })
           .then((resp) => {
-            // location.reload();
+            location.reload();
           });
       });
   };
   const SubmitApprovelCreate = (e, uid, name, type) => {
+    debugger;
     apiAuth
       .post(`/ApprovalManager/Create/${evaluationId}`, {
         actionUID: uid,
@@ -866,7 +887,10 @@ function Course() {
         ActivityCode: lastActCode.code,
       })
       .then((response) => {
-        setReviewed(true);
+        setReviewed((prevReviewed) => ({
+          ...prevReviewed,
+          [id]: true,
+        }));
         console.log(response);
       });
   };
@@ -895,6 +919,17 @@ function Course() {
       })
       .catch((error) => {
         console.error("Download failed", error);
+      });
+  };
+
+  const handelCommentImp = (id) => {
+    apiAuth
+      .put(`/Task/ImpAddReview/${id}/IMPL_APPROVAL_VP_DIV`, {
+        remark: handelCommentRemark,
+      })
+      .then((resp) => {
+        setHandelCommentRemark("");
+        getRecords();
       });
   };
 
@@ -2556,7 +2591,7 @@ function Course() {
                                             clear: "both",
                                           }}
                                         >
-                                          {msg.remark && (
+                                          {msg?.remark && (
                                             <div
                                               className="flex flex-row items-start mt-5"
                                               style={{ position: "relative" }}
@@ -2576,7 +2611,7 @@ function Course() {
                                                 </div>
                                                 <div
                                                   dangerouslySetInnerHTML={{
-                                                    __html: msg.remark,
+                                                    __html: msg?.remark,
                                                   }}
                                                 ></div>
                                                 <div className="my-0.5 text-xs font-medium text-secondary">
@@ -3685,7 +3720,7 @@ function Course() {
                                             handelreview(imptsk.id)
                                           }
                                         >
-                                          {reviewed ? (
+                                          {reviewed[imptsk.id] ? (
                                             <span
                                               className="mat-button-wrapper"
                                               style={{
@@ -3770,14 +3805,15 @@ function Course() {
                                           </span>
 
                                           <span className="text-sm text-secondary leading-none pt-5">
-                                            Consulted on{" "}
-                                            {formatDate(imptsk?.completedAt)}
+                                            Completed on{" "}
+                                            {/* {formatDates(imptsk?.completedAt)} */}
                                           </span>
                                         </div>
                                       </div>
                                     </div>
                                     <div>&nbsp;</div>
-                                    {currentActivityForm.canEdit && (
+                                    {currentActivityForm.canEdit &&
+                                    !imptsk.implementationReviews.length ? (
                                       <div className="mat-form-field-wrapper">
                                         <div className="mat-form-field-flex">
                                           <img
@@ -3799,10 +3835,18 @@ function Course() {
                                               aria-invalid="false"
                                               aria-required="false"
                                               style={{ height: "36px" }}
+                                              onChange={(e) =>
+                                                setHandelCommentRemark(
+                                                  e.target.value
+                                                )
+                                              }
                                             ></textarea>
                                             <button
                                               className="mat-focus-indicator mat-raised-button mat-button-base"
                                               style={{ float: "right" }}
+                                              onClick={() =>
+                                                handelCommentImp(imptsk.id)
+                                              }
                                             >
                                               <span className="mat-button-wrapper">
                                                 Save
@@ -3823,6 +3867,124 @@ function Course() {
                                             }}
                                           ></div>
                                         </div>
+                                      </div>
+                                    ) : (
+                                      <div>
+                                        <Accordion
+                                          expanded={expanded}
+                                          onChange={handleExpansionChange}
+                                        >
+                                          <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon />}
+                                            aria-controls="panel1a-content"
+                                            id="panel1a-header"
+                                          >
+                                            <Typography>
+                                              <span className="text-brown">
+                                                {
+                                                  imptsk?.implementationReviews
+                                                    ?.length
+                                                }{" "}
+                                                Reviews
+                                              </span>{" "}
+                                              <span className="text-green">
+                                                (You have added{" "}
+                                                {
+                                                  imptsk?.implementationReviews
+                                                    ?.length
+                                                }{" "}
+                                                review)
+                                              </span>
+                                            </Typography>
+                                          </AccordionSummary>
+                                          <AccordionDetails>
+                                            <div className="mat-form-field-wrapper">
+                                              <div className="mat-form-field-flex">
+                                                <img
+                                                  src="/assets/images/etc/userpic.png"
+                                                  alt="Card cover image"
+                                                  className="rounded-full mr-4"
+                                                  style={{
+                                                    width: "3rem",
+                                                    height: "3rem",
+                                                  }}
+                                                />
+                                                <div className="mat-form-field-infix">
+                                                  <textarea
+                                                    rows="2"
+                                                    className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                                    placeholder="Write a comment..."
+                                                    id="ImpTaskReview265"
+                                                    data-placeholder="Write a comment..."
+                                                    aria-invalid="false"
+                                                    aria-required="false"
+                                                    style={{ height: "36px" }}
+                                                    value={
+                                                      imptsk
+                                                        .implementationReviews[0]
+                                                        ?.remark
+                                                    }
+                                                    onChange={(e) =>
+                                                      setHandelCommentRemark(
+                                                        e.target.value
+                                                      )
+                                                    }
+                                                  ></textarea>
+
+                                                  <button
+                                                    className="mat-focus-indicator mat-raised-button mat-button-base"
+                                                    style={{ float: "right" }}
+                                                    onClick={() =>
+                                                      handelCommentImp(
+                                                        imptsk.id
+                                                      )
+                                                    }
+                                                  >
+                                                    <span className="mat-button-wrapper">
+                                                      Update
+                                                    </span>
+
+                                                    <span className="mat-ripple mat-button-ripple"></span>
+                                                    <span className="mat-button-focus-overlay"></span>
+                                                  </button>
+
+                                                  <span className="mat-form-field-label-wrapper"></span>
+                                                </div>
+                                              </div>
+                                              <span
+                                                style={{
+                                                  fontSize: "x-small",
+                                                  paddingLeft: "60px",
+                                                }}
+                                              >
+                                                {" "}
+                                                {imptsk.implementationReviews[0]
+                                                  ?.updatedAt &&
+                                                  new Date(
+                                                    imptsk.implementationReviews[0]?.updatedAt
+                                                  ).toLocaleString("en-US", {
+                                                    month: "long",
+                                                    day: "numeric",
+                                                    year: "numeric",
+                                                    hour: "numeric",
+                                                    minute: "numeric",
+                                                    second: "numeric",
+                                                    hour12: true,
+                                                    timeZoneName: "short",
+                                                  })}
+                                              </span>
+                                              <div className="mat-form-field-subscript-wrapper">
+                                                <div
+                                                  className="mat-form-field-hint-wrapper"
+                                                  style={{
+                                                    opacity: 1,
+                                                    transform: "translateY(0%)",
+                                                  }}
+                                                ></div>
+                                              </div>
+                                            </div>
+                                          </AccordionDetails>
+                                        </Accordion>
                                       </div>
                                     )}
                                   </div>
