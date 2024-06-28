@@ -12,6 +12,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ReCAPTCHA from "react-google-recaptcha";
 
+import { decryptFeature, encryptFeature } from "./featureEncryption";
+
 /**
  * Form Validation Schema
  */
@@ -90,8 +92,12 @@ function jwtSignInTab() {
       }
       if (user.statusCode === 200) {
         localStorage.setItem("jwt_access_token", user.data.jwt);
-        localStorage.setItem("features", user.data.features);
-        navigate("/dashboards/project");
+        try {
+          encryptFeature(user.data.features);
+        } catch (error) {
+          console.error("Encryption/Decryption error:", error);
+        }
+        // navigate("/dashboards/project");
       }
 
       // You can now use the user data as needed
