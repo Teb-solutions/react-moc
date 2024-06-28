@@ -126,7 +126,6 @@ function FuseNavVerticalCollapse(props) {
             </FuseSvgIcon>
           </IconButton>
         </ListItemButton>
-        {console.log("=======================itm", item)}
 
         {item.children && (
           <Collapse in={open} className="collapse-children">

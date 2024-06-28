@@ -43,6 +43,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import DocPhasesEnum from "./docPhaseEnum";
+import { ToastContainer, toast } from "react-toastify";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -84,7 +85,9 @@ function Course() {
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
   const [changeEvaluationId, setChangeEvaluationId] = useState();
-  const [handelUrlChange, setHandelUrlChange] = useState("");
+  const [handelUrlChange, setHandelUrlChange] = useState({
+    urlRemarks: "",
+  });
   const [listDocument, setListDocument] = useState([]);
 
   const [open, setOpen] = useState(false);
@@ -184,6 +187,9 @@ function Course() {
   const [comments, setComments] = useState("");
   const [reviewed, setReviewed] = useState({});
   const [errorss, setErrorStake] = useState("");
+  const [handelApprover, setHandelApprover] = useState({
+    approver: "",
+  });
 
   const handleOpenImplemntationTask = () => {
     setOpenImplemntationTask(true);
@@ -200,6 +206,13 @@ function Course() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+  const handleChangeApprover = (e) => {
+    const { name, value } = e.target;
+    setHandelApprover((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const handleChangeAddTask = (e) => {
@@ -615,6 +628,9 @@ function Course() {
                 const evaluationIds = resp.data.data.id;
                 setContentDetails(resp.data?.data);
                 setChangeEvaluationId(resp.data?.data.id);
+                setHandelUrlChange({
+                  urlRemarks: resp.data?.data.remarks,
+                });
 
                 apiAuth
                   .get(
@@ -698,18 +714,25 @@ function Course() {
 
   // Update the onClick event to pass the necessary parameters
   const handleUrlChange = (event) => {
-    setHandelUrlChange(event.target.value);
+    setHandelUrlChange({
+      ...handelUrlChange,
+      urlRemarks: event.target.value,
+    });
     setErrorsUrl({});
   };
 
   const validateUrl = () => {
     let tempErrors = {};
 
-    if (!handelUrlChange) {
+    // Add validation logic here
+    if (!handelUrlChange.urlRemarks) {
       tempErrors.handelUrlChange = "Consolidated Document Url is required";
     }
 
+    // Update the state with errors
     setErrorsUrl(tempErrors);
+
+    // Return true if there are no errors
     return Object.keys(tempErrors).length === 0;
   };
   const handelUrlUpdate = (e) => {
@@ -717,30 +740,49 @@ function Course() {
     if (validateUrl()) {
       apiAuth
         .post(`/DocMoc/UpdateEvaluationDocumentDetails/${changeEvaluationId}`, {
-          ConsolidatedDocumentUrl: handelUrlChange,
+          ConsolidatedDocumentUrl: handelUrlChange.urlRemarks,
         })
-        .then((resp) => {});
+        .then((resp) => {
+          toast.success("  Consolidated Document url successfully updated");
+        });
+    } else {
+      toast.error("Concolidated Document Url is not valid");
     }
   };
 
   const SubmitApprovel = (e, uid) => {
-    if (forms.length <= 1) {
-      setErrorStake("At least one stakeholder is required.");
+    if (forms.length < 1) {
+      toast.error("At least one stakeholder is required.");
     }
     apiAuth
       .get(
         `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${changeEvaluationId}`
       )
       .then((resp) => {
-        apiAuth
-          .post(`/DocMoc/EvaluationSubmitForApproval/${changeEvaluationId}`, {
-            actionUID: uid,
-            activityUID: evalActivity.uid,
-            formUID: changeEvaluationId,
-          })
-          .then((resp) => {
-            location.reload();
-          });
+        const data = resp.data.data; // Assuming resp contains your data array
+        // debugger;
+        // Check if any object in data has an empty tasks array
+        const hasEmptyComment = data.some((item) => item.comments === "");
+        if (resp.data.data.length === 0) {
+          toast.error("Minimum One stakeholders Required");
+        } else {
+          if (hasEmptyComment) {
+            toast.error("All stakeholders must update the task");
+          } else {
+            apiAuth
+              .post(
+                `/DocMoc/EvaluationSubmitForApproval/${changeEvaluationId}`,
+                {
+                  actionUID: uid,
+                  activityUID: evalActivity.uid,
+                  formUID: changeEvaluationId,
+                }
+              )
+              .then((resp) => {
+                location.reload();
+              });
+          }
+        }
       });
   };
   const SubmitApprovelCreate = (e, uid, name, type) => {
@@ -766,17 +808,26 @@ function Course() {
       });
   };
   const SubmitImpCreate = (e, uid) => {
+    debugger;
     apiAuth.get(`/ChangeImpact/ListTask?id=${evaluationId}`).then((resp) => {
-      apiAuth
-        .post(`/DocMoc/ImplementationSubmit/${evaluationId}/22`, {
-          actionUID: uid,
-          activityUID: impActivity.uid,
+      if (handelApprover.approver == "") {
+        toast.error("Select an approver");
+      } else {
+        toast.success("MOC has Created");
+        apiAuth
+          .post(
+            `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver}`,
+            {
+              actionUID: uid,
+              activityUID: impActivity.uid,
 
-          formUID: impActivity.formUID,
-        })
-        .then((resp) => {
-          getRecords();
-        });
+              formUID: impActivity.formUID,
+            }
+          )
+          .then((resp) => {
+            getRecords();
+          });
+      }
     });
   };
 
@@ -876,6 +927,7 @@ function Course() {
     apiAuth
       .post(`/DocMoc/UpdateImplementationChecklist/${evaluationId}`, CheckLists)
       .then((response) => {
+        toast.success("Checklist successfully updated");
         setOpen(false);
         console.log(response);
       });
@@ -942,7 +994,10 @@ function Course() {
         formUID: closeActivity.formUID,
       })
       .then((resp) => {
-        getRecords();
+        toast.success("MOC Successfully Closed");
+        setTimeout(() => {
+          getRecords();
+        }, 3000);
       });
   };
   useEffect(() => {
@@ -954,6 +1009,7 @@ function Course() {
       header={<MocHeader activity={actName} reqno={reqNo} />}
       content={
         <div className="w-full">
+          <ToastContainer className="toast-container" />
           <SwipeableViews>
             <>
               <div className="flex justify-center p-16 pb-64 sm:p-24 ">
@@ -1724,7 +1780,7 @@ function Course() {
                               <span> Consolidated Document Url *</span>
                               <OutlinedInput
                                 id="documentUrl"
-                                value={handelUrlChange}
+                                value={handelUrlChange.urlRemarks}
                                 onChange={handleUrlChange}
                               />
                               {!!errorsUrl.handelUrlChange && (
@@ -2834,10 +2890,10 @@ function Course() {
                                       <FormControl fullWidth sx={{ m: 1 }}>
                                         <Select
                                           labelId="functionName-label"
-                                          id="docControllerId"
-                                          name="docControllerId"
-                                          // value={documentState.docControllerId}
-                                          // onChange={handleChange}
+                                          id="approverId"
+                                          name="approver"
+                                          value={handelApprover.approver}
+                                          onChange={handleChangeApprover}
                                           label="Document Controller *"
                                         >
                                           {docStaff.map((option) => (
@@ -2974,9 +3030,9 @@ function Course() {
                                         <Select
                                           labelId="functionName-label"
                                           id="docControllerId"
-                                          name="docControllerId"
-                                          // value={documentState.docControllerId}
-                                          // onChange={handleChange}
+                                          name="approver"
+                                          value={handelApprover.approver}
+                                          onChange={handleChangeApprover}
                                           label="Document Controller *"
                                         >
                                           {docStaff.map((option) => (
@@ -4061,6 +4117,7 @@ function Course() {
                                   onChange={handleChangeRemark}
                                   label="Reason For Change*"
                                   className="mt-5"
+                                  value={valueRemark}
                                 />
                               </FormControl>
                             </Box>

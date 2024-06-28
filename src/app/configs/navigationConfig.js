@@ -12,7 +12,7 @@ const feature = storedFeature ? storedFeature : [];
 // console.log(feature, "888");
 /**
  * The navigationConfig object is an array of navigation items for the Fuse application.
- */
+ */ console.log(feature);
 const navigationConfig1 = [
   {
     id: "dashboards",

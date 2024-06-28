@@ -25,6 +25,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import SearchIcon from "@mui/icons-material/Search";
 import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
+import { ToastContainer, toast } from "react-toastify";
 
 function createData(
   index,

@@ -333,9 +333,31 @@ const Task = () => {
           formDatas.append("isActive", formData.isActive && formData.isActive);
         }
         if (value === "submit") {
-          apiAuth.post(path, formDatas);
+          apiAuth
+            .post(path, formDatas)
+            .then((response) => {
+              toast.success("Staff Created");
+              setSidebarOpen(false);
+              setTimeout(() => {
+                location.reload();
+              }, 2000);
+            })
+            .catch((error) => {
+              toast.error("Some Error Occured");
+            });
         } else {
-          apiAuth.put(path, formDatas);
+          apiAuth
+            .put(path, formDatas)
+            .then((response) => {
+              toast.success("Staff Updated");
+              setSidebarOpen(false);
+              setTimeout(() => {
+                location.reload();
+              }, 2000);
+            })
+            .catch((error) => {
+              toast.error("Some Error Occured");
+            });
         }
       } catch (error) {
         console.error("Error submitting the form:", error);
@@ -363,7 +385,7 @@ const Task = () => {
 
   return (
     <>
-      <ToastContainer />
+      <ToastContainer className="toast-container " />
       <div style={{ margin: "20px" }}>
         <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
