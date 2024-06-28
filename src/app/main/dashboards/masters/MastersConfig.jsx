@@ -1,6 +1,10 @@
 import { authRoles } from "src/app/auth";
 import Masters from "./Masters";
 import Department from "./department/Department";
+import Error404Page from "../../404/Error404Page";
+
+const storedFeature = localStorage.getItem("features");
+const feature = storedFeature ? storedFeature : [];
 
 const mastersConfig = {
   settings: {
@@ -9,16 +13,20 @@ const mastersConfig = {
   auth: authRoles.onlyGuest,
   routes: [
     {
-      path: "/masters/department",
-      element: <Department />,
+      path: feature.includes("MST") ? "/masters/department" : "404",
+      element: feature.includes("MST") ? <Department /> : <Error404Page />,
       children: [
         {
-          path: "",
-          element: <Department to="department" />,
+          path: feature.includes("MST") ? "" : "404",
+          element: feature.includes("MST") ? (
+            <Department to="department" />
+          ) : (
+            <Error404Page />
+          ),
         },
         {
-          path: "department",
-          element: <Department />,
+          path: feature.includes("MST") ? "department" : "404",
+          element: feature.includes("MST") ? <Department /> : <Error404Page />,
         },
       ],
     },

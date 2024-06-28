@@ -40,6 +40,8 @@ function createData(
 }
 
 export default function StickyHeadTable() {
+  const storedFeature = localStorage.getItem("features");
+  const feature = storedFeature ? storedFeature : [];
   const columns = [
     { id: "index", label: "#", minWidth: 50 },
     { id: "code", label: "Code", minWidth: 100 },
@@ -65,16 +67,22 @@ export default function StickyHeadTable() {
       format: (value) => value.toFixed(2),
       render: (row) => (
         <div>
-          <Button
-            onClick={() => handleEdit(row)}
-            endIcon={
-              <FuseSvgIcon size={20}>heroicons-solid:pencil</FuseSvgIcon>
-            }
-          ></Button>
-          <Button
-            onClick={() => handleDelete(row)}
-            endIcon={<FuseSvgIcon size={20}>heroicons-solid:trash</FuseSvgIcon>}
-          ></Button>
+          {feature.includes("MUPT") && (
+            <Button
+              onClick={() => handleEdit(row)}
+              endIcon={
+                <FuseSvgIcon size={20}>heroicons-solid:pencil</FuseSvgIcon>
+              }
+            ></Button>
+          )}
+          {feature.includes("MDEL") && (
+            <Button
+              onClick={() => handleDelete(row)}
+              endIcon={
+                <FuseSvgIcon size={20}>heroicons-solid:trash</FuseSvgIcon>
+              }
+            ></Button>
+          )}
         </div>
       ),
     },
@@ -500,10 +508,16 @@ export default function StickyHeadTable() {
               }}
               sx={{ width: 250 }}
             />
-            <Button variant="contained" color="secondary" onClick={handleOpen}>
-              <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-              <span className="mx-4 sm:mx-8">Add</span>
-            </Button>
+            {feature.includes("MCRT") && (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleOpen}
+              >
+                <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+                <span className="mx-4 sm:mx-8">Add</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>

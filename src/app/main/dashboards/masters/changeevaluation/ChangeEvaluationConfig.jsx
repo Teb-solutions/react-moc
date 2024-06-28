@@ -1,5 +1,9 @@
 import { authRoles } from "src/app/auth";
 import ChangeEvaluation from "./ChangeEvaluation";
+import Error404Page from "src/app/main/404/Error404Page";
+
+const storedFeature = localStorage.getItem("features");
+const feature = storedFeature ? storedFeature : [];
 
 const ChangeEvaluationConfig = {
   settings: {
@@ -8,8 +12,12 @@ const ChangeEvaluationConfig = {
   auth: authRoles.onlyGuest,
   routes: [
     {
-      path: "/masters/changeevaluation",
-      element: <ChangeEvaluation />,
+      path: feature.includes("MST") ? "/masters/changeevaluation" : "404",
+      element: feature.includes("MST") ? (
+        <ChangeEvaluation />
+      ) : (
+        <Error404Page />
+      ),
     },
   ],
 };

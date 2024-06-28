@@ -1,5 +1,9 @@
 import { authRoles } from "src/app/auth";
 import PSSRSubCategory from "./PSSRSubCategory";
+import Error404Page from "src/app/main/404/Error404Page";
+
+const storedFeature = localStorage.getItem("features");
+const feature = storedFeature ? storedFeature : [];
 
 const PSSRSubCategoryConfig = {
   settings: {
@@ -8,8 +12,8 @@ const PSSRSubCategoryConfig = {
   auth: authRoles.onlyGuest,
   routes: [
     {
-      path: "/masters/pssrsubcategory",
-      element: <PSSRSubCategory />,
+      path: feature.includes("MST") ? "/masters/pssrsubcategory" : "404",
+      element: feature.includes("MST") ? <PSSRSubCategory /> : <Error404Page />,
     },
   ],
 };

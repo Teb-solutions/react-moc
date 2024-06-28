@@ -52,6 +52,8 @@ function createData(
 }
 
 export default function StickyHeadTable() {
+  const storedFeature = localStorage.getItem("features");
+  const feature = storedFeature ? storedFeature : [];
   const columns = [
     { id: "index", label: "#", minWidth: 50 },
     {
@@ -90,16 +92,22 @@ export default function StickyHeadTable() {
       format: (value) => value.toFixed(2),
       render: (row) => (
         <div>
-          <Button
-            onClick={() => handleEdit(row)}
-            endIcon={
-              <FuseSvgIcon size={20}>heroicons-solid:pencil</FuseSvgIcon>
-            }
-          ></Button>
-          <Button
-            onClick={() => handleDelete(row)}
-            endIcon={<FuseSvgIcon size={20}>heroicons-solid:trash</FuseSvgIcon>}
-          ></Button>
+          {feature.includes("MUPT") && (
+            <Button
+              onClick={() => handleEdit(row)}
+              endIcon={
+                <FuseSvgIcon size={20}>heroicons-solid:pencil</FuseSvgIcon>
+              }
+            ></Button>
+          )}
+          {feature.includes("MDEL") && (
+            <Button
+              onClick={() => handleDelete(row)}
+              endIcon={
+                <FuseSvgIcon size={20}>heroicons-solid:trash</FuseSvgIcon>
+              }
+            ></Button>
+          )}
         </div>
       ),
     },
@@ -200,13 +208,26 @@ export default function StickyHeadTable() {
     setErrors({});
   };
 
-  const handleOpen = () => {
-    setOpen(true);
+  useEffect(() => {
     apiAuth.get(`/LookupData/Lov/5`).then((resp) => {
       setParticularList(resp.data.data);
     });
+  }, []);
+
+  const handleOpen = () => {
+    setOpen(true);
   };
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setLookUpAdd({
+      ...lookupAdd,
+      crudMode: "INSERT",
+      description: "",
+      isActive: true,
+      name: "",
+      designationId: 0,
+    });
+    setOpen(false);
+  };
 
   const handleOpenDelete = () => {
     setDelete(true);
@@ -262,13 +283,17 @@ export default function StickyHeadTable() {
   };
 
   const handleEdit = (row) => {
+    let particularId = particularList?.find(
+      (item) => item.text === row.designation
+    )?.value;
     setLookUpAdd({
       ...row,
       crudMode: "UPDATE",
       id: row.id,
       lookupType: row.lookupType,
-      parentType: "",
+      designationId: particularId,
     });
+
     setId(row.id);
     handleOpen();
   };
@@ -346,10 +371,13 @@ export default function StickyHeadTable() {
                     name="designationId"
                     value={lookupAdd.designationId}
                     onChange={handleAdd}
-                    label="Designation *"
+                    // label="Designation *"
                     fullWidth
                     error={!!errors.parentId}
                   >
+                    <MenuItem value="" disabled>
+                      <em>Designation *</em>
+                    </MenuItem>
                     {particularList.map((option) => (
                       <MenuItem key={option.id} value={option.value}>
                         {option.text}
@@ -422,7 +450,7 @@ export default function StickyHeadTable() {
                 type="submit"
                 onClick={handleSubmit}
               >
-                Submit
+                {lookupAdd.crudMode === "UPDATE" ? "Update" : "Add"}
               </Button>
             </Box>
           </Box>
@@ -548,10 +576,16 @@ export default function StickyHeadTable() {
               }}
               sx={{ width: 250 }}
             />
-            <Button variant="contained" color="secondary" onClick={handleOpen}>
-              <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-              <span className="mx-4 sm:mx-8">Add</span>
-            </Button>
+            {feature.includes("MCRT") && (
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleOpen}
+              >
+                <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+                <span className="mx-4 sm:mx-8">Add</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>
