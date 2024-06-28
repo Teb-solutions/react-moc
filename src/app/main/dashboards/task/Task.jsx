@@ -31,6 +31,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { styled } from "@mui/material/styles";
+import { ToastContainer, toast } from "react-toastify";
 
 const Task = () => {
   const style = {
@@ -338,11 +339,14 @@ const Task = () => {
       .put(`/Task/Update?id=${taskType}`, updatedTask)
       .then((response) => {
         setOpen(false);
-        console.log(response);
+        toast.success("Task Comment Added");
+        setTimeout(() => {
+          location.reload();
+        }, 2000);
       })
       .catch((error) => {
         setOpen(false);
-        console.error(error);
+        toast.error("Some Error Occured");
       });
   };
 
@@ -480,6 +484,7 @@ const Task = () => {
   };
   return (
     <>
+      <ToastContainer className="toast-container " />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

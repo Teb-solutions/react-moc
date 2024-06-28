@@ -753,3 +753,10 @@ body.sidebar1-open .maincntainer {
 .muiltr-14sjh14 {
   min-height: auto;
 }
+
+.toast-container {
+  z-index: 9999 !important;
+  position: fixed !important;
+  top: 70px !important;
+  right: 10px !important;
+}
