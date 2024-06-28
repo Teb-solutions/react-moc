@@ -2,17 +2,16 @@ import i18next from "i18next";
 import ar from "./navigation-i18n/ar";
 import en from "./navigation-i18n/en";
 import tr from "./navigation-i18n/tr";
+import { decryptFeature } from "../main/sign-in/tabs/featureEncryption";
 
 i18next.addResourceBundle("en", "navigation", en);
 i18next.addResourceBundle("tr", "navigation", tr);
 i18next.addResourceBundle("ar", "navigation", ar);
 
-const storedFeature = localStorage.getItem("features");
+const storedFeature = decryptFeature();
 const feature = storedFeature ? storedFeature : [];
-// console.log(feature, "888");
-/**
- * The navigationConfig object is an array of navigation items for the Fuse application.
- */ console.log(feature);
+console.log("features", feature);
+
 const navigationConfig1 = [
   {
     id: "dashboards",
@@ -262,7 +261,6 @@ const shouldIncludeItem = (item) => {
   return false;
 };
 
-// Filter navigationConfig based on the features array and default items
 const filterNavigation = (config) => {
   return config
     .map((group) => ({
