@@ -49,6 +49,7 @@ import { apiAuth } from "src/utils/http";
 import Initiation from "../components/Initiation";
 import AssetPhasesEnum from "./assetPhaseEnum";
 import InitiationApproval from "../components/InitiationApproval";
+import InitiationComplete from "../components/initiationComplete";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -90,6 +91,7 @@ const AssetCourse = () => {
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
   const [ApprovalDetails, setApprovalDetails] = useState({});
+  const [AssetDetails, setAssetDetails] = useState({});
 
   const [changeEvaluationId, setChangeEvaluationId] = useState();
   const [handelUrlChange, setHandelUrlChange] = useState({
@@ -141,7 +143,6 @@ const AssetCourse = () => {
   const [errors, setErrors] = useState([]);
   const [errorsUrl, setErrorsUrl] = useState({});
   const [handelCommentRemark, setHandelCommentRemark] = useState("");
-  const [ApprovalManager, setApprovalManager] = useState({});
   const [expanded, setExpanded] = useState(false);
   const [comment, setComment] = useState("");
 
@@ -558,10 +559,15 @@ const AssetCourse = () => {
 
   function getRecords() {
     apiAuth
-      .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+      .get(`/ChangeRequest/RequestDetails?id=${assetEvaluationId}`)
       .then((resp) => {
-        setContent(resp.data.data.phases);
-        setValueRemark("");
+        setAssetDetails(resp.data.data);
+        apiAuth
+          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+          .then((resp) => {
+            setContent(resp.data.data.phases);
+            setValueRemark("");
+          });
       });
   }
 
@@ -654,27 +660,12 @@ const AssetCourse = () => {
                   });
               });
             break;
-          case "Approval":
-            apiAuth
-              .get(
-                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
-              )
-              .then((resp) => {
-                setReqNo(resp.data.data.requestNo);
-                setContentDetails(resp.data?.data);
+          case "InitiationComplete":
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+            });
 
-                apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
-                  setAppActions(resp.data.data.actions);
-                  setAppActivity(resp.data.data.activity);
-                  apiAuth
-                    .get(
-                      `/ApprovalManager/Remark/${resp.data.data.activity.uid}`
-                    )
-                    .then((resp) => {
-                      setApprovalManager(resp.data?.data);
-                    });
-                });
-              });
             break;
           case "Implementation":
             apiAuth
@@ -1029,6 +1020,14 @@ const AssetCourse = () => {
             )}
             {currentPhase === "InitiationApproval" && (
               <InitiationApproval ApprovalDetails={ApprovalDetails} />
+            )}
+            {currentPhase === "InitiationComplete" && (
+              <InitiationComplete
+                assetEvaluationId={assetEvaluationId}
+                AppActions={appActions}
+                AppActivity={appActivity}
+                AssetDetails={AssetDetails}
+              />
             )}
           </div>
         </div>
