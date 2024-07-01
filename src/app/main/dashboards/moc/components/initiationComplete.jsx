@@ -1,12 +1,10 @@
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-
 import {
   Backdrop,
   Box,
   Button,
   Fade,
-  InputLabel,
-  MenuItem,
+  Grid,
   Modal,
   OutlinedInput,
   Paper,
@@ -14,7 +12,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
+
+import { styled } from "@mui/material/styles";
+import React, { useState, useEffect } from "react";
 import SwipeableViews from "react-swipeable-views";
 import {
   FormControl,
@@ -24,10 +24,8 @@ import {
   Radio,
   Link,
 } from "@mui/material";
-import { useState } from "react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
 
 const InitiationComplete = ({
@@ -41,6 +39,7 @@ const InitiationComplete = ({
   const [class1, setClass1] = useState([]);
   const [selectedClass, setSelectedClass] = useState(1);
   const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
   const style = {
     position: "absolute",
     top: "50%",
@@ -48,10 +47,8 @@ const InitiationComplete = ({
     transform: "translate(-50%, -50%)",
     width: "615px",
     maxWidth: "80vw",
-    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
-
     boxShadow: 24,
     p: 4,
   };
@@ -159,10 +156,97 @@ const InitiationComplete = ({
       .post("/ChangeSummary/Create", formattedDocumentState)
       .then((response) => {
         toast.success("Successfully Created");
-
         setOpen(false);
       })
       .catch((error) => {});
+  };
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [fileDetails, setFileDetails] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [listDocument, setListDocument] = useState([]);
+  const [selectedFile, setSelectedFile] = useState({
+    name: "",
+    description: "",
+    type: "",
+    document: "binary",
+    documentType: "ChangeRequest",
+    documentId: "",
+    changeRequestToken: null,
+  });
+  const style1 = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "1200px",
+    maxWidth: "80vw",
+    height: "60%",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const BoldLabel = styled("label")({
+    fontWeight: "bold",
+    color: "black",
+  });
+  const drawerStyle = (open) => ({
+    width: 350,
+    bgcolor: "background.paper",
+    borderTopRightRadius: "16px",
+    borderBottomRightRadius: "16px",
+    boxShadow: 24,
+    p: 2,
+    position: "absolute",
+    top: 0,
+    right: open ? 0 : -250, // Move drawer out of view when closed
+    height: "100%",
+    zIndex: 10,
+    transition: "right 0.3s ease", // Smooth transition for opening/closing
+  });
+
+  const handelDetailDoc = (doc) => {
+    setSelectedDocument(doc);
+    setFileDetails(true);
+    setDocumenDowToken(doc.token);
+  };
+
+  const handleModalClose = () => {
+    setOpen1(false);
+    setOpenDrawer(false);
+  };
+
+  const handleOpen1 = () => {
+    setOpen1(true);
+    const newGuid = uuidv4();
+    setSelectedFile((prevState) => ({
+      ...prevState,
+      documentId: newGuid,
+    }));
+  };
+  const toggleDrawer = (open) => () => {
+    setOpenDrawer(open);
+  };
+
+  const handelFileDiscriptionChange = (event) => {
+    const { name, value } = event.target;
+    setSelectedFile((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmitAsset = (e) => {
+    const formData = new FormData();
+    formData.append("name", selectedFile.name);
+    formData.append("descritpion", selectedFile.description);
+    formData.append("type", selectedFile.type);
+    formData.append("document", selectedFile.document);
+    formData.append("documentType", selectedFile.documentType);
+    formData.append("documentId", selectedFile.documentId);
+    formData.append("changeRequestToken", selectedFile.changeRequestToken);
   };
 
   return (
@@ -182,24 +266,21 @@ const InitiationComplete = ({
       >
         <Fade in={open}>
           <Box sx={style}>
-            <Box>
+            <Box mb={2}>
               <div className="flex">
                 <Typography
-                  id="transition-modal-title"
                   variant="h6"
                   component="h2"
                   style={{
                     fontSize: "15px",
                     marginRight: "5px",
                     marginTop: "5px",
-
                     color: "red",
                   }}
                 >
-                  <img src="/assets/images/etc/icon.png" />
+                  <img src="/assets/images/etc/icon.png" alt="Icon" />
                 </Typography>
                 <Typography
-                  id="transition-modal-title"
                   variant="h6"
                   component="h2"
                   style={{
@@ -208,388 +289,569 @@ const InitiationComplete = ({
                 >
                   Submit request
                   <Typography
-                    id="transition-modal-title"
                     variant="h6"
                     component="h2"
                     style={{
                       fontSize: "15px",
-                      fontWeight: "800px !important",
+                      fontWeight: "bold",
                       color: "grey",
                     }}
                   >
-                    Once submited you will not be able to revert ! Are you sure
-                    you want to continue ?
+                    Once submitted you will not be able to revert! Are you sure
+                    you want to continue?
                   </Typography>
                 </Typography>
               </div>
             </Box>
-            <div
-              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-              style={{
-                marginTop: "15px",
-                justifyContent: "end",
-                backgroundColor: " rgba(248,250,252)",
-                padding: "10px",
-              }}
-            >
+            <Box display="flex" justifyContent="flex-end" mb={2}>
               <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="primary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid grey",
-                }}
+                variant="outlined"
                 onClick={handleClose}
+                style={{
+                  padding: "10px 20px",
+                  marginRight: "10px",
+                  borderColor: "grey",
+                }}
               >
                 Cancel
               </Button>
               <Button
-                className="whitespace-nowrap"
                 variant="contained"
                 color="secondary"
-                style={{ padding: "23px", backgroundColor: "red" }}
-                type="submit"
                 onClick={handleSubmit}
+                style={{ padding: "10px 20px" }}
               >
                 Submit
               </Button>
-            </div>
+            </Box>
           </Box>
         </Fade>
       </Modal>
-      <SwipeableViews>
-        <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
-          <div>
-            <div
-              _ngcontent-fyk-c288=""
-              class="flex items-center w-full  border-b justify-between"
-            >
-              <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
-                Change Summary
-              </h2>
-            </div>
-            <div>&nbsp;</div>
-            <div _ngcontent-fyk-c288="" class=" mb-6 ng-star-inserted">
-              <div className="mt-2">
-                <div className="space-y-4">
-                  <div className="flex row">
-                    <FormControl
-                      component="fieldset"
-                      className="flex-auto w-1/2 pln-15 prn-15 radio_button"
-                    >
-                      <FormLabel
-                        component="legend"
-                        className="block gender_label pb-2"
-                        style={{ fontWeight: 500 }}
-                      >
-                        Class Category *
-                        <Link
-                          href="#"
-                          className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer"
-                        >
-                          <span className="inline-flex">
-                            <span className="font-medium leading-5">
-                              (View Class Category Details)
-                            </span>
-                          </span>
-                        </Link>
-                      </FormLabel>
-                      {currentActivityForm.canEdit ? (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                          }}
-                        >
-                          <FormControl>
-                            <RadioGroup
-                              row
-                              aria-labelledby="documentType"
-                              name="classCategory"
-                              value={selectedClass}
-                              onChange={handleClassChange}
-                            >
-                              <FormControlLabel
-                                value="1"
-                                control={<Radio />}
-                                label="Class I"
-                              />
-                              <FormControlLabel
-                                value="2"
-                                control={<Radio />}
-                                label="Class II"
-                              />
-                            </RadioGroup>
-                            <Link
-                              href="#"
-                              className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer"
-                            >
-                              <span className="inline-flex">
-                                <span className="font-medium leading-5">
-                                  (View Class Category Details)
-                                </span>
-                              </span>
-                            </Link>
-                          </FormControl>
-                        </Box>
-                      ) : (
-                        <span>{currentSummeryById.classCategoryString}</span>
-                      )}
-                    </FormControl>
-                  </div>
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      marginTop: "20px",
-                    }}
-                  >
-                    <FormControl fullWidth sx={{ m: 1 }}>
-                      <FormLabel
-                        className="font-medium text-14"
-                        component="legend"
-                      >
-                        Type*
-                      </FormLabel>
-                      {currentActivityForm.canEdit ? (
-                        <Select
-                          labelId="functionName-label"
-                          id="docControllerId"
-                          name="changeLeaderId"
-                          value={IniComp.changeLeaderId}
-                          onChange={handleChange}
-                          label="Document Controller *"
-                        >
-                          {class1.map((option) => (
-                            <MenuItem key={option.id} value={option.value}>
-                              {option.text}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      ) : (
-                        <span>{currentSummeryById.changeLeader}</span>
-                      )}
-                    </FormControl>
-                  </Box>
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      marginTop: "15px",
-                    }}
-                  >
-                    <FormControl fullWidth sx={{ m: 1 }}>
-                      <FormLabel
-                        className="font-medium text-14"
-                        component="legend"
-                      >
-                        Change Location (you can add multiple location) *
-                      </FormLabel>
-                      {currentActivityForm.canEdit ? (
-                        <OutlinedInput
-                          id="changeLocation"
-                          name="changeLocation"
-                          value={IniComp.changeLocation}
-                          onChange={handleChange}
-                          label="changeLocation*"
-                        />
-                      ) : (
-                        <span>{currentSummeryById.changeLocation}</span>
-                      )}
-                    </FormControl>
-                  </Box>
-                  <FormControl>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <FormControl>
-                        <FormLabel
-                          className="font-medium text-14"
-                          component="legend"
-                        >
-                          Change Type*
-                        </FormLabel>
-                        {currentActivityForm.canEdit ? (
-                          <RadioGroup
-                            row
-                            aria-labelledby="documentType"
-                            name="changeType"
-                            onChange={handleChange}
-                          >
-                            <FormControlLabel
-                              value="1"
-                              control={<Radio />}
-                              label="Permenent"
-                            />
-                            <FormControlLabel
-                              value="2"
-                              control={<Radio />}
-                              label="Temporory"
-                            />
-                          </RadioGroup>
-                        ) : (
-                          <span>{currentSummeryById.changeTypeString}</span>
-                        )}
-                      </FormControl>
-                    </Box>
-                  </FormControl>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <FormControl
-                        sx={{
-                          m: 1,
-                          width: 800,
-                          maxWidth: "100%",
-                        }}
-                      >
-                        <FormLabel
-                          className="font-medium text-14"
-                          component="legend"
-                        >
-                          Expected Change Completion Date
-                        </FormLabel>
-                        {currentActivityForm.canEdit ? (
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexWrap: "wrap",
-                              marginTop: "15px",
-                            }}
-                          >
-                            <DatePicker
-                              label="Validity Expires On *"
-                              value={IniComp.TerminationDate}
-                              onChange={handleChanges}
-                              renderInput={(params) => (
-                                <TextField fullWidth {...params} />
-                              )}
-                            />
-                          </Box>
-                        ) : (
-                          <span>
-                            {currentSummeryById.changeTerminationDate}
-                          </span>
-                        )}
-                      </FormControl>
-                    </LocalizationProvider>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      marginTop: "15px",
-                    }}
-                  >
-                    <FormControl fullWidth sx={{ m: 1 }}>
-                      <FormLabel
-                        className="font-medium text-14"
-                        component="legend"
-                      >
-                        Brief Description *
-                      </FormLabel>
-                      {currentActivityForm.canEdit ? (
-                        <OutlinedInput
-                          id="briefDescription"
-                          name="briefDescription"
-                          value={IniComp.briefDescription}
-                          onChange={handleChange}
-                          label="Reason For New Document *"
-                        />
-                      ) : (
-                        <span>{currentSummeryById.briefDescription}</span>
-                      )}
-                    </FormControl>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      marginTop: "15px",
-                    }}
-                  >
-                    <FormControl fullWidth sx={{ m: 1 }}>
-                      <FormLabel
-                        className="font-medium text-14"
-                        component="legend"
-                      >
-                        Change Benefits *
-                      </FormLabel>
-                      {currentActivityForm.canEdit ? (
-                        <OutlinedInput
-                          id="changeBenefits"
-                          name="changeBenefits"
-                          value={IniComp.changeBenefits}
-                          onChange={handleChange}
-                          label="Reason For New Document *"
-                        />
-                      ) : (
-                        <span>{currentSummeryById.changeBenefits}</span>
-                      )}
-                    </FormControl>
-                  </Box>
-                </div>
-              </div>
-            </div>
-            <div
-              className="my-10"
-              style={{ borderTopWidth: "2px", marginTop: "40px" }}
-            ></div>
-            <div className="flex justify-between">
-              <div
-                className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                style={{ marginTop: "15px" }}
-              >
-                <Button
-                  className="whitespace-nowrap mt-5"
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open1}
+        onClose={handleModalClose}
+        closeAfterTransition
+        // Customize backdrop appearance
+        BackdropComponent={Backdrop}
+        // Props for backdrop customization
+        BackdropProps={{
+          timeout: 500, // Adjust as needed
+          style: {
+            // Add backdrop styles here
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+        }}
+      >
+        <Fade in={open1}>
+          <Box sx={style1}>
+            <Box sx={{ flex: 1 }}>
+              <Box className="flex justify-between" style={{ margin: "30px" }}>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
                   style={{
-                    border: "1px solid",
-                    backgroundColor: "#0000",
-                    color: "black",
-                    borderColor: "rgba(203,213,225)",
+                    fontSize: "3rem",
                   }}
-                  variant="contained"
-                  color="warning"
-                  startIcon={
-                    <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
-                  }
-                  // onClick={handleOpenDocModal}
                 >
-                  Document
-                </Button>
-              </div>
-              {currentActivityForm.canExecute && (
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{ marginTop: "15px" }}
+                  File Manager
+                  {/* <Typography
+                                id="transition-modal-title"
+                                variant="h6"
+                                component="h2"
+                              >
+                                0 Files
+                              </Typography> */}
+                </Typography>
+                <Box>
+                  <Button
+                    className=""
+                    variant="contained"
+                    color="secondary"
+                    onClick={toggleDrawer(true)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+                    <span className="mx-4 sm:mx-8">Upload File</span>
+                  </Button>
+                </Box>
+              </Box>
+              <Box>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                  component="div"
+                  style={{
+                    backgroundColor: "#e3eeff80",
+                  }}
                 >
-                  {AppActions.map((btn) => (
+                  {listDocument.map((doc, index) => (
+                    <div className="content " key={index}>
+                      <div
+                        onClick={() => handelDetailDoc(doc)}
+                        style={{ textAlign: "-webkit-center" }}
+                      >
+                        <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        <h6>{doc?.name}</h6>
+                        <h6>by {doc?.staffName}</h6>
+                      </div>
+                    </div>
+                  ))}
+                </Typography>
+              </Box>
+            </Box>
+            {openDrawer && !fileDetails && (
+              <Box sx={drawerStyle(openDrawer)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setOpenDrawer(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
                     <Button
-                      className="whitespace-nowrap"
+                      className=""
                       variant="contained"
                       color="secondary"
-                      style={{ padding: "15px" }}
-                      onClick={() => handleOpen(btn)}
+                      style={{
+                        backgroundColor: "#24a0ed",
+                        borderRadius: "5px",
+                        paddingLeft: "50px",
+                        paddingRight: "50px",
+                      }}
+                      component="span"
                     >
-                      {btn.name}
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
                     </Button>
-                  ))}
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Selecte File"
+                      variant="standard"
+                      disabled
+                      value={selectedFile.name}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="description"
+                      variant="standard"
+                      onChange={handelFileDiscriptionChange}
+                      value={selectedFile.description}
+                    />
+                  </Box>
                 </div>
-              )}
-            </div>
-          </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleSubmitAsset}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Box>
+            )}
+
+            {fileDetails && (
+              <Box sx={drawerStyle(fileDetails)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setFileDetails(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <div className=" ">
+                      <div
+                        onClick={handelDetailDoc}
+                        style={{ textAlign: "-webkit-center" }}
+                      >
+                        <img src="/assets/images/etc/icon_N.png" />
+                      </div>
+                    </div>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Created By"
+                      variant="standard"
+                      disabled
+                      value={selectedDocument.staffName}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label=" Created At"
+                      name="description"
+                      variant="standard"
+                      disabled
+                      value={formatDate(selectedDocument.createdAt)}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="Description"
+                      variant="standard"
+                      disabled
+                      value={
+                        selectedDocument.description == null
+                          ? ""
+                          : selectedDocument.descritpion
+                      }
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleDownload}
+                  >
+                    Download
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
+              </Box>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
+
+      <SwipeableViews>
+        <Paper className="w-full mx-auto my-8 p-16 rounded-16 shadow overflow-hidden">
+          <Typography variant="h4" component="h2" gutterBottom>
+            <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+              Change Summary
+            </h2>
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <FormControl component="fieldset" fullWidth>
+                <FormLabel component="legend">
+                  Class Category
+                  <Link
+                    href="#"
+                    className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer"
+                  >
+                    (View Class Category Details)
+                  </Link>
+                </FormLabel>
+                {currentActivityForm.canEdit ? (
+                  <RadioGroup
+                    row
+                    aria-labelledby="classCategory"
+                    name="classCategory"
+                    value={selectedClass}
+                    onChange={handleClassChange}
+                  >
+                    <FormControlLabel
+                      value="1"
+                      control={<Radio />}
+                      label="Class I"
+                    />
+                    <FormControlLabel
+                      value="2"
+                      control={<Radio />}
+                      label="Class II"
+                    />
+                  </RadioGroup>
+                ) : (
+                  <span>{currentSummeryById.classCategoryString}</span>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <FormLabel>Change Leader</FormLabel>
+                {currentActivityForm.canEdit ? (
+                  <Select
+                    name="changeLeaderId"
+                    value={IniComp.changeLeaderId}
+                    onChange={handleChange}
+                  >
+                    {class1.map((option) => (
+                      <MenuItem key={option.id} value={option.value}>
+                        {option.text}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                ) : (
+                  <span>{currentSummeryById.changeLeader}</span>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <FormLabel>
+                  Change Location (you can add multiple locations)
+                </FormLabel>
+                {currentActivityForm.canEdit ? (
+                  <OutlinedInput
+                    name="changeLocation"
+                    value={IniComp.changeLocation}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <span>{currentSummeryById.changeLocation}</span>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <FormLabel>Change Type</FormLabel>
+                {currentActivityForm.canEdit ? (
+                  <RadioGroup
+                    row
+                    name="changeType"
+                    value={IniComp.changeType}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel
+                      value="1"
+                      control={<Radio />}
+                      label="Permanent"
+                    />
+                    <FormControlLabel
+                      value="2"
+                      control={<Radio />}
+                      label="Temporary"
+                    />
+                  </RadioGroup>
+                ) : (
+                  <span>{currentSummeryById.changeTypeString}</span>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <FormLabel>Expected Change Completion Date</FormLabel>
+                {currentActivityForm.canEdit ? (
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DatePicker
+                      label="Expected Completion Date"
+                      value={IniComp.TerminationDate}
+                      onChange={handleChanges}
+                      renderInput={(params) => (
+                        <TextField fullWidth {...params} />
+                      )}
+                    />
+                  </LocalizationProvider>
+                ) : (
+                  <span>{currentSummeryById.changeTerminationDate}</span>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <FormLabel>Brief Description</FormLabel>
+                {currentActivityForm.canEdit ? (
+                  <OutlinedInput
+                    name="briefDescription"
+                    value={IniComp.briefDescription}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <span>{currentSummeryById.briefDescription}</span>
+                )}
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <FormControl fullWidth>
+                <FormLabel>Change Benefits</FormLabel>
+                {currentActivityForm.canEdit ? (
+                  <OutlinedInput
+                    name="changeBenefits"
+                    value={IniComp.changeBenefits}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <span>{currentSummeryById.changeBenefits}</span>
+                )}
+              </FormControl>
+            </Grid>
+          </Grid>
+          <Box mt={4} display="flex" justifyContent="space-between">
+            <Button
+              variant="outlined"
+              style={{
+                padding: "10px 20px",
+                borderColor: "grey",
+              }}
+              startIcon={
+                <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
+              }
+              onClick={handleOpen1}
+            >
+              Document
+            </Button>
+            {currentActivityForm.canExecute && (
+              <Box display="flex" gap={2}>
+                {AppActions.map((btn) => (
+                  <Button
+                    key={btn.uid}
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleOpen(btn)}
+                  >
+                    {btn.name}
+                  </Button>
+                ))}
+              </Box>
+            )}
+          </Box>
         </Paper>
       </SwipeableViews>
     </div>

@@ -91,7 +91,7 @@ const AssetCourse = () => {
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
 
-  const [AssetDetails, setAssetDetails] = useState({});
+  // const [AssetDetails, setAssetDetails] = useState({});
   const [currentSummeryById, setCurrentSummeryById] = useState({});
 
   const [changeEvaluationId, setChangeEvaluationId] = useState();
@@ -563,7 +563,7 @@ const AssetCourse = () => {
     apiAuth
       .get(`/ChangeRequest/RequestDetails?id=${assetEvaluationId}`)
       .then((resp) => {
-        setAssetDetails(resp.data.data);
+        setContentDetails(resp.data.data);
         apiAuth
           .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
           .then((resp) => {
@@ -827,7 +827,6 @@ const AssetCourse = () => {
       });
   };
   const SubmitImpCreate = (e, uid) => {
-    debugger;
     apiAuth
       .get(`/ChangeImpact/ListTask?id=${assetEvaluationId}`)
       .then((resp) => {
@@ -1056,7 +1055,7 @@ const AssetCourse = () => {
                 assetEvaluationId={assetEvaluationId}
                 AppActions={appActions}
                 AppActivity={appActivity}
-                AssetDetails={AssetDetails}
+                AssetDetails={contentDetails}
                 currentActivityForm={currentActivityForm}
                 currentSummeryById={currentSummeryById}
               />
