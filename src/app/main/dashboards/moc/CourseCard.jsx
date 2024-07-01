@@ -14,7 +14,7 @@ import CourseProgress from "./CourseProgress";
 function CourseCard(props) {
   const { course } = props;
 
-  console.log(course, ";;");
+  console.log(course, ";;12");
 
   function buttonStatus() {
     switch (course.activeStep) {
@@ -43,7 +43,11 @@ function CourseCard(props) {
         }}
       >
         <Button
-          to={`/moc/evaluation/${course.token}`}
+          to={
+            course.requestTypeName === "Asset"
+              ? `/moc/assetEvaluation/${course.token}`
+              : `/moc/evaluation/${course.token}`
+          }
           component={Link}
           className="px-16 min-w-128"
           color="secondary"
