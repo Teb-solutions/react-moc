@@ -50,6 +50,7 @@ import Initiation from "../components/Initiation";
 import AssetPhasesEnum from "./assetPhaseEnum";
 import InitiationApproval from "../components/InitiationApproval";
 import InitiationComplete from "../components/initiationComplete";
+import InitiationApprovalProceed from "../components/InitiationApproveProceed";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -93,8 +94,9 @@ const AssetCourse = () => {
 
   // const [AssetDetails, setAssetDetails] = useState({});
   const [currentSummeryById, setCurrentSummeryById] = useState({});
-
   const [changeEvaluationId, setChangeEvaluationId] = useState();
+  const [TeamAssignmentList, setTeamAssignmentList] = useState([]);
+
   const [handelUrlChange, setHandelUrlChange] = useState({
     urlRemarks: "",
   });
@@ -655,26 +657,7 @@ const AssetCourse = () => {
                     });
                 });
               });
-            // apiAuth
-            //   .get(`/ChangeRequest/RequestDetails?id=${assetEvaluationId}`)
-            //   .then((resp) => {
-            //     const evaluationIds = resp.data.data.id;
-            //     setContentDetails(resp.data?.data);
 
-            //     apiAuth
-            //       .get(
-            //         `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${evaluationIds}`
-            //       )
-            //       .then((resp) => {
-            //         setChangeEvaluationDetail(resp.data?.data);
-            //         apiAuth
-            //           .get(`/Activity/ActivityDetails/${uid}`)
-            //           .then((resp) => {
-            //             setEvalActions(resp.data.data.actions);
-            //             setEvalActivity(resp.data.data.activity);
-            //           });
-            //       });
-            //   });
             break;
           case "InitiationComplete":
             apiAuth
@@ -688,41 +671,19 @@ const AssetCourse = () => {
               });
 
             break;
-          case "Implementation":
+          case "InitiationApprovalProceed":
             apiAuth
-              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .get(`TeamAssignment/List?id=${assetEvaluationId}`)
               .then((resp) => {
-                setReqNo(resp.data.data.requestNo);
-                setContentDetails(resp.data?.data);
+                setTeamAssignmentList(resp.data.data);
+
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
-                  setImpActions(resp.data.data.actions);
-                  setImpActivity(resp.data.data.activity);
-                });
-                apiAuth.get(`/Staff/LOV`).then((resp) => {
-                  setDocStaff(resp.data.data);
-                  apiAuth
-                    .get(`DocMoc/GetImplementation/${assetEvaluationId}`)
-                    .then((resp) => {
-                      setTaskLists(resp.data.data.taskList);
-                      setCheckLists(resp.data.data.checkList);
-                    });
+                  setAppActions(resp.data.data.actions);
+                  setAppActivity(resp.data.data.activity);
                 });
               });
             break;
-          case "docimplclosure":
-            apiAuth
-              .get(
-                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
-              )
-              .then((resp) => {
-                setReqNo(resp.data.data.requestNo);
-                setContentDetails(resp.data?.data);
-                apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
-                  setCloseActions(resp.data.data.actions);
-                  setCloseActivity(resp.data.data.activity);
-                });
-              });
-            break;
+
           default:
             console.log("No matching phase found");
             return;
@@ -1058,6 +1019,15 @@ const AssetCourse = () => {
                 AssetDetails={contentDetails}
                 currentActivityForm={currentActivityForm}
                 currentSummeryById={currentSummeryById}
+              />
+            )}
+            {currentPhase === "InitiationApprovalProceed" && (
+              <InitiationApprovalProceed
+                currentActivityForm={currentActivityForm}
+                TeamAssignmentList={TeamAssignmentList}
+                AppActions={appActions}
+                AppActivity={appActivity}
+                assetEvaluationId={assetEvaluationId}
               />
             )}
           </div>
