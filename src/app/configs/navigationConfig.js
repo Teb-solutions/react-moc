@@ -8,8 +8,8 @@ i18next.addResourceBundle("en", "navigation", en);
 i18next.addResourceBundle("tr", "navigation", tr);
 i18next.addResourceBundle("ar", "navigation", ar);
 
-const storedFeature = decryptFeature();
-const feature = storedFeature ? storedFeature : [];
+// const storedFeature = decryptFeature();
+const feature = decryptFeature() || [];
 
 const navigationConfig1 = [
   {

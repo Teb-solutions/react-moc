@@ -1,11 +1,13 @@
 import CryptoJS from "crypto-js";
 
 import Cookies from "js-cookie";
+
 export const encryptFeature = (data) => {
   const jsonString = JSON.stringify(data);
   const secretKey = import.meta.env.VITE_SECRET_KEY;
   const encryptedData = CryptoJS.AES.encrypt(jsonString, secretKey).toString();
   Cookies.set("MOC_Features", encryptedData);
+  return encryptedData;
 };
 
 export const decryptFeature = () => {

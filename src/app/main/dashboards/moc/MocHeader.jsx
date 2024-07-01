@@ -26,6 +26,9 @@ function MocHeader(props) {
   const handleOpenNewDoc = () => {
     navigate("/moc/activity");
   };
+  const handleOpenNewAsset = () => {
+    navigate("/moc/assetactivity");
+  };
 
   return (
     <div
@@ -77,7 +80,7 @@ function MocHeader(props) {
             open={Boolean(anchorEl)}
             onClose={handleOpenNewDoc}
           >
-            <MenuItem>Technical </MenuItem>
+            <MenuItem onClick={handleOpenNewAsset}>Technical </MenuItem>
             <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
             <MenuItem>Organisation</MenuItem>
           </Menu>

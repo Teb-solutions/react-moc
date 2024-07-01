@@ -11,8 +11,9 @@ import { useAuth } from "src/app/auth/AuthRouteProvider";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ReCAPTCHA from "react-google-recaptcha";
-
-import { decryptFeature, encryptFeature } from "./featureEncryption";
+import Cookies from "js-cookie";
+import { encryptFeature } from "./featureEncryption";
+import { apiAuth } from "src/utils/http";
 
 /**
  * Form Validation Schema
@@ -34,7 +35,7 @@ const defaultValues = {
   remember: true,
 };
 
-function jwtSignInTab() {
+const JwtSignInTab = () => {
   const [showMFA, setShowMFA] = useState(false);
   const [recaptchaTokens, setRecaptchaToken] = useState("");
   const [logindata, setLoginData] = useState();
@@ -68,11 +69,15 @@ function jwtSignInTab() {
     setValue("mFAOtp", "", {
       shouldDirty: true,
     });
-  }, [setValue]);
+  }, []);
 
-  useEffect(() => {
-    console.log("reAuth state has changed: ", reAuth);
-  }, [reAuth]);
+  // useEffect(() => {
+  //   console.log("reAuth state has changed: ", reAuth);
+  // }, [reAuth]);
+
+  // useEffect(() => {
+  //   console.log("showMFA state has changed: ", showMFA);
+  // }, [showMFA]);
 
   async function onSubmit(formData) {
     const { userName, password, mFAOtp } = formData;
@@ -83,24 +88,26 @@ function jwtSignInTab() {
       recaptchaToken: localStorage.getItem("recap"),
       mFAOtp: mFAOtp,
     };
-
     try {
-      const user = await axiosService.signIn(params);
-      if (user.statusCode === 202) {
-        setReAuth(true);
-        console.log("reAuth set to true");
-      }
-      if (user.statusCode === 200) {
-        localStorage.setItem("jwt_access_token", user.data.jwt);
-        try {
-          encryptFeature(user.data.features);
-        } catch (error) {
-          console.error("Encryption/Decryption error:", error);
+      apiAuth.post("/Account/Login", params).then((resp) => {
+        if (resp.data.statusCode === 202) {
+          console.log("Setting showMFA to true", resp);
+          setShowMFA(true);
         }
-        navigate("/dashboards/project");
-      }
-
-      // You can now use the user data as needed
+        if (resp.data.statusCode === 200) {
+          Cookies.remove("MOC_Features");
+          localStorage.setItem("jwt_access_token", resp.data.data.jwt);
+          try {
+            const enData = encryptFeature(resp.data.data.features);
+            if (enData) {
+              navigate("/dashboards/project");
+              location.reload();
+            }
+          } catch (error) {
+            console.error("Encryption/Decryption error:", error);
+          }
+        }
+      });
     } catch (error) {
       const errorData = error.response.data;
       errorData.forEach((err) => {
@@ -129,7 +136,7 @@ function jwtSignInTab() {
               className="mb-24"
               label="User Name"
               autoFocus
-              type="email"
+              type="string"
               error={!!errors.userName}
               helperText={errors?.userName?.message}
               variant="outlined"
@@ -168,23 +175,25 @@ function jwtSignInTab() {
           </div>
         )}
 
-        <Controller
-          name="mFAOtp"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              className="mb-24 mt-4"
-              label="mFAOtp"
-              type="number"
-              // error={!!errors.mFAOtp}
-              // helperText={errors?.password?.mFAOtp}
-              variant="outlined"
-              required
-              fullWidth
-            />
-          )}
-        />
+        {showMFA && (
+          <Controller
+            name="mFAOtp"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                className="mb-24 mt-4"
+                label="OTP"
+                type="string"
+                // error={!!errors.mFAOtp}
+                // helperText={errors?.password?.mFAOtp}
+                variant="outlined"
+                required
+                fullWidth
+              />
+            )}
+          />
+        )}
         {reAuth && <h1>hello</h1>}
 
         <div className="flex flex-col items-center mt-4 justify-center sm:flex-row sm:justify-between">
@@ -220,6 +229,6 @@ function jwtSignInTab() {
       </form>
     </div>
   );
-}
+};
 
-export default jwtSignInTab;
+export default JwtSignInTab;

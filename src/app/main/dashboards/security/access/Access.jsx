@@ -152,8 +152,16 @@ const Access = () => {
               ? { ...item, isActive: !isActive }
               : item
           );
-          setRoleIdList(updatedList);
-          updateFeaturesInCookies(updatedList);
+          apiAuth.get(`/Staff/Staff`).then((resp) => {
+            if (resp.data?.data) {
+              const enData = encryptFeature(resp.data?.data?.features);
+              if (enData) {
+                setRoleIdList(updatedList);
+              }
+            }
+          });
+
+          // updateFeaturesInCookies(updatedList);s
         }
         // Optionally update the state based on the response if needed
       })

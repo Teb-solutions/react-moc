@@ -4,6 +4,7 @@ import DocRequest from "./activity/docRequest";
 import Task from "../task/Task";
 import Error404Page from "../../404/Error404Page";
 import { decryptFeature } from "../../sign-in/tabs/featureEncryption";
+import AssetRequest from "./assetActivity/AssetRequest";
 const MocApp = lazy(() => import("./Moc"));
 // const DocApp = lazy(() => import('./docevaluation/Doc'));
 /**
@@ -28,6 +29,10 @@ const MocConfig1 = {
     {
       path: "/moc/activity",
       element: <DocRequest />,
+    },
+    {
+      path: "/moc/Assetactivity",
+      element: <AssetRequest />,
     },
   ],
 };
