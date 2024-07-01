@@ -89,6 +89,8 @@ const AssetCourse = () => {
   const { assetEvaluationId } = routeParams;
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
+  const [ApprovalDetails, setApprovalDetails] = useState({});
+
   const [changeEvaluationId, setChangeEvaluationId] = useState();
   const [handelUrlChange, setHandelUrlChange] = useState({
     urlRemarks: "",
@@ -1020,16 +1022,15 @@ const AssetCourse = () => {
       content={
         <div className="w-full">
           <ToastContainer className="toast-container" />
-          <SwipeableViews>
-            <div className="flex justify-center p-16 pb-64 sm:p-24 ">
-              {currentPhase === "InitiationRequest" && (
-                <Initiation contentDetails={contentDetails} />
-              )}
-              {currentPhase === "InitiationApproval" && (
-                <InitiationApproval ApprovalDetails={ApprovalDetails} />
-              )}
-            </div>
-          </SwipeableViews>
+
+          <div className="flex justify-center p-16 pb-64 sm:p-24 ">
+            {currentPhase === "InitiationRequest" && (
+              <Initiation contentDetails={contentDetails} />
+            )}
+            {currentPhase === "InitiationApproval" && (
+              <InitiationApproval ApprovalDetails={ApprovalDetails} />
+            )}
+          </div>
         </div>
       }
       leftSidebarWidth={300}
