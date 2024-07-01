@@ -13,7 +13,7 @@ import { FormControlLabel } from "@mui/material";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
 import FuseLoading from "@fuse/core/FuseLoading";
-import CourseCard from "./CourseCard";
+// import CourseCard from "./CourseCard";
 import {
   useGetAcademyCategoriesQuery,
   useGetAcademyCoursesQuery,
@@ -218,7 +218,7 @@ function Courses() {
                 {filteredData.map((course) => {
                   return (
                     <motion.div variants={item} key={course.id}>
-                      <CourseCard course={course} />
+                      {/* <CourseCard course={course} /> */}
                     </motion.div>
                   );
                 })}

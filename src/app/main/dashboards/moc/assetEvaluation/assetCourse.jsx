@@ -89,7 +89,6 @@ const AssetCourse = () => {
   const { assetEvaluationId } = routeParams;
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
-  const [ApprovalDetails, setApprovalDetails] = useState({});
 
   const [changeEvaluationId, setChangeEvaluationId] = useState();
   const [handelUrlChange, setHandelUrlChange] = useState({
@@ -629,30 +628,44 @@ const AssetCourse = () => {
           case "InitiationApproval":
             apiAuth
               .get(
-                `/ChangeEvaluation/Get/${assetEvaluationId}/${matchingActivity?.formUID ? matchingActivity?.formUID : null}/${matchingActivity.version}`
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
               .then((resp) => {
-                const evaluationIds = resp.data.data.id;
+                setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp.data?.data);
-                setChangeEvaluationId(resp.data?.data.id);
-                setHandelUrlChange({
-                  urlRemarks: resp.data?.data.remarks,
-                });
 
-                apiAuth
-                  .get(
-                    `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${evaluationIds}`
-                  )
-                  .then((resp) => {
-                    setChangeEvaluationDetail(resp.data?.data);
-                    apiAuth
-                      .get(`/Activity/ActivityDetails/${uid}`)
-                      .then((resp) => {
-                        setEvalActions(resp.data.data.actions);
-                        setEvalActivity(resp.data.data.activity);
-                      });
-                  });
+                apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+                  setAppActions(resp.data.data.actions);
+                  setAppActivity(resp.data.data.activity);
+                  apiAuth
+                    .get(
+                      `/ApprovalManager/Remark/${resp.data.data.activity.uid}`
+                    )
+                    .then((resp) => {
+                      setApprovalManager(resp.data?.data);
+                    });
+                });
               });
+            // apiAuth
+            //   .get(`/ChangeRequest/RequestDetails?id=${assetEvaluationId}`)
+            //   .then((resp) => {
+            //     const evaluationIds = resp.data.data.id;
+            //     setContentDetails(resp.data?.data);
+
+            //     apiAuth
+            //       .get(
+            //         `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${evaluationIds}`
+            //       )
+            //       .then((resp) => {
+            //         setChangeEvaluationDetail(resp.data?.data);
+            //         apiAuth
+            //           .get(`/Activity/ActivityDetails/${uid}`)
+            //           .then((resp) => {
+            //             setEvalActions(resp.data.data.actions);
+            //             setEvalActivity(resp.data.data.activity);
+            //           });
+            //       });
+            //   });
             break;
           case "Approval":
             apiAuth
@@ -1028,7 +1041,16 @@ const AssetCourse = () => {
               <Initiation contentDetails={contentDetails} />
             )}
             {currentPhase === "InitiationApproval" && (
-              <InitiationApproval ApprovalDetails={ApprovalDetails} />
+              <InitiationApproval
+                ApprovalDetails={contentDetails}
+                ApprovalManager={ApprovalManager}
+                Actions={appActions}
+                Activity={appActivity}
+                currentActivityForm={currentActivityForm}
+                SubmitApprovelCreate={SubmitApprovelCreate}
+                handleChangeRemark={handleChangeRemark}
+                valueRemark={valueRemark}
+              />
             )}
           </div>
         </div>
