@@ -14,6 +14,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import Cookies from "js-cookie";
 import { encryptFeature } from "./featureEncryption";
 import { apiAuth } from "src/utils/http";
+import { ToastContainer, toast } from "react-toastify";
 
 /**
  * Form Validation Schema
@@ -92,7 +93,10 @@ const JwtSignInTab = () => {
       apiAuth.post("/Account/Login", params).then((resp) => {
         if (resp.data.statusCode === 202) {
           console.log("Setting showMFA to true", resp);
+          toast.success("Otp Required");
           setShowMFA(true);
+          return;
+        } else {
         }
         if (resp.data.statusCode === 200) {
           Cookies.remove("MOC_Features");
@@ -100,12 +104,15 @@ const JwtSignInTab = () => {
           try {
             const enData = encryptFeature(resp.data.data.features);
             if (enData) {
+              toast.success("Successfully Logined");
               navigate("/dashboards/project");
               location.reload();
             }
           } catch (error) {
             console.error("Encryption/Decryption error:", error);
           }
+        } else {
+          toast.error("Some Error Occured");
         }
       });
     } catch (error) {
@@ -121,6 +128,7 @@ const JwtSignInTab = () => {
 
   return (
     <div className="w-full">
+      <ToastContainer className="toast-container" />
       <form
         name="loginForm"
         noValidate
