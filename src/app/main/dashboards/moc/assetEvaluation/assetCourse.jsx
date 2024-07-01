@@ -92,6 +92,7 @@ const AssetCourse = () => {
   const [contentDetails, setContentDetails] = useState({});
   const [ApprovalDetails, setApprovalDetails] = useState({});
   const [AssetDetails, setAssetDetails] = useState({});
+  const [currentSummeryById, setCurrentSummeryById] = useState({});
 
   const [changeEvaluationId, setChangeEvaluationId] = useState();
   const [handelUrlChange, setHandelUrlChange] = useState({
@@ -661,10 +662,15 @@ const AssetCourse = () => {
               });
             break;
           case "InitiationComplete":
-            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
-              setAppActions(resp.data.data.actions);
-              setAppActivity(resp.data.data.activity);
-            });
+            apiAuth
+              .get(`/ChangeSummary/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setCurrentSummeryById(resp.data.data);
+                apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+                  setAppActions(resp.data.data.actions);
+                  setAppActivity(resp.data.data.activity);
+                });
+              });
 
             break;
           case "Implementation":
@@ -1027,6 +1033,8 @@ const AssetCourse = () => {
                 AppActions={appActions}
                 AppActivity={appActivity}
                 AssetDetails={AssetDetails}
+                currentActivityForm={currentActivityForm}
+                currentSummeryById={currentSummeryById}
               />
             )}
           </div>
