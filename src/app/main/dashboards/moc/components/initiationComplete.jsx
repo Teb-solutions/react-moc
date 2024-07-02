@@ -5,6 +5,7 @@ import {
   Button,
   Fade,
   Grid,
+  MenuItem,
   Modal,
   OutlinedInput,
   Paper,
@@ -20,6 +21,7 @@ import {
   FormControl,
   FormLabel,
   RadioGroup,
+  Badge,
   FormControlLabel,
   Radio,
   Link,
@@ -27,6 +29,8 @@ import {
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { apiAuth } from "src/utils/http";
+import { makeStyles } from "@mui/styles";
+import { withStyles } from "@mui/styles";
 
 const InitiationComplete = ({
   assetEvaluationId,
@@ -36,6 +40,16 @@ const InitiationComplete = ({
   currentActivityForm,
   currentSummeryById,
 }) => {
+  const StyledBadge = withStyles((theme) => ({
+    badge: {
+      right: -3,
+      top: 13,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: "0 4px",
+      backgroundColor: "#2c3e50", // Adjust background color to match the image
+      color: "white",
+    },
+  }))(Badge);
   const [class1, setClass1] = useState([]);
   const [selectedClass, setSelectedClass] = useState(1);
   const [open, setOpen] = useState(false);
@@ -223,11 +237,12 @@ const InitiationComplete = ({
 
   const handleOpen1 = () => {
     setOpen1(true);
-    const newGuid = uuidv4();
-    setSelectedFile((prevState) => ({
-      ...prevState,
-      documentId: newGuid,
-    }));
+    // ListDoc(assetEvaluationId, AssetDetails?.changeRequestId);
+    // const newGuid = uuidv4();
+    // setSelectedFile((prevState) => ({
+    //   ...prevState,
+    //   documentId: newGuid,
+    // }));
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
@@ -827,6 +842,7 @@ const InitiationComplete = ({
             </Grid>
           </Grid>
           <Box mt={4} display="flex" justifyContent="space-between">
+            {/* <StyledBadge badgeContent={AssetDetails.documentStatus}> */}
             <Button
               variant="outlined"
               style={{
@@ -840,6 +856,7 @@ const InitiationComplete = ({
             >
               Document
             </Button>
+            {/* </StyledBadge> */}
             {currentActivityForm.canExecute && (
               <Box display="flex" gap={2}>
                 {AppActions.map((btn) => (

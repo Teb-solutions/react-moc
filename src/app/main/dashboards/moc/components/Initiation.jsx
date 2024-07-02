@@ -1,6 +1,7 @@
 import { useState } from "react";
 import {
   Backdrop,
+  Badge,
   Box,
   Button,
   Fade,
@@ -14,14 +15,44 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-
+import { withStyles } from "@mui/styles";
 import { v4 as uuidv4 } from "uuid";
-
+import { makeStyles } from "@mui/styles";
 import SwipeableViews from "react-swipeable-views";
 import { parseISO, format } from "date-fns";
+import { apiAuth } from "src/utils/http";
+
+const useStyles = makeStyles({
+  documentList: {
+    backgroundColor: "#e3eeff80",
+  },
+  documentItem: {
+    textAlign: "center",
+    padding: "16px",
+  },
+  documentImage: {
+    width: "50px", // Adjust the size as needed
+    height: "50px",
+  },
+  documentDetails: {
+    marginTop: "8px",
+  },
+});
 
 function Initiation(props) {
-  const { contentDetails } = props;
+  const classes = useStyles();
+  const { contentDetails, assetEvaluationId } = props;
+  const StyledBadge = withStyles((theme) => ({
+    badge: {
+      right: -3,
+      top: 13,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: "0 4px",
+      backgroundColor: "#2c3e50", // Adjust background color to match the image
+      color: "white",
+    },
+  }))(Badge);
+
   const [open, setOpen] = useState(false);
   const [documentState, setDocumentState] = useState({
     docControllerId: "",
@@ -92,6 +123,26 @@ function Initiation(props) {
     transition: "right 0.3s ease", // Smooth transition for opening/closing
   });
 
+  const handleDownload = () => {
+    debugger;
+    apiAuth
+      .get(`/DocumentManager/download/${documenDowToken}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", selectedDocument.documentImage); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed", error);
+      });
+  };
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);
     setFileDetails(true);
@@ -103,13 +154,24 @@ function Initiation(props) {
     setOpenDrawer(false);
   };
 
+  const ListDoc = (id, changeRequestId) => {
+    apiAuth
+      .get(
+        `/DocumentManager/DocList/${changeRequestId}/ChangeRequest?changeRequestToken=${id}`
+      )
+      .then((Resp) => {
+        setListDocument(Resp?.data?.data);
+      });
+  };
+
   const handleOpen = () => {
     setOpen(true);
-    const newGuid = uuidv4();
-    setSelectedFile((prevState) => ({
-      ...prevState,
-      documentId: newGuid,
-    }));
+    ListDoc(assetEvaluationId, contentDetails?.changeRequestId);
+    // const newGuid = uuidv4();
+    // setSelectedFile((prevState) => ({
+    //   ...prevState,
+    //   documentId: newGuid,
+    // }));
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
@@ -175,7 +237,7 @@ function Initiation(props) {
                               </Typography> */}
                 </Typography>
                 <Box>
-                  <Button
+                  {/* <Button
                     className=""
                     variant="contained"
                     color="secondary"
@@ -183,7 +245,7 @@ function Initiation(props) {
                   >
                     <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
                     <span className="mx-4 sm:mx-8">Upload File</span>
-                  </Button>
+                  </Button> */}
                 </Box>
               </Box>
               <Box>
@@ -202,7 +264,11 @@ function Initiation(props) {
                         onClick={() => handelDetailDoc(doc)}
                         style={{ textAlign: "-webkit-center" }}
                       >
-                        <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        {doc.fileType === "JPG" ? (
+                          <img src="/assets/images/etc/icon_n.png" style={{}} />
+                        ) : (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        )}
                         <h6>{doc?.name}</h6>
                         <h6>by {doc?.staffName}</h6>
                       </div>
@@ -363,11 +429,14 @@ function Initiation(props) {
                   <label htmlFor="fileInput">
                     <div className=" ">
                       <div
-                        onClick={handelDetailDoc}
-                        style={{ textAlign: "-webkit-center" }}
+                        // onClick={handelDetailDoc}
+                        style={{
+                          textAlign: "-webkit-center",
+                        }}
                       >
                         <img src="/assets/images/etc/icon_N.png" />
                       </div>
+                      {selectedDocument?.name}
                     </div>
                   </label>
                   <Box
@@ -458,18 +527,6 @@ function Initiation(props) {
                     onClick={handleDownload}
                   >
                     Download
-                  </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                  >
-                    Delete
                   </Button>
                 </div>
               </Box>
@@ -599,23 +656,27 @@ function Initiation(props) {
             </div>
             <div className="flex items-center justify-between w-full mt-8 px-6 py-3 border-t">
               <div>
-                <Button
-                  className="whitespace-nowrap mt-5"
-                  style={{
-                    border: "1px solid",
-                    backgroundColor: "transparent",
-                    color: "black",
-                    borderColor: "rgba(203,213,225)",
-                  }}
-                  variant="contained"
-                  color="warning"
-                  startIcon={
-                    <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
-                  }
-                  onClick={handleOpen}
-                >
-                  Document
-                </Button>
+                <StyledBadge badgeContent={contentDetails.documentStatus}>
+                  <Button
+                    className="whitespace-nowrap mt-5"
+                    style={{
+                      border: "1px solid",
+                      backgroundColor: "transparent",
+                      color: "black",
+                      borderColor: "rgba(203,213,225)",
+                    }}
+                    variant="contained"
+                    color="warning"
+                    startIcon={
+                      <FuseSvgIcon size={20}>
+                        heroicons-solid:upload
+                      </FuseSvgIcon>
+                    }
+                    onClick={handleOpen}
+                  >
+                    Document
+                  </Button>
+                </StyledBadge>
               </div>
             </div>
           </div>
