@@ -51,6 +51,7 @@ import AssetPhasesEnum from "./assetPhaseEnum";
 import InitiationApproval from "../components/InitiationApproval";
 import InitiationComplete from "../components/initiationComplete";
 import InitiationApprovalProceed from "../components/InitiationApproveProceed";
+import EvaluationChange from "../components/EvaluationChange";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -619,6 +620,9 @@ const AssetCourse = () => {
           case AssetPhasesEnum.INITIATIONAPPROVALAPROCEED:
             actualPhaseName = "InitiationApprovalProceed";
             break;
+          case AssetPhasesEnum.EVALUATIONCHANGE:
+            actualPhaseName = "EvaluationChange";
+            break;
 
           default:
             actualPhaseName = " ";
@@ -672,6 +676,18 @@ const AssetCourse = () => {
 
             break;
           case "InitiationApprovalProceed":
+            apiAuth
+              .get(`TeamAssignment/List?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setTeamAssignmentList(resp.data.data);
+
+                apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+                  setAppActions(resp.data.data.actions);
+                  setAppActivity(resp.data.data.activity);
+                });
+              });
+            break;
+          case "EvaluationChange":
             apiAuth
               .get(`TeamAssignment/List?id=${assetEvaluationId}`)
               .then((resp) => {
@@ -1024,6 +1040,14 @@ const AssetCourse = () => {
             {currentPhase === "InitiationApprovalProceed" && (
               <InitiationApprovalProceed
                 currentActivityForm={currentActivityForm}
+                TeamAssignmentList={TeamAssignmentList}
+                AppActions={appActions}
+                AppActivity={appActivity}
+                assetEvaluationId={assetEvaluationId}
+              />
+            )}
+            {currentPhase === "EvaluationChange" && (
+              <EvaluationChange
                 TeamAssignmentList={TeamAssignmentList}
                 AppActions={appActions}
                 AppActivity={appActivity}

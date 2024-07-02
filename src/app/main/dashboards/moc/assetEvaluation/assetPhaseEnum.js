@@ -3,6 +3,7 @@ const AssetPhasesEnum = Object.freeze({
   INITIATIONAPPROVAL: 5,
   INITIATIONACOMPLETE: 2,
   INITIATIONAPPROVALAPROCEED: 6,
+  EVALUATIONCHANGE: 3,
 });
 
 export default AssetPhasesEnum;

@@ -67,9 +67,7 @@ function InitiationApprovalProceed({
       console.error("Error fetching records:", error);
     }
   }
-  console.log("====================================");
-  console.log(AppActions, "AppActions");
-  console.log("====================================");
+
   useEffect(() => {
     getRecords();
   }, []);
