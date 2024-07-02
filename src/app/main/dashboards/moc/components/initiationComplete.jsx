@@ -76,17 +76,13 @@ const InitiationComplete = ({
     briefDescription: "",
     changeBenefits: "",
     documentType: "Activity",
-    documentId: AppActivity.uid,
-    documentStatus: AppActivity.form,
+
     actionUID: "",
-    activityUID: AppActivity.uid,
     formUID: "",
     token: AssetDetails.token,
-    executeActivity: {
-      actionUID: "",
-      activityUID: AppActivity.uid,
-    },
   });
+
+  console.log(IniComp, "IniComp");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -151,6 +147,13 @@ const InitiationComplete = ({
       ...IniComp,
       formattedTermDate: formattedTermDate,
       changeTerminationDate: formattedChangeTermDate,
+      documentId: AppActivity.uid,
+      documentStatus: AppActivity.form,
+      activityUID: AppActivity.uid,
+      executeActivity: {
+        actionUID: AppActions[0].uid,
+        activityUID: AppActivity.uid,
+      },
     };
     apiAuth
       .post("/ChangeSummary/Create", formattedDocumentState)
