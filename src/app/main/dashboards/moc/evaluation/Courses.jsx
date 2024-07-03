@@ -13,10 +13,7 @@ import { FormControlLabel } from "@mui/material";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
 import FuseLoading from "@fuse/core/FuseLoading";
-import {
-  useGetAcademyCategoriesQuery,
-  useGetAcademyCoursesQuery,
-} from "../AcademyApi";
+
 import CourseCard from "../CourseCard";
 
 const container = {

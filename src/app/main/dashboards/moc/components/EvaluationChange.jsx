@@ -1,13 +1,25 @@
 import React, { useState, useEffect } from "react";
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Backdrop,
   Box,
   Button,
   Checkbox,
   Fade,
+  FormControl,
+  FormLabel,
   Grid,
+  InputLabel,
+  ListItemText,
+  MenuItem,
   Modal,
+  OutlinedInput,
   Paper,
+  Select,
+  Step,
+  Stepper,
   Table,
   TableBody,
   TableCell,
@@ -16,8 +28,12 @@ import {
   Typography,
 } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 import { apiAuth } from "src/utils/http";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -81,12 +97,29 @@ function EvaluationChange({
   const [SessionList, setSessionList] = useState([]);
   const [sessionTime, setSessionTime] = useState();
   const [selectedItems, setSelectedItems] = useState([]);
+  const [docStaff, setDocStaff] = useState([]);
+  const [list, setIsList] = useState([]);
+  const [impactList, setImpactList] = useState([]);
 
   const initialSeconds = sessionTime * 60; // Convert minutes to seconds
   const [currentSeconds, setCurrentSeconds] = useState(() => {
     const storedTime = localStorage.getItem("currentSeconds");
     return storedTime ? parseInt(storedTime, 10) : initialSeconds;
   });
+  const [selectedTasks, setSelectedTasks] = useState([]);
+  const [remark, setRemark] = useState("");
+  const [sessionTaskList, setSessionTaskList] = useState([]);
+
+  const handleChangeTask = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setSelectedTasks(typeof value === "string" ? value.split(",") : value);
+  };
+
+  const handleRemarkChange = (event) => {
+    setRemark(event.target.value);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -174,9 +207,27 @@ function EvaluationChange({
       .then((resp) => {
         setSession(resp.data?.data);
         const sessionList = resp.data?.data?.activeSession?.timeoutMin;
-
+        const sessionListId = resp.data?.data?.id;
         setSessionTime(sessionList);
+        apiAuth
+          .get(
+            `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${sessionListId}`
+          )
+          .then((resp) => {
+            setIsList(resp.data.data);
+          });
+        apiAuth
+          .get(`/ChangeImpact/ImpactTask?id=${sessionListId}`)
+          .then((resp) => {
+            setSessionTaskList(resp.data?.data);
+          });
+        apiAuth.get(`/ChangeImpact/Get?id=${sessionListId}`).then((resp) => {
+          setImpactList(resp.data?.data);
+        });
       });
+    apiAuth.get(`/Staff/LOV`).then((resp) => {
+      setDocStaff(resp.data.data);
+    });
   };
 
   const groupByRoleName = (teamAssignmentList) => {
@@ -238,6 +289,171 @@ function EvaluationChange({
         console.error("Error creating session:", error);
       });
   };
+
+  const [forms, setForms] = useState([]);
+  const [AddCunsultation, setAddConsultation] = useState(false);
+  const [AddImpact, setAddCImpact] = useState(false);
+
+  const [editConsultation, setEditConsultation] = useState(false);
+  const [editStaffName, setEditStaffName] = useState("");
+  const [editStaffDate, setEditStaffDate] = useState("");
+  const [editStaffId, setEditStaffId] = useState();
+  const [editId, setEditId] = useState();
+  const [particularList, setParticularList] = useState([]);
+  const [particularSubList, setParticularSubList] = useState([]);
+
+  const [impactForm, setImpactForm] = useState({
+    particular: "",
+    particularSubCategory: "",
+    hazardDetail: "",
+  });
+
+  const handleAddForm = () => {
+    const newForms = [
+      ...forms,
+      { id: Date.now(), consultedDate: null, consultedStaffId: "" },
+    ];
+    setForms(newForms);
+  };
+
+  const handleRemoveForm = (id) => {
+    const newForms = forms.filter((form) => form.id !== id);
+    setForms(newForms);
+  };
+
+  const handleAddConsultation = () => {
+    setAddConsultation(true);
+    handleAddForm();
+  };
+  const handleAddImpact = () => {
+    setAddCImpact(true);
+  };
+
+  const handlebackList = () => {
+    setAddConsultation(false);
+    setEditConsultation(false);
+
+    setForms([]);
+  };
+
+  const handleChangeImpact = (e) => {
+    if (e.target.name == "particular") {
+      apiAuth.get(`/LookupData/Lov/17/75`).then((resp) => {
+        setParticularSubList(resp?.data.data);
+      });
+    }
+
+    const { name, value } = e.target;
+    setImpactForm((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handlebackImpactList = () => {
+    setAddCImpact(false);
+    apiAuth
+      .get(`/LookupData/Lov/16`, { TeamList: selectedItems })
+      .then((resp) => {
+        setParticularList(resp?.data.data);
+      });
+  };
+
+  const handleInputChange = (id, name, value) => {
+    const newForms = forms.map((form) =>
+      form.id === id ? { ...form, [name]: value } : form
+    );
+    setForms(newForms);
+  };
+  const formatDates = (date) => {
+    const d = new Date(date);
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    const year = d.getFullYear();
+    return `${month}/${day}/${year}`;
+  };
+
+  const handleSubmit = () => {
+    const payload = forms.map((form) => ({
+      id: 0,
+      changeRequestId: 0,
+      changeEvaluationId: 0,
+      consultedDate: form.consultedDate
+        ? formatDates(form.consultedDate)
+        : null,
+      consultedStaffDesignationId: "",
+      consultedStaffId: form.consultedStaffId,
+      taskReviewId: "",
+      comments: "",
+      isActive: true,
+      isEditable: true,
+    }));
+
+    apiAuth
+      .post(
+        `/ChangeEvaluationConsultation/Create/${Session.id}/${assetEvaluationId}`,
+        payload
+      )
+      .then((resp) => {
+        setAddConsultation(false);
+        getRecords();
+      })
+      .catch((error) => {
+        console.error("Error submitting the form:", error);
+      });
+  };
+  const handelImpactSubmit = () => {
+    const payload = [
+      {
+        changeImapactId: 0,
+        changeRequestId: 0,
+        changeEvaluationId: 0,
+        particular: impactForm.particular,
+        particularSubCategory: impactForm.particularSubCategory,
+        principle: "1",
+        hazardDetail: impactForm.hazardDetail,
+        otherDetail: "",
+        changeImpactHazardList: [],
+        documentStatus: "Pending",
+        isShowDetail: true,
+        changeImpactTasks: [],
+      },
+    ];
+    apiAuth
+      .put(`ChangeImpact/Create/${Session.id}/${assetEvaluationId}`, payload)
+      .then((resp) => {
+        setAddCImpact(false);
+      });
+  };
+
+  const handelEditConsultation = (staff, date, stffid, id) => {
+    setAddConsultation(true);
+
+    setEditConsultation(true);
+    setEditStaffName(staff);
+    setEditStaffDate(new Date(date));
+    setEditStaffId(stffid);
+    setEditId(id);
+  };
+
+  const handleSave = () => {
+    const apiData = {
+      consultedDate: editStaffDate,
+      consultedStaffDesignationId: 0,
+      consultedStaffId: editStaffId,
+      comments: "",
+      impactTaskIds: selectedTasks,
+      remark: remark,
+    };
+    apiAuth
+      .put(`/ChangeEvaluationConsultation/UpdateList?id=${editId}`, apiData)
+      .then((resp) => {
+        setEditConsultation(false);
+        getRecords();
+      });
+    // Send apiData to the API endpoint using fetch or any other method
+  };
+
   return (
     <div className="w-full">
       <SwipeableViews>
@@ -302,7 +518,7 @@ function EvaluationChange({
               </div>
             </div>
           </div>
-          {!Session?.activeSession && (
+          {!Session.hasActiveSession && (
             <div className="ng-star-inserted mt-5">
               <div className="ng-star-inserted">
                 <div
@@ -319,6 +535,7 @@ function EvaluationChange({
               </div>
             </div>
           )}
+          {/* )} */}
 
           <Box sx={{ width: "100%", mt: 2 }} className="hello">
             <Box sx={{ display: "flex" }}>
@@ -348,60 +565,680 @@ function EvaluationChange({
             </Box>
 
             <CustomTabPanel value={value} index={0}>
-              <Typography className="ps-5">
-                No Evaluation Consultations added
-              </Typography>
+              {list.length && !AddCunsultation ? (
+                list.map((itms) => (
+                  <Accordion style={{ margin: "0px" }}>
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1-content"
+                      id="panel1-header"
+                      style={{ minHeight: "60px" }}
+                    >
+                      <div
+                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                        style={{ width: "40%" }}
+                      >
+                        <div className="flex items-center">
+                          <img
+                            src="/assets/images/etc/userpic.png"
+                            alt="Card cover image"
+                            className="rounded-full mr-4"
+                            style={{ width: "4rem", height: "4rem" }}
+                          />
+                          <div className="flex flex-col">
+                            <span className="font-semibold leading-none">
+                              {itms.staff}
+                            </span>
+                            <span className="text-sm text-secondary leading-none pt-5">
+                              Consulted on {formatDate(itms.consultedDate)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                        <div className="flex items-center">
+                          <div
+                            className="py-0.5 px-3 rounded-full text-sm"
+                            style={{
+                              backgroundColor:
+                                itms.comments == "" || itms.comments == null
+                                  ? "rgba(252,165,165)"
+                                  : "rgba(134,239,172)",
+                              padding: "5px",
+                            }}
+                          >
+                            {itms.comments === ""
+                              ? "No Comments Added"
+                              : "Comments Added"}
+                          </div>{" "}
+                          <div
+                            className="py-0.5 px-3 rounded-full text-sm"
+                            style={{
+                              backgroundColor:
+                                itms.tasks.length == 0
+                                  ? "rgba(252,165,165)"
+                                  : "rgba(134,239,172)",
+                              padding: "5px",
+                              marginLeft: "15px",
+                            }}
+                          >
+                            {itms.tasks.length == 0
+                              ? "No Task Added"
+                              : "Task Added"}
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                      <Stepper orientation="vertical">
+                        <Step>
+                          <div className="mat-expansion-panel-body ng-tns-c137-15">
+                            <div className="mt-2 ng-tns-c137-15">
+                              <div className="prose prose-sm max-w-5xl">
+                                <div className="ng-star-inserted">
+                                  <span
+                                    className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                    style={{
+                                      padding: "10px",
+                                    }}
+                                  >
+                                    "No Comments Added"
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                            {itms?.remark !== "" &&
+                              itms?.tasks.length !== 0 && (
+                                <div style={{ alignItems: "flex-start" }}>
+                                  <div
+                                    className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                    style={{
+                                      padding: "20px",
+                                      backgroundColor: "#EBF8FF",
+                                    }}
+                                  >
+                                    <p>
+                                      <b>Task Added</b> : {itms.tasks[0]}{" "}
+                                    </p>
+                                  </div>
+                                  <div
+                                    className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                    style={{
+                                      padding: "20px",
+                                      backgroundColor: "#EBF8FF",
+                                      marginTop: "5px",
+                                    }}
+                                  >
+                                    <p>
+                                      <b>Remarks</b> : {itms.remark}{" "}
+                                    </p>
+                                  </div>
+                                </div>
+                              )}
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="flex items-center w-full  border-b justify-between"
+                              style={{ marginTop: "5px" }}
+                            ></div>
+                            <Button
+                              className="ms-5"
+                              variant="contained"
+                              sx={{
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid black",
+                                marginTop: "8px",
+                              }}
+                              startIcon={
+                                <FuseSvgIcon size={20}>
+                                  heroicons-outline:user-add
+                                </FuseSvgIcon>
+                              }
+                              onClick={() =>
+                                handelEditConsultation(
+                                  itms.staff,
+                                  itms.consultedDate,
+                                  itms.consultedStaffId,
+                                  itms.id
+                                )
+                              }
+                            >
+                              Edit Consultation
+                            </Button>
+                          </div>
+                        </Step>
+                      </Stepper>
+                    </AccordionDetails>
+                  </Accordion>
+                ))
+              ) : (
+                <Typography className="ps-5">
+                  No Evaluation Consultations added
+                </Typography>
+              )}
+
               <div className="flex justify-start">
                 <div
                   className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                   style={{ marginTop: "15px" }}
                 >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    style={{ padding: "15px" }}
-                    //   onClick={() => handleOpen(btn)}
-                    startIcon={
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                    }
-                  >
-                    Add New Consultation
-                  </Button>
+                  {!AddCunsultation && (
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="secondary"
+                      style={{ padding: "15px" }}
+                      onClick={handleAddConsultation}
+                      startIcon={
+                        <FuseSvgIcon size={20}>
+                          heroicons-outline:plus
+                        </FuseSvgIcon>
+                      }
+                    >
+                      Add New Consultation
+                    </Button>
+                  )}
                 </div>
               </div>
+              {AddCunsultation && (
+                <div className="font-semibold ps-5">
+                  <a rel="noopener noreferrer" onClick={handlebackList}>
+                    Back to List
+                  </a>
+                </div>
+              )}
+
+              {!editConsultation && (
+                <>
+                  {AddCunsultation &&
+                    forms.map((form, index) => (
+                      <div
+                        style={{
+                          marginTop: "30px",
+                          justifyContent: "space-start",
+                        }}
+                        className="flex flex-row "
+                        key={index}
+                      >
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                          <FormControl
+                            sx={{
+                              marginLeft: "10px",
+                            }}
+                          >
+                            <Box sx={{}}>
+                              <DatePicker
+                                label="Validity Expires On *"
+                                name="consultedDate"
+                                renderInput={(params) => (
+                                  <TextField fullWidth {...params} />
+                                )}
+                                value={form.consultedDate}
+                                onChange={(newValue) =>
+                                  handleInputChange(
+                                    form.id,
+                                    "consultedDate",
+                                    newValue
+                                  )
+                                }
+                              />
+                            </Box>
+                          </FormControl>
+                        </LocalizationProvider>
+                        <Box
+                          sx={{
+                            width: 860,
+                            maxWidth: "50%",
+                            marginLeft: "5rem",
+                          }}
+                        >
+                          <FormControl fullWidth>
+                            <InputLabel id="division-label">
+                              Search Staff
+                            </InputLabel>
+                            <Select
+                              labelId="division-label"
+                              name="consultedStaffId"
+                              id={`consultedStaffId-${form.id}`}
+                              value={form.consultedStaffId}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  form.id,
+                                  "consultedStaffId",
+                                  e.target.value
+                                )
+                              }
+                            >
+                              <MenuItem value="" disabled>
+                                <em>None</em>
+                              </MenuItem>
+                              {docStaff.map((option) => (
+                                <MenuItem key={option.id} value={option.value}>
+                                  {option.text}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Box>
+                        <Button
+                          className="whitespace-nowrap mt-5"
+                          startIcon={
+                            <FuseSvgIcon size={20}>
+                              heroicons-solid:trash
+                            </FuseSvgIcon>
+                          }
+                          onClick={() => handleRemoveForm(form.id)}
+                        ></Button>
+                      </div>
+                    ))}
+                </>
+              )}
+              {editConsultation && (
+                <>
+                  <div
+                    style={{
+                      marginTop: "30px",
+                      justifyContent: "space-start",
+                    }}
+                    className="flex flex-row "
+                  >
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <FormControl
+                        sx={{
+                          marginLeft: "10px",
+                        }}
+                      >
+                        <FormLabel component="legend" className="text-14">
+                          Consulted On
+                        </FormLabel>
+                        <Box sx={{}}>
+                          <DatePicker
+                            name="consultedDate"
+                            renderInput={(params) => (
+                              <TextField fullWidth {...params} />
+                            )}
+                            value={editStaffDate}
+                            disabled
+                          />
+                        </Box>
+                      </FormControl>
+                    </LocalizationProvider>
+
+                    <Box
+                      sx={{
+                        width: 860,
+                        maxWidth: "50%",
+                        marginLeft: "5rem",
+                      }}
+                    >
+                      <FormControl fullWidth>
+                        <FormLabel component="legend" className="text-14">
+                          Staff
+                        </FormLabel>
+                        <Select
+                          labelId="division-label"
+                          name="consultedStaffId"
+                          id="consultedStaffId"
+                          value={editStaffName} // Set the default value here
+                          disabled
+                        >
+                          <MenuItem value={editStaffName} disabled>
+                            {editStaffName} {/* Display the value */}
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
+                  </div>
+                  <div
+                    className="py-0.5 px-3 rounded-full text-sm  mt-5"
+                    style={{ paddingLeft: "10px", paddingTop: "10px" }}
+                  >
+                    No Comments Added By staff
+                  </div>
+
+                  <Box
+                    sx={{ display: "flex", flexWrap: "wrap", marginTop: "5px" }}
+                  >
+                    <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
+                      <FormLabel
+                        htmlFor="reasonForNewDocument"
+                        className="font-semibold leading-none"
+                      >
+                        Tasks
+                      </FormLabel>
+                      <Select
+                        id="reasonForNewDocument"
+                        name="reasonForNewDocument"
+                        multiple
+                        value={selectedTasks}
+                        onChange={handleChangeTask}
+                        className="mt-5"
+                        displayEmpty
+                        renderValue={(selected) =>
+                          selected.length === 0 ? (
+                            <em>None</em>
+                          ) : (
+                            selected
+                              .map((taskId) => {
+                                const task = sessionTaskList.find(
+                                  (option) => option.value === taskId
+                                );
+                                return task ? task.text : taskId;
+                              })
+                              .join(", ")
+                          )
+                        }
+                      >
+                        <MenuItem value="" disabled>
+                          <em>None</em>
+                        </MenuItem>
+                        {sessionTaskList.map((option) => (
+                          <MenuItem key={option.id} value={option.value}>
+                            <Checkbox
+                              checked={selectedTasks.indexOf(option.value) > -1}
+                            />
+                            <ListItemText primary={option.text} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+                  <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                    <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
+                      <FormLabel
+                        htmlFor="reasonForNewDocument"
+                        className="font-semibold leading-none"
+                      >
+                        Remarks
+                      </FormLabel>
+                      <OutlinedInput
+                        id="reasonForNewDocument"
+                        name="reasonForNewDocument"
+                        onChange={handleRemarkChange}
+                        label="Reason For Change*"
+                        className="mt-5"
+                        // value={valueRemark}
+                      />
+                    </FormControl>
+                  </Box>
+                  <div
+                    className="my-10"
+                    style={{ borderTopWidth: "2px", marginTop: "40px" }}
+                  ></div>
+                  <div className="flex justify-end">
+                    <div
+                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                      style={{ marginTop: "15px" }}
+                    ></div>
+                    <div
+                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                      style={{ marginTop: "15px" }}
+                    >
+                      <Button
+                        className="whitespace-nowrap"
+                        variant="contained"
+                        color="secondary"
+                        style={{ padding: "15px" }}
+                        onClick={handleSave}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="flex justify-start">
+                    <div
+                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                      style={{ marginTop: "15px" }}
+                    >
+                      <Button
+                        className="whitespace-nowrap"
+                        variant="contained"
+                        color="secondary"
+                        style={{ padding: "15px" }}
+                        onClick={handleAddConsultation}
+                        startIcon={
+                          <FuseSvgIcon size={20}>
+                            heroicons-outline:plus
+                          </FuseSvgIcon>
+                        }
+                      >
+                        Add New Consultation
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              )}
             </CustomTabPanel>
 
             <CustomTabPanel value={value} index={1}>
-              <Typography variant="h6"></Typography>
-              <Typography></Typography>
-              <div className="flex justify-start">
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{ marginTop: "15px" }}
+              <Paper>
+                {AddImpact && (
+                  <>
+                    <div
+                      className="font-semibold ps-5"
+                      style={{ padding: "15px" }}
+                    >
+                      <a
+                        rel="noopener noreferrer"
+                        onClick={handlebackImpactList}
+                      >
+                        Back to Impact View
+                      </a>
+                    </div>
+                    <div
+                      className="my-10"
+                      style={{ borderTopWidth: "2px" }}
+                    ></div>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        marginTop: "5px",
+                        margin: "20px",
+                      }}
+                    >
+                      <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
+                        <FormLabel
+                          htmlFor="particular"
+                          className="font-semibold leading-none"
+                        >
+                          Particular *
+                        </FormLabel>
+                        <Select
+                          id="particular"
+                          name="particular"
+                          value={impactForm.particular}
+                          onChange={handleChangeImpact}
+                          className="mt-5"
+                        >
+                          <MenuItem value="" disabled>
+                            <em>None</em>
+                          </MenuItem>
+                          {particularList.map((option) => (
+                            <MenuItem key={option.id} value={option.value}>
+                              <ListItemText primary={option.text} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+
+                      <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
+                        <FormLabel
+                          htmlFor="particularSubCategory"
+                          className="font-semibold leading-none"
+                        >
+                          Particular Sub Category *
+                        </FormLabel>
+                        <Select
+                          id="particularSubCategory"
+                          name="particularSubCategory"
+                          value={impactForm.particularSubCategory}
+                          onChange={handleChangeImpact}
+                          className="mt-5"
+                        >
+                          <MenuItem value="" disabled>
+                            <em>None</em>
+                          </MenuItem>
+                          {particularSubList.map((option) => (
+                            <MenuItem key={option.id} value={option.value}>
+                              <ListItemText primary={option.text} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+
+                      <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
+                        <FormLabel
+                          htmlFor="hazardDetail"
+                          className="font-semibold leading-none"
+                        >
+                          Detail of Hazard or How the Action/Task to be Achieved
+                        </FormLabel>
+                        <OutlinedInput
+                          id="hazardDetail"
+                          name="hazardDetail"
+                          value={impactForm.hazardDetail}
+                          onChange={handleChangeImpact}
+                          label="Reason For Change*"
+                          className="mt-5"
+                        />
+                      </FormControl>
+                    </Box>
+                    <div
+                      className="my-10"
+                      style={{ borderTopWidth: "2px" }}
+                    ></div>
+                    <Button
+                      className="whitespace-nowrap mt-5"
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "#0000",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                        marginLeft: "30px",
+                      }}
+                      variant="contained"
+                      startIcon={
+                        <FuseSvgIcon size={20}>
+                          heroicons-outline:plus
+                        </FuseSvgIcon>
+                      }
+                    >
+                      Add New Task
+                    </Button>
+                    <div
+                      className="my-10"
+                      style={{ borderTopWidth: "2px" }}
+                    ></div>
+                    <div className="flex justify-end">
+                      <div
+                        className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                        style={{ marginTop: "15px" }}
+                      >
+                        <Button
+                          className="whitespace-nowrap"
+                          variant="contained"
+                          color="secondary"
+                          style={{ margin: "15px" }}
+                          //   onClick={() => handleOpen(btn)}
+                          startIcon={
+                            <FuseSvgIcon size={20}>
+                              heroicons-outline:plus
+                            </FuseSvgIcon>
+                          }
+                          onClick={handelImpactSubmit}
+                        >
+                          Submit
+                        </Button>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </Paper>
+              {!AddImpact && (
+                <div className="flex justify-start">
+                  <div
+                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                    style={{ marginTop: "15px" }}
+                  >
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="secondary"
+                      style={{ padding: "15px" }}
+                      //   onClick={() => handleOpen(btn)}
+                      startIcon={
+                        <FuseSvgIcon size={20}>
+                          heroicons-outline:plus
+                        </FuseSvgIcon>
+                      }
+                      onClick={handleAddImpact}
+                    >
+                      Add New Impact
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CustomTabPanel>
+          </Box>
+
+          {AddCunsultation && !editConsultation && (
+            <>
+              <div
+                className="my-10"
+                style={{ borderTopWidth: "2px", marginTop: "40px" }}
+              ></div>
+
+              <div
+                className="flex justify-between items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                style={{ marginTop: "15px" }}
+              >
+                <Button
+                  className="whitespace-nowrap mt-5"
+                  style={{
+                    border: "1px solid",
+                    backgroundColor: "black",
+                    color: "white",
+                    marginLeft: "10px",
+                  }}
+                  variant="contained"
+                  startIcon={
+                    <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+                  }
+                  onClick={handleAddConsultation}
                 >
+                  Add Stake
+                </Button>
+
+                <div className="flex items-center space-x-12">
+                  <Button
+                    className="whitespace-nowrap mt-5"
+                    style={{
+                      border: "1px solid",
+                      backgroundColor: "#0000",
+                      color: "black",
+                      borderColor: "rgba(203,213,225)",
+                      marginLeft: "10px",
+                    }}
+                    variant="contained"
+                  >
+                    Cancel
+                  </Button>
                   <Button
                     className="whitespace-nowrap"
                     variant="contained"
                     color="secondary"
                     style={{ padding: "15px" }}
-                    //   onClick={() => handleOpen(btn)}
-                    startIcon={
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                    }
+                    onClick={handleSubmit}
                   >
-                    Add New Impact
+                    Submit
                   </Button>
                 </div>
               </div>
-            </CustomTabPanel>
-          </Box>
-
-          {!Session?.activeSession && (
+            </>
+          )}
+          {!Session.hasActiveSession && (
             <>
               <div
                 className="my-10"
