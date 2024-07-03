@@ -266,6 +266,8 @@ function Initiation(props) {
                       >
                         {doc.fileType === "JPG" ? (
                           <img src="/assets/images/etc/icon_n.png" style={{}} />
+                        ) : doc.fileType === "JPG" ? (
+                          <img src="/assets/images/etc/icon_n.png" style={{}} />
                         ) : (
                           <img src="/assets/images/etc/icon_N.png" style={{}} />
                         )}
