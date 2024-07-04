@@ -265,9 +265,9 @@ function Initiation(props) {
                         style={{ textAlign: "-webkit-center" }}
                       >
                         {doc.fileType === "JPG" ? (
-                          <img src="/assets/images/etc/icon_n.png" style={{}} />
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
                         ) : doc.fileType === "JPG" ? (
-                          <img src="/assets/images/etc/icon_n.png" style={{}} />
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
                         ) : (
                           <img src="/assets/images/etc/icon_N.png" style={{}} />
                         )}

@@ -24,6 +24,7 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  FormHelperText,
   TableRow,
   Typography,
 } from "@mui/material";
@@ -100,6 +101,7 @@ function EvaluationChange({
   const [docStaff, setDocStaff] = useState([]);
   const [list, setIsList] = useState([]);
   const [impactList, setImpactList] = useState([]);
+  const [errorsAdd, setErrorsAdd] = useState({});
 
   const initialSeconds = sessionTime * 60; // Convert minutes to seconds
   const [currentSeconds, setCurrentSeconds] = useState(() => {
@@ -229,7 +231,6 @@ function EvaluationChange({
       setDocStaff(resp.data.data);
     });
   };
-
   const groupByRoleName = (teamAssignmentList) => {
     return teamAssignmentList.reduce((acc, item) => {
       if (!acc[item.roleName]) {
@@ -241,39 +242,31 @@ function EvaluationChange({
   };
 
   const groupedData = groupByRoleName(TeamAssignmentList);
+
   useEffect(() => {
     const defaultSelections = TeamAssignmentList.filter(
-      (item) => item.roleName === "change leader" || item.roleName === "hseq"
+      (item) => item.roleName === "Change Leader" || item.roleName === "Hseq"
     ).map((item) => ({
       teamType: item.teamType,
       staffId: item.staffId,
       staffName: item.staffName,
     }));
     setSelectedItems(defaultSelections);
-  }, []);
+  }, [TeamAssignmentList]);
 
   const handleCheckboxChange = (teamType, staffId, staffName) => {
-    const selectedItem = { teamType, staffId, staffName };
-
-    // Check if the item is already selected
-    const isSelected = selectedItems.some(
-      (item) => item.teamType === teamType && item.staffId === staffId
-    );
-
-    if (isSelected) {
-      // Remove the item from selectedItems if already selected
-      setSelectedItems((prevSelectedItems) =>
-        prevSelectedItems.filter(
-          (item) => !(item.teamType === teamType && item.staffId === staffId)
-        )
+    setSelectedItems((prevSelectedItems) => {
+      const isSelected = prevSelectedItems.some(
+        (item) => item.teamType === teamType && item.staffId === staffId
       );
-    } else {
-      // Add the item to selectedItems if not already selected
-      setSelectedItems((prevSelectedItems) => [
-        ...prevSelectedItems,
-        selectedItem,
-      ]);
-    }
+      if (isSelected) {
+        return prevSelectedItems.filter(
+          (item) => !(item.teamType === teamType && item.staffId === staffId)
+        );
+      } else {
+        return [...prevSelectedItems, { teamType, staffId, staffName }];
+      }
+    });
   };
   const handelCreateSession = () => {
     apiAuth
@@ -291,6 +284,7 @@ function EvaluationChange({
   };
 
   const [forms, setForms] = useState([]);
+
   const [AddCunsultation, setAddConsultation] = useState(false);
   const [AddImpact, setAddCImpact] = useState(false);
 
@@ -308,12 +302,32 @@ function EvaluationChange({
     hazardDetail: "",
   });
 
+  const validateAdd = () => {
+    let tempErrors = {};
+    forms.forEach((form) => {
+      if (!form.consultedDate)
+        tempErrors[form.id] = {
+          ...tempErrors[form.id],
+          consultedDate: "Expires date is required",
+        };
+      if (!form.consultedStaffId)
+        tempErrors[form.id] = {
+          ...tempErrors[form.id],
+          consultedStaffId: "Staff is required",
+        };
+    });
+
+    setErrorsAdd(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const handleAddForm = () => {
-    const newForms = [
-      ...forms,
-      { id: Date.now(), consultedDate: null, consultedStaffId: "" },
-    ];
-    setForms(newForms);
+    const newForm = {
+      id: Date.now(),
+      consultedDate: null,
+      consultedStaffId: "",
+    };
+    setForms((prevForms) => [...prevForms, newForm]);
   };
 
   const handleRemoveForm = (id) => {
@@ -322,8 +336,10 @@ function EvaluationChange({
   };
 
   const handleAddConsultation = () => {
-    setAddConsultation(true);
-    handleAddForm();
+    if (validateAdd()) {
+      handleAddForm();
+      setAddConsultation(true);
+    }
   };
   const handleAddImpact = () => {
     setAddCImpact(true);
@@ -364,6 +380,16 @@ function EvaluationChange({
       form.id === id ? { ...form, [name]: value } : form
     );
     setForms(newForms);
+    if (errorsAdd[id]?.[name]) {
+      setErrorsAdd((prevErrors) => {
+        const newErrors = { ...prevErrors };
+        delete newErrors[id][name];
+        if (Object.keys(newErrors[id]).length === 0) {
+          delete newErrors[id];
+        }
+        return newErrors;
+      });
+    }
   };
   const formatDates = (date) => {
     const d = new Date(date);
@@ -759,20 +785,25 @@ function EvaluationChange({
                           justifyContent: "space-start",
                         }}
                         className="flex flex-row "
-                        key={index}
+                        key={form.id}
                       >
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                           <FormControl
                             sx={{
                               marginLeft: "10px",
                             }}
+                            error={!!errorsAdd[form.id]?.consultedDate}
                           >
                             <Box sx={{}}>
                               <DatePicker
                                 label="Validity Expires On *"
                                 name="consultedDate"
                                 renderInput={(params) => (
-                                  <TextField fullWidth {...params} />
+                                  <TextField
+                                    fullWidth
+                                    {...params}
+                                    error={!!errorsAdd[form.id]?.consultedDate}
+                                  />
                                 )}
                                 value={form.consultedDate}
                                 onChange={(newValue) =>
@@ -784,6 +815,11 @@ function EvaluationChange({
                                 }
                               />
                             </Box>
+                            {!!errorsAdd[form.id]?.consultedDate && (
+                              <FormHelperText error>
+                                {errorsAdd[form.id].consultedDate}
+                              </FormHelperText>
+                            )}
                           </FormControl>
                         </LocalizationProvider>
                         <Box
@@ -809,6 +845,7 @@ function EvaluationChange({
                                   e.target.value
                                 )
                               }
+                              error={!!errorsAdd[form.id]?.consultedStaffId}
                             >
                               <MenuItem value="" disabled>
                                 <em>None</em>
@@ -819,6 +856,11 @@ function EvaluationChange({
                                 </MenuItem>
                               ))}
                             </Select>
+                            {!!errorsAdd[form.id]?.consultedStaffId && (
+                              <FormHelperText error>
+                                {errorsAdd[form.id].consultedStaffId}
+                              </FormHelperText>
+                            )}
                           </FormControl>
                         </Box>
                         <Button
