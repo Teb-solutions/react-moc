@@ -26,6 +26,7 @@ import {
   TableHead,
   FormHelperText,
   TableRow,
+  TextField,
   Typography,
 } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
@@ -162,7 +163,6 @@ function EvaluationChange({
         const activeSessions = sessionList.filter(
           (session) => session.isActive
         );
-        console.log(activeSessions[0].timeoutMin, "activeSessions");
 
         setSessionList(activeSessions);
         setSessionTime(activeSessions[0].timeoutMin);
@@ -300,6 +300,7 @@ function EvaluationChange({
     particular: "",
     particularSubCategory: "",
     hazardDetail: "",
+    changeImpactTasks: [],
   });
 
   const validateAdd = () => {
@@ -342,6 +343,13 @@ function EvaluationChange({
     }
   };
   const handleAddImpact = () => {
+    setImpactForm({
+      particular: "",
+      particularSubCategory: "",
+      hazardDetail: "",
+    });
+    handlebackImpactList();
+
     setAddCImpact(true);
   };
 
@@ -354,7 +362,7 @@ function EvaluationChange({
 
   const handleChangeImpact = (e) => {
     if (e.target.name == "particular") {
-      apiAuth.get(`/LookupData/Lov/17/75`).then((resp) => {
+      apiAuth.get(`/LookupData/Lov/17/${e.target.value}`).then((resp) => {
         setParticularSubList(resp?.data.data);
       });
     }
@@ -368,11 +376,9 @@ function EvaluationChange({
 
   const handlebackImpactList = () => {
     setAddCImpact(false);
-    apiAuth
-      .get(`/LookupData/Lov/16`, { TeamList: selectedItems })
-      .then((resp) => {
-        setParticularList(resp?.data.data);
-      });
+    apiAuth.get(`/LookupData/Lov/16`).then((resp) => {
+      setParticularList(resp?.data.data);
+    });
   };
 
   const handleInputChange = (id, name, value) => {
@@ -442,9 +448,26 @@ function EvaluationChange({
         changeImpactHazardList: [],
         documentStatus: "Pending",
         isShowDetail: true,
-        changeImpactTasks: [],
+        changeImpactTasks: impactForm.changeImpactTasks.map((task) => ({
+          id: 0,
+          changeRequestId: 0,
+          changeEvaluationId: 0,
+          changeImapactId: 0,
+          actionWhat: task.actionWhat,
+          actionHow: task.actionHow,
+          actionComments: "",
+          deadline: task.deadline, // Replace with actual value if necessary
+          assignedStaffId: task.assignedStaffId,
+          taskReviewId: "",
+          dueDate: formatDates(task.dueDate),
+          isCompleted: false,
+          completedAt: "",
+          isActive: true,
+          isEditable: true,
+        })),
       },
     ];
+
     apiAuth
       .put(`ChangeImpact/Create/${Session.id}/${assetEvaluationId}`, payload)
       .then((resp) => {
@@ -479,7 +502,75 @@ function EvaluationChange({
       });
     // Send apiData to the API endpoint using fetch or any other method
   };
+  const [addNewTask, setAddNewTask] = useState(false);
 
+  const handelEditImpactTask = (patricularname, subname, hazard) => {
+    handlebackImpactList();
+    setAddCImpact(true);
+    setImpactForm({
+      particular: patricularname,
+      particularSubCategory: subname,
+      hazardDetail: hazard,
+    });
+  };
+
+  const handleTaskInputChange = (index, event) => {
+    const { name, value } = event.target;
+
+    const newTasks = [...AddTaskforms];
+    newTasks[index][name] = value;
+    setAddTakForms(newTasks);
+
+    // Update impactForm
+    const updatedImpactForm = { ...impactForm, changeImpactTasks: newTasks };
+    setImpactForm(updatedImpactForm);
+  };
+
+  const handleDateChange = (index, newValue) => {
+    const newTasks = [...AddTaskforms];
+    newTasks[index].dueDate = newValue;
+    setAddTakForms(newTasks);
+
+    // Update impactForm
+    const updatedImpactForm = { ...impactForm, changeImpactTasks: newTasks };
+    setImpactForm(updatedImpactForm);
+  };
+
+  const [AddTaskforms, setAddTakForms] = useState([]);
+  const [mocPhase, setMocPhase] = useState([]);
+
+  const handleAddNewTask = () => {
+    setAddNewTask(true);
+    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {
+      setMocPhase(resp.data.data);
+    });
+    const newTask = {
+      actionWhat: "",
+      actionHow: "",
+      assignedStaffId: "",
+      consultedDate: null,
+      dueDate: null,
+    };
+    const newTasks = [...AddTaskforms, newTask];
+    setAddTakForms(newTasks);
+
+    // Update impactForm
+    const updatedImpactForm = { ...impactForm, changeImpactTasks: newTasks };
+    setImpactForm(updatedImpactForm);
+  };
+
+  const handleRemoveAddTaskForm = (index) => {
+    const newTasks = AddTaskforms.filter((_, i) => i !== index);
+    setAddTakForms(newTasks);
+
+    // Update impactForm
+    const updatedImpactForm = { ...impactForm, changeImpactTasks: newTasks };
+    setImpactForm(updatedImpactForm);
+  };
+
+  console.log("====================================");
+  console.log(impactForm, "impactFormss");
+  console.log("====================================");
   return (
     <div className="w-full">
       <SwipeableViews>
@@ -508,7 +599,6 @@ function EvaluationChange({
                   }
                   onClick={handleOpen}
                 >
-                  {console.log(SessionList, "Session")}
                   {!Session?.activeSession && <span>Create Session</span>}
                   {Session?.activeSession?.status == 1 && (
                     <span>Session acceptance pending</span>
@@ -1055,6 +1145,255 @@ function EvaluationChange({
 
             <CustomTabPanel value={value} index={1}>
               <Paper>
+                {impactList.length && !AddImpact
+                  ? impactList.map((itms) => (
+                      <Accordion style={{ margin: "0px" }}>
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls="panel1-content"
+                          id="panel1-header"
+                          style={{ minHeight: "60px" }}
+                        >
+                          <div
+                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                            style={{ width: "40%" }}
+                          >
+                            <div className="flex items-center">
+                              <img
+                                src="/assets/images/etc/userpic.png"
+                                alt="Card cover image"
+                                className="rounded-full mr-4"
+                                style={{ width: "4rem", height: "4rem" }}
+                              />
+                              <div className="flex flex-col">
+                                <span className="font-semibold leading-none">
+                                  {itms.particularName}
+                                </span>
+                                <span className="text-sm text-secondary leading-none pt-5">
+                                  {itms.particularSubName}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div
+                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                            style={{ width: "20%" }}
+                          >
+                            <div className="flex items-center">
+                              <div
+                                className=" rounded-full text-sm"
+                                style={{
+                                  backgroundColor:
+                                    itms.riskCount > 0
+                                      ? "rgba(252,165,165)"
+                                      : "",
+                                  paddingLeft: "10px",
+                                  paddingRight: "10px",
+                                }}
+                              >
+                                {itms.riskCount > 0
+                                  ? `${itms?.riskCount} Risks`
+                                  : "No Risks"}
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                            style={{ width: "20%" }}
+                          >
+                            <div className="flex items-center">
+                              <div className="py-0.5 px-3 rounded-full text-sm">
+                                {itms.changeImpactTasks.length}
+                                {""}Tasks
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                            style={{ width: "20%" }}
+                          >
+                            <div className="flex items-center">
+                              <div className="py-0.5 px-3 rounded-full text-sm">
+                                {itms.reviewsCount > 0
+                                  ? `${itms?.reviewsCount} Reviews`
+                                  : "No Reviews"}
+                              </div>
+                            </div>
+                          </div>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Stepper orientation="vertical">
+                            <Step>
+                              <div className="mat-expansion-panel-body ng-tns-c137-15">
+                                <div className="mt-2 ng-tns-c137-15">
+                                  <div className="prose prose-sm max-w-5xl">
+                                    <div className="ng-star-inserted">
+                                      <span
+                                        className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                        style={{
+                                          padding: "10px",
+                                        }}
+                                      >
+                                        "No Comments Added"
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                                {itms?.hazardDetail !== "" && (
+                                  <>
+                                    <div className="task-detail-item mt-5">
+                                      <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                        Detail of Hazard or How the Action/Task
+                                        to be Achieved
+                                      </span>
+                                      <span className="task-detail-value">
+                                        {itms.hazardDetail}
+                                      </span>
+                                    </div>
+                                    {itms?.changeImpactTasks?.map((imptsk) => (
+                                      <table className="task-table mat-table">
+                                        <thead
+                                          className="task-table-header"
+                                          style={{ display: "none" }}
+                                        >
+                                          {/* Empty header */}
+                                        </thead>
+                                        <tbody className="task-table-body">
+                                          <tr className="task-table-row mat-row">
+                                            <td className="task-table-cell mat-cell">
+                                              <div className="task-header flex items-center">
+                                                <div className="task-id flex flex-col">
+                                                  <span className="task-id-text font-semibold text-xl leading-none">
+                                                    Task #{imptsk?.id}
+                                                  </span>
+                                                </div>
+                                              </div>
+                                              <div className="task-details px-6 mt-2">
+                                                <div className="task-detail prose prose-sm max-w-5xl">
+                                                  <div className="task-detail-item mt-3">
+                                                    <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                                      What is Task
+                                                    </span>
+                                                    <span className="task-detail-value">
+                                                      {imptsk.actionWhat}
+                                                    </span>
+                                                  </div>
+                                                  <div className="task-detail-item mt-5">
+                                                    <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                                      How is Task done
+                                                    </span>
+                                                    <span className="task-detail-value">
+                                                      {imptsk.actionHow}
+                                                    </span>
+                                                  </div>
+                                                  <div className="task-detail-item mt-5">
+                                                    <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                                      Assigned to
+                                                    </span>
+                                                    <span className="task-detail-value">
+                                                      {imptsk.assignedStaff}
+                                                    </span>
+                                                    <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                                                      Due Date
+                                                    </span>
+                                                    <span className="task-detail-value">
+                                                      {formatDate(
+                                                        imptsk.dueDate
+                                                      )}
+                                                    </span>
+                                                    <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                                                      Deadline
+                                                    </span>
+                                                    <span className="task-detail-value">
+                                                      {imptsk?.deadlineDisplay}
+                                                    </span>
+                                                  </div>
+                                                </div>
+
+                                                <div>&nbsp;</div>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        </tbody>
+                                        <tfoot
+                                          className="task-table-footer"
+                                          style={{
+                                            display: "none",
+                                            bottom: 0,
+                                            zIndex: 10,
+                                          }}
+                                        >
+                                          {/* Empty footer */}
+                                        </tfoot>
+                                      </table>
+                                    ))}
+                                  </>
+                                )}
+                                {/* {itms?.remark !== "" &&
+                              itms?.tasks.length !== 0 && (
+                                <div style={{ alignItems: "flex-start" }}>
+                                  <div
+                                    className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                    style={{
+                                      padding: "20px",
+                                      backgroundColor: "#EBF8FF",
+                                    }}
+                                  >
+                                    <p>
+                                      <b>Task Added</b> : {itms.tasks[0]}{" "}
+                                    </p>
+                                  </div>
+                                  <div
+                                    className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                    style={{
+                                      padding: "20px",
+                                      backgroundColor: "#EBF8FF",
+                                      marginTop: "5px",
+                                    }}
+                                  >
+                                    <p>
+                                      <b>Remarks</b> : {itms.remark}{" "}
+                                    </p>
+                                  </div>
+                                </div>
+                              )} */}
+                                <div
+                                  _ngcontent-fyk-c288=""
+                                  class="flex items-center w-full  border-b justify-between"
+                                  style={{ marginTop: "5px" }}
+                                ></div>
+                                <Button
+                                  className="ms-5"
+                                  variant="contained"
+                                  sx={{
+                                    backgroundColor: "white",
+                                    color: "black",
+                                    border: "1px solid black",
+                                    marginTop: "8px",
+                                  }}
+                                  startIcon={
+                                    <FuseSvgIcon size={20}>
+                                      heroicons-outline:user-add
+                                    </FuseSvgIcon>
+                                  }
+                                  onClick={() =>
+                                    handelEditImpactTask(
+                                      itms.particularName,
+                                      itms.particularSubName,
+                                      itms.hazardDetail
+                                    )
+                                  }
+                                >
+                                  Edit Impact/Task
+                                </Button>
+                              </div>
+                            </Step>
+                          </Stepper>
+                        </AccordionDetails>
+                      </Accordion>
+                    ))
+                  : ""}
                 {AddImpact && (
                   <>
                     <div
@@ -1129,28 +1468,328 @@ function EvaluationChange({
                           ))}
                         </Select>
                       </FormControl>
+                      {impactForm.particular == 78 ? (
+                        <>
+                          <div>&nbsp;</div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="flex items-center w-full bg-gray-50  border-b justify-between"
+                          ></div>
+                          <div>&nbsp;</div>
+                          <Box sx={{ width: "100%", margin: "20px" }}>
+                            <Grid
+                              container
+                              spacing={2}
+                              className="inventory-grid"
+                              sx={{
+                                position: "sticky",
+                                top: 0,
+                                paddingY: 2,
+                                paddingX: { xs: 2, md: 3 },
+                                boxShadow: 1,
+                                backgroundColor: "grey.50",
+                                zIndex: 10,
+                              }}
+                            >
+                              <Grid item xs={12} md={3}>
+                                <Typography
+                                  variant="subtitle1"
+                                  color="text.secondary"
+                                  fontWeight="fontWeightBold"
+                                  style={{ fontSize: "13px" }}
+                                >
+                                  Detail of Hazard or How the Action/Task to be
+                                  Achieved
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12} md={3}>
+                                <Typography
+                                  variant="subtitle1"
+                                  color="text.secondary"
+                                  fontWeight="fontWeightBold"
+                                >
+                                  Risk Analysis Details
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12} md={2}>
+                                <Typography
+                                  variant="subtitle1"
+                                  color="text.secondary"
+                                  fontWeight="fontWeightBold"
+                                  style={{ fontSize: "13px" }}
+                                >
+                                  Human
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12} md={2}>
+                                <Typography
+                                  variant="subtitle1"
+                                  color="text.secondary"
+                                  fontWeight="fontWeightBold"
+                                  style={{ fontSize: "13px" }}
+                                >
+                                  Technical
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12} md={2}>
+                                <Typography
+                                  variant="subtitle1"
+                                  color="text.secondary"
+                                  fontWeight="fontWeightBold"
+                                  style={{ fontSize: "13px" }}
+                                >
+                                  Organisational
+                                </Typography>
+                              </Grid>
+                            </Grid>
+                          </Box>
 
-                      <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
-                        <FormLabel
-                          htmlFor="hazardDetail"
-                          className="font-semibold leading-none"
-                        >
-                          Detail of Hazard or How the Action/Task to be Achieved
-                        </FormLabel>
-                        <OutlinedInput
-                          id="hazardDetail"
-                          name="hazardDetail"
-                          value={impactForm.hazardDetail}
-                          onChange={handleChangeImpact}
-                          label="Reason For Change*"
-                          className="mt-5"
-                        />
-                      </FormControl>
+                          <FormControl fullWidth sx={{ m: 1, maxWidth: "90%" }}>
+                            <Select
+                              id="particularSubCategory"
+                              name="particularSubCategory"
+                              value={impactForm.particularSubCategory}
+                              onChange={handleChangeImpact}
+                              className="mt-5"
+                            >
+                              <MenuItem value="Select">
+                                <em>Select</em>
+                              </MenuItem>
+                              {particularSubList.map((option) => (
+                                <MenuItem key={option.id} value={option.value}>
+                                  <ListItemText primary={option.text} />
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                          <Button
+                            className="whitespace-nowrap mt-5"
+                            startIcon={
+                              <FuseSvgIcon size={20}>
+                                heroicons-solid:trash
+                              </FuseSvgIcon>
+                            }
+                            style={{ marginTop: "20px" }}
+                            onClick={() => handleRemoveForm()}
+                          ></Button>
+                        </>
+                      ) : (
+                        <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
+                          <FormLabel
+                            htmlFor="hazardDetail"
+                            className="font-semibold leading-none"
+                          >
+                            Detail of Hazard or How the Action/Task to be
+                            Achieved
+                          </FormLabel>
+                          <OutlinedInput
+                            id="hazardDetail"
+                            name="hazardDetail"
+                            value={impactForm.hazardDetail}
+                            onChange={handleChangeImpact}
+                            label="Reason For Change*"
+                            className="mt-5"
+                          />
+                        </FormControl>
+                      )}
                     </Box>
                     <div
                       className="my-10"
                       style={{ borderTopWidth: "2px" }}
                     ></div>
+                    {addNewTask &&
+                      AddTaskforms.map((task, index) => (
+                        <Paper style={{ margin: "20px" }}>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="flex items-center w-full bg-gray-50  border-b justify-between"
+                          >
+                            <h2
+                              _ngcontent-fyk-c288=""
+                              class="text-2xl font-semibold"
+                              style={{ padding: "10px" }}
+                            >
+                              Task
+                            </h2>
+                            <Button
+                              className="whitespace-nowrap mt-5 mb-5"
+                              style={{
+                                backgroundColor: "#0000",
+                                color: "black",
+                              }}
+                              variant="contained"
+                              color="warning"
+                              onClick={() => handleRemoveAddTaskForm(index)}
+                            >
+                              <FuseSvgIcon size={20}>
+                                heroicons-solid:x
+                              </FuseSvgIcon>
+                            </Button>
+                          </div>
+                          <div className="flex-auto">
+                            <div className="flex flex-col-reverse">
+                              <div
+                                style={{
+                                  marginTop: "30px",
+                                  justifyContent: "space-between",
+                                  margin: "15px",
+                                }}
+                                className="flex flex-row "
+                              >
+                                <Box
+                                  sx={{
+                                    width: 560,
+                                    maxWidth: "60%",
+                                  }}
+                                >
+                                  <TextField
+                                    fullWidth
+                                    label="What is the Task"
+                                    name="actionWhat"
+                                    value={task.actionWhat}
+                                    onChange={(e) =>
+                                      handleTaskInputChange(index, e)
+                                    }
+                                  />
+                                </Box>
+
+                                <Box
+                                  sx={{
+                                    width: 560,
+                                    maxWidth: "60%",
+                                  }}
+                                >
+                                  <TextField
+                                    fullWidth
+                                    label="How is the task done"
+                                    name="actionHow"
+                                    value={task.actionHow}
+                                    onChange={(e) =>
+                                      handleTaskInputChange(index, e)
+                                    }
+                                  />
+                                </Box>
+                              </div>
+                            </div>{" "}
+                            <div className="flex flex-col-reverse">
+                              <div
+                                style={{
+                                  marginTop: "30px",
+                                  justifyContent: "space-between",
+                                  margin: "15px",
+                                }}
+                                className="flex flex-row "
+                              >
+                                <FormControl
+                                  sx={{
+                                    width: 560,
+                                    maxWidth: "60%",
+                                  }}
+                                >
+                                  <FormLabel
+                                    className="font-medium text-14"
+                                    component="legend"
+                                  >
+                                    MOC phase *
+                                  </FormLabel>
+                                  <Select
+                                    variant="outlined"
+                                    name="deadline"
+                                    value={task.deadline}
+                                    onChange={(e) =>
+                                      handleTaskInputChange(index, e)
+                                    }
+                                  >
+                                    {mocPhase.map((option) => (
+                                      <MenuItem
+                                        key={option.id}
+                                        value={option.value}
+                                      >
+                                        {option.text}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+                                <FormControl
+                                  sx={{
+                                    width: 560,
+                                    maxWidth: "60%",
+                                  }}
+                                >
+                                  <FormLabel
+                                    className="font-medium text-14"
+                                    component="legend"
+                                  >
+                                    Task Assigned To *
+                                  </FormLabel>
+                                  <Select
+                                    variant="outlined"
+                                    name="assignedStaffId"
+                                    value={task.assignedStaffId}
+                                    onChange={(e) =>
+                                      handleTaskInputChange(index, e)
+                                    }
+                                  >
+                                    {docStaff.map((option) => (
+                                      <MenuItem
+                                        key={option.id}
+                                        value={option.value}
+                                      >
+                                        {option.text}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                </FormControl>
+                              </div>
+                            </div>{" "}
+                            <div className="flex flex-col-reverse">
+                              <div
+                                style={{
+                                  marginTop: "30px",
+                                  justifyContent: "space-between",
+                                  margin: "15px",
+                                }}
+                                className="flex flex-row "
+                              >
+                                <LocalizationProvider
+                                  dateAdapter={AdapterDateFns}
+                                >
+                                  <FormControl
+                                    sx={{
+                                      width: 560,
+                                      maxWidth: "60%",
+                                    }}
+                                  >
+                                    <Box sx={{}}>
+                                      <DatePicker
+                                        label="Due Date *"
+                                        name="dueDate"
+                                        value={task.dueDate}
+                                        onChange={(newValue) =>
+                                          handleDateChange(index, newValue)
+                                        }
+                                        renderInput={(params) => (
+                                          <TextField fullWidth {...params} />
+                                        )}
+                                      />
+                                    </Box>
+                                  </FormControl>
+                                </LocalizationProvider>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="ng-star-inserted">
+                            <span
+                              className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                              style={{
+                                padding: "15px",
+                              }}
+                            >
+                              No Reviews Added
+                            </span>
+                          </div>
+                        </Paper>
+                      ))}
                     <Button
                       className="whitespace-nowrap mt-5"
                       style={{
@@ -1166,6 +1805,7 @@ function EvaluationChange({
                           heroicons-outline:plus
                         </FuseSvgIcon>
                       }
+                      onClick={handleAddNewTask}
                     >
                       Add New Task
                     </Button>
