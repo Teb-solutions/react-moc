@@ -103,7 +103,7 @@ function EvaluationChange({
   const [list, setIsList] = useState([]);
   const [impactList, setImpactList] = useState([]);
   const [errorsAdd, setErrorsAdd] = useState({});
-
+  const [errorsAddTask, setErrorsAddTask] = useState({});
   const initialSeconds = sessionTime * 60; // Convert minutes to seconds
   const [currentSeconds, setCurrentSeconds] = useState(() => {
     const storedTime = localStorage.getItem("currentSeconds");
@@ -359,19 +359,26 @@ function EvaluationChange({
 
     setForms([]);
   };
-
   const handleChangeImpact = (e) => {
-    if (e.target.name == "particular") {
-      apiAuth.get(`/LookupData/Lov/17/${e.target.value}`).then((resp) => {
+    const { name, value } = e.target;
+
+    if (name === "particular") {
+      apiAuth.get(`/LookupData/Lov/17/${value}`).then((resp) => {
         setParticularSubList(resp?.data.data);
       });
     }
 
-    const { name, value } = e.target;
     setImpactForm((prevState) => ({
       ...prevState,
       [name]: value,
     }));
+
+    if (errorsAddTask[name]) {
+      setErrorsAddTask((prevErrors) => ({
+        ...prevErrors,
+        [name]: "",
+      }));
+    }
   };
 
   const handlebackImpactList = () => {
@@ -539,24 +546,39 @@ function EvaluationChange({
   const [AddTaskforms, setAddTakForms] = useState([]);
   const [mocPhase, setMocPhase] = useState([]);
 
-  const handleAddNewTask = () => {
-    setAddNewTask(true);
-    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {
-      setMocPhase(resp.data.data);
-    });
-    const newTask = {
-      actionWhat: "",
-      actionHow: "",
-      assignedStaffId: "",
-      consultedDate: null,
-      dueDate: null,
-    };
-    const newTasks = [...AddTaskforms, newTask];
-    setAddTakForms(newTasks);
+  const validateAddTask = () => {
+    const errors = {};
+    if (!impactForm.particular) {
+      errors.particular = "Particular is required";
+    }
+    if (!impactForm.particularSubCategory) {
+      errors.particularSubCategory = "Particular Sub Category is required";
+    }
+    setErrorsAddTask(errors);
 
-    // Update impactForm
-    const updatedImpactForm = { ...impactForm, changeImpactTasks: newTasks };
-    setImpactForm(updatedImpactForm);
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleAddNewTask = () => {
+    if (validateAddTask()) {
+      setAddNewTask(true);
+      apiAuth.get(`/LookupData/Lov/11`).then((resp) => {
+        setMocPhase(resp.data.data);
+      });
+      const newTask = {
+        actionWhat: "",
+        actionHow: "",
+        assignedStaffId: "",
+        consultedDate: null,
+        dueDate: null,
+      };
+      const newTasks = [...AddTaskforms, newTask];
+      setAddTakForms(newTasks);
+
+      // Update impactForm
+      const updatedImpactForm = { ...impactForm, changeImpactTasks: newTasks };
+      setImpactForm(updatedImpactForm);
+    }
   };
 
   const handleRemoveAddTaskForm = (index) => {
@@ -568,9 +590,6 @@ function EvaluationChange({
     setImpactForm(updatedImpactForm);
   };
 
-  console.log("====================================");
-  console.log(impactForm, "impactFormss");
-  console.log("====================================");
   return (
     <div className="w-full">
       <SwipeableViews>
@@ -1432,6 +1451,7 @@ function EvaluationChange({
                           value={impactForm.particular}
                           onChange={handleChangeImpact}
                           className="mt-5"
+                          error={!!errorsAddTask.particular}
                         >
                           <MenuItem value="" disabled>
                             <em>None</em>
@@ -1442,6 +1462,11 @@ function EvaluationChange({
                             </MenuItem>
                           ))}
                         </Select>
+                        {!!errorsAddTask?.particular && (
+                          <FormHelperText error>
+                            {errorsAddTask.particular}
+                          </FormHelperText>
+                        )}
                       </FormControl>
 
                       <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
@@ -1457,6 +1482,7 @@ function EvaluationChange({
                           value={impactForm.particularSubCategory}
                           onChange={handleChangeImpact}
                           className="mt-5"
+                          error={!!errorsAddTask.particularSubCategory}
                         >
                           <MenuItem value="" disabled>
                             <em>None</em>
@@ -1467,6 +1493,11 @@ function EvaluationChange({
                             </MenuItem>
                           ))}
                         </Select>
+                        {!!errorsAddTask?.particularSubCategory && (
+                          <FormHelperText error>
+                            {errorsAddTask.particularSubCategory}
+                          </FormHelperText>
+                        )}
                       </FormControl>
                       {impactForm.particular == 78 ? (
                         <>
