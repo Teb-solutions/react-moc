@@ -104,6 +104,7 @@ function EvaluationChange({
   const [impactList, setImpactList] = useState([]);
   const [errorsAdd, setErrorsAdd] = useState({});
   const [errorsAddTask, setErrorsAddTask] = useState({});
+  const [errorsTask, setErrorsTask] = useState({});
   const initialSeconds = sessionTime * 60; // Convert minutes to seconds
   const [currentSeconds, setCurrentSeconds] = useState(() => {
     const storedTime = localStorage.getItem("currentSeconds");
@@ -528,6 +529,15 @@ function EvaluationChange({
     newTasks[index][name] = value;
     setAddTakForms(newTasks);
 
+    // Clear the error for this specific field if it exists
+    const errorKey = `${name}_${index}`;
+    if (errorsTask[errorKey]) {
+      setErrorsTask((prevErrors) => ({
+        ...prevErrors,
+        [errorKey]: "",
+      }));
+    }
+
     // Update impactForm
     const updatedImpactForm = { ...impactForm, changeImpactTasks: newTasks };
     setImpactForm(updatedImpactForm);
@@ -537,6 +547,15 @@ function EvaluationChange({
     const newTasks = [...AddTaskforms];
     newTasks[index].dueDate = newValue;
     setAddTakForms(newTasks);
+
+    // Clear the error for the due date field if it exists
+    const errorKey = `dueDate_${index}`;
+    if (errorsTask[errorKey]) {
+      setErrorsTask((prevErrors) => ({
+        ...prevErrors,
+        [errorKey]: "",
+      }));
+    }
 
     // Update impactForm
     const updatedImpactForm = { ...impactForm, changeImpactTasks: newTasks };
@@ -559,25 +578,55 @@ function EvaluationChange({
     return Object.keys(errors).length === 0;
   };
 
+  const validateTasks = () => {
+    const errors = {};
+    AddTaskforms.forEach((task, index) => {
+      if (!task.actionWhat) {
+        errors[`actionWhat_${index}`] = "Task description is required";
+      }
+      if (!task.actionHow) {
+        errors[`actionHow_${index}`] = "Task details are required";
+      }
+      if (!task.deadline) {
+        errors[`deadline_${index}`] = "Deadline is required";
+      }
+      if (!task.assignedStaffId) {
+        errors[`assignedStaffId_${index}`] = "Assigned Staff is required";
+      }
+      if (!task.dueDate) {
+        errors[`dueDate_${index}`] = "Due Date is required";
+      }
+    });
+    setErrorsTask(errors);
+
+    return Object.keys(errors).length === 0;
+  };
+
   const handleAddNewTask = () => {
     if (validateAddTask()) {
       setAddNewTask(true);
-      apiAuth.get(`/LookupData/Lov/11`).then((resp) => {
-        setMocPhase(resp.data.data);
-      });
-      const newTask = {
-        actionWhat: "",
-        actionHow: "",
-        assignedStaffId: "",
-        consultedDate: null,
-        dueDate: null,
-      };
-      const newTasks = [...AddTaskforms, newTask];
-      setAddTakForms(newTasks);
+      if (validateTasks()) {
+        apiAuth.get(`/LookupData/Lov/11`).then((resp) => {
+          setMocPhase(resp.data.data);
+        });
+        const newTask = {
+          actionWhat: "",
+          actionHow: "",
+          assignedStaffId: "",
+          consultedDate: null,
+          dueDate: null,
+        };
 
-      // Update impactForm
-      const updatedImpactForm = { ...impactForm, changeImpactTasks: newTasks };
-      setImpactForm(updatedImpactForm);
+        const newTasks = [...AddTaskforms, newTask];
+        setAddTakForms(newTasks);
+
+        // Update impactForm
+        const updatedImpactForm = {
+          ...impactForm,
+          changeImpactTasks: newTasks,
+        };
+        setImpactForm(updatedImpactForm);
+      }
     }
   };
 
@@ -1681,6 +1730,10 @@ function EvaluationChange({
                                     onChange={(e) =>
                                       handleTaskInputChange(index, e)
                                     }
+                                    error={!!errorsTask[`actionWhat_${index}`]}
+                                    helperText={
+                                      errorsTask[`actionWhat_${index}`]
+                                    }
                                   />
                                 </Box>
 
@@ -1697,6 +1750,10 @@ function EvaluationChange({
                                     value={task.actionHow}
                                     onChange={(e) =>
                                       handleTaskInputChange(index, e)
+                                    }
+                                    error={!!errorsTask[`actionHow_${index}`]}
+                                    helperText={
+                                      errorsTask[`actionHow_${index}`]
                                     }
                                   />
                                 </Box>
@@ -1730,6 +1787,7 @@ function EvaluationChange({
                                     onChange={(e) =>
                                       handleTaskInputChange(index, e)
                                     }
+                                    error={!!errorsTask[`deadline_${index}`]}
                                   >
                                     {mocPhase.map((option) => (
                                       <MenuItem
@@ -1740,6 +1798,11 @@ function EvaluationChange({
                                       </MenuItem>
                                     ))}
                                   </Select>
+                                  {!!errorsTask[`deadline_${index}`] && (
+                                    <FormHelperText error>
+                                      {errorsTask[`deadline_${index}`]}
+                                    </FormHelperText>
+                                  )}
                                 </FormControl>
                                 <FormControl
                                   sx={{
@@ -1760,6 +1823,9 @@ function EvaluationChange({
                                     onChange={(e) =>
                                       handleTaskInputChange(index, e)
                                     }
+                                    error={
+                                      !!errorsTask[`assignedStaffId_${index}`]
+                                    }
                                   >
                                     {docStaff.map((option) => (
                                       <MenuItem
@@ -1770,6 +1836,11 @@ function EvaluationChange({
                                       </MenuItem>
                                     ))}
                                   </Select>
+                                  {!!errorsTask[`assignedStaffId_${index}`] && (
+                                    <FormHelperText error>
+                                      {errorsTask[`assignedStaffId_${index}`]}
+                                    </FormHelperText>
+                                  )}
                                 </FormControl>
                               </div>
                             </div>{" "}
@@ -1790,6 +1861,7 @@ function EvaluationChange({
                                       width: 560,
                                       maxWidth: "60%",
                                     }}
+                                    error={!!errorsTask[`dueDate_${index}`]}
                                   >
                                     <Box sx={{}}>
                                       <DatePicker
@@ -1802,8 +1874,14 @@ function EvaluationChange({
                                         renderInput={(params) => (
                                           <TextField fullWidth {...params} />
                                         )}
+                                        error={!!errorsTask[`dueDate_${index}`]}
                                       />
                                     </Box>
+                                    {!!errorsTask[`dueDate_${index}`] && (
+                                      <FormHelperText error>
+                                        {errorsTask[`dueDate_${index}`]}
+                                      </FormHelperText>
+                                    )}
                                   </FormControl>
                                 </LocalizationProvider>
                               </div>
