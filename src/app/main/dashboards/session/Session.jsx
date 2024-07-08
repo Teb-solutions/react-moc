@@ -1,10 +1,19 @@
-import { InputLabel, Paper } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  InputLabel,
+  OutlinedInput,
+  Paper,
+} from "@mui/material";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
 import { format, parseISO } from "date-fns";
 const SessionList = () => {
   const [sessionList, setSessionList] = useState([]);
+  const [Comment, setComment] = useState("");
 
   function getRecords() {
     apiAuth.get(`/NotificationManager/GetAllSessions/`).then((resp) => {
@@ -22,6 +31,28 @@ const SessionList = () => {
 
     // Format the date
     return format(date, "MMM d, h:mm a");
+  };
+
+  const handleAccept = (id, ChangeId) => {
+    apiAuth
+      .put(
+        `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Approve`,
+        {
+          comments: Comment,
+        }
+      )
+      .then((resp) => {
+        getRecords();
+      });
+  };
+  const handleReject = (id, ChangeId) => {
+    apiAuth
+      .put(`/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Reject`, {
+        comments: Comment,
+      })
+      .then((resp) => {
+        getRecords();
+      });
   };
 
   return (
@@ -52,7 +83,12 @@ const SessionList = () => {
                   <div className="flex flex-col leading-5 text-md text-secondary space-y-2">
                     <div>
                       <b style={{ fontSize: "larger" }}>
-                        New Evaluation Session started by{" "}
+                        {list.sessionType == "Evaluation" &&
+                          "New Evaluation Session started by"}{" "}
+                        {list.sessionType == "Implementation" &&
+                          "New Implementation Session started by"}{" "}
+                        {list.sessionType == "PSSR" &&
+                          "New PSSR Session started by "}{" "}
                         {list?.startedByStaffName}
                       </b>
                     </div>
@@ -105,6 +141,76 @@ const SessionList = () => {
                             hour12: true,
                           })}
                         </div>
+                      )}
+                    {list.approvalStatusString == "Pending" &&
+                      list.statusString != "Canceled" &&
+                      list.isExpired == false && (
+                        <>
+                          <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                            <FormControl
+                              fullWidth
+                              sx={{ m: 1, maxWidth: "100%" }}
+                            >
+                              <FormLabel
+                                htmlFor="reasonForNewDocument"
+                                className="font-semibold leading-none"
+                              >
+                                Comment
+                              </FormLabel>
+                              <OutlinedInput
+                                id="reasonForNewDocument"
+                                name="reasonForNewDocument"
+                                onChange={(e) => setComment(e.target.value)}
+                                label="Reason For Change*"
+                                className="mt-5"
+                                sx={{
+                                  "& .MuiOutlinedInput-root": {
+                                    borderRadius: "8px",
+                                    backgroundColor: "#f0f0f0",
+                                    "& fieldset": {
+                                      borderColor: "#ccc",
+                                    },
+                                    "&:hover fieldset": {
+                                      borderColor: "#999",
+                                    },
+                                    "&.Mui-focused fieldset": {
+                                      borderColor: "#333",
+                                    },
+                                  },
+                                }}
+                              />
+                            </FormControl>
+                          </Box>
+                          <div className="flex justify-start">
+                            <div
+                              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                              style={{ marginTop: "15px" }}
+                            >
+                              <Button
+                                className="whitespace-nowrap"
+                                variant="contained"
+                                color="secondary"
+                                style={{ padding: "15px" }}
+                                onClick={() =>
+                                  handleAccept(list.id, list.changeRequestId)
+                                }
+                              >
+                                Accept
+                              </Button>
+                              <Button
+                                className="whitespace-nowrap"
+                                variant="contained"
+                                color="secondary"
+                                style={{ padding: "15px" }}
+                                onClick={() =>
+                                  handleReject(list.id, list.changeRequestId)
+                                }
+                              >
+                                Reject
+                              </Button>
+                            </div>
+                          </div>
+                        </>
                       )}
                   </div>
                 </div>
