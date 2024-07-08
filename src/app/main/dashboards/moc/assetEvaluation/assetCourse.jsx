@@ -52,6 +52,7 @@ import InitiationApproval from "../components/InitiationApproval";
 import InitiationComplete from "../components/initiationComplete";
 import InitiationApprovalProceed from "../components/InitiationApproveProceed";
 import EvaluationChange from "../components/EvaluationChange";
+import EvaluationApproval from "../components/EvaluationApproval";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -575,6 +576,76 @@ const AssetCourse = () => {
           });
       });
   }
+  const [tasks, setTasks] = useState([]);
+  const [showRiskAnalysisChart, setShowRiskAnalysisChart] = useState(false);
+  const [riskAnalysisChartOptions, setRiskAnalysisChartOptions] = useState({});
+  const loadRiskAnalysisChart = (tasks) => {
+    let taskLabels = [];
+    let taskResidualRisks = [];
+
+    tasks.forEach((task) => {
+      if (task.riskAnalysisList.length > 0) {
+        taskLabels.push(task.sourceTaskId);
+        let taskResidualRisk = 0;
+
+        task.riskAnalysisList.forEach((ra) => {
+          ra.riskAnalysisSubTasks.forEach((subTask) => {
+            subTask.riskAnalysisHazardTypes.forEach((hazardType) => {
+              hazardType.riskAnalysisHazardSituation.forEach((situation) => {
+                let residualRisk = situation.residualRisk;
+                if (residualRisk > taskResidualRisk) {
+                  taskResidualRisk = residualRisk;
+                }
+              });
+            });
+          });
+        });
+
+        taskResidualRisks.push(taskResidualRisk);
+      }
+    });
+    if (taskResidualRisks.length > 0) {
+      setShowRiskAnalysisChart(true);
+    }
+    setRiskAnalysisChartOptions({
+      series: [{ name: "Residual Risk", data: taskResidualRisks }],
+      chart: {
+        height: 350,
+        type: "scatter",
+        zoom: { enabled: false },
+      },
+      annotations: {
+        yaxis: [
+          {
+            y: 400,
+            y2: 800,
+            borderColor: "#000",
+            fillColor: "#fe1919",
+            opacity: 0.2,
+          },
+          {
+            y: 200,
+            y2: 400,
+            borderColor: "#000",
+            fillColor: "#FEB019",
+            opacity: 0.2,
+          },
+        ],
+      },
+      dataLabels: { enabled: false },
+      stroke: { curve: "straight" },
+      title: { text: "Risk Chart", align: "left" },
+      xaxis: {
+        title: { text: "Task ID" },
+        categories: taskLabels,
+      },
+      yaxis: {
+        title: { text: "Residual Risk" },
+        min: 0,
+        max: 850,
+      },
+    });
+  };
 
   const handleStepChange = (
     e,
@@ -603,7 +674,6 @@ const AssetCourse = () => {
         (activity) => activity.uid === uid
       );
       setCurrentActivityForm(matchingActivity);
-
       if (matchingActivity) {
         let actualPhaseName;
 
@@ -623,6 +693,9 @@ const AssetCourse = () => {
           case AssetPhasesEnum.EVALUATIONCHANGE:
             actualPhaseName = "EvaluationChange";
             break;
+          case AssetPhasesEnum.EVALUATIONAPPROVAL:
+            actualPhaseName = "EvaluationApproval";
+            break;
 
           default:
             actualPhaseName = " ";
@@ -630,7 +703,6 @@ const AssetCourse = () => {
 
         setCurrentPhase(actualPhaseName);
         setCurrentPhaseName(phaseName);
-
         switch (actualPhaseName) {
           case "InitiationRequest":
             apiAuth
@@ -697,6 +769,30 @@ const AssetCourse = () => {
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
                 });
+              });
+            break;
+          case "EvaluationApproval":
+            apiAuth
+              .get(`TeamAssignment/List?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp.data?.data);
+                if (resp.data?.data) {
+                  const data = resp.data?.data;
+                  debugger;
+                  if (data.requestTypeName !== "Document") {
+                    const updatedTasks = data.tasklist.map((task) => {
+                      task.showPreviousTasks = false;
+                      task.riskAnalysisList = data.riskAnalysisList.filter(
+                        (ra) => ra.changeImapactId === task.changeImapactId
+                      );
+                      return task;
+                    });
+
+                    setTasks(updatedTasks);
+                    loadRiskAnalysisChart(updatedTasks);
+                  }
+                }
               });
             break;
 
@@ -1028,6 +1124,7 @@ const AssetCourse = () => {
                 SubmitApprovelCreate={SubmitApprovelCreate}
                 handleChangeRemark={handleChangeRemark}
                 valueRemark={valueRemark}
+                contentDetails={contentDetails}
               />
             )}
             {currentPhase === "InitiationComplete" && (
@@ -1055,6 +1152,16 @@ const AssetCourse = () => {
                 AppActions={appActions}
                 AppActivity={appActivity}
                 assetEvaluationId={assetEvaluationId}
+              />
+            )}
+            {currentPhase === "EvaluationApproval" && (
+              <EvaluationApproval
+                AppActions={appActions}
+                AppActivity={appActivity}
+                assetEvaluationId={assetEvaluationId}
+                contentDetails={contentDetails}
+                showRiskAnalysisChart={showRiskAnalysisChart}
+                riskAnalysisChartOptions={riskAnalysisChartOptions}
               />
             )}
           </div>
