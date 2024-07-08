@@ -773,26 +773,28 @@ const AssetCourse = () => {
             break;
           case "EvaluationApproval":
             apiAuth
-              .get(`TeamAssignment/List?id=${assetEvaluationId}`)
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
-                setContentDetails(resp.data?.data);
-                if (resp.data?.data) {
-                  const data = resp.data?.data;
-                  debugger;
-                  if (data.requestTypeName !== "Document") {
-                    const updatedTasks = data.tasklist.map((task) => {
-                      task.showPreviousTasks = false;
-                      task.riskAnalysisList = data.riskAnalysisList.filter(
-                        (ra) => ra.changeImapactId === task.changeImapactId
-                      );
-                      return task;
-                    });
+                setContentDetails(resp?.data?.data);
+                // if (resp.data?.data) {
+                //   const data = resp.data?.data;
+                //   debugger;
+                //   if (data.requestTypeName !== "Document") {
+                //     const updatedTasks = data.tasklist.map((task) => {
+                //       task.showPreviousTasks = false;
+                //       task.riskAnalysisList = data.riskAnalysisList.filter(
+                //         (ra) => ra.changeImapactId === task.changeImapactId
+                //       );
+                //       return task;
+                //     });
 
-                    setTasks(updatedTasks);
-                    loadRiskAnalysisChart(updatedTasks);
-                  }
-                }
+                //     setTasks(updatedTasks);
+                //     loadRiskAnalysisChart(updatedTasks);
+                //   }
+                // }
               });
             break;
 
