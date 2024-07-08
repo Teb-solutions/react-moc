@@ -773,9 +773,7 @@ const AssetCourse = () => {
             break;
           case "EvaluationApproval":
             apiAuth
-              .get(
-                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
-              )
+              .get(`TeamAssignment/List?id=${assetEvaluationId}`)
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp.data?.data);
