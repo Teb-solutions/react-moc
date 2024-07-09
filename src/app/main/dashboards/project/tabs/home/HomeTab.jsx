@@ -183,9 +183,9 @@ function HomeTab() {
             flexDirection="column"
             alignItems="center"
           >
-            {data.tasksDue !== undefined ? (
+            {data?.tasksDue !== undefined ? (
               <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500">
-                {data.tasksDue}
+                {data?.tasksDue}
               </Typography>
             ) : (
               <Skeleton variant="text" width={100} height={60} />
@@ -199,8 +199,8 @@ function HomeTab() {
             color="text.secondary"
           >
             <span className="truncate">Completed</span>:
-            {data.tasksCompleted !== undefined ? (
-              <b className="px-8">{data.tasksCompleted}</b>
+            {data?.tasksCompleted !== undefined ? (
+              <b className="px-8">{data?.tasksCompleted}</b>
             ) : (
               <Skeleton variant="text" width={40} />
             )}
@@ -223,9 +223,9 @@ function HomeTab() {
             flexDirection="column"
             alignItems="center"
           >
-            {data.tasksOverDue !== undefined ? (
+            {data?.tasksOverDue !== undefined ? (
               <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500">
-                {data.tasksOverDue}
+                {data?.tasksOverDue}
               </Typography>
             ) : (
               <Skeleton variant="text" width={100} height={60} />
@@ -239,8 +239,8 @@ function HomeTab() {
             color="text.secondary"
           >
             <span className="truncate">From yesterday</span>:
-            {data.tasksOverDueYesterday !== undefined ? (
-              <b className="px-8">{data.tasksOverDueYesterday}</b>
+            {data?.tasksOverDueYesterday !== undefined ? (
+              <b className="px-8">{data?.tasksOverDueYesterday}</b>
             ) : (
               <Skeleton variant="text" width={40} />
             )}
@@ -267,9 +267,9 @@ function HomeTab() {
             flexDirection="column"
             alignItems="center"
           >
-            {data.requestsOpen !== undefined ? (
+            {data?.requestsOpen !== undefined ? (
               <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-amber-500">
-                {data.requestsOpen}
+                {data?.requestsOpen}
               </Typography>
             ) : (
               <Skeleton variant="text" width={100} height={60} />
@@ -283,8 +283,8 @@ function HomeTab() {
             color="text.secondary"
           >
             <span className="truncate">Closed today</span>:
-            {data.requestsClosedToday !== undefined ? (
-              <b className="px-8">{data.requestsClosedToday}</b>
+            {data?.requestsClosedToday !== undefined ? (
+              <b className="px-8">{data?.requestsClosedToday}</b>
             ) : (
               <Skeleton variant="text" width={40} />
             )}
@@ -307,9 +307,9 @@ function HomeTab() {
             flexDirection="column"
             alignItems="center"
           >
-            {data.approvalsPending !== undefined ? (
+            {data?.approvalsPending !== undefined ? (
               <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500">
-                {data.approvalsPending}
+                {data?.approvalsPending}
               </Typography>
             ) : (
               <Skeleton variant="text" width={100} height={60} />
@@ -323,8 +323,8 @@ function HomeTab() {
             color="text.secondary"
           >
             <span className="truncate">Due</span>:
-            {data.tasksDue !== undefined ? (
-              <b className="px-8">{data.tasksDue}</b>
+            {data?.tasksDue !== undefined ? (
+              <b className="px-8">{data?.tasksDue}</b>
             ) : (
               <Skeleton variant="text" width={40} />
             )}

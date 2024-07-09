@@ -163,6 +163,7 @@ const AssetCourse = () => {
   ]);
   const [value, setValue] = useState(0);
   const [valueRemark, setValueRemark] = useState("");
+  const [remarkRequest, setRemarkRequest] = useState([]);
   const [data, setData] = useState({
     consultedDate: null,
     consultedStaffId: "",
@@ -351,7 +352,6 @@ const AssetCourse = () => {
 
   const handelSubmit = (e) => {
     e.preventDefault();
-    debugger;
     if (validate()) {
       const formattedForms = forms.map((form) => {
         const date = form.data.consultedDate;
@@ -578,7 +578,16 @@ const AssetCourse = () => {
   }
   const [tasks, setTasks] = useState([]);
   const [showRiskAnalysisChart, setShowRiskAnalysisChart] = useState(false);
-  const [riskAnalysisChartOptions, setRiskAnalysisChartOptions] = useState({});
+  const [riskAnalysisChartOptions, setRiskAnalysisChartOptions] = useState({
+    series: [],
+    chart: {},
+    annotations: {},
+    dataLabels: {},
+    stroke: {},
+    title: {},
+    xaxis: {},
+    yaxis: {},
+  });
   const loadRiskAnalysisChart = (tasks) => {
     let taskLabels = [];
     let taskResidualRisks = [];
@@ -673,6 +682,7 @@ const AssetCourse = () => {
       const matchingActivity = matchingPhase.activities.find(
         (activity) => activity.uid === uid
       );
+      console.log(matchingActivity, "matchingActivity");
       setCurrentActivityForm(matchingActivity);
       if (matchingActivity) {
         let actualPhaseName;
@@ -682,7 +692,14 @@ const AssetCourse = () => {
             actualPhaseName = "InitiationRequest";
             break;
           case AssetPhasesEnum.INITIATIONAPPROVAL:
-            actualPhaseName = "InitiationApproval";
+            if (
+              matchingActivity.name ===
+              "Site In Charge Approval if Moc is needed"
+            ) {
+              actualPhaseName = "InitiationApproval";
+            } else if (matchingActivity.name === "Approval by Site in Charge") {
+              actualPhaseName = "EvaluationApproval";
+            }
             break;
           case AssetPhasesEnum.INITIATIONACOMPLETE:
             actualPhaseName = "InitiationComplete";
@@ -693,9 +710,9 @@ const AssetCourse = () => {
           case AssetPhasesEnum.EVALUATIONCHANGE:
             actualPhaseName = "EvaluationChange";
             break;
-          case AssetPhasesEnum.EVALUATIONAPPROVAL:
-            actualPhaseName = "EvaluationApproval";
-            break;
+          // case AssetPhasesEnum.EVALUATIONAPPROVAL:
+          //   actualPhaseName = "EvaluationApproval";
+          //   break;
 
           default:
             actualPhaseName = " ";
@@ -779,23 +796,31 @@ const AssetCourse = () => {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
-                // if (resp.data?.data) {
-                //   const data = resp.data?.data;
-                //   debugger;
-                //   if (data.requestTypeName !== "Document") {
-                //     const updatedTasks = data.tasklist.map((task) => {
-                //       task.showPreviousTasks = false;
-                //       task.riskAnalysisList = data.riskAnalysisList.filter(
-                //         (ra) => ra.changeImapactId === task.changeImapactId
-                //       );
-                //       return task;
-                //     });
+                if (resp.data?.data) {
+                  const data = resp.data?.data;
+                  if (data.requestTypeName !== "Document") {
+                    const updatedTasks = data.tasklist.map((task) => {
+                      task.showPreviousTasks = false;
+                      task.riskAnalysisList = data.riskAnalysisList.filter(
+                        (ra) => ra.changeImapactId === task.changeImapactId
+                      );
+                      return task;
+                    });
 
-                //     setTasks(updatedTasks);
-                //     loadRiskAnalysisChart(updatedTasks);
-                //   }
-                // }
+                    setTasks(updatedTasks);
+                    loadRiskAnalysisChart(updatedTasks);
+                  }
+                }
               });
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(`/ApprovalManager/RemarksbyRequest/${uid}`)
+                .then((resp) => {
+                  setRemarkRequest(resp.data.data);
+                });
+            });
             break;
 
           default:
@@ -880,7 +905,6 @@ const AssetCourse = () => {
       });
   };
   const SubmitApprovelCreate = (e, uid, name, type) => {
-    debugger;
     apiAuth
       .post(`/ApprovalManager/Create/${assetEvaluationId}`, {
         actionUID: uid,
@@ -1161,6 +1185,10 @@ const AssetCourse = () => {
                 contentDetails={contentDetails}
                 showRiskAnalysisChart={showRiskAnalysisChart}
                 riskAnalysisChartOptions={riskAnalysisChartOptions}
+                lastActCode={lastActCode}
+                currentActivityForm={currentActivityForm}
+                remarkRequest={remarkRequest}
+                setRemarkRequest={setRemarkRequest}
               />
             )}
           </div>

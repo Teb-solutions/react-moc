@@ -95,10 +95,7 @@ function InitiationApproval(props) {
         </Paper>
       </SwipeableViews>
       <SwipeableViews style={{ overflow: "hidden" }}>
-        <Paper
-          className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow"
-          style={{ marginRight: "15px", width: "100%" }}
-        >
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow">
           <div className="flex items-center w-full border-b justify-between">
             <h2 className="text-2xl font-semibold">Approval</h2>
           </div>
