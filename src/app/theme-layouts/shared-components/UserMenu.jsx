@@ -99,14 +99,14 @@ function UserMenu() {
               <ListItemIcon className="min-w-40">
                 <FuseSvgIcon>heroicons-outline:lock-closed</FuseSvgIcon>
               </ListItemIcon>
-              <ListItemText primary="Sign In" />
+              <ListItemText primary="Sign Out" />
             </MenuItem>
-            <MenuItem component={Link} to="/sign-up" role="button">
+            {/* <MenuItem component={Link} to="/sign-up" role="button">
               <ListItemIcon className="min-w-40">
                 <FuseSvgIcon>heroicons-outline:user-add </FuseSvgIcon>
               </ListItemIcon>
               <ListItemText primary="Sign up" />
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem component={Link} to="/change-password" role="button">
               <ListItemIcon className="min-w-40">
                 <FuseSvgIcon>heroicons-outline:user-add </FuseSvgIcon>

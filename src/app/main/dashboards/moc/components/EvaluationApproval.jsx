@@ -36,6 +36,7 @@ import { useState } from "react";
 import { apiAuth } from "src/utils/http";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SaveIcon from "@mui/icons-material/Save";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 
 const EvaluationApproval = ({
   contentDetails,
@@ -61,6 +62,10 @@ const EvaluationApproval = ({
 
   const [newRemark, setNewRemark] = useState("");
   const [newImpactTaskRemark, setNewImpactTaskRemark] = useState("");
+
+  console.log("====================================");
+  console.log(riskAnalysisChartOptions, "riskAnalysisChartOptions");
+  console.log("====================================");
 
   const handleInputChange = (event, type) => {
     if (type === "Consultaion") {
@@ -314,6 +319,11 @@ const EvaluationApproval = ({
       consultaioncomment: null,
       activityCode: AppActivity.code,
     };
+    apiAuth
+      .post(`/ApprovalManager/Create/${assetEvaluationId}`, payload)
+      .then((response) => {
+        getRecords();
+      });
   };
 
   return (
@@ -879,7 +889,9 @@ const EvaluationApproval = ({
                 <span className="task-detail-value">{itm.tasks[0]}</span>
               </div>
               <div>&nbsp;</div>
-              {AppActivity.canEdit && !itm.reviews.length > 0 ? (
+              {AppActivity.canEdit &&
+              !itm.reviews.length > 0 &&
+              rwv.isCreatedByMe ? (
                 <div className="mat-form-field-wrapper">
                   <div className="mat-form-field-flex">
                     <img
@@ -932,75 +944,95 @@ const EvaluationApproval = ({
                     expanded={expanded == itm.id}
                     onChange={handleExpansionChange(itm.id)}
                   >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="panel1a-content"
-                      id="panel1a-header"
-                    >
-                      <Typography>
-                        <span className="text-brown">
-                          {itm?.reviews?.length} Reviews
-                        </span>{" "}
-                        <span className="text-green">
-                          (You have added {itm?.reviews?.length} review)
-                        </span>
-                      </Typography>
-                    </AccordionSummary>
+                    {itm?.reviews?.length ? (
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                      >
+                        <Typography>
+                          <span className="text-brown">
+                            {itm?.reviews?.length} Reviews
+                          </span>{" "}
+                          <span className="text-green">
+                            (You have added {itm?.reviews?.length} review)
+                          </span>
+                        </Typography>
+                      </AccordionSummary>
+                    ) : (
+                      <span className="ps-12 text-black">No Reviews Added</span>
+                    )}
                     <AccordionDetails>
-                      <div className="mat-form-field-wrapper">
-                        <div className="mat-form-field-flex">
-                          <img
-                            src="/assets/images/etc/userpic.png"
-                            alt="Card cover image"
-                            className="rounded-full mr-4"
-                            style={{
-                              width: "3rem",
-                              height: "3rem",
-                            }}
-                          />
-                          <div className="mat-form-field-infix">
-                            <textarea
-                              rows="2"
-                              className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                              placeholder="Write a comment..."
-                              id="ImpTaskReview265"
-                              data-placeholder="Write a comment..."
-                              aria-invalid="false"
-                              aria-required="false"
-                              style={{ height: "36px" }}
-                              value={itm.reviews[0]?.remark}
-                              onChange={(e) =>
-                                setHandelCommentRemark(e.target.value)
-                              }
-                            ></textarea>
+                      {itm?.reviews?.map((rwv) => (
+                        <div className="mat-form-field-wrapper">
+                          <div className="mat-form-field-flex">
+                            <img
+                              src="/assets/images/etc/userpic.png"
+                              alt="Card cover image"
+                              className="rounded-full mr-4"
+                              style={{
+                                width: "3rem",
+                                height: "3rem",
+                              }}
+                            />
 
-                            <button
-                              className="mat-focus-indicator mat-raised-button mat-button-base"
-                              style={{ float: "right" }}
-                              onClick={() =>
-                                handelCommentImp(itm.id, itm.reviews[0].id, 2)
-                              }
-                            >
-                              <span className="mat-button-wrapper">Update</span>
+                            {AppActivity.canEdit && rwv.isCreatedByMe ? (
+                              <div className="mat-form-field-infix">
+                                <textarea
+                                  rows="2"
+                                  className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                  placeholder="Write a comment..."
+                                  id="ImpTaskReview265"
+                                  data-placeholder="Write a comment..."
+                                  aria-invalid="false"
+                                  aria-required="false"
+                                  style={{ height: "36px" }}
+                                  value={rwv.remark}
+                                  onChange={(e) =>
+                                    setHandelCommentRemark(e.target.value)
+                                  }
+                                ></textarea>
 
-                              <span className="mat-ripple mat-button-ripple"></span>
-                              <span className="mat-button-focus-overlay"></span>
-                            </button>
+                                <button
+                                  className="mat-focus-indicator mat-raised-button mat-button-base"
+                                  style={{ float: "right" }}
+                                  onClick={() =>
+                                    handelCommentImp(
+                                      itm.id,
+                                      itm.reviews[0].id,
+                                      2
+                                    )
+                                  }
+                                >
+                                  <span className="mat-button-wrapper">
+                                    Update
+                                  </span>
 
-                            <span className="mat-form-field-label-wrapper"></span>
+                                  <span className="mat-ripple mat-button-ripple"></span>
+                                  <span className="mat-button-focus-overlay"></span>
+                                </button>
+
+                                <span className="mat-form-field-label-wrapper"></span>
+                              </div>
+                            ) : (
+                              <div className="mat-form-field-infix">
+                                <span className="">
+                                  {rwv?.createdByStaffName}
+                                </span>
+                              </div>
+                            )}
                           </div>
-                        </div>
-                        <span
-                          style={{
-                            fontSize: "x-small",
-                            paddingLeft: "60px",
-                          }}
-                        >
-                          {" "}
-                          {itm.reviews[0]?.updatedAt &&
-                            new Date(itm.reviews[0]?.updatedAt).toLocaleString(
-                              "en-US",
-                              {
+                          <span
+                            style={{
+                              fontSize: "x-small",
+                              paddingLeft: "35px",
+                            }}
+                          >
+                            {" "}
+                            {itm.reviews[0]?.updatedAt &&
+                              new Date(
+                                itm.reviews[0]?.updatedAt
+                              ).toLocaleString("en-US", {
                                 month: "long",
                                 day: "numeric",
                                 year: "numeric",
@@ -1009,19 +1041,19 @@ const EvaluationApproval = ({
                                 second: "numeric",
                                 hour12: true,
                                 timeZoneName: "short",
-                              }
-                            )}
-                        </span>
-                        <div className="mat-form-field-subscript-wrapper">
-                          <div
-                            className="mat-form-field-hint-wrapper"
-                            style={{
-                              opacity: 1,
-                              transform: "translateY(0%)",
-                            }}
-                          ></div>
+                              })}
+                          </span>
+                          <div className="mat-form-field-subscript-wrapper">
+                            <div
+                              className="mat-form-field-hint-wrapper"
+                              style={{
+                                opacity: 1,
+                                transform: "translateY(0%)",
+                              }}
+                            ></div>
+                          </div>
                         </div>
-                      </div>
+                      ))}
                     </AccordionDetails>
                   </Accordion>
                 </div>
@@ -1085,7 +1117,10 @@ const EvaluationApproval = ({
                     <td className="task-table-cell mat-cell">
                       <div className="task-header flex items-center">
                         <div className="task-id flex flex-col">
-                          <span className="task-id-text font-semibold text-xl leading-none">
+                          <span
+                            className="task-id-text font-semibold text-xl leading-none"
+                            style={{ fontSize: "20px" }}
+                          >
                             Task #{imptsk?.id}
                           </span>
                         </div>
@@ -1164,42 +1199,46 @@ const EvaluationApproval = ({
                               </span>
                             </div>
                             <div>
-                              <div style={{ float: "right" }}>
-                                <FormGroup>
-                                  <FormControlLabel
-                                    control={
-                                      <Checkbox
-                                        onChange={(e) =>
-                                          handleCheckboxChange(
-                                            e.target.checked,
-                                            {
-                                              id: imptsk.id,
-                                              impact:
-                                                imptsk.particularName +
-                                                ">" +
-                                                imptsk.particularSubName,
-                                              task: imptsk.actionWhat,
-                                              how: imptsk.actionHow,
-                                              assignedTo: imptsk.assignedStaff,
-                                              dueDate: formatDates(
-                                                imptsk.dueDate
-                                              ),
-                                              deadline: imptsk.deadlineDisplay,
-                                              taskId: imptsk?.id,
-                                            }
-                                          )
-                                        }
-                                        id="check289-input"
-                                        inputProps={{
-                                          "aria-label": "primary checkbox",
-                                        }}
-                                        color="primary"
-                                      />
-                                    }
-                                    label="Need External Consultation"
-                                  />
-                                </FormGroup>
-                              </div>
+                              {AppActivity.canEdit && (
+                                <div style={{ float: "right" }}>
+                                  <FormGroup>
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox
+                                          onChange={(e) =>
+                                            handleCheckboxChange(
+                                              e.target.checked,
+                                              {
+                                                id: imptsk.id,
+                                                impact:
+                                                  imptsk.particularName +
+                                                  ">" +
+                                                  imptsk.particularSubName,
+                                                task: imptsk.actionWhat,
+                                                how: imptsk.actionHow,
+                                                assignedTo:
+                                                  imptsk.assignedStaff,
+                                                dueDate: formatDates(
+                                                  imptsk.dueDate
+                                                ),
+                                                deadline:
+                                                  imptsk.deadlineDisplay,
+                                                taskId: imptsk?.id,
+                                              }
+                                            )
+                                          }
+                                          id="check289-input"
+                                          inputProps={{
+                                            "aria-label": "primary checkbox",
+                                          }}
+                                          color="primary"
+                                        />
+                                      }
+                                      label="Need External Consultation"
+                                    />
+                                  </FormGroup>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -1268,7 +1307,19 @@ const EvaluationApproval = ({
                                                             }}
                                                           >
                                                             <div
-                                                              className={`rounded text-white p-2 py-1 px-3 mb-1 inline-flex text-center text-sm font-semibold leading-2 ${situation.residualRiskClassificationDisplay}`}
+                                                              // className={`rounded text-white p-2 py-1 px-3 mb-1 inline-flex text-center text-sm font-semibold leading-2 `}
+                                                              style={{
+                                                                backgroundColor:
+                                                                  situation.residualRiskClassificationDisplay ==
+                                                                  "AverageRisk"
+                                                                    ? "orange"
+                                                                    : "green",
+                                                                width: "25%",
+                                                                padding: "3px",
+                                                                color: "white",
+                                                                borderRadius:
+                                                                  "5px",
+                                                              }}
                                                             >
                                                               {
                                                                 situation.residualRiskClassificationDisplay
@@ -1407,107 +1458,125 @@ const EvaluationApproval = ({
                               expanded={expanded == imptsk.id}
                               onChange={handleExpansionChange(imptsk.id)}
                             >
-                              <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                              >
-                                <Typography>
-                                  <span className="text-brown">
-                                    {imptsk?.changeImpactTaskReviews?.length}{" "}
-                                    Reviews
-                                  </span>{" "}
-                                  <span className="text-green">
-                                    (You have added {imptsk?.reviews?.length}{" "}
-                                    review)
-                                  </span>
-                                </Typography>
-                              </AccordionSummary>
+                              {imptsk?.changeImpactTaskReviews?.length ? (
+                                <AccordionSummary
+                                  expandIcon={<ExpandMoreIcon />}
+                                  aria-controls="panel1a-content"
+                                  id="panel1a-header"
+                                >
+                                  <Typography>
+                                    <span className="text-brown">
+                                      {imptsk?.changeImpactTaskReviews?.length}{" "}
+                                      Reviews
+                                    </span>{" "}
+                                    <span className="text-green">
+                                      (You have added {imptsk?.reviews?.length}{" "}
+                                      review)
+                                    </span>
+                                  </Typography>
+                                </AccordionSummary>
+                              ) : (
+                                <span className="ps-12 text-black">
+                                  No Reviews Added
+                                </span>
+                              )}
+
                               <AccordionDetails>
-                                <div className="mat-form-field-wrapper">
-                                  <div className="mat-form-field-flex">
-                                    <img
-                                      src="/assets/images/etc/userpic.png"
-                                      alt="Card cover image"
-                                      className="rounded-full mr-4"
+                                {imptsk.changeImpactTaskReviews?.map((rwx) => (
+                                  <div className="mat-form-field-wrapper">
+                                    <div className="mat-form-field-flex">
+                                      <img
+                                        src="/assets/images/etc/userpic.png"
+                                        alt="Card cover image"
+                                        className="rounded-full mr-4"
+                                        style={{
+                                          width: "3rem",
+                                          height: "3rem",
+                                        }}
+                                      />
+                                      {AppActivity.canEdit &&
+                                      rwx.isCreatedByMe ? (
+                                        <div className="mat-form-field-infix">
+                                          <textarea
+                                            rows="2"
+                                            className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                            placeholder="Write a comment..."
+                                            id="ImpTaskReview265"
+                                            data-placeholder="Write a comment..."
+                                            aria-invalid="false"
+                                            aria-required="false"
+                                            style={{ height: "36px" }}
+                                            value={rwx?.remark}
+                                            onChange={(e) =>
+                                              setHandelCommentRemark(
+                                                e.target.value
+                                              )
+                                            }
+                                          ></textarea>
+
+                                          <button
+                                            className="mat-focus-indicator mat-raised-button mat-button-base"
+                                            style={{ float: "right" }}
+                                            onClick={() =>
+                                              handelCommentImp(
+                                                itm.id,
+                                                itm.changeImpactTaskReviews[0]
+                                                  .id,
+                                                2
+                                              )
+                                            }
+                                          >
+                                            <span className="mat-button-wrapper">
+                                              Update
+                                            </span>
+
+                                            <span className="mat-ripple mat-button-ripple"></span>
+                                            <span className="mat-button-focus-overlay"></span>
+                                          </button>
+
+                                          <span className="mat-form-field-label-wrapper"></span>
+                                        </div>
+                                      ) : (
+                                        <div className="mat-form-field-infix">
+                                          <span className="">
+                                            {rwx?.createdByStaffName}
+                                          </span>
+                                        </div>
+                                      )}
+                                    </div>
+                                    <span
                                       style={{
-                                        width: "3rem",
-                                        height: "3rem",
+                                        fontSize: "x-small",
+                                        paddingLeft: "35px",
                                       }}
-                                    />
-                                    <div className="mat-form-field-infix">
-                                      <textarea
-                                        rows="2"
-                                        className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                        placeholder="Write a comment..."
-                                        id="ImpTaskReview265"
-                                        data-placeholder="Write a comment..."
-                                        aria-invalid="false"
-                                        aria-required="false"
-                                        style={{ height: "36px" }}
-                                        value={
-                                          imptsk.changeImpactTaskReviews[0]
-                                            ?.remark
-                                        }
-                                        onChange={(e) =>
-                                          setHandelCommentRemark(e.target.value)
-                                        }
-                                      ></textarea>
-
-                                      <button
-                                        className="mat-focus-indicator mat-raised-button mat-button-base"
-                                        style={{ float: "right" }}
-                                        onClick={() =>
-                                          handelCommentImp(
-                                            itm.id,
-                                            itm.changeImpactTaskReviews[0].id,
-                                            2
-                                          )
-                                        }
-                                      >
-                                        <span className="mat-button-wrapper">
-                                          Update
-                                        </span>
-
-                                        <span className="mat-ripple mat-button-ripple"></span>
-                                        <span className="mat-button-focus-overlay"></span>
-                                      </button>
-
-                                      <span className="mat-form-field-label-wrapper"></span>
+                                    >
+                                      {" "}
+                                      {imptsk.changeImpactTaskReviews[0]
+                                        ?.updatedAt &&
+                                        new Date(
+                                          imptsk.changeImpactTaskReviews[0]?.updatedAt
+                                        ).toLocaleString("en-US", {
+                                          month: "long",
+                                          day: "numeric",
+                                          year: "numeric",
+                                          hour: "numeric",
+                                          minute: "numeric",
+                                          second: "numeric",
+                                          hour12: true,
+                                          timeZoneName: "short",
+                                        })}
+                                    </span>
+                                    <div className="mat-form-field-subscript-wrapper">
+                                      <div
+                                        className="mat-form-field-hint-wrapper"
+                                        style={{
+                                          opacity: 1,
+                                          transform: "translateY(0%)",
+                                        }}
+                                      ></div>
                                     </div>
                                   </div>
-                                  <span
-                                    style={{
-                                      fontSize: "x-small",
-                                      paddingLeft: "60px",
-                                    }}
-                                  >
-                                    {" "}
-                                    {imptsk.changeImpactTaskReviews[0]
-                                      ?.updatedAt &&
-                                      new Date(
-                                        imptsk.changeImpactTaskReviews[0]?.updatedAt
-                                      ).toLocaleString("en-US", {
-                                        month: "long",
-                                        day: "numeric",
-                                        year: "numeric",
-                                        hour: "numeric",
-                                        minute: "numeric",
-                                        second: "numeric",
-                                        hour12: true,
-                                        timeZoneName: "short",
-                                      })}
-                                  </span>
-                                  <div className="mat-form-field-subscript-wrapper">
-                                    <div
-                                      className="mat-form-field-hint-wrapper"
-                                      style={{
-                                        opacity: 1,
-                                        transform: "translateY(0%)",
-                                      }}
-                                    ></div>
-                                  </div>
-                                </div>
+                                ))}
                               </AccordionDetails>
                             </Accordion>
                           </div>
@@ -1670,111 +1739,155 @@ const EvaluationApproval = ({
                       _ngcontent-fyk-c288=""
                       class="flex items-center w-full  border-b justify-between"
                     ></div>
-                    <TableBody>
-                      {remarkRequest.map(
-                        (remark, index) =>
-                          remark.evaluationTypeString === "Consultaion" && (
-                            <TableRow key={index}>
-                              <TableCell>
-                                <TextField
-                                  id={`tasks-comment-${index}`}
-                                  label="Write your task comments..."
-                                  multiline
-                                  rows={1}
-                                  fullWidth
-                                  sx={{
-                                    "& .MuiInputBase-root": {
-                                      height: "auto",
-                                    },
-                                    "& .MuiInputBase-inputMultiline": {
-                                      height: "100px", // Set desired height here
-                                    },
-                                  }}
-                                  InputProps={{
-                                    endAdornment: (
-                                      <InputAdornment
-                                        position="end"
-                                        style={{ height: "90px" }}
-                                      >
-                                        <Button
-                                          variant="contained"
-                                          color="primary"
-                                          style={{
-                                            float: "right",
-                                            backgroundColor: "blue",
-                                            marginBottom: "3px",
-                                          }}
-                                          // Add functionality to update the comment here if needed
-                                        >
-                                          Update
-                                        </Button>
-                                      </InputAdornment>
-                                    ),
-                                  }}
-                                  value={remark.remark}
-                                  onChange={(event) =>
-                                    handleRemarkChange(index, event)
-                                  }
-                                  onClick={() =>
-                                    handleUpdateClick(index, remark.id)
-                                  }
-                                />
-                                <h6 className="ps-4 pt-6 text-grey">
-                                  {remark.createdBy +
-                                    "-" +
-                                    formatDates(remark.createdAt)}
-                                </h6>
-                              </TableCell>
-                            </TableRow>
-                          )
-                      )}
-                      <TableRow>
-                        <TableCell>
-                          <TextField
-                            id="tasks-comment-new"
-                            label="Write your Consultation comments..."
-                            multiline
-                            rows={1}
-                            fullWidth
-                            value={newRemark}
-                            onChange={(event) =>
-                              handleInputChange(event, "Consultaion")
-                            }
-                            sx={{
-                              "& .MuiInputBase-root": {
-                                height: "auto",
-                              },
-                              "& .MuiInputBase-inputMultiline": {
-                                height: "100px", // Set desired height here
-                              },
-                            }}
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment
-                                  position="end"
-                                  style={{ height: "90px" }}
-                                >
-                                  <Button
-                                    variant="contained"
-                                    color="primary"
-                                    style={{
-                                      float: "right",
-                                      backgroundColor: "blue",
-                                      marginBottom: "3px",
+                    {AppActivity.canEdit && (
+                      <TableBody>
+                        {remarkRequest.map(
+                          (remark, index) =>
+                            remark.evaluationTypeString === "Consultaion" && (
+                              <TableRow key={index}>
+                                <TableCell>
+                                  <TextField
+                                    id={`tasks-comment-${index}`}
+                                    label="Write your task comments..."
+                                    multiline
+                                    rows={1}
+                                    fullWidth
+                                    sx={{
+                                      "& .MuiInputBase-root": {
+                                        height: "auto",
+                                      },
+                                      "& .MuiInputBase-inputMultiline": {
+                                        height: "100px", // Set desired height here
+                                      },
                                     }}
-                                    onClick={() =>
-                                      handleSaveClick("Consultaion")
+                                    InputProps={{
+                                      endAdornment: (
+                                        <InputAdornment
+                                          position="end"
+                                          style={{ height: "90px" }}
+                                        >
+                                          <Button
+                                            variant="contained"
+                                            color="primary"
+                                            style={{
+                                              float: "right",
+                                              backgroundColor: "blue",
+                                              marginBottom: "3px",
+                                            }}
+                                            // Add functionality to update the comment here if needed
+                                          >
+                                            Update
+                                          </Button>
+                                        </InputAdornment>
+                                      ),
+                                    }}
+                                    value={remark.remark}
+                                    onChange={(event) =>
+                                      handleRemarkChange(index, event)
                                     }
+                                    onClick={() =>
+                                      handleUpdateClick(index, remark.id)
+                                    }
+                                  />
+                                  <h6 className="ps-4 pt-6 text-grey">
+                                    {remark.createdBy +
+                                      "-" +
+                                      formatDates(remark.createdAt)}
+                                  </h6>
+                                </TableCell>
+                              </TableRow>
+                            )
+                        )}
+                        <TableRow>
+                          <TableCell>
+                            <TextField
+                              id="tasks-comment-new"
+                              label="Write your Consultation comments..."
+                              multiline
+                              rows={1}
+                              fullWidth
+                              value={newRemark}
+                              onChange={(event) =>
+                                handleInputChange(event, "Consultaion")
+                              }
+                              sx={{
+                                "& .MuiInputBase-root": {
+                                  height: "auto",
+                                },
+                                "& .MuiInputBase-inputMultiline": {
+                                  height: "100px", // Set desired height here
+                                },
+                              }}
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment
+                                    position="end"
+                                    style={{ height: "90px" }}
                                   >
-                                    Save
-                                  </Button>
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      style={{
+                                        float: "right",
+                                        backgroundColor: "blue",
+                                        marginBottom: "3px",
+                                      }}
+                                      onClick={() =>
+                                        handleSaveClick("Consultaion")
+                                      }
+                                    >
+                                      Save
+                                    </Button>
+                                  </InputAdornment>
+                                ),
+                              }}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    )}
+                    {!AppActivity.canEdit && (
+                      <TableBody>
+                        {remarkRequest.map(
+                          (remark, index) =>
+                            remark.evaluationTypeString === "Consultaion" && (
+                              <TableRow key={index}>
+                                <TableCell>
+                                  <div className="flex">
+                                    <img
+                                      src="/assets/images/etc/userpic.png"
+                                      alt="Card cover image"
+                                      className="rounded-full mr-4"
+                                      style={{
+                                        width: "5rem",
+                                        height: "5rem",
+                                      }}
+                                    />
+                                    <h6 className="ps-4 pt-2 text-black">
+                                      <b>{remark.createdBy}</b> {remark?.remark}
+                                    </h6>
+                                    {" -"}
+                                    <h6 className="ps-5 pt-2 text-grey">
+                                      {formatDates(remark.createdAt)}
+                                    </h6>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            )
+                        )}
+                        {remarkRequest.length == 0 && (
+                          <TableRow>
+                            <TableCell>
+                              <div className="flex">
+                                <h5 className="ps-4 pt-2 text-black text-center">
+                                  <b>No Comments</b>
+                                </h5>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    )}
                   </Table>
                 </TableContainer>
               </Grid>
@@ -1787,98 +1900,145 @@ const EvaluationApproval = ({
                       </TableRow>
                     </TableHead>
                     <div className="flex items-center w-full border-b justify-between"></div>
-                    <TableBody>
-                      {remarkRequest.map(
-                        (remark, index) =>
-                          remark.evaluationTypeString === "ImpactTask" && (
-                            <TableRow key={index}>
-                              <TableCell>
-                                <TextField
-                                  id={`impact-task-comment-${index}`}
-                                  label="Write your task comments..."
-                                  multiline
-                                  rows={1}
-                                  fullWidth
-                                  value={remark.remark}
-                                  onChange={(event) =>
-                                    handleRemarkChange(index, event)
-                                  }
-                                  sx={{
-                                    "& .MuiInputBase-root": {
-                                      height: "auto",
-                                    },
-                                    "& .MuiInputBase-inputMultiline": {
-                                      height: "100px",
-                                    },
-                                  }}
-                                  InputProps={{
-                                    endAdornment: (
-                                      <InputAdornment
-                                        position="end"
-                                        style={{ height: "90px" }}
-                                      >
-                                        <Button
-                                          variant="contained"
-                                          color="primary"
-                                          style={{
-                                            float: "right",
-                                            backgroundColor: "blue",
-                                            marginBottom: "3px",
-                                          }}
-                                          onClick={() =>
-                                            handleUpdateClick(index, remark.id)
-                                          }
-                                        >
-                                          Update
-                                        </Button>
-                                      </InputAdornment>
-                                    ),
-                                  }}
-                                />
-                                <h6 className="ps-4 pt-6 text-grey">
-                                  {remark.createdBy +
-                                    "-" +
-                                    formatDates(remark.createdAt)}
-                                </h6>
-                              </TableCell>
-                            </TableRow>
-                          )
-                      )}
-                      <TableRow>
-                        <TableCell>
-                          <TextField
-                            id="tasks-comment"
-                            label="Write your task comments..."
-                            multiline
-                            rows={1}
-                            fullWidth
-                            InputProps={{
-                              endAdornment: (
-                                <InputAdornment
-                                  position="end"
-                                  style={{ height: "90px" }}
-                                >
-                                  <Button
-                                    variant="contained"
-                                    color="primary"
-                                    style={{
-                                      float: "right",
-                                      backgroundColor: "blue",
-                                      marginBottom: "3px",
-                                    }}
-                                    onClick={() =>
-                                      handleSaveClick("ImpactTask")
+                    {AppActivity.canEdit && (
+                      <TableBody>
+                        {remarkRequest.map(
+                          (remark, index) =>
+                            remark.evaluationTypeString === "ImpactTask" && (
+                              <TableRow key={index}>
+                                <TableCell>
+                                  <TextField
+                                    id={`impact-task-comment-${index}`}
+                                    label="Write your task comments..."
+                                    multiline
+                                    rows={1}
+                                    fullWidth
+                                    value={remark.remark}
+                                    onChange={(event) =>
+                                      handleRemarkChange(index, event)
                                     }
+                                    sx={{
+                                      "& .MuiInputBase-root": {
+                                        height: "auto",
+                                      },
+                                      "& .MuiInputBase-inputMultiline": {
+                                        height: "100px",
+                                      },
+                                    }}
+                                    InputProps={{
+                                      endAdornment: (
+                                        <InputAdornment
+                                          position="end"
+                                          style={{ height: "90px" }}
+                                        >
+                                          <Button
+                                            variant="contained"
+                                            color="primary"
+                                            style={{
+                                              float: "right",
+                                              backgroundColor: "blue",
+                                              marginBottom: "3px",
+                                            }}
+                                            onClick={() =>
+                                              handleUpdateClick(
+                                                index,
+                                                remark.id
+                                              )
+                                            }
+                                          >
+                                            Update
+                                          </Button>
+                                        </InputAdornment>
+                                      ),
+                                    }}
+                                  />
+                                  <h6 className="ps-4 pt-6 text-grey">
+                                    {remark.createdBy +
+                                      "-" +
+                                      formatDates(remark.createdAt)}
+                                  </h6>
+                                </TableCell>
+                              </TableRow>
+                            )
+                        )}
+                        <TableRow>
+                          <TableCell>
+                            <TextField
+                              id="tasks-comment"
+                              label="Write your task comments..."
+                              multiline
+                              rows={1}
+                              fullWidth
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment
+                                    position="end"
+                                    style={{ height: "90px" }}
                                   >
-                                    Save
-                                  </Button>
-                                </InputAdornment>
-                              ),
-                            }}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      style={{
+                                        float: "right",
+                                        backgroundColor: "blue",
+                                        marginBottom: "3px",
+                                      }}
+                                      onClick={() =>
+                                        handleSaveClick("ImpactTask")
+                                      }
+                                    >
+                                      Save
+                                    </Button>
+                                  </InputAdornment>
+                                ),
+                              }}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    )}
+                    {!AppActivity.canEdit && (
+                      <TableBody>
+                        {remarkRequest.map(
+                          (remark, index) =>
+                            remark.evaluationTypeString === "ImpactTask" && (
+                              <TableRow key={index}>
+                                <TableCell>
+                                  <div className="flex">
+                                    <img
+                                      src="/assets/images/etc/userpic.png"
+                                      alt="Card cover image"
+                                      className="rounded-full mr-4"
+                                      style={{
+                                        width: "5rem",
+                                        height: "5rem",
+                                      }}
+                                    />
+                                    <h6 className="ps-4 pt-2 text-black">
+                                      <b>{remark.createdBy}</b> {remark?.remark}
+                                    </h6>
+                                    {" -"}
+                                    <h6 className="ps-5 pt-2 text-grey">
+                                      {formatDates(remark.createdAt)}
+                                    </h6>
+                                  </div>
+                                </TableCell>
+                              </TableRow>
+                            )
+                        )}
+                        {remarkRequest.length == 0 && (
+                          <TableRow>
+                            <TableCell>
+                              <div className="flex">
+                                <h5 className="ps-4 pt-2 text-black text-center">
+                                  <b>No Comments</b>
+                                </h5>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    )}
                   </Table>
                 </TableContainer>
               </Grid>
@@ -1908,6 +2068,24 @@ const EvaluationApproval = ({
               ))}
             </div>
           )}
+          <div className="flex justify-start">
+            <Button
+              className="whitespace-nowrap mt-5"
+              style={{
+                border: "1px solid",
+                backgroundColor: "transparent",
+                color: "black",
+                borderColor: "rgba(203,213,225)",
+              }}
+              variant="contained"
+              color="warning"
+              startIcon={
+                <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
+              }
+            >
+              Document
+            </Button>
+          </div>
         </Paper>
       </SwipeableViews>
     </div>

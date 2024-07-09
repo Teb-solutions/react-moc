@@ -692,14 +692,18 @@ const AssetCourse = () => {
             actualPhaseName = "InitiationRequest";
             break;
           case AssetPhasesEnum.INITIATIONAPPROVAL:
-            if (
-              matchingActivity.name ===
-              "Site In Charge Approval if Moc is needed"
-            ) {
+            if (matchingActivity.code === "IS_MOC_NEEDED") {
               actualPhaseName = "InitiationApproval";
-            } else if (matchingActivity.name === "Approval by Site in Charge") {
+            } else if (matchingActivity.code === "EV_APPR_SITE_CH") {
               actualPhaseName = "EvaluationApproval";
+            } else if (matchingActivity.code === "EV_APPR_COORP_HSE") {
+              actualPhaseName = "EvaluationApprovalCooprate";
+            } else if (matchingActivity.code === "EV_APPR_VP_DIV") {
+              actualPhaseName = "EvaluationApprovalVp";
+            } else if (matchingActivity.code === "EV_APPR_VP_HSE") {
+              actualPhaseName = "EvaluationApprovalVpHse";
             }
+
             break;
           case AssetPhasesEnum.INITIATIONACOMPLETE:
             actualPhaseName = "InitiationComplete";
@@ -816,7 +820,117 @@ const AssetCourse = () => {
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
               apiAuth
-                .get(`/ApprovalManager/RemarksbyRequest/${uid}`)
+                .get(
+                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
+                )
+                .then((resp) => {
+                  setRemarkRequest(resp.data.data);
+                });
+            });
+            break;
+          case "EvaluationApprovalCooprate":
+            apiAuth
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp?.data?.data);
+                if (resp.data?.data) {
+                  const data = resp.data?.data;
+                  if (data.requestTypeName !== "Document") {
+                    const updatedTasks = data.tasklist.map((task) => {
+                      task.showPreviousTasks = false;
+                      task.riskAnalysisList = data.riskAnalysisList.filter(
+                        (ra) => ra.changeImapactId === task.changeImapactId
+                      );
+                      return task;
+                    });
+
+                    setTasks(updatedTasks);
+                    loadRiskAnalysisChart(updatedTasks);
+                  }
+                }
+              });
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(
+                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
+                )
+                .then((resp) => {
+                  setRemarkRequest(resp.data.data);
+                });
+            });
+            break;
+          case "EvaluationApprovalVp":
+            apiAuth
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp?.data?.data);
+                if (resp.data?.data) {
+                  const data = resp.data?.data;
+                  if (data.requestTypeName !== "Document") {
+                    const updatedTasks = data.tasklist.map((task) => {
+                      task.showPreviousTasks = false;
+                      task.riskAnalysisList = data.riskAnalysisList.filter(
+                        (ra) => ra.changeImapactId === task.changeImapactId
+                      );
+                      return task;
+                    });
+
+                    setTasks(updatedTasks);
+                    loadRiskAnalysisChart(updatedTasks);
+                  }
+                }
+              });
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(
+                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
+                )
+                .then((resp) => {
+                  setRemarkRequest(resp.data.data);
+                });
+            });
+            break;
+          case "EvaluationApprovalVpHse":
+            apiAuth
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp?.data?.data);
+                if (resp.data?.data) {
+                  const data = resp.data?.data;
+                  if (data.requestTypeName !== "Document") {
+                    const updatedTasks = data.tasklist.map((task) => {
+                      task.showPreviousTasks = false;
+                      task.riskAnalysisList = data.riskAnalysisList.filter(
+                        (ra) => ra.changeImapactId === task.changeImapactId
+                      );
+                      return task;
+                    });
+
+                    setTasks(updatedTasks);
+                    loadRiskAnalysisChart(updatedTasks);
+                  }
+                }
+              });
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(
+                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
+                )
                 .then((resp) => {
                   setRemarkRequest(resp.data.data);
                 });
@@ -1178,6 +1292,48 @@ const AssetCourse = () => {
               />
             )}
             {currentPhase === "EvaluationApproval" && (
+              <EvaluationApproval
+                AppActions={appActions}
+                AppActivity={appActivity}
+                assetEvaluationId={assetEvaluationId}
+                contentDetails={contentDetails}
+                showRiskAnalysisChart={showRiskAnalysisChart}
+                riskAnalysisChartOptions={riskAnalysisChartOptions}
+                lastActCode={lastActCode}
+                currentActivityForm={currentActivityForm}
+                remarkRequest={remarkRequest}
+                setRemarkRequest={setRemarkRequest}
+              />
+            )}
+            {currentPhase === "EvaluationApprovalCooprate" && (
+              <EvaluationApproval
+                AppActions={appActions}
+                AppActivity={appActivity}
+                assetEvaluationId={assetEvaluationId}
+                contentDetails={contentDetails}
+                showRiskAnalysisChart={showRiskAnalysisChart}
+                riskAnalysisChartOptions={riskAnalysisChartOptions}
+                lastActCode={lastActCode}
+                currentActivityForm={currentActivityForm}
+                remarkRequest={remarkRequest}
+                setRemarkRequest={setRemarkRequest}
+              />
+            )}
+            {currentPhase === "EvaluationApprovalVp" && (
+              <EvaluationApproval
+                AppActions={appActions}
+                AppActivity={appActivity}
+                assetEvaluationId={assetEvaluationId}
+                contentDetails={contentDetails}
+                showRiskAnalysisChart={showRiskAnalysisChart}
+                riskAnalysisChartOptions={riskAnalysisChartOptions}
+                lastActCode={lastActCode}
+                currentActivityForm={currentActivityForm}
+                remarkRequest={remarkRequest}
+                setRemarkRequest={setRemarkRequest}
+              />
+            )}
+            {currentPhase === "EvaluationApprovalVpHse" && (
               <EvaluationApproval
                 AppActions={appActions}
                 AppActivity={appActivity}

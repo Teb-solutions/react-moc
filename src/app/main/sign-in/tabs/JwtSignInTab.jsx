@@ -101,12 +101,13 @@ const JwtSignInTab = () => {
         if (resp.data.statusCode === 200) {
           Cookies.remove("MOC_Features");
           localStorage.setItem("jwt_access_token", resp.data.data.jwt);
+
           try {
             const enData = encryptFeature(resp.data.data.features);
             if (enData) {
               toast.success("Successfully Logined");
               navigate("/dashboards/project");
-              location.reload();
+              // location.reload();
             }
           } catch (error) {
             console.error("Encryption/Decryption error:", error);
