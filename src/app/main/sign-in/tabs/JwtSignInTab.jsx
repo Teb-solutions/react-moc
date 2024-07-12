@@ -103,6 +103,7 @@ const JwtSignInTab = () => {
           localStorage.setItem("jwt_access_token", resp.data.data.jwt);
           try {
             const enData = encryptFeature(resp.data.data.features);
+
             if (enData) {
               toast.success("Successfully Logined");
               navigate("/dashboards/project");
