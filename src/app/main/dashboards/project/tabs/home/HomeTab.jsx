@@ -46,6 +46,10 @@ function HomeTab() {
     navigate("/moc/activity");
   };
 
+  const handleOpenNewAsset = () => {
+    navigate("/moc/assetactivity");
+  };
+
   const handleOpenMoc = () => {
     navigate("/moc");
   };
@@ -77,7 +81,7 @@ function HomeTab() {
                 open={Boolean(anchorEl)}
                 onClose={() => setAnchorEl(null)}
               >
-                <MenuItem>Technical</MenuItem>
+                <MenuItem onClick={handleOpenNewAsset}>Technical</MenuItem>
                 <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
                 <MenuItem>Organisation</MenuItem>
               </Menu>

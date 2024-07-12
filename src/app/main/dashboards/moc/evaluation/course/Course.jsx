@@ -2269,7 +2269,7 @@ function Course() {
                                     <label htmlFor="fileInput">
                                       <div className=" ">
                                         <div
-                                          onClick={handelDetailDoc}
+                                          // onClick={handelDetailDoc}
                                           style={{
                                             textAlign: "-webkit-center",
                                           }}

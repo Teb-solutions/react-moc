@@ -1302,7 +1302,10 @@ const AssetCourse = () => {
 
           <div className="flex justify-center p-16 pb-64 sm:p-24 ">
             {currentPhase === "InitiationRequest" && (
-              <Initiation contentDetails={contentDetails} />
+              <Initiation
+                contentDetails={contentDetails}
+                assetEvaluationId={assetEvaluationId}
+              />
             )}
             {currentPhase === "InitiationApproval" && (
               <InitiationApproval
