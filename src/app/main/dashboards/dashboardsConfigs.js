@@ -28,6 +28,7 @@ import ChangePasswordConfig from "./changepassword/ChangePasswordConfig";
 import SecurityConfig from "./security/SecurityConfig";
 import RoleConfig from "./security/role/RoleConfig";
 import AccessConfig from "./security/access/AccessConfig";
+import OrgActivityConfig from "./moc/orgActivity/OrgActivityConfig";
 /**
  * Dashboards
  */
@@ -61,5 +62,6 @@ const dashboardsConfigs = [
   ChangePasswordConfig,
   RoleConfig,
   AccessConfig,
+  OrgActivityConfig,
 ];
 export default dashboardsConfigs;

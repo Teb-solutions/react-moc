@@ -199,7 +199,9 @@ function Course() {
     apiAuth.get(`/LookupData/Lov/16`).then((resp) => {
       setParticular(resp.data.data);
     });
-    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {});
+    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {
+      setParticularSub(resp.data.data);
+    });
   };
 
   const handleCloseImplemntationTask = () => setOpenImplemntationTask(false);
@@ -337,7 +339,6 @@ function Course() {
 
   const handelSubmit = (e) => {
     e.preventDefault();
-    debugger;
     if (validate()) {
       const formattedForms = forms.map((form) => {
         const date = form.data.consultedDate;
@@ -786,7 +787,6 @@ function Course() {
       });
   };
   const SubmitApprovelCreate = (e, uid, name, type) => {
-    debugger;
     apiAuth
       .post(`/ApprovalManager/Create/${evaluationId}`, {
         actionUID: uid,
@@ -808,7 +808,6 @@ function Course() {
       });
   };
   const SubmitImpCreate = (e, uid) => {
-    debugger;
     apiAuth.get(`/ChangeImpact/ListTask?id=${evaluationId}`).then((resp) => {
       if (handelApprover.approver == "") {
         toast.error("Select an approver");

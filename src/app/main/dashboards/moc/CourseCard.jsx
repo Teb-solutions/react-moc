@@ -16,17 +16,6 @@ function CourseCard(props) {
 
   console.log(course, ";;12");
 
-  function buttonStatus() {
-    switch (course.activeStep) {
-      case course.totalSteps:
-        return "Completed";
-      case 0:
-        return "Start";
-      default:
-        return "Continue";
-    }
-  }
-
   return (
     <Card className="flex flex-col h-384 shadow">
       <CardContent className="flex flex-col flex-auto p-24">
@@ -34,7 +23,7 @@ function CourseCard(props) {
       </CardContent>
       {/* <CourseProgress course={course?.completionPercent} /> */}
       <CardActions
-        className="items-center justify-end py-16 px-24"
+        className="items-center justify-between py-16 px-24"
         sx={{
           backgroundColor: (theme) =>
             theme.palette.mode === "light"
@@ -42,21 +31,29 @@ function CourseCard(props) {
               : lighten(theme.palette.background.default, 0.03),
         }}
       >
+        <div>
+          <h4>
+            <b>{course?.statusName}</b>
+          </h4>
+        </div>
         <Button
           to={
             course.requestTypeName === "Asset"
               ? `/moc/assetEvaluation/${course.token}`
-              : `/moc/evaluation/${course.token}`
+              : course.requestTypeName === "Document"
+                ? `/moc/evaluation/${course.token}`
+                : `/moc/orgEvaluation/${course.token}`
           }
           component={Link}
-          className="px-16 min-w-128"
-          color="secondary"
+          className="px-12 min-w-120"
+          // color="light"
           variant="contained"
+          style={{ backgroundColor: "white", border: "1px solid grey" }}
           endIcon={
             <FuseSvgIcon size={20}>heroicons-solid:arrow-sm-right</FuseSvgIcon>
           }
         >
-          {buttonStatus()}
+          View
         </Button>
       </CardActions>
     </Card>
