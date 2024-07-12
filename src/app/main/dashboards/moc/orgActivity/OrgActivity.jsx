@@ -11,7 +11,13 @@ import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import { Select, MenuItem, ListItemText, FormHelperText } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  ListItemText,
+  FormHelperText,
+  Autocomplete,
+} from "@mui/material";
 import MocHeader from "../MocHeader";
 import { Button } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -367,24 +373,38 @@ function OrgActivity() {
                     sx={{ m: 1 }}
                     error={!!errors.changeStaffId}
                   >
-                    <InputLabel id="functionName-label">Employee *</InputLabel>
-                    <Select
-                      labelId="functionName-label"
-                      id="docControllerId"
-                      name="changeStaffId"
-                      value={documentState.changeStaffId}
-                      onChange={handleChange}
-                      label="changeStaffId *"
+                    <FormLabel
+                      id="documentType"
+                      style={{ color: formValid ? "inherit" : "red" }}
                     >
-                      {docController.map((option) => (
-                        <MenuItem key={option.id} value={option.value}>
-                          {option.text}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {!!errors.changeStaffId && (
-                      <FormHelperText>{errors.changeStaffId}</FormHelperText>
-                    )}
+                      Employee *
+                    </FormLabel>
+                    <Autocomplete
+                      id="docControllerId"
+                      options={docController}
+                      getOptionLabel={(option) => option.text}
+                      value={
+                        docController.find(
+                          (option) =>
+                            option.value === documentState.changeStaffId
+                        ) || null
+                      }
+                      onChange={(event, newValue) => {
+                        handleChange({
+                          target: {
+                            name: "changeStaffId",
+                            value: newValue ? newValue.value : "",
+                          },
+                        });
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          error={!!errors.changeStaffId}
+                          helperText={errors.changeStaffId}
+                        />
+                      )}
+                    />
                   </FormControl>
                 </Box>
                 <Box
@@ -395,28 +415,40 @@ function OrgActivity() {
                     sx={{ m: 1 }}
                     error={!!errors.changeStaffDesignationId}
                   >
-                    <InputLabel id="functionName-label">
-                      Employee Designation *
-                    </InputLabel>
-                    <Select
-                      labelId="functionName-label"
-                      id="changeStaffDesignationId"
-                      name="changeStaffDesignationId"
-                      value={documentState.changeStaffDesignationId}
-                      onChange={handleChange}
-                      label="changeStaffDesignationId*"
+                    <FormLabel
+                      id="documentType"
+                      style={{ color: formValid ? "inherit" : "red" }}
                     >
-                      {staffDesignation.map((option) => (
-                        <MenuItem key={option.id} value={option.value}>
-                          {option.text}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {!!errors.changeStaffDesignationId && (
-                      <FormHelperText>
-                        {errors.changeStaffDesignationId}
-                      </FormHelperText>
-                    )}
+                      Employee Designation *
+                    </FormLabel>
+
+                    <Autocomplete
+                      id="changeStaffDesignationId"
+                      options={staffDesignation}
+                      getOptionLabel={(option) => option.text}
+                      value={
+                        staffDesignation.find(
+                          (option) =>
+                            option.value ===
+                            documentState.changeStaffDesignationId
+                        ) || null
+                      }
+                      onChange={(event, newValue) => {
+                        handleChange({
+                          target: {
+                            name: "changeStaffDesignationId",
+                            value: newValue ? newValue.value : "",
+                          },
+                        });
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          error={!!errors.changeStaffDesignationId}
+                          helperText={errors.changeStaffDesignationId}
+                        />
+                      )}
+                    />
                   </FormControl>
                 </Box>
 
