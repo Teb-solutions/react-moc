@@ -29,6 +29,9 @@ function MocHeader(props) {
   const handleOpenNewAsset = () => {
     navigate("/moc/assetactivity");
   };
+  const handleOpenNewOrg = () => {
+    navigate("/moc/orgactivity");
+  };
 
   return (
     <div
@@ -82,7 +85,7 @@ function MocHeader(props) {
           >
             <MenuItem onClick={handleOpenNewAsset}>Technical </MenuItem>
             <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
-            <MenuItem>Organisation</MenuItem>
+            <MenuItem onClick={handleOpenNewOrg}>Organisation</MenuItem>
           </Menu>
         </Breadcrumbs>
 

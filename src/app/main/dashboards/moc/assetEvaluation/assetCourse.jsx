@@ -53,6 +53,8 @@ import InitiationComplete from "../components/initiationComplete";
 import InitiationApprovalProceed from "../components/InitiationApproveProceed";
 import EvaluationChange from "../components/EvaluationChange";
 import EvaluationApproval from "../components/EvaluationApproval";
+import ImplementationApproval from "../components/ImplementationApproval";
+import ImplementationApprovalSite from "../components/ImplementationApprovalSite";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -205,6 +207,7 @@ const AssetCourse = () => {
   const [handelApprover, setHandelApprover] = useState({
     approver: "",
   });
+  const [showApexAndContent, setShowApexAndContent] = useState(false);
 
   const handleOpenImplemntationTask = () => {
     setOpenImplemntationTask(true);
@@ -702,6 +705,8 @@ const AssetCourse = () => {
               actualPhaseName = "EvaluationApprovalVp";
             } else if (matchingActivity.code === "EV_APPR_VP_HSE") {
               actualPhaseName = "EvaluationApprovalVpHse";
+            } else if (matchingActivity.code === "IMPL_APPROVAL_SITE_CH") {
+              actualPhaseName = "ImplementationApprovalSite";
             }
 
             break;
@@ -714,9 +719,9 @@ const AssetCourse = () => {
           case AssetPhasesEnum.EVALUATIONCHANGE:
             actualPhaseName = "EvaluationChange";
             break;
-          // case AssetPhasesEnum.EVALUATIONAPPROVAL:
-          //   actualPhaseName = "EvaluationApproval";
-          //   break;
+          case AssetPhasesEnum.IMPLEMENTATIONAPPROVAL:
+            actualPhaseName = "ImplementationApproval";
+            break;
 
           default:
             actualPhaseName = " ";
@@ -935,6 +940,32 @@ const AssetCourse = () => {
                   setRemarkRequest(resp.data.data);
                 });
             });
+            break;
+          case "ImplementationApproval":
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+            });
+            break;
+          case "ImplementationApprovalSite":
+            apiAuth
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp?.data?.data);
+              });
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(`/ApprovalManager/Remark/${resp.data.data.activity.uid}`)
+                .then((resp) => {
+                  setApprovalManager(resp.data?.data);
+                });
+            });
+
             break;
 
           default:
@@ -1345,6 +1376,27 @@ const AssetCourse = () => {
                 currentActivityForm={currentActivityForm}
                 remarkRequest={remarkRequest}
                 setRemarkRequest={setRemarkRequest}
+              />
+            )}
+            {currentPhase === "ImplementationApproval" && (
+              <ImplementationApproval
+                AppActions={appActions}
+                AppActivity={appActivity}
+                assetEvaluationId={assetEvaluationId}
+                currentActivityForm={currentActivityForm}
+                lastActCode={lastActCode}
+              />
+            )}
+            {currentPhase === "ImplementationApprovalSite" && (
+              <ImplementationApprovalSite
+                AppActions={appActions}
+                AppActivity={appActivity}
+                assetEvaluationId={assetEvaluationId}
+                currentActivityForm={currentActivityForm}
+                lastActCode={lastActCode}
+                showApexAndContent={showApexAndContent}
+                contentDetails={contentDetails}
+                ApprovalManager={ApprovalManager}
               />
             )}
           </div>

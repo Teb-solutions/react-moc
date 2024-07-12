@@ -199,7 +199,9 @@ function Course() {
     apiAuth.get(`/LookupData/Lov/16`).then((resp) => {
       setParticular(resp.data.data);
     });
-    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {});
+    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {
+      setParticularSub(resp.data.data);
+    });
   };
 
   const handleCloseImplemntationTask = () => setOpenImplemntationTask(false);
