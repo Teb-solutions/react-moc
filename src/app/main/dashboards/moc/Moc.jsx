@@ -1,4 +1,3 @@
-/* eslint-disable import/order */
 import { styled } from "@mui/material/styles";
 import MocHeader from "./MocHeader";
 import FusePageCarded from "@fuse/core/FusePageCarded";
@@ -11,12 +10,9 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
 import Switch from "@mui/material/Switch";
 import { FormControlLabel } from "@mui/material";
-import FusePageSimple from "@fuse/core/FusePageSimple";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
-import FuseLoading from "@fuse/core/FuseLoading";
 import {
   useGetAcademyCategoriesQuery,
   useGetAcademyCoursesQuery,
@@ -51,54 +47,38 @@ const item = {
 };
 
 function MocApp() {
-  const { data: courses, isLoading } = useGetAcademyCoursesQuery();
+  const { data: courses } = useGetAcademyCoursesQuery();
   const { data: categories } = useGetAcademyCategoriesQuery();
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const [filteredData, setFilteredData] = useState(courses);
+  const [filteredData, setFilteredData] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [hideCompleted, setHideCompleted] = useState(false);
-  // useEffect(() => {
-  //   function getFilteredArray() {
-  //     if (
-  //       courses &&
-  //       searchText.length === 0 &&
-  //       selectedCategory === "all" &&
-  //       !hideCompleted
-  //     ) {
-  //       return courses;
-  //     }
-
-  //     return _.filter(courses, (item) => {
-  //       if (selectedCategory !== "all" && item.category !== selectedCategory) {
-  //         return false;
-  //       }
-
-  //       if (hideCompleted && item.progress.completed > 0) {
-  //         return false;
-  //       }
-
-  //       return item.title.toLowerCase().includes(searchText.toLowerCase());
-  //     });
-  //   }
-
-  //   if (courses) {
-  //     setFilteredData(getFilteredArray());
-  //   }
-  // }, [courses, hideCompleted, sext, selectedCategory]);
-  // archTe;
-
-  function getRecords() {
-    apiAuth.get("/ChangeRequest/List").then((resp) => {
-      // setContent(resp.data.data.phases);
-      console.log(resp.data.data);
-      setFilteredData(resp.data.data);
-    });
-  }
 
   useEffect(() => {
+    function getFilteredArray(data) {
+      return _.filter(data, (item) => {
+        if (selectedCategory !== "all" && item.category !== selectedCategory) {
+          return false;
+        }
+
+        if (hideCompleted && item.statusName === "Completed") {
+          return false;
+        }
+
+        return item.requestNo.toLowerCase().includes(searchText.toLowerCase());
+      });
+    }
+
+    function getRecords() {
+      apiAuth.get("/ChangeRequest/List").then((resp) => {
+        const data = resp.data.data;
+        setFilteredData(getFilteredArray(data));
+      });
+    }
+
     getRecords();
-  }, []);
+  }, [hideCompleted, searchText, selectedCategory]);
 
   function handleSelectedCategory(event) {
     setSelectedCategory(event.target.value);
@@ -125,7 +105,7 @@ function MocApp() {
                   onChange={handleSelectedCategory}
                 >
                   <MenuItem value="all">
-                    <em> All </em>
+                    <em>All</em>
                   </MenuItem>
                   {categories?.map((category) => (
                     <MenuItem value={category.slug} key={category.id}>
@@ -144,7 +124,7 @@ function MocApp() {
                   onChange={handleSelectedCategory}
                 >
                   <MenuItem value="all">
-                    <em> All </em>
+                    <em>All</em>
                   </MenuItem>
                   {categories?.map((category) => (
                     <MenuItem value={category.slug} key={category.id}>

@@ -14,6 +14,13 @@ import {
   Paper,
   Step,
   Stepper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
   TextField,
   Typography,
 } from "@mui/material";
@@ -25,7 +32,17 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import SearchIcon from "@mui/icons-material/Search";
 import { apiAuth } from "src/utils/http";
 import { ToastContainer, toast } from "react-toastify";
+import { styled } from "@mui/material/styles";
+function createData(
+  index,
 
+  Task,
+  Audit,
+  date,
+  staff
+) {
+  return { Task, Audit, date, staff };
+}
 const OrgImplementation = ({
   impDetails,
   appActivity,
@@ -34,6 +51,39 @@ const OrgImplementation = ({
   currentActivityForm,
   orgEvaluationId,
 }) => {
+  const columns = [
+    { id: "index", label: "#", minWidth: 50 },
+    {
+      id: "Task",
+      label: "Task",
+      minWidth: 170,
+      align: "left",
+      format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+      id: "Audit",
+      label: "Audit Comments",
+      minWidth: 170,
+      align: "left",
+      format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+      id: "date",
+      label: "Done By Date",
+      minWidth: 170,
+      align: "left",
+      format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+      id: "staff",
+      label: "Done BY staff",
+      minWidth: 170,
+      align: "left",
+      format: (value) => value.toLocaleString("en-US"),
+    },
+  ];
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const styleAuditCom = {
     position: "absolute",
     top: "50%",
@@ -49,6 +99,39 @@ const OrgImplementation = ({
     p: 4,
     padding: "0px",
   };
+  const style1 = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "1100px",
+    maxWidth: "80vw",
+    height: "55%",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+    p: 4,
+    padding: "0px",
+  };
+  const BoldLabel = styled("label")({
+    fontWeight: "bold",
+    color: "black",
+  });
+  const drawerStyle = (open) => ({
+    width: 350,
+    bgcolor: "background.paper",
+    borderTopRightRadius: "16px",
+    borderBottomRightRadius: "16px",
+    boxShadow: 24,
+    p: 2,
+    position: "absolute",
+    top: 0,
+    right: open ? 0 : -250, // Move drawer out of view when closed
+    height: "100%",
+    zIndex: 10,
+    transition: "right 0.3s ease", // Smooth transition for opening/closing
+  });
   const [expanded, setExpanded] = useState(null);
   const [impComments, setImpComments] = useState([]);
   const [comments, setComments] = useState("");
@@ -56,6 +139,8 @@ const OrgImplementation = ({
   const [openAuditComment, setOpenAuditComment] = useState(false);
   const handleCloseAudit = () => setOpenAudit(false);
   const handleCloseAuditComment = () => setOpenAuditComment(false);
+  const [currentAudit, setCurrentAudit] = useState([]);
+
   const [auditData, setAuditData] = useState({
     comments: "",
     isActive: true,
@@ -70,6 +155,14 @@ const OrgImplementation = ({
       day: "2-digit",
       year: "numeric",
     });
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
   const handelOpenAuditComment = (auditsid) => {
@@ -101,6 +194,7 @@ const OrgImplementation = ({
         getRecords();
       });
   };
+  const [documentCounts, setDocumentCounts] = useState({});
 
   const handelComments = (e, taskid) => {
     apiAuth
@@ -108,6 +202,18 @@ const OrgImplementation = ({
       .then((resp) => {
         const comments = resp.data.data;
         setImpComments(comments);
+        comments.forEach((comment) => {
+          const id = comment.id;
+          apiAuth
+            .get(`/DocumentManager/DocumentCount?id=${id}&documentType=Task`)
+            .then((documentResp) => {
+              const count = documentResp.data.data; // Assuming this is the count value
+              setDocumentCounts((prevCounts) => ({
+                ...prevCounts,
+                [id]: count,
+              }));
+            });
+        });
       })
       .catch((error) => {
         console.error("Error fetching task comments:", error);
@@ -173,6 +279,67 @@ const OrgImplementation = ({
       .catch((error) => {
         console.error(error);
         toast.success("Some Error Occured");
+      });
+  };
+
+  const handelOpenAudit = async (audits, value) => {
+    setOpenAudit(true);
+    const transformedData = audits.map((item, index) =>
+      createData(
+        index + 1,
+        item.task,
+        item.comments,
+        formatDate(item.donebydate),
+        item.auditDoneBy
+      )
+    );
+    setCurrentAudit(transformedData);
+  };
+
+  const [open, setOpen] = useState(false);
+  const [listDocument, setListDocument] = useState([]);
+  const [fileDetails, setFileDetails] = useState(false);
+
+  const handleOpen = (id) => {
+    apiAuth
+      .get(
+        `DocumentManager/DocList/${id}/Task?changeRequestToken=${orgEvaluationId}`
+      )
+      .then((response) => {
+        setListDocument(response?.data?.data);
+      });
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [documenDowToken, setDocumenDowToken] = useState("");
+  const [fileName, setFileName] = useState("");
+
+  const handelDetailDoc = (doc) => {
+    debugger;
+    setSelectedDocument(doc);
+    setFileDetails(true);
+    setDocumenDowToken(doc.token);
+    setFileName(doc.name);
+  };
+
+  const handleDownload = () => {
+    apiAuth
+      .get(`/DocumentManager/download/${documenDowToken}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", fileName); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed", error);
       });
   };
 
@@ -256,6 +423,316 @@ const OrgImplementation = ({
                 </div>
               </Typography>
             </Box>
+          </Box>
+        </Fade>
+      </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openAudit}
+        onClose={handleCloseAudit}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={openAudit}>
+          <Box sx={style1}>
+            <Box
+              style={{
+                padding: "30px",
+                backgroundColor: "#4f46e5",
+                borderTopLeftRadius: "16px",
+                borderTopRightRadius: "16px",
+                color: "white",
+              }}
+            >
+              Audit List
+            </Box>
+            <div
+              _ngcontent-fyk-c288=""
+              class="flex items-center w-full  border-b justify-end"
+              style={{ marginTop: "10px" }}
+            >
+              <TextField
+                variant="filled"
+                fullWidth
+                placeholder="Search"
+                style={{
+                  marginBottom: "15px",
+                  backgroundColor: "white",
+                  marginRight: "30px",
+                }}
+                //   value={searchTerm}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment
+                      position="start"
+                      style={{
+                        marginTop: "0px",
+                        paddingTop: "0px",
+                      }}
+                    >
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ width: 320 }}
+              />
+            </div>
+            <Box sx={{ overflow: "auto", padding: "5px 30px 0 30px" }}>
+              <TableContainer style={{ marginTop: "15px" }}>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      {columns?.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{
+                            minWidth: column.minWidth,
+                          }}
+                        >
+                          {column?.label}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {currentAudit
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((row) => {
+                        return (
+                          <TableRow
+                            hover
+                            role="checkbox"
+                            tabIndex={-1}
+                            key={row.code}
+                            sx={{ padding: "default" }}
+                          >
+                            {columns.map((column) => {
+                              const value = row[column.id];
+                              return (
+                                <TableCell
+                                  key={column.id}
+                                  align={column.align}
+                                  style={{ borderBottom: "1px solid #dddddd" }}
+                                >
+                                  {column.render
+                                    ? column.render(row) // Render custom actions
+                                    : column.format && typeof value === "number"
+                                      ? column.format(value)
+                                      : value}
+                                </TableCell>
+                              );
+                            })}
+                          </TableRow>
+                        );
+                      })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                style={{ display: "flex", marginTop: "10px" }}
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={currentAudit.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Box>
+          </Box>
+        </Fade>
+      </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={open}>
+          <Box sx={style1}>
+            <Box>
+              <Box className="flex justify-between" style={{ margin: "30px" }}>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "4rem",
+                    fontWeight: "800px !important",
+                  }}
+                >
+                  File Manager
+                </Typography>
+              </Box>
+            </Box>
+            <Box>
+              <Typography
+                id="transition-modal-title"
+                variant="h6"
+                className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                component="div"
+                style={{
+                  backgroundColor: "#e3eeff80",
+                }}
+              >
+                {listDocument.map((doc, index) => (
+                  <div className="content " key={index}>
+                    <div
+                      onClick={() => handelDetailDoc(doc)}
+                      style={{ textAlign: "-webkit-center" }}
+                    >
+                      <img src="/assets/images/etc/icon_N.png" style={{}} />
+                      <h6>{doc?.name}</h6>
+                      <h6>by {doc?.staffName}</h6>
+                    </div>
+                  </div>
+                ))}
+              </Typography>
+            </Box>
+            {fileDetails && (
+              <Box sx={drawerStyle(fileDetails)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setFileDetails(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <label htmlFor="fileInput">
+                    <div className=" ">
+                      <div
+                        onClick={handelDetailDoc}
+                        style={{
+                          textAlign: "-webkit-center",
+                        }}
+                      >
+                        <img src="/assets/images/etc/icon_N.png" />
+                      </div>
+                      {selectedDocument?.name}
+                    </div>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": {
+                        m: 1,
+                        width: "25ch",
+                      },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": {
+                        m: 1,
+                        width: "25ch",
+                      },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Created By"
+                      variant="standard"
+                      disabled
+                      value={selectedDocument.staffName}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": {
+                        m: 1,
+                        width: "25ch",
+                      },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label=" Created At"
+                      name="description"
+                      variant="standard"
+                      disabled
+                      value={formatDate(selectedDocument.createdAt)}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": {
+                        m: 1,
+                        width: "25ch",
+                      },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="Description"
+                      variant="standard"
+                      disabled
+                      value={selectedDocument.descritpion}
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "center",
+                    backgroundColor: " rgba(248,250,252)",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleDownload}
+                  >
+                    Download
+                  </Button>
+                </div>
+              </Box>
+            )}
           </Box>
         </Fade>
       </Modal>
@@ -395,7 +872,10 @@ const OrgImplementation = ({
                       }}
                       variant="contained"
                       color="warning"
-                      onClick={() => handelOpenAudit(detail.audits, "")}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handelOpenAudit(detail.audits, "");
+                      }}
                     >
                       Audits
                     </Button>
@@ -544,6 +1024,7 @@ const OrgImplementation = ({
                                   </small>
                                 </div>
                               </div>
+
                               <button
                                 className="icon-button"
                                 onClick={() => handleOpen(msg.id)}
@@ -555,7 +1036,10 @@ const OrgImplementation = ({
                                 <FuseSvgIcon size={20}>
                                   heroicons-solid:document
                                 </FuseSvgIcon>
-                                <span className="count"></span>
+                                <span className="count">
+                                  {" "}
+                                  {documentCounts[msg.id]}
+                                </span>
                               </button>
                             </div>
                           )}

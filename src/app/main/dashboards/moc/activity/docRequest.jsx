@@ -11,7 +11,13 @@ import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import { Select, MenuItem, ListItemText, FormHelperText } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  ListItemText,
+  FormHelperText,
+  Autocomplete,
+} from "@mui/material";
 import MocHeader from "../MocHeader";
 import { Button } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -680,26 +686,38 @@ function DocRequest() {
                     sx={{ m: 1 }}
                     error={!!errors.docControllerId}
                   >
-                    <InputLabel id="functionName-label">
-                      Document Controller *
-                    </InputLabel>
-                    <Select
-                      labelId="functionName-label"
-                      id="docControllerId"
-                      name="docControllerId"
-                      value={documentState.docControllerId}
-                      onChange={handleChange}
-                      label="Document Controller *"
+                    <FormLabel
+                      id="documentType"
+                      style={{ color: formValid ? "inherit" : "red" }}
                     >
-                      {docController.map((option) => (
-                        <MenuItem key={option.id} value={option.value}>
-                          {option.text}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {!!errors.docControllerId && (
-                      <FormHelperText>{errors.docControllerId}</FormHelperText>
-                    )}
+                      Document Controller *
+                    </FormLabel>
+                    <Autocomplete
+                      id="docControllerId"
+                      options={docController}
+                      getOptionLabel={(option) => option.text}
+                      value={
+                        docController.find(
+                          (option) =>
+                            option.value === documentState.docControllerId
+                        ) || null
+                      }
+                      onChange={(event, newValue) => {
+                        handleChange({
+                          target: {
+                            name: "docControllerId",
+                            value: newValue ? newValue.value : "",
+                          },
+                        });
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          error={!!errors.docControllerId}
+                          helperText={errors.docControllerId}
+                        />
+                      )}
+                    />
                   </FormControl>
                 </Box>
               </div>

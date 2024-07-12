@@ -707,6 +707,8 @@ const AssetCourse = () => {
               actualPhaseName = "EvaluationApprovalVpHse";
             } else if (matchingActivity.code === "IMPL_APPROVAL_SITE_CH") {
               actualPhaseName = "ImplementationApprovalSite";
+            } else if (matchingActivity.code === "IMPL_APPROVAL_COORP_HSE") {
+              actualPhaseName = "ImplementationApprovalCoorp";
             }
 
             break;
@@ -948,6 +950,26 @@ const AssetCourse = () => {
             });
             break;
           case "ImplementationApprovalSite":
+            apiAuth
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp?.data?.data);
+              });
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(`/ApprovalManager/Remark/${resp.data.data.activity.uid}`)
+                .then((resp) => {
+                  setApprovalManager(resp.data?.data);
+                });
+            });
+
+            break;
+          case "ImplementationApprovalCoorp":
             apiAuth
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
@@ -1388,6 +1410,18 @@ const AssetCourse = () => {
               />
             )}
             {currentPhase === "ImplementationApprovalSite" && (
+              <ImplementationApprovalSite
+                AppActions={appActions}
+                AppActivity={appActivity}
+                assetEvaluationId={assetEvaluationId}
+                currentActivityForm={currentActivityForm}
+                lastActCode={lastActCode}
+                showApexAndContent={showApexAndContent}
+                contentDetails={contentDetails}
+                ApprovalManager={ApprovalManager}
+              />
+            )}
+            {currentPhase === "ImplementationApprovalCoorp" && (
               <ImplementationApprovalSite
                 AppActions={appActions}
                 AppActivity={appActivity}

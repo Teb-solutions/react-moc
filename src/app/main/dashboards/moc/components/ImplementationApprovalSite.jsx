@@ -107,25 +107,24 @@ const ImplementationApprovalSite = ({
       version: AppActivity.version,
     };
     console.log(payload, "payys");
-    // apiAuth
-    //   .post(`/ApprovalManager/Create/${assetEvaluationId}`, {
-    //     actionUID: AppActions.uid,
-    //     actionUid: AppActions.uid,
-    //     formUID: AppActivity.formUID,
-    //     actionName: name,
-    //     actionType: type,
-    //     activityCode: AppActivity.code,
-    //     activityId: AppActivity.uid,
-    //     consultaioncomment: "",
-    //     formType: AppActivity.form,
-    //     remark: valueRemark,
-    //     taskscomment: "",
-    //     version: AppActivity.version,
-    //   })
-    //   .then((resp) => {
-    //     setValueRemark("");
-    //
-    //   });
+    apiAuth
+      .post(`/ApprovalManager/Create/${assetEvaluationId}`, {
+        actionUID: uid,
+        actionUid: uid,
+        formUID: AppActivity.formUID,
+        actionName: name,
+        actionType: type,
+        activityCode: AppActivity.code,
+        activityId: AppActivity.uid,
+        consultaioncomment: "",
+        formType: AppActivity.form,
+        remark: valueRemark,
+        taskscomment: "",
+        version: AppActivity.version,
+      })
+      .then((resp) => {
+        setValueRemark("");
+      });
   };
   return (
     <div className="w-full">
@@ -397,10 +396,22 @@ const ImplementationApprovalSite = ({
                                           <span className="mat-form-field-label-wrapper"></span>
                                         </div>
                                       ) : (
-                                        <div className="mat-form-field-infix">
-                                          <span className="">
-                                            {rwx?.createdByStaffName}
-                                          </span>
+                                        <div>
+                                          <div className="mat-form-field-infix">
+                                            <span className="">
+                                              {rwx?.createdByStaffName}
+                                            </span>
+                                            -{" "}
+                                            <span className="text-grey">
+                                              {rwx?.remark}
+                                            </span>
+                                          </div>
+                                          <p
+                                            className="mat-form-field-infix text-grey"
+                                            style={{ fontSize: "smaller" }}
+                                          >
+                                            {formatDatess(rwx?.updatedAt)}
+                                          </p>
                                         </div>
                                       )}
                                     </div>
