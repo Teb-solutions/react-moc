@@ -1,0 +1,39 @@
+.stop-session {
+    background-color: #6200ea;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    margin: 16px auto 0;
+    text-align: center;
+  }
+  
+  .stop-session:hover {
+    background-color: #3700b3;
+  }
+  
+  textarea {
+    width: 100%;
+    height: 60px;
+    margin-top: 14px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .mt-5 {
+    margin-top: 16px;
+  }
+  
+  .ng-star-inserted {
+    margin-bottom: 10px;
+  }
+  
+  .ng-star-inserted b {
+    display: block;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+  

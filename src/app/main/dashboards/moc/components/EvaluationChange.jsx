@@ -41,7 +41,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { Link } from "react-router-dom";
 import CountdownTimer from "./CountdownTimer ";
 import { border } from "@mui/system";
-
+import "./componentStyle.css";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -111,7 +111,8 @@ function EvaluationChange({
   const [errorsAddTask, setErrorsAddTask] = useState({});
   const [errorsTask, setErrorsTask] = useState({});
   const [errorsSub, setErrorsSub] = useState({});
-
+  const [errorsImpact, setErrorsImpact] = useState({});
+  const [hazardValue, setHazardValue] = useState(true);
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [remark, setRemark] = useState("");
   const [sessionTaskList, setSessionTaskList] = useState([]);
@@ -132,7 +133,24 @@ function EvaluationChange({
   useEffect(() => {
     getRecords();
   }, []);
+  const [timer, setTimer] = useState(null);
+  const startTimer = (timeoutMin) => {
+    const endTime = new Date().getTime() + timeoutMin * 60000;
+    const interval = setInterval(() => {
+      const currentTime = new Date().getTime();
+      const distance = endTime - currentTime;
 
+      if (distance < 0) {
+        clearInterval(interval);
+        setTimer("Session Ended");
+        return;
+      }
+
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      setTimer(`${minutes} Min ${seconds} Sec`);
+    }, 1000);
+  };
   const handleClose = () => setOpen(false);
   const handleCloseSession = () => setOpenSession(false);
 
@@ -562,6 +580,10 @@ function EvaluationChange({
     apiAuth.get(`/LookupData/Lov/11`).then((resp) => {
       setMocPhase(resp.data.data);
     });
+
+    apiAuth.get(`/LookupData/Lov/18/${particularSubCategory}`).then((resp) => {
+      setHazardList(resp?.data.data);
+    });
     apiAuth
       .get(`/RiskAnalysis/hazardList?id=${subtask}`)
       .then((resp) => {
@@ -703,21 +725,34 @@ function EvaluationChange({
     setImpactForm(updatedImpactForm);
   };
 
+  const validateHazardDetails = () => {
+    const errors = {};
+    hazardDetailsForm.forEach((detail, index) => {
+      if (!detail.changeImpactHazard) {
+        errors[index] = "This field is required.";
+      }
+    });
+    setErrorsImpact(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handelAddHazardDetails = () => {
     setHazardDetails(true);
-    const newTask = {
-      id: 0,
-      changeImpactHazard: "",
-    };
-    const newTasks = [...hazardDetailsForm, newTask];
-    setHazardDetailsForm(newTasks);
+    if (validateHazardDetails()) {
+      const newTask = {
+        id: 0,
+        changeImpactHazard: "",
+      };
+      const newTasks = [...hazardDetailsForm, newTask];
+      setHazardDetailsForm(newTasks);
 
-    // Update impactForm
-    const updatedImpactForm = {
-      ...impactForm,
-      changeImpactHazardList: newTasks,
-    };
-    setImpactForm(updatedImpactForm);
+      // Update impactForm
+      const updatedImpactForm = {
+        ...impactForm,
+        changeImpactHazardList: newTasks,
+      };
+      setImpactForm(updatedImpactForm);
+    }
   };
 
   const handleHazardDetailChange = (index, event) => {
@@ -726,6 +761,10 @@ function EvaluationChange({
     const newTasks = [...hazardDetailsForm];
     newTasks[index][name] = value;
     setHazardDetailsForm(newTasks);
+    // Clear the error for the changed field
+    const newErrors = { ...errorsImpact };
+    delete newErrors[index];
+    setErrorsImpact(newErrors);
 
     // Update impactForm
     const updatedImpactForm = {
@@ -2770,111 +2809,108 @@ function EvaluationChange({
                                                       }
                                                     </Typography>
                                                   </Grid>
-                                                  <Grid item xs={12} md={9}>
-                                                    {riskAnalysisHazardType.riskAnalysisHazardSituation.map(
-                                                      (
-                                                        riskHazardSituation,
-                                                        situationIndex
-                                                      ) => (
+                                                  {riskAnalysisHazardType.riskAnalysisHazardSituation.map(
+                                                    (
+                                                      riskHazardSituation,
+                                                      situationIndex
+                                                    ) => (
+                                                      <Grid
+                                                        container
+                                                        spacing={2}
+                                                        key={situationIndex}
+                                                        alignItems="center"
+                                                      >
                                                         <Grid
-                                                          container
-                                                          spacing={2}
-                                                          key={situationIndex}
-                                                          alignItems="center"
+                                                          item
+                                                          xs={12}
+                                                          md={3}
                                                         >
-                                                          <Grid
-                                                            item
-                                                            xs={12}
-                                                            md={3}
+                                                          <Typography
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                            fontWeight="fontWeightRegular"
                                                           >
-                                                            <Typography
-                                                              variant="body2"
-                                                              color="text.primary"
-                                                              fontWeight="fontWeightRegular"
-                                                            >
-                                                              {
-                                                                riskHazardSituation.hazardousSituation
-                                                              }
-                                                            </Typography>
+                                                            {
+                                                              riskHazardSituation.hazardousSituation
+                                                            }
+                                                          </Typography>
 
-                                                            <Typography
-                                                              variant="body2"
-                                                              color="text.primary"
-                                                              fontWeight="fontWeightRegular"
-                                                              style={{
-                                                                backgroundColor:
-                                                                  riskHazardSituation.residualRiskClassificationDisplay ===
-                                                                  "HighRisk"
-                                                                    ? "red"
+                                                          <Typography
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                            fontWeight="fontWeightRegular"
+                                                            style={{
+                                                              backgroundColor:
+                                                                riskHazardSituation.residualRiskClassificationDisplay ===
+                                                                "HighRisk"
+                                                                  ? "red"
+                                                                  : riskHazardSituation.residualRiskClassificationDisplay ===
+                                                                      "LowRisk"
+                                                                    ? "yellow"
                                                                     : riskHazardSituation.residualRiskClassificationDisplay ===
-                                                                        "LowRisk"
-                                                                      ? "yellow"
-                                                                      : riskHazardSituation.residualRiskClassificationDisplay ===
-                                                                          "VeryLowRisk"
-                                                                        ? "green"
-                                                                        : "initial",
-                                                                color: "white",
-                                                                padding: "5px",
-                                                                borderRadius:
-                                                                  "5px",
-                                                                marginTop:
-                                                                  "5px",
-                                                              }}
-                                                            >
-                                                              {
-                                                                riskHazardSituation.residualRiskClassificationDisplay
-                                                              }
-                                                            </Typography>
-                                                          </Grid>
-                                                          <Grid
-                                                            item
-                                                            xs={12}
-                                                            md={2}
+                                                                        "VeryLowRisk"
+                                                                      ? "green"
+                                                                      : "initial",
+                                                              color: "white",
+                                                              padding: "5px",
+                                                              borderRadius:
+                                                                "5px",
+                                                              marginTop: "5px",
+                                                            }}
                                                           >
-                                                            <Typography
-                                                              variant="body2"
-                                                              color="text.primary"
-                                                              fontWeight="fontWeightRegular"
-                                                            >
-                                                              {
-                                                                riskHazardSituation.humanControlMeasure
-                                                              }
-                                                            </Typography>
-                                                          </Grid>
-                                                          <Grid
-                                                            item
-                                                            xs={12}
-                                                            md={2}
-                                                          >
-                                                            <Typography
-                                                              variant="body2"
-                                                              color="text.primary"
-                                                              fontWeight="fontWeightRegular"
-                                                            >
-                                                              {
-                                                                riskHazardSituation.technicalControlMeasure
-                                                              }
-                                                            </Typography>
-                                                          </Grid>
-                                                          <Grid
-                                                            item
-                                                            xs={12}
-                                                            md={2}
-                                                          >
-                                                            <Typography
-                                                              variant="body2"
-                                                              color="text.primary"
-                                                              fontWeight="fontWeightRegular"
-                                                            >
-                                                              {
-                                                                riskHazardSituation.organisationalControlMeasure
-                                                              }
-                                                            </Typography>
-                                                          </Grid>
+                                                            {
+                                                              riskHazardSituation.residualRiskClassificationDisplay
+                                                            }
+                                                          </Typography>
                                                         </Grid>
-                                                      )
-                                                    )}
-                                                  </Grid>
+                                                        <Grid
+                                                          item
+                                                          xs={12}
+                                                          md={2}
+                                                        >
+                                                          <Typography
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                            fontWeight="fontWeightRegular"
+                                                          >
+                                                            {
+                                                              riskHazardSituation.humanControlMeasure
+                                                            }
+                                                          </Typography>
+                                                        </Grid>
+                                                        <Grid
+                                                          item
+                                                          xs={12}
+                                                          md={2}
+                                                        >
+                                                          <Typography
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                            fontWeight="fontWeightRegular"
+                                                          >
+                                                            {
+                                                              riskHazardSituation.technicalControlMeasure
+                                                            }
+                                                          </Typography>
+                                                        </Grid>
+                                                        <Grid
+                                                          item
+                                                          xs={12}
+                                                          md={2}
+                                                        >
+                                                          <Typography
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                            fontWeight="fontWeightRegular"
+                                                          >
+                                                            {
+                                                              riskHazardSituation.organisationalControlMeasure
+                                                            }
+                                                          </Typography>
+                                                        </Grid>
+                                                      </Grid>
+                                                    )
+                                                  )}
                                                 </Grid>
                                               </React.Fragment>
                                             )
@@ -2887,6 +2923,7 @@ function EvaluationChange({
                                 )
                               )}
                             </Box>
+
                             {hazardDetails &&
                               hazardDetailsForm.map((detail, index) => (
                                 <>
@@ -2903,6 +2940,7 @@ function EvaluationChange({
                                         handleHazardDetailChange(index, e)
                                       }
                                       className="mt-5"
+                                      error={!!errorsImpact[index]}
                                     >
                                       <MenuItem
                                         value="Select"
@@ -2919,6 +2957,11 @@ function EvaluationChange({
                                         </MenuItem>
                                       ))}
                                     </Select>
+                                    {errorsImpact[index] && (
+                                      <FormHelperText error>
+                                        {errorsImpact[index]}
+                                      </FormHelperText>
+                                    )}
                                   </FormControl>
                                   <Button
                                     className="whitespace-nowrap mt-5"
@@ -4786,31 +4829,102 @@ function EvaluationChange({
 
             {SessionList[0]?.isActive ? (
               <div style={{ margin: "20px" }}>
-                <span>
-                  Evaluation Session started by{" "}
-                  <b>{SessionList[0]?.startedByStaffName}</b> on{" "}
-                  <b>{formatDate(SessionList[0]?.startedAt)}</b>
-                </span>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <span>
+                    Evaluation session started by{" "}
+                    <b>{SessionList[0]?.startedByStaffName}</b> on{" "}
+                    <b>{formatDate(SessionList[0]?.startedAt)}</b>
+                  </span>
+                  <span
+                    style={{
+                      color: "orangered",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <i
+                      className="clock icon"
+                      style={{ marginRight: "5px" }}
+                    ></i>
+                    {timer}
+                  </span>
+                </div>
                 <div className="mt-5 row" style={{ marginTop: "20px" }}>
                   <b className="ng-star-inserted">CHANGE LEADER</b>
                   <div
                     className="ng-star-inserted"
-                    style={{ display: "flex", flexDirection: "row" }}
+                    style={{ display: "flex", flexDirection: "column" }}
                   >
                     <div style={{ flex: "65%" }}>
-                      <div className="ng-star-inserted">
-                        <span>Tebs Dev Team Name</span>
-                        <span
-                          style={{ color: "orangered", fontSize: "small" }}
-                          className="ng-star-inserted"
-                        >
-                          Acceptance Pending
-                        </span>
-                      </div>
+                      {SessionList[0]?.teamList
+                        .filter((member) => member.teamType === 1)
+                        .map((teamMember, index) => (
+                          <div key={index} className="ng-star-inserted">
+                            <span>{teamMember.staffName}</span>
+                            <span
+                              style={{
+                                color:
+                                  teamMember.approvalStatus === 2
+                                    ? "green"
+                                    : "orangered",
+                                fontSize: "small",
+                                marginLeft: "5px",
+                              }}
+                              className="ng-star-inserted"
+                            >
+                              {teamMember.approvalStatus === 2
+                                ? `Accepted at ${formatDate(teamMember.updatedAt)}`
+                                : "Acceptance Pending"}
+                            </span>
+                            <div>Comments: {teamMember.comments}</div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                  <br className="ng-star-inserted" />
+                  <b className="ng-star-inserted">OTHERS</b>
+                  <div
+                    className="ng-star-inserted"
+                    style={{ display: "flex", flexDirection: "column" }}
+                  >
+                    <div style={{ flex: "65%" }}>
+                      {SessionList[0]?.teamList
+                        .filter((member) => member.teamType !== 1)
+                        .map((teamMember, index) => (
+                          <div key={index} className="ng-star-inserted">
+                            <span>{teamMember.staffName}</span>
+                            <span
+                              style={{
+                                color:
+                                  teamMember.approvalStatus === 2
+                                    ? "green"
+                                    : "orangered",
+                                fontSize: "small",
+                                marginLeft: "5px",
+                              }}
+                              className="ng-star-inserted"
+                            >
+                              {teamMember.approvalStatus === 2
+                                ? `Accepted at ${formatDate(teamMember.updatedAt)}`
+                                : "Acceptance Pending"}
+                            </span>
+                            <div>Comments: {teamMember.comments}</div>
+                          </div>
+                        ))}
                     </div>
                   </div>
                   <br className="ng-star-inserted" />
                 </div>
+                <div>
+                  <textarea placeholder="Comment *" />
+                </div>
+                <button className="stop-session">Stop Session</button>
               </div>
             ) : (
               <div
