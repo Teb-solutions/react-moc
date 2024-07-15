@@ -9,7 +9,7 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Switch from "@mui/material/Switch";
 import { FormControlLabel } from "@mui/material";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
@@ -47,42 +47,90 @@ const item = {
 };
 
 function MocApp() {
-  const { data: courses } = useGetAcademyCoursesQuery();
-  const { data: categories } = useGetAcademyCategoriesQuery();
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
-  const [filteredData, setFilteredData] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategoryType, setSelectedCategoryType] = useState("all");
+
   const [hideCompleted, setHideCompleted] = useState(false);
-
+  const [originalData, setOriginalData] = useState([]);
+  const [site, setSite] = useState([]);
+  const categories = [
+    {
+      name: "Asset",
+      value: "Asset",
+    },
+    {
+      name: "Engg",
+      value: "Engg",
+    },
+    {
+      name: "TransportAct",
+      value: "TransportAct",
+    },
+    {
+      name: "Document",
+      value: "Document",
+    },
+    {
+      name: "Organisation",
+      value: "Org",
+    },
+    {
+      name: "Others",
+      value: "Others",
+    },
+  ];
   useEffect(() => {
-    function getFilteredArray(data) {
-      return _.filter(data, (item) => {
-        if (selectedCategory !== "all" && item.category !== selectedCategory) {
-          return false;
-        }
-
-        if (hideCompleted && item.statusName === "Completed") {
-          return false;
-        }
-
-        return item.requestNo.toLowerCase().includes(searchText.toLowerCase());
-      });
-    }
-
     function getRecords() {
       apiAuth.get("/ChangeRequest/List").then((resp) => {
-        const data = resp.data.data;
-        setFilteredData(getFilteredArray(data));
+        setOriginalData(resp.data.data);
+      });
+      apiAuth.get("/LookupData/Lov/23").then((resp) => {
+        setSite(resp.data.data);
       });
     }
 
     getRecords();
-  }, [hideCompleted, searchText, selectedCategory]);
-
-  function handleSelectedCategory(event) {
+  }, []);
+  const handleSelectedCategory = (event) => {
     setSelectedCategory(event.target.value);
-  }
+  };
+  const handleSelectedCategoryType = (event) => {
+    setSelectedCategoryType(event.target.value);
+  };
+
+  const filteredData = useMemo(() => {
+    return _.filter(originalData, (item) => {
+      console.log("Selected Category:", selectedCategory);
+
+      if (
+        selectedCategory !== "all" &&
+        item.siteId !== parseInt(selectedCategory, 10)
+      ) {
+        return false;
+      }
+
+      if (
+        selectedCategoryType !== "all" &&
+        item.requestTypeName !== selectedCategoryType
+      ) {
+        return false;
+      }
+
+      if (hideCompleted && item.statusName === "Completed") {
+        return false;
+      }
+
+      return item.requestNo.toLowerCase().includes(searchText.toLowerCase());
+    });
+  }, [
+    originalData,
+    hideCompleted,
+    searchText,
+    selectedCategory,
+    selectedCategoryType,
+  ]);
 
   function handleSearchText(event) {
     setSearchText(event.target.value);
@@ -102,14 +150,14 @@ function MocApp() {
                   id="category-select"
                   label="Category"
                   value={selectedCategory}
-                  onChange={handleSelectedCategory}
+                  onChange={(event) => handleSelectedCategory(event)}
                 >
                   <MenuItem value="all">
                     <em>All</em>
                   </MenuItem>
-                  {categories?.map((category) => (
-                    <MenuItem value={category.slug} key={category.id}>
-                      {category.title}
+                  {site?.map((category) => (
+                    <MenuItem value={category.value} key={category.value}>
+                      {category.text}
                     </MenuItem>
                   ))}
                 </Select>
@@ -120,15 +168,15 @@ function MocApp() {
                   labelId="category-select-label"
                   id="category-select"
                   label="Category"
-                  value={selectedCategory}
-                  onChange={handleSelectedCategory}
+                  value={selectedCategoryType}
+                  onChange={handleSelectedCategoryType}
                 >
                   <MenuItem value="all">
                     <em>All</em>
                   </MenuItem>
                   {categories?.map((category) => (
-                    <MenuItem value={category.slug} key={category.id}>
-                      {category.title}
+                    <MenuItem value={category.value} key={category.id}>
+                      {category.name}
                     </MenuItem>
                   ))}
                 </Select>

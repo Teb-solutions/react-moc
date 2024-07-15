@@ -33,7 +33,13 @@ function CourseCard(props) {
       >
         <div>
           <h4>
-            <b>{course?.statusName}</b>
+            <b
+              style={{
+                color: course.statusName == "Cancelled" ? "orangered" : "black",
+              }}
+            >
+              {course?.statusName}
+            </b>
           </h4>
         </div>
         <Button

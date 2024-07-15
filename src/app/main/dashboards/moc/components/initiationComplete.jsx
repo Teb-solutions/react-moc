@@ -793,13 +793,12 @@ const InitiationComplete = ({
                 )}
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <FormControl fullWidth>
                 <FormLabel>Expected Change Completion Date</FormLabel>
                 {currentActivityForm.canEdit ? (
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker
-                      label="Expected Completion Date"
                       value={IniComp.TerminationDate}
                       onChange={handleChanges}
                       renderInput={(params) => (

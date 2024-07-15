@@ -1394,25 +1394,36 @@ function EvaluationChange({
                 </div>
               </div>
             </div>
-            {!Session.hasActiveSession && (
+            {AppActivity.canEdit && (
               <div className="ng-star-inserted mt-5">
                 <div className="ng-star-inserted">
-                  <div
-                    className="mt-4 py-2 px-5 rounded-lg bg-red-100 dark:bg-red-700"
-                    style={{
-                      backgroundColor: "rgb(255 196 202)",
-                      padding: "5px",
-                    }}
-                  >
-                    {Session?.activeSession?.status == 1
-                      ? "Session will be started after once all the team members accepts"
-                      : " Please start session to make any changes."}
-                  </div>
+                  {Session?.activeSession?.status == 1 && (
+                    <div
+                      className="mt-4 py-2 px-5 rounded-lg bg-red-100 dark:bg-red-700"
+                      style={{
+                        backgroundColor: "rgb(255 196 202)",
+                        padding: "5px",
+                      }}
+                    >
+                      Session will be started after once all the team members
+                      accepts
+                    </div>
+                  )}
+                  {Session?.activeSession?.status == 0 && (
+                    <div
+                      className="mt-4 py-2 px-5 rounded-lg bg-red-100 dark:bg-red-700"
+                      style={{
+                        backgroundColor: "rgb(255 196 202)",
+                        padding: "5px",
+                      }}
+                    >
+                      Please start session to make any changes.
+                    </div>
+                  )}
                 </div>
               </div>
             )}
             {/* )} */}
-
             <Box sx={{ width: "100%", mt: 2 }} className="hello">
               <Box sx={{ display: "flex" }}>
                 <Button
@@ -1599,22 +1610,24 @@ function EvaluationChange({
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                     style={{ marginTop: "15px" }}
                   >
-                    {!AddCunsultation && Session.hasActiveSession && (
-                      <Button
-                        className="whitespace-nowrap"
-                        variant="contained"
-                        color="secondary"
-                        style={{ padding: "15px" }}
-                        onClick={handleAddConsultation}
-                        startIcon={
-                          <FuseSvgIcon size={20}>
-                            heroicons-outline:plus
-                          </FuseSvgIcon>
-                        }
-                      >
-                        Add New Consultation
-                      </Button>
-                    )}
+                    {AppActivity.canEdit &&
+                      Session.activeSession?.status == 2 &&
+                      !AddCunsultation && (
+                        <Button
+                          className="whitespace-nowrap"
+                          variant="contained"
+                          color="secondary"
+                          style={{ padding: "15px" }}
+                          onClick={handleAddConsultation}
+                          startIcon={
+                            <FuseSvgIcon size={20}>
+                              heroicons-outline:plus
+                            </FuseSvgIcon>
+                          }
+                        >
+                          Add New Consultation
+                        </Button>
+                      )}
                   </div>
                 </div>
                 {AddCunsultation && (
@@ -3265,33 +3278,34 @@ function EvaluationChange({
                     </>
                   )}
                 </Paper>
-                {!AddImpact && Session.hasActiveSession && (
-                  <div className="flex justify-start">
-                    <div
-                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                      style={{ marginTop: "15px" }}
-                    >
-                      <Button
-                        className="whitespace-nowrap"
-                        variant="contained"
-                        color="secondary"
-                        style={{ padding: "15px" }}
-                        //   onClick={() => handleOpen(btn)}
-                        startIcon={
-                          <FuseSvgIcon size={20}>
-                            heroicons-outline:plus
-                          </FuseSvgIcon>
-                        }
-                        onClick={handleAddImpact}
+                {AppActivity.canEdit &&
+                  Session.activeSession?.status == 2 &&
+                  !AddImpact && (
+                    <div className="flex justify-start">
+                      <div
+                        className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                        style={{ marginTop: "15px" }}
                       >
-                        Add New Impact
-                      </Button>
+                        <Button
+                          className="whitespace-nowrap"
+                          variant="contained"
+                          color="secondary"
+                          style={{ padding: "15px" }}
+                          //   onClick={() => handleOpen(btn)}
+                          startIcon={
+                            <FuseSvgIcon size={20}>
+                              heroicons-outline:plus
+                            </FuseSvgIcon>
+                          }
+                          onClick={handleAddImpact}
+                        >
+                          Add New Impact
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
               </CustomTabPanel>
             </Box>
-
             {AddCunsultation && !editConsultation && (
               <>
                 <div
@@ -3349,7 +3363,7 @@ function EvaluationChange({
                 </div>
               </>
             )}
-            {!Session.hasActiveSession && AppActivity.canExecute && (
+            {Session.activeSession?.status != 2 && AppActivity.canExecute && (
               <>
                 <div
                   className="my-10"
@@ -3505,23 +3519,23 @@ function EvaluationChange({
                       {TaskhazardRiskViewName}.pdf
                     </a>
                   </Box>
-                  <Box sx={{ marginLeft: 2 }}>
-                    <a
-                      href={URL.createObjectURL(
-                        new Blob([generalGuidePdf], {
-                          type: "application/pdf",
-                        })
-                      )}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ backgroundColor: "white", color: "blue" }}
-                      onClick={handleGeneralGuideClick}
-                    >
-                      General Guide
-                    </a>
-                  </Box>
                 </>
               )}
+              <Box sx={{ marginLeft: 2 }}>
+                <a
+                  href={URL.createObjectURL(
+                    new Blob([generalGuidePdf], {
+                      type: "application/pdf",
+                    })
+                  )}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ backgroundColor: "white", color: "blue" }}
+                  onClick={handleGeneralGuideClick}
+                >
+                  General Guide
+                </a>
+              </Box>
             </Box>
             <Box
               sx={{

@@ -123,17 +123,12 @@ const AssetCourse = () => {
   const [actName, setActName] = useState("");
   const [reqNo, setReqNo] = useState("");
   const [canEdits, setCanEdits] = useState();
-  const [searchTerm, setSearchTerm] = useState("");
   const [ChangeEvaluationDetail, setChangeEvaluationDetail] = useState([]);
-  const [taskLists, setTaskLists] = useState([]);
   const [CheckLists, setCheckLists] = useState([]);
-  const [evalActions, setEvalActions] = useState([]);
   const [evalActivity, setEvalActivity] = useState({});
   const [appActions, setAppActions] = useState([]);
   const [appActivity, setAppActivity] = useState({});
-  const [impActions, setImpActions] = useState([]);
   const [impActivity, setImpActivity] = useState({});
-  const [closeActions, setCloseActions] = useState([]);
   const [closeActivity, setCloseActivity] = useState({});
   const [addStake, setAddStake] = useState(false);
   const [docStaff, setDocStaff] = useState([]);
@@ -151,12 +146,7 @@ const AssetCourse = () => {
   const [errorsUrl, setErrorsUrl] = useState({});
   const [handelCommentRemark, setHandelCommentRemark] = useState("");
   const [ApprovalManager, setApprovalManager] = useState({});
-  const [expanded, setExpanded] = useState(false);
-  const [comment, setComment] = useState("");
 
-  const handleExpansionChange = () => {
-    setExpanded(!expanded);
-  };
   const [forms, setForms] = useState([
     {
       id: Date.now(),
@@ -709,6 +699,10 @@ const AssetCourse = () => {
               actualPhaseName = "ImplementationApprovalSite";
             } else if (matchingActivity.code === "IMPL_APPROVAL_COORP_HSE") {
               actualPhaseName = "ImplementationApprovalCoorp";
+            } else if (matchingActivity.code === "IMPL_APPROVAL_VP_DIV") {
+              actualPhaseName = "ImplementationApprovalDiv";
+            } else if (matchingActivity.code === "IMPL_APPROVAL_VP_HSE") {
+              actualPhaseName = "ImplementationApprovalHse";
             }
 
             break;
@@ -970,6 +964,46 @@ const AssetCourse = () => {
 
             break;
           case "ImplementationApprovalCoorp":
+            apiAuth
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp?.data?.data);
+              });
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(`/ApprovalManager/Remark/${resp.data.data.activity.uid}`)
+                .then((resp) => {
+                  setApprovalManager(resp.data?.data);
+                });
+            });
+
+            break;
+          case "ImplementationApprovalDiv":
+            apiAuth
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp?.data?.data);
+              });
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(`/ApprovalManager/Remark/${resp.data.data.activity.uid}`)
+                .then((resp) => {
+                  setApprovalManager(resp.data?.data);
+                });
+            });
+
+            break;
+          case "ImplementationApprovalHse":
             apiAuth
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
@@ -1425,6 +1459,31 @@ const AssetCourse = () => {
               />
             )}
             {currentPhase === "ImplementationApprovalCoorp" && (
+              <ImplementationApprovalSite
+                AppActions={appActions}
+                AppActivity={appActivity}
+                assetEvaluationId={assetEvaluationId}
+                currentActivityForm={currentActivityForm}
+                lastActCode={lastActCode}
+                showApexAndContent={showApexAndContent}
+                contentDetails={contentDetails}
+                ApprovalManager={ApprovalManager}
+              />
+            )}
+            {currentPhase === "ImplementationApprovalDiv" && (
+              <ImplementationApprovalSite
+                AppActions={appActions}
+                AppActivity={appActivity}
+                assetEvaluationId={assetEvaluationId}
+                currentActivityForm={currentActivityForm}
+                lastActCode={lastActCode}
+                showApexAndContent={showApexAndContent}
+                contentDetails={contentDetails}
+                ApprovalManager={ApprovalManager}
+              />
+            )}
+
+            {currentPhase === "ImplementationApprovalHse" && (
               <ImplementationApprovalSite
                 AppActions={appActions}
                 AppActivity={appActivity}
