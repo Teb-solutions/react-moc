@@ -50,6 +50,10 @@ function HomeTab() {
     navigate("/moc/assetactivity");
   };
 
+  const handleOpenNewOrg = () => {
+    navigate("/moc/orgactivity");
+  };
+
   const handleOpenMoc = () => {
     navigate("/moc");
   };
@@ -83,7 +87,7 @@ function HomeTab() {
               >
                 <MenuItem onClick={handleOpenNewAsset}>Technical</MenuItem>
                 <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
-                <MenuItem>Organisation</MenuItem>
+                <MenuItem onClick={handleOpenNewOrg}>Organisation</MenuItem>
               </Menu>
               {Object.keys(routeParams).length === 0 &&
                 feature.includes("REQ") && (
