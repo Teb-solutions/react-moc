@@ -83,9 +83,13 @@ function CourseInfo(props) {
             </span>
           </Typography>
         </div>
-        <div>
-          <CircularProgress course={course?.completionPercent} />
-        </div>
+        {course.statusName != "Cancelled" ? (
+          <div>
+            <CircularProgress course={course?.completionPercent} />
+          </div>
+        ) : (
+          <img src="/assets/images/etc/close_icon.jpg" />
+        )}
       </div>
 
       <span>

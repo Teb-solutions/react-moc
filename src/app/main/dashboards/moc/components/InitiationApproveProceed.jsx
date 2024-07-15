@@ -1,5 +1,6 @@
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import {
+  Autocomplete,
   Backdrop,
   Box,
   Button,
@@ -14,6 +15,7 @@ import {
   Modal,
   OutlinedInput,
   Select,
+  TextField,
   Typography,
 } from "@mui/material";
 import { Paper } from "@mui/material";
@@ -120,6 +122,8 @@ function InitiationApprovalProceed({
       .put(`/TeamAssignment/Create?id=${assetEvaluationId}`, payload)
       .then((resp) => {
         console.log("Response:", resp.data);
+        setOpen(false);
+        getRecords();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -257,24 +261,40 @@ function InitiationApprovalProceed({
                     >
                       Hseq *
                     </FormLabel>
-                    <Select
+                    <Autocomplete
                       id="teamType"
-                      name="teamType"
-                      value={selectedTeamType}
-                      onChange={handleTeamTypeChange}
-                      label="Reason For New Document *"
-                    >
-                      <MenuItem value="" disabled>
-                        <em>Select</em>
-                      </MenuItem>
-                      {staffList.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
+                      options={staffList}
+                      getOptionLabel={(option) => option.text}
+                      value={
+                        staffList.find(
+                          (option) => option.value === selectedTeamType
+                        ) || null
+                      }
+                      onChange={(event, newValue) => {
+                        handleTeamTypeChange({
+                          target: {
+                            name: "teamType",
+                            value: newValue ? newValue.value : "",
+                          },
+                        });
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          error={false}
+                          helperText={null}
+                        />
+                      )}
+                      renderOption={(props, option) => (
+                        <MenuItem
+                          {...props}
+                          key={option.value}
+                          value={option.value}
+                        >
                           <ListItemText primary={option.text} />
                         </MenuItem>
-                      ))}
-
-                      {/* Add other team types as needed */}
-                    </Select>
+                      )}
+                    />
                   </FormControl>
                 </Box>
                 <Box

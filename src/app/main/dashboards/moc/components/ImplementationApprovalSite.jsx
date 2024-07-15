@@ -20,6 +20,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
 import { apiAuth } from "src/utils/http.js";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon/FuseSvgIcon.jsx";
+import { useEffect } from "react";
 
 const ImplementationApprovalSite = ({
   contentDetails,
@@ -36,12 +37,28 @@ const ImplementationApprovalSite = ({
 
   const [handelCommentRemark, setHandelCommentRemark] = useState("");
 
-  const handleExpansionChange = () => {
-    setExpanded(!expanded);
+  const handleExpansionChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
   };
 
   const handleChangeRemark = (event) => {
     setValueRemark(event.target.value);
+  };
+
+  function getRecords() {
+    apiAuth
+      .get(
+        `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+      )
+      .then((resp) => {});
+  }
+
+  const hasAddedComment = (comments) => {
+    return comments.some((comment) => comment.isCreatedByMe);
+  };
+
+  const isMyComment = (comment) => {
+    return comment.isCreatedByMe;
   };
 
   const formatDatess = (date) => {
@@ -54,7 +71,7 @@ const ImplementationApprovalSite = ({
       second: "numeric",
     });
   };
-
+  const [clickedTasks, setClickedTasks] = useState({});
   const handelImpactreview = (id) => {
     apiAuth
       .put(`/SummaryDetails/ImpReviewStatus/${assetEvaluationId}`, {
@@ -65,6 +82,10 @@ const ImplementationApprovalSite = ({
       .then((response) => {
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
+          [id]: true,
+        }));
+        setClickedTasks((prevClickedTasks) => ({
+          ...prevClickedTasks,
           [id]: true,
         }));
         console.log(response);
@@ -78,6 +99,8 @@ const ImplementationApprovalSite = ({
           remark: handelCommentRemark,
         })
         .then((resp) => {
+          getRecords();
+
           setHandelCommentRemark("");
         });
     } else {
@@ -86,6 +109,8 @@ const ImplementationApprovalSite = ({
           remark: handelCommentRemark,
         })
         .then((resp) => {
+          getRecords();
+
           setHandelCommentRemark("");
         });
     }
@@ -171,27 +196,29 @@ const ImplementationApprovalSite = ({
                             Task #{imptsk?.id}
                           </span>
                         </div>
-                        <div className="task-button ml-auto">
-                          <button
-                            className="task-mark-reviewed-button mat-stroked-button"
-                            onClick={() => handelImpactreview(imptsk.id)}
-                          >
-                            {imptsk?.reviewd ? (
-                              <span
-                                className="mat-button-wrapper"
-                                style={{
-                                  backgroundColor: "rgba(220,252,231)",
-                                }}
-                              >
-                                You have reviewed this just now
-                              </span>
-                            ) : (
-                              <span className="mat-button-wrapper">
-                                Click here to mark as reviewed
-                              </span>
-                            )}
-                          </button>
-                        </div>
+                        {currentActivityForm.canEdit && (
+                          <div className="task-button ml-auto">
+                            <button
+                              className="task-mark-reviewed-button mat-stroked-button"
+                              onClick={() => handelImpactreview(imptsk.id)}
+                            >
+                              {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
+                                <span
+                                  className="mat-button-wrapper"
+                                  style={{
+                                    backgroundColor: "rgba(220,252,231)",
+                                  }}
+                                >
+                                  You have reviewed this just now
+                                </span>
+                              ) : (
+                                <span className="mat-button-wrapper">
+                                  Click here to mark as reviewed
+                                </span>
+                              )}
+                            </button>
+                          </div>
+                        )}
                       </div>
                       <div className="task-details px-6 mt-2">
                         <div className="task-detail prose prose-sm max-w-5xl">
@@ -265,8 +292,200 @@ const ImplementationApprovalSite = ({
                           </div>
                         </div>
                         <div>&nbsp;</div>
-                        {currentActivityForm.canEdit &&
-                        !imptsk.implementationReviews.length ? (
+
+                        {imptsk.implementationReviews.length > 0 ? (
+                          <div>
+                            <Accordion
+                              expanded={expanded == imptsk.id}
+                              onChange={handleExpansionChange(imptsk.id)}
+                            >
+                              <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1a-content"
+                                id="panel1a-header"
+                              >
+                                <Typography>
+                                  <span className="text-brown">
+                                    {imptsk?.implementationReviews?.length}{" "}
+                                    Reviews
+                                  </span>{" "}
+                                  {hasAddedComment(
+                                    imptsk.implementationReviews
+                                  ) && (
+                                    <span className="text-green">
+                                      (You have added 1 review)
+                                    </span>
+                                  )}
+                                </Typography>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                {currentActivityForm.canEdit &&
+                                  !hasAddedComment(
+                                    imptsk.implementationReviews
+                                  ) && (
+                                    <div className="mat-form-field-wrapper">
+                                      <div className="mat-form-field-flex">
+                                        <img
+                                          src="/assets/images/etc/userpic.png"
+                                          alt="Card cover image"
+                                          className="rounded-full mr-4"
+                                          style={{
+                                            width: "3rem",
+                                            height: "3rem",
+                                          }}
+                                        />
+
+                                        <div className="mat-form-field-infix">
+                                          <textarea
+                                            rows="2"
+                                            className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                            placeholder="Write a comment..."
+                                            id="ImpTaskReview265"
+                                            data-placeholder="Write a comment..."
+                                            aria-invalid="false"
+                                            aria-required="false"
+                                            style={{ height: "36px" }}
+                                            // value={rwx?.remark}
+                                            onChange={(e) =>
+                                              setHandelCommentRemark(
+                                                e.target.value
+                                              )
+                                            }
+                                          ></textarea>
+
+                                          <button
+                                            className="mat-focus-indicator mat-raised-button mat-button-base"
+                                            style={{ float: "right" }}
+                                            onClick={() =>
+                                              handelCommentImp(
+                                                imptsk.id,
+                                                imptsk.implementationReviews[0]
+                                                  .id,
+                                                2
+                                              )
+                                            }
+                                          >
+                                            <span className="mat-button-wrapper">
+                                              Save
+                                            </span>
+
+                                            <span className="mat-ripple mat-button-ripple"></span>
+                                            <span className="mat-button-focus-overlay"></span>
+                                          </button>
+
+                                          <span className="mat-form-field-label-wrapper"></span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  )}
+                                {imptsk.implementationReviews?.map((rwx) => (
+                                  <div className="mat-form-field-wrapper">
+                                    <div className="mat-form-field-flex">
+                                      <img
+                                        src="/assets/images/etc/userpic.png"
+                                        alt="Card cover image"
+                                        className="rounded-full mr-4"
+                                        style={{
+                                          width: "3rem",
+                                          height: "3rem",
+                                        }}
+                                      />
+                                      {AppActivity.canEdit &&
+                                      isMyComment(rwx) ? (
+                                        <div className="mat-form-field-infix">
+                                          <textarea
+                                            rows="2"
+                                            className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                            placeholder="Write a comment..."
+                                            id="ImpTaskReview265"
+                                            data-placeholder="Write a comment..."
+                                            aria-invalid="false"
+                                            aria-required="false"
+                                            style={{ height: "36px" }}
+                                            value={rwx?.remark}
+                                            onChange={(e) =>
+                                              setHandelCommentRemark(
+                                                e.target.value
+                                              )
+                                            }
+                                          ></textarea>
+
+                                          <button
+                                            className="mat-focus-indicator mat-raised-button mat-button-base"
+                                            style={{ float: "right" }}
+                                            onClick={() =>
+                                              handelCommentImp(
+                                                imptsk.id,
+                                                imptsk.implementationReviews[0]
+                                                  .id,
+                                                2
+                                              )
+                                            }
+                                          >
+                                            <span className="mat-button-wrapper">
+                                              Update
+                                            </span>
+                                          </button>
+
+                                          <span className="mat-form-field-label-wrapper"></span>
+                                        </div>
+                                      ) : (
+                                        <div>
+                                          <div className="mat-form-field-infix mt-12">
+                                            <span className="">
+                                              {rwx?.createdByStaffName}
+                                            </span>
+                                            -{" "}
+                                            <span className="text-grey">
+                                              {rwx?.remark}
+                                            </span>
+                                          </div>
+                                          <p
+                                            className="mat-form-field-infix text-grey"
+                                            style={{ fontSize: "smaller" }}
+                                          >
+                                            {formatDatess(rwx?.updatedAt)}
+                                          </p>
+                                        </div>
+                                      )}
+                                    </div>
+                                    {/* <span
+                                  style={{
+                                    fontSize: "x-small",
+                                    paddingLeft: "60px",
+                                  }}
+                                >
+                                  {" "}
+                                  {imptsk.implementationReviews[0]
+                                    ?.updatedAt &&
+                                    new Date(
+                                      imptsk.implementationReviews[0]?.updatedAt
+                                    ).toLocaleString("en-US", {
+                                      month: "long",
+                                      day: "numeric",
+                                      year: "numeric",
+                                      hour: "numeric",
+                                      minute: "numeric",
+                                      second: "numeric",
+                                      hour12: true,
+                                      timeZoneName: "short",
+                                    })}
+                                </span> */}
+                                    <div className="mat-form-field-subscript-wrapper">
+                                      <div
+                                        className="mat-form-field-hint-wrapper"
+                                        style={{
+                                          opacity: 1,
+                                          transform: "translateY(0%)",
+                                        }}
+                                      ></div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </AccordionDetails>
+                            </Accordion>
+                          </div>
+                        ) : (
                           <div className="mat-form-field-wrapper">
                             <div className="mat-form-field-flex">
                               <img
@@ -316,140 +535,6 @@ const ImplementationApprovalSite = ({
                                 }}
                               ></div>
                             </div>
-                          </div>
-                        ) : (
-                          <div>
-                            <Accordion
-                              expanded={expanded}
-                              onChange={handleExpansionChange}
-                            >
-                              <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                              >
-                                <Typography>
-                                  <span className="text-brown">
-                                    {imptsk?.implementationReviews?.length}{" "}
-                                    Reviews
-                                  </span>{" "}
-                                  <span className="text-green">
-                                    (You have added{" "}
-                                    {imptsk?.implementationReviews?.length}{" "}
-                                    review)
-                                  </span>
-                                </Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                {imptsk.implementationReviews?.map((rwx) => (
-                                  <div className="mat-form-field-wrapper">
-                                    <div className="mat-form-field-flex">
-                                      <img
-                                        src="/assets/images/etc/userpic.png"
-                                        alt="Card cover image"
-                                        className="rounded-full mr-4"
-                                        style={{
-                                          width: "3rem",
-                                          height: "3rem",
-                                        }}
-                                      />
-                                      {AppActivity.canEdit &&
-                                      rwx.isCreatedByMe ? (
-                                        <div className="mat-form-field-infix">
-                                          <textarea
-                                            rows="2"
-                                            className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                            placeholder="Write a comment..."
-                                            id="ImpTaskReview265"
-                                            data-placeholder="Write a comment..."
-                                            aria-invalid="false"
-                                            aria-required="false"
-                                            style={{ height: "36px" }}
-                                            value={rwx?.remark}
-                                            onChange={(e) =>
-                                              setHandelCommentRemark(
-                                                e.target.value
-                                              )
-                                            }
-                                          ></textarea>
-
-                                          <button
-                                            className="mat-focus-indicator mat-raised-button mat-button-base"
-                                            style={{ float: "right" }}
-                                            onClick={() =>
-                                              handelCommentImp(
-                                                imptsk.id,
-                                                imptsk.implementationReviews[0]
-                                                  .id,
-                                                2
-                                              )
-                                            }
-                                          >
-                                            <span className="mat-button-wrapper">
-                                              Update
-                                            </span>
-
-                                            <span className="mat-ripple mat-button-ripple"></span>
-                                            <span className="mat-button-focus-overlay"></span>
-                                          </button>
-
-                                          <span className="mat-form-field-label-wrapper"></span>
-                                        </div>
-                                      ) : (
-                                        <div>
-                                          <div className="mat-form-field-infix">
-                                            <span className="">
-                                              {rwx?.createdByStaffName}
-                                            </span>
-                                            -{" "}
-                                            <span className="text-grey">
-                                              {rwx?.remark}
-                                            </span>
-                                          </div>
-                                          <p
-                                            className="mat-form-field-infix text-grey"
-                                            style={{ fontSize: "smaller" }}
-                                          >
-                                            {formatDatess(rwx?.updatedAt)}
-                                          </p>
-                                        </div>
-                                      )}
-                                    </div>
-                                    {/* <span
-                                    style={{
-                                      fontSize: "x-small",
-                                      paddingLeft: "60px",
-                                    }}
-                                  >
-                                    {" "}
-                                    {imptsk.implementationReviews[0]
-                                      ?.updatedAt &&
-                                      new Date(
-                                        imptsk.implementationReviews[0]?.updatedAt
-                                      ).toLocaleString("en-US", {
-                                        month: "long",
-                                        day: "numeric",
-                                        year: "numeric",
-                                        hour: "numeric",
-                                        minute: "numeric",
-                                        second: "numeric",
-                                        hour12: true,
-                                        timeZoneName: "short",
-                                      })}
-                                  </span> */}
-                                    <div className="mat-form-field-subscript-wrapper">
-                                      <div
-                                        className="mat-form-field-hint-wrapper"
-                                        style={{
-                                          opacity: 1,
-                                          transform: "translateY(0%)",
-                                        }}
-                                      ></div>
-                                    </div>
-                                  </div>
-                                ))}
-                              </AccordionDetails>
-                            </Accordion>
                           </div>
                         )}
                       </div>

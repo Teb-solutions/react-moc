@@ -103,7 +103,7 @@ function ImplementationApproval({
       label: "Mobilization",
     },
     {
-      label: "Close out",
+      label: "Closeout",
     },
     {
       label: "Handover",
@@ -441,19 +441,13 @@ function ImplementationApproval({
   };
 
   const SubmitApprovelCreate = (e, btnid) => {
-    const payload = {
-      activityUID: lastActCode.uid,
-      actionUID: btnid,
-      formUID: lastActCode?.formUID,
-    };
-
-    // apiAuth
-    //   .put(`/ChangeImplementation/ExecuteActivity/${assetEvaluationId}`, {
-    //     activityUID: lastActCode.uid,
-    //     actionUID: btnid,
-    //     formUID: lastActCode?.formUID,
-    //   })
-    //   .then((resp) => {});
+    apiAuth
+      .post(`/ChangeImplementation/ExecuteActivity/${assetEvaluationId}`, {
+        activityUID: lastActCode.uid,
+        actionUID: btnid,
+        formUID: lastActCode?.formUID,
+      })
+      .then((resp) => {});
   };
 
   return (
@@ -1522,7 +1516,7 @@ function ImplementationApproval({
             Audit Lists
           </Button>
           {lastActCode?.canExecute && (
-            <div className="flex justify-between">
+            <div className="flex justify-end">
               {AppActions.map((btn) => (
                 <>
                   <Button
