@@ -1421,6 +1421,7 @@ const AssetCourse = () => {
                 currentActivityForm={currentActivityForm}
                 remarkRequest={remarkRequest}
                 setRemarkRequest={setRemarkRequest}
+                handleStepChange={handleStepChange()}
               />
             )}
             {currentPhase === "EvaluationApprovalVpHse" && (

@@ -3429,7 +3429,7 @@ function EvaluationChange({
                         color="secondary"
                         style={{ padding: "15px" }}
                         key={btn.name}
-                        //   onClick={() => handleOpen(btn)}
+                        onClick={() => handleOpen(btn)}
                       >
                         {btn.name}
                       </Button>

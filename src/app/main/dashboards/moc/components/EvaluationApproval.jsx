@@ -48,9 +48,14 @@ const EvaluationApproval = ({
   AppActions,
   remarkRequest,
   setRemarkRequest,
+  handleStepChange,
 }) => {
   const [reviewed, setReviewed] = useState({});
-  const [handelCommentRemark, setHandelCommentRemark] = useState("");
+  const [handelCommentRemark, setHandelCommentRemark] = useState({
+    stakeHoldersCmt: "",
+    EvaluationImpactCmt: "",
+    taskCmt: "",
+  });
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [showSendPopup, setShowSendPopup] = useState(false);
   const [dateExtendopen, setDateExtendOpen] = useState(false);
@@ -59,6 +64,8 @@ const EvaluationApproval = ({
   const [email, setEmail] = useState("");
   const [comments, setComments] = useState("");
   const [staff, setStaff] = useState([]);
+
+  const [rendering, setRendering] = useState(false);
 
   const [newRemark, setNewRemark] = useState("");
   const [newImpactTaskRemark, setNewImpactTaskRemark] = useState("");
@@ -79,13 +86,53 @@ const EvaluationApproval = ({
     updatedRemarks[index].remark = event.target.value;
     setRemarkRequest(updatedRemarks);
   };
-  const getRecords = () => {
-    apiAuth
-      .get(`/ApprovalManager/RemarksbyRequest/${AppActivity.uid}`)
-      .then((resp) => {
-        setRemarkRequest(resp.data.data);
-      });
+
+  console.log(contentDetails, "5554");
+  const getRecords = async () => {
+    try {
+      const resp = await apiAuth.get(
+        `/ApprovalManager/RemarksbyRequest/${AppActivity.uid}`
+      );
+      setRemarkRequest(resp.data.data);
+    } catch (error) {
+      console.error("Error fetching records:", error);
+    }
   };
+
+  const shouldRender = () => {
+    if (
+      AppActivity?.canEdit &&
+      contentDetails &&
+      contentDetails?.consultaion?.length > 0
+    ) {
+      setHandelCommentRemark((prev) => ({
+        ...prev,
+        stakeHoldersCmt:
+          contentDetails.consultaion[0]?.reviews[0]?.remark || "",
+        EvaluationImpactCmt:
+          contentDetails.tasklist[0]?.changeImpactTaskReviews[0]?.remark,
+      }));
+    }
+  };
+  const shouldRender1 = () => {
+    if (
+      AppActivity?.canEdit &&
+      contentDetails &&
+      contentDetails.tasklist?.length > 0
+    ) {
+      setHandelCommentRemark((prev) => ({
+        ...prev,
+
+        EvaluationImpactCmt:
+          contentDetails.tasklist[0]?.changeImpactTaskReviews[0]?.remark,
+      }));
+    }
+  };
+
+  useEffect(() => {
+    shouldRender();
+    shouldRender1();
+  }, [AppActivity, contentDetails]);
   useEffect(() => {
     getRecords();
   }, []);
@@ -166,39 +213,69 @@ const EvaluationApproval = ({
   };
   const [expanded, setExpanded] = useState(false);
 
-  const handelCommentImp = (id, rwid, value) => {
-    if (value == 1) {
-      apiAuth
-        .put(
-          `/ChangeEvaluationConsultation/AddReview/${id}/EV_APPR_SITE_CH/0`,
-          {
-            remark: handelCommentRemark,
-          }
-        )
-        .then((resp) => {
-          setHandelCommentRemark("");
-        });
-    } else {
-      apiAuth
-        .put(
-          `/ChangeEvaluationConsultation/AddReview/${id}/EV_APPR_SITE_CH/${rwid}`,
-          {
-            remark: handelCommentRemark,
-          }
-        )
-        .then((resp) => {
-          setHandelCommentRemark("");
-        });
+  const HandleRemark = (e) => {
+    const { name, value } = e.target;
+    setHandelCommentRemark({
+      ...handelCommentRemark,
+      [name]: value,
+    });
+  };
+
+  const handelCommentImp = (id, rwid, value, check) => {
+    let endpoint;
+
+    // Determine the endpoint based on check and value
+    if (check === 1 || check === 2) {
+      const baseEndpoint = `/ChangeEvaluationConsultation/AddReview/${id}/EV_APPR_SITE_CH/`;
+      endpoint = value === 1 ? `${baseEndpoint}0` : `${baseEndpoint}${rwid}`;
+      if (check === 2) {
+        endpoint =
+          value === 1
+            ? `${baseEndpoint}0`
+            : `/Task/AddReview/${id}/EV_APPR_SITE_CH/`;
+      }
     }
+
+    // Determine the remark based on check value
+    const remark =
+      check === 1
+        ? handelCommentRemark.stakeHoldersCmt
+        : check === 2
+          ? handelCommentRemark.EvaluationImpactCmt
+          : handelCommentRemark.taskCmt;
+
+    // Make the API request
+    apiAuth.put(endpoint, { remark }).then((resp) => {
+      handleStepChange();
+      let updatedRemark = {};
+      if (value === 1 && check === 1) {
+        handleStepChange();
+        updatedRemark = { stakeHoldersCmt: "" };
+      } else if (value === 2 && check === 2) {
+        handleStepChange();
+        updatedRemark = { EvaluationImpactCmt: "" };
+      } else if (check === 3) {
+        handleStepChange();
+        updatedRemark = { taskCmt: "" };
+      }
+
+      setHandelCommentRemark({ ...handelCommentRemark, ...updatedRemark });
+      handleStepChange();
+    });
   };
 
   const handelImpactCommentImp = (id) => {
     apiAuth
       .put(`/Task/AddReview/${id}/EV_APPR_SITE_CH`, {
-        remark: handelCommentRemark,
+        remark: handelCommentRemark.EvaluationImpactCmt,
       })
       .then((resp) => {
-        setHandelCommentRemark("");
+        setHandelCommentRemark({
+          ...handelCommentRemark,
+          EvaluationImpactCmt: handelCommentRemark.EvaluationImpactCmt, // Clear the specific
+        });
+        handleStepChange();
+        handelCommentRemark.EvaluationImpactCmt;
       });
   };
 
@@ -914,17 +991,19 @@ const EvaluationApproval = ({
                         rows="2"
                         className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
                         placeholder="Write a comment..."
+                        name="stakeHoldersCmt"
                         id="ImpTaskReview265"
                         data-placeholder="Write a comment..."
                         aria-invalid="false"
                         aria-required="false"
                         style={{ height: "36px" }}
-                        onChange={(e) => setHandelCommentRemark(e.target.value)}
+                        value={handelCommentRemark.stakeHoldersCmt}
+                        onChange={HandleRemark}
                       ></textarea>
                       <button
                         className="mat-focus-indicator mat-raised-button mat-button-base"
                         style={{ float: "right" }}
-                        onClick={() => handelCommentImp(itm.id, 1)}
+                        onClick={() => handelCommentImp(itm.id, 1, 1)}
                       >
                         <span className="mat-button-wrapper">Save</span>
                         <span className="mat-ripple mat-button-ripple"></span>
@@ -988,6 +1067,7 @@ const EvaluationApproval = ({
                               <div className="mat-form-field-infix">
                                 <textarea
                                   rows="2"
+                                  name="stakeHoldersCmt"
                                   className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
                                   placeholder="Write a comment..."
                                   id="ImpTaskReview265"
@@ -995,9 +1075,11 @@ const EvaluationApproval = ({
                                   aria-invalid="false"
                                   aria-required="false"
                                   style={{ height: "36px" }}
-                                  value={rwv.remark}
-                                  onChange={(e) =>
-                                    setHandelCommentRemark(e.target.value)
+                                  value={handelCommentRemark.stakeHoldersCmt}
+                                  onChange={
+                                    HandleRemark
+                                    // (e) =>
+                                    // setHandelCommentRemark(e.target.value)
                                   }
                                 ></textarea>
 
@@ -1008,7 +1090,8 @@ const EvaluationApproval = ({
                                     handelCommentImp(
                                       itm.id,
                                       itm.reviews[0].id,
-                                      2
+                                      2,
+                                      1
                                     )
                                   }
                                 >
@@ -1517,32 +1600,39 @@ const EvaluationApproval = ({
                                             className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
                                             placeholder="Write a comment..."
                                             id="ImpTaskReview265"
+                                            name="EvaluationImpactCmt"
                                             data-placeholder="Write a comment..."
                                             aria-invalid="false"
                                             aria-required="false"
                                             style={{ height: "36px" }}
-                                            value={rwx?.remark}
-                                            onChange={(e) =>
-                                              setHandelCommentRemark(
-                                                e.target.value
-                                              )
+                                            // value={rwx?.remark}
+                                            // onChange={(e) =>
+                                            //   setHandelCommentRemark(
+                                            //     e.target.value
+                                            //   )
+                                            // }
+                                            value={
+                                              handelCommentRemark.EvaluationImpactCmt
                                             }
+                                            onChange={HandleRemark}
                                           ></textarea>
 
                                           <button
                                             className="mat-focus-indicator mat-raised-button mat-button-base"
                                             style={{ float: "right" }}
-                                            onClick={() =>
+                                            onClick={(e) =>
                                               handelCommentImp(
-                                                itm.id,
-                                                itm.changeImpactTaskReviews[0]
+                                                imptsk.id,
+                                                imptsk
+                                                  .changeImpactTaskReviews[0]
                                                   .id,
+                                                2,
                                                 2
                                               )
                                             }
                                           >
                                             <span className="mat-button-wrapper">
-                                              Update
+                                              Update22
                                             </span>
 
                                             <span className="mat-ripple mat-button-ripple"></span>
@@ -1617,9 +1707,12 @@ const EvaluationApproval = ({
                                   aria-invalid="false"
                                   aria-required="false"
                                   style={{ height: "36px" }}
-                                  onChange={(e) =>
-                                    setHandelCommentRemark(e.target.value)
-                                  }
+                                  name="taskCmt"
+                                  value={handelCommentRemark.taskCmt}
+                                  onChange={HandleRemark}
+                                  // onChange={(e) =>
+                                  //   setHandelCommentRemark(e.target.value)
+                                  // }
                                 ></textarea>
                                 <button
                                   className="mat-focus-indicator mat-raised-button mat-button-base"
@@ -1629,7 +1722,7 @@ const EvaluationApproval = ({
                                   }
                                 >
                                   <span className="mat-button-wrapper">
-                                    Save
+                                    Save224
                                   </span>
                                   <span className="mat-ripple mat-button-ripple"></span>
                                   <span className="mat-button-focus-overlay"></span>
