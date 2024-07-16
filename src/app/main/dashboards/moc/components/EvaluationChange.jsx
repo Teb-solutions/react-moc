@@ -42,6 +42,7 @@ import { Link } from "react-router-dom";
 import CountdownTimer from "./CountdownTimer ";
 import { border } from "@mui/system";
 import "./componentStyle.css";
+import { useRef } from "react";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -276,6 +277,8 @@ function EvaluationChange({
       }
     });
   };
+  const timerRef = useRef();
+
   const handelCreateSession = () => {
     apiAuth
       .post(
@@ -285,6 +288,9 @@ function EvaluationChange({
       .then((resp) => {
         setOpen(false);
         getRecords();
+        if (timerRef.current) {
+          timerRef.current.startTimer(); // Start the timer when the API call is successful
+        }
       })
       .catch((error) => {
         console.error("Error creating session:", error);
@@ -481,11 +487,21 @@ function EvaluationChange({
       });
   };
   const handelImpactSubmit = () => {
+    console.log(impactForm.changeImpactTasks, "payyy");
     const payload = [
       {
-        changeImapactId: 0,
-        changeRequestId: 0,
-        changeEvaluationId: 0,
+        changeImapactId:
+          impactForm.changeImapactId != undefined
+            ? impactForm.changeImapactId
+            : 0,
+        changeRequestId:
+          impactForm.changeRequestId != undefined
+            ? impactForm.changeRequestId
+            : 0,
+        changeEvaluationId:
+          impactForm.changeEvaluationId != undefined
+            ? impactForm.changeEvaluationId
+            : 0,
         particular: impactForm.particular,
         particularSubCategory: impactForm.particularSubCategory,
         principle: "1",
@@ -493,15 +509,15 @@ function EvaluationChange({
         otherDetail: "",
         changeImpactHazardList: hazardDetailsForm.map((detail) => ({
           id: 0,
-          changeImpactHazard: detail.value,
+          changeImpactHazard: detail.changeImpactHazard,
         })),
         documentStatus: "Pending",
         isShowDetail: true,
         changeImpactTasks: impactForm.changeImpactTasks.map((task) => ({
           id: 0,
-          changeRequestId: 0,
-          changeEvaluationId: 0,
-          changeImapactId: 0,
+          changeRequestId: task.changeRequestId,
+          changeEvaluationId: task.changeEvaluationId,
+          changeImapactId: task.changeImapactId,
           actionWhat: task.actionWhat,
           actionHow: task.actionHow,
           actionComments: "",
@@ -516,6 +532,7 @@ function EvaluationChange({
         })),
       },
     ];
+
     apiAuth
       .put(`ChangeImpact/Create/${Session.id}/${assetEvaluationId}`, payload)
       .then((resp) => {
@@ -556,13 +573,13 @@ function EvaluationChange({
   const [EditSubTask, setEditSubTask] = useState([]);
 
   const handelEditImpactTask = (
-    patricularname,
-    subname,
     hazard,
     impactTaaks,
-    subtask,
     particular,
-    particularSubCategory
+    particularSubCategory,
+    impid,
+    reqid,
+    evalid
   ) => {
     handlebackImpactList();
     setAddCImpact(true);
@@ -570,6 +587,9 @@ function EvaluationChange({
       particular: particular,
       particularSubCategory: particularSubCategory,
       hazardDetail: hazard,
+      changeImapactId: impid,
+      changeRequestId: reqid,
+      changeEvaluationId: evalid,
     });
     setAddTakForms(impactTaaks || []);
     setAddNewTask(true);
@@ -585,7 +605,7 @@ function EvaluationChange({
       setHazardList(resp?.data.data);
     });
     apiAuth
-      .get(`/RiskAnalysis/hazardList?id=${subtask}`)
+      .get(`/RiskAnalysis/hazardList?id=${impid}`)
       .then((resp) => {
         setEditSubTask(resp.data.data);
       })
@@ -1375,6 +1395,31 @@ function EvaluationChange({
       }
     : { m: 1, maxWidth: "100%" };
 
+  const handelSubmitApproval = (btn) => {
+    apiAuth
+      .post(`/ChangeEvaluation/ExecuteActivity/${Session.id}`, {
+        activityUID: AppActivity.uid,
+        actionUID: btn.uid,
+        formUID: `${Session.id}`,
+      })
+      .then((resp) => {});
+  };
+
+  const [stopComment, setStopComment] = useState("");
+
+  const handleStopSession = () => {
+    apiAuth
+      .put(
+        `/ChangeEvaluationSession/End/${SessionList[0].changeEvaluationId}/${assetEvaluationId}/${SessionList[0].id}`,
+        { comments: stopComment }
+      )
+      .then((resp) => {
+        if (timerRef.current) {
+          timerRef.current.resetTimer(); // Reset the timer when the API call is successful
+        }
+      });
+  };
+
   return (
     <div className="w-full">
       <ToastContainer className="toast-container " />
@@ -1385,32 +1430,34 @@ function EvaluationChange({
               <div className="flex items-center w-full border-b pb-5 justify-between">
                 <h2 className="text-2xl font-semibold">Evaluation</h2>
                 <div>
-                  <Button
-                    className="whitespace-nowrap mt-5"
-                    style={{
-                      border: "1px solid",
-                      backgroundColor: "transparent",
-                      color: "black",
-                      borderColor: "rgba(203,213,225)",
-                      marginRight: "5px",
-                    }}
-                    variant="contained"
-                    color="warning"
-                    startIcon={
-                      <FuseSvgIcon size={20}>
-                        {Session?.activeSession?.status === 2
-                          ? "heroicons-outline:x"
-                          : "heroicons-outline:user-add"}
-                      </FuseSvgIcon>
-                    }
-                    onClick={handleOpen}
-                  >
-                    {!Session?.activeSession && <span>Create Session</span>}
-                    {Session?.activeSession?.status === 1 && (
-                      <span>Session acceptance pending</span>
-                    )}
-                    <CountdownTimer Session={Session} />
-                  </Button>
+                  {AppActivity.canEdit && (
+                    <Button
+                      className="whitespace-nowrap mt-5"
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "transparent",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                        marginRight: "5px",
+                      }}
+                      variant="contained"
+                      color="warning"
+                      startIcon={
+                        <FuseSvgIcon size={20}>
+                          {Session?.activeSession?.status === 2
+                            ? "heroicons-outline:x"
+                            : "heroicons-outline:user-add"}
+                        </FuseSvgIcon>
+                      }
+                      onClick={handleOpen}
+                    >
+                      {!Session?.activeSession && <span>Create Session</span>}
+                      {Session?.activeSession?.status === 1 && (
+                        <span>Session acceptance pending</span>
+                      )}
+                      <CountdownTimer ref={timerRef} Session={Session} />
+                    </Button>
+                  )}
                   <Button
                     className="whitespace-nowrap mt-5"
                     style={{
@@ -1569,7 +1616,18 @@ function EvaluationChange({
                                         padding: "10px",
                                       }}
                                     >
-                                      "No Comments Added"
+                                      {itms.comments == "" ? (
+                                        "No Comments Added"
+                                      ) : (
+                                        <div className="">
+                                          <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                            comments
+                                          </span>
+                                          <span className="task-detail-value">
+                                            {itms.comments}
+                                          </span>
+                                        </div>
+                                      )}
                                     </span>
                                   </div>
                                 </div>
@@ -1607,31 +1665,33 @@ function EvaluationChange({
                                 class="flex items-center w-full  border-b justify-between"
                                 style={{ marginTop: "5px" }}
                               ></div>
-                              <Button
-                                className="ms-5"
-                                variant="contained"
-                                sx={{
-                                  backgroundColor: "white",
-                                  color: "black",
-                                  border: "1px solid black",
-                                  marginTop: "8px",
-                                }}
-                                startIcon={
-                                  <FuseSvgIcon size={20}>
-                                    heroicons-outline:user-add
-                                  </FuseSvgIcon>
-                                }
-                                onClick={() =>
-                                  handelEditConsultation(
-                                    itms.staff,
-                                    itms.consultedDate,
-                                    itms.consultedStaffId,
-                                    itms.id
-                                  )
-                                }
-                              >
-                                Edit Consultation
-                              </Button>
+                              {AppActivity.canEdit && (
+                                <Button
+                                  className="ms-5"
+                                  variant="contained"
+                                  sx={{
+                                    backgroundColor: "white",
+                                    color: "black",
+                                    border: "1px solid black",
+                                    marginTop: "8px",
+                                  }}
+                                  startIcon={
+                                    <FuseSvgIcon size={20}>
+                                      heroicons-outline:user-add
+                                    </FuseSvgIcon>
+                                  }
+                                  onClick={() =>
+                                    handelEditConsultation(
+                                      itms.staff,
+                                      itms.consultedDate,
+                                      itms.consultedStaffId,
+                                      itms.id
+                                    )
+                                  }
+                                >
+                                  Edit Consultation
+                                </Button>
+                              )}
                             </div>
                           </Step>
                         </Stepper>
@@ -2172,22 +2232,25 @@ function EvaluationChange({
                                                         Create New Risk Analysis
                                                       </Button>
                                                     </div> */}
-                                                    <span
-                                                      className="text-white"
-                                                      style={{
-                                                        backgroundColor: "blue",
-                                                        marginLeft: "10px",
-                                                        borderRadius: "5px",
-                                                        padding: "1px",
-                                                        fontSize: "10px",
-                                                        cursor: "pointer",
-                                                      }}
-                                                      onClick={() =>
-                                                        handelRisk(sub.id)
-                                                      }
-                                                    >
-                                                      Create New Risk Analysis
-                                                    </span>
+                                                    {AppActivity.canEdit && (
+                                                      <span
+                                                        className="text-white"
+                                                        style={{
+                                                          backgroundColor:
+                                                            "blue",
+                                                          marginLeft: "10px",
+                                                          borderRadius: "5px",
+                                                          padding: "1px",
+                                                          fontSize: "10px",
+                                                          cursor: "pointer",
+                                                        }}
+                                                        onClick={() =>
+                                                          handelRisk(sub.id)
+                                                        }
+                                                      >
+                                                        Create New Risk Analysis
+                                                      </span>
+                                                    )}
                                                   </Grid>
                                                 </Grid>
                                               </div>
@@ -2363,7 +2426,8 @@ function EvaluationChange({
                                                           {hazardType.riskAnalysisHazardSituation &&
                                                             hazardType
                                                               .riskAnalysisHazardSituation
-                                                              .length > 0 && (
+                                                              .length > 0 &&
+                                                            AppActivity.canEdit && (
                                                               <div
                                                                 className="mt-2 ms-5"
                                                                 style={{
@@ -2585,34 +2649,36 @@ function EvaluationChange({
                                     class="flex items-center w-full  border-b justify-between"
                                     style={{ marginTop: "5px" }}
                                   ></div>
-                                  <Button
-                                    className="ms-5"
-                                    variant="contained"
-                                    sx={{
-                                      backgroundColor: "white",
-                                      color: "black",
-                                      border: "1px solid black",
-                                      marginTop: "8px",
-                                    }}
-                                    startIcon={
-                                      <FuseSvgIcon size={20}>
-                                        heroicons-outline:user-add
-                                      </FuseSvgIcon>
-                                    }
-                                    onClick={() =>
-                                      handelEditImpactTask(
-                                        itms.particularName,
-                                        itms.particularSubName,
-                                        itms.hazardDetail,
-                                        itms?.changeImpactTasks,
-                                        itms?.changeImapactId,
-                                        itms?.particular,
-                                        itms.particularSubCategory
-                                      )
-                                    }
-                                  >
-                                    Edit Impact/Task
-                                  </Button>
+                                  {AppActivity.canEdit && (
+                                    <Button
+                                      className="ms-5"
+                                      variant="contained"
+                                      sx={{
+                                        backgroundColor: "white",
+                                        color: "black",
+                                        border: "1px solid black",
+                                        marginTop: "8px",
+                                      }}
+                                      startIcon={
+                                        <FuseSvgIcon size={20}>
+                                          heroicons-outline:user-add
+                                        </FuseSvgIcon>
+                                      }
+                                      onClick={() =>
+                                        handelEditImpactTask(
+                                          itms.hazardDetail,
+                                          itms?.changeImpactTasks,
+                                          itms?.particular,
+                                          itms.particularSubCategory,
+                                          itms?.changeImapactId,
+                                          itms?.changeRequestId,
+                                          itms?.changeEvaluationId
+                                        )
+                                      }
+                                    >
+                                      Edit Impact/Task
+                                    </Button>
+                                  )}
                                 </div>
                               </Step>
                             </Stepper>
@@ -3429,7 +3495,8 @@ function EvaluationChange({
                         color="secondary"
                         style={{ padding: "15px" }}
                         key={btn.name}
-                        onClick={() => handleOpen(btn)}
+                        // onClick={() => handleOpen(btn)}
+                        onClick={() => handelSubmitApproval(btn)}
                       >
                         {btn.name}
                       </Button>
@@ -4842,104 +4909,89 @@ function EvaluationChange({
             </div>
 
             {SessionList[0]?.isActive ? (
-              <div style={{ margin: "20px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <span>
-                    Evaluation session started by{" "}
-                    <b>{SessionList[0]?.startedByStaffName}</b> on{" "}
-                    <b>{formatDate(SessionList[0]?.startedAt)}</b>
-                  </span>
-                  <span
+              <>
+                <div style={{ margin: "20px" }}>
+                  <div
                     style={{
-                      color: "orangered",
                       display: "flex",
+                      justifyContent: "space-between",
                       alignItems: "center",
                     }}
                   >
-                    <i
-                      className="clock icon"
-                      style={{ marginRight: "5px" }}
-                    ></i>
-                    {timer}
-                  </span>
-                </div>
-                <div className="mt-5 row" style={{ marginTop: "20px" }}>
-                  <b className="ng-star-inserted">CHANGE LEADER</b>
-                  <div
-                    className="ng-star-inserted"
-                    style={{ display: "flex", flexDirection: "column" }}
-                  >
-                    <div style={{ flex: "65%" }}>
-                      {SessionList[0]?.teamList
-                        .filter((member) => member.teamType === 1)
-                        .map((teamMember, index) => (
-                          <div key={index} className="ng-star-inserted">
-                            <span>{teamMember.staffName}</span>
-                            <span
-                              style={{
-                                color:
-                                  teamMember.approvalStatus === 2
-                                    ? "green"
-                                    : "orangered",
-                                fontSize: "small",
-                                marginLeft: "5px",
-                              }}
-                              className="ng-star-inserted"
-                            >
-                              {teamMember.approvalStatus === 2
-                                ? `Accepted at ${formatDate(teamMember.updatedAt)}`
-                                : "Acceptance Pending"}
-                            </span>
-                            <div>Comments: {teamMember.comments}</div>
-                          </div>
-                        ))}
-                    </div>
+                    <span>
+                      Evaluation session started by{" "}
+                      <b>{SessionList[0]?.startedByStaffName}</b> on{" "}
+                      <b>{formatDate(SessionList[0]?.startedAt)}</b>
+                    </span>
+                    <span
+                      style={{
+                        color: "orangered",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <i
+                        className="clock icon"
+                        style={{ marginRight: "5px" }}
+                      ></i>
+                      {timer}
+                    </span>
+                    <CountdownTimer ref={timerRef} Session={Session} />
                   </div>
-                  <br className="ng-star-inserted" />
-                  <b className="ng-star-inserted">OTHERS</b>
-                  <div
-                    className="ng-star-inserted"
-                    style={{ display: "flex", flexDirection: "column" }}
-                  >
-                    <div style={{ flex: "65%" }}>
-                      {SessionList[0]?.teamList
-                        .filter((member) => member.teamType !== 1)
-                        .map((teamMember, index) => (
-                          <div key={index} className="ng-star-inserted">
-                            <span>{teamMember.staffName}</span>
-                            <span
-                              style={{
-                                color:
-                                  teamMember.approvalStatus === 2
-                                    ? "green"
-                                    : "orangered",
-                                fontSize: "small",
-                                marginLeft: "5px",
-                              }}
-                              className="ng-star-inserted"
-                            >
-                              {teamMember.approvalStatus === 2
-                                ? `Accepted at ${formatDate(teamMember.updatedAt)}`
-                                : "Acceptance Pending"}
-                            </span>
-                            <div>Comments: {teamMember.comments}</div>
-                          </div>
-                        ))}
+                  <div className="mt-5 row" style={{ marginTop: "20px" }}>
+                    <div
+                      className="ng-star-inserted"
+                      style={{ display: "flex", flexDirection: "column" }}
+                    >
+                      <div style={{ flex: "65%" }}>
+                        {SessionList?.map((teamMember, index) =>
+                          teamMember.teamList.map((itm) => (
+                            <div key={index} className="ng-star-inserted">
+                              <b className="ng-star-inserted">
+                                {itm.teamType == 1
+                                  ? "CHANGE LEADER"
+                                  : itm.teamType == 2
+                                    ? "HSEQ"
+                                    : "OTHERS"}
+                              </b>
+                              <span>{itm.staffName}</span>
+                              <span
+                                style={{
+                                  color:
+                                    itm.approvalStatus === 2
+                                      ? "green"
+                                      : "orangered",
+                                  fontSize: "small",
+                                  marginLeft: "5px",
+                                }}
+                                className="ng-star-inserted"
+                              >
+                                {itm.approvalStatus === 2
+                                  ? `Accepted at ${formatDate(itm.updatedAt)}`
+                                  : "Acceptance Pending"}
+                              </span>
+                              <div>Comments: {itm.comments}</div>
+                            </div>
+                          ))
+                        )}
+                      </div>
                     </div>
+
+                    <br className="ng-star-inserted" />
                   </div>
-                  <br className="ng-star-inserted" />
+                  <div>
+                    <textarea
+                      placeholder="Comment *"
+                      onChange={(e) => setStopComment(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <textarea placeholder="Comment *" />
+                <div className="flex justify-end">
+                  <button className="stop-session" onClick={handleStopSession}>
+                    Stop Session
+                  </button>
                 </div>
-                <button className="stop-session">Stop Session</button>
-              </div>
+              </>
             ) : (
               <div
                 className="flex flex-col items-start justify-between p-24"

@@ -58,6 +58,7 @@ function ImplementationApproval({
   lastActCode,
   AppActions,
   AppActivity,
+  setContent,
 }) {
   const columns = [
     { id: "index", label: "#", minWidth: 50 },
@@ -447,7 +448,13 @@ function ImplementationApproval({
         actionUID: btnid,
         formUID: lastActCode?.formUID,
       })
-      .then((resp) => {});
+      .then((resp) => {
+        apiAuth
+          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+          .then((resp) => {
+            setContent(resp.data.data.phases);
+          });
+      });
   };
 
   return (

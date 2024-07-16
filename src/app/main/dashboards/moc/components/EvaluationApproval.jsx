@@ -49,6 +49,7 @@ const EvaluationApproval = ({
   remarkRequest,
   setRemarkRequest,
   handleStepChange,
+  setContent,
 }) => {
   const [reviewed, setReviewed] = useState({});
   const [handelCommentRemark, setHandelCommentRemark] = useState({
@@ -56,15 +57,16 @@ const EvaluationApproval = ({
     EvaluationImpactCmt: "",
     taskCmt: "",
   });
+  const [handelCommentRemark1, setHandelCommentRemark1] = useState("");
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [showSendPopup, setShowSendPopup] = useState(false);
   const [dateExtendopen, setDateExtendOpen] = useState(false);
   const handlehandledateExtendClose = () => setDateExtendOpen(false);
   const [selectedStaff, setSelectedStaff] = useState([]);
+
   const [email, setEmail] = useState("");
   const [comments, setComments] = useState("");
   const [staff, setStaff] = useState([]);
-
   const [rendering, setRendering] = useState(false);
 
   const [newRemark, setNewRemark] = useState("");
@@ -86,7 +88,6 @@ const EvaluationApproval = ({
     updatedRemarks[index].remark = event.target.value;
     setRemarkRequest(updatedRemarks);
   };
-
   console.log(contentDetails, "5554");
   const getRecords = async () => {
     try {
@@ -94,11 +95,15 @@ const EvaluationApproval = ({
         `/ApprovalManager/RemarksbyRequest/${AppActivity.uid}`
       );
       setRemarkRequest(resp.data.data);
+      apiAuth
+        .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+        .then((resp) => {
+          setContent(resp.data.data.phases);
+        });
     } catch (error) {
       console.error("Error fetching records:", error);
     }
   };
-
   const shouldRender = () => {
     if (
       AppActivity?.canEdit &&
@@ -212,7 +217,7 @@ const EvaluationApproval = ({
     padding: "1px",
   };
   const [expanded, setExpanded] = useState(false);
-
+  const [clickedTasks, setClickedTasks] = useState({});
   const HandleRemark = (e) => {
     const { name, value } = e.target;
     setHandelCommentRemark({
@@ -266,16 +271,12 @@ const EvaluationApproval = ({
 
   const handelImpactCommentImp = (id) => {
     apiAuth
-      .put(`/Task/AddReview/${id}/EV_APPR_SITE_CH`, {
-        remark: handelCommentRemark.EvaluationImpactCmt,
+      .put(`/Task/AddReview/${id}/${lastActCode.code}`, {
+        remark: handelCommentRemark1,
       })
       .then((resp) => {
-        setHandelCommentRemark({
-          ...handelCommentRemark,
-          EvaluationImpactCmt: handelCommentRemark.EvaluationImpactCmt, // Clear the specific
-        });
+        setHandelCommentRemark1("");
         handleStepChange();
-        handelCommentRemark.EvaluationImpactCmt;
       });
   };
 
@@ -308,6 +309,7 @@ const EvaluationApproval = ({
     });
   };
   const handelreview = (id) => {
+    debugger;
     apiAuth
       .put(`/SummaryDetails/ConsultationReviewStatus/${assetEvaluationId}`, {
         Task: [id],
@@ -316,6 +318,10 @@ const EvaluationApproval = ({
       .then((response) => {
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
+          [id]: true,
+        }));
+        setClickedTasks((prevClickedTasks) => ({
+          ...prevClickedTasks,
           [id]: true,
         }));
         console.log(response);
@@ -331,6 +337,10 @@ const EvaluationApproval = ({
       .then((response) => {
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
+          [id]: true,
+        }));
+        setClickedTasks((prevClickedTasks) => ({
+          ...prevClickedTasks,
           [id]: true,
         }));
         console.log(response);
@@ -945,7 +955,7 @@ const EvaluationApproval = ({
                       className="task-mark-reviewed-button mat-stroked-button"
                       onClick={() => handelreview(itm.id)}
                     >
-                      {itm?.reviewd ? (
+                      {itm?.reviewd || clickedTasks[itm.id] ? (
                         <span
                           className="mat-button-wrapper"
                           style={{
@@ -974,82 +984,81 @@ const EvaluationApproval = ({
                 <span className="task-detail-value">{itm.tasks[0]}</span>
               </div>
               <div>&nbsp;</div>
-              {AppActivity.canEdit && !itm.reviews.length > 0 ? (
-                <div className="mat-form-field-wrapper">
-                  <div className="mat-form-field-flex">
-                    <img
-                      src="/assets/images/etc/userpic.png"
-                      alt="Card cover image"
-                      className="rounded-full mr-4"
-                      style={{
-                        width: "5rem",
-                        height: "5rem",
-                      }}
-                    />
-                    <div className="mat-form-field-infix">
-                      <textarea
-                        rows="2"
-                        className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                        placeholder="Write a comment..."
-                        name="stakeHoldersCmt"
-                        id="ImpTaskReview265"
-                        data-placeholder="Write a comment..."
-                        aria-invalid="false"
-                        aria-required="false"
-                        style={{ height: "36px" }}
-                        value={handelCommentRemark.stakeHoldersCmt}
-                        onChange={HandleRemark}
-                      ></textarea>
-                      <button
-                        className="mat-focus-indicator mat-raised-button mat-button-base"
-                        style={{ float: "right" }}
-                        onClick={() => handelCommentImp(itm.id, 1, 1)}
-                      >
-                        <span className="mat-button-wrapper">Save</span>
-                        <span className="mat-ripple mat-button-ripple"></span>
-                        <span className="mat-button-focus-overlay"></span>
-                      </button>
-                      <span className="mat-form-field-label-wrapper"></span>
-                    </div>
-                  </div>
 
-                  <div className="mat-form-field-subscript-wrapper">
-                    <div
-                      className="mat-form-field-hint-wrapper"
-                      style={{
-                        opacity: 1,
-                        transform: "translateY(0%)",
-                      }}
-                    ></div>
-                  </div>
-                </div>
-              ) : (
+              {itm.reviews.length > 0 ? (
                 <div>
                   <Accordion
                     expanded={expanded == itm.id}
                     onChange={handleExpansionChange(itm.id)}
                   >
-                    {itm?.reviews?.length ? (
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                      >
-                        <Typography>
-                          <span className="text-brown">
-                            {itm?.reviews?.length} Reviews
-                          </span>{" "}
-                          {hasAddedComment(itm.reviews) && (
-                            <span className="text-green">
-                              (You have added 1 review)
-                            </span>
-                          )}
-                        </Typography>
-                      </AccordionSummary>
-                    ) : (
-                      <span className="ps-12 text-black">No Reviews Added</span>
-                    )}
+                    <AccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+                    >
+                      <Typography>
+                        <span className="text-brown">
+                          {itm?.reviews?.length} Review
+                        </span>{" "}
+                        {hasAddedComment(itm.reviews) && (
+                          <span className="text-green">
+                            (You have added 1 review)
+                          </span>
+                        )}
+                      </Typography>
+                    </AccordionSummary>
+
                     <AccordionDetails>
+                      {AppActivity.canEdit && !hasAddedComment(itm.reviews) && (
+                        <div className="mat-form-field-wrapper">
+                          <div className="mat-form-field-flex">
+                            <img
+                              src="/assets/images/etc/userpic.png"
+                              alt="Card cover image"
+                              className="rounded-full mr-4"
+                              style={{
+                                width: "5rem",
+                                height: "5rem",
+                              }}
+                            />
+                            <div className="mat-form-field-infix">
+                              <textarea
+                                rows="2"
+                                className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                placeholder="Write a comment..."
+                                id="ImpTaskReview265"
+                                data-placeholder="Write a comment..."
+                                aria-invalid="false"
+                                aria-required="false"
+                                style={{ height: "36px" }}
+                                onChange={(e) =>
+                                  setHandelCommentRemark(e.target.value)
+                                }
+                              ></textarea>
+                              <button
+                                className="mat-focus-indicator mat-raised-button mat-button-base"
+                                style={{ float: "right" }}
+                                onClick={() => handelCommentImp(itm.id, 1)}
+                              >
+                                <span className="mat-button-wrapper">Save</span>
+                                <span className="mat-ripple mat-button-ripple"></span>
+                                <span className="mat-button-focus-overlay"></span>
+                              </button>
+                              <span className="mat-form-field-label-wrapper"></span>
+                            </div>
+                          </div>
+
+                          <div className="mat-form-field-subscript-wrapper">
+                            <div
+                              className="mat-form-field-hint-wrapper"
+                              style={{
+                                opacity: 1,
+                                transform: "translateY(0%)",
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
                       {itm?.reviews?.map((rwv) => (
                         <div className="mat-form-field-wrapper">
                           <div className="mat-form-field-flex">
@@ -1063,7 +1072,7 @@ const EvaluationApproval = ({
                               }}
                             />
 
-                            {AppActivity.canEdit && rwv.isCreatedByMe ? (
+                            {AppActivity.canEdit && isMyComment(rwv) ? (
                               <div className="mat-form-field-infix">
                                 <textarea
                                   rows="2"
@@ -1148,6 +1157,53 @@ const EvaluationApproval = ({
                     </AccordionDetails>
                   </Accordion>
                 </div>
+              ) : (
+                <div className="mat-form-field-wrapper">
+                  <div className="mat-form-field-flex">
+                    <img
+                      src="/assets/images/etc/userpic.png"
+                      alt="Card cover image"
+                      className="rounded-full mr-4"
+                      style={{
+                        width: "5rem",
+                        height: "5rem",
+                      }}
+                    />
+                    <div className="mat-form-field-infix">
+                      <textarea
+                        rows="2"
+                        className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                        placeholder="Write a comment..."
+                        id="ImpTaskReview265"
+                        data-placeholder="Write a comment..."
+                        aria-invalid="false"
+                        aria-required="false"
+                        style={{ height: "36px" }}
+                        onChange={(e) => setHandelCommentRemark(e.target.value)}
+                      ></textarea>
+                      <button
+                        className="mat-focus-indicator mat-raised-button mat-button-base"
+                        style={{ float: "right" }}
+                        onClick={() => handelCommentImp(itm.id, 1)}
+                      >
+                        <span className="mat-button-wrapper">Save</span>
+                        <span className="mat-ripple mat-button-ripple"></span>
+                        <span className="mat-button-focus-overlay"></span>
+                      </button>
+                      <span className="mat-form-field-label-wrapper"></span>
+                    </div>
+                  </div>
+
+                  <div className="mat-form-field-subscript-wrapper">
+                    <div
+                      className="mat-form-field-hint-wrapper"
+                      style={{
+                        opacity: 1,
+                        transform: "translateY(0%)",
+                      }}
+                    ></div>
+                  </div>
+                </div>
               )}
             </div>
           ))}
@@ -1221,7 +1277,7 @@ const EvaluationApproval = ({
                               className="task-mark-reviewed-button mat-stroked-button"
                               onClick={() => handelImpactreview(imptsk.id)}
                             >
-                              {imptsk?.reviewd ? (
+                              {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
                                 <span
                                   className="mat-button-wrapper"
                                   style={{
@@ -1544,7 +1600,7 @@ const EvaluationApproval = ({
                                             aria-required="false"
                                             style={{ height: "36px" }}
                                             onChange={(e) =>
-                                              setHandelCommentRemark(
+                                              setHandelCommentRemark1(
                                                 e.target.value
                                               )
                                             }
@@ -1555,7 +1611,7 @@ const EvaluationApproval = ({
                                             onClick={() =>
                                               handelImpactCommentImp(
                                                 imptsk.id,
-                                                1
+                                                2
                                               )
                                             }
                                           >
@@ -1600,39 +1656,33 @@ const EvaluationApproval = ({
                                             className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
                                             placeholder="Write a comment..."
                                             id="ImpTaskReview265"
-                                            name="EvaluationImpactCmt"
                                             data-placeholder="Write a comment..."
                                             aria-invalid="false"
                                             aria-required="false"
                                             style={{ height: "36px" }}
-                                            // value={rwx?.remark}
-                                            // onChange={(e) =>
-                                            //   setHandelCommentRemark(
-                                            //     e.target.value
-                                            //   )
-                                            // }
-                                            value={
-                                              handelCommentRemark.EvaluationImpactCmt
+                                            defaultValue={rwx?.remark}
+                                            onChange={(e) =>
+                                              setHandelCommentRemark1(
+                                                e.target.value
+                                              )
                                             }
-                                            onChange={HandleRemark}
                                           ></textarea>
 
                                           <button
                                             className="mat-focus-indicator mat-raised-button mat-button-base"
                                             style={{ float: "right" }}
-                                            onClick={(e) =>
-                                              handelCommentImp(
+                                            onClick={() =>
+                                              handelImpactCommentImp(
                                                 imptsk.id,
-                                                imptsk
-                                                  .changeImpactTaskReviews[0]
-                                                  .id,
-                                                2,
+                                                // imptsk
+                                                //   .changeImpactTaskReviews[0]
+                                                //   .id,
                                                 2
                                               )
                                             }
                                           >
                                             <span className="mat-button-wrapper">
-                                              Update22
+                                              Update
                                             </span>
 
                                             <span className="mat-ripple mat-button-ripple"></span>
@@ -1707,12 +1757,9 @@ const EvaluationApproval = ({
                                   aria-invalid="false"
                                   aria-required="false"
                                   style={{ height: "36px" }}
-                                  name="taskCmt"
-                                  value={handelCommentRemark.taskCmt}
-                                  onChange={HandleRemark}
-                                  // onChange={(e) =>
-                                  //   setHandelCommentRemark(e.target.value)
-                                  // }
+                                  onChange={(e) =>
+                                    setHandelCommentRemark(e.target.value)
+                                  }
                                 ></textarea>
                                 <button
                                   className="mat-focus-indicator mat-raised-button mat-button-base"
@@ -1722,7 +1769,7 @@ const EvaluationApproval = ({
                                   }
                                 >
                                   <span className="mat-button-wrapper">
-                                    Save224
+                                    Save
                                   </span>
                                   <span className="mat-ripple mat-button-ripple"></span>
                                   <span className="mat-button-focus-overlay"></span>
