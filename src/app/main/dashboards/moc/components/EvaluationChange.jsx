@@ -28,6 +28,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  Autocomplete,
 } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -310,6 +311,7 @@ function EvaluationChange({
   const [particularList, setParticularList] = useState([]);
   const [particularSubList, setParticularSubList] = useState([]);
   const [hazardList, setHazardList] = useState([]);
+  const [editRiskAnalysDetail, setEditRiskAnalysDetail] = useState([]);
 
   const [impactForm, setImpactForm] = useState({
     particular: "",
@@ -487,7 +489,6 @@ function EvaluationChange({
       });
   };
   const handelImpactSubmit = () => {
-    console.log(impactForm.changeImpactTasks, "payyy");
     const payload = [
       {
         changeImapactId:
@@ -537,6 +538,9 @@ function EvaluationChange({
       .put(`ChangeImpact/Create/${Session.id}/${assetEvaluationId}`, payload)
       .then((resp) => {
         setAddCImpact(false);
+        apiAuth.get(`/ChangeImpact/Get?id=${Session.id}`).then((resp) => {
+          setImpactList(resp.data?.data);
+        });
       });
   };
 
@@ -809,6 +813,7 @@ function EvaluationChange({
   const [Classifications, setClassification] = useState("");
 
   const handelRisk = (id, type) => {
+    setEditRiskAnalysDetail([]);
     sethazardTypeValue(type);
     setRisk(true);
     setFormValues({
@@ -1150,15 +1155,26 @@ function EvaluationChange({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handelRiskSubmit = () => {
+  const handelRiskSubmit = (value) => {
     if (validateRisk()) {
+      if (value == "Submit") {
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          id: 0,
+        }));
+      }
       const payload = {
         riskAnalysisSubTaskId: subTaskDetail.id,
         hazardType: formValues.hazardType.value,
         riskAnalysisHazardSituation: [formValues],
       };
-      console.log(payload, "paysssss");
-      apiAuth.post(`/RiskAnalysis/CreateAnalysis`, payload).then((resp) => {
+      console.log(payload, "payyy");
+      let apiPath = "/RiskAnalysis/CreateAnalysis";
+
+      if (value === "Update") {
+        apiPath = "/RiskAnalysis/UpdateAnalysis";
+      }
+      apiAuth.post(apiPath, payload).then((resp) => {
         setRisk(false);
         getRecords();
       });
@@ -1181,6 +1197,7 @@ function EvaluationChange({
         residualLikelihoodScoring: "",
         residualSeverityScoring: "",
         residualRisk: "",
+        id: 0,
       });
     }
   };
@@ -1248,9 +1265,9 @@ function EvaluationChange({
     apiAuth.get(`/LookupData/Lov/29`).then((resp) => {
       setPotentialTimeDetails(resp.data.data);
     });
-    // apiAuth.get(`/LookupData/Lov/30/${value}`).then((resp) => {
-    //   setPotentialFrequencyDetails(resp.data.data);
-    // });
+    apiAuth.get(`/LookupData/Lov/30/${value}`).then((resp) => {
+      setPotentialFrequencyDetails(resp.data.data);
+    });
     apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
       const data = resp.data.data.riskAnalysisHazardSituation[0];
       setFormValues({
@@ -1344,6 +1361,7 @@ function EvaluationChange({
       setPotentialFrequencyDetails(resp.data.data);
     });
     apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
+      setEditRiskAnalysDetail(resp.data.data.riskAnalysisHazardSituation);
       const data = resp.data.data.riskAnalysisHazardSituation[0];
       setFormValues({
         ...formValues,
@@ -1366,6 +1384,7 @@ function EvaluationChange({
         residualSeverityScoring: data?.residualSeverityScoring,
         residualRisk: data?.residualRisk,
         residualRiskClassification: data?.residualRiskClassification,
+        id: data?.id,
       });
       const { classification, classificationValue } =
         calculateRiskClassification(data?.residualRisk);
@@ -1414,6 +1433,7 @@ function EvaluationChange({
         { comments: stopComment }
       )
       .then((resp) => {
+        setOpen(false);
         if (timerRef.current) {
           timerRef.current.resetTimer(); // Reset the timer when the API call is successful
         }
@@ -1495,7 +1515,7 @@ function EvaluationChange({
                       accepts
                     </div>
                   )}
-                  {Session?.activeSession?.status == 0 && (
+                  {!Session?.hasActiveSession && (
                     <div
                       className="mt-4 py-2 px-5 rounded-lg bg-red-100 dark:bg-red-700"
                       style={{
@@ -1756,9 +1776,13 @@ function EvaluationChange({
                               }}
                               error={!!errorsAdd[form.id]?.consultedDate}
                             >
+                              <FormLabel
+                                id={`consultedStaffId-label-${form.id}`}
+                              >
+                                Validity Expires On *
+                              </FormLabel>
                               <Box sx={{}}>
                                 <DatePicker
-                                  label="Validity Expires On *"
                                   name="consultedDate"
                                   renderInput={(params) => (
                                     <TextField
@@ -1794,40 +1818,40 @@ function EvaluationChange({
                             }}
                           >
                             <FormControl fullWidth>
-                              <InputLabel id="division-label">
+                              <FormLabel
+                                id={`consultedStaffId-label-${form.id}`}
+                              >
                                 Search Staff
-                              </InputLabel>
-                              <Select
-                                labelId="division-label"
-                                name="consultedStaffId"
+                              </FormLabel>
+                              <Autocomplete
                                 id={`consultedStaffId-${form.id}`}
-                                value={form.consultedStaffId}
-                                onChange={(e) =>
+                                options={docStaff}
+                                getOptionLabel={(option) => option.text}
+                                value={
+                                  docStaff.find(
+                                    (option) =>
+                                      option.value === form.consultedStaffId
+                                  ) || null
+                                }
+                                onChange={(event, newValue) => {
                                   handleInputChange(
                                     form.id,
                                     "consultedStaffId",
-                                    e.target.value
-                                  )
-                                }
-                                error={!!errorsAdd[form.id]?.consultedStaffId}
-                              >
-                                <MenuItem value="" disabled>
-                                  <em>None</em>
-                                </MenuItem>
-                                {docStaff.map((option) => (
-                                  <MenuItem
-                                    key={option.id}
-                                    value={option.value}
-                                  >
-                                    {option.text}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                              {!!errorsAdd[form.id]?.consultedStaffId && (
-                                <FormHelperText error>
-                                  {errorsAdd[form.id].consultedStaffId}
-                                </FormHelperText>
-                              )}
+                                    newValue ? newValue.value : ""
+                                  );
+                                }}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    error={
+                                      !!errorsAdd[form.id]?.consultedStaffId
+                                    }
+                                    helperText={
+                                      errorsAdd[form.id]?.consultedStaffId
+                                    }
+                                  />
+                                )}
+                              />
                             </FormControl>
                           </Box>
                           <Button
@@ -2186,7 +2210,6 @@ function EvaluationChange({
                                               <div>
                                                 <Grid
                                                   container
-                                                  spacing={2}
                                                   className="inventory-grid"
                                                   sx={{
                                                     paddingY: 2,
@@ -2199,7 +2222,6 @@ function EvaluationChange({
                                                   <Grid item xs={12} md={4}>
                                                     <h6
                                                       style={{
-                                                        paddingLeft: "10px",
                                                         paddingBottom: "5px",
                                                       }}
                                                     >
@@ -2237,10 +2259,9 @@ function EvaluationChange({
                                                         className="text-white"
                                                         style={{
                                                           backgroundColor:
-                                                            "blue",
-                                                          marginLeft: "10px",
+                                                            "#2563eb",
                                                           borderRadius: "5px",
-                                                          padding: "1px",
+                                                          padding: "4px",
                                                           fontSize: "10px",
                                                           cursor: "pointer",
                                                         }}
@@ -2514,7 +2535,7 @@ function EvaluationChange({
                                                                 "10px",
                                                               borderRadius:
                                                                 "5px",
-                                                              padding: "1px",
+                                                              padding: "3px",
                                                               fontSize: "10px",
                                                               cursor: "pointer",
                                                             }}
@@ -3252,33 +3273,53 @@ function EvaluationChange({
                                     >
                                       Task Assigned To *
                                     </FormLabel>
-                                    <Select
-                                      variant="outlined"
-                                      name="assignedStaffId"
-                                      value={task.assignedStaffId}
-                                      onChange={(e) =>
-                                        handleTaskInputChange(index, e)
+                                    <Autocomplete
+                                      id={`assignedStaffId-${index}`}
+                                      options={docStaff}
+                                      getOptionLabel={(option) => option.text}
+                                      value={
+                                        docStaff.find(
+                                          (option) =>
+                                            option.value ===
+                                            task.assignedStaffId
+                                        ) || null
                                       }
-                                      error={
-                                        !!errorsTask[`assignedStaffId_${index}`]
-                                      }
-                                    >
-                                      {docStaff.map((option) => (
+                                      onChange={(event, newValue) => {
+                                        handleTaskInputChange(index, {
+                                          target: {
+                                            name: "assignedStaffId",
+                                            value: newValue
+                                              ? newValue.value
+                                              : "",
+                                          },
+                                        });
+                                      }}
+                                      renderInput={(params) => (
+                                        <TextField
+                                          {...params}
+                                          variant="outlined"
+                                          error={
+                                            !!errorsTask[
+                                              `assignedStaffId_${index}`
+                                            ]
+                                          }
+                                          helperText={
+                                            errorsTask[
+                                              `assignedStaffId_${index}`
+                                            ]
+                                          }
+                                        />
+                                      )}
+                                      renderOption={(props, option) => (
                                         <MenuItem
+                                          {...props}
                                           key={option.id}
                                           value={option.value}
                                         >
                                           {option.text}
                                         </MenuItem>
-                                      ))}
-                                    </Select>
-                                    {!!errorsTask[
-                                      `assignedStaffId_${index}`
-                                    ] && (
-                                      <FormHelperText error>
-                                        {errorsTask[`assignedStaffId_${index}`]}
-                                      </FormHelperText>
-                                    )}
+                                      )}
+                                    />
                                   </FormControl>
                                 </div>
                               </div>{" "}
@@ -3460,7 +3501,7 @@ function EvaluationChange({
                       Cancel
                     </Button>
                     <Button
-                      className="whitespace-nowrap"
+                      className="whitespace-nowrap mt-12"
                       variant="contained"
                       color="secondary"
                       style={{ padding: "15px" }}
@@ -3744,14 +3785,16 @@ function EvaluationChange({
                     }}
                     className="flex flex-row "
                   >
-                    <Box
-                      sx={{
-                        width: 380,
-                        maxWidth: "48%",
-                      }}
-                    >
-                      {viewrisk ? (
-                        <>
+                    {viewrisk ? (
+                      <>
+                        <Box
+                          sx={{
+                            width: 280,
+                            maxWidth: "38%",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
                           <FormControl fullWidth>
                             <FormLabel
                               htmlFor="Time"
@@ -3780,6 +3823,13 @@ function EvaluationChange({
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
+                                "& .MuiSelect-icon": {
+                                  display: "none",
+                                },
+                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                  {
+                                    padding: "0px",
+                                  },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -3800,8 +3850,15 @@ function EvaluationChange({
                               </FormHelperText>
                             )}
                           </FormControl>
-                        </>
-                      ) : (
+                        </Box>
+                      </>
+                    ) : (
+                      <Box
+                        sx={{
+                          width: 380,
+                          maxWidth: "48%",
+                        }}
+                      >
                         <FormControl fullWidth>
                           <InputLabel id="time-select-label">Time *</InputLabel>
                           <Select
@@ -3828,16 +3885,19 @@ function EvaluationChange({
                             </FormHelperText>
                           )}
                         </FormControl>
-                      )}
-                    </Box>
-                    <Box
-                      sx={{
-                        width: 380,
-                        maxWidth: "48%",
-                      }}
-                    >
-                      {viewrisk ? (
-                        <>
+                      </Box>
+                    )}
+
+                    {viewrisk ? (
+                      <>
+                        <Box
+                          sx={{
+                            width: 280,
+                            maxWidth: "38%",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
                           <FormControl fullWidth>
                             <FormLabel
                               htmlFor="Frequency"
@@ -3865,6 +3925,13 @@ function EvaluationChange({
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
+                                "& .MuiSelect-icon": {
+                                  display: "none",
+                                },
+                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                  {
+                                    padding: "0px",
+                                  },
                               }}
                             >
                               {potentialFrequencyDetails.map((option) => (
@@ -3882,8 +3949,15 @@ function EvaluationChange({
                               </FormHelperText>
                             )}
                           </FormControl>
-                        </>
-                      ) : (
+                        </Box>
+                      </>
+                    ) : (
+                      <Box
+                        sx={{
+                          width: 380,
+                          maxWidth: "48%",
+                        }}
+                      >
                         <FormControl fullWidth>
                           <InputLabel id="time-select-label">
                             Frequency *
@@ -3909,8 +3983,8 @@ function EvaluationChange({
                             </FormHelperText>
                           )}
                         </FormControl>
-                      )}
-                    </Box>
+                      </Box>
+                    )}
 
                     <Box
                       sx={{
@@ -3996,6 +4070,13 @@ function EvaluationChange({
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
+                                "& .MuiSelect-icon": {
+                                  display: "none",
+                                },
+                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                  {
+                                    padding: "0px",
+                                  },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -4082,6 +4163,13 @@ function EvaluationChange({
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
+                                "& .MuiSelect-icon": {
+                                  display: "none",
+                                },
+                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                  {
+                                    padding: "0px",
+                                  },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -4351,6 +4439,13 @@ function EvaluationChange({
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
+                                "& .MuiSelect-icon": {
+                                  display: "none",
+                                },
+                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                  {
+                                    padding: "0px",
+                                  },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -4453,6 +4548,13 @@ function EvaluationChange({
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
+                                "& .MuiSelect-icon": {
+                                  display: "none",
+                                },
+                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                  {
+                                    padding: "0px",
+                                  },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -4607,6 +4709,13 @@ function EvaluationChange({
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
+                                "& .MuiSelect-icon": {
+                                  display: "none",
+                                },
+                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                  {
+                                    padding: "0px",
+                                  },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -4703,6 +4812,13 @@ function EvaluationChange({
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
+                                "& .MuiSelect-icon": {
+                                  display: "none",
+                                },
+                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                  {
+                                    padding: "0px",
+                                  },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -4867,9 +4983,13 @@ function EvaluationChange({
                 style={{
                   marginTop: "10px",
                 }}
-                onClick={handelRiskSubmit}
+                onClick={() =>
+                  handelRiskSubmit(
+                    editRiskAnalysDetail.length ? "Update" : "Submit"
+                  )
+                }
               >
-                Submit
+                {editRiskAnalysDetail.length ? "Update" : "Submit"}
               </Button>
             </div>
           </Paper>
@@ -4979,18 +5099,25 @@ function EvaluationChange({
 
                     <br className="ng-star-inserted" />
                   </div>
-                  <div>
-                    <textarea
-                      placeholder="Comment *"
-                      onChange={(e) => setStopComment(e.target.value)}
-                    />
+                  {Session?.activeSession?.status == 2 && (
+                    <div>
+                      <textarea
+                        placeholder="Comment *"
+                        onChange={(e) => setStopComment(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </div>
+                {Session?.activeSession?.status == 2 && (
+                  <div className="flex justify-end">
+                    <button
+                      className="stop-session"
+                      onClick={handleStopSession}
+                    >
+                      Stop Session
+                    </button>
                   </div>
-                </div>
-                <div className="flex justify-end">
-                  <button className="stop-session" onClick={handleStopSession}>
-                    Stop Session
-                  </button>
-                </div>
+                )}
               </>
             ) : (
               <div

@@ -39,6 +39,7 @@ const InitiationComplete = ({
   AssetDetails,
   currentActivityForm,
   currentSummeryById,
+  setContent,
 }) => {
   const StyledBadge = withStyles((theme) => ({
     badge: {
@@ -174,6 +175,11 @@ const InitiationComplete = ({
       .then((response) => {
         toast.success("Successfully Created");
         setOpen(false);
+        apiAuth
+          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+          .then((resp) => {
+            setContent(resp.data.data.phases);
+          });
       })
       .catch((error) => {});
   };
@@ -339,7 +345,7 @@ const InitiationComplete = ({
                 onClick={handleSubmit}
                 style={{ padding: "10px 20px" }}
               >
-                Submit
+                Submits
               </Button>
             </Box>
           </Box>

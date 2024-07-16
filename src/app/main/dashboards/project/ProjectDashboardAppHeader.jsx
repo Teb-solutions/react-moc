@@ -82,7 +82,7 @@ function ProjectDashboardAppHeader() {
           <div className="flex flex-col min-w-0 mx-16">
             <Typography className="text-2xl md:text-5xl font-semibold tracking-tight leading-7 md:leading-snug truncate">
               {/* {`Welcome back, ${user.data.displayName}!`} */}Welcome back,
-              Sreenivas Sathyamurthy
+              {localStorage.getItem("username")}
             </Typography>
 
             <div className="flex items-center">
@@ -93,7 +93,7 @@ function ProjectDashboardAppHeader() {
                 className="mx-6 leading-6 truncate"
                 color="text.secondary"
               >
-                You have 2 new messages and 15 new tasks
+                You have 15 pending tasks
               </Typography>
             </div>
           </div>

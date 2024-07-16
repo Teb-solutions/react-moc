@@ -49,7 +49,7 @@ function UserMenu() {
             {user.role?.toString()}
             {(!user.role ||
               (Array.isArray(user.role) && user.role.length === 0)) &&
-              "Guest"}
+              localStorage.getItem("username")}
           </Typography>
         </div>
 

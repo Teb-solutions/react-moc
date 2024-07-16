@@ -150,11 +150,13 @@ const ImplementationApprovalSite = ({
       })
       .then((resp) => {
         setValueRemark("");
-        apiAuth
-          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
-          .then((resp) => {
-            setContent(resp.data.data.phases);
-          });
+      });
+    apiAuth
+      .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+      .then((resp) => {
+        debugger;
+
+        setContent(resp.data.data.phases);
       });
   };
   return (
@@ -351,7 +353,7 @@ const ImplementationApprovalSite = ({
                                             aria-invalid="false"
                                             aria-required="false"
                                             style={{ height: "36px" }}
-                                            // value={rwx?.remark}
+                                            value={imptsk?.remark}
                                             onChange={(e) =>
                                               setHandelCommentRemark(
                                                 e.target.value

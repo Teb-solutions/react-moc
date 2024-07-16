@@ -569,6 +569,11 @@ const AssetCourse = () => {
           });
       });
   }
+
+  useEffect(() => {
+    getRecords();
+  }, []);
+
   const [tasks, setTasks] = useState([]);
   const [showRiskAnalysisChart, setShowRiskAnalysisChart] = useState(false);
   const [riskAnalysisChartOptions, setRiskAnalysisChartOptions] = useState({
@@ -1362,6 +1367,7 @@ const AssetCourse = () => {
                 AssetDetails={contentDetails}
                 currentActivityForm={currentActivityForm}
                 currentSummeryById={currentSummeryById}
+                setContent={setContent}
               />
             )}
             {currentPhase === "InitiationApprovalProceed" && (
@@ -1371,6 +1377,7 @@ const AssetCourse = () => {
                 AppActions={appActions}
                 AppActivity={appActivity}
                 assetEvaluationId={assetEvaluationId}
+                setContent={setContent}
               />
             )}
             {currentPhase === "EvaluationChange" && (
