@@ -1435,6 +1435,7 @@ const AssetCourse = () => {
                 currentActivityForm={currentActivityForm}
                 remarkRequest={remarkRequest}
                 setRemarkRequest={setRemarkRequest}
+                setContent={setContent}
               />
             )}
             {currentPhase === "ImplementationApproval" && (
@@ -1444,6 +1445,7 @@ const AssetCourse = () => {
                 assetEvaluationId={assetEvaluationId}
                 currentActivityForm={currentActivityForm}
                 lastActCode={lastActCode}
+                setContent={setContent}
               />
             )}
             {currentPhase === "ImplementationApprovalSite" && (
@@ -1456,6 +1458,7 @@ const AssetCourse = () => {
                 showApexAndContent={showApexAndContent}
                 contentDetails={contentDetails}
                 ApprovalManager={ApprovalManager}
+                setContent={setContent}
               />
             )}
             {currentPhase === "ImplementationApprovalCoorp" && (

@@ -30,6 +30,7 @@ const ImplementationApprovalSite = ({
   AppActions,
   AppActivity,
   ApprovalManager,
+  setContent,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [reviewed, setReviewed] = useState({});
@@ -149,6 +150,11 @@ const ImplementationApprovalSite = ({
       })
       .then((resp) => {
         setValueRemark("");
+        apiAuth
+          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+          .then((resp) => {
+            setContent(resp.data.data.phases);
+          });
       });
   };
   return (
@@ -486,56 +492,60 @@ const ImplementationApprovalSite = ({
                             </Accordion>
                           </div>
                         ) : (
-                          <div className="mat-form-field-wrapper">
-                            <div className="mat-form-field-flex">
-                              <img
-                                src="/assets/images/etc/userpic.png"
-                                alt="Card cover image"
-                                className="rounded-full mr-4"
-                                style={{
-                                  width: "5rem",
-                                  height: "5rem",
-                                }}
-                              />
-                              <div className="mat-form-field-infix">
-                                <textarea
-                                  rows="2"
-                                  className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                  placeholder="Write a comment..."
-                                  id="ImpTaskReview265"
-                                  data-placeholder="Write a comment..."
-                                  aria-invalid="false"
-                                  aria-required="false"
-                                  style={{ height: "36px" }}
-                                  onChange={(e) =>
-                                    setHandelCommentRemark(e.target.value)
-                                  }
-                                ></textarea>
-                                <button
-                                  className="mat-focus-indicator mat-raised-button mat-button-base"
-                                  style={{ float: "right" }}
-                                  onClick={() => handelCommentImp(imptsk.id, 1)}
-                                >
-                                  <span className="mat-button-wrapper">
-                                    Save
-                                  </span>
-                                  <span className="mat-ripple mat-button-ripple"></span>
-                                  <span className="mat-button-focus-overlay"></span>
-                                </button>
-                                <span className="mat-form-field-label-wrapper"></span>
+                          AppActivity.canEdit && (
+                            <div className="mat-form-field-wrapper">
+                              <div className="mat-form-field-flex">
+                                <img
+                                  src="/assets/images/etc/userpic.png"
+                                  alt="Card cover image"
+                                  className="rounded-full mr-4"
+                                  style={{
+                                    width: "5rem",
+                                    height: "5rem",
+                                  }}
+                                />
+                                <div className="mat-form-field-infix">
+                                  <textarea
+                                    rows="2"
+                                    className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                    placeholder="Write a comment..."
+                                    id="ImpTaskReview265"
+                                    data-placeholder="Write a comment..."
+                                    aria-invalid="false"
+                                    aria-required="false"
+                                    style={{ height: "36px" }}
+                                    onChange={(e) =>
+                                      setHandelCommentRemark(e.target.value)
+                                    }
+                                  ></textarea>
+                                  <button
+                                    className="mat-focus-indicator mat-raised-button mat-button-base"
+                                    style={{ float: "right" }}
+                                    onClick={() =>
+                                      handelCommentImp(imptsk.id, 1)
+                                    }
+                                  >
+                                    <span className="mat-button-wrapper">
+                                      Save
+                                    </span>
+                                    <span className="mat-ripple mat-button-ripple"></span>
+                                    <span className="mat-button-focus-overlay"></span>
+                                  </button>
+                                  <span className="mat-form-field-label-wrapper"></span>
+                                </div>
+                              </div>
+
+                              <div className="mat-form-field-subscript-wrapper">
+                                <div
+                                  className="mat-form-field-hint-wrapper"
+                                  style={{
+                                    opacity: 1,
+                                    transform: "translateY(0%)",
+                                  }}
+                                ></div>
                               </div>
                             </div>
-
-                            <div className="mat-form-field-subscript-wrapper">
-                              <div
-                                className="mat-form-field-hint-wrapper"
-                                style={{
-                                  opacity: 1,
-                                  transform: "translateY(0%)",
-                                }}
-                              ></div>
-                            </div>
-                          </div>
+                          )
                         )}
                       </div>
                     </td>

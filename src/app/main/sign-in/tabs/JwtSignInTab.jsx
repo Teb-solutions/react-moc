@@ -108,7 +108,7 @@ const JwtSignInTab = () => {
             if (enData) {
               toast.success("Successfully Logined");
               navigate("/dashboards/project");
-              // location.reload();
+              location.reload();
             }
           } catch (error) {
             console.error("Encryption/Decryption error:", error);
