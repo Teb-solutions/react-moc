@@ -26,6 +26,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 function createData(
   index,
@@ -279,7 +280,7 @@ export default function StickyHeadTable() {
     setImplementationist(updatedDepartmentList);
   };
   if (isLoading) {
-    return <Loader />;
+    return <FuseLoading />;
   }
   return (
     <div style={{ backgroundColor: "white" }}>

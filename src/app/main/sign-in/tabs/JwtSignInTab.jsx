@@ -101,6 +101,9 @@ const JwtSignInTab = () => {
         if (resp.data.statusCode === 200) {
           Cookies.remove("MOC_Features");
           localStorage.setItem("jwt_access_token", resp.data.data.jwt);
+          localStorage.setItem("username", resp.data.data.name);
+
+          name;
 
           try {
             const enData = encryptFeature(resp.data.data.features);

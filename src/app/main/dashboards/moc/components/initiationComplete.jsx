@@ -31,6 +31,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { apiAuth } from "src/utils/http";
 import { makeStyles } from "@mui/styles";
 import { withStyles } from "@mui/styles";
+import { toast, ToastContainer } from "react-toastify";
 
 const InitiationComplete = ({
   assetEvaluationId,
@@ -39,6 +40,7 @@ const InitiationComplete = ({
   AssetDetails,
   currentActivityForm,
   currentSummeryById,
+  setContent,
 }) => {
   const StyledBadge = withStyles((theme) => ({
     badge: {
@@ -81,7 +83,7 @@ const InitiationComplete = ({
   };
 
   const [IniComp, setIniComp] = useState({
-    classCategory: "",
+    classCategory: "1",
     changeLeaderId: "",
     changeLocation: "",
     changeType: "",
@@ -174,8 +176,15 @@ const InitiationComplete = ({
       .then((response) => {
         toast.success("Successfully Created");
         setOpen(false);
+        apiAuth
+          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+          .then((resp) => {
+            setContent(resp.data.data.phases);
+          });
       })
-      .catch((error) => {});
+      .catch((error) => {
+        toast.error("Some error occured");
+      });
   };
   const [openDrawer, setOpenDrawer] = useState(false);
   const [fileDetails, setFileDetails] = useState(false);
@@ -269,6 +278,8 @@ const InitiationComplete = ({
 
   return (
     <div className="w-full">
+      <ToastContainer className="toast-container " />
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

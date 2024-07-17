@@ -19,6 +19,8 @@ import {
 } from "./evaluation/AcademyApi";
 import CourseCard from "./CourseCard";
 import { apiAuth } from "src/utils/http";
+import Loader from "../../loader/Loader";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 const Root = styled(FusePageCarded)({
   "& .FusePageCarded-header": {},
@@ -54,6 +56,8 @@ function MocApp() {
 
   const [hideCompleted, setHideCompleted] = useState(false);
   const [originalData, setOriginalData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [site, setSite] = useState([]);
   const categories = [
     {
@@ -85,6 +89,7 @@ function MocApp() {
     function getRecords() {
       apiAuth.get("/ChangeRequest/List").then((resp) => {
         setOriginalData(resp.data.data);
+        setIsLoading(false);
       });
       apiAuth.get("/LookupData/Lov/23").then((resp) => {
         setSite(resp.data.data);
@@ -134,6 +139,10 @@ function MocApp() {
 
   function handleSearchText(event) {
     setSearchText(event.target.value);
+  }
+
+  if (isLoading) {
+    return <FuseLoading />;
   }
 
   return (

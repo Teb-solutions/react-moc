@@ -31,6 +31,7 @@ function InitiationApprovalProceed({
   AppActivity,
   currentActivityForm,
   TeamAssignmentList,
+  setContent,
 }) {
   const [staffList, setStaffList] = useState([]);
   const [open, setOpen] = useState(false);
@@ -123,6 +124,11 @@ function InitiationApprovalProceed({
       .then((resp) => {
         console.log("Response:", resp.data);
         setOpen(false);
+        apiAuth
+          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+          .then((resp) => {
+            setContent(resp.data.data.phases);
+          });
         getRecords();
       })
       .catch((error) => {

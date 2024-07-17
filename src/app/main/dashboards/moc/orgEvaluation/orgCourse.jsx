@@ -20,6 +20,7 @@ import Initiation from "../components/Initiation";
 import OrgPhasesEnum from "./orgPhaseEnum";
 import MainComponent from "../components/mainContent";
 import OrgImplementation from "../components/OrgImplementation";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 const orgCourse = () => {
   const pageLayout = useRef(null);
@@ -42,6 +43,7 @@ const orgCourse = () => {
   const [impDetails, setImpDetails] = useState([]);
   const [appActivity, setAppActivity] = useState([]);
   const [appActions, setApActions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let lastIndex = -1;
@@ -136,6 +138,8 @@ const orgCourse = () => {
         apiAuth
           .get(`/Activity/RequestLifecycle/${orgEvaluationId}`)
           .then((resp) => {
+            setIsLoading(false);
+
             setContent(resp.data.data.phases);
             setValueRemark("");
           });
@@ -219,6 +223,10 @@ const orgCourse = () => {
   useEffect(() => {
     handleStepChange();
   }, []);
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <FusePageSimple

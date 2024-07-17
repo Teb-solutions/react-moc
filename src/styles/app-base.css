@@ -294,11 +294,11 @@ body.sidebar1-open .maincntainer {
 }
 
 .loader {
-  border: 12px solid #f3f3f3;
+  border: 12px solid #bdbdbd;
   border-radius: 50%;
-  border-top: 12px solid rgb(125, 125, 125);
-  width: 90px;
-  height: 90px;
+  border-top: 12px solid rgb(255, 255, 255);
+  width: 60px;
+  height: 60px;
   -webkit-animation: spin 2s linear infinite; /* Safari */
   animation: spin 2s linear infinite;
 }

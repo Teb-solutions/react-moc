@@ -15,6 +15,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { decryptFeature } from "../../sign-in/tabs/featureEncryption";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 const Task = () => {
   const storedFeature = decryptFeature();
@@ -87,6 +88,8 @@ const Task = () => {
   const [editIconImage, setEditIconImage] = useState(false);
   const [addIconImage, setAddIconImage] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
   const [formData, setFormData] = useState({
     image: "",
     firstName: "",
@@ -114,6 +117,7 @@ const Task = () => {
   };
   function getRecords() {
     apiAuth.get(`/Staff/List`).then((resp) => {
+      setIsLoading(false);
       setTaskList(resp.data.data);
     });
   }
@@ -383,6 +387,10 @@ const Task = () => {
       document.body.classList.remove("sidebar1-open");
     };
   }, [sidebarOpen]);
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <>

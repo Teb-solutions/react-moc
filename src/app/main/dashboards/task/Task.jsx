@@ -32,6 +32,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { styled } from "@mui/material/styles";
 import { ToastContainer, toast } from "react-toastify";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 const Task = () => {
   const style = {
@@ -109,6 +110,8 @@ const Task = () => {
   const [fileName, setFileName] = useState("");
   const [viewDoc, setviewDoc] = useState(false);
   const [documentCounts, setDocumentCounts] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     description: "",
@@ -148,25 +151,8 @@ const Task = () => {
   const handleClose = () => setOpen(false);
   const getRecords = () => {
     apiAuth.get(`/Task/List`).then((resp) => {
+      setIsLoading(false);
       setTaskList(resp.data.data);
-    });
-  };
-
-  const getComplete = () => {
-    apiAuth.get(`/Task/List`).then((resp) => {
-      const completedTasks = resp?.data?.data?.filter((item) =>
-        item.taskList.some((task) => task.completed)
-      );
-      setTaskList(completedTasks);
-    });
-  };
-
-  const getPending = () => {
-    apiAuth.get(`/Task/List`).then((resp) => {
-      const IncompletedTasks = resp?.data?.data?.filter((item) =>
-        item.taskList.some((task) => !task.completed)
-      );
-      setTaskList(IncompletedTasks);
     });
   };
 
@@ -482,6 +468,11 @@ const Task = () => {
     setFileDetails(true);
     setDocumenDowToken(doc.token);
   };
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
+
   return (
     <>
       <ToastContainer className="toast-container " />
