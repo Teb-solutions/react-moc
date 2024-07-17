@@ -52,13 +52,8 @@ const EvaluationApproval = ({
   setContent,
 }) => {
   const [reviewed, setReviewed] = useState({});
-  const [handelCommentRemark, setHandelCommentRemark] = useState({
-    stakeHoldersCmt: "",
-    EvaluationImpactCmt: "",
-    taskCmt: "",
-  });
-  const [handelCommentRemark1, setHandelCommentRemark1] = useState("");
-  const [selectedTasks, setSelectedTasks] = useState([]);  handelImpactCommentImp
+  const [handelCommentRemark, setHandelCommentRemark] = useState("");
+  const [selectedTasks, setSelectedTasks] = useState([]);
   const [showSendPopup, setShowSendPopup] = useState(false);
   const [dateExtendopen, setDateExtendOpen] = useState(false);
   const handlehandledateExtendClose = () => setDateExtendOpen(false);
@@ -67,7 +62,6 @@ const EvaluationApproval = ({
   const [email, setEmail] = useState("");
   const [comments, setComments] = useState("");
   const [staff, setStaff] = useState([]);
-  const [rendering, setRendering] = useState(false);
 
   const [newRemark, setNewRemark] = useState("");
   const [newImpactTaskRemark, setNewImpactTaskRemark] = useState("");
@@ -88,7 +82,6 @@ const EvaluationApproval = ({
     updatedRemarks[index].remark = event.target.value;
     setRemarkRequest(updatedRemarks);
   };
-  console.log(contentDetails, "5554");
   const getRecords = async () => {
     try {
       const resp = await apiAuth.get(
@@ -104,40 +97,6 @@ const EvaluationApproval = ({
       console.error("Error fetching records:", error);
     }
   };
-  const shouldRender = () => {
-    if (
-      AppActivity?.canEdit &&
-      contentDetails &&
-      contentDetails?.consultaion?.length > 0
-    ) {
-      setHandelCommentRemark((prev) => ({
-        ...prev,
-        stakeHoldersCmt:
-          contentDetails.consultaion[0]?.reviews[0]?.remark || "",
-        EvaluationImpactCmt:
-          contentDetails.tasklist[0]?.changeImpactTaskReviews[0]?.remark,
-      }));
-    }
-  };
-  const shouldRender1 = () => {
-    if (
-      AppActivity?.canEdit &&
-      contentDetails &&
-      contentDetails.tasklist?.length > 0
-    ) {
-      setHandelCommentRemark((prev) => ({
-        ...prev,
-
-        EvaluationImpactCmt:
-          contentDetails.tasklist[0]?.changeImpactTaskReviews[0]?.remark,
-      }));
-    }
-  };
-
-  useEffect(() => {
-    shouldRender();
-    shouldRender1();
-  }, [AppActivity, contentDetails]);
   useEffect(() => {
     getRecords();
   }, []);
@@ -218,64 +177,43 @@ const EvaluationApproval = ({
   };
   const [expanded, setExpanded] = useState(false);
   const [clickedTasks, setClickedTasks] = useState({});
-  const HandleRemark = (e) => {
-    const { name, value } = e.target;
-    setHandelCommentRemark({
-      ...handelCommentRemark,
-      [name]: value,
-    });
-  };
 
-  const handelCommentImp = (id, rwid, value, check) => {
-    let endpoint;
-
-    // Determine the endpoint based on check and value
-    if (check === 1 || check === 2) {
-      const baseEndpoint = `/ChangeEvaluationConsultation/AddReview/${id}/EV_APPR_SITE_CH/`;
-      endpoint = value === 1 ? `${baseEndpoint}0` : `${baseEndpoint}${rwid}`;
-      if (check === 2) {
-        endpoint =
-          value === 1
-            ? `${baseEndpoint}0`
-            : `/Task/AddReview/${id}/EV_APPR_SITE_CH/`;
-      }
+  const handelCommentImp = (id, rwid, value) => {
+    debugger;
+    if (value == 1) {
+      apiAuth
+        .put(
+          `/ChangeEvaluationConsultation/AddReview/${id}/${lastActCode.code}/0`,
+          {
+            remark: handelCommentRemark,
+          }
+        )
+        .then((resp) => {
+          setHandelCommentRemark("");
+          handleStepChange();
+        });
+    } else {
+      apiAuth
+        .put(
+          `/ChangeEvaluationConsultation/AddReview/${id}/${lastActCode.code}/${rwid}`,
+          {
+            remark: handelCommentRemark,
+          }
+        )
+        .then((resp) => {
+          setHandelCommentRemark("");
+          handleStepChange();
+        });
     }
-
-    // Determine the remark based on check value
-    const remark =
-      check === 1
-        ? handelCommentRemark.stakeHoldersCmt
-        : check === 2
-          ? handelCommentRemark.EvaluationImpactCmt
-          : handelCommentRemark.taskCmt;
-
-    // Make the API request
-    apiAuth.put(endpoint, { remark }).then((resp) => {
-      handleStepChange();
-      let updatedRemark = {};
-      if (value === 1 && check === 1) {
-        handleStepChange();
-        updatedRemark = { stakeHoldersCmt: "" };
-      } else if (value === 2 && check === 2) {
-        handleStepChange();
-        updatedRemark = { EvaluationImpactCmt: "" };
-      } else if (check === 3) {
-        handleStepChange();
-        updatedRemark = { taskCmt: "" };
-      }
-
-      setHandelCommentRemark({ ...handelCommentRemark, ...updatedRemark });
-      handleStepChange();
-    });
   };
 
   const handelImpactCommentImp = (id) => {
     apiAuth
       .put(`/Task/AddReview/${id}/${lastActCode.code}`, {
-        remark: handelCommentRemark1,
+        remark: handelCommentRemark,
       })
       .then((resp) => {
-        setHandelCommentRemark1("");
+        setHandelCommentRemark("");
         handleStepChange();
       });
   };
@@ -1038,7 +976,7 @@ const EvaluationApproval = ({
                               <button
                                 className="mat-focus-indicator mat-raised-button mat-button-base"
                                 style={{ float: "right" }}
-                                onClick={() => handelCommentImp(itm.id, 1)}
+                                onClick={() => handelCommentImp(itm.id, 1, 1)}
                               >
                                 <span className="mat-button-wrapper">Save</span>
                                 <span className="mat-ripple mat-button-ripple"></span>
@@ -1059,8 +997,8 @@ const EvaluationApproval = ({
                           </div>
                         </div>
                       )}
-                      {itm?.reviews?.map((rwv) => (
-                        <div className="mat-form-field-wrapper">
+                      {itm?.reviews?.map((rwv, index) => (
+                        <div className="mat-form-field-wrapper" key={index}>
                           <div className="mat-form-field-flex">
                             <img
                               src="/assets/images/etc/userpic.png"
@@ -1076,7 +1014,6 @@ const EvaluationApproval = ({
                               <div className="mat-form-field-infix">
                                 <textarea
                                   rows="2"
-                                  name="stakeHoldersCmt"
                                   className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
                                   placeholder="Write a comment..."
                                   id="ImpTaskReview265"
@@ -1084,11 +1021,9 @@ const EvaluationApproval = ({
                                   aria-invalid="false"
                                   aria-required="false"
                                   style={{ height: "36px" }}
-                                  value={handelCommentRemark.stakeHoldersCmt}
-                                  onChange={
-                                    HandleRemark
-                                    // (e) =>
-                                    // setHandelCommentRemark(e.target.value)
+                                  defaultValue={rwv.remark}
+                                  onChange={(e) =>
+                                    setHandelCommentRemark(e.target.value)
                                   }
                                 ></textarea>
 
@@ -1098,9 +1033,9 @@ const EvaluationApproval = ({
                                   onClick={() =>
                                     handelCommentImp(
                                       itm.id,
-                                      itm.reviews[0].id,
-                                      2,
-                                      1
+                                      itm.reviews[1].id,
+
+                                      2
                                     )
                                   }
                                 >
@@ -1117,7 +1052,14 @@ const EvaluationApproval = ({
                             ) : (
                               <div className="mat-form-field-infix">
                                 <span className="">
-                                  {rwv?.createdByStaffName}
+                                  {rwv?.createdByStaffName + "55"}
+                                </span>
+                                &nbsp;&nbsp;
+                                <span
+                                  className="text-gray"
+                                  style={{ fontSize: "10px" }}
+                                >
+                                  {rwv?.remark}
                                 </span>
                               </div>
                             )}
@@ -1184,7 +1126,7 @@ const EvaluationApproval = ({
                       <button
                         className="mat-focus-indicator mat-raised-button mat-button-base"
                         style={{ float: "right" }}
-                        onClick={() => handelCommentImp(itm.id, 1)}
+                        onClick={() => handelCommentImp(itm.id, 1, 1)}
                       >
                         <span className="mat-button-wrapper">Save</span>
                         <span className="mat-ripple mat-button-ripple"></span>
@@ -1600,7 +1542,7 @@ const EvaluationApproval = ({
                                             aria-required="false"
                                             style={{ height: "36px" }}
                                             onChange={(e) =>
-                                              setHandelCommentRemark1(
+                                              setHandelCommentRemark(
                                                 e.target.value
                                               )
                                             }
@@ -1662,7 +1604,7 @@ const EvaluationApproval = ({
                                             style={{ height: "36px" }}
                                             defaultValue={rwx?.remark}
                                             onChange={(e) =>
-                                              setHandelCommentRemark1(
+                                              setHandelCommentRemark(
                                                 e.target.value
                                               )
                                             }
@@ -1674,8 +1616,7 @@ const EvaluationApproval = ({
                                             onClick={() =>
                                               handelImpactCommentImp(
                                                 imptsk.id,
-                                                // imptsk
-                                                //   .changeImpactTaskReviews[0]
+                                                // itm.changeImpactTaskReviews[0]
                                                 //   .id,
                                                 2
                                               )
@@ -1695,6 +1636,9 @@ const EvaluationApproval = ({
                                         <div className="mat-form-field-infix">
                                           <span className="">
                                             {rwx?.createdByStaffName}
+                                          </span>{" "}
+                                          <span className="">
+                                            {rwx?.remark}
                                           </span>
                                         </div>
                                       )}
