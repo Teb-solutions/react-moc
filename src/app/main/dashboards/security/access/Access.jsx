@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
 import MocHeader from "../../moc/MocHeader";
 import { encryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 const Access = () => {
   const pageLayout = useRef(null);
@@ -23,6 +24,7 @@ const Access = () => {
   const [roleIdList, setRoleIdList] = useState([]);
   const [allExpanded, setAllExpanded] = useState(false);
   const [expandedAccordions, setExpandedAccordions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const featureMap = [
     { id: 1, code: "MST", description: "Master", parentId: 0 },
@@ -72,6 +74,7 @@ const Access = () => {
 
   function getRecords() {
     apiAuth.get(`/Role/List`).then((resp) => {
+      setIsLoading(false);
       setRoleList(resp.data.data);
       apiAuth
         .get(`/RoleFeature/List?roleId=${resp.data.data[0].roleId}`)
@@ -171,6 +174,10 @@ const Access = () => {
         setRoleIdList(roleIdList); // Revert to the original state
       });
   };
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <>

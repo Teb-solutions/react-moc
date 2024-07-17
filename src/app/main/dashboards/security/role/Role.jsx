@@ -27,6 +27,7 @@ import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
 import { ToastContainer, toast } from "react-toastify";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 function createData(
   index,
@@ -90,6 +91,7 @@ export default function StickyHeadTable() {
   const [edit, setEdit] = useState(false);
   const [errors, setErrors] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
+
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -260,7 +262,7 @@ export default function StickyHeadTable() {
   };
 
   if (isLoading) {
-    return <Loader />;
+    return <FuseLoading />;
   }
 
   return (

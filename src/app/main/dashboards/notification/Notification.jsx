@@ -1,3 +1,4 @@
+import FuseLoading from "@fuse/core/FuseLoading";
 import { InputLabel, Paper } from "@mui/material";
 import { format, parseISO } from "date-fns";
 import React from "react";
@@ -8,9 +9,11 @@ import { apiAuth } from "src/utils/http";
 
 const Notification = () => {
   const [notificationList, setNotificationList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   function getRecords() {
     apiAuth.get(`/NotificationManager/Notifications/`).then((resp) => {
+      setIsLoading(false);
       setNotificationList(resp.data.data);
     });
   }
@@ -25,6 +28,11 @@ const Notification = () => {
     // Format the date
     return format(date, "MMM d, h:mm a");
   };
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
+
   return (
     <>
       <div className="" style={{ margin: "30px" }}>

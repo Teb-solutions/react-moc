@@ -55,6 +55,7 @@ import EvaluationChange from "../components/EvaluationChange";
 import EvaluationApproval from "../components/EvaluationApproval";
 import ImplementationApproval from "../components/ImplementationApproval";
 import ImplementationApprovalSite from "../components/ImplementationApprovalSite";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -95,7 +96,7 @@ const AssetCourse = () => {
   const { assetEvaluationId } = routeParams;
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
-
+  const [isLoading, setIsLoading] = useState(true);
   // const [AssetDetails, setAssetDetails] = useState({});
   const [currentSummeryById, setCurrentSummeryById] = useState({});
   const [changeEvaluationId, setChangeEvaluationId] = useState();
@@ -735,6 +736,8 @@ const AssetCourse = () => {
             apiAuth
               .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
               .then((resp) => {
+                setIsLoading(false);
+
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp.data?.data);
               });
@@ -756,6 +759,8 @@ const AssetCourse = () => {
                       `/ApprovalManager/Remark/${resp.data.data.activity.uid}`
                     )
                     .then((resp) => {
+                      setIsLoading(false);
+
                       setApprovalManager(resp.data?.data);
                     });
                 });
@@ -768,6 +773,8 @@ const AssetCourse = () => {
               .then((resp) => {
                 setCurrentSummeryById(resp.data.data);
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+                  setIsLoading(false);
+
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
                 });
@@ -781,6 +788,8 @@ const AssetCourse = () => {
                 setTeamAssignmentList(resp.data.data);
 
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+                  setIsLoading(false);
+
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
                 });
@@ -793,6 +802,8 @@ const AssetCourse = () => {
                 setTeamAssignmentList(resp.data.data);
 
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+                  setIsLoading(false);
+
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
                 });
@@ -830,6 +841,8 @@ const AssetCourse = () => {
                   `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
                 )
                 .then((resp) => {
+                  setIsLoading(false);
+
                   setRemarkRequest(resp.data.data);
                 });
             });
@@ -866,6 +879,8 @@ const AssetCourse = () => {
                   `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
                 )
                 .then((resp) => {
+                  setIsLoading(false);
+
                   setRemarkRequest(resp.data.data);
                 });
             });
@@ -902,6 +917,8 @@ const AssetCourse = () => {
                   `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
                 )
                 .then((resp) => {
+                  setIsLoading(false);
+
                   setRemarkRequest(resp.data.data);
                 });
             });
@@ -938,12 +955,16 @@ const AssetCourse = () => {
                   `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
                 )
                 .then((resp) => {
+                  setIsLoading(false);
+
                   setRemarkRequest(resp.data.data);
                 });
             });
             break;
           case "ImplementationApproval":
             apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setIsLoading(false);
+
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
             });
@@ -963,6 +984,8 @@ const AssetCourse = () => {
               apiAuth
                 .get(`/ApprovalManager/Remark/${resp.data.data.activity.uid}`)
                 .then((resp) => {
+                  setIsLoading(false);
+
                   setApprovalManager(resp.data?.data);
                 });
             });
@@ -983,6 +1006,8 @@ const AssetCourse = () => {
               apiAuth
                 .get(`/ApprovalManager/Remark/${resp.data.data.activity.uid}`)
                 .then((resp) => {
+                  setIsLoading(false);
+
                   setApprovalManager(resp.data?.data);
                 });
             });
@@ -1003,6 +1028,8 @@ const AssetCourse = () => {
               apiAuth
                 .get(`/ApprovalManager/Remark/${resp.data.data.activity.uid}`)
                 .then((resp) => {
+                  setIsLoading(false);
+
                   setApprovalManager(resp.data?.data);
                 });
             });
@@ -1023,6 +1050,8 @@ const AssetCourse = () => {
               apiAuth
                 .get(`/ApprovalManager/Remark/${resp.data.data.activity.uid}`)
                 .then((resp) => {
+                  setIsLoading(false);
+
                   setApprovalManager(resp.data?.data);
                 });
             });
@@ -1331,6 +1360,10 @@ const AssetCourse = () => {
   useEffect(() => {
     handleStepChange();
   }, []);
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <FusePageSimple

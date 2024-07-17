@@ -567,6 +567,7 @@ function EvaluationChange({
       .put(`/ChangeEvaluationConsultation/UpdateList?id=${editId}`, apiData)
       .then((resp) => {
         setEditConsultation(false);
+        setAddConsultation(false);
         getRecords();
       });
     // Send apiData to the API endpoint using fetch or any other method
@@ -1654,31 +1655,27 @@ function EvaluationChange({
                               </div>
                               {itms?.remark !== "" &&
                                 itms?.tasks.length !== 0 && (
-                                  <div style={{ alignItems: "flex-start" }}>
-                                    <div
-                                      className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                      style={{
-                                        padding: "20px",
-                                        backgroundColor: "#EBF8FF",
-                                      }}
-                                    >
-                                      <p>
-                                        <b>Task Added</b> : {itms.tasks[0]}{" "}
-                                      </p>
+                                  <>
+                                    <div className="">
+                                      <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                        <b>Task Added</b>
+                                      </span>
+                                      <span className="task-detail-value">
+                                        {itms.tasks[0]}
+                                      </span>
                                     </div>
                                     <div
-                                      className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                      style={{
-                                        padding: "20px",
-                                        backgroundColor: "#EBF8FF",
-                                        marginTop: "5px",
-                                      }}
+                                      className=""
+                                      style={{ marginTop: "25px" }}
                                     >
-                                      <p>
-                                        <b>Remarks</b> : {itms.remark}{" "}
-                                      </p>
+                                      <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                        <b>Remarks</b>
+                                      </span>
+                                      <span className="task-detail-value">
+                                        {itms.remark}
+                                      </span>
                                     </div>
-                                  </div>
+                                  </>
                                 )}
                               <div
                                 _ngcontent-fyk-c288=""

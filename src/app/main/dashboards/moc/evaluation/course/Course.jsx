@@ -44,6 +44,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import DocPhasesEnum from "./docPhaseEnum";
 import { ToastContainer, toast } from "react-toastify";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -149,6 +150,8 @@ function Course() {
   ]);
   const [value, setValue] = useState(0);
   const [valueRemark, setValueRemark] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
   const [data, setData] = useState({
     consultedDate: null,
     consultedStaffId: "",
@@ -552,6 +555,7 @@ function Course() {
 
   function getRecords() {
     apiAuth.get(`/Activity/RequestLifecycle/${evaluationId}`).then((resp) => {
+      setIsLoading(false);
       setContent(resp.data.data.phases);
       setValueRemark("");
     });
@@ -1002,6 +1006,10 @@ function Course() {
   useEffect(() => {
     handleStepChange();
   }, []);
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <FusePageSimple

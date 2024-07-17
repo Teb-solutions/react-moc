@@ -11,12 +11,15 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
 import { format, parseISO } from "date-fns";
+import FuseLoading from "@fuse/core/FuseLoading";
 const SessionList = () => {
   const [sessionList, setSessionList] = useState([]);
   const [Comment, setComment] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   function getRecords() {
     apiAuth.get(`/NotificationManager/GetAllSessions/`).then((resp) => {
+      setIsLoading(false);
       setSessionList(resp.data.data);
     });
   }
@@ -54,6 +57,10 @@ const SessionList = () => {
         getRecords();
       });
   };
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <>
