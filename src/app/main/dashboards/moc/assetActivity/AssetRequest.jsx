@@ -29,6 +29,7 @@ import { parseISO, format } from "date-fns";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 function AssetRequest() {
   const style = {
@@ -85,6 +86,7 @@ function AssetRequest() {
   const [expenseNature, setExpenseNature] = useState([]);
   const [expenseType, setExpenseType] = useState([]);
   const [purchaseCat, setPurchaseCat] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [docController, setDocController] = useState([]);
   const [open, setOpen] = useState(false);
@@ -105,14 +107,15 @@ function AssetRequest() {
   };
 
   const [documentState, setDocumentState] = useState({
-    type: "",
+    type: 1,
     projectValue: "",
-    expenseNature: "",
-    expenseType: "",
-    purchaseCategory: "",
+    expenseNature: 2,
+    expenseType: 3,
+    purchaseCategory: 2,
     projectName: "",
     projectDescription: "",
   });
+
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedFile, setSelectedFile] = useState({
@@ -315,6 +318,7 @@ function AssetRequest() {
       setDocController(staffResponse.data.data);
 
       const changeRequestResponse = await apiAuth.get(`/ChangeRequest/Create`);
+      setIsLoading(false);
       setDocContent(changeRequestResponse.data.data);
       setMockType(changeRequestResponse.data.data.mocType);
       setExpenseNature(changeRequestResponse.data.data.mocExpenseNature);
@@ -349,6 +353,10 @@ function AssetRequest() {
       });
     }
   }, [docContent]);
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <FusePageCarded
@@ -469,229 +477,7 @@ function AssetRequest() {
                 className="my-10"
                 style={{ borderTopWidth: "2px", marginTop: "45px" }}
               ></div>
-              {/* <div style={{ marginTop: "20px" }}>
-                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                  <FormControl
-                    fullWidth
-                    sx={{ m: 1 }}
-                    error={!!errors.projectName}
-                  >
-                    <InputLabel htmlFor="projectName">
-                      Document Name *
-                    </InputLabel>
-                    <OutlinedInput
-                      id="projectName"
-                      name="projectName"
-                      value={documentState.projectName}
-                      onChange={handleChange}
-                      label="Document Name *"
-                    />
-                    {!!errors.projectName && (
-                      <FormHelperText>{errors.projectName}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Box>
-                <Box
-                  sx={{ display: "flex", flexWrap: "wrap", marginTop: "15px" }}
-                >
-                  <FormControl fullWidth sx={{ m: 1 }}>
-                    <InputLabel htmlFor="projectDescription">
-                      Document Description *
-                    </InputLabel>
-                    <OutlinedInput
-                      id="projectDescription"
-                      name="projectDescription"
-                      value={documentState.projectDescription}
-                      onChange={handleChange}
-                      label="Document Description *"
-                    />
-                  </FormControl>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    marginTop: "15px",
-                    marginLeft: "10px",
-                  }}
-                >
-                  <FormControl>
-                    <FormLabel
-                      id="documentType"
-                      style={{ color: formValid ? "inherit" : "red" }}
-                    >
-                      Document Type *
-                    </FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby="documentType"
-                      name="documentType"
-                      value={
-                        documentState.isNewDocument == null
-                          ? ""
-                          : documentState.isNewDocument
-                            ? "New"
-                            : "Existing"
-                      }
-                      onChange={handleRadioChange}
-                    >
-                      <FormControlLabel
-                        value="New"
-                        control={<Radio />}
-                        label="New"
-                      />
-                      <FormControlLabel
-                        value="Existing"
-                        control={<Radio />}
-                        label="Existing"
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                </Box>
-                {documentState.isNewDocument === true && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      marginTop: "15px",
-                    }}
-                  >
-                    <FormControl
-                      fullWidth
-                      sx={{ m: 1 }}
-                      error={!!errors.reasonForNewDocument}
-                    >
-                      <InputLabel htmlFor="newDocumentField">
-                        Reason For New Document *
-                      </InputLabel>
-                      <OutlinedInput
-                        id="reasonForNewDocument"
-                        name="reasonForNewDocument"
-                        value={documentState.reasonForNewDocument}
-                        onChange={handleChange}
-                        label="Reason For New Document *"
-                      />
-                      {!!errors.reasonForNewDocument && (
-                        <FormHelperText>
-                          {errors.reasonForNewDocument}
-                        </FormHelperText>
-                      )}
-                    </FormControl>
-                  </Box>
-                )}
-                {documentState.isNewDocument === false && (
-                  <>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <FormControl
-                        sx={{
-                          m: 1,
-                          width: 480,
-                          maxWidth: "50%",
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                            marginTop: "15px",
-                          }}
-                        >
-                          <DatePicker
-                            label="Validity Expires On *"
-                            value={documentState.docOldValidityDate}
-                            onChange={handleChanges}
-                            renderInput={(params) => (
-                              <TextField fullWidth {...params} />
-                            )}
-                          />
-                        </Box>
-                      </FormControl>
-                    </LocalizationProvider>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        marginTop: "15px",
-                      }}
-                    >
-                      <FormControl
-                        fullWidth
-                        sx={{ m: 1 }}
-                        error={!!errors.reasonForNewDocument}
-                      >
-                        <InputLabel htmlFor="existingDocumentField2">
-                          Reason For Change*
-                        </InputLabel>
-                        <OutlinedInput
-                          id="reasonForNewDocument"
-                          name="reasonForNewDocument"
-                          value={documentState.reasonForNewDocument}
-                          onChange={handleChange}
-                          label="Reason For Change*"
-                        />
-                        {!!errors.reasonForNewDocument && (
-                          <FormHelperText>
-                            {errors.reasonForNewDocument}
-                          </FormHelperText>
-                        )}
-                      </FormControl>
-                    </Box>
-                  </>
-                )}
-                <Box
-                  sx={{ display: "flex", flexWrap: "wrap", marginTop: "15px" }}
-                >
-                  <FormControl
-                    fullWidth
-                    sx={{ m: 1 }}
-                    error={!!errors.documentUrl}
-                  >
-                    <InputLabel htmlFor="documentUrl">
-                      Document URL *
-                    </InputLabel>
-                    <OutlinedInput
-                      id="documentUrl"
-                      name="documentUrl"
-                      value={documentState.documentUrl}
-                      onChange={handleChange}
-                      label="Document URL *"
-                    />
-                    {!!errors.documentUrl && (
-                      <FormHelperText>{errors.documentUrl}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Box>
-                <Box
-                  sx={{ display: "flex", flexWrap: "wrap", marginTop: "15px" }}
-                >
-                  <FormControl
-                    fullWidth
-                    sx={{ m: 1 }}
-                    error={!!errors.docControllerId}
-                  >
-                    <InputLabel id="functionName-label">
-                      Document Controller *
-                    </InputLabel>
-                    <Select
-                      labelId="functionName-label"
-                      id="docControllerId"
-                      name="docControllerId"
-                      value={documentState.docControllerId}
-                      onChange={handleChange}
-                      label="Document Controller *"
-                    >
-                      {docController.map((option) => (
-                        <MenuItem key={option.id} value={option.value}>
-                          {option.text}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {!!errors.docControllerId && (
-                      <FormHelperText>{errors.docControllerId}</FormHelperText>
-                    )}
-                  </FormControl>
-                </Box>
-              </div> */}
+
               <div style={{ marginTop: "30px" }} className="flex flex-row ">
                 <FormControl
                   sx={{
@@ -710,6 +496,7 @@ function AssetRequest() {
                     variant="outlined"
                     name="type"
                     onChange={handleChange}
+                    value={documentState.type}
                   >
                     {mockType.map((option) => (
                       <MenuItem key={option.id} value={option.value}>
@@ -759,6 +546,7 @@ function AssetRequest() {
                     variant="outlined"
                     name="expenseNature"
                     onChange={handleChange}
+                    value={documentState.expenseNature}
                   >
                     {expenseNature.map((option) => (
                       <MenuItem key={option.id} value={option.value}>
@@ -789,6 +577,7 @@ function AssetRequest() {
                     variant="outlined"
                     name="expenseType"
                     onChange={handleChange}
+                    value={documentState.expenseType}
                   >
                     {expenseType.map((option) => (
                       <MenuItem key={option.id} value={option.value}>
@@ -812,12 +601,13 @@ function AssetRequest() {
                     component="legend"
                     error={!!errors.purchaseCategory}
                   >
-                    Purchase Category nature*
+                    Purchase Category *
                   </FormLabel>
                   <Select
                     variant="outlined"
                     name="purchaseCategory"
                     onChange={handleChange}
+                    value={documentState.purchaseCategory}
                   >
                     {purchaseCat.map((option) => (
                       <MenuItem key={option.id} value={option.value}>

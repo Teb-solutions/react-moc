@@ -349,6 +349,7 @@ function ImplementationApproval({
       .post(`ChangeImpact/ActionTask?id=${assetEvaluationId}`, updatedTask)
       .then((response) => {
         getRecords();
+        handelComments(e, task.id);
         console.log(response);
       })
       .catch((error) => {
@@ -368,6 +369,7 @@ function ImplementationApproval({
     apiAuth
       .post(`ChangeImpact/ActionTask?id=${assetEvaluationId}`, updatedTask)
       .then((response) => {
+        handelComments(e, task.id);
         getRecords();
         console.log(response);
       })

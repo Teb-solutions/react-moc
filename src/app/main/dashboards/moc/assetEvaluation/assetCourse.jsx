@@ -56,6 +56,7 @@ import EvaluationApproval from "../components/EvaluationApproval";
 import ImplementationApproval from "../components/ImplementationApproval";
 import ImplementationApprovalSite from "../components/ImplementationApprovalSite";
 import FuseLoading from "@fuse/core/FuseLoading";
+import CustomStepIcon from "../CustomStepIcon";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -1419,6 +1420,7 @@ const AssetCourse = () => {
                 AppActions={appActions}
                 AppActivity={appActivity}
                 assetEvaluationId={assetEvaluationId}
+                setContent={setContent}
               />
             )}
             {currentPhase === "EvaluationApproval" && (
@@ -1433,6 +1435,7 @@ const AssetCourse = () => {
                 currentActivityForm={currentActivityForm}
                 remarkRequest={remarkRequest}
                 setRemarkRequest={setRemarkRequest}
+                setContent={setContent}
               />
             )}
             {currentPhase === "EvaluationApprovalCooprate" && (
@@ -1447,6 +1450,7 @@ const AssetCourse = () => {
                 currentActivityForm={currentActivityForm}
                 remarkRequest={remarkRequest}
                 setRemarkRequest={setRemarkRequest}
+                setContent={setContent}
               />
             )}
             {currentPhase === "EvaluationApprovalVp" && (
@@ -1513,6 +1517,7 @@ const AssetCourse = () => {
                 showApexAndContent={showApexAndContent}
                 contentDetails={contentDetails}
                 ApprovalManager={ApprovalManager}
+                setContent={setContent}
               />
             )}
             {currentPhase === "ImplementationApprovalDiv" && (
@@ -1525,6 +1530,7 @@ const AssetCourse = () => {
                 showApexAndContent={showApexAndContent}
                 contentDetails={contentDetails}
                 ApprovalManager={ApprovalManager}
+                setContent={setContent}
               />
             )}
 
@@ -1538,6 +1544,7 @@ const AssetCourse = () => {
                 showApexAndContent={showApexAndContent}
                 contentDetails={contentDetails}
                 ApprovalManager={ApprovalManager}
+                setContent={setContent}
               />
             )}
           </div>
@@ -1593,6 +1600,15 @@ const AssetCourse = () => {
                     >
                       <StepLabel
                         className="font-medium"
+                        StepIconComponent={(props) => (
+                          <CustomStepIcon
+                            {...props}
+                            index={index}
+                            canView={step.canView}
+                            isComplete={step.isComplete}
+                            status={step.status}
+                          />
+                        )}
                         sx={{
                           "& .MuiSvgIcon-root": {
                             color: "background.default",
@@ -1623,7 +1639,6 @@ const AssetCourse = () => {
                           course={step.isComplete === true ? 100 : 0}
                         />
                       </StepContent>
-
                       <>
                         <StepContent
                           style={{ fontSize: "10px" }}
@@ -1637,7 +1652,10 @@ const AssetCourse = () => {
                           </b>
                         </StepContent>
                         <StepContent style={{ fontSize: "10px" }}>
-                          Started at <b>{formatDate(step.actualStartDate)}</b>
+                          Started at{" "}
+                          <b>
+                            {formatDate(step.actualStartDate, "yyyy-MM-dd")}
+                          </b>
                         </StepContent>
                         <StepContent style={{ fontSize: "10px" }}>
                           {step.actualEndDate === null ? (
@@ -1645,7 +1663,9 @@ const AssetCourse = () => {
                           ) : (
                             <>
                               {step.status} at{" "}
-                              <b>{formatDate(step.actualEndDate)}</b>
+                              <b>
+                                {formatDate(step?.actualEndDate, "yyyy-MM-dd")}
+                              </b>
                             </>
                           )}
                         </StepContent>

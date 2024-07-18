@@ -45,6 +45,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import DocPhasesEnum from "./docPhaseEnum";
 import { ToastContainer, toast } from "react-toastify";
 import FuseLoading from "@fuse/core/FuseLoading";
+import CustomStepIcon from "../../CustomStepIcon";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -4213,6 +4214,15 @@ function Course() {
                     >
                       <StepLabel
                         className="font-medium"
+                        StepIconComponent={(props) => (
+                          <CustomStepIcon
+                            {...props}
+                            index={index}
+                            canView={step.canView}
+                            isComplete={step.isComplete}
+                            status={step.status}
+                          />
+                        )}
                         sx={{
                           "& .MuiSvgIcon-root": {
                             color: "background.default",

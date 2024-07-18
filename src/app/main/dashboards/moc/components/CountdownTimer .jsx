@@ -12,21 +12,31 @@ const CountdownTimer = forwardRef(({ Session }, ref) => {
   });
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSeconds((prevSeconds) => {
-        const newTime = prevSeconds + 1;
-        localStorage.setItem("currentSeconds", newTime.toString());
-        return newTime;
-      });
-    }, 1000);
+    let timer;
+    if (Session?.activeSession?.status === 2) {
+      timer = setInterval(() => {
+        setCurrentSeconds((prevSeconds) => {
+          const newTime = prevSeconds + 1;
+          localStorage.setItem("currentSeconds", newTime.toString());
+          return newTime;
+        });
+      }, 1000);
+    }
 
     return () => clearInterval(timer);
-  }, []);
+  }, [Session]);
 
   useImperativeHandle(ref, () => ({
     startTimer: () => {
       setCurrentSeconds(0);
       localStorage.setItem("currentSeconds", "0");
+    },
+    resetTimer: () => {
+      setCurrentSeconds(0);
+      localStorage.removeItem("currentSeconds");
+    },
+    stopTimer: () => {
+      clearInterval(timer);
     },
   }));
 

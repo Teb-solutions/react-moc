@@ -658,7 +658,7 @@ function Initiation(props) {
             </div>
             <div className="flex items-center justify-between w-full mt-8 px-6 py-3 border-t">
               <div>
-                <StyledBadge badgeContent={contentDetails.documentStatus}>
+                <StyledBadge badgeContent={contentDetails.documentCount}>
                   <Button
                     className="whitespace-nowrap mt-5"
                     style={{

@@ -781,3 +781,31 @@ body.sidebar1-open .maincntainer {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+
+.custom-update-button {
+  position: absolute;
+  right: 10px;
+  top: 60%;
+  transform: translateY(-50%);
+  background-color: white;
+  color: black; /* Match the blue color */
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.custom-update-button:hover {
+  background-color: rgb(216, 216, 216);
+
+  color: black;
+}
+
+.muiltr-6od3lo-MuiChip-label {
+  padding-left: 0px;
+  padding-right: 0px;
+  white-space: "none";
+}

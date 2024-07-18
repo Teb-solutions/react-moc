@@ -163,6 +163,7 @@ const Task = () => {
   // Function to open sidebar
   const openSidebar = (e, task) => {
     e.preventDefault();
+    window.history.pushState({}, "", `/task/${task.id}`);
     setTask(task);
     setSidebarOpen(true);
     if (task.sourceTaskId != null) {
@@ -962,10 +963,7 @@ const Task = () => {
                       style={{ padding: "2.5rem" }}
                       onClick={(e) => openSidebar(e, task)}
                     >
-                      <Link
-                        to={`/task/${task.id}`}
-                        className="relative flex items-center h-full pl-3 w-full"
-                      >
+                      <div className="relative flex items-center h-full pl-3 w-full">
                         <div className="z-10 absolute -top-px right-0 -bottom-px flex flex-0 w-1 bg-primary"></div>
                         <div
                           className="flex items-center mr-4"
@@ -1056,7 +1054,7 @@ const Task = () => {
                               )}
                             </div>
                           )}
-                      </Link>
+                      </div>
                     </div>
                   ))}
                 </div>

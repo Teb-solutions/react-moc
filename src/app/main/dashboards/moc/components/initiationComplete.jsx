@@ -738,11 +738,11 @@ const InitiationComplete = ({
                     />
                   </RadioGroup>
                 ) : (
-                  <span>{currentSummeryById.classCategoryString}</span>
+                  <span>{currentSummeryById?.classCategoryString}</span>
                 )}
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <FormControl fullWidth>
                 <FormLabel>Change Leader</FormLabel>
                 {currentActivityForm.canEdit ? (
@@ -762,7 +762,7 @@ const InitiationComplete = ({
                 )}
               </FormControl>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <FormControl fullWidth>
                 <FormLabel>
                   Change Location (you can add multiple locations)

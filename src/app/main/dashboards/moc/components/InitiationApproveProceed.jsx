@@ -334,7 +334,9 @@ function InitiationApprovalProceed({
                       {staffList.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                           <Checkbox
-                            checked={selectedStaffs.indexOf(option.value) > -1}
+                            checked={selectedStaffs.some(
+                              (staff) => staff.staffId === option.value
+                            )}
                           />
                           <ListItemText primary={option.text} />
                         </MenuItem>
@@ -373,7 +375,7 @@ function InitiationApprovalProceed({
                 </div>
                 <div
                   className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{ marginTop: "15px" }}
+                  style={{ marginTop: "25px" }}
                 >
                   {AppActions.map((btn) => (
                     <Button
@@ -391,8 +393,11 @@ function InitiationApprovalProceed({
             </>
           )}
           {!currentActivityForm.canEdit &&
-            TeamAssignmentList.map((list) => (
+            TeamAssignmentList.filter(
+              (list) => list.roleName !== "Change Leader"
+            ).map((list) => (
               <div
+                key={list.id} // Assuming there's a unique id for each list item
                 className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
                 style={{ width: "40%" }}
               >

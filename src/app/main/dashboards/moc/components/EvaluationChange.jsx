@@ -69,13 +69,13 @@ const style1 = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: "600px",
+  width: "800px",
   maxWidth: "80vw",
-  height: "65%",
+  maxHeight: "75vh", // Adjust the max height to ensure it's not too large
+  overflowY: "auto", // Enable scrolling if content exceeds maxHeight
   borderRadius: "16px",
-  bgcolor: "background.paper",
-  boxShadow: 24,
-  p: 4,
+  backgroundColor: "#fff", // Adjust as needed
+  boxShadow: "0px 8px 24px rgba(0, 0, 0, 0.2)", // Example box shadow
   padding: "0px",
 };
 
@@ -99,6 +99,7 @@ function EvaluationChange({
   AppActivity,
   TeamAssignmentList,
   assetEvaluationId,
+  setContent,
 }) {
   const [open, setOpen] = useState(false);
   const [openSession, setOpenSession] = useState(false);
@@ -287,6 +288,8 @@ function EvaluationChange({
         { TeamList: selectedItems }
       )
       .then((resp) => {
+        toast.success("Evaluation session has been successfully created.");
+
         setOpen(false);
         getRecords();
         if (timerRef.current) {
@@ -1422,7 +1425,13 @@ function EvaluationChange({
         actionUID: btn.uid,
         formUID: `${Session.id}`,
       })
-      .then((resp) => {});
+      .then((resp) => {
+        apiAuth
+          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+          .then((resp) => {
+            setContent(resp.data.data.phases);
+          });
+      });
   };
 
   const [stopComment, setStopComment] = useState("");
@@ -1434,9 +1443,11 @@ function EvaluationChange({
         { comments: stopComment }
       )
       .then((resp) => {
+        toast.success("Evaluation session has been stopped.");
         setOpen(false);
+        setTimeout(() => location.reload(), 1000);
         if (timerRef.current) {
-          timerRef.current.resetTimer(); // Reset the timer when the API call is successful
+          timerRef.current.stopTimer(); // Stop the timer when the API call is successful
         }
       });
   };
@@ -2204,74 +2215,57 @@ function EvaluationChange({
                                           <div key={index}>
                                             {sub.riskAnalysisHazardTypes
                                               .length === 0 ? (
-                                              <div>
-                                                <Grid
-                                                  container
-                                                  className="inventory-grid"
-                                                  sx={{
-                                                    paddingY: 2,
-                                                    paddingX: {
-                                                      xs: 2,
-                                                      md: 3,
-                                                    },
-                                                  }}
-                                                >
-                                                  <Grid item xs={12} md={4}>
-                                                    <h6
-                                                      style={{
-                                                        paddingBottom: "5px",
-                                                      }}
-                                                    >
-                                                      {sub.subTaskName}
-                                                    </h6>
-                                                  </Grid>
+                                              <>
+                                                <div
+                                                  _ngcontent-fyk-c288=""
+                                                  class="flex items-center w-full  border-b justify-between"
+                                                ></div>
+                                                <div>
+                                                  <Grid
+                                                    container
+                                                    className="inventory-grid"
+                                                    sx={{
+                                                      paddingY: 2,
+                                                      paddingX: {
+                                                        xs: 2,
+                                                        md: 1,
+                                                      },
+                                                    }}
+                                                  >
+                                                    <Grid item xs={12} md={4}>
+                                                      <h6
+                                                        style={{
+                                                          paddingBottom: "5px",
+                                                        }}
+                                                      >
+                                                        {sub.subTaskName}
+                                                      </h6>
+                                                    </Grid>
 
-                                                  <Grid item xs={12}>
-                                                    {/* <div
-                                                      style={{
-                                                        paddingLeft: "10px",
-                                                        paddingBottom: "5px",
-                                                      }}
-                                                    >
-                                                      <Button
-                                                        variant="contained"
-                                                        color="primary"
-                                                        onClick={() =>
-                                                          handelRisk(sub.id)
-                                                        }
-                                                        style={{
-                                                          backgroundColor:
-                                                            "blue",
-                                                          borderRadius: "5px",
-                                                          padding: "5px 10px",
-                                                          fontSize: "12px",
-                                                          cursor: "pointer",
-                                                        }}
-                                                      >
-                                                        Create New Risk Analysis
-                                                      </Button>
-                                                    </div> */}
-                                                    {AppActivity.canEdit && (
-                                                      <span
-                                                        className="text-white"
-                                                        style={{
-                                                          backgroundColor:
-                                                            "#2563eb",
-                                                          borderRadius: "5px",
-                                                          padding: "4px",
-                                                          fontSize: "10px",
-                                                          cursor: "pointer",
-                                                        }}
-                                                        onClick={() =>
-                                                          handelRisk(sub.id)
-                                                        }
-                                                      >
-                                                        Create New Risk Analysis
-                                                      </span>
-                                                    )}
+                                                    <Grid item xs={12}>
+                                                      {AppActivity.canEdit && (
+                                                        <span
+                                                          className="text-white"
+                                                          style={{
+                                                            backgroundColor:
+                                                              "#2563eb",
+                                                            borderRadius: "5px",
+                                                            padding: "4px",
+                                                            fontSize: "10px",
+                                                            cursor: "pointer",
+                                                          }}
+                                                          onClick={() =>
+                                                            handelRisk(sub.id)
+                                                          }
+                                                        >
+                                                          Create New Risk
+                                                          Analysis
+                                                        </span>
+                                                      )}
+                                                    </Grid>
                                                   </Grid>
-                                                </Grid>
-                                              </div>
+                                                </div>
+                                              </>
                                             ) : (
                                               sub.riskAnalysisHazardTypes?.map(
                                                 (hazardType) => (
@@ -2523,29 +2517,33 @@ function EvaluationChange({
                                                                 </a>
                                                               </div>
                                                             )}
-                                                          <span
-                                                            className="text-white"
-                                                            style={{
-                                                              backgroundColor:
-                                                                "#2563eb",
-                                                              marginLeft:
-                                                                "10px",
-                                                              borderRadius:
-                                                                "5px",
-                                                              padding: "3px",
-                                                              fontSize: "10px",
-                                                              cursor: "pointer",
-                                                            }}
-                                                            onClick={() =>
-                                                              handelRisk(
-                                                                sub.id,
-                                                                hazardType.hazardType
-                                                              )
-                                                            }
-                                                          >
-                                                            Create New Risk
-                                                            Analysis
-                                                          </span>
+                                                          {AppActivity.canEdit && (
+                                                            <span
+                                                              className="text-white"
+                                                              style={{
+                                                                backgroundColor:
+                                                                  "#2563eb",
+                                                                marginLeft:
+                                                                  "10px",
+                                                                borderRadius:
+                                                                  "5px",
+                                                                padding: "3px",
+                                                                fontSize:
+                                                                  "10px",
+                                                                cursor:
+                                                                  "pointer",
+                                                              }}
+                                                              onClick={() =>
+                                                                handelRisk(
+                                                                  sub.id,
+                                                                  hazardType.hazardType
+                                                                )
+                                                              }
+                                                            >
+                                                              Create New Risk
+                                                              Analysis
+                                                            </span>
+                                                          )}
                                                         </div>
                                                       )
                                                     )}
@@ -5087,7 +5085,9 @@ function EvaluationChange({
                                   ? `Accepted at ${formatDate(itm.updatedAt)}`
                                   : "Acceptance Pending"}
                               </span>
-                              <div>Comments: {itm.comments}</div>
+                              {itm.comments && (
+                                <div>Comments: {itm.comments}</div>
+                              )}
                             </div>
                           ))
                         )}
