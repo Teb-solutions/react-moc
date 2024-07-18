@@ -12,6 +12,7 @@ import { selectUser } from "src/app/auth/user/store/userSlice";
 import { useAuth } from "src/app/auth/AuthRouteProvider";
 import { darken } from "@mui/material/styles";
 import { useAppSelector } from "app/store/hooks";
+import { Tooltip } from "@mui/material";
 
 /**
  * The user menu.
@@ -34,22 +35,36 @@ function UserMenu() {
   return (
     <>
       <Button
-        className="min-h-40 min-w-40 p-0 md:px-16 md:py-6"
+        className="min-h-40 min-w-40 p-0  md:py-6"
+        // onClick={userMenuClick}
+        color="inherit"
+      >
+        <div className="mx-4 hidden flex-col items-end md:flex">
+          <Typography
+            className="text-11 font-medium capitalize"
+            color="text.secondary"
+          >
+            <FuseSvgIcon>heroicons-outline:bell</FuseSvgIcon>
+          </Typography>
+        </div>
+      </Button>
+      <Button
+        className="min-h-40 min-w-40 p-0  md:py-6"
         onClick={userMenuClick}
         color="inherit"
       >
         <div className="mx-4 hidden flex-col items-end md:flex">
-          <Typography component="span" className="flex font-semibold">
-            {/* {user.data.displayName} */}
-          </Typography>
           <Typography
             className="text-11 font-medium capitalize"
             color="text.secondary"
           >
             {user.role?.toString()}
             {(!user.role ||
-              (Array.isArray(user.role) && user.role.length === 0)) &&
-              localStorage.getItem("username")}
+              (Array.isArray(user.role) && user.role.length === 0)) && (
+              <>
+                <FuseSvgIcon>heroicons-outline:user-circle</FuseSvgIcon>
+              </>
+            )}
           </Typography>
         </div>
 
@@ -76,6 +91,23 @@ function UserMenu() {
           </Avatar>
         )} */}
       </Button>
+      <Tooltip
+        title={localStorage.getItem("username")}
+        arrow
+        componentsProps={{
+          tooltip: {
+            sx: {
+              backgroundColor: "black",
+              color: "white",
+              fontSize: 12,
+            },
+          },
+        }}
+      >
+        <Typography component="span" className="flex">
+          Hi, {localStorage.getItem("username").split(" ")[0]}
+        </Typography>
+      </Tooltip>
 
       <Popover
         open={Boolean(userMenu)}
@@ -95,6 +127,12 @@ function UserMenu() {
       >
         {!user.role || user.role.length === 0 ? (
           <>
+            <MenuItem component={Link} to="/change-password" role="button">
+              <ListItemIcon className="min-w-40">
+                <FuseSvgIcon>heroicons-outline:user-add </FuseSvgIcon>
+              </ListItemIcon>
+              <ListItemText primary="Change Password" />
+            </MenuItem>
             <MenuItem component={Link} to="/sign-in" role="button">
               <ListItemIcon className="min-w-40">
                 <FuseSvgIcon>heroicons-outline:lock-closed</FuseSvgIcon>
@@ -107,12 +145,6 @@ function UserMenu() {
               </ListItemIcon>
               <ListItemText primary="Sign up" />
             </MenuItem> */}
-            <MenuItem component={Link} to="/change-password" role="button">
-              <ListItemIcon className="min-w-40">
-                <FuseSvgIcon>heroicons-outline:user-add </FuseSvgIcon>
-              </ListItemIcon>
-              <ListItemText primary="Change Password" />
-            </MenuItem>
           </>
         ) : (
           <>

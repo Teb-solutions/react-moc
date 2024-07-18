@@ -37,7 +37,7 @@ import { apiAuth } from "src/utils/http";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SaveIcon from "@mui/icons-material/Save";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-
+import { ToastContainer, toast } from "react-toastify";
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -65,10 +65,6 @@ const EvaluationApproval = ({
 
   const [newRemark, setNewRemark] = useState("");
   const [newImpactTaskRemark, setNewImpactTaskRemark] = useState("");
-
-  console.log("====================================");
-  console.log(riskAnalysisChartOptions, "riskAnalysisChartOptions");
-  console.log("====================================");
 
   const handleInputChange = (event, type) => {
     if (type === "Consultaion") {
@@ -112,6 +108,11 @@ const EvaluationApproval = ({
     apiAuth
       .post(`/ApprovalManager/CreateComment/${assetEvaluationId}/0`, payload)
       .then((resp) => {
+        if (type == "Consultaion") {
+          toast.success("Consultation comment added.");
+        } else {
+          toast.success("Task comment added.");
+        }
         setNewRemark("");
         setNewImpactTaskRemark("");
         getRecords();
@@ -189,6 +190,7 @@ const EvaluationApproval = ({
           }
         )
         .then((resp) => {
+          toast.success("Review successfully added");
           setHandelCommentRemark("");
           handleStepChange();
         });
@@ -201,18 +203,24 @@ const EvaluationApproval = ({
           }
         )
         .then((resp) => {
+          toast.success("Review successfully updated");
           setHandelCommentRemark("");
           handleStepChange();
         });
     }
   };
 
-  const handelImpactCommentImp = (id) => {
+  const handelImpactCommentImp = (id, value) => {
     apiAuth
       .put(`/Task/AddReview/${id}/${lastActCode.code}`, {
         remark: handelCommentRemark,
       })
       .then((resp) => {
+        if (value == 1) {
+          toast.success("Review successfully added");
+        } else {
+          toast.success("Review successfully Updated");
+        }
         setHandelCommentRemark("");
         handleStepChange();
       });
@@ -254,6 +262,7 @@ const EvaluationApproval = ({
         ActivityCode: lastActCode.code,
       })
       .then((response) => {
+        toast.success("Successfully marked the item as reviewed");
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
           [id]: true,
@@ -273,6 +282,8 @@ const EvaluationApproval = ({
         ActivityCode: lastActCode.code,
       })
       .then((response) => {
+        toast.success("Successfully marked the item as reviewed");
+
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
           [id]: true,
@@ -333,6 +344,9 @@ const EvaluationApproval = ({
     apiAuth
       .put(`/SummaryDetails/SendComment/${assetEvaluationId}`, payload)
       .then((response) => {
+        toast.success(
+          "Selected tasks successfully sent for external consultation"
+        );
         handlehandledateExtendClose();
       });
   };
@@ -355,12 +369,22 @@ const EvaluationApproval = ({
     apiAuth
       .post(`/ApprovalManager/Create/${assetEvaluationId}`, payload)
       .then((response) => {
-        getRecords();
-      });
+        if (response.data.statusCode != 400) {
+          apiAuth
+            .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+            .then((resp) => {
+              setContent(resp.data.data.phases);
+            });
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((error) => {});
   };
 
   return (
     <div className="w-full h-full">
+      <ToastContainer className="toast-container" />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -576,16 +600,18 @@ const EvaluationApproval = ({
           color: "white",
         }}
       >
-        <button
-          onClick={handledateExtendopen}
+        <Button
+          className="whitespace-nowrap ms-5"
+          variant="contained"
+          color="secondary"
           style={{
-            backgroundColor: "blue",
             padding: "10px",
             borderRadius: "20px",
           }}
+          onClick={handledateExtendopen}
         >
           Send selected {selectedTasks.length} task(s) for external consultation
-        </button>
+        </Button>
       </div>
       <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
@@ -892,6 +918,7 @@ const EvaluationApproval = ({
                     <button
                       className="task-mark-reviewed-button mat-stroked-button"
                       onClick={() => handelreview(itm.id)}
+                      disabled={itm?.reviewd || clickedTasks[itm.id]}
                     >
                       {itm?.reviewd || clickedTasks[itm.id] ? (
                         <span
@@ -959,7 +986,10 @@ const EvaluationApproval = ({
                                 height: "5rem",
                               }}
                             />
-                            <div className="mat-form-field-infix">
+                            <div
+                              className="mat-form-field-infix"
+                              style={{ position: "relative", width: "100%" }}
+                            >
                               <textarea
                                 rows="2"
                                 className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
@@ -968,19 +998,20 @@ const EvaluationApproval = ({
                                 data-placeholder="Write a comment..."
                                 aria-invalid="false"
                                 aria-required="false"
-                                style={{ height: "36px" }}
+                                style={{
+                                  height: "36px",
+                                  width: "100%",
+                                  paddingRight: "100px",
+                                }}
                                 onChange={(e) =>
                                   setHandelCommentRemark(e.target.value)
                                 }
                               ></textarea>
                               <button
-                                className="mat-focus-indicator mat-raised-button mat-button-base"
-                                style={{ float: "right" }}
+                                className="custom-update-button"
                                 onClick={() => handelCommentImp(itm.id, 1, 1)}
                               >
-                                <span className="mat-button-wrapper">Save</span>
-                                <span className="mat-ripple mat-button-ripple"></span>
-                                <span className="mat-button-focus-overlay"></span>
+                                Save
                               </button>
                               <span className="mat-form-field-label-wrapper"></span>
                             </div>
@@ -1011,7 +1042,10 @@ const EvaluationApproval = ({
                             />
 
                             {AppActivity.canEdit && isMyComment(rwv) ? (
-                              <div className="mat-form-field-infix">
+                              <div
+                                className="mat-form-field-infix"
+                                style={{ position: "relative" }}
+                              >
                                 <textarea
                                   rows="2"
                                   className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
@@ -1020,7 +1054,11 @@ const EvaluationApproval = ({
                                   data-placeholder="Write a comment..."
                                   aria-invalid="false"
                                   aria-required="false"
-                                  style={{ height: "36px" }}
+                                  style={{
+                                    height: "36px",
+                                    width: "100%",
+                                    paddingRight: "100px",
+                                  }}
                                   defaultValue={rwv.remark}
                                   onChange={(e) =>
                                     setHandelCommentRemark(e.target.value)
@@ -1028,8 +1066,7 @@ const EvaluationApproval = ({
                                 ></textarea>
 
                                 <button
-                                  className="mat-focus-indicator mat-raised-button mat-button-base"
-                                  style={{ float: "right" }}
+                                  className="custom-update-button"
                                   onClick={() => {
                                     if (itm.reviews.length > 0) {
                                       const reviewId =
@@ -1043,12 +1080,7 @@ const EvaluationApproval = ({
                                     }
                                   }}
                                 >
-                                  <span className="mat-button-wrapper">
-                                    Update
-                                  </span>
-
-                                  <span className="mat-ripple mat-button-ripple"></span>
-                                  <span className="mat-button-focus-overlay"></span>
+                                  Update
                                 </button>
 
                                 <span className="mat-form-field-label-wrapper"></span>
@@ -1115,7 +1147,10 @@ const EvaluationApproval = ({
                         height: "5rem",
                       }}
                     />
-                    <div className="mat-form-field-infix">
+                    <div
+                      className="mat-form-field-infix"
+                      style={{ position: "relative", width: "100%" }}
+                    >
                       <textarea
                         rows="2"
                         className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
@@ -1124,17 +1159,18 @@ const EvaluationApproval = ({
                         data-placeholder="Write a comment..."
                         aria-invalid="false"
                         aria-required="false"
-                        style={{ height: "36px" }}
+                        style={{
+                          height: "36px",
+                          width: "100%",
+                          paddingRight: "100px",
+                        }}
                         onChange={(e) => setHandelCommentRemark(e.target.value)}
                       ></textarea>
                       <button
-                        className="mat-focus-indicator mat-raised-button mat-button-base"
-                        style={{ float: "right" }}
+                        className="custom-update-button"
                         onClick={() => handelCommentImp(itm.id, 1, 1)}
                       >
-                        <span className="mat-button-wrapper">Save</span>
-                        <span className="mat-ripple mat-button-ripple"></span>
-                        <span className="mat-button-focus-overlay"></span>
+                        Save
                       </button>
                       <span className="mat-form-field-label-wrapper"></span>
                     </div>
@@ -1222,6 +1258,9 @@ const EvaluationApproval = ({
                             <button
                               className="task-mark-reviewed-button mat-stroked-button"
                               onClick={() => handelImpactreview(imptsk.id)}
+                              disabled={
+                                imptsk?.reviewd || clickedTasks[imptsk.id]
+                              }
                             >
                               {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
                                 <span
@@ -1379,112 +1418,206 @@ const EvaluationApproval = ({
                             <div>
                               <table className="min-w-full divide-y divide-gray-200">
                                 <tbody>
-                                  {contentDetails?.riskAnalysisList.map(
-                                    (riskAnalysis, pIndex) => (
-                                      <React.Fragment key={riskAnalysis.id}>
-                                        {riskAnalysis.riskAnalysisSubTasks.map(
-                                          (subTask, lIndex) => (
-                                            <React.Fragment key={subTask.id}>
-                                              {subTask.riskAnalysisHazardTypes
-                                                .length > 0 ? (
-                                                subTask.riskAnalysisHazardTypes.map(
-                                                  (hazardType, mIndex) =>
-                                                    hazardType.riskAnalysisHazardSituation.map(
-                                                      (situation, fIndex) => (
-                                                        <tr
-                                                          key={situation.id}
-                                                          className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                                  {contentDetails?.riskAnalysisList[0]?.riskAnalysisSubTasks?.map(
+                                    (sub, index) => (
+                                      <div key={index}>
+                                        {sub.riskAnalysisHazardTypes.length ===
+                                        0 ? (
+                                          <>
+                                            <div
+                                              _ngcontent-fyk-c288=""
+                                              class="flex items-center w-full  border-b justify-between"
+                                            ></div>
+                                            <div>
+                                              <Grid
+                                                container
+                                                className="inventory-grid"
+                                                sx={{
+                                                  paddingY: 2,
+                                                  paddingX: {
+                                                    xs: 2,
+                                                    md: 1,
+                                                  },
+                                                }}
+                                              >
+                                                <Grid item xs={12} md={4}>
+                                                  <h6
+                                                    style={{
+                                                      paddingBottom: "5px",
+                                                    }}
+                                                  >
+                                                    {sub.subTaskName}
+                                                  </h6>
+                                                </Grid>
+                                              </Grid>
+                                            </div>
+                                          </>
+                                        ) : (
+                                          sub.riskAnalysisHazardTypes?.map(
+                                            (hazardType) => (
+                                              <div key={hazardType.id}>
+                                                {hazardType.riskAnalysisHazardSituation?.map(
+                                                  (situation) => (
+                                                    <div key={situation.id}>
+                                                      <Grid
+                                                        container
+                                                        spacing={2}
+                                                        className="inventory-grid"
+                                                        sx={{
+                                                          paddingY: 2,
+                                                          paddingX: {
+                                                            xs: 2,
+                                                            md: 3,
+                                                          },
+                                                        }}
+                                                      >
+                                                        <Grid
+                                                          item
+                                                          xs={12}
+                                                          md={3}
                                                         >
-                                                          <td
-                                                            className="px-4 py-4"
+                                                          <Typography
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                            fontWeight="fontWeightRegular"
                                                             style={{
-                                                              width: "30%",
+                                                              backgroundColor:
+                                                                situation.residualRiskClassificationDisplay ===
+                                                                "HighRisk"
+                                                                  ? "red"
+                                                                  : situation.residualRiskClassificationDisplay ===
+                                                                      "LowRisk"
+                                                                    ? "yellow"
+                                                                    : situation.residualRiskClassificationDisplay ===
+                                                                        "AverageRisk"
+                                                                      ? "orange"
+                                                                      : situation.residualRiskClassificationDisplay ===
+                                                                          "SignificantRisk"
+                                                                        ? "purple"
+                                                                        : "green",
+                                                              width: "35%",
+                                                              padding: "3px",
+                                                              color:
+                                                                situation.residualRiskClassificationDisplay ===
+                                                                "LowRisk"
+                                                                  ? "#000"
+                                                                  : "white",
+                                                              borderRadius:
+                                                                "5px",
+                                                              textAlign:
+                                                                "center",
+                                                              fontSize: "12px",
+                                                              fontWeight:
+                                                                situation.residualRiskClassificationDisplay ===
+                                                                "LowRisk"
+                                                                  ? ""
+                                                                  : "bold",
                                                             }}
                                                           >
-                                                            <div
-                                                              // className={`rounded text-white p-2 py-1 px-3 mb-1 inline-flex text-center text-sm font-semibold leading-2 `}
-                                                              style={{
-                                                                backgroundColor:
-                                                                  situation.residualRiskClassificationDisplay ==
-                                                                  "AverageRisk"
-                                                                    ? "orange"
-                                                                    : "green",
-                                                                width: "25%",
-                                                                padding: "3px",
-                                                                color: "white",
-                                                                borderRadius:
-                                                                  "5px",
-                                                              }}
-                                                            >
-                                                              {
-                                                                situation.residualRiskClassificationDisplay
-                                                              }
-                                                            </div>
-                                                            <div className="font-semibold">
-                                                              {
-                                                                subTask.subTaskName
-                                                              }
-                                                            </div>
-                                                            <div>
-                                                              -{" "}
-                                                              {
-                                                                hazardType.hazardTypeDisplay
-                                                              }
-                                                            </div>
-                                                            <div>
-                                                              -{" "}
-                                                              {
-                                                                situation.hazardousSituation
-                                                              }
-                                                            </div>
-                                                          </td>
-                                                          <td className="px-4 py-4">
+                                                            {
+                                                              situation.residualRiskClassificationDisplay
+                                                            }
+                                                          </Typography>
+                                                        </Grid>
+                                                        <Grid
+                                                          item
+                                                          xs={12}
+                                                          md={3}
+                                                        >
+                                                          <Typography
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                            fontWeight="fontWeightRegular"
+                                                            style={{
+                                                              marginLeft:
+                                                                "10px",
+                                                              fontSize: "12px",
+                                                            }}
+                                                          >
                                                             {
                                                               situation.humanControlMeasure
                                                             }
-                                                          </td>
-                                                          <td className="px-4 py-4">
+                                                          </Typography>
+                                                        </Grid>
+                                                        <Grid
+                                                          item
+                                                          xs={12}
+                                                          md={3}
+                                                        >
+                                                          <Typography
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                            fontWeight="fontWeightRegular"
+                                                            style={{
+                                                              marginLeft:
+                                                                "42px",
+                                                              fontSize: "12px",
+                                                            }}
+                                                          >
                                                             {
                                                               situation.technicalControlMeasure
                                                             }
-                                                          </td>
-                                                          <td className="px-4 py-4">
+                                                          </Typography>
+                                                        </Grid>
+                                                        <Grid
+                                                          item
+                                                          xs={12}
+                                                          md={3}
+                                                        >
+                                                          <Typography
+                                                            variant="body2"
+                                                            color="text.primary"
+                                                            fontWeight="fontWeightRegular"
+                                                            style={{
+                                                              marginLeft:
+                                                                "82px",
+                                                              fontSize: "12px",
+                                                            }}
+                                                          >
                                                             {
                                                               situation.organisationalControlMeasure
                                                             }
-                                                          </td>
-                                                        </tr>
-                                                      )
-                                                    )
-                                                )
-                                              ) : (
-                                                <tr
-                                                  key={subTask.id}
-                                                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-                                                >
-                                                  <td className="px-4 py-4">
-                                                    <div className="font-semibold">
-                                                      {subTask.subTaskName}
+                                                          </Typography>
+                                                        </Grid>
+                                                      </Grid>
+                                                      <h6
+                                                        style={{
+                                                          paddingLeft: "10px",
+                                                          paddingBottom: "5px",
+                                                        }}
+                                                      >
+                                                        {sub.subTaskName}
+                                                      </h6>
+                                                      <h6
+                                                        style={{
+                                                          paddingLeft: "10px",
+                                                          paddingBottom: "5px",
+                                                        }}
+                                                      >
+                                                        -{" "}
+                                                        {
+                                                          hazardType.hazardTypeDisplay
+                                                        }
+                                                      </h6>
+                                                      <h6
+                                                        style={{
+                                                          paddingLeft: "10px",
+                                                          paddingBottom: "5px",
+                                                        }}
+                                                      >
+                                                        -{" "}
+                                                        {
+                                                          situation.hazardousSituation
+                                                        }
+                                                      </h6>
                                                     </div>
-                                                    <div className="text-red-800 mt-1 text-sm font-semibold leading-2">
-                                                      Risk analysis not done
-                                                    </div>
-                                                  </td>
-                                                  <td className="px-4 py-4">
-                                                    -
-                                                  </td>
-                                                  <td className="px-4 py-4">
-                                                    -
-                                                  </td>
-                                                  <td className="px-4 py-4">
-                                                    -
-                                                  </td>
-                                                </tr>
-                                              )}
-                                            </React.Fragment>
+                                                  )
+                                                )}
+                                              </div>
+                                            )
                                           )
                                         )}
-                                      </React.Fragment>
+                                      </div>
                                     )
                                   )}
                                 </tbody>
@@ -1535,7 +1668,13 @@ const EvaluationApproval = ({
                                             height: "5rem",
                                           }}
                                         />
-                                        <div className="mat-form-field-infix">
+                                        <div
+                                          className="mat-form-field-infix"
+                                          style={{
+                                            position: "relative",
+                                            width: "100%",
+                                          }}
+                                        >
                                           <textarea
                                             rows="2"
                                             className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
@@ -1552,12 +1691,11 @@ const EvaluationApproval = ({
                                             }
                                           ></textarea>
                                           <button
-                                            className="mat-focus-indicator mat-raised-button mat-button-base"
-                                            style={{ float: "right" }}
+                                            className="custom-update-button"
                                             onClick={() =>
                                               handelImpactCommentImp(
                                                 imptsk.id,
-                                                2
+                                                1
                                               )
                                             }
                                           >
@@ -1596,7 +1734,10 @@ const EvaluationApproval = ({
                                       />
                                       {AppActivity.canEdit &&
                                       isMyComment(rwx) ? (
-                                        <div className="mat-form-field-infix">
+                                        <div
+                                          className="mat-form-field-infix"
+                                          style={{ position: "relative" }}
+                                        >
                                           <textarea
                                             rows="2"
                                             className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
@@ -1605,7 +1746,11 @@ const EvaluationApproval = ({
                                             data-placeholder="Write a comment..."
                                             aria-invalid="false"
                                             aria-required="false"
-                                            style={{ height: "36px" }}
+                                            style={{
+                                              height: "36px",
+                                              width: "100%",
+                                              paddingRight: "100px",
+                                            }}
                                             defaultValue={rwx?.remark}
                                             onChange={(e) =>
                                               setHandelCommentRemark(
@@ -1615,8 +1760,7 @@ const EvaluationApproval = ({
                                           ></textarea>
 
                                           <button
-                                            className="mat-focus-indicator mat-raised-button mat-button-base"
-                                            style={{ float: "right" }}
+                                            className="custom-update-button"
                                             onClick={() =>
                                               handelImpactCommentImp(
                                                 imptsk.id,
@@ -1626,12 +1770,7 @@ const EvaluationApproval = ({
                                               )
                                             }
                                           >
-                                            <span className="mat-button-wrapper">
-                                              Update
-                                            </span>
-
-                                            <span className="mat-ripple mat-button-ripple"></span>
-                                            <span className="mat-button-focus-overlay"></span>
+                                            Update
                                           </button>
 
                                           <span className="mat-form-field-label-wrapper"></span>
@@ -1695,7 +1834,13 @@ const EvaluationApproval = ({
                                   height: "5rem",
                                 }}
                               />
-                              <div className="mat-form-field-infix">
+                              <div
+                                className="mat-form-field-infix"
+                                style={{
+                                  position: "relative",
+                                  width: "100%",
+                                }}
+                              >
                                 <textarea
                                   rows="2"
                                   className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
@@ -1710,8 +1855,7 @@ const EvaluationApproval = ({
                                   }
                                 ></textarea>
                                 <button
-                                  className="mat-focus-indicator mat-raised-button mat-button-base"
-                                  style={{ float: "right" }}
+                                  className="custom-update-button"
                                   onClick={() =>
                                     handelImpactCommentImp(imptsk.id, 1)
                                   }
@@ -1841,7 +1985,7 @@ const EvaluationApproval = ({
                               {imptsk.externalEmailIDs}
                             </span>
                           </div>
-                          <div className="task-detail-item mt-5">
+                          <div className="task-detail-item">
                             <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
                               Comments
                             </span>
@@ -1924,13 +2068,19 @@ const EvaluationApproval = ({
                                         >
                                           <Button
                                             variant="contained"
-                                            color="primary"
+                                            color="secondary"
                                             style={{
                                               float: "right",
-                                              backgroundColor: "blue",
+
                                               marginBottom: "3px",
                                             }}
                                             // Add functionality to update the comment here if needed
+                                            onClick={() =>
+                                              handleUpdateClick(
+                                                index,
+                                                remark.id
+                                              )
+                                            }
                                           >
                                             Update
                                           </Button>
@@ -1940,9 +2090,6 @@ const EvaluationApproval = ({
                                     value={remark.remark}
                                     onChange={(event) =>
                                       handleRemarkChange(index, event)
-                                    }
-                                    onClick={() =>
-                                      handleUpdateClick(index, remark.id)
                                     }
                                   />
                                   <h6 className="ps-4 pt-6 text-grey">
@@ -1982,10 +2129,10 @@ const EvaluationApproval = ({
                                   >
                                     <Button
                                       variant="contained"
-                                      color="primary"
+                                      color="secondary"
                                       style={{
                                         float: "right",
-                                        backgroundColor: "blue",
+
                                         marginBottom: "3px",
                                       }}
                                       onClick={() =>
@@ -2089,10 +2236,10 @@ const EvaluationApproval = ({
                                         >
                                           <Button
                                             variant="contained"
-                                            color="primary"
+                                            color="secondary"
                                             style={{
                                               float: "right",
-                                              backgroundColor: "blue",
+
                                               marginBottom: "3px",
                                             }}
                                             onClick={() =>
@@ -2137,10 +2284,9 @@ const EvaluationApproval = ({
                                   >
                                     <Button
                                       variant="contained"
-                                      color="primary"
+                                      color="secondary"
                                       style={{
                                         float: "right",
-                                        backgroundColor: "blue",
                                         marginBottom: "3px",
                                       }}
                                       onClick={() =>

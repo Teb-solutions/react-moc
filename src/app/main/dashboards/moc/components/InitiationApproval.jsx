@@ -26,7 +26,7 @@ function InitiationApproval(props) {
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
           <div>
             <div className="flex items-center w-full border-b justify-between">
-              <h2 className="text-2xl font-semibold">MOC Document Request</h2>
+              <h2 className="text-2xl font-semibold">Summary Details</h2>
             </div>
             <div className="px-6 mb-6">
               <div>&nbsp;</div>

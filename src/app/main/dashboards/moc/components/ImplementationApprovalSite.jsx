@@ -21,6 +21,7 @@ import { useState } from "react";
 import { apiAuth } from "src/utils/http.js";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon/FuseSvgIcon.jsx";
 import { useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 const ImplementationApprovalSite = ({
   contentDetails,
@@ -81,6 +82,7 @@ const ImplementationApprovalSite = ({
         activityCode: lastActCode.code,
       })
       .then((response) => {
+        toast.success("Successfully marked the item as reviewed");
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
           [id]: true,
@@ -100,6 +102,7 @@ const ImplementationApprovalSite = ({
           remark: handelCommentRemark,
         })
         .then((resp) => {
+          toast.success("Review successfully added");
           getRecords();
 
           setHandelCommentRemark("");
@@ -110,6 +113,7 @@ const ImplementationApprovalSite = ({
           remark: handelCommentRemark,
         })
         .then((resp) => {
+          toast.success("Review successfully Updated");
           getRecords();
 
           setHandelCommentRemark("");
@@ -118,21 +122,6 @@ const ImplementationApprovalSite = ({
   };
 
   const SubmitApprovelCreate = (e, uid, name, type) => {
-    const payload = {
-      actionUID: uid,
-      actionUid: uid,
-      formUID: AppActivity.formUID,
-      actionName: name,
-      actionType: type,
-      activityCode: AppActivity.code,
-      activityId: AppActivity.uid,
-      consultaioncomment: "",
-      formType: AppActivity.form,
-      remark: valueRemark,
-      taskscomment: "",
-      version: AppActivity.version,
-    };
-    console.log(payload, "payys");
     apiAuth
       .post(`/ApprovalManager/Create/${assetEvaluationId}`, {
         actionUID: uid,
@@ -149,18 +138,22 @@ const ImplementationApprovalSite = ({
         version: AppActivity.version,
       })
       .then((resp) => {
-        setValueRemark("");
-      });
-    apiAuth
-      .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
-      .then((resp) => {
-        debugger;
-
-        setContent(resp.data.data.phases);
-      });
+        if (resp.data.statusCode != 400) {
+          apiAuth
+            .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+            .then((resp) => {
+              setContent(resp.data.data.phases);
+            });
+          setValueRemark("");
+        } else {
+          toast.error(resp.data.message);
+        }
+      })
+      .catch((error) => {});
   };
   return (
     <div className="w-full">
+      <ToastContainer className="toast-container" />
       <MainComponent contentDetails={contentDetails} />
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow">
@@ -209,6 +202,9 @@ const ImplementationApprovalSite = ({
                             <button
                               className="task-mark-reviewed-button mat-stroked-button"
                               onClick={() => handelImpactreview(imptsk.id)}
+                              disabled={
+                                imptsk?.reviewd || clickedTasks[imptsk.id]
+                              }
                             >
                               {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
                                 <span
@@ -343,7 +339,13 @@ const ImplementationApprovalSite = ({
                                           }}
                                         />
 
-                                        <div className="mat-form-field-infix">
+                                        <div
+                                          className="mat-form-field-infix"
+                                          style={{
+                                            position: "relative",
+                                            width: "100%",
+                                          }}
+                                        >
                                           <textarea
                                             rows="2"
                                             className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
@@ -362,19 +364,19 @@ const ImplementationApprovalSite = ({
                                           ></textarea>
 
                                           <button
-                                            className="mat-focus-indicator mat-raised-button mat-button-base"
+                                            className="custom-update-button"
                                             style={{ float: "right" }}
                                             onClick={() =>
                                               handelCommentImp(
                                                 imptsk.id,
                                                 imptsk.implementationReviews[0]
                                                   .id,
-                                                2
+                                                1
                                               )
                                             }
                                           >
                                             <span className="mat-button-wrapper">
-                                              Save25
+                                              Save
                                             </span>
 
                                             <span className="mat-ripple mat-button-ripple"></span>
@@ -400,7 +402,10 @@ const ImplementationApprovalSite = ({
                                       />
                                       {AppActivity.canEdit &&
                                       isMyComment(rwx) ? (
-                                        <div className="mat-form-field-infix">
+                                        <div
+                                          className="mat-form-field-infix"
+                                          style={{ position: "relative" }}
+                                        >
                                           <textarea
                                             rows="2"
                                             className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
@@ -409,7 +414,11 @@ const ImplementationApprovalSite = ({
                                             data-placeholder="Write a comment..."
                                             aria-invalid="false"
                                             aria-required="false"
-                                            style={{ height: "36px" }}
+                                            style={{
+                                              height: "36px",
+                                              width: "100%",
+                                              paddingRight: "100px",
+                                            }}
                                             defaultValue={rwx?.remark}
                                             onChange={(e) =>
                                               setHandelCommentRemark(
@@ -419,8 +428,7 @@ const ImplementationApprovalSite = ({
                                           ></textarea>
 
                                           <button
-                                            className="mat-focus-indicator mat-raised-button mat-button-base"
-                                            style={{ float: "right" }}
+                                            className="custom-update-button"
                                             onClick={() =>
                                               handelCommentImp(
                                                 imptsk.id,
@@ -430,9 +438,7 @@ const ImplementationApprovalSite = ({
                                               )
                                             }
                                           >
-                                            <span className="mat-button-wrapper">
-                                              Update
-                                            </span>
+                                            Update
                                           </button>
 
                                           <span className="mat-form-field-label-wrapper"></span>
@@ -506,7 +512,13 @@ const ImplementationApprovalSite = ({
                                     height: "5rem",
                                   }}
                                 />
-                                <div className="mat-form-field-infix">
+                                <div
+                                  className="mat-form-field-infix"
+                                  style={{
+                                    position: "relative",
+                                    width: "100%",
+                                  }}
+                                >
                                   <textarea
                                     rows="2"
                                     className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
@@ -515,23 +527,22 @@ const ImplementationApprovalSite = ({
                                     data-placeholder="Write a comment..."
                                     aria-invalid="false"
                                     aria-required="false"
-                                    style={{ height: "36px" }}
+                                    style={{
+                                      height: "36px",
+                                      width: "100%",
+                                      paddingRight: "100px",
+                                    }}
                                     onChange={(e) =>
                                       setHandelCommentRemark(e.target.value)
                                     }
                                   ></textarea>
                                   <button
-                                    className="mat-focus-indicator mat-raised-button mat-button-base"
-                                    style={{ float: "right" }}
+                                    className="custom-update-button"
                                     onClick={() =>
-                                      handelCommentImp(imptsk.id, 1)
+                                      handelCommentImp(imptsk.id, 1, 1)
                                     }
                                   >
-                                    <span className="mat-button-wrapper">
-                                      Save
-                                    </span>
-                                    <span className="mat-ripple mat-button-ripple"></span>
-                                    <span className="mat-button-focus-overlay"></span>
+                                    Save
                                   </button>
                                   <span className="mat-form-field-label-wrapper"></span>
                                 </div>

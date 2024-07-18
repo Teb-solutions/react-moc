@@ -35,6 +35,7 @@ import { parseISO, format } from "date-fns";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 function DocRequest() {
   const style = {
@@ -93,6 +94,7 @@ function DocRequest() {
   const handleClose = () => setOpen(false);
   const [openDocModal, setOpenDocModal] = useState(false);
   const [listDocument, setListDocument] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const routeParams = useParams();
   const navigate = useNavigate();
 
@@ -336,6 +338,7 @@ function DocRequest() {
 
       const changeRequestResponse = await apiAuth.get(`/ChangeRequest/Create`);
       setDocContent(changeRequestResponse.data.data);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching records:", error);
     }
@@ -366,6 +369,10 @@ function DocRequest() {
       });
     }
   }, [docContent]);
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <FusePageCarded

@@ -21,6 +21,7 @@ import OrgPhasesEnum from "./orgPhaseEnum";
 import MainComponent from "../components/mainContent";
 import OrgImplementation from "../components/OrgImplementation";
 import FuseLoading from "@fuse/core/FuseLoading";
+import CustomStepIcon from "../CustomStepIcon";
 
 const orgCourse = () => {
   const pageLayout = useRef(null);
@@ -305,6 +306,15 @@ const orgCourse = () => {
                     >
                       <StepLabel
                         className="font-medium"
+                        StepIconComponent={(props) => (
+                          <CustomStepIcon
+                            {...props}
+                            index={index}
+                            canView={step.canView}
+                            isComplete={step.isComplete}
+                            status={step.status}
+                          />
+                        )}
                         sx={{
                           "& .MuiSvgIcon-root": {
                             color: "background.default",

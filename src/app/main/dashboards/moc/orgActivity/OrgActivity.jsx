@@ -35,6 +35,7 @@ import { parseISO, format } from "date-fns";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 function OrgActivity() {
   const style = {
@@ -59,6 +60,7 @@ function OrgActivity() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
   const handleClose = () => setOpen(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [documentState, setDocumentState] = useState({
     changeStaffId: "",
@@ -176,6 +178,7 @@ function OrgActivity() {
       setDocController(staffResponse.data.data);
 
       const changeRequestResponse = await apiAuth.get(`/ChangeRequest/Create`);
+      setIsLoading(false);
       setDocContent(changeRequestResponse.data.data);
       const staffDesignation = await apiAuth.get(`/LookupData/Lov/5`);
       setStaffDesignation(staffDesignation.data.data);
@@ -209,6 +212,9 @@ function OrgActivity() {
       });
     }
   }, [docContent]);
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <FusePageCarded
