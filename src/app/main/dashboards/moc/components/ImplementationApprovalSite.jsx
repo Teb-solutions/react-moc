@@ -353,7 +353,7 @@ const ImplementationApprovalSite = ({
                                             aria-invalid="false"
                                             aria-required="false"
                                             style={{ height: "36px" }}
-                                            value={imptsk?.remark}
+                                            defaultValue={imptsk?.remark}
                                             onChange={(e) =>
                                               setHandelCommentRemark(
                                                 e.target.value
@@ -374,7 +374,7 @@ const ImplementationApprovalSite = ({
                                             }
                                           >
                                             <span className="mat-button-wrapper">
-                                              Save
+                                              Save25
                                             </span>
 
                                             <span className="mat-ripple mat-button-ripple"></span>
@@ -410,7 +410,7 @@ const ImplementationApprovalSite = ({
                                             aria-invalid="false"
                                             aria-required="false"
                                             style={{ height: "36px" }}
-                                            value={rwx?.remark}
+                                            defaultValue={rwx?.remark}
                                             onChange={(e) =>
                                               setHandelCommentRemark(
                                                 e.target.value
