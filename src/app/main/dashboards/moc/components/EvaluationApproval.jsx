@@ -1030,14 +1030,18 @@ const EvaluationApproval = ({
                                 <button
                                   className="mat-focus-indicator mat-raised-button mat-button-base"
                                   style={{ float: "right" }}
-                                  onClick={() =>
-                                    handelCommentImp(
-                                      itm.id,
-                                      itm.reviews[1].id,
-
-                                      2
-                                    )
-                                  }
+                                  onClick={() => {
+                                    if (itm.reviews.length > 0) {
+                                      const reviewId =
+                                        itm.reviews.length === 1
+                                          ? itm.reviews[0].id
+                                          : itm.reviews[1].id;
+                                      handelCommentImp(itm.id, reviewId, 2);
+                                    } else {
+                                      // Handle the case where there are no reviews
+                                      console.error("No reviews available");
+                                    }
+                                  }}
                                 >
                                   <span className="mat-button-wrapper">
                                     Update
