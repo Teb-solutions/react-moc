@@ -228,13 +228,9 @@ function Initiation(props) {
                   }}
                 >
                   File Manager
-                  {/* <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                              >
-                                0 Files
-                              </Typography> */}
+                  <Typography id="transition-modal-subtitle" component="h2">
+                    {contentDetails.documentCount} Files
+                  </Typography>
                 </Typography>
                 <Box>
                   {/* <Button
@@ -658,7 +654,7 @@ function Initiation(props) {
             </div>
             <div className="flex items-center justify-between w-full mt-8 px-6 py-3 border-t">
               <div>
-                <StyledBadge badgeContent={contentDetails.documentStatus}>
+                <StyledBadge badgeContent={contentDetails.documentCount}>
                   <Button
                     className="whitespace-nowrap mt-5"
                     style={{
