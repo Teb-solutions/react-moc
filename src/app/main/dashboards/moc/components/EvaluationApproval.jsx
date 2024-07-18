@@ -37,7 +37,7 @@ import { apiAuth } from "src/utils/http";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SaveIcon from "@mui/icons-material/Save";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-
+import { ToastContainer, toast } from "react-toastify";
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -65,10 +65,6 @@ const EvaluationApproval = ({
 
   const [newRemark, setNewRemark] = useState("");
   const [newImpactTaskRemark, setNewImpactTaskRemark] = useState("");
-
-  console.log("====================================");
-  console.log(riskAnalysisChartOptions, "riskAnalysisChartOptions");
-  console.log("====================================");
 
   const handleInputChange = (event, type) => {
     if (type === "Consultaion") {
@@ -112,6 +108,11 @@ const EvaluationApproval = ({
     apiAuth
       .post(`/ApprovalManager/CreateComment/${assetEvaluationId}/0`, payload)
       .then((resp) => {
+        if (type == "Consultaion") {
+          toast.success("Consultation comment added.");
+        } else {
+          toast.success("Task comment added.");
+        }
         setNewRemark("");
         setNewImpactTaskRemark("");
         getRecords();
@@ -189,6 +190,7 @@ const EvaluationApproval = ({
           }
         )
         .then((resp) => {
+          toast.success("Review successfully added");
           setHandelCommentRemark("");
           handleStepChange();
         });
@@ -201,18 +203,24 @@ const EvaluationApproval = ({
           }
         )
         .then((resp) => {
+          toast.success("Review successfully updated");
           setHandelCommentRemark("");
           handleStepChange();
         });
     }
   };
 
-  const handelImpactCommentImp = (id) => {
+  const handelImpactCommentImp = (id, value) => {
     apiAuth
       .put(`/Task/AddReview/${id}/${lastActCode.code}`, {
         remark: handelCommentRemark,
       })
       .then((resp) => {
+        if (value == 1) {
+          toast.success("Review successfully added");
+        } else {
+          toast.success("Review successfully Updated");
+        }
         setHandelCommentRemark("");
         handleStepChange();
       });
@@ -254,6 +262,7 @@ const EvaluationApproval = ({
         ActivityCode: lastActCode.code,
       })
       .then((response) => {
+        toast.success("Successfully marked the item as reviewed");
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
           [id]: true,
@@ -273,6 +282,8 @@ const EvaluationApproval = ({
         ActivityCode: lastActCode.code,
       })
       .then((response) => {
+        toast.success("Successfully marked the item as reviewed");
+
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
           [id]: true,
@@ -333,6 +344,9 @@ const EvaluationApproval = ({
     apiAuth
       .put(`/SummaryDetails/SendComment/${assetEvaluationId}`, payload)
       .then((response) => {
+        toast.success(
+          "Selected tasks successfully sent for external consultation"
+        );
         handlehandledateExtendClose();
       });
   };
@@ -361,6 +375,7 @@ const EvaluationApproval = ({
 
   return (
     <div className="w-full h-full">
+      <ToastContainer className="toast-container" />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -892,6 +907,7 @@ const EvaluationApproval = ({
                     <button
                       className="task-mark-reviewed-button mat-stroked-button"
                       onClick={() => handelreview(itm.id)}
+                      disabled={itm?.reviewd || clickedTasks[itm.id]}
                     >
                       {itm?.reviewd || clickedTasks[itm.id] ? (
                         <span
@@ -976,7 +992,7 @@ const EvaluationApproval = ({
                               <button
                                 className="mat-focus-indicator mat-raised-button mat-button-base"
                                 style={{ float: "right" }}
-                                onClick={() => handelCommentImp(itm.id, 1, 1)}
+                                onClick={() => `handelCommentImp`(itm.id, 1, 1)}
                               >
                                 <span className="mat-button-wrapper">Save</span>
                                 <span className="mat-ripple mat-button-ripple"></span>
@@ -1218,6 +1234,9 @@ const EvaluationApproval = ({
                             <button
                               className="task-mark-reviewed-button mat-stroked-button"
                               onClick={() => handelImpactreview(imptsk.id)}
+                              disabled={
+                                imptsk?.reviewd || clickedTasks[imptsk.id]
+                              }
                             >
                               {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
                                 <span
@@ -1401,15 +1420,37 @@ const EvaluationApproval = ({
                                                               // className={`rounded text-white p-2 py-1 px-3 mb-1 inline-flex text-center text-sm font-semibold leading-2 `}
                                                               style={{
                                                                 backgroundColor:
-                                                                  situation.residualRiskClassificationDisplay ==
-                                                                  "AverageRisk"
-                                                                    ? "orange"
-                                                                    : "green",
-                                                                width: "25%",
+                                                                  situation.residualRiskClassificationDisplay ===
+                                                                  "HighRisk"
+                                                                    ? "red"
+                                                                    : situation.residualRiskClassificationDisplay ===
+                                                                        "LowRisk"
+                                                                      ? "yellow"
+                                                                      : situation.residualRiskClassificationDisplay ===
+                                                                          "AverageRisk"
+                                                                        ? "orange"
+                                                                        : situation.residualRiskClassificationDisplay ===
+                                                                            "SignificantRisk"
+                                                                          ? "purple"
+                                                                          : "green",
+                                                                width: "35%",
                                                                 padding: "3px",
-                                                                color: "white",
+                                                                color:
+                                                                  situation.residualRiskClassificationDisplay ===
+                                                                  "LowRisk"
+                                                                    ? "#000"
+                                                                    : "white",
                                                                 borderRadius:
                                                                   "5px",
+                                                                textAlign:
+                                                                  "center",
+                                                                fontSize:
+                                                                  "12px",
+                                                                fontWeight:
+                                                                  situation.residualRiskClassificationDisplay ===
+                                                                  "LowRisk"
+                                                                    ? ""
+                                                                    : "bold",
                                                               }}
                                                             >
                                                               {
@@ -1553,7 +1594,7 @@ const EvaluationApproval = ({
                                             onClick={() =>
                                               handelImpactCommentImp(
                                                 imptsk.id,
-                                                2
+                                                1
                                               )
                                             }
                                           >
@@ -1837,7 +1878,7 @@ const EvaluationApproval = ({
                               {imptsk.externalEmailIDs}
                             </span>
                           </div>
-                          <div className="task-detail-item mt-5">
+                          <div className="task-detail-item">
                             <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
                               Comments
                             </span>
@@ -1927,6 +1968,12 @@ const EvaluationApproval = ({
                                               marginBottom: "3px",
                                             }}
                                             // Add functionality to update the comment here if needed
+                                            onClick={() =>
+                                              handleUpdateClick(
+                                                index,
+                                                remark.id
+                                              )
+                                            }
                                           >
                                             Update
                                           </Button>
@@ -1936,9 +1983,6 @@ const EvaluationApproval = ({
                                     value={remark.remark}
                                     onChange={(event) =>
                                       handleRemarkChange(index, event)
-                                    }
-                                    onClick={() =>
-                                      handleUpdateClick(index, remark.id)
                                     }
                                   />
                                   <h6 className="ps-4 pt-6 text-grey">
