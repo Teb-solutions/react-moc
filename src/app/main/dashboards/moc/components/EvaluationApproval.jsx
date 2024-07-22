@@ -48,8 +48,8 @@ const EvaluationApproval = ({
   AppActions,
   remarkRequest,
   setRemarkRequest,
-  handleStepChange,
   setContent,
+  setContentDetails,
 }) => {
   const [reviewed, setReviewed] = useState({});
   const [handelCommentRemark, setHandelCommentRemark] = useState("");
@@ -178,10 +178,11 @@ const EvaluationApproval = ({
   };
   const [expanded, setExpanded] = useState(false);
   const [clickedTasks, setClickedTasks] = useState({});
+  const [showReview, setshowReview] = useState(false);
 
   const handelCommentImp = (id, rwid, value) => {
-    debugger;
     if (value == 1) {
+      setshowReview(true);
       apiAuth
         .put(
           `/ChangeEvaluationConsultation/AddReview/${id}/${lastActCode.code}/0`,
@@ -192,7 +193,13 @@ const EvaluationApproval = ({
         .then((resp) => {
           toast.success("Review successfully added");
           setHandelCommentRemark("");
-          handleStepChange();
+          apiAuth
+            .get(
+              `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+            )
+            .then((resp) => {
+              setContentDetails(resp.data.data);
+            });
         });
     } else {
       apiAuth
@@ -205,7 +212,6 @@ const EvaluationApproval = ({
         .then((resp) => {
           toast.success("Review successfully updated");
           setHandelCommentRemark("");
-          handleStepChange();
         });
     }
   };
@@ -217,12 +223,19 @@ const EvaluationApproval = ({
       })
       .then((resp) => {
         if (value == 1) {
+          setshowReview(true);
           toast.success("Review successfully added");
+          apiAuth
+            .get(
+              `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+            )
+            .then((resp) => {
+              setContentDetails(resp.data.data);
+            });
         } else {
           toast.success("Review successfully Updated");
         }
         setHandelCommentRemark("");
-        handleStepChange();
       });
   };
 
@@ -913,12 +926,11 @@ const EvaluationApproval = ({
                     Consulted On {formatDates(itm?.consultedDate)}
                   </span>
                 </div>
-                {itm.requestTypeName != "Document" && AppActivity.canEdit && (
+                {itm.requestTypeName != "Document" && (
                   <div className="task-button ml-auto">
                     <button
                       className="task-mark-reviewed-button mat-stroked-button"
                       onClick={() => handelreview(itm.id)}
-                      disabled={itm?.reviewd || clickedTasks[itm.id]}
                     >
                       {itm?.reviewd || clickedTasks[itm.id] ? (
                         <span
@@ -950,7 +962,7 @@ const EvaluationApproval = ({
               </div>
               <div>&nbsp;</div>
 
-              {itm.reviews.length > 0 ? (
+              {itm.reviews.length > 0 || showReview ? (
                 <div>
                   <Accordion
                     expanded={expanded == itm.id}
@@ -1253,7 +1265,7 @@ const EvaluationApproval = ({
                             Task #{imptsk?.id}
                           </span>
                         </div>
-                        {AppActivity.canEdit && (
+                        {imptsk.requestTypeName != "Document" && (
                           <div className="task-button ml-auto">
                             <button
                               className="task-mark-reviewed-button mat-stroked-button"
@@ -1627,7 +1639,8 @@ const EvaluationApproval = ({
                         )}
                         <div>&nbsp;</div>
 
-                        {imptsk.changeImpactTaskReviews.length > 0 ? (
+                        {imptsk.changeImpactTaskReviews.length > 0 ||
+                        showReview ? (
                           <div>
                             <Accordion
                               expanded={expanded == imptsk.id}

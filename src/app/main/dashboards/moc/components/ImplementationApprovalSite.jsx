@@ -32,10 +32,12 @@ const ImplementationApprovalSite = ({
   AppActivity,
   ApprovalManager,
   setContent,
+  setContentDetails,
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [reviewed, setReviewed] = useState({});
   const [valueRemark, setValueRemark] = useState("");
+  const [showReview, setshowReview] = useState(false);
 
   const [handelCommentRemark, setHandelCommentRemark] = useState("");
 
@@ -52,7 +54,9 @@ const ImplementationApprovalSite = ({
       .get(
         `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
       )
-      .then((resp) => {});
+      .then((resp) => {
+        setContentDetails(resp.data.data);
+      });
   }
 
   const hasAddedComment = (comments) => {
@@ -102,6 +106,7 @@ const ImplementationApprovalSite = ({
           remark: handelCommentRemark,
         })
         .then((resp) => {
+          setshowReview(true);
           toast.success("Review successfully added");
           getRecords();
 
@@ -113,6 +118,7 @@ const ImplementationApprovalSite = ({
           remark: handelCommentRemark,
         })
         .then((resp) => {
+          setshowReview(true);
           toast.success("Review successfully Updated");
           getRecords();
 
@@ -297,7 +303,8 @@ const ImplementationApprovalSite = ({
                         </div>
                         <div>&nbsp;</div>
 
-                        {imptsk.implementationReviews.length > 0 ? (
+                        {imptsk.implementationReviews.length > 0 ||
+                        showReview ? (
                           <div>
                             <Accordion
                               expanded={expanded == imptsk.id}

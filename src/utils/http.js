@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const handleError = async (error) => {
   let err = {
@@ -8,28 +9,25 @@ const handleError = async (error) => {
   };
 
   if (error.response) {
-    if (error.response.status === 401 && !error.config._retry) {
-      error.config._retry = true;
-      // const refresh_token = localStorage.getItem('refresh_token');
-      // const resp = await apiClient.get(`${process.env.REACT_APP_API_BASE_URL}/auth/admin/refresh-token`, {
-      // 	headers: { Authorization: `Bearer ${refresh_token}` }
-      // });
+    if (error.response.status === 401) {
+      // Show toast error message
+      toast.error("Session expired. Please log in again.");
 
-      localStorage.setItem("token", resp.data.accessToken);
-      localStorage.setItem("refresh_token", resp.data.refreshToken);
-
-      error.config.headers.Authorization = `Bearer ${resp.data.accessToken}`;
-
-      return apiClient(error.config);
+      // Clear local storage and redirect to login page
+      localStorage.clear();
+      setTimeout(() => {
+        window.location = `${process.env.REACT_APP_PUBLIC_URL}/sign-in`;
+      }, 2000); // Delay to allow toast to show
+      return;
     }
 
     if (error.response.status === 403) {
-      // err = {
-      //     status: 403,
-      //     message: "",
-      // };
+      toast.error("Access denied. Please log in.");
       localStorage.clear();
-      window.location = `${process.env.REACT_APP_PUBLIC_URL}/auth/login`;
+      setTimeout(() => {
+        window.location = `${process.env.REACT_APP_PUBLIC_URL}/sign-in`;
+      }, 2000); // Delay to allow toast to show
+      return;
     } else if (error.response.status === 500) {
       err = {
         status: error.response.status,
@@ -40,7 +38,11 @@ const handleError = async (error) => {
         status: error.response.status,
         message: "App is under maintenance",
       };
-      window.location = `${process.env.REACT_APP_PUBLIC_URL}/under-maintenance`;
+      toast.error("App is under maintenance");
+      setTimeout(() => {
+        window.location = `${process.env.REACT_APP_PUBLIC_URL}/under-maintenance`;
+      }, 2000); // Delay to allow toast to show
+      return;
     } else if (error.response.status === 400) {
       err = {
         message: error.response.data.message || err.message,
@@ -59,7 +61,7 @@ const handleError = async (error) => {
 };
 
 export const apiClient = axios.create({
-  baseURL: `https://mocapi.tebs.co.in/api`,
+  baseURL: "https://mocapi.tebs.co.in/api",
   headers: {
     Accept: "application/json",
   },
@@ -71,6 +73,7 @@ export const apiAuth = axios.create({
     Accept: "application/json",
   },
 });
+
 const getToken = () => localStorage.getItem("jwt_access_token");
 apiAuth.interceptors.request.use((config) => {
   const token = getToken();
@@ -92,5 +95,21 @@ apiClient.interceptors.request.use((config) => {
   }
   return config;
 });
-apiClient.interceptors.response.use((res) => res, handleError);
-apiAuth.interceptors.response.use((res) => res, handleError);
+
+const handleResponseError = (error) => {
+  if (error.response && error.response.status === 401) {
+    // Clear local storage and redirect to login page
+    localStorage.clear();
+
+    toast.error("Session expired. Please log in again.");
+
+    setTimeout(() => {
+      window.location.href = `/sign-in`;
+    }, 500);
+    return;
+  }
+  return handleError(error);
+};
+
+apiClient.interceptors.response.use((res) => res, handleResponseError);
+apiAuth.interceptors.response.use((res) => res, handleResponseError);

@@ -152,7 +152,7 @@ export default function StickyHeadTable() {
   function getRecords() {
     apiAuth.get(`/LookupData/List/activity`).then((resp) => {
       setIsLoading(false);
-      const transformedData = resp.data.data.map((item, index) =>
+      const transformedData = resp?.data?.data?.map((item, index) =>
         createData(
           index + 1,
           item.code,
@@ -542,7 +542,7 @@ export default function StickyHeadTable() {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                {columns.map((column) => (
+                {columns?.map((column) => (
                   <TableCell
                     key={column.id}
                     align={column.align}
@@ -558,7 +558,7 @@ export default function StickyHeadTable() {
             <TableBody>
               {filteredDepartmentList
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
+                ?.map((row) => {
                   return (
                     <TableRow
                       hover
@@ -567,7 +567,7 @@ export default function StickyHeadTable() {
                       key={row.code}
                       sx={{ padding: dense ? "4px" : "default" }}
                     >
-                      {columns.map((column) => {
+                      {columns?.map((column) => {
                         const value = row[column.id];
                         return (
                           <TableCell

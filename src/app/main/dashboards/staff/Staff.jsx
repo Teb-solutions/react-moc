@@ -745,7 +745,7 @@ const Task = () => {
                       </div>
                       <div style={styles.gridContainer}>
                         <div>
-                          <div style={styles.textMd}>User Name</div>
+                          <div style={styles.textMd}>User Name (JID)</div>
                           <div style={styles.textSecondary}>
                             {personDetails?.userName != undefined &&
                               personDetails?.userName}
@@ -1203,7 +1203,7 @@ const Task = () => {
                             >
                               <TextField
                                 fullWidth
-                                label="User Name *"
+                                label="User Name (JID) *"
                                 name="username"
                                 value={formData.username}
                                 onChange={handleChange}

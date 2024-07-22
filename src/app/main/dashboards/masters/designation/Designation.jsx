@@ -150,6 +150,7 @@ export default function StickyHeadTable() {
     p: 4,
     padding: "0px",
   };
+
   function getRecords() {
     apiAuth.get(`/LookupData/List/designation`).then((resp) => {
       setIsLoading(false);

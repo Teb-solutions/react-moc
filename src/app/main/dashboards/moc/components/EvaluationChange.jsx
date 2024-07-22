@@ -216,6 +216,15 @@ function EvaluationChange({
         setSession(resp.data?.data);
         const sessionList = resp.data?.data?.activeSession?.timeoutMin;
         const sessionListId = resp.data?.data?.id;
+        if (resp.data.data.activeSession != null) {
+          if (resp?.data?.data?.activeSession?.status == 2) {
+            localStorage.setItem("isActiveSession", true);
+          } else {
+            localStorage.setItem("isActiveSession", false);
+          }
+        } else {
+          localStorage.setItem("isActiveSession", false);
+        }
         if (resp?.data?.data?.activeSession?.timeoutMin) {
           localStorage.setItem(
             "timeoutMin",
@@ -289,11 +298,15 @@ function EvaluationChange({
       )
       .then((resp) => {
         toast.success("Evaluation session has been successfully created.");
-
-        setOpen(false);
         getRecords();
-        if (timerRef.current) {
-          timerRef.current.startTimer(); // Start the timer when the API call is successful
+        setOpen(false);
+        setTimeout(() => localStorage.setItem("isActiveSession", false), 1000);
+
+        if (Session.hasActiveSession == true) {
+          if (timerRef.current) {
+            timerRef.current.startTimer();
+            // Start the timer when the API call is successful
+          }
         }
       })
       .catch((error) => {
@@ -396,6 +409,7 @@ function EvaluationChange({
     setAddTakForms([]);
     setEditSubTask([]);
     setAddCImpact(true);
+    setEditCImpact(false);
   };
 
   const handlebackList = () => {
@@ -512,13 +526,13 @@ function EvaluationChange({
         hazardDetail: impactForm.hazardDetail,
         otherDetail: "",
         changeImpactHazardList: hazardDetailsForm.map((detail) => ({
-          id: 0,
+          id: detail.id,
           changeImpactHazard: detail.changeImpactHazard,
         })),
         documentStatus: "Pending",
         isShowDetail: true,
         changeImpactTasks: impactForm.changeImpactTasks.map((task) => ({
-          id: 0,
+          id: task.id,
           changeRequestId: task.changeRequestId,
           changeEvaluationId: task.changeEvaluationId,
           changeImapactId: task.changeImapactId,
@@ -662,7 +676,8 @@ function EvaluationChange({
     setImpactForm(updatedImpactForm);
   };
 
-  const handleRemoveAddTaskForm = (index) => {
+  const handleRemoveAddTaskForm = (index, id) => {
+    apiAuth.delete(`/ChangeImpact/${id}/1`).then((resp) => {});
     const newTasks = AddTaskforms.filter((_, i) => i !== index);
     setAddTakForms(newTasks);
 
@@ -1445,11 +1460,27 @@ function EvaluationChange({
       .then((resp) => {
         toast.success("Evaluation session has been stopped.");
         setOpen(false);
+        localStorage.setItem("isActiveSession", false);
+        getRecords();
         setTimeout(() => location.reload(), 1000);
         if (timerRef.current) {
-          timerRef.current.stopTimer(); // Stop the timer when the API call is successful
+          timerRef.current.stopTimer();
+          // Stop the timer when the API call is successful
         }
       });
+  };
+
+  const handleRemoveSubTask = (id, impid) => {
+    apiAuth.get(`/RiskAnalysis/RemoveSubTask?id=${id}`).then((resp) => {
+      apiAuth
+        .get(`/RiskAnalysis/hazardList?id=${impid}`)
+        .then((resp) => {
+          setEditSubTask(resp.data.data);
+        })
+        .catch((error) => {
+          console.error("Error creating session:", error);
+        });
+    });
   };
 
   return (
@@ -1693,33 +1724,36 @@ function EvaluationChange({
                                 class="flex items-center w-full  border-b justify-between"
                                 style={{ marginTop: "5px" }}
                               ></div>
-                              {AppActivity.canEdit && (
-                                <Button
-                                  className="ms-5"
-                                  variant="contained"
-                                  sx={{
-                                    backgroundColor: "white",
-                                    color: "black",
-                                    border: "1px solid black",
-                                    marginTop: "8px",
-                                  }}
-                                  startIcon={
-                                    <FuseSvgIcon size={20}>
-                                      heroicons-outline:user-add
-                                    </FuseSvgIcon>
-                                  }
-                                  onClick={() =>
-                                    handelEditConsultation(
-                                      itms.staff,
-                                      itms.consultedDate,
-                                      itms.consultedStaffId,
-                                      itms.id
-                                    )
-                                  }
-                                >
-                                  Edit Consultation
-                                </Button>
-                              )}
+                              {AppActivity.canEdit &&
+                                JSON.parse(
+                                  localStorage.getItem("isActiveSession")
+                                ) && (
+                                  <Button
+                                    className="ms-5"
+                                    variant="contained"
+                                    sx={{
+                                      backgroundColor: "white",
+                                      color: "black",
+                                      border: "1px solid black",
+                                      marginTop: "8px",
+                                    }}
+                                    startIcon={
+                                      <FuseSvgIcon size={20}>
+                                        heroicons-outline:user-add
+                                      </FuseSvgIcon>
+                                    }
+                                    onClick={() =>
+                                      handelEditConsultation(
+                                        itms.staff,
+                                        itms.consultedDate,
+                                        itms.consultedStaffId,
+                                        itms.id
+                                      )
+                                    }
+                                  >
+                                    Edit Consultation
+                                  </Button>
+                                )}
                             </div>
                           </Step>
                         </Stepper>
@@ -2144,7 +2178,8 @@ function EvaluationChange({
                             <Stepper orientation="vertical">
                               <Step>
                                 <div className="mat-expansion-panel-body ng-tns-c137-15">
-                                  {itms?.hazardDetail ? (
+                                  {itms?.hazardDetail &&
+                                  itms?.riskAnalysisList?.length == 0 ? (
                                     <>
                                       <div className="task-detail-item mt-5">
                                         <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
@@ -2435,11 +2470,12 @@ function EvaluationChange({
                                                               situation.hazardousSituation
                                                             }
                                                           </h6>
-                                                          {hazardType.riskAnalysisHazardSituation &&
-                                                            hazardType
-                                                              .riskAnalysisHazardSituation
-                                                              .length > 0 &&
-                                                            AppActivity.canEdit && (
+                                                          {AppActivity.canEdit &&
+                                                            JSON.parse(
+                                                              localStorage.getItem(
+                                                                "isActiveSession"
+                                                              )
+                                                            ) && (
                                                               <div
                                                                 className="mt-2 ms-5"
                                                                 style={{
@@ -2517,33 +2553,39 @@ function EvaluationChange({
                                                                 </a>
                                                               </div>
                                                             )}
-                                                          {AppActivity.canEdit && (
-                                                            <span
-                                                              className="text-white"
-                                                              style={{
-                                                                backgroundColor:
-                                                                  "#2563eb",
-                                                                marginLeft:
-                                                                  "10px",
-                                                                borderRadius:
-                                                                  "5px",
-                                                                padding: "3px",
-                                                                fontSize:
-                                                                  "10px",
-                                                                cursor:
-                                                                  "pointer",
-                                                              }}
-                                                              onClick={() =>
-                                                                handelRisk(
-                                                                  sub.id,
-                                                                  hazardType.hazardType
-                                                                )
-                                                              }
-                                                            >
-                                                              Create New Risk
-                                                              Analysis
-                                                            </span>
-                                                          )}
+                                                          {AppActivity.canEdit &&
+                                                            JSON.parse(
+                                                              localStorage.getItem(
+                                                                "isActiveSession"
+                                                              )
+                                                            ) && (
+                                                              <span
+                                                                className="text-white"
+                                                                style={{
+                                                                  backgroundColor:
+                                                                    "#2563eb",
+                                                                  marginLeft:
+                                                                    "10px",
+                                                                  borderRadius:
+                                                                    "5px",
+                                                                  padding:
+                                                                    "3px",
+                                                                  fontSize:
+                                                                    "10px",
+                                                                  cursor:
+                                                                    "pointer",
+                                                                }}
+                                                                onClick={() =>
+                                                                  handelRisk(
+                                                                    sub.id,
+                                                                    hazardType.hazardType
+                                                                  )
+                                                                }
+                                                              >
+                                                                Create New Risk
+                                                                Analysis
+                                                              </span>
+                                                            )}
                                                         </div>
                                                       )
                                                     )}
@@ -2665,36 +2707,39 @@ function EvaluationChange({
                                     class="flex items-center w-full  border-b justify-between"
                                     style={{ marginTop: "5px" }}
                                   ></div>
-                                  {AppActivity.canEdit && (
-                                    <Button
-                                      className="ms-5"
-                                      variant="contained"
-                                      sx={{
-                                        backgroundColor: "white",
-                                        color: "black",
-                                        border: "1px solid black",
-                                        marginTop: "8px",
-                                      }}
-                                      startIcon={
-                                        <FuseSvgIcon size={20}>
-                                          heroicons-outline:user-add
-                                        </FuseSvgIcon>
-                                      }
-                                      onClick={() =>
-                                        handelEditImpactTask(
-                                          itms.hazardDetail,
-                                          itms?.changeImpactTasks,
-                                          itms?.particular,
-                                          itms.particularSubCategory,
-                                          itms?.changeImapactId,
-                                          itms?.changeRequestId,
-                                          itms?.changeEvaluationId
-                                        )
-                                      }
-                                    >
-                                      Edit Impact/Task
-                                    </Button>
-                                  )}
+                                  {AppActivity.canEdit &&
+                                    JSON.parse(
+                                      localStorage.getItem("isActiveSession")
+                                    ) && (
+                                      <Button
+                                        className="ms-5"
+                                        variant="contained"
+                                        sx={{
+                                          backgroundColor: "white",
+                                          color: "black",
+                                          border: "1px solid black",
+                                          marginTop: "8px",
+                                        }}
+                                        startIcon={
+                                          <FuseSvgIcon size={20}>
+                                            heroicons-outline:user-add
+                                          </FuseSvgIcon>
+                                        }
+                                        onClick={() =>
+                                          handelEditImpactTask(
+                                            itms.hazardDetail,
+                                            itms?.changeImpactTasks,
+                                            itms?.particular,
+                                            itms.particularSubCategory,
+                                            itms?.changeImapactId,
+                                            itms?.changeRequestId,
+                                            itms?.changeEvaluationId
+                                          )
+                                        }
+                                      >
+                                        Edit Impact/Task
+                                      </Button>
+                                    )}
                                 </div>
                               </Step>
                             </Stepper>
@@ -2884,131 +2929,162 @@ function EvaluationChange({
                                           </Typography>
                                         </Grid>
                                         <Grid item xs={12} md={9}>
-                                          {subTask.riskAnalysisHazardTypes.map(
-                                            (
-                                              riskAnalysisHazardType,
-                                              hazardTypeIndex
-                                            ) => (
-                                              <React.Fragment
-                                                key={hazardTypeIndex}
-                                              >
-                                                <Grid container spacing={2}>
-                                                  <Grid item xs={12} md={3}>
-                                                    <Typography
-                                                      variant="body2"
-                                                      color="text.primary"
-                                                      fontWeight="fontWeightRegular"
-                                                    >
-                                                      {
-                                                        riskAnalysisHazardType.hazardTypeDisplay
-                                                      }
-                                                    </Typography>
-                                                  </Grid>
-                                                  {riskAnalysisHazardType.riskAnalysisHazardSituation.map(
-                                                    (
-                                                      riskHazardSituation,
-                                                      situationIndex
-                                                    ) => (
-                                                      <Grid
-                                                        container
-                                                        spacing={2}
-                                                        key={situationIndex}
-                                                        alignItems="center"
+                                          {subTask.riskAnalysisHazardTypes
+                                            .length ? (
+                                            subTask.riskAnalysisHazardTypes.map(
+                                              (
+                                                riskAnalysisHazardType,
+                                                hazardTypeIndex
+                                              ) => (
+                                                <React.Fragment
+                                                  key={hazardTypeIndex}
+                                                >
+                                                  <Grid container spacing={2}>
+                                                    <Grid item xs={12} md={3}>
+                                                      <Typography
+                                                        variant="body2"
+                                                        color="text.primary"
+                                                        fontWeight="fontWeightRegular"
+                                                        className="text-center"
                                                       >
+                                                        {
+                                                          riskAnalysisHazardType.hazardTypeDisplay
+                                                        }
+                                                      </Typography>
+                                                    </Grid>
+                                                    {riskAnalysisHazardType.riskAnalysisHazardSituation.map(
+                                                      (
+                                                        riskHazardSituation,
+                                                        situationIndex
+                                                      ) => (
                                                         <Grid
-                                                          item
-                                                          xs={12}
-                                                          md={3}
+                                                          container
+                                                          spacing={2}
+                                                          key={situationIndex}
+                                                          alignItems="center"
                                                         >
-                                                          <Typography
-                                                            variant="body2"
-                                                            color="text.primary"
-                                                            fontWeight="fontWeightRegular"
+                                                          <Grid
+                                                            item
+                                                            xs={12}
+                                                            md={3}
                                                           >
-                                                            {
-                                                              riskHazardSituation.hazardousSituation
-                                                            }
-                                                          </Typography>
+                                                            <Typography
+                                                              variant="body2"
+                                                              color="text.primary"
+                                                              fontWeight="fontWeightRegular"
+                                                              className="text-center"
+                                                            >
+                                                              {
+                                                                riskHazardSituation.hazardousSituation
+                                                              }
+                                                            </Typography>
 
-                                                          <Typography
-                                                            variant="body2"
-                                                            color="text.primary"
-                                                            fontWeight="fontWeightRegular"
-                                                            style={{
-                                                              backgroundColor:
-                                                                riskHazardSituation.residualRiskClassificationDisplay ===
-                                                                "HighRisk"
-                                                                  ? "red"
-                                                                  : riskHazardSituation.residualRiskClassificationDisplay ===
-                                                                      "LowRisk"
-                                                                    ? "yellow"
+                                                            <Typography
+                                                              variant="body2"
+                                                              color="text.primary"
+                                                              fontWeight="fontWeightRegular"
+                                                              className="text-center"
+                                                              style={{
+                                                                backgroundColor:
+                                                                  riskHazardSituation.residualRiskClassificationDisplay ===
+                                                                  "HighRisk"
+                                                                    ? "red"
                                                                     : riskHazardSituation.residualRiskClassificationDisplay ===
-                                                                        "VeryLowRisk"
-                                                                      ? "green"
-                                                                      : "initial",
-                                                              color: "white",
-                                                              padding: "5px",
-                                                              borderRadius:
-                                                                "5px",
-                                                              marginTop: "5px",
-                                                            }}
+                                                                        "LowRisk"
+                                                                      ? "yellow"
+                                                                      : riskHazardSituation.residualRiskClassificationDisplay ===
+                                                                          "AverageRisk"
+                                                                        ? "orange"
+                                                                        : riskHazardSituation.residualRiskClassificationDisplay ===
+                                                                            "VeryLowRisk"
+                                                                          ? "green"
+                                                                          : "initial",
+                                                                color: "white",
+                                                                padding: "5px",
+                                                                borderRadius:
+                                                                  "5px",
+                                                                marginTop:
+                                                                  "5px",
+                                                              }}
+                                                            >
+                                                              {
+                                                                riskHazardSituation.residualRiskClassificationDisplay
+                                                              }
+                                                            </Typography>
+                                                          </Grid>
+                                                          <Grid
+                                                            item
+                                                            xs={12}
+                                                            md={2}
                                                           >
-                                                            {
-                                                              riskHazardSituation.residualRiskClassificationDisplay
-                                                            }
-                                                          </Typography>
-                                                        </Grid>
-                                                        <Grid
-                                                          item
-                                                          xs={12}
-                                                          md={2}
-                                                        >
-                                                          <Typography
-                                                            variant="body2"
-                                                            color="text.primary"
-                                                            fontWeight="fontWeightRegular"
+                                                            <Typography
+                                                              variant="body2"
+                                                              color="text.primary"
+                                                              fontWeight="fontWeightRegular"
+                                                              className="text-center"
+                                                            >
+                                                              {
+                                                                riskHazardSituation.humanControlMeasure
+                                                              }
+                                                            </Typography>
+                                                          </Grid>
+                                                          <Grid
+                                                            item
+                                                            xs={12}
+                                                            md={2}
                                                           >
-                                                            {
-                                                              riskHazardSituation.humanControlMeasure
-                                                            }
-                                                          </Typography>
-                                                        </Grid>
-                                                        <Grid
-                                                          item
-                                                          xs={12}
-                                                          md={2}
-                                                        >
-                                                          <Typography
-                                                            variant="body2"
-                                                            color="text.primary"
-                                                            fontWeight="fontWeightRegular"
+                                                            <Typography
+                                                              variant="body2"
+                                                              color="text.primary"
+                                                              fontWeight="fontWeightRegular"
+                                                              className="text-center"
+                                                            >
+                                                              {
+                                                                riskHazardSituation.technicalControlMeasure
+                                                              }
+                                                            </Typography>
+                                                          </Grid>
+                                                          <Grid
+                                                            item
+                                                            xs={12}
+                                                            md={2}
                                                           >
-                                                            {
-                                                              riskHazardSituation.technicalControlMeasure
-                                                            }
-                                                          </Typography>
+                                                            <Typography
+                                                              variant="body2"
+                                                              color="text.primary"
+                                                              fontWeight="fontWeightRegular"
+                                                              className="text-center"
+                                                            >
+                                                              {
+                                                                riskHazardSituation.organisationalControlMeasure
+                                                              }
+                                                            </Typography>
+                                                          </Grid>
                                                         </Grid>
-                                                        <Grid
-                                                          item
-                                                          xs={12}
-                                                          md={2}
-                                                        >
-                                                          <Typography
-                                                            variant="body2"
-                                                            color="text.primary"
-                                                            fontWeight="fontWeightRegular"
-                                                          >
-                                                            {
-                                                              riskHazardSituation.organisationalControlMeasure
-                                                            }
-                                                          </Typography>
-                                                        </Grid>
-                                                      </Grid>
-                                                    )
-                                                  )}
-                                                </Grid>
-                                              </React.Fragment>
+                                                      )
+                                                    )}
+                                                  </Grid>
+                                                </React.Fragment>
+                                              )
                                             )
+                                          ) : (
+                                            <Button
+                                              className="whitespace-nowrap"
+                                              startIcon={
+                                                <FuseSvgIcon size={15}>
+                                                  heroicons-solid:trash
+                                                </FuseSvgIcon>
+                                              }
+                                              style={{
+                                                color: "red",
+                                              }}
+                                              onClick={() =>
+                                                handleRemoveSubTask(
+                                                  subTask.id,
+                                                  task.changeImapactId
+                                                )
+                                              }
+                                            ></Button>
                                           )}
                                         </Grid>
                                       </Grid>
@@ -3139,7 +3215,7 @@ function EvaluationChange({
                                 class="text-2xl font-semibold"
                                 style={{ padding: "10px" }}
                               >
-                                Task
+                                Task #{task.id}
                               </h2>
                               <Button
                                 className="whitespace-nowrap mt-5 mb-5"
@@ -3149,7 +3225,9 @@ function EvaluationChange({
                                 }}
                                 variant="contained"
                                 color="warning"
-                                onClick={() => handleRemoveAddTaskForm(index)}
+                                onClick={() =>
+                                  handleRemoveAddTaskForm(index, task.id)
+                                }
                               >
                                 <FuseSvgIcon size={20}>
                                   heroicons-solid:x
@@ -3337,11 +3415,16 @@ function EvaluationChange({
                                       }}
                                       error={!!errorsTask[`dueDate_${index}`]}
                                     >
+                                      {console.log(task.dueDate, "dueeee")}
                                       <Box sx={{}}>
                                         <DatePicker
                                           label="Due Date *"
                                           name="dueDate"
-                                          // value={task.dueDate}
+                                          value={
+                                            task.dueDate
+                                              ? new Date(task.dueDate)
+                                              : null
+                                          }
                                           onChange={(newValue) =>
                                             handleDateChange(index, newValue)
                                           }
@@ -3508,39 +3591,40 @@ function EvaluationChange({
                 </div>
               </>
             )}
-            {Session.activeSession?.status != 2 && AppActivity.canExecute && (
-              <>
-                <div
-                  className="my-10"
-                  style={{ borderTopWidth: "2px", marginTop: "40px" }}
-                ></div>
-
-                <div className="flex justify-end">
+            {!JSON.parse(localStorage.getItem("isActiveSession")) &&
+              AppActivity.canExecute && (
+                <>
                   <div
-                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                    style={{ marginTop: "15px" }}
+                    className="my-10"
+                    style={{ borderTopWidth: "2px", marginTop: "40px" }}
                   ></div>
-                  <div
-                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                    style={{ marginTop: "15px" }}
-                  >
-                    {AppActions.map((btn) => (
-                      <Button
-                        className="whitespace-nowrap"
-                        variant="contained"
-                        color="secondary"
-                        style={{ padding: "15px" }}
-                        key={btn.name}
-                        // onClick={() => handleOpen(btn)}
-                        onClick={() => handelSubmitApproval(btn)}
-                      >
-                        {btn.name}
-                      </Button>
-                    ))}
+
+                  <div className="flex justify-end">
+                    <div
+                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                      style={{ marginTop: "15px" }}
+                    ></div>
+                    <div
+                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                      style={{ marginTop: "15px" }}
+                    >
+                      {AppActions.map((btn) => (
+                        <Button
+                          className="whitespace-nowrap"
+                          variant="contained"
+                          color="secondary"
+                          style={{ padding: "15px" }}
+                          key={btn.name}
+                          // onClick={() => handleOpen(btn)}
+                          onClick={() => handelSubmitApproval(btn)}
+                        >
+                          {btn.name}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
           </Paper>
         ) : (
           <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
@@ -5218,7 +5302,7 @@ function EvaluationChange({
                 container
                 spacing={2}
                 className="mt-5"
-                style={{ overflow: "scroll", height: "40vh" }}
+                style={{ overflow: "scroll", height: "35vh" }}
               >
                 <Grid item xs={12}>
                   <Table

@@ -153,7 +153,7 @@ export default function StickyHeadTable() {
   function getRecords() {
     apiAuth.get(`/LookupData/List/changeevaluation`).then((resp) => {
       setIsLoading(false);
-      const transformedData = resp.data.data.map((item, index) =>
+      const transformedData = resp?.data.data?.map((item, index) =>
         createData(
           index + 1,
           item.code,
