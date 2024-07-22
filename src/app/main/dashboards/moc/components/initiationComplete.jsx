@@ -68,7 +68,7 @@ const InitiationComplete = ({
     boxShadow: 24,
     p: 4,
   };
-
+  console.log(currentActivityForm.uid, assetEvaluationId, "888888888");
   const handleClose = () => setOpen(false);
 
   const handleOpen = (btn) => {
@@ -244,9 +244,20 @@ const InitiationComplete = ({
     setOpenDrawer(false);
   };
 
+  const ListDoc1 = (id, activeid) => {
+    // /DocumentManager/DocList/dfe9f50848a94203868dfbcac5a64614/ChangeSummary?changeRequestToken=9e2cc18f-3d8e-400a-aba2-af0d1c0aeb37
+    apiAuth
+      .get(
+        `/DocumentManager/DocList/${activeid}/ChangeSummary?changeRequestToken=${id}`
+      )
+      .then((Resp) => {
+        setListDocument(Resp?.data?.data);
+      });
+  };
+
   const handleOpen1 = () => {
     setOpen1(true);
-    // ListDoc(assetEvaluationId, AssetDetails?.changeRequestId);
+    ListDoc1(assetEvaluationId, currentActivityForm.uid);
     // const newGuid = uuidv4();
     // setSelectedFile((prevState) => ({
     //   ...prevState,
@@ -395,17 +406,21 @@ const InitiationComplete = ({
                                 0 Files
                               </Typography> */}
                 </Typography>
-                <Box>
-                  <Button
-                    className=""
-                    variant="contained"
-                    color="secondary"
-                    onClick={toggleDrawer(true)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-                    <span className="mx-4 sm:mx-8">Upload File</span>
-                  </Button>
-                </Box>
+                {currentActivityForm.canExecute && (
+                  <Box>
+                    <Button
+                      className=""
+                      variant="contained"
+                      color="secondary"
+                      onClick={toggleDrawer(true)}
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </Box>
+                )}
               </Box>
               <Box>
                 <Typography

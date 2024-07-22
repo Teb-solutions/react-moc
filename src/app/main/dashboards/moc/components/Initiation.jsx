@@ -124,7 +124,6 @@ function Initiation(props) {
   });
 
   const handleDownload = () => {
-    debugger;
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`, {
         responseType: "blob",
@@ -132,8 +131,9 @@ function Initiation(props) {
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
+        debugger;
         link.href = url;
-        link.setAttribute("download", selectedDocument.documentImage); // or any other extension
+        link.setAttribute("download", selectedDocument.name); // or any other extension
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -532,6 +532,7 @@ function Initiation(props) {
           </Box>
         </Fade>
       </Modal>
+
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
           <div>

@@ -1391,6 +1391,7 @@ const AssetCourse = () => {
                 handleChangeRemark={handleChangeRemark}
                 valueRemark={valueRemark}
                 contentDetails={contentDetails}
+                assetEvaluationId={assetEvaluationId}
               />
             )}
             {currentPhase === "InitiationComplete" && (
