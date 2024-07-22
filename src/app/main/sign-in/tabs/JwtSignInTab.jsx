@@ -147,7 +147,7 @@ const JwtSignInTab = () => {
             <TextField
               {...field}
               className="mb-24"
-              label="User Name"
+              label="User Name (JID)"
               autoFocus
               type="string"
               error={!!errors.userName}

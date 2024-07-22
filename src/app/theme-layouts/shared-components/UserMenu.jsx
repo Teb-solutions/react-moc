@@ -12,7 +12,10 @@ import { selectUser } from "src/app/auth/user/store/userSlice";
 import { useAuth } from "src/app/auth/AuthRouteProvider";
 import { darken } from "@mui/material/styles";
 import { useAppSelector } from "app/store/hooks";
-import { Tooltip } from "@mui/material";
+import { Badge, Tooltip } from "@mui/material";
+import NotificationPopup from "./NotificationPopup";
+import { useEffect } from "react";
+import { apiAuth } from "src/utils/http";
 
 /**
  * The user menu.
@@ -32,22 +35,72 @@ function UserMenu() {
     return null;
   }
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+  const [notification, setNotification] = useState(null);
+
+  function getRecords() {
+    apiAuth.get(`/NotificationManager/Notifications/`).then((resp) => {
+      setNotification(resp.data.data);
+    });
+  }
+
+  useEffect(() => {
+    getRecords();
+  }, []);
+
   return (
     <>
-      <Button
-        className="min-h-40 min-w-40 p-0  md:py-6"
-        // onClick={userMenuClick}
-        color="inherit"
+      <Badge badgeContent={notification?.length} color="success">
+        <Button
+          className="min-h-40 min-w-40 p-0  md:py-6"
+          onClick={handleClick}
+          color="inherit"
+        >
+          <div className="mx-4 hidden flex-col items-end md:flex">
+            <Typography
+              className="text-11 font-medium capitalize"
+              color="text.secondary"
+            >
+              <FuseSvgIcon>heroicons-outline:bell</FuseSvgIcon>
+            </Typography>
+          </div>
+        </Button>
+      </Badge>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClick}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        PaperProps={{
+          style: {
+            width: "400px", // Set the width of the popover
+            maxHeight: "500px", // Set the max height of the popover
+            overflowY: "auto", // Enable scrolling if content overflows
+          },
+        }}
       >
-        <div className="mx-4 hidden flex-col items-end md:flex">
-          <Typography
-            className="text-11 font-medium capitalize"
-            color="text.secondary"
-          >
-            <FuseSvgIcon>heroicons-outline:bell</FuseSvgIcon>
-          </Typography>
-        </div>
-      </Button>
+        {notification && (
+          <NotificationPopup
+            notification={notification}
+            setNotification={setNotification}
+          />
+        )}
+      </Popover>
       <Button
         className="min-h-40 min-w-40 p-0  md:py-6"
         onClick={userMenuClick}
@@ -105,7 +158,7 @@ function UserMenu() {
         }}
       >
         <Typography component="span" className="flex">
-          Hi, {localStorage.getItem("username").split(" ")[0]}
+          Hi, {localStorage.getItem("username")?.split(" ")[0]}
         </Typography>
       </Tooltip>
 

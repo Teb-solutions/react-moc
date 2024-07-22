@@ -26,13 +26,14 @@ import {
 import { Box, Modal, Paper } from "@mui/material";
 import { apiAuth } from "src/utils/http";
 import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { styled } from "@mui/material/styles";
 import { ToastContainer, toast } from "react-toastify";
 import FuseLoading from "@fuse/core/FuseLoading";
+import { useLocation } from "react-router-dom";
 
 const Task = () => {
   const style = {
@@ -122,10 +123,12 @@ const Task = () => {
     changeRequestToken: "",
   });
   console.log(selectedFile);
+  // Extract the task.id from the URL
 
   const taskType = router["*"];
 
-  console.log(selectedFile.documentId, "seleee");
+  const navigate = useNavigate();
+
   useEffect(() => {
     setPriority(task.priority);
   }, [task]);
@@ -163,6 +166,7 @@ const Task = () => {
   // Function to open sidebar
   const openSidebar = (e, task) => {
     e.preventDefault();
+
     window.history.pushState({}, "", `/task/${task.id}`);
     setTask(task);
     setSidebarOpen(true);
@@ -314,6 +318,8 @@ const Task = () => {
   };
 
   const handleSubmit = () => {
+    const path = window.location.pathname;
+    const taskId = path.startsWith("/task/") ? path.split("/task/")[1] : null;
     const updatedTask = {
       ...task,
       notes: comments,
@@ -321,9 +327,9 @@ const Task = () => {
       taskStatus: 2,
       startedDate: "0001-01-01T00:00:00",
     };
-    console.log("Payload before API call:", updatedTask);
+
     apiAuth
-      .put(`/Task/Update?id=${taskType}`, updatedTask)
+      .put(`/Task/Update?id=${taskId}`, updatedTask)
       .then((response) => {
         setOpen(false);
         toast.success("Task Comment Added");
@@ -380,7 +386,7 @@ const Task = () => {
       setFileName(file.name);
     }
     const fileType = file.type.startsWith("image/")
-      ? file.type.split("/")[1]
+      ? file.type?.split("/")[1]
       : file.type;
 
     setSelectedFile({
@@ -468,6 +474,17 @@ const Task = () => {
     console.log(doc, "doccc");
     setFileDetails(true);
     setDocumenDowToken(doc.token);
+  };
+
+  const handelViewMoc = (e, list) => {
+    e.preventDefault();
+    if (list.requestTypeName == "Asset") {
+      navigate(`/moc/assetEvaluation/${list.token}`);
+    } else if (list.requestTypeName === "Document") {
+      navigate(`/moc/evaluation/${list.token}`);
+    } else {
+      navigate(`/moc/orgEvaluation/${list.token}`);
+    }
   };
 
   if (isLoading) {
@@ -941,8 +958,9 @@ const Task = () => {
                     >
                       <a
                         className="flex items-center min-w-0 h-full w-full pr-7"
-                        href={`/moc/evaluation/${list.changeRequestToken}`}
+                        href="#"
                         style={{ textDecoration: "none" }}
+                        onClick={(e) => handelViewMoc(e, list)}
                       >
                         View MOC details
                       </a>
@@ -1649,7 +1667,7 @@ const Task = () => {
                                   >
                                     <div className="font-semibold">
                                       {" "}
-                                      {task.changeLeaderName}{" "}
+                                      {task?.changeLeaderName}{" "}
                                     </div>
                                     <div
                                       className="min-w-4 leading-5 "
@@ -1824,7 +1842,7 @@ const Task = () => {
                     >
                       {" "}
                       <span className="text-success">
-                        {task.changeLeaderName} has approved your task
+                        {task?.changeLeaderName} has approved your task
                       </span>
                     </div>
                     <div className="flex-auto border-b"></div>
@@ -1842,7 +1860,7 @@ const Task = () => {
                       {" "}
                       <span className="text-success">
                         Awaiting approval from
-                        {task.changeLeaderName}
+                        {task?.changeLeaderName}
                       </span>
                     </div>
                     <div className="flex-auto border-b"></div>

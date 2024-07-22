@@ -25,10 +25,13 @@ function ProjectDashboardAppHeader() {
     id: 1,
     menuEl: null,
   });
+  const [data, setData] = useState([]);
 
   const fetchdataSetting = useCallback(async () => {
     try {
-      apiAuth.get(`/Dashboard/Get`).then((resp) => {});
+      apiAuth.get(`/Dashboard/Get`).then((resp) => {
+        setData(resp?.data?.data);
+      });
     } catch (err) {
       console.log(err);
     }
@@ -93,7 +96,7 @@ function ProjectDashboardAppHeader() {
                 className="mx-6 leading-6 truncate"
                 color="text.secondary"
               >
-                You have 15 pending tasks
+                You have {data?.tasksDue} pending tasks
               </Typography>
             </div>
           </div>

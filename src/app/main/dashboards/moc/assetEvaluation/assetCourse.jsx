@@ -1430,6 +1430,7 @@ const AssetCourse = () => {
                 AppActivity={appActivity}
                 assetEvaluationId={assetEvaluationId}
                 contentDetails={contentDetails}
+                setContentDetails={setContentDetails}
                 showRiskAnalysisChart={showRiskAnalysisChart}
                 riskAnalysisChartOptions={riskAnalysisChartOptions}
                 lastActCode={lastActCode}
@@ -1506,6 +1507,7 @@ const AssetCourse = () => {
                 contentDetails={contentDetails}
                 ApprovalManager={ApprovalManager}
                 setContent={setContent}
+                setContentDetails={setContentDetails}
               />
             )}
             {currentPhase === "ImplementationApprovalCoorp" && (

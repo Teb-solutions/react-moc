@@ -59,7 +59,7 @@ const navigationConfig1 = [
         id: "Staff.request",
         title: "Staff",
         type: "item",
-        icon: "heroicons-outline:bell",
+        icon: "heroicons-outline:user-group",
         url: "/staff",
         feature: "STA",
       },

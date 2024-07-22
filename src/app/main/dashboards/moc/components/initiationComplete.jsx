@@ -763,7 +763,7 @@ const InitiationComplete = ({
                 {currentActivityForm.canEdit ? (
                   <Select
                     name="changeLeaderId"
-                    value={IniComp.changeLeaderId}
+                    value={IniComp?.changeLeaderId}
                     onChange={handleChange}
                   >
                     {class1.map((option) => (
@@ -773,7 +773,7 @@ const InitiationComplete = ({
                     ))}
                   </Select>
                 ) : (
-                  <span>{currentSummeryById.changeLeader}</span>
+                  <span>{currentSummeryById?.changeLeader}</span>
                 )}
               </FormControl>
             </Grid>
@@ -785,11 +785,11 @@ const InitiationComplete = ({
                 {currentActivityForm.canEdit ? (
                   <OutlinedInput
                     name="changeLocation"
-                    value={IniComp.changeLocation}
+                    value={IniComp?.changeLocation}
                     onChange={handleChange}
                   />
                 ) : (
-                  <span>{currentSummeryById.changeLocation}</span>
+                  <span>{currentSummeryById?.changeLocation}</span>
                 )}
               </FormControl>
             </Grid>
@@ -800,7 +800,7 @@ const InitiationComplete = ({
                   <RadioGroup
                     row
                     name="changeType"
-                    value={IniComp.changeType}
+                    value={IniComp?.changeType}
                     onChange={handleChange}
                   >
                     <FormControlLabel
@@ -815,7 +815,7 @@ const InitiationComplete = ({
                     />
                   </RadioGroup>
                 ) : (
-                  <span>{currentSummeryById.changeTypeString}</span>
+                  <span>{currentSummeryById?.changeTypeString}</span>
                 )}
               </FormControl>
             </Grid>
@@ -843,11 +843,11 @@ const InitiationComplete = ({
                 {currentActivityForm.canEdit ? (
                   <OutlinedInput
                     name="briefDescription"
-                    value={IniComp.briefDescription}
+                    value={IniComp?.briefDescription}
                     onChange={handleChange}
                   />
                 ) : (
-                  <span>{currentSummeryById.briefDescription}</span>
+                  <span>{currentSummeryById?.briefDescription}</span>
                 )}
               </FormControl>
             </Grid>
@@ -857,11 +857,11 @@ const InitiationComplete = ({
                 {currentActivityForm.canEdit ? (
                   <OutlinedInput
                     name="changeBenefits"
-                    value={IniComp.changeBenefits}
+                    value={IniComp?.changeBenefits}
                     onChange={handleChange}
                   />
                 ) : (
-                  <span>{currentSummeryById.changeBenefits}</span>
+                  <span>{currentSummeryById?.changeBenefits}</span>
                 )}
               </FormControl>
             </Grid>
