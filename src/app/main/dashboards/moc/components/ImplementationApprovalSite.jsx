@@ -155,17 +155,17 @@ const ImplementationApprovalSite = ({
     <div className="w-full">
       <MainComponent contentDetails={contentDetails} />
       <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow">
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div
             _ngcontent-fyk-c288=""
-            class="flex items-center w-full  border-b justify-between"
+            class="flex items-center w-full border-b p-30 pt-24 pb-24 justify-between"
           >
             <h2 className="text-2xl font-semibold">Implementation Tasks</h2>
             <TextField
               variant="filled"
               fullWidth
               placeholder="Search"
-              style={{ marginBottom: "15px" }}
+              style={{ marginBottom: "0" }}
               //   value={searchTerm}
               InputProps={{
                 startAdornment: (
@@ -177,6 +177,7 @@ const ImplementationApprovalSite = ({
               sx={{ width: 320 }}
             />
           </div>
+          <div className="p-30 pt-24 pb-24">
           {contentDetails?.implementationTask?.map((imptsk) => (
             <>
               <table className="task-table mat-table">
@@ -187,7 +188,7 @@ const ImplementationApprovalSite = ({
                 <tbody className="task-table-body">
                   <tr className="task-table-row mat-row">
                     <td className="task-table-cell mat-cell">
-                      <div className="task-header flex items-center">
+                      <div className="task-header flex items-center p-0">
                         <div className="task-id flex flex-col">
                           <span
                             className="task-id-text font-semibold text-xl leading-none"
@@ -220,38 +221,38 @@ const ImplementationApprovalSite = ({
                           </div>
                         )}
                       </div>
-                      <div className="task-details px-6 mt-2">
+                      <div className="task-details p-0 mt-10">
                         <div className="task-detail prose prose-sm max-w-5xl">
-                          <div className="task-detail-item mt-3">
-                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                          <div className="task-detail-item mt-10 p-0">
+                            <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
                               What is Task
                             </span>
-                            <span className="task-detail-value">
+                            <span className="task-detail-value d-inline-block">
                               {imptsk.actionWhat}
                             </span>
                           </div>
-                          <div className="task-detail-item mt-3">
-                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                          <div className="task-detail-item mt-10 p-0">
+                            <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
                               How is Task done
                             </span>
-                            <span className="task-detail-value">
+                            <span className="task-detail-value d-inline-block">
                               {imptsk.actionHow}
                             </span>
                           </div>
-                          <div className="task-detail-item mt-5">
-                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                          <div className="task-detail-item mt-10 p-0">
+                            <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
                               Assigned to
                             </span>
                             <span className="task-detail-value">
                               {imptsk.assignedStaff}
                             </span>
-                            <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                            <span className="task-detail-label bg-default rounded d-inline-block ml-2 text-secondary font-semibold">
                               Due Date
                             </span>
                             <span className="task-detail-value">
                               {formatDatess(imptsk.dueDate)}
                             </span>
-                            <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                            <span className="task-detail-label bg-default rounded d-inline-block ml-2 text-secondary font-semibold">
                               Deadline
                             </span>
                             <span className="task-detail-value">
@@ -260,7 +261,7 @@ const ImplementationApprovalSite = ({
                           </div>
                         </div>
                         <div
-                          className="inventory-grid grid items-center gap-4 mt-5 ms-5 py-3 px-2 md:px-2"
+                          className="inventory-grid grid items-center gap-4 mt-10 ms-5 py-3 "
                           style={{ width: "40%" }}
                         >
                           <div className="flex items-center mt-5">
@@ -550,20 +551,21 @@ const ImplementationApprovalSite = ({
                   }}
                 ></tfoot>
               </table>
-              <div
+              {/* <div
                 _ngcontent-fyk-c288=""
                 class="flex items-center w-full  border-b justify-between"
-              ></div>
+              ></div> */}
             </>
           ))}
+          </div>
         </Paper>
       </SwipeableViews>
       <SwipeableViews style={{ overflow: "hidden" }}>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow">
-          <div className="flex items-center w-full border-b justify-between">
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
+          <div className="flex items-center w-full border-b p-30 pt-24 pb-24 justify-between">
             <h2 className="text-2xl font-semibold">Approval</h2>
           </div>
-          <div>&nbsp;</div>
+          <div className="p-30 pt-24 pb-24">
           {AppActivity.isComplete && AppActivity.status !== "Pending" ? (
             <div
               className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
@@ -652,6 +654,7 @@ const ImplementationApprovalSite = ({
               )}
             </div>
           )}
+          </div>
         </Paper>
       </SwipeableViews>
     </div>

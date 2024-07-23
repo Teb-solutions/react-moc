@@ -619,7 +619,7 @@ const OrgImplementation = ({
                     x
                   </Button>
                 </div>
-                <div>&nbsp;</div>
+                
                 <div className="text-center">
                   <label htmlFor="fileInput">
                     <div className=" ">
@@ -737,472 +737,447 @@ const OrgImplementation = ({
         </Fade>
       </Modal>
       <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
-          <div>
-            <div className="flex items-center w-full justify-between">
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
+         
+            <div className="flex items-center w-full p-30 pt-24 pb-24 justify-between">
               <h2 className="text-2xl font-semibold">Implementation</h2>
             </div>
-          </div>
-          <div>&nbsp;</div>
+          
+          
           <div
             _ngcontent-fyk-c288=""
             class="flex items-center w-full  border-b justify-between"
           ></div>
-          <div>&nbsp;</div>
-          <div
-            _ngcontent-fyk-c288=""
-            class="flex items-center w-full  border-b justify-between"
-            style={{ marginTop: "10px" }}
-          >
-            <div className="flex items-center">
-              <h2
-                _ngcontent-fyk-c288=""
-                class="text-2xl font-semibold"
-                style={{ marginRight: "15px" }}
-              >
-                {impDetails.length} Tasks
-              </h2>
-            </div>
+          <div className="p-30 pt-24 pb-24">
+            <div
+              _ngcontent-fyk-c288=""
+              class="flex items-center w-full justify-between border_box" >
+              <div className="flex items-center">
+                <h2
+                  _ngcontent-fyk-c288=""
+                  class="text-xl font-semibold"
+                  style={{ marginRight: "0" }}
+                >
+                  {impDetails.length} Tasks
+                </h2>
+              </div>
 
-            <TextField
-              variant="filled"
-              fullWidth
-              placeholder="Search"
-              style={{
-                marginBottom: "15px",
-                backgroundColor: "white",
-              }}
-              //   value={searchTerm}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment
-                    position="start"
-                    style={{
-                      marginTop: "0px",
-                      paddingTop: "0px",
-                    }}
-                  >
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ width: 320 }}
-            />
-          </div>
-          {impDetails.map((detail, index) => (
-            <Accordion
-              key={detail.id}
-              expanded={expanded === detail.id}
-              sx={{
-                mt: 2,
-                minHeight: "70px",
-                transition: "height 0.3s",
-                "&.Mui-expanded": {
-                  minHeight: "100px",
-                },
-                "@media (max-width: 600px)": {
-                  mt: 4,
-                },
-              }}
-              onChange={handleAccordionChange(detail.id)}
-            >
-              <AccordionSummary
-                style={{ minHeight: "60px" }}
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={`panel${index + 1}-content`}
-                id={`panel${index + 1}-header`}
-                onClick={(e) => handelComments(e, detail.id)}
-              >
-                <div
-                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                  style={{ width: "17%" }}
-                >
-                  <div className="flex items-center">Task #{detail.id}</div>
-                </div>
-
-                <div
-                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                  style={{ width: "17%" }}
-                >
-                  <div className="flex items-center" style={{}}>
-                    {detail.isCompleted && detail.taskStatus === 3 ? (
-                      <span className="text-green">Approved</span>
-                    ) : detail.isCompleted && detail.taskStatus !== 3 ? (
-                      <span className="text-red">Awaiting Approval</span>
-                    ) : (
-                      <span className="text-black">Not Completed</span>
-                    )}
-                  </div>
-                </div>
-                <div
-                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                  style={{ width: "17%" }}
-                >
-                  <div className="flex items-center">No Risks</div>
-                </div>
-                <div
-                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                  style={{ width: "17%" }}
-                >
-                  <div className="flex items-center">
-                    {detail.assignedStaff}
-                  </div>
-                </div>
-
-                <div
-                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                  style={{ width: "17%" }}
-                >
-                  <div className="flex items-center">
-                    {formatDate(detail.dueDate)}
-                  </div>
-                </div>
-                <div
-                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                  style={{ width: "17%" }}
-                >
-                  <div className="flex items-center">
-                    <Button
-                      className="whitespace-nowrap mt-5 mb-5"
+              <TextField
+                variant="filled"
+                fullWidth
+                placeholder="Search"
+                style={{
+                  marginBottom: "0",
+                  backgroundColor: "white",
+                }}
+                //   value={searchTerm}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment
+                      position="start"
                       style={{
-                        border: "1px solid",
-                        backgroundColor: "#0000",
-                        color: "black",
-                        borderColor: "rgba(203,213,225)",
-                      }}
-                      variant="contained"
-                      color="warning"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handelOpenAudit(detail.audits, "");
+                        marginTop: "0px",
+                        paddingTop: "0px",
                       }}
                     >
-                      Audits
-                    </Button>
-                    {lastActCode?.canExecute && (
-                      <Button
-                        className="whitespace-nowrap ms-5 mt-5 mb-5"
-                        style={{
-                          border: "1px solid",
-                          backgroundColor: "#0000",
-                          color: "black",
-                          borderColor: "rgba(203,213,225)",
-                        }}
-                        variant="contained"
-                        color="warning"
-                        onClick={() => handelOpenAuditComment(detail.id)}
-                      >
-                        <FuseSvgIcon
-                          className="text-48"
-                          size={24}
-                          color="action"
-                        >
-                          heroicons-outline:document-text
-                        </FuseSvgIcon>
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Stepper orientation="vertical">
-                  <Step>
-                    <div style={{ alignItems: "flex-start" }}>
-                      <div className="flex flex-col items-start mt-5">
-                        <div
-                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ width: 320 }}
+              />
+            </div>
+            <div className="border_accordian">
+              {impDetails.map((detail, index) => (
+                <Accordion
+                  key={detail.id}
+                  expanded={expanded === detail.id}
+                  sx={{
+                    minHeight: "70px",
+                    transition: "height 0.3s",
+                    "&.Mui-expanded": {
+                      minHeight: "100px",
+                    }
+                  }}
+                  onChange={handleAccordionChange(detail.id)}
+                >
+                  <AccordionSummary
+                    style={{ minHeight: "60px" }}
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`panel${index + 1}-content`}
+                    id={`panel${index + 1}-header`}
+                    onClick={(e) => handelComments(e, detail.id)}
+                  >
+                    <div
+                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                      <div className="flex items-center">Task #{detail.id}</div>
+                    </div>
+                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                      <div className="flex items-center" style={{}}>
+                        {detail.isCompleted && detail.taskStatus === 3 ? (
+                          <span className="text-green">Approved</span>
+                        ) : detail.isCompleted && detail.taskStatus !== 3 ? (
+                          <span className="text-red">Awaiting Approval</span>
+                        ) : (
+                          <span className="text-black">Not Completed</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                      <div className="flex items-center">No Risks</div>
+                    </div>
+                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                      <div className="flex items-center">
+                        {detail.assignedStaff}
+                      </div>
+                    </div>
+                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                      <div className="flex items-center">
+                        {formatDate(detail.dueDate)}
+                      </div>
+                    </div>
+                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                      <div className="flex items-center">
+                        <Button
+                          className="whitespace-nowrap mt-5 mb-5"
                           style={{
-                            padding: "20px",
-                            backgroundColor: "#dbeafe",
+                            border: "1px solid",
+                            backgroundColor: "#0000",
+                            color: "black",
+                            borderColor: "rgba(203,213,225)",
+                          }}
+                          variant="contained"
+                          color="warning"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handelOpenAudit(detail.audits, "");
                           }}
                         >
-                          <b>{detail?.assignedByStaff}</b>
-                          <p>What is the task : {detail?.actionWhat}</p>
-                        </div>
-                      </div>
-                      <div className="flex flex-col items-start mt-5">
-                        <div
-                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                          style={{
-                            padding: "20px",
-                            backgroundColor: "#dbeafe",
-                          }}
-                        >
-                          <p>How is Task done : {detail?.actionHow}</p>
-                        </div>
-                      </div>
-                      {detail?.particularName && detail?.particularSubName && (
-                        <div className="flex flex-col items-start mt-5">
-                          <div
-                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                          Audits
+                        </Button>
+                        {lastActCode?.canExecute && (
+                          <Button
+                            className="whitespace-nowrap ms-5 mt-5 mb-5"
                             style={{
-                              padding: "20px",
-                              backgroundColor: "#dbeafe",
+                              border: "1px solid",
+                              backgroundColor: "#0000",
+                              color: "black",
+                              borderColor: "rgba(203,213,225)",
                             }}
+                            variant="contained"
+                            color="warning"
+                            onClick={() => handelOpenAuditComment(detail.id)}
                           >
-                            <p>
-                              Impact :{" "}
-                              {`${detail?.particularName} > ${detail?.particularSubName}`}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                      <div className="flex flex-col items-start mt-5">
-                        <div
-                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                          style={{
-                            padding: "20px",
-                            backgroundColor: "#dbeafe",
-                          }}
-                        >
-                          <p>Due Date : {formatDate(detail.dueDate)}</p>
-                        </div>
-                      </div>
-                      <div>&nbsp;</div>
-                      <div className="flex items-center justify-center my-3">
-                        <div className="flex-auto border-b"></div>
-                        <div
-                          className="flex-0 "
-                          style={{ fontSize: "xx-small" }}
-                        >
-                          <b>{detail?.assignedByStaff}</b> has assigned task to{" "}
-                          <b>{detail?.assignedStaff}</b> on{" "}
-                          {formatDate(detail.assignedAt)}
-                        </div>
-                        <div className="flex-auto border-b"></div>
-                      </div>
-                      <div>&nbsp;</div>
-                      {impComments.map((msg) => (
-                        <div
-                          key={msg.id}
-                          className="flex flex-row flex-wrap mb-2"
-                          style={{
-                            width: "auto",
-                            display: "block",
-                            clear: "both",
-                          }}
-                        >
-                          {msg?.remark && (
-                            <div
-                              className="flex flex-row items-start mt-5"
-                              style={{ position: "relative" }}
+                            <FuseSvgIcon
+                              className="text-48"
+                              size={24}
+                              color="action"
                             >
-                              <div
-                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
-                                style={{ padding: "10px" }}
-                              >
-                                <div
-                                  className="font-semibold"
-                                  style={{
-                                    fontSize: "smaller",
-                                  }}
-                                >
-                                  {" "}
-                                  {detail.assignedStaff}{" "}
-                                </div>
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html: msg?.remark,
-                                  }}
-                                ></div>
-                                <div className="my-0.5 text-xs font-medium text-secondary">
-                                  <small>
-                                    {msg.startedDate &&
-                                    !msg.workInProgressDate &&
-                                    !msg.completedDate &&
-                                    !msg.dueDate
-                                      ? `Started on ${formatDate(msg.startedDate)}`
-                                      : msg.workInProgressDate &&
-                                          !msg.completedDate &&
-                                          !msg.dueDate
-                                        ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
-                                        : msg.dueDate && !msg.completedDate
-                                          ? `Due on ${formatDate(msg.dueDate)}`
-                                          : msg.completedDate
-                                            ? `Completed on ${formatDate(msg.completedDate)}`
-                                            : "Unknown"}
-                                  </small>
-                                </div>
-                              </div>
-
-                              <button
-                                className="icon-button"
-                                onClick={() => handleOpen(msg.id)}
-                                style={{
-                                  top: "-15px",
-                                  right: "-20px",
-                                }}
-                              >
-                                <FuseSvgIcon size={20}>
-                                  heroicons-solid:document
-                                </FuseSvgIcon>
-                                <span className="count">
-                                  {" "}
-                                  {documentCounts[msg.id]}
-                                </span>
-                              </button>
+                              heroicons-outline:document-text
+                            </FuseSvgIcon>
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Stepper orientation="vertical">
+                      <Step>
+                        <div style={{ alignItems: "flex-start" }}>
+                          <div className="flex flex-col items-start mt-5">
+                            <div
+                              className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                              style={{
+                                padding: "20px",
+                                backgroundColor: "#dbeafe",
+                              }}
+                            >
+                              <b>{detail?.assignedByStaff}</b>
+                              <p>What is the task : {detail?.actionWhat}</p>
                             </div>
-                          )}
-                          {msg.comments && (
+                          </div>
+                          <div className="flex flex-col items-start mt-5">
+                            <div
+                              className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                              style={{
+                                padding: "20px",
+                                backgroundColor: "#dbeafe",
+                              }}
+                            >
+                              <p>How is Task done : {detail?.actionHow}</p>
+                            </div>
+                          </div>
+                          {detail?.particularName && detail?.particularSubName && (
                             <div className="flex flex-col items-start mt-5">
                               <div
                                 className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                 style={{
-                                  padding: "10px",
+                                  padding: "20px",
                                   backgroundColor: "#dbeafe",
                                 }}
                               >
-                                <div
-                                  className="font-semibold"
-                                  style={{
-                                    fontSize: "smaller",
-                                  }}
-                                >
-                                  {" "}
-                                  {detail.assignedByStaff}{" "}
-                                </div>
-                                <div
-                                  className="min-w-4 leading-5 "
-                                  dangerouslySetInnerHTML={{
-                                    __html: msg.comments,
-                                  }}
-                                  style={{
-                                    fontSize: "smaller",
-                                  }}
-                                ></div>
-                                <div
-                                  className="min-w-4 leading-5"
-                                  style={{
-                                    fontSize: "xx-small",
-                                  }}
-                                >
-                                  {" "}
-                                  {msg.approvalStatusDate && (
-                                    <>
-                                      {msg.approverId
-                                        ? "Approved on"
-                                        : "Rejected on"}{" "}
-                                      {new Date(
-                                        msg.approvalStatusDate
-                                      ).toLocaleString("en-US", {
-                                        month: "short",
-                                        day: "2-digit",
-                                        hour: "numeric",
-                                        minute: "numeric",
-                                        hour12: true,
-                                      })}
-                                    </>
-                                  )}
-                                </div>
+                                <p>
+                                  Impact :{" "}
+                                  {`${detail?.particularName} > ${detail?.particularSubName}`}
+                                </p>
                               </div>
                             </div>
                           )}
-                        </div>
-                      ))}
-                      {detail.isCompleted && detail.taskStatus !== 3 && (
-                        <>
-                          <div>&nbsp;</div>
-
-                          <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                          <div className="flex flex-col items-start mt-5">
                             <div
-                              _ngcontent-fyk-c288=""
-                              class="flex items-center w-full  border-b justify-between"
-                            ></div>
-                          </div>
-                          {currentActivityForm.canEdit && (
-                            <div
-                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                              style={{ width: "100%" }}
+                              className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                              style={{
+                                padding: "20px",
+                                backgroundColor: "#dbeafe",
+                              }}
                             >
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  flexWrap: "wrap",
-                                }}
-                              >
-                                <FormControl
-                                  fullWidth
-                                  sx={{
-                                    m: 1,
-                                    maxWidth: "100%",
-                                  }}
+                              <p>Due Date : {formatDate(detail.dueDate)}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center justify-center my-3">
+                            <div className="flex-auto border-b"></div>
+                            <div
+                              className="flex-0 "
+                              style={{ fontSize: "xx-small" }}
+                            >
+                              <b>{detail?.assignedByStaff}</b> has assigned task to{" "}
+                              <b>{detail?.assignedStaff}</b> on{" "}
+                              {formatDate(detail.assignedAt)}
+                            </div>
+                            <div className="flex-auto border-b"></div>
+                          </div>
+                          
+                          {impComments.map((msg) => (
+                            <div
+                              key={msg.id}
+                              className="flex flex-row flex-wrap mb-2"
+                              style={{
+                                width: "auto",
+                                display: "block",
+                                clear: "both",
+                              }}
+                            >
+                              {msg?.remark && (
+                                <div
+                                  className="flex flex-row items-start mt-5"
+                                  style={{ position: "relative" }}
                                 >
-                                  <span className="font-semibold leading-none">
-                                    Comments*
-                                  </span>
-                                  <OutlinedInput
-                                    id="reasonForNewDocument"
-                                    name="reasonForNewDocument"
-                                    onChange={(e) =>
-                                      setComments(e.target.value)
-                                    }
-                                    label="Reason For Change*"
-                                    className="mt-5"
-                                  />
-                                </FormControl>
-                              </Box>
+                                  <div
+                                    className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
+                                    style={{ padding: "10px" }}
+                                  >
+                                    <div
+                                      className="font-semibold"
+                                      style={{
+                                        fontSize: "smaller",
+                                      }}
+                                    >
+                                      {" "}
+                                      {detail.assignedStaff}{" "}
+                                    </div>
+                                    <div
+                                      dangerouslySetInnerHTML={{
+                                        __html: msg?.remark,
+                                      }}
+                                    ></div>
+                                    <div className="my-0.5 text-xs font-medium text-secondary">
+                                      <small>
+                                        {msg.startedDate &&
+                                        !msg.workInProgressDate &&
+                                        !msg.completedDate &&
+                                        !msg.dueDate
+                                          ? `Started on ${formatDate(msg.startedDate)}`
+                                          : msg.workInProgressDate &&
+                                              !msg.completedDate &&
+                                              !msg.dueDate
+                                            ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
+                                            : msg.dueDate && !msg.completedDate
+                                              ? `Due on ${formatDate(msg.dueDate)}`
+                                              : msg.completedDate
+                                                ? `Completed on ${formatDate(msg.completedDate)}`
+                                                : "Unknown"}
+                                      </small>
+                                    </div>
+                                  </div>
+
+                                  <button
+                                    className="icon-button"
+                                    onClick={() => handleOpen(msg.id)}
+                                    style={{
+                                      top: "-15px",
+                                      right: "-20px",
+                                    }}
+                                  >
+                                    <FuseSvgIcon size={20}>
+                                      heroicons-solid:document
+                                    </FuseSvgIcon>
+                                    <span className="count">
+                                      {" "}
+                                      {documentCounts[msg.id]}
+                                    </span>
+                                  </button>
+                                </div>
+                              )}
+                              {msg.comments && (
+                                <div className="flex flex-col items-start mt-5">
+                                  <div
+                                    className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                    style={{
+                                      padding: "10px",
+                                      backgroundColor: "#dbeafe",
+                                    }}
+                                  >
+                                    <div
+                                      className="font-semibold"
+                                      style={{
+                                        fontSize: "smaller",
+                                      }}
+                                    >
+                                      {" "}
+                                      {detail.assignedByStaff}{" "}
+                                    </div>
+                                    <div
+                                      className="min-w-4 leading-5 "
+                                      dangerouslySetInnerHTML={{
+                                        __html: msg.comments,
+                                      }}
+                                      style={{
+                                        fontSize: "smaller",
+                                      }}
+                                    ></div>
+                                    <div
+                                      className="min-w-4 leading-5"
+                                      style={{
+                                        fontSize: "xx-small",
+                                      }}
+                                    >
+                                      {" "}
+                                      {msg.approvalStatusDate && (
+                                        <>
+                                          {msg.approverId
+                                            ? "Approved on"
+                                            : "Rejected on"}{" "}
+                                          {new Date(
+                                            msg.approvalStatusDate
+                                          ).toLocaleString("en-US", {
+                                            month: "short",
+                                            day: "2-digit",
+                                            hour: "numeric",
+                                            minute: "numeric",
+                                            hour12: true,
+                                          })}
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
+                          ))}
+                          {detail.isCompleted && detail.taskStatus !== 3 && (
+                            <>
+                              
+
+                              <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                <div
+                                  _ngcontent-fyk-c288=""
+                                  class="flex items-center w-full  border-b justify-between"
+                                ></div>
+                              </div>
+                              {currentActivityForm.canEdit && (
+                                <div
+                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                  style={{ width: "100%" }}
+                                >
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      flexWrap: "wrap",
+                                    }}
+                                  >
+                                    <FormControl
+                                      fullWidth
+                                      sx={{
+                                        m: 1,
+                                        maxWidth: "100%",
+                                      }}
+                                    >
+                                      <span className="font-semibold leading-none">
+                                        Comments*
+                                      </span>
+                                      <OutlinedInput
+                                        id="reasonForNewDocument"
+                                        name="reasonForNewDocument"
+                                        onChange={(e) =>
+                                          setComments(e.target.value)
+                                        }
+                                        label="Reason For Change*"
+                                        className="mt-5"
+                                      />
+                                    </FormControl>
+                                  </Box>
+                                </div>
+                              )}
+                              {currentActivityForm.canEdit && (
+                                <div className="flex justify-start ">
+                                  <Button
+                                    className="whitespace-nowrap ms-5 "
+                                    variant="contained"
+                                    color="secondary"
+                                    style={{
+                                      marginTop: "10px",
+                                      backgroundColor: "white",
+                                      color: "black",
+                                    }}
+                                    onClick={(e) => handelRejectImpl(e, detail)}
+                                  >
+                                    Reject
+                                  </Button>
+                                  <Button
+                                    className="whitespace-nowrap ms-5 "
+                                    variant="contained"
+                                    color="secondary"
+                                    style={{
+                                      marginTop: "10px",
+                                    }}
+                                    onClick={(e) => handelApproveImpl(e, detail)}
+                                  >
+                                    Approve
+                                  </Button>
+                                </div>
+                              )}
+                            </>
                           )}
-                          {currentActivityForm.canEdit && (
-                            <div className="flex justify-start ">
-                              <Button
-                                className="whitespace-nowrap ms-5 "
-                                variant="contained"
-                                color="secondary"
-                                style={{
-                                  marginTop: "10px",
-                                  backgroundColor: "white",
-                                  color: "black",
-                                }}
-                                onClick={(e) => handelRejectImpl(e, detail)}
-                              >
-                                Reject
-                              </Button>
-                              <Button
-                                className="whitespace-nowrap ms-5 "
-                                variant="contained"
-                                color="secondary"
-                                style={{
-                                  marginTop: "10px",
-                                }}
-                                onClick={(e) => handelApproveImpl(e, detail)}
-                              >
-                                Approve
-                              </Button>
-                            </div>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  </Step>
-                </Stepper>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-          {currentActivityForm.canEdit && (
-            <>
-              <div>&nbsp;</div>
-              <div
-                _ngcontent-fyk-c288=""
-                class="flex items-center w-full  border-b justify-between"
-              ></div>
-              <div className="flex justify-end ">
-                {appActions?.map((btn) => (
-                  <Button
-                    className="whitespace-nowrap ms-5 "
-                    variant="contained"
-                    color="secondary"
-                    style={{
-                      marginTop: "10px",
-                    }}
-                    onClick={() => handleCloseAuditMoc(btn.uid)}
-                  >
-                    {btn.name}
-                  </Button>
-                ))}
-              </div>
-            </>
-          )}
+                        </div>
+                      </Step>
+                    </Stepper>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </div>
+            {currentActivityForm.canEdit && (
+              <>              
+                <div _ngcontent-fyk-c288="" class="flex items-center w-full  border-b justify-between"></div>
+                <div className="flex justify-end ">
+                  {appActions?.map((btn) => (
+                    <Button
+                      className="whitespace-nowrap ms-5 "
+                      variant="contained"
+                      color="secondary"
+                      style={{
+                        marginTop: "10px",
+                      }}
+                      onClick={() => handleCloseAuditMoc(btn.uid)}
+                    >
+                      {btn.name}
+                    </Button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
         </Paper>
       </SwipeableViews>
     </div>

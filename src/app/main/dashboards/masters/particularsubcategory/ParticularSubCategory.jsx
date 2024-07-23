@@ -56,37 +56,39 @@ export default function StickyHeadTable() {
   const storedFeature = decryptFeature();
   const feature = storedFeature ? storedFeature : [];
   const columns = [
-    { id: "index", label: "#", minWidth: 50 },
-    { id: "code", label: "Code", minWidth: 100 },
+    { id: "index", label: "#" },
+    { id: "code", label: "Code" },
+    // { id: "index", label: "#", minWidth: 50 },
+    // { id: "code", label: "Code", minWidth: 100 },
     {
       id: "particular",
       label: "Particular",
-      minWidth: 170,
+      //minWidth: 170,
       align: "left",
       format: (value) => value.toLocaleString("en-US"),
     },
     {
       id: "description",
       label: "Description",
-      minWidth: 170,
+      //minWidth: 170,
       align: "left",
       format: (value) => value.toLocaleString("en-US"),
     },
     {
       id: "status",
       label: "Status",
-      minWidth: 70,
+      //minWidth: 70,
       align: "left",
       format: (value) => value.toFixed(2),
     },
     {
       id: "action",
       label: "Action",
-      minWidth: 170,
+      //minWidth: 170,
       align: "left",
       format: (value) => value.toFixed(2),
       render: (row) => (
-        <div>
+        <div className="action_button">
           {feature.includes("MUPT") && (
             <Button
               onClick={() => handleEdit(row)}
@@ -158,7 +160,7 @@ export default function StickyHeadTable() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "450px",
+    width: "400px",
     maxWidth: "80vw",
     height: "auto",
     borderRadius: "16px",
@@ -351,15 +353,17 @@ export default function StickyHeadTable() {
                 alignItems: "center",
               }}
             >
-              <span>{lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}</span>
+              <span className="text-popup font-medium">{lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}</span>
               <span onClick={handleClose} style={{ cursor: "pointer" }}>
-                X
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" fit="" height="24" width="24" preserveAspectRatio="xMidYMid meet" focusable="false">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
               </span>
             </Box>
             <Box sx={{ p: 4 }}>
               <Box sx={{ mb: 3 }}>
                 <FormControl sx={{ m: 1 }}>
-                  <InputLabel id="functionName-label">Particular *</InputLabel>
+                  <InputLabel id="functionName-label" className="custom_label">Particular *</InputLabel>
 
                   <Select
                     labelId="functionName-label"
@@ -409,14 +413,21 @@ export default function StickyHeadTable() {
                 />
               </Box>
             </Box>
-            <Box
+            <Box 
               sx={{
                 display: "flex",
                 justifyContent: "flex-end",
-                backgroundColor: "rgba(248, 250, 252)",
-                p: 2,
+                // backgroundColor: "rgba(248, 250, 252)",
+                // p: 2,
                 borderBottomLeftRadius: "16px",
                 borderBottomRightRadius: "16px",
+                marginTop: "0",
+                marginBottom: "0",
+                justifyContent: "end",
+                // backgroundColor: " rgba(248,250,252)",
+                padding: "30px",
+                paddingTop: "0",
+                paddingBottom: "30px"
               }}
             >
               <Button

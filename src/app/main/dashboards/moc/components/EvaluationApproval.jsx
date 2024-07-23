@@ -438,7 +438,7 @@ const EvaluationApproval = ({
                       ))}
                     </TableBody>
                   </Table>
-                  <div>&nbsp;</div>
+                  
                   <Grid item xs={12} className="mt-5">
                     <FormControl fullWidth sx={{ flexGrow: 1 }}>
                       <InputLabel id="staff-label">Select Staff</InputLabel>
@@ -563,23 +563,20 @@ const EvaluationApproval = ({
         </button>
       </div>
       <SwipeableViews style={{ overflow: "hidden" }}>
-        <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
+        <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>
-            <div
-              _ngcontent-fyk-c288=""
-              class="flex items-center w-full  border-b justify-between"
-            >
+            <div _ngcontent-fyk-c288="" class="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                 Summary Details
               </h2>
             </div>
-            <div _ngcontent-fyk-c288="" class="px-6 mb-6 ng-star-inserted">
-              <div>&nbsp;</div>
+            <div _ngcontent-fyk-c288="" class="p-30 pt-24 pb-24 ng-star-inserted">
+              
               <div
                 _ngcontent-fyk-c288=""
                 class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
               >
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -594,7 +591,7 @@ const EvaluationApproval = ({
                     {contentDetails?.requestNo}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -609,7 +606,7 @@ const EvaluationApproval = ({
                     {contentDetails?.initiatorName}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -625,13 +622,13 @@ const EvaluationApproval = ({
                   </div>
                 </div>
               </div>
-              <div>&nbsp;</div>
+              
 
               <div
                 _ngcontent-fyk-c288=""
                 class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
               >
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -646,7 +643,7 @@ const EvaluationApproval = ({
                     {contentDetails?.requestTypeName}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -661,7 +658,7 @@ const EvaluationApproval = ({
                     {contentDetails?.expenseNature}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -677,12 +674,12 @@ const EvaluationApproval = ({
                   </div>
                 </div>
               </div>
-              <div>&nbsp;</div>
+              
               <div
                 _ngcontent-fyk-c288=""
                 class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
               >
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -697,7 +694,7 @@ const EvaluationApproval = ({
                     {contentDetails?.changeType}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -712,7 +709,7 @@ const EvaluationApproval = ({
                     {contentDetails?.projectValue}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -728,12 +725,12 @@ const EvaluationApproval = ({
                   </div>
                 </div>
               </div>
-              <div>&nbsp;</div>
+              
               <div
                 _ngcontent-fyk-c288=""
                 class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
               >
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -749,24 +746,24 @@ const EvaluationApproval = ({
                   </div>
                 </div>
               </div>
-              <div>&nbsp;</div>
-
-              <div _ngcontent-fyk-c288="">
-                <div
-                  _ngcontent-fyk-c288=""
-                  class="mt-3 leading-6 text-secondary"
-                >
-                  Location of change
+              
+              <div class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                <div _ngcontent-fyk-c288="" className="my-6">
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="mt-3 leading-6 text-secondary"
+                  >
+                    Location of change
+                  </div>
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="text-lg leading-6 font-medium"
+                  >
+                    {" "}
+                    {contentDetails?.changeLocationString}
+                  </div>
                 </div>
-                <div
-                  _ngcontent-fyk-c288=""
-                  class="text-lg leading-6 font-medium"
-                >
-                  {" "}
-                  {contentDetails?.changeLocationString}
-                </div>
-
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -783,16 +780,16 @@ const EvaluationApproval = ({
                 </div>
               </div>
             </div>
-            <div>&nbsp;</div>
+            
           </div>
         </Paper>
       </SwipeableViews>
       <SwipeableViews style={{ overflow: "hidden" }}>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow">
-          <div className="flex items-center w-full border-b justify-between">
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16  rounded-16 shadow">
+          <div className="flex items-center w-full border-b p-30 pb-24 pt-24 justify-between">
             <h2 className="text-2xl font-semibold">Change Evaluation Team</h2>
           </div>
-          <div className="evaluation-team-container grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="evaluation-team-container grid grid-cols-1 md:grid-cols-3 gap-4 p-30 pt-24 pb-24">
             {contentDetails?.evaluationTeam?.map((list, index) => (
               <div
                 className="inventory-grid grid items-center gap-4 py-3 px-2"
@@ -805,7 +802,7 @@ const EvaluationApproval = ({
                   <img
                     src="/assets/images/etc/userpic.png"
                     alt="Card cover image"
-                    className="rounded-full mr-4"
+                    className="rounded-full mr-24"
                     style={{ width: "4rem", height: "4rem" }}
                   />
                   <div className="flex flex-col">
@@ -823,17 +820,14 @@ const EvaluationApproval = ({
         </Paper>
       </SwipeableViews>
       <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow">
-          <div
-            _ngcontent-fyk-c288=""
-            class="flex items-center w-full  border-b justify-between"
-          >
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
+          <div _ngcontent-fyk-c288="" class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
             <h2 className="text-2xl font-semibold">Stake Holders</h2>
             <TextField
               variant="filled"
               fullWidth
               placeholder="Search"
-              style={{ marginBottom: "15px" }}
+              style={{ marginBottom: "0" }}
               //   value={searchTerm}
               InputProps={{
                 startAdornment: (
@@ -845,8 +839,9 @@ const EvaluationApproval = ({
               sx={{ width: 320 }}
             />
           </div>
+          <div className="p-30 pt-0">
           {contentDetails?.consultaion?.map((itm) => (
-            <div>
+            <div className="mt-24">
               <div className="flex items-center" style={{ marginTop: "15px" }}>
                 <img
                   src="/assets/images/etc/userpic.png"
@@ -889,16 +884,15 @@ const EvaluationApproval = ({
               <div className="flex items-center" style={{ marginTop: "10px" }}>
                 <h5> {itm?.remark}</h5>
               </div>
-              <div className="mt-5" style={{ marginTop: "20px" }}>
-                <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+              <div className="mt-10">
+                <span className="task-detail-label bg-default rounded  text-secondary font-semibold d-inline-block">
                   Task Added
                 </span>
-
-                <span className="task-detail-value">{itm.tasks[0]}</span>
+                <span className="task-detail-value d-inline-block">{itm.tasks[0]}</span>
               </div>
-              <div>&nbsp;</div>
+              
               {AppActivity.canEdit && !itm.reviews.length > 0 ? (
-                <div className="mat-form-field-wrapper">
+                <div className="mat-form-field-wrapper mt-10">
                   <div className="mat-form-field-flex">
                     <img
                       src="/assets/images/etc/userpic.png"
@@ -945,7 +939,7 @@ const EvaluationApproval = ({
                   </div>
                 </div>
               ) : (
-                <div>
+                <div className="mt-10">
                   <Accordion
                     expanded={expanded == itm.id}
                     onChange={handleExpansionChange(itm.id)}
@@ -1068,20 +1062,21 @@ const EvaluationApproval = ({
               )}
             </div>
           ))}
+          </div>
         </Paper>
       </SwipeableViews>
       <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow">
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div
             _ngcontent-fyk-c288=""
-            class="flex items-center w-full  border-b justify-between"
+            class="flex items-center w-full  p-30 pt-24 pb-24 border-b justify-between"
           >
             <h2 className="text-2xl font-semibold">Evaluation Impacts</h2>
             <TextField
               variant="filled"
               fullWidth
               placeholder="Search"
-              style={{ marginBottom: "15px" }}
+              style={{ marginBottom: "0" }}
               //   value={searchTerm}
               InputProps={{
                 startAdornment: (
@@ -1093,8 +1088,9 @@ const EvaluationApproval = ({
               sx={{ width: 320 }}
             />
           </div>
+          <div className="p-30">
           {showRiskAnalysisChart && (
-            <div id="chart" class="mb-2 mt-2 p-2">
+            <div id="chart" class="mb-2 mt-2 p-0">
               <Chart
                 options={{
                   ...riskAnalysisChartOptions,
@@ -1123,21 +1119,15 @@ const EvaluationApproval = ({
                 <tbody className="task-table-body">
                   <tr className="task-table-row mat-row">
                     <td className="task-table-cell mat-cell">
-                      <div className="task-header flex items-center">
+                      <div className="task-header p-0 flex items-center">
                         <div className="task-id flex flex-col">
-                          <span
-                            className="task-id-text font-semibold text-xl leading-none"
-                            style={{ fontSize: "20px" }}
-                          >
+                          <span className="task-id-text font-semibold text-xl leading-none" style={{ fontSize: "20px" }}>
                             Task #{imptsk?.id}
                           </span>
                         </div>
                         {AppActivity.canEdit && (
                           <div className="task-button ml-auto">
-                            <button
-                              className="task-mark-reviewed-button mat-stroked-button"
-                              onClick={() => handelImpactreview(imptsk.id)}
-                            >
+                            <button className="task-mark-reviewed-button mat-stroked-button" onClick={() => handelImpactreview(imptsk.id)}>
                               {imptsk?.reviewd ? (
                                 <span
                                   className="mat-button-wrapper"
@@ -1156,46 +1146,43 @@ const EvaluationApproval = ({
                           </div>
                         )}
                       </div>
-                      <div className="task-details px-6 mt-2">
+                      <div className="task-details p-0 mt-5">
                         <div className="task-detail prose prose-sm max-w-5xl">
-                          <div className="task-detail-item mt-3">
-                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                          <div className="task-detail-item mt-10 p-0">
+                            <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
                               Impact
                             </span>
-                            <span className="task-detail-value">
+                            <span className="task-detail-value d-inline-block">
                               {imptsk.particularName +
                                 ">" +
                                 imptsk.particularSubName}
                             </span>
                           </div>
-                          <div className="task-detail-item mt-3">
-                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                          <div className="task-detail-item mt-10 p-0">
+                            <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
                               What is Task
                             </span>
-                            <span className="task-detail-value">
+                            <span className="task-detail-value d-inline-block">
                               {imptsk.actionWhat}
                             </span>
                           </div>
-                          <div className="task-detail-item mt-5">
-                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                          <div className="task-detail-item mt-10 p-0">
+                            <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
                               How is Task done
                             </span>
-                            <span className="task-detail-value">
+                            <span className="task-detail-value d-inline-block">
                               {imptsk.actionHow}
                             </span>
                           </div>
-                          <div
-                            className="task-detail-item mt-5 flex "
-                            style={{ justifyContent: "space-between" }}
-                          >
+                          <div className="task-detail-item mt-10 flex p-0" style={{ justifyContent: "space-between" }}>
                             <div>
-                              <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                              <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
                                 Assigned to
                               </span>
                               <span className="task-detail-value">
                                 {imptsk.assignedStaff}
                               </span>
-                              <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                              <span className="task-detail-label bg-default rounded d-inline-block ml-2 text-secondary font-semibold">
                                 Due Date
                               </span>
                               <span className="task-detail-value">
@@ -1253,8 +1240,8 @@ const EvaluationApproval = ({
                           </div>
                         </div>
                         {imptsk?.riskAnalysisList?.length !== 0 && (
-                          <Paper style={{ margin: "10px" }}>
-                            <div
+                          <Paper className="mt-10 radius-0">
+                            {/* <div
                               _ngcontent-fyk-c288=""
                               class="flex items-center w-full   justify-between"
                               style={{
@@ -1262,37 +1249,25 @@ const EvaluationApproval = ({
                                 backgroundColor: "rgb(241 248 255)",
                               }}
                             >
-                              <h6
-                                _ngcontent-fyk-c288=""
-                                class="text-small font-semibold"
-                                style={{ padding: "15px" }}
-                              >
-                                Risk Details
-                              </h6>
-                              <h6
-                                _ngcontent-fyk-c288=""
-                                class="text-1xl font-semibold"
-                                style={{ padding: "10px" }}
-                              >
-                                Human Measures
-                              </h6>
-                              <h6
-                                _ngcontent-fyk-c288=""
-                                class="text-1xl font-semibold"
-                                style={{ padding: "10px" }}
-                              >
-                                Technical Measures
-                              </h6>
-                              <h6
-                                _ngcontent-fyk-c288=""
-                                class="text-1xl font-semibold"
-                                style={{ padding: "10px" }}
-                              >
-                                ORGANISATIONAL MEASURES
-                              </h6>
-                            </div>
+                            </div> */}
                             <div>
-                              <table className="min-w-full divide-y divide-gray-200">
+                              <table className="min-w-full task_table">
+                                <thead>
+                                  <tr>
+                                    <th style={{backgroundColor: "rgb(241 248 255)"}}>
+                                      <h6 _ngcontent-fyk-c288="" class="text-small font-semibold">Risk Details</h6>
+                                    </th>
+                                    <th style={{backgroundColor: "rgb(241 248 255)"}}>
+                                      <h6 _ngcontent-fyk-c288="" class="text-1xl font-semibold">Human Measures</h6>
+                                    </th>
+                                    <th style={{backgroundColor: "rgb(241 248 255)"}}>
+                                      <h6 _ngcontent-fyk-c288="" class="text-1xl font-semibold">Technical Measures</h6>
+                                    </th>
+                                    <th style={{backgroundColor: "rgb(241 248 255)"}}>
+                                      <h6 _ngcontent-fyk-c288="" class="text-1xl font-semibold">ORGANISATIONAL MEASURES</h6>
+                                    </th>
+                                  </tr>
+                                </thead>
                                 <tbody>
                                   {contentDetails?.riskAnalysisList.map(
                                     (riskAnalysis, pIndex) => (
@@ -1317,6 +1292,7 @@ const EvaluationApproval = ({
                                                             }}
                                                           >
                                                             <div
+                                                              className="d-inline-block"
                                                               // className={`rounded text-white p-2 py-1 px-3 mb-1 inline-flex text-center text-sm font-semibold leading-2 `}
                                                               style={{
                                                                 backgroundColor:
@@ -1324,7 +1300,7 @@ const EvaluationApproval = ({
                                                                   "AverageRisk"
                                                                     ? "orange"
                                                                     : "green",
-                                                                width: "25%",
+                                                                //width: "25%",
                                                                 padding: "3px",
                                                                 color: "white",
                                                                 borderRadius:
@@ -1335,18 +1311,18 @@ const EvaluationApproval = ({
                                                                 situation.residualRiskClassificationDisplay
                                                               }
                                                             </div>
-                                                            <div className="font-semibold">
+                                                            <div className="font-semibold mt-10">
                                                               {
                                                                 subTask.subTaskName
                                                               }
                                                             </div>
-                                                            <div>
+                                                            <div className="mt-10">
                                                               -{" "}
                                                               {
                                                                 hazardType.hazardTypeDisplay
                                                               }
                                                             </div>
-                                                            <div>
+                                                            <div className="mt-10">
                                                               -{" "}
                                                               {
                                                                 situation.hazardousSituation
@@ -1407,10 +1383,10 @@ const EvaluationApproval = ({
                             </div>
                           </Paper>
                         )}
-                        <div>&nbsp;</div>
+                        
 
                         {imptsk.changeImpactTaskReviews.length > 0 ? (
-                          <div>
+                          <div className="mt-10">
                             <Accordion
                               expanded={expanded == imptsk.id}
                               onChange={handleExpansionChange(imptsk.id)}
@@ -1666,18 +1642,16 @@ const EvaluationApproval = ({
               </table>
               <div
                 _ngcontent-fyk-c288=""
-                class="flex items-center w-full  border-b justify-between"
+                class="flex items-center w-full justify-between"
               ></div>
             </>
           ))}
+          </div>
         </Paper>
       </SwipeableViews>
       <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow">
-          <div
-            _ngcontent-fyk-c288=""
-            class="flex items-center w-full  border-b justify-between"
-          >
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
+          <div _ngcontent-fyk-c288="" class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
             <h2 className="text-2xl font-semibold">
               External Consultations for Tasks
             </h2>
@@ -1685,7 +1659,7 @@ const EvaluationApproval = ({
               variant="filled"
               fullWidth
               placeholder="Search"
-              style={{ marginBottom: "15px" }}
+              style={{ marginBottom: "0" }}
               //   value={searchTerm}
               InputProps={{
                 startAdornment: (
@@ -1697,103 +1671,106 @@ const EvaluationApproval = ({
               sx={{ width: 320 }}
             />
           </div>
+          <div className="p-30 pt-0">
           {contentDetails?.externalconsultations?.map((imptsk) => (
             <>
-              <table className="task-table mat-table">
-                <thead
-                  className="task-table-header"
-                  style={{ display: "none" }}
-                >
-                  {/* Empty header */}
-                </thead>
-                <tbody className="task-table-body">
-                  <tr className="task-table-row mat-row">
-                    <td className="task-table-cell mat-cell">
-                      <div className="task-header flex items-center">
-                        <div className="task-id flex flex-col">
-                          <span
-                            className="task-id-text font-semibold text-xl leading-none"
-                            style={{ fontSize: "20px" }}
-                          >
-                            Task #{imptsk?.taskIDs}
-                          </span>
-                          <span
-                            className="task-id-text font-semibold leading-none"
-                            style={{ font: "menu" }}
-                          >
-                            Initiated by {imptsk?.createdBy} on{" "}
-                            {formatDatess(imptsk?.externalconsultationDate)}
-                          </span>
-                        </div>
-                        <div className="task-button ml-auto">
-                          <button className="task-mark-reviewed-button mat-stroked-button">
-                            <span className="mat-button-wrapper">
-                              {imptsk?.documents == 0
-                                ? "No Responses"
-                                : `${imptsk?.documents}Responses`}
+              <div className="border-lastremove">
+                <table className="task-table mat-table mt-24">
+                  <thead
+                    className="task-table-header"
+                    style={{ display: "none" }}
+                  >
+                    {/* Empty header */}
+                  </thead>
+                  <tbody className="task-table-body">
+                    <tr className="task-table-row mat-row">
+                      <td className="task-table-cell mat-cell">
+                        <div className="task-header flex items-center p-0">
+                          <div className="task-id flex flex-col">
+                            <span
+                              className="task-id-text font-semibold text-xl leading-none"
+                              style={{ fontSize: "20px" }}
+                            >
+                              Task #{imptsk?.taskIDs}
                             </span>
-                          </button>
-                        </div>
-                      </div>
-                      <div className="task-details px-6 mt-2">
-                        <div className="task-detail prose prose-sm max-w-5xl">
-                          <div className="task-detail-item mt-3">
-                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                              Staff Email Ids
-                            </span>
-                            <span className="task-detail-value">
-                              {imptsk.staffEmailIDs}
+                            <span
+                              className="task-id-text font-semibold leading-none mt-3"
+                              style={{ font: "menu" }}
+                            >
+                              Initiated by {imptsk?.createdBy} on{" "}
+                              {formatDatess(imptsk?.externalconsultationDate)}
                             </span>
                           </div>
-                          <div className="task-detail-item mt-3">
-                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                              External Email Ids
-                            </span>
-                            <span className="task-detail-value">
-                              {imptsk.externalEmailIDs}
-                            </span>
-                          </div>
-                          <div className="task-detail-item mt-5">
-                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                              Comments
-                            </span>
-                            <span className="task-detail-value">
-                              {imptsk.remark}
-                            </span>
+                          <div className="task-button ml-auto">
+                            <button className="task-mark-reviewed-button mat-stroked-button">
+                              <span className="mat-button-wrapper">
+                                {imptsk?.documents == 0
+                                  ? "No Responses"
+                                  : `${imptsk?.documents}Responses`}
+                              </span>
+                            </button>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-                <tfoot
-                  className="task-table-footer"
-                  style={{
-                    display: "none",
-                    bottom: 0,
-                    zIndex: 10,
-                  }}
-                >
-                  {/* Empty footer */}
-                </tfoot>
-              </table>
-              <div
-                _ngcontent-fyk-c288=""
-                class="flex items-center w-full  border-b justify-between"
-              ></div>
+                        <div className="task-details p-0 mt-2">
+                          <div className="task-detail prose prose-sm max-w-5xl">
+                            <div className="task-detail-item mt-10 p-0">
+                              <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
+                                Staff Email Ids
+                              </span>
+                              <span className="task-detail-value d-inline-block">
+                                {imptsk.staffEmailIDs}
+                              </span>
+                            </div>
+                            <div className="task-detail-item mt-10 p-0">
+                              <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
+                                External Email Ids
+                              </span>
+                              <span className="task-detail-value d-inline-block">
+                                {imptsk.externalEmailIDs}
+                              </span>
+                            </div>
+                            <div className="task-detail-item mt-10 p-0">
+                              <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
+                                Comments
+                              </span>
+                              <span className="task-detail-value d-inline-block">
+                                {imptsk.remark}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot
+                    className="task-table-footer"
+                    style={{
+                      display: "none",
+                      bottom: 0,
+                      zIndex: 10,
+                    }}
+                  >
+                    {/* Empty footer */}
+                  </tfoot>
+                </table>
+                <div
+                  _ngcontent-fyk-c288=""
+                  class="flex items-center w-full border-b mt-24 justify-between"
+                ></div>
+              </div>
             </>
           ))}
+          </div>
         </Paper>
       </SwipeableViews>
       <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow">
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div
             _ngcontent-fyk-c288=""
-            class="flex items-center w-full  border-b justify-between"
-          >
+            class="flex items-center w-full  border-b justify-between p-30 pt-24 pb-24">
             <h2 className="text-2xl font-semibold">Approval</h2>
           </div>
-          <div className="px-6 sm:px-6 mt-4" style={{ marginTop: "15px" }}>
+          <div className="p-30">
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TableContainer component={Paper}>
@@ -2116,14 +2093,9 @@ const EvaluationApproval = ({
               </Grid>
             </Grid>
           </div>
-          <div>&nbsp;</div>
-          <div>&nbsp;</div>
-
           <div className="flex items-center w-full border-b justify-between"></div>
-          <div>&nbsp;</div>
-
           {AppActivity?.canExecute && (
-            <div className="flex justify-end">
+            <div className="flex justify-end p-30">
               {AppActions.map((btn) => (
                 <Button
                   key={btn.uid}
@@ -2140,7 +2112,7 @@ const EvaluationApproval = ({
               ))}
             </div>
           )}
-          <div className="flex justify-start">
+          <div className="flex justify-start p-30 pt-24 pb-24">
             <Button
               className="whitespace-nowrap mt-5"
               style={{

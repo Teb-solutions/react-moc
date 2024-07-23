@@ -16,11 +16,11 @@ function MainComponent({ contentDetails, contentChanges }) {
   return (
     <div className="w-full">
       <SwipeableViews style={{ overflow: "hidden" }}>
-        <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
+        <Paper className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
           <div>
             <div
               _ngcontent-fyk-c288=""
-              class="flex items-center w-full  border-b justify-between"
+              class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
             >
               <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                 {contentChanges
@@ -28,19 +28,13 @@ function MainComponent({ contentDetails, contentChanges }) {
                   : "Summary Details"}
               </h2>
             </div>
-            <div _ngcontent-fyk-c288="" class="px-6 mb-6 ng-star-inserted">
-              <div>&nbsp;</div>
+            <div _ngcontent-fyk-c288="" class="p-30 pt-24 pb-24 mb-6 ng-star-inserted">              
               <div
                 _ngcontent-fyk-c288=""
                 class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
               >
-                <div _ngcontent-fyk-c288="">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Request No{" "}
-                  </div>
+                <div _ngcontent-fyk-c288="" className="my-6">
+                  <div _ngcontent-fyk-c288=""class="mt-3 leading-6 text-secondary">Request No{" "}</div>
                   <div
                     _ngcontent-fyk-c288=""
                     class="text-lg leading-6 font-medium"
@@ -49,7 +43,7 @@ function MainComponent({ contentDetails, contentChanges }) {
                     {contentDetails?.requestNo}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -66,7 +60,7 @@ function MainComponent({ contentDetails, contentChanges }) {
                       : contentDetails?.initiatorName}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -84,13 +78,10 @@ function MainComponent({ contentDetails, contentChanges }) {
                   </div>
                 </div>
               </div>
-              <div>&nbsp;</div>
+              
 
-              <div
-                _ngcontent-fyk-c288=""
-                class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-              >
-                <div _ngcontent-fyk-c288="">
+              <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -107,7 +98,7 @@ function MainComponent({ contentDetails, contentChanges }) {
                       : contentDetails?.requestTypeName}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -124,7 +115,7 @@ function MainComponent({ contentDetails, contentChanges }) {
                       : contentDetails?.expenseNature}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -142,12 +133,10 @@ function MainComponent({ contentDetails, contentChanges }) {
                   </div>
                 </div>
               </div>
-              <div>&nbsp;</div>
+              
               <div
-                _ngcontent-fyk-c288=""
-                class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-              >
-                <div _ngcontent-fyk-c288="">
+                _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -164,7 +153,7 @@ function MainComponent({ contentDetails, contentChanges }) {
                       : contentDetails?.changeType}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -179,7 +168,7 @@ function MainComponent({ contentDetails, contentChanges }) {
                     {contentDetails?.projectValue}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -199,12 +188,10 @@ function MainComponent({ contentDetails, contentChanges }) {
                   </div>
                 </div>
               </div>
-              <div>&nbsp;</div>
-              <div
-                _ngcontent-fyk-c288=""
-                class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-              >
-                <div _ngcontent-fyk-c288="">
+            
+            
+              <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -223,29 +210,29 @@ function MainComponent({ contentDetails, contentChanges }) {
                       : contentDetails?.projectDescription}
                   </div>
                 </div>
-              </div>
-              <div>&nbsp;</div>
+              
+                <div className="my-6">                
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="mt-3 leading-6 text-secondary"
+                  >
+                    {contentChanges
+                      ? "Program Completion Date"
+                      : "Location of change"}
+                  </div>
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="text-lg leading-6 font-medium"
+                  >
+                    {" "}
+                    {contentChanges
+                      ? formatDates(contentDetails?.programCompletionDate)
+                      : contentDetails?.changeLocationString}
+                  </div>
+                </div>
 
-              <div _ngcontent-fyk-c288="">
-                <div
-                  _ngcontent-fyk-c288=""
-                  class="mt-3 leading-6 text-secondary"
-                >
-                  {contentChanges
-                    ? "Program Completion Date"
-                    : "Location of change"}
-                </div>
-                <div
-                  _ngcontent-fyk-c288=""
-                  class="text-lg leading-6 font-medium"
-                >
-                  {" "}
-                  {contentChanges
-                    ? formatDates(contentDetails?.programCompletionDate)
-                    : contentDetails?.changeLocationString}
-                </div>
                 {!contentChanges && (
-                  <div _ngcontent-fyk-c288="">
+                  <div _ngcontent-fyk-c288=""  className="my-6">
                     <div
                       _ngcontent-fyk-c288=""
                       class="mt-3 leading-6 text-secondary"
@@ -263,7 +250,7 @@ function MainComponent({ contentDetails, contentChanges }) {
                 )}
               </div>
             </div>
-            <div>&nbsp;</div>
+         
           </div>
         </Paper>
       </SwipeableViews>

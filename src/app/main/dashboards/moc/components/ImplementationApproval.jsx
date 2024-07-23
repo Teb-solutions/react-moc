@@ -901,9 +901,9 @@ function ImplementationApproval({
         </Fade>
       </Modal>
       <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>
-            <div className="flex items-center w-full border-b justify-between">
+            <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               <h2 className="text-2xl font-semibold">Implementation</h2>
             </div>
             <Box sx={{ width: "100%" }}>
@@ -920,10 +920,10 @@ function ImplementationApproval({
                       }}
                       sx={{
                         backgroundColor:
-                          activeStep === index ? "#f0f0f0" : "white",
+                          activeStep === index ? "#f0f0f0" : "#f9f9f9",
                         padding: "15px",
                         borderRadius: "10px",
-                        marginTop: "10px",
+                        marginTop: "0",
                       }}
                     >
                       {step?.label}
@@ -1198,7 +1198,7 @@ function ImplementationApproval({
                                           </p>
                                         </div>
                                       </div>
-                                      <div>&nbsp;</div>
+                                      
                                       <div className="flex items-center justify-center my-3">
                                         <div className="flex-auto border-b"></div>
                                         <div
@@ -1212,7 +1212,7 @@ function ImplementationApproval({
                                         </div>
                                         <div className="flex-auto border-b"></div>
                                       </div>
-                                      <div>&nbsp;</div>
+                                      
                                       {impComments.map((msg) => (
                                         <div
                                           key={msg.id}
@@ -1347,7 +1347,7 @@ function ImplementationApproval({
                                       {detail.isCompleted &&
                                         detail.taskStatus !== 3 && (
                                           <>
-                                            <div>&nbsp;</div>
+                                            
 
                                             <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                               <div
@@ -1483,20 +1483,25 @@ function ImplementationApproval({
               </Stepper>
 
               {activeStep === steps.length && (
-                <Paper square elevation={0} sx={{ p: 3 }}>
-                  <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
+                <Paper square elevation={0} className="pt-24 pb-24">
+                  <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}style={{
+              border: "1px solid",
+              backgroundColor: "#0000",
+              color: "black",
+              borderColor: "rgba(203,213,225)",
+            }}>
                     Reset
                   </Button>
                 </Paper>
               )}
             </Box>
           </div>
-          <div>&nbsp;</div>
-          <div
+          
+          {/* <div
             _ngcontent-fyk-c288=""
             class="flex items-center w-full  border-b justify-between"
-          ></div>
-          <div>&nbsp;</div>
+          ></div> */}
+          <div className="p-30 pt-24 pb-24">
 
           <Button
             className="whitespace-nowrap mt-5 mb-5"
@@ -1515,8 +1520,9 @@ function ImplementationApproval({
             </FuseSvgIcon>
             Audit Lists
           </Button>
+          </div>
           {lastActCode?.canExecute && (
-            <div className="flex justify-end">
+            <div className="flex justify-end p-30">
               {AppActions.map((btn) => (
                 <>
                   <Button
