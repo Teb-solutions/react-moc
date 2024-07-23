@@ -69,7 +69,9 @@ function CourseInfo(props) {
             className="text-13 mt-2 line-clamp-2"
             color="text.secondary"
           >
-            Document Name :
+            {course.requestTypeName === "Document"
+              ? "Document Name :"
+              : "Project Name :"}
           </Typography>
           <span>{course?.projectName}</span>
           <Divider className="w-48 my-24 border-1" light />
@@ -79,7 +81,9 @@ function CourseInfo(props) {
             color="text.secondary"
           >
             <span className="whitespace-nowrap leading-none">
-              Document Author :
+              {course.requestTypeName === "Document"
+                ? " Document Author :"
+                : "Change Leader :"}
             </span>
           </Typography>
         </div>
