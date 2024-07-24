@@ -38,6 +38,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SaveIcon from "@mui/icons-material/Save";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { ToastContainer, toast } from "react-toastify";
+import FuseLoading from "@fuse/core/FuseLoading";
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -179,6 +180,7 @@ const EvaluationApproval = ({
   const [expanded, setExpanded] = useState(false);
   const [clickedTasks, setClickedTasks] = useState({});
   const [showReview, setshowReview] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handelCommentImp = (id, rwid, value) => {
     if (value == 1) {
@@ -379,6 +381,7 @@ const EvaluationApproval = ({
   };
 
   const SubmitApprovelCreate = (e, btuid, btname, bttype) => {
+    setIsLoading(true);
     const payload = {
       activityId: AppActivity.uid,
       actionType: bttype,
@@ -397,17 +400,26 @@ const EvaluationApproval = ({
       .post(`/ApprovalManager/Create/${assetEvaluationId}`, payload)
       .then((response) => {
         if (response.data.statusCode != 400) {
+          setIsLoading(false);
+
           apiAuth
             .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
             .then((resp) => {
               setContent(resp.data.data.phases);
             });
         } else {
+          setIsLoading(false);
+
           toast.error(response.data.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setIsLoading(false);
+      });
   };
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <div className="w-full h-full">
@@ -982,7 +994,37 @@ const EvaluationApproval = ({
                     {itm.tasks[0]}
                   </span>
                 </div>
-                <div>&nbsp;</div>
+                {itm.requestTypeName != "Document" && AppActivity.canEdit && (
+                  <div className="task-button ml-auto">
+                    <button
+                      className="task-mark-reviewed-button mat-stroked-button"
+                      onClick={() => handelreview(itm.id)}
+                    >
+                      {itm?.reviewd || clickedTasks[itm.id] ? (
+                        <span
+                          className="mat-button-wrapper"
+                          style={{
+                            backgroundColor: "rgba(220,252,231)",
+                          }}
+                        >
+                          You have reviewed this just now
+                        </span>
+                      ) : (
+                        <span className="mat-button-wrapper">
+                          Click here to mark as reviewed
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center" style={{ marginTop: "10px" }}>
+                <h5> {itm?.remark}</h5>
+              </div>
+              <div className="mt-5" style={{ marginTop: "20px" }}>
+                <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                  Task Added
+                </span>
 
                 {itm.reviews.length > 0 || showReview ? (
                   <div>
@@ -1257,44 +1299,84 @@ const EvaluationApproval = ({
               sx={{ width: 320 }}
             />
           </div>
-          <div className="p-30">
-            {showRiskAnalysisChart && (
-              <div id="chart" class="mb-2 mt-2 p-0">
-                <Chart
-                  options={{
-                    ...riskAnalysisChartOptions,
-                    annotations: riskAnalysisChartOptions.annotations || {},
-                    dataLabels: riskAnalysisChartOptions.dataLabels || {},
-                    grid: riskAnalysisChartOptions.grid || {},
-                    stroke: riskAnalysisChartOptions.stroke || {},
-                    title: riskAnalysisChartOptions.title || {},
-                    xaxis: riskAnalysisChartOptions.xaxis || {},
-                  }}
-                  series={riskAnalysisChartOptions.series || []}
-                  type={riskAnalysisChartOptions.chart.type || "scatter"}
-                  height={riskAnalysisChartOptions.chart.height || 350}
-                />
-              </div>
-            )}
-            {contentDetails?.tasklist?.map((imptsk) => (
-              <>
-                <table className="task-table mat-table">
-                  <thead
-                    className="task-table-header"
-                    style={{ display: "none" }}
-                  >
-                    {/* Empty header */}
-                  </thead>
-                  <tbody className="task-table-body">
-                    <tr className="task-table-row mat-row">
-                      <td className="task-table-cell mat-cell">
-                        <div className="task-header p-0 flex items-center">
-                          <div className="task-id flex flex-col">
-                            <span
-                              className="task-id-text font-semibold text-xl leading-none"
-                              style={{ fontSize: "20px" }}
-                            >
-                              Task #{imptsk?.id}
+<div className="p-30">
+          {showRiskAnalysisChart && (
+            <div id="chart" class="mb-2 mt-2 p-0">
+              <Chart
+                options={{
+                  ...riskAnalysisChartOptions,
+                  annotations: riskAnalysisChartOptions.annotations || {},
+                  dataLabels: riskAnalysisChartOptions.dataLabels || {},
+                  grid: riskAnalysisChartOptions.grid || {},
+                  stroke: riskAnalysisChartOptions.stroke || {},
+                  title: riskAnalysisChartOptions.title || {},
+                  xaxis: riskAnalysisChartOptions.xaxis || {},
+                }}
+                series={riskAnalysisChartOptions.series || []}
+                type={riskAnalysisChartOptions.chart.type || "scatter"}
+                height={riskAnalysisChartOptions.chart.height || 350}
+              />
+            </div>
+          )}
+          {contentDetails?.tasklist?.map((imptsk) => (
+            <>
+              <table className="task-table mat-table">
+                <thead
+                  className="task-table-header"
+                  style={{ display: "none" }}
+                >
+                  {/* Empty header */}
+                </thead>
+                <tbody className="task-table-body">
+                  <tr className="task-table-row mat-row">
+                    <td className="task-table-cell mat-cell">
+                    <div className="task-header p-0 flex items-center">
+                        <div className="task-id flex flex-col">
+                          <span
+                            className="task-id-text font-semibold text-xl leading-none"
+                            style={{ fontSize: "20px" }}
+                          >
+                            Task #{imptsk?.id}
+                          </span>
+                        </div>
+                        {imptsk.requestTypeName != "Document" &&
+                          AppActivity.canEdit && (
+                            <div className="task-button ml-auto">
+                              <button
+                                className="task-mark-reviewed-button mat-stroked-button"
+                                onClick={() => handelImpactreview(imptsk.id)}
+                                disabled={
+                                  imptsk?.reviewd || clickedTasks[imptsk.id]
+                                }
+                              >
+                                {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
+                                  <span
+                                    className="mat-button-wrapper"
+                                    style={{
+                                      backgroundColor: "rgba(220,252,231)",
+                                    }}
+                                  >
+                                    You have reviewed this just now
+                                  </span>
+                                ) : (
+                                  <span className="mat-button-wrapper">
+                                    Click here to mark as reviewed
+                                  </span>
+                                )}
+                              </button>
+                            </div>
+                          )}
+                      </div>
+                      <div className="task-details px-6 mt-2">
+                        <div className="task-detail prose prose-sm max-w-5xl">
+                          <div className="task-detail-item mt-3">
+                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                              Impact
+                            </span>
+                            <span className="task-detail-value">
+                              {imptsk.particularName +
+                                ">" +
+                                imptsk.particularSubName}
                             </span>
                           </div>
                           {imptsk.requestTypeName != "Document" && (
@@ -1975,7 +2057,7 @@ const EvaluationApproval = ({
                 </table>
                 <div
                   _ngcontent-fyk-c288=""
-                  class="flex items-center w-full justify-between"
+                  class="flex items-center w-full border-b mt-24 justify-between"
                 ></div>
               </>
             ))}
@@ -2053,30 +2135,35 @@ const EvaluationApproval = ({
                               <span className="task-detail-value">
                                 {imptsk.remark}
                               </span>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                    <tfoot
-                      className="task-table-footer"
-                      style={{
-                        display: "none",
-                        bottom: 0,
-                        zIndex: 10,
-                      }}
-                    >
-                      {/* Empty footer */}
-                    </tfoot>
-                  </table>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="flex items-center w-full border-b mt-24 justify-between"
-                  ></div>
-                </div>
-              </>
-            ))}
+                       </div>
+                    
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot
+                  className="task-table-footer"
+                  style={{
+                    display: "none",
+                    bottom: 0,
+                    zIndex: 10,
+                  }}
+                >
+                  {/* Empty footer */}
+                </tfoot>
+              </table>
+              <div
+                _ngcontent-fyk-c288=""
+                  class="flex items-center w-full border-b mt-24 justify-between"
+              ></div>
+              </div>
+            </>
+          ))}
           </div>
+          {contentDetails?.externalconsultations?.length == 0 && (
+            <span className="mt-5">No external consultations found.</span>
+          )}
         </Paper>
       </SwipeableViews>
       <SwipeableViews>

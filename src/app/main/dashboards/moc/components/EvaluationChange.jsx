@@ -44,6 +44,7 @@ import CountdownTimer from "./CountdownTimer ";
 import { border } from "@mui/system";
 import "./componentStyle.css";
 import { useRef } from "react";
+import FuseLoading from "@fuse/core/FuseLoading";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -100,6 +101,7 @@ function EvaluationChange({
   TeamAssignmentList,
   assetEvaluationId,
   setContent,
+  currentActivityForm,
 }) {
   const [open, setOpen] = useState(false);
   const [openSession, setOpenSession] = useState(false);
@@ -133,9 +135,6 @@ function EvaluationChange({
 
   const [value, setValue] = useState(0);
 
-  useEffect(() => {
-    getRecords();
-  }, []);
   const [timer, setTimer] = useState(null);
   const startTimer = (timeoutMin) => {
     const endTime = new Date().getTime() + timeoutMin * 60000;
@@ -211,7 +210,9 @@ function EvaluationChange({
 
   const getRecords = () => {
     apiAuth
-      .get(`/ChangeEvaluation/Get/${assetEvaluationId}/null/1`)
+      .get(
+        `/ChangeEvaluation/Get/${assetEvaluationId}/${currentActivityForm.formUID ? currentActivityForm.formUID : null}/${currentActivityForm.version}`
+      )
       .then((resp) => {
         setSession(resp.data?.data);
         const sessionList = resp.data?.data?.activeSession?.timeoutMin;
@@ -252,6 +253,9 @@ function EvaluationChange({
       setDocStaff(resp.data.data);
     });
   };
+  useEffect(() => {
+    getRecords();
+  }, [currentActivityForm]);
 
   const groupByRoleName = (teamAssignmentList) => {
     return teamAssignmentList.reduce((acc, item) => {
@@ -291,6 +295,7 @@ function EvaluationChange({
   const timerRef = useRef();
 
   const handelCreateSession = () => {
+    setIsLoading(true);
     apiAuth
       .post(
         `/ChangeEvaluationSession/Create/${Session.id}/${assetEvaluationId}`,
@@ -298,6 +303,8 @@ function EvaluationChange({
       )
       .then((resp) => {
         toast.success("Evaluation session has been successfully created.");
+        setIsLoading(false);
+
         getRecords();
         setOpen(false);
         setTimeout(() => localStorage.setItem("isActiveSession", false), 1000);
@@ -310,6 +317,8 @@ function EvaluationChange({
         }
       })
       .catch((error) => {
+        setIsLoading(false);
+
         console.error("Error creating session:", error);
       });
   };
@@ -476,6 +485,7 @@ function EvaluationChange({
   };
 
   const handleSubmit = () => {
+    setIsLoading(true);
     const payload = forms.map((form) => ({
       id: 0,
       changeRequestId: 0,
@@ -497,14 +507,19 @@ function EvaluationChange({
         payload
       )
       .then((resp) => {
+        setIsLoading(false);
+
         setAddConsultation(false);
         getRecords();
       })
       .catch((error) => {
+        setIsLoading(false);
+
         console.error("Error submitting the form:", error);
       });
   };
   const handelImpactSubmit = () => {
+    setIsLoading(true);
     const payload = [
       {
         changeImapactId:
@@ -553,17 +568,24 @@ function EvaluationChange({
     apiAuth
       .put(`ChangeImpact/Create/${Session.id}/${assetEvaluationId}`, payload)
       .then((resp) => {
+        setIsLoading(false);
+
         setAddCImpact(false);
         apiAuth.get(`/ChangeImpact/Get?id=${Session.id}`).then((resp) => {
           setImpactList(resp.data?.data);
         });
+      })
+      .catch((err) => {
+        setIsLoading(false);
       });
   };
-
-  const handelEditConsultation = (staff, date, stffid, id) => {
+  const [EditComments, setEditComments] = useState("");
+  const handelEditConsultation = (staff, date, stffid, id, comments) => {
     setAddConsultation(true);
 
     setEditConsultation(true);
+    setEditComments(comments);
+
     setEditStaffName(staff);
     setEditStaffDate(new Date(date));
     setEditStaffId(stffid);
@@ -571,20 +593,26 @@ function EvaluationChange({
   };
 
   const handleSave = () => {
+    setIsLoading(true);
     const apiData = {
       consultedDate: editStaffDate,
       consultedStaffDesignationId: 0,
       consultedStaffId: editStaffId,
-      comments: "",
+      comments: EditComments,
       impactTaskIds: selectedTasks,
       remark: remark,
     };
     apiAuth
       .put(`/ChangeEvaluationConsultation/UpdateList?id=${editId}`, apiData)
       .then((resp) => {
+        setIsLoading(false);
+
         setEditConsultation(false);
         setAddConsultation(false);
         getRecords();
+      })
+      .catch((err) => {
+        setIsLoading(false);
       });
     // Send apiData to the API endpoint using fetch or any other method
   };
@@ -829,6 +857,7 @@ function EvaluationChange({
   const [generalGuidePdf, setGeneralGuidePdf] = useState(null);
   const [hazardTypeValue, sethazardTypeValue] = useState("");
   const [Classifications, setClassification] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handelRisk = (id, type) => {
     setEditRiskAnalysDetail([]);
@@ -962,9 +991,9 @@ function EvaluationChange({
       frequencyScoring &&
       likelihoodScoring &&
       severityScoring &&
-      likelihoodScoring < 15 &&
+      likelihoodScoring <= 15 &&
       likelihoodScoring > 0 &&
-      severityScoring < 15 &&
+      severityScoring <= 15 &&
       severityScoring > 0
     ) {
       return frequencyScoring * likelihoodScoring * severityScoring;
@@ -1175,6 +1204,7 @@ function EvaluationChange({
 
   const handelRiskSubmit = (value) => {
     if (validateRisk()) {
+      setIsLoading(true);
       if (value == "Submit") {
         setFormValues((prevValues) => ({
           ...prevValues,
@@ -1192,10 +1222,17 @@ function EvaluationChange({
       if (value === "Update") {
         apiPath = "/RiskAnalysis/UpdateAnalysis";
       }
-      apiAuth.post(apiPath, payload).then((resp) => {
-        setRisk(false);
-        getRecords();
-      });
+      apiAuth
+        .post(apiPath, payload)
+        .then((resp) => {
+          setIsLoading(false);
+
+          setRisk(false);
+          getRecords();
+        })
+        .catch((err) => {
+          setIsLoading(true);
+        });
       setFormValues({
         hazardType: "",
         hazardousSituation: "",
@@ -1334,12 +1371,18 @@ function EvaluationChange({
     });
   };
   const handelRemoveDetails = (id, subId) => {
+    setIsLoading(true);
     if (id) {
-      apiAuth.delete(`/RiskAnalysis/${id}`).then((resp) => {
-        console.log(resp.message, "hhh");
-        toast.success("Deleted");
-        getRecords();
-      });
+      apiAuth
+        .delete(`/RiskAnalysis/${id}`)
+        .then((resp) => {
+          console.log(resp.message, "hhh");
+          toast.success("Deleted");
+          setIsLoading(false);
+
+          getRecords();
+        })
+        .catch((err) => setIsLoading(false));
     }
   };
   const [hazaid, setHazaId] = useState(0);
@@ -1410,10 +1453,6 @@ function EvaluationChange({
 
       const { classification, classificationValue } =
         calculateRiskClassification(data?.residualRisk);
-      // console.log("====================================");
-      // console.log(resp?.data?.data?.hazardType);
-      // console.log("====================================");
-      // setSubTaskhazardRiskApi(resp?.data?.data?.hazardType);
 
       setClassification(classification);
       if (data.time) {
@@ -1441,6 +1480,8 @@ function EvaluationChange({
     : { m: 1, maxWidth: "100%" };
 
   const handelSubmitApproval = (btn) => {
+    setIsLoading(true);
+
     apiAuth
       .post(`/ChangeEvaluation/ExecuteActivity/${Session.id}`, {
         activityUID: AppActivity.uid,
@@ -1448,23 +1489,35 @@ function EvaluationChange({
         formUID: `${Session.id}`,
       })
       .then((resp) => {
+        setIsLoading(false);
+
+        toast.success("Evaluation Submitted Successfully");
         apiAuth
           .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
           .then((resp) => {
             setContent(resp.data.data.phases);
           });
+      })
+      .catch((err) => {
+        setIsLoading(false);
+
+        toast.error("Some Error Occured");
       });
   };
 
   const [stopComment, setStopComment] = useState("");
 
   const handleStopSession = () => {
+    setIsLoading(true);
+
     apiAuth
       .put(
         `/ChangeEvaluationSession/End/${SessionList[0].changeEvaluationId}/${assetEvaluationId}/${SessionList[0].id}`,
         { comments: stopComment }
       )
       .then((resp) => {
+        setIsLoading(false);
+
         toast.success("Evaluation session has been stopped.");
         setOpen(false);
         localStorage.setItem("isActiveSession", false);
@@ -1474,6 +1527,9 @@ function EvaluationChange({
           timerRef.current.stopTimer();
           // Stop the timer when the API call is successful
         }
+      })
+      .catch(() => {
+        setIsLoading(false);
       });
   };
 
@@ -1489,6 +1545,34 @@ function EvaluationChange({
         });
     });
   };
+  const [expanded, setExpanded] = useState("panel1"); // Default to a static value
+
+  // Static identifiers for each accordion section
+  const handleExpansionChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : null);
+  };
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
+  const [previousTasks, setPreviousTasks] = useState({});
+
+  const toggleDetails = (impid) => {
+    if (selectedTaskId === impid) {
+      // If the clicked task is already selected, close it by setting selectedTaskId to null
+      setSelectedTaskId(null);
+    } else {
+      // Fetch data and set the selected task ID
+      apiAuth.get(`/Task/GetPreviousVersions/${impid}`).then((resp) => {
+        setPreviousTasks((prev) => ({
+          ...prev,
+          [impid]: resp.data.data,
+        }));
+      });
+      setSelectedTaskId(impid);
+    }
+  };
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <div className="w-full">
@@ -1668,8 +1752,31 @@ function EvaluationChange({
                             >
                               {itms.tasks.length == 0
                                 ? "No Task Added"
-                                : "Task Added"}
+                                : `${itms?.tasks?.length} Task Added`}
                             </div>
+                            {itms?.reviews?.length != 0 ? (
+                              <div
+                                className="py-0.5 px-3 rounded-full text-sm"
+                                style={{
+                                  backgroundColor: "rgba(252,165,165)",
+
+                                  padding: "5px",
+                                  marginLeft: "15px",
+                                }}
+                              >
+                                {`${itms?.reviews?.length} review Added`}
+                              </div>
+                            ) : (
+                              <div
+                                className="py-0.5 px-3 rounded-full text-sm"
+                                style={{
+                                  padding: "5px",
+                                  marginLeft: "28px",
+                                }}
+                              >
+                                No reviews
+                              </div>
+                            )}
                           </div>
                         </div>
                       </AccordionSummary>
@@ -1683,11 +1790,18 @@ function EvaluationChange({
                                     <span
                                       className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
                                       style={{
-                                        padding: "10px",
+                                        paddingBottom: "10px",
                                       }}
                                     >
                                       {itms.comments == "" ? (
-                                        "No Comments Added"
+                                        <span
+                                          className="inline-flex bg-default rounded  mr-5 mt-5 ms-5 text-secondary max-w-5xl"
+                                          style={{
+                                            paddingBottom: "10px",
+                                          }}
+                                        >
+                                          No Comments Added.
+                                        </span>
                                       ) : (
                                         <div className="">
                                           <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
@@ -1702,41 +1816,101 @@ function EvaluationChange({
                                   </div>
                                 </div>
                               </div>
-                              {itms?.remark !== "" &&
-                                itms?.tasks.length !== 0 && (
-                                  <>
-                                    <div className="">
-                                      <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                                        <b>Task Added</b>
-                                      </span>
-                                      <span className="task-detail-value">
-                                        {itms.tasks[0]}
-                                      </span>
-                                    </div>
-                                    <div
-                                      className=""
-                                      style={{ marginTop: "25px" }}
-                                    >
-                                      <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                                        <b>Remarks</b>
-                                      </span>
-                                      <span className="task-detail-value">
-                                        {itms.remark}
-                                      </span>
-                                    </div>
-                                  </>
-                                )}
-                              <div
-                                _ngcontent-fyk-c288=""
-                                class="flex items-center w-full  border-b justify-between"
-                                style={{ marginTop: "5px" }}
-                              ></div>
+                              {itms?.remark != "" && itms.tasks[0] && (
+                                <>
+                                  <div className="">
+                                    <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                      Task Added
+                                    </span>
+                                    <span className="task-detail-value">
+                                      {itms.tasks[0]}
+                                    </span>
+                                  </div>
+                                  <div
+                                    className=""
+                                    style={{ marginTop: "25px" }}
+                                  >
+                                    <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                      Remarks
+                                    </span>
+                                    <span className="task-detail-value">
+                                      {itms.remark}
+                                    </span>
+                                  </div>
+                                </>
+                              )}
+                              {itms?.reviews?.length == 0 && (
+                                <span
+                                  className="inline-flex bg-default rounded  mt-5 ms-5 text-secondary "
+                                  style={{
+                                    paddingBottom: "10px",
+                                  }}
+                                >
+                                  No reviews added.
+                                </span>
+                              )}
+                              {itms?.reviews?.length != 0 && (
+                                <Accordion
+                                  expanded={expanded === "panel1"}
+                                  onChange={handleExpansionChange("panel1")}
+                                  className="mt-6"
+                                >
+                                  <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls="panel1a-content"
+                                    id="panel1a-header"
+                                  >
+                                    <Typography>
+                                      <span className="text-brown">
+                                        {itms?.reviews?.length} Reviews
+                                      </span>{" "}
+                                    </Typography>
+                                  </AccordionSummary>
+                                  {itms?.reviews?.map((rivew) => (
+                                    <AccordionDetails>
+                                      <div className="mat-form-field-wrapper">
+                                        <div className="mat-form-field-flex">
+                                          <img
+                                            src="/assets/images/etc/userpic.png"
+                                            alt="Card cover image"
+                                            className="rounded-full mr-4"
+                                            style={{
+                                              width: "3rem",
+                                              height: "3rem",
+                                            }}
+                                          />
+                                          <div>
+                                            <div className="mat-form-field-infix mt-12">
+                                              <span className="">
+                                                {rivew?.createdByStaffName}
+                                              </span>
+                                              -{" "}
+                                              <span className="text-grey">
+                                                {rivew?.remark}
+                                              </span>
+                                            </div>
+                                            <p
+                                              className="mat-form-field-infix text-grey"
+                                              style={{
+                                                fontSize: "smaller",
+                                              }}
+                                            >
+                                              {rivew?.updatedAt}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </AccordionDetails>
+                                  ))}
+                                </Accordion>
+                              )}
+
                               {AppActivity.canEdit &&
                                 JSON.parse(
                                   localStorage.getItem("isActiveSession")
                                 ) && (
                                   <Button
-                                    className="ms-5"
+                                    className=" mt-5"
                                     variant="contained"
                                     sx={{
                                       backgroundColor: "white",
@@ -1754,7 +1928,8 @@ function EvaluationChange({
                                         itms.staff,
                                         itms.consultedDate,
                                         itms.consultedStaffId,
-                                        itms.id
+                                        itms.id,
+                                        itms.comments
                                       )
                                     }
                                   >
@@ -1828,7 +2003,7 @@ function EvaluationChange({
                               <FormLabel
                                 id={`consultedStaffId-label-${form.id}`}
                               >
-                                Validity Expires On *
+                                <b className="text-black">Consulted On *</b>
                               </FormLabel>
                               <Box sx={{}}>
                                 <DatePicker
@@ -1870,7 +2045,7 @@ function EvaluationChange({
                               <FormLabel
                                 id={`consultedStaffId-label-${form.id}`}
                               >
-                                Search Staff
+                                <b className="text-black">Staff *</b>
                               </FormLabel>
                               <Autocomplete
                                 id={`consultedStaffId-${form.id}`}
@@ -1975,9 +2150,23 @@ function EvaluationChange({
                     <div
                       className="py-0.5 px-3 rounded-full text-sm  mt-5"
                       style={{ paddingLeft: "10px", paddingTop: "10px" }}
-                    >
-                      No Comments Added By staff
-                    </div>
+                    ></div>
+                    {list.map((itms) => (
+                      <>
+                        {itms.comments == "" ? (
+                          "  No Comments Added By staff"
+                        ) : (
+                          <div className="mb-12 ms-8">
+                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                              Comments by Staff
+                            </span>
+                            <span className="task-detail-value">
+                              {itms.comments}
+                            </span>
+                          </div>
+                        )}
+                      </>
+                    ))}
 
                     <Box
                       sx={{
@@ -2046,7 +2235,7 @@ function EvaluationChange({
                           onChange={handleRemarkChange}
                           label="Reason For Change*"
                           className="mt-5"
-                          // value={valueRemark}
+                          value={remark}
                         />
                       </FormControl>
                     </Box>
@@ -2074,6 +2263,7 @@ function EvaluationChange({
                         </Button>
                       </div>
                     </div>
+
                     <div className="flex justify-start">
                       <div
                         className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
@@ -2173,7 +2363,17 @@ function EvaluationChange({
                               style={{ width: "20%" }}
                             >
                               <div className="flex items-center">
-                                <div className="py-0.5 px-3 rounded-full text-sm">
+                                <div
+                                  className="py-0.5 px-3 rounded-full text-sm"
+                                  style={{
+                                    backgroundColor:
+                                      itms.reviewsCount > 0
+                                        ? "rgba(252,165,165)"
+                                        : "",
+                                    padding: "5px",
+                                    marginLeft: "15px",
+                                  }}
+                                >
                                   {itms.reviewsCount > 0
                                     ? `${itms?.reviewsCount} Reviews`
                                     : "No Reviews"}
@@ -2285,25 +2485,31 @@ function EvaluationChange({
                                                     </Grid>
 
                                                     <Grid item xs={12}>
-                                                      {AppActivity.canEdit && (
-                                                        <span
-                                                          className="text-white"
-                                                          style={{
-                                                            backgroundColor:
-                                                              "#2563eb",
-                                                            borderRadius: "5px",
-                                                            padding: "4px",
-                                                            fontSize: "10px",
-                                                            cursor: "pointer",
-                                                          }}
-                                                          onClick={() =>
-                                                            handelRisk(sub.id)
-                                                          }
-                                                        >
-                                                          Create New Risk
-                                                          Analysis
-                                                        </span>
-                                                      )}
+                                                      {AppActivity.canEdit &&
+                                                        JSON.parse(
+                                                          localStorage.getItem(
+                                                            "isActiveSession"
+                                                          )
+                                                        ) && (
+                                                          <span
+                                                            className="text-white"
+                                                            style={{
+                                                              backgroundColor:
+                                                                "#2563eb",
+                                                              borderRadius:
+                                                                "5px",
+                                                              padding: "4px",
+                                                              fontSize: "10px",
+                                                              cursor: "pointer",
+                                                            }}
+                                                            onClick={() =>
+                                                              handelRisk(sub.id)
+                                                            }
+                                                          >
+                                                            Create New Risk
+                                                            Analysis
+                                                          </span>
+                                                        )}
                                                     </Grid>
                                                   </Grid>
                                                 </div>
@@ -2620,10 +2826,171 @@ function EvaluationChange({
                                             <div className="task-header flex items-center">
                                               <div className="task-id flex flex-col">
                                                 <span className="task-id-text font-semibold text-xl leading-none">
-                                                  Task #{imptsk?.id}
+                                                  Task #{imptsk?.sourceTaskId}
                                                 </span>
                                               </div>
                                             </div>
+                                            {imptsk.sourceTaskId !==
+                                              imptsk.id &&
+                                              (!imptsk.showPreviousTasks ||
+                                                imptsk.showPreviousTasks ===
+                                                  null) && (
+                                                <span
+                                                  className="text-sm text-secondary text-blue-500 font-bold cursor-pointer leading-none mt-1 ms-12"
+                                                  onClick={() =>
+                                                    toggleDetails(imptsk.id)
+                                                  }
+                                                >
+                                                  {selectedTaskId !== imptsk.id
+                                                    ? "Show previous versions"
+                                                    : "Hide previous versions"}
+                                                </span>
+                                              )}
+                                            {selectedTaskId === imptsk.id &&
+                                              previousTasks[imptsk.id] &&
+                                              previousTasks[imptsk.id].map(
+                                                (itm) => (
+                                                  <div
+                                                    className="task-details px-6 mt-2 border"
+                                                    key={itm.id}
+                                                  >
+                                                    <div class="mt-3 ms-9 font-semibold">
+                                                      V{itm.evaluationVersion}
+                                                    </div>
+                                                    <div className="task-detail prose prose-sm max-w-5xl">
+                                                      <div className="task-detail-item mt-3">
+                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                          Impact
+                                                        </span>
+                                                        <span className="task-detail-value">
+                                                          {itm.particularName +
+                                                            ">" +
+                                                            itm.particularSubName}
+                                                        </span>
+                                                      </div>
+                                                      <div className="task-detail-item mt-3">
+                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                          What is Task
+                                                        </span>
+                                                        <span className="task-detail-value">
+                                                          {itm.actionWhat}
+                                                        </span>
+                                                      </div>
+                                                      <div className="task-detail-item mt-5">
+                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                          How is Task done
+                                                        </span>
+                                                        <span className="task-detail-value">
+                                                          {itm.actionHow}
+                                                        </span>
+                                                      </div>
+                                                      <div className="task-detail-item mt-5">
+                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                          Assigned to
+                                                        </span>
+                                                        <span className="task-detail-value">
+                                                          {itm.assignedStaff}
+                                                        </span>
+                                                        <span className="task-detail-label bg-default rounded ml-2 text-secondary font-semibold">
+                                                          Due Date
+                                                        </span>
+                                                        <span className="task-detail-value">
+                                                          {formatDate(
+                                                            itm.dueDate
+                                                          )}
+                                                        </span>
+                                                        <span className="task-detail-label bg-default rounded ml-2 text-secondary font-semibold">
+                                                          Deadline
+                                                        </span>
+                                                        <span className="task-detail-value">
+                                                          {itm?.deadlineDisplay}
+                                                        </span>
+                                                      </div>
+                                                    </div>
+                                                    <div>&nbsp;</div>
+                                                    {itm
+                                                      ?.changeImpactTaskReviews
+                                                      ?.length != 0 && (
+                                                      <Accordion
+                                                        expanded={
+                                                          expanded === "panel2"
+                                                        }
+                                                        onChange={handleExpansionChange(
+                                                          "panel2"
+                                                        )}
+                                                        className="mt-6"
+                                                      >
+                                                        <AccordionSummary
+                                                          expandIcon={
+                                                            <ExpandMoreIcon />
+                                                          }
+                                                          aria-controls="panel1a-content"
+                                                          id="panel1a-header"
+                                                        >
+                                                          <Typography>
+                                                            <span className="text-brown">
+                                                              {
+                                                                itm
+                                                                  ?.changeImpactTaskReviews
+                                                                  ?.length
+                                                              }{" "}
+                                                              Reviews
+                                                            </span>{" "}
+                                                          </Typography>
+                                                        </AccordionSummary>
+                                                        {itm?.changeImpactTaskReviews?.map(
+                                                          (rivew) => (
+                                                            <AccordionDetails>
+                                                              <div className="mat-form-field-wrapper">
+                                                                <div className="mat-form-field-flex">
+                                                                  <img
+                                                                    src="/assets/images/etc/userpic.png"
+                                                                    alt="Card cover image"
+                                                                    className="rounded-full mr-4"
+                                                                    style={{
+                                                                      width:
+                                                                        "3rem",
+                                                                      height:
+                                                                        "3rem",
+                                                                    }}
+                                                                  />
+                                                                  <div>
+                                                                    <div className="mat-form-field-infix mt-12">
+                                                                      <span className="">
+                                                                        {
+                                                                          rivew?.createdByStaffName
+                                                                        }
+                                                                      </span>
+                                                                      -{" "}
+                                                                      <span className="text-grey">
+                                                                        {
+                                                                          rivew?.remark
+                                                                        }
+                                                                      </span>
+                                                                    </div>
+                                                                    <p
+                                                                      className="mat-form-field-infix text-grey"
+                                                                      style={{
+                                                                        fontSize:
+                                                                          "smaller",
+                                                                      }}
+                                                                    >
+                                                                      {
+                                                                        rivew?.updatedAt
+                                                                      }
+                                                                    </p>
+                                                                  </div>
+                                                                </div>
+                                                              </div>
+                                                            </AccordionDetails>
+                                                          )
+                                                        )}
+                                                      </Accordion>
+                                                    )}
+                                                  </div>
+                                                )
+                                              )}
+
                                             <div className="task-details px-6 mt-2">
                                               <div className="task-detail prose prose-sm max-w-5xl">
                                                 <div className="task-detail-item mt-3">
@@ -2666,19 +3033,84 @@ function EvaluationChange({
 
                                               <div>&nbsp;</div>
                                             </div>
+
+                                            {imptsk?.changeImpactTaskReviews
+                                              ?.length != 0 ? (
+                                              <Accordion
+                                                expanded={expanded === "panel3"}
+                                                onChange={handleExpansionChange(
+                                                  "panel3"
+                                                )}
+                                                className="mt-6"
+                                              >
+                                                <AccordionSummary
+                                                  expandIcon={
+                                                    <ExpandMoreIcon />
+                                                  }
+                                                  aria-controls="panel1a-content"
+                                                  id="panel1a-header"
+                                                >
+                                                  <Typography>
+                                                    <span className="text-brown">
+                                                      {
+                                                        imptsk
+                                                          ?.changeImpactTaskReviews
+                                                          ?.length
+                                                      }{" "}
+                                                      Reviews
+                                                    </span>{" "}
+                                                  </Typography>
+                                                </AccordionSummary>
+                                                {imptsk?.changeImpactTaskReviews?.map(
+                                                  (rivew) => (
+                                                    <AccordionDetails>
+                                                      <div className="mat-form-field-wrapper">
+                                                        <div className="mat-form-field-flex">
+                                                          <img
+                                                            src="/assets/images/etc/userpic.png"
+                                                            alt="Card cover image"
+                                                            className="rounded-full mr-4"
+                                                            style={{
+                                                              width: "3rem",
+                                                              height: "3rem",
+                                                            }}
+                                                          />
+                                                          <div>
+                                                            <div className="mat-form-field-infix mt-12">
+                                                              <span className="">
+                                                                {
+                                                                  rivew?.createdByStaffName
+                                                                }
+                                                              </span>
+                                                              -{" "}
+                                                              <span className="text-grey">
+                                                                {rivew?.remark}
+                                                              </span>
+                                                            </div>
+                                                            <p
+                                                              className="mat-form-field-infix text-grey"
+                                                              style={{
+                                                                fontSize:
+                                                                  "smaller",
+                                                              }}
+                                                            >
+                                                              {rivew?.updatedAt}
+                                                            </p>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </AccordionDetails>
+                                                  )
+                                                )}
+                                              </Accordion>
+                                            ) : (
+                                              <span className="ms-10">
+                                                No Comments Added
+                                              </span>
+                                            )}
                                           </td>
                                         </tr>
                                       </tbody>
-                                      <tfoot
-                                        className="task-table-footer"
-                                        style={{
-                                          display: "none",
-                                          bottom: 0,
-                                          zIndex: 10,
-                                        }}
-                                      >
-                                        {/* Empty footer */}
-                                      </tfoot>
                                     </table>
                                   ))}
                                   {/* {itms?.remark !== "" &&
@@ -2709,43 +3141,46 @@ function EvaluationChange({
                                   </div>
                                 </div>
                               )} */}
-                                  <div
-                                    _ngcontent-fyk-c288=""
-                                    class="flex items-center w-full  border-b justify-between"
-                                    style={{ marginTop: "5px" }}
-                                  ></div>
+
                                   {AppActivity.canEdit &&
                                     JSON.parse(
                                       localStorage.getItem("isActiveSession")
                                     ) && (
-                                      <Button
-                                        className="ms-5"
-                                        variant="contained"
-                                        sx={{
-                                          backgroundColor: "white",
-                                          color: "black",
-                                          border: "1px solid black",
-                                          marginTop: "8px",
-                                        }}
-                                        startIcon={
-                                          <FuseSvgIcon size={20}>
-                                            heroicons-outline:user-add
-                                          </FuseSvgIcon>
-                                        }
-                                        onClick={() =>
-                                          handelEditImpactTask(
-                                            itms.hazardDetail,
-                                            itms?.changeImpactTasks,
-                                            itms?.particular,
-                                            itms.particularSubCategory,
-                                            itms?.changeImapactId,
-                                            itms?.changeRequestId,
-                                            itms?.changeEvaluationId
-                                          )
-                                        }
-                                      >
-                                        Edit Impact/Task
-                                      </Button>
+                                      <>
+                                        <div
+                                          _ngcontent-fyk-c288=""
+                                          class="flex items-center w-full  border-b justify-between"
+                                          style={{ marginTop: "5px" }}
+                                        ></div>
+                                        <Button
+                                          className="ms-5"
+                                          variant="contained"
+                                          sx={{
+                                            backgroundColor: "white",
+                                            color: "black",
+                                            border: "1px solid black",
+                                            marginTop: "8px",
+                                          }}
+                                          startIcon={
+                                            <FuseSvgIcon size={20}>
+                                              heroicons-outline:user-add
+                                            </FuseSvgIcon>
+                                          }
+                                          onClick={() =>
+                                            handelEditImpactTask(
+                                              itms.hazardDetail,
+                                              itms?.changeImpactTasks,
+                                              itms?.particular,
+                                              itms.particularSubCategory,
+                                              itms?.changeImapactId,
+                                              itms?.changeRequestId,
+                                              itms?.changeEvaluationId
+                                            )
+                                          }
+                                        >
+                                          Edit Impact/Task
+                                        </Button>
+                                      </>
                                     )}
                                 </div>
                               </Step>
@@ -5134,35 +5569,56 @@ function EvaluationChange({
             <div>&nbsp;</div>
             <div className="flex items-center w-full border-b pb-5 justify-between"></div>
             <div className="flex justify-end ">
-              <Button
-                className="whitespace-nowrap mt-5"
-                style={{
-                  border: "1px solid",
-                  backgroundColor: "#0000",
-                  color: "black",
-                  borderColor: "rgba(203,213,225)",
-                  marginLeft: "10px",
-                  marginTop: "10px",
-                }}
-                variant="contained"
-              >
-                Cancel
-              </Button>
-              <Button
-                className="whitespace-nowrap ms-5 "
-                variant="contained"
-                color="secondary"
-                style={{
-                  marginTop: "10px",
-                }}
-                onClick={() =>
-                  handelRiskSubmit(
-                    editRiskAnalysDetail.length ? "Update" : "Submit"
-                  )
-                }
-              >
-                {editRiskAnalysDetail.length ? "Update" : "Submit"}
-              </Button>
+              {!viewrisk && (
+                <>
+                  <Button
+                    className="whitespace-nowrap mt-5"
+                    style={{
+                      border: "1px solid",
+                      backgroundColor: "#0000",
+                      color: "black",
+                      borderColor: "rgba(203,213,225)",
+                      marginLeft: "10px",
+                      marginTop: "10px",
+                    }}
+                    variant="contained"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap ms-5 "
+                    variant="contained"
+                    color="secondary"
+                    style={{
+                      marginTop: "10px",
+                    }}
+                    onClick={() =>
+                      handelRiskSubmit(
+                        editRiskAnalysDetail.length ? "Update" : "Submit"
+                      )
+                    }
+                  >
+                    {editRiskAnalysDetail.length ? "Update" : "Submit"}
+                  </Button>
+                </>
+              )}
+              {viewrisk && (
+                <Button
+                  className="whitespace-nowrap mt-5"
+                  style={{
+                    border: "1px solid",
+                    backgroundColor: "#0000",
+                    color: "black",
+                    borderColor: "rgba(203,213,225)",
+                    marginLeft: "10px",
+                    marginTop: "10px",
+                  }}
+                  variant="contained"
+                  onClick={goBack}
+                >
+                  Close
+                </Button>
+              )}
             </div>
           </Paper>
         )}

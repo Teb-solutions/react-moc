@@ -24,6 +24,7 @@ import SwipeableViews from "react-swipeable-views";
 import { parseISO, format } from "date-fns";
 import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 function InitiationApprovalProceed({
   assetEvaluationId,
@@ -77,6 +78,7 @@ function InitiationApprovalProceed({
 
   const [selectedStaffs, setSelectedStaffs] = useState([]);
   const [selectedTeamType, setSelectedTeamType] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [teamAssignments, setTeamAssignments] = useState([]);
   const [selectedStaff, setSelectedStaff] = useState({
@@ -96,22 +98,19 @@ function InitiationApprovalProceed({
     }
   };
 
-  const handleStaffChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    const selectedValues = typeof value === "string" ? value.split(",") : value;
-
-    const updatedSelectedStaffs = selectedValues.map((value) => {
-      return { staffId: value, teamType: "Others" };
-    });
-
-    setSelectedStaffs(updatedSelectedStaffs);
+  const handleStaffChange = (event, newValue) => {
+    setSelectedStaffs(
+      newValue.map((staff) => ({
+        staffId: staff.value,
+        teamType: "Others",
+      }))
+    );
   };
 
   console.log(AppActivity, "payloadss");
 
   const handleSubmit = () => {
+    setIsLoading(true);
     const payload = {
       teamAssignments: [...teamAssignments, ...selectedStaffs],
       executeActivity: {
@@ -123,6 +122,8 @@ function InitiationApprovalProceed({
       .put(`/TeamAssignment/Create?id=${assetEvaluationId}`, payload)
       .then((resp) => {
         console.log("Response:", resp.data);
+        setIsLoading(false);
+
         setOpen(false);
         apiAuth
           .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
@@ -133,8 +134,13 @@ function InitiationApprovalProceed({
       })
       .catch((error) => {
         console.error("Error:", error);
+        setIsLoading(false);
       });
   };
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <div className="w-full">
@@ -312,35 +318,37 @@ function InitiationApprovalProceed({
                     >
                       Others*
                     </FormLabel>
-                    <Select
-                      id="briefDescription"
-                      name="briefDescription"
+                    <Autocomplete
                       multiple
-                      value={selectedStaffs.map((staff) => staff.staffId)}
-                      onChange={handleStaffChange}
-                      renderValue={(selected) =>
-                        selected
-                          .map((value) => {
-                            const staff = staffList.find(
-                              (option) => option.value === value
-                            );
-                            return staff ? staff.text : "";
-                          })
-                          .join(", ")
+                      id="staff-autocomplete"
+                      options={staffList}
+                      getOptionLabel={(option) => option.text}
+                      isOptionEqualToValue={(option, value) =>
+                        option.value === value.value
                       }
-                      label="Reason For New Document *"
-                    >
-                      {staffList.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          <Checkbox
-                            checked={selectedStaffs.some(
-                              (staff) => staff.staffId === option.value
-                            )}
-                          />
+                      value={staffList.filter((staff) =>
+                        selectedStaffs.some(
+                          (selected) => selected.staffId === staff.value
+                        )
+                      )}
+                      onChange={handleStaffChange}
+                      renderInput={(params) => (
+                        <TextField {...params} variant="outlined" fullWidth />
+                      )}
+                      renderOption={(props, option, { selected }) => (
+                        <li {...props} key={option.value}>
+                          <Checkbox checked={selected} />
                           <ListItemText primary={option.text} />
-                        </MenuItem>
-                      ))}
-                    </Select>
+                        </li>
+                      )}
+                      renderTags={(value, getTagProps) =>
+                        value.map((option, index) => (
+                          <span key={index} {...getTagProps({ index })}>
+                            {option.text}
+                          </span>
+                        ))
+                      }
+                    />
                   </FormControl>
                 </Box>
               </>
