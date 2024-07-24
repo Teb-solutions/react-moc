@@ -2055,7 +2055,7 @@ const EvaluationApproval = ({
               ></div>
             </>
           ))}
-          {contentDetails?.externalconsultations.length == 0 && (
+          {contentDetails?.externalconsultations?.length == 0 && (
             <span className="mt-5">No external consultations found.</span>
           )}
         </Paper>
