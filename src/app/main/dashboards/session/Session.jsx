@@ -37,6 +37,8 @@ const SessionList = () => {
   };
 
   const handleAccept = (id, ChangeId) => {
+    setIsLoading(true);
+
     apiAuth
       .put(
         `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Approve`,
@@ -46,15 +48,24 @@ const SessionList = () => {
       )
       .then((resp) => {
         getRecords();
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setIsLoading(false);
       });
   };
   const handleReject = (id, ChangeId) => {
+    setIsLoading(true);
     apiAuth
       .put(`/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Reject`, {
         comments: Comment,
       })
       .then((resp) => {
         getRecords();
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setIsLoading(false);
       });
   };
 

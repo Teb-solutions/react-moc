@@ -282,6 +282,7 @@ function AssetRequest() {
   const [formValid, setFormValid] = useState(true);
 
   const handleSubmit = (event) => {
+    setIsLoading(true);
     event.preventDefault();
 
     const updatedDocumentState = {
@@ -294,11 +295,15 @@ function AssetRequest() {
       .then((response) => {
         toast.success("Successfully Created");
         setTimeout(() => {
+          setIsLoading(false);
+
           navigate("/dashboards/project");
         }, 1000);
         setOpen(false);
       })
       .catch((error) => {
+        setIsLoading(false);
+
         setOpen(true);
         toast.success("Some Error Occured");
       });

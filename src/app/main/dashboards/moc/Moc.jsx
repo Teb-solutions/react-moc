@@ -107,6 +107,7 @@ function MocApp() {
 
   const filteredData = useMemo(() => {
     return _.filter(originalData, (item) => {
+      debugger;
       console.log("Selected Category:", selectedCategory);
 
       if (

@@ -38,6 +38,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SaveIcon from "@mui/icons-material/Save";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { ToastContainer, toast } from "react-toastify";
+import FuseLoading from "@fuse/core/FuseLoading";
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -179,6 +180,7 @@ const EvaluationApproval = ({
   const [expanded, setExpanded] = useState(false);
   const [clickedTasks, setClickedTasks] = useState({});
   const [showReview, setshowReview] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handelCommentImp = (id, rwid, value) => {
     if (value == 1) {
@@ -379,6 +381,7 @@ const EvaluationApproval = ({
   };
 
   const SubmitApprovelCreate = (e, btuid, btname, bttype) => {
+    setIsLoading(true);
     const payload = {
       activityId: AppActivity.uid,
       actionType: bttype,
@@ -397,17 +400,26 @@ const EvaluationApproval = ({
       .post(`/ApprovalManager/Create/${assetEvaluationId}`, payload)
       .then((response) => {
         if (response.data.statusCode != 400) {
+          setIsLoading(false);
+
           apiAuth
             .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
             .then((resp) => {
               setContent(resp.data.data.phases);
             });
         } else {
+          setIsLoading(false);
+
           toast.error(response.data.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setIsLoading(false);
+      });
   };
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <div className="w-full h-full">
@@ -940,7 +952,7 @@ const EvaluationApproval = ({
                     Consulted On {formatDates(itm?.consultedDate)}
                   </span>
                 </div>
-                {itm.requestTypeName != "Document" && (
+                {itm.requestTypeName != "Document" && AppActivity.canEdit && (
                   <div className="task-button ml-auto">
                     <button
                       className="task-mark-reviewed-button mat-stroked-button"
@@ -1279,32 +1291,33 @@ const EvaluationApproval = ({
                             Task #{imptsk?.id}
                           </span>
                         </div>
-                        {imptsk.requestTypeName != "Document" && (
-                          <div className="task-button ml-auto">
-                            <button
-                              className="task-mark-reviewed-button mat-stroked-button"
-                              onClick={() => handelImpactreview(imptsk.id)}
-                              disabled={
-                                imptsk?.reviewd || clickedTasks[imptsk.id]
-                              }
-                            >
-                              {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
-                                <span
-                                  className="mat-button-wrapper"
-                                  style={{
-                                    backgroundColor: "rgba(220,252,231)",
-                                  }}
-                                >
-                                  You have reviewed this just now
-                                </span>
-                              ) : (
-                                <span className="mat-button-wrapper">
-                                  Click here to mark as reviewed
-                                </span>
-                              )}
-                            </button>
-                          </div>
-                        )}
+                        {imptsk.requestTypeName != "Document" &&
+                          AppActivity.canEdit && (
+                            <div className="task-button ml-auto">
+                              <button
+                                className="task-mark-reviewed-button mat-stroked-button"
+                                onClick={() => handelImpactreview(imptsk.id)}
+                                disabled={
+                                  imptsk?.reviewd || clickedTasks[imptsk.id]
+                                }
+                              >
+                                {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
+                                  <span
+                                    className="mat-button-wrapper"
+                                    style={{
+                                      backgroundColor: "rgba(220,252,231)",
+                                    }}
+                                  >
+                                    You have reviewed this just now
+                                  </span>
+                                ) : (
+                                  <span className="mat-button-wrapper">
+                                    Click here to mark as reviewed
+                                  </span>
+                                )}
+                              </button>
+                            </div>
+                          )}
                       </div>
                       <div className="task-details px-6 mt-2">
                         <div className="task-detail prose prose-sm max-w-5xl">
@@ -2042,6 +2055,9 @@ const EvaluationApproval = ({
               ></div>
             </>
           ))}
+          {contentDetails?.externalconsultations.length == 0 && (
+            <span className="mt-5">No external consultations found.</span>
+          )}
         </Paper>
       </SwipeableViews>
       <SwipeableViews>
