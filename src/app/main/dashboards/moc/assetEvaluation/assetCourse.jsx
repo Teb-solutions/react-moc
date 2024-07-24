@@ -780,6 +780,7 @@ const AssetCourse = () => {
             apiAuth
               .get(`/ChangeSummary/Get?id=${assetEvaluationId}`)
               .then((resp) => {
+                setCountApprove(0);
                 setCurrentSummeryById(resp.data.data);
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
                   setIsLoading(false);
@@ -789,7 +790,7 @@ const AssetCourse = () => {
                 });
                 apiAuth
                   .get(
-                    `/DocumentManager/DocumentCount?id=${resp.data.data.activity.uid}&documentType=Approval`
+                    `/DocumentManager/DocumentCount?id=${resp.data.data.activity.uid}&documentType=ChangeSummary`
                   )
                   .then((resp) => {
                     setCountApprove(resp.data.data);
