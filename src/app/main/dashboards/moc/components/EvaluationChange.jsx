@@ -56,7 +56,7 @@ function CustomTabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ pt: 3 }}>
           <Typography>{children}</Typography>
         </Box>
       )}
@@ -1495,10 +1495,10 @@ function EvaluationChange({
       <ToastContainer className="toast-container " />
       <SwipeableViews>
         {!risk ? (
-          <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
+          <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
             <div>
-              <div className="flex items-center w-full border-b pb-5 justify-between">
-                <h2 className="text-2xl font-semibold">Evaluation</h2>
+              <div className="flex items-center w-full border-b justify-between p-30 py-24">
+                <h2 className="text-2xl font-semibold">Evaluation ffff</h2>
                 <div>
                   {AppActivity.canEdit && (
                     <Button
@@ -1552,7 +1552,7 @@ function EvaluationChange({
             </div>
             {AppActivity.canEdit && (
               <div className="ng-star-inserted mt-5">
-                <div className="ng-star-inserted">
+                <div className="ng-star-inserted ">
                   {Session?.activeSession?.status == 1 && (
                     <div
                       className="mt-4 py-2 px-5 rounded-lg bg-red-100 dark:bg-red-700"
@@ -1580,7 +1580,7 @@ function EvaluationChange({
               </div>
             )}
             {/* )} */}
-            <Box sx={{ width: "100%", mt: 2 }} className="hello">
+            <Box sx={{ width: "100%" }} className="hello p-30">
               <Box sx={{ display: "flex" }}>
                 <Button
                   onClick={() => handleChange(0)}

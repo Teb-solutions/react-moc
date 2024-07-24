@@ -17,7 +17,7 @@ function CourseCard(props) {
   console.log(course, ";;12");
 
   return (
-    <Card className="flex flex-col h-384 shadow">
+    <Card className="flex flex-col shadow">
       <CardContent className="flex flex-col flex-auto p-24">
         <CourseInfo course={course} />
       </CardContent>

@@ -951,7 +951,7 @@ function InitiationApproval(props) {
         </Fade>
       </Modal>
       <SwipeableViews style={{ overflow: "hidden" }}>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>
             <div className="flex items-center w-full border-b justify-between">
               <h2 className="text-2xl font-semibold">Summary Details</h2>
@@ -982,8 +982,13 @@ function InitiationApproval(props) {
 
             <div className="px-6 mb-6">
               <div>&nbsp;</div>
+            <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
+              <h2 className="text-2xl font-semibold">MOC Document Request</h2>
+            </div>
+            <div className="p-30">
+              
               <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
-                <div>
+                <div  className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
                     Request No
                   </div>
@@ -991,13 +996,13 @@ function InitiationApproval(props) {
                     {ApprovalDetails?.requestNo}
                   </div>
                 </div>
-                <div>
+                <div  className="my-3">
                   <div className="mt-3 leading-6 text-secondary">Initiator</div>
                   <div className="text-lg leading-6 font-medium">
                     {ApprovalDetails?.initiatorName}
                   </div>
                 </div>
-                <div>
+                <div  className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
                     Initiated On
                   </div>
@@ -1006,15 +1011,15 @@ function InitiationApproval(props) {
                   </div>
                 </div>
               </div>
-              <div>&nbsp;</div>
+              
               <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
-                <div>
+                <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">Type</div>
                   <div className="text-lg leading-6 font-medium">
                     {ApprovalDetails?.requestTypeName}
                   </div>
                 </div>
-                <div>
+                <div  className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
                     Expense Nature
                   </div>
@@ -1022,7 +1027,7 @@ function InitiationApproval(props) {
                     {ApprovalDetails?.expenseNature}
                   </div>
                 </div>
-                <div>
+                <div  className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
                     Expense Type
                   </div>
@@ -1031,9 +1036,9 @@ function InitiationApproval(props) {
                   </div>
                 </div>
               </div>
-              <div>&nbsp;</div>
+          
               <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
-                <div>
+                <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
                     Project Description
                   </div>

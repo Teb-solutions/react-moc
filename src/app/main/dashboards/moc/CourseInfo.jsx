@@ -61,23 +61,17 @@ function CourseInfo(props) {
         Initiated by <b>{course.initiatorName}</b> on{" "}
         <b> {formatDate(course?.requestDate)}</b>
       </Typography>
-      <Divider className="w-48 my-24 border-1" light />
 
-      <div className="flex justify-between">
+      <div className="flex justify-between align-items-center  mt-10 ">
         <div>
-          <Typography
-            className="text-13 mt-2 line-clamp-2"
-            color="text.secondary"
-          >
+          <Typography className="text-13line-clamp-2" color="text.secondary">
             {course.requestTypeName === "Document"
               ? "Document Name :"
               : "Project Name :"}
           </Typography>
           <span>{course?.projectName}</span>
-          <Divider className="w-48 my-24 border-1" light />
-
           <Typography
-            className="flex items-center space-x-6 text-13"
+            className="text-13 mt-10 line-clamp-2"
             color="text.secondary"
           >
             <span className="whitespace-nowrap leading-none">
@@ -86,6 +80,11 @@ function CourseInfo(props) {
                 : "Change Leader :"}
             </span>
           </Typography>
+          <span>
+            {course?.changeLeaderName === null
+              ? "Not assigned"
+              : course?.changeLeaderName}
+          </span>
         </div>
         {course.statusName != "Cancelled" ? (
           <div>
@@ -95,12 +94,6 @@ function CourseInfo(props) {
           <img src="/assets/images/etc/close_icon.jpg" />
         )}
       </div>
-
-      <span>
-        {course?.changeLeaderName === null
-          ? "Not assigned"
-          : course?.changeLeaderName}
-      </span>
     </div>
   );
 }

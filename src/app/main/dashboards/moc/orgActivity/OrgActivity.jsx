@@ -224,393 +224,393 @@ function OrgActivity() {
           <ToastContainer className="toast-container" />
 
           <form onSubmit={handleSubmit}>
-            <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-40">
-              <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
-                <div
-                  _ngcontent-fyk-c288=""
-                  class="flex items-center w-full  border-b justify-between"
-                >
-                  <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
-                    New Organisation MOC Request
-                  </h2>
+            <div className="p-24">
+              <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-24 white_box rounded-2xl shadow">
+                <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                  <div _ngcontent-fyk-c288="" class="flex items-center w-full justify-between">
+                    <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+                      New Organisation MOC Request
+                    </h2>
+                  </div>
                 </div>
-              </div>
-              <div
-                style={{ marginTop: "30px", justifyContent: "space-between" }}
-                className="flex flex-row "
-              >
-                <Box
-                  sx={{
-                    width: 480,
-                    maxWidth: "50%",
-                  }}
+                <div
+                  style={{ marginTop: "0", justifyContent: "space-between" }}
+                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full custom_margin"
                 >
-                  <TextField
-                    fullWidth
-                    label="Request No"
-                    id="Request No"
-                    value={docContent.requestNo || ""}
-                    disabled
-                  />
-                </Box>
-                <Box
-                  sx={{
-                    width: 480,
-                    maxWidth: "50%",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    label="Date"
-                    id="Date"
-                    value={formatDate(docContent?.requestDate)}
-                    disabled
-                  />
-                </Box>
-                <Box
-                  sx={{
-                    width: 480,
-                    maxWidth: "50%",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    label="Site in charge"
-                    id="Site in charge"
-                    value={docContent.siteInChargeName || ""}
-                    disabled
-                  />
-                </Box>
-              </div>
-              <div
-                style={{ marginTop: "30px", justifyContent: "space-between" }}
-                className="flex flex-row "
-              >
-                <Box
-                  sx={{
-                    width: 480,
-                    maxWidth: "50%",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    label="Site"
-                    id="Site
-"
-                    value={docContent.siteName || ""}
-                    disabled
-                  />
-                </Box>
-                <Box
-                  sx={{
-                    width: 480,
-                    maxWidth: "50%",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    label="Division"
-                    id="Division"
-                    value={docContent.divisionName || ""}
-                    disabled
-                  />
-                </Box>
-                <Box
-                  sx={{
-                    width: 480,
-                    maxWidth: "50%",
-                  }}
-                >
-                  <TextField
-                    fullWidth
-                    label="Function"
-                    id="Function"
-                    value={docContent.functionName || ""}
-                    disabled
-                  />
-                </Box>
-              </div>
-
-              <div
-                className="my-10"
-                style={{ borderTopWidth: "2px", marginTop: "45px" }}
-              ></div>
-              <div style={{ marginTop: "10px" }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    marginTop: "5px",
-                    marginLeft: "10px",
-                  }}
-                >
-                  <FormControl>
-                    <FormLabel
-                      id="documentType"
-                      style={{ color: formValid ? "inherit" : "red" }}
-                    >
-                      Employee Type *
-                    </FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby="staffType"
-                      name="staffType"
-                      value={documentState.staffType}
-                      onChange={handleRadioChange}
-                    >
-                      <FormControlLabel
-                        value="1"
-                        control={<Radio />}
-                        label="New"
-                      />
-                      <FormControlLabel
-                        value="2"
-                        control={<Radio />}
-                        label="Existing"
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                </Box>
-                <Box
-                  sx={{ display: "flex", flexWrap: "wrap", marginTop: "15px" }}
-                >
-                  <FormControl
-                    fullWidth
-                    sx={{ m: 1 }}
-                    error={!!errors.changeStaffId}
-                  >
-                    <FormLabel
-                      id="documentType"
-                      style={{ color: formValid ? "inherit" : "red" }}
-                    >
-                      Employee *
-                    </FormLabel>
-                    <Autocomplete
-                      id="docControllerId"
-                      options={docController}
-                      getOptionLabel={(option) => option.text}
-                      value={
-                        docController.find(
-                          (option) =>
-                            option.value === documentState.changeStaffId
-                        ) || null
-                      }
-                      onChange={(event, newValue) => {
-                        handleChange({
-                          target: {
-                            name: "changeStaffId",
-                            value: newValue ? newValue.value : "",
-                          },
-                        });
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          error={!!errors.changeStaffId}
-                          helperText={errors.changeStaffId}
-                        />
-                      )}
-                    />
-                  </FormControl>
-                </Box>
-                <Box
-                  sx={{ display: "flex", flexWrap: "wrap", marginTop: "15px" }}
-                >
-                  <FormControl
-                    fullWidth
-                    sx={{ m: 1 }}
-                    error={!!errors.changeStaffDesignationId}
-                  >
-                    <FormLabel
-                      id="documentType"
-                      style={{ color: formValid ? "inherit" : "red" }}
-                    >
-                      Employee Designation *
-                    </FormLabel>
-
-                    <Autocomplete
-                      id="changeStaffDesignationId"
-                      options={staffDesignation}
-                      getOptionLabel={(option) => option.text}
-                      value={
-                        staffDesignation.find(
-                          (option) =>
-                            option.value ===
-                            documentState.changeStaffDesignationId
-                        ) || null
-                      }
-                      onChange={(event, newValue) => {
-                        handleChange({
-                          target: {
-                            name: "changeStaffDesignationId",
-                            value: newValue ? newValue.value : "",
-                          },
-                        });
-                      }}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          error={!!errors.changeStaffDesignationId}
-                          helperText={errors.changeStaffDesignationId}
-                        />
-                      )}
-                    />
-                  </FormControl>
-                </Box>
-
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <FormControl
+                  <Box
                     sx={{
-                      m: 1,
                       width: 480,
-                      maxWidth: "50%",
+                      maxWidth: "100%",
+                      marginTop: "25px"
                     }}
                   >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        marginTop: "15px",
-                      }}
+                    <TextField
+                      fullWidth
+                      label="Request No"
+                      id="Request No"
+                      value={docContent.requestNo || ""}
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      width: 480,
+                      maxWidth: "100%",
+                      marginTop: "25px"
+                    }}
+                  >
+                    <TextField
+                      fullWidth
+                      label="Date"
+                      id="Date"
+                      value={formatDate(docContent?.requestDate)}
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      width: 480,
+                      maxWidth: "100%",
+                      marginTop: "25px"
+                    }}
+                  >
+                    <TextField
+                      fullWidth
+                      label="Site in charge"
+                      id="Site in charge"
+                      value={docContent.siteInChargeName || ""}
+                      disabled
+                    />
+                  </Box>
+                </div>
+                <div
+                  style={{ marginTop: "0", justifyContent: "space-between" }}
+                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full custom_margin"
+                >
+                  <Box
+                    sx={{
+                      width: 480,
+                      maxWidth: "100%",
+                      marginTop: "25px"
+                    }}
+                  >
+                    <TextField
+                      fullWidth
+                      label="Site"
+                      id="Site
+  "
+                      value={docContent.siteName || ""}
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      width: 480,
+                      maxWidth: "100%",
+                      marginTop: "25px"
+                    }}
+                  >
+                    <TextField
+                      fullWidth
+                      label="Division"
+                      id="Division"
+                      value={docContent.divisionName || ""}
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    sx={{
+                      width: 480,
+                      maxWidth: "100%",
+                      marginTop: "25px"
+                    }}
+                  >
+                    <TextField
+                      fullWidth
+                      label="Function"
+                      id="Function"
+                      value={docContent.functionName || ""}
+                      disabled
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="mt-25px"
+                  style={{ borderTopWidth: "2px" }}
+                ></div>
+                <div style={{ marginTop: "0" }} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full custom_margin">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      marginTop: "25px",
+                      marginLeft: "0",
+                    }}
+                  >
+                    <FormControl>
+                      <FormLabel
+                        id="documentType"
+                        style={{ color: formValid ? "inherit" : "red" }}
+                      >
+                        Employee Type *
+                      </FormLabel>
+                      <RadioGroup
+                        row
+                        aria-labelledby="staffType"
+                        name="staffType"
+                        value={documentState.staffType}
+                        onChange={handleRadioChange}
+                      >
+                        <FormControlLabel
+                          value="1"
+                          control={<Radio />}
+                          label="New"
+                        />
+                        <FormControlLabel
+                          value="2"
+                          control={<Radio />}
+                          label="Existing"
+                        />
+                      </RadioGroup>
+                    </FormControl>
+                  </Box>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full custom_margin">
+                  <Box
+                    sx={{ display: "flex", flexWrap: "wrap", marginTop: "25px" }}
+                  >
+                    <FormControl
+                      fullWidth
+                      sx={{ m: 1 }}
+                      error={!!errors.changeStaffId}
                     >
-                      <DatePicker
-                        label="Program Completion Date *"
-                        value={documentState.programCompletionDate}
-                        onChange={handleChanges}
+                      <FormLabel
+                        id="documentType"
+                        style={{ color: formValid ? "inherit" : "red" }}
+                      >
+                        Employee *
+                      </FormLabel>
+                      <Autocomplete
+                        id="docControllerId"
+                        options={docController}
+                        getOptionLabel={(option) => option.text}
+                        value={
+                          docController.find(
+                            (option) =>
+                              option.value === documentState.changeStaffId
+                          ) || null
+                        }
+                        onChange={(event, newValue) => {
+                          handleChange({
+                            target: {
+                              name: "changeStaffId",
+                              value: newValue ? newValue.value : "",
+                            },
+                          });
+                        }}
                         renderInput={(params) => (
-                          <TextField fullWidth {...params} />
+                          <TextField
+                            {...params}
+                            error={!!errors.changeStaffId}
+                            helperText={errors.changeStaffId}
+                          />
                         )}
                       />
-                    </Box>
-                  </FormControl>
-                </LocalizationProvider>
-              </div>
-              <div
-                className="my-10"
-                style={{ borderTopWidth: "2px", marginTop: "40px" }}
-              ></div>
-              <div className="flex justify-between">
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{ marginTop: "15px" }}
-                >
-                  <div></div>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    style={{ padding: "15px" }}
-                    onClick={handleOpen}
+                    </FormControl>
+                  </Box>
+                  <Box
+                    sx={{ display: "flex", flexWrap: "wrap", marginTop: "25px" }}
                   >
-                    Submit
-                  </Button>
+                    <FormControl
+                      fullWidth
+                      sx={{ m: 1 }}
+                      error={!!errors.changeStaffDesignationId}
+                    >
+                      <FormLabel
+                        id="documentType"
+                        style={{ color: formValid ? "inherit" : "red" }}
+                      >
+                        Employee Designation *
+                      </FormLabel>
 
-                  <Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    open={open}
-                    onClose={handleClose}
-                    closeAfterTransition
-                    slots={{ backdrop: Backdrop }}
-                    slotProps={{
-                      backdrop: {
-                        timeout: 500,
-                      },
-                    }}
-                  >
-                    <Fade in={open}>
-                      <Box sx={style}>
-                        <Box>
-                          <div className="flex">
-                            <Typography
-                              id="transition-modal-title"
-                              variant="h6"
-                              component="h2"
-                              style={{
-                                fontSize: "15px",
-                                marginRight: "5px",
-                                marginTop: "5px",
+                      <Autocomplete
+                        id="changeStaffDesignationId"
+                        options={staffDesignation}
+                        getOptionLabel={(option) => option.text}
+                        value={
+                          staffDesignation.find(
+                            (option) =>
+                              option.value ===
+                              documentState.changeStaffDesignationId
+                          ) || null
+                        }
+                        onChange={(event, newValue) => {
+                          handleChange({
+                            target: {
+                              name: "changeStaffDesignationId",
+                              value: newValue ? newValue.value : "",
+                            },
+                          });
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            error={!!errors.changeStaffDesignationId}
+                            helperText={errors.changeStaffDesignationId}
+                          />
+                        )}
+                      />
+                    </FormControl>
+                  </Box>
 
-                                color: "red",
-                              }}
-                            >
-                              <img src="/assets/images/etc/icon.png" />
-                            </Typography>
-                            <Typography
-                              id="transition-modal-title"
-                              variant="h6"
-                              component="h2"
-                              style={{
-                                fontSize: "2rem",
-                              }}
-                            >
-                              Submit request
+                  <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <FormControl
+                      sx={{
+                        m: 1,
+                        width: 480,
+                        maxWidth: "100%",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          marginTop: "36px",
+                        }}
+                      >
+                        <DatePicker
+                          label="Program Completion Date *"
+                          value={documentState.programCompletionDate}
+                          onChange={handleChanges}
+                          renderInput={(params) => (
+                            <TextField fullWidth {...params} />
+                          )}
+                        />
+                      </Box>
+                    </FormControl>
+                  </LocalizationProvider>
+                </div>
+                <div className="mt-25px" style={{ borderTopWidth: "2px"}}></div>
+                <div className="flex justify-between">
+                  <div className="flex items-center mt-25px " >
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="secondary"
+                      style={{ padding: "15px", marginRight:"10px" }}
+                      onClick={handleOpen}
+                    >
+                      Submit
+                    </Button>
+
+                    <Modal
+                      aria-labelledby="transition-modal-title"
+                      aria-describedby="transition-modal-description"
+                      open={open}
+                      onClose={handleClose}
+                      closeAfterTransition
+                      slots={{ backdrop: Backdrop }}
+                      slotProps={{
+                        backdrop: {
+                          timeout: 500,
+                        },
+                      }}
+                    >
+                      <Fade in={open}>
+                        <Box sx={style}>
+                          <Box>
+                            <div className="flex">
                               <Typography
                                 id="transition-modal-title"
                                 variant="h6"
                                 component="h2"
                                 style={{
                                   fontSize: "15px",
-                                  fontWeight: "800px !important",
-                                  color: "grey",
+                                  marginRight: "5px",
+                                  marginTop: "5px",
+
+                                  color: "red",
                                 }}
                               >
-                                Once submited you will not be able to revert !
-                                Are you sure you want to continue ?
+                                <img src="/assets/images/etc/icon.png" />
                               </Typography>
-                            </Typography>
+                              <Typography
+                                id="transition-modal-title"
+                                variant="h6"
+                                component="h2"
+                                style={{
+                                  fontSize: "2rem",
+                                }}
+                              >
+                                Submit request
+                                <Typography
+                                  id="transition-modal-title"
+                                  variant="h6"
+                                  component="h2"
+                                  style={{
+                                    fontSize: "15px",
+                                    fontWeight: "800px !important",
+                                    color: "grey",
+                                  }}
+                                >
+                                  Once submited you will not be able to revert !
+                                  Are you sure you want to continue ?
+                                </Typography>
+                              </Typography>
+                            </div>
+                          </Box>
+                          <div
+                            className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                            style={{
+                              marginTop: "15px",
+                              justifyContent: "end",
+                              backgroundColor: " rgba(248,250,252)",
+                              padding: "10px",
+                            }}
+                          >
+                            <Button
+                              className="whitespace-nowrap"
+                              variant="contained"
+                              color="primary"
+                              style={{
+                                padding: "23px",
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid grey",
+                              }}
+                              onClick={handleClose}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              className="whitespace-nowrap"
+                              variant="contained"
+                              color="secondary"
+                              style={{ padding: "23px", backgroundColor: "red" }}
+                              type="submit"
+                              onClick={handleSubmit}
+                            >
+                              Submit
+                            </Button>
                           </div>
                         </Box>
-                        <div
-                          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                          style={{
-                            marginTop: "15px",
-                            justifyContent: "end",
-                            backgroundColor: " rgba(248,250,252)",
-                            padding: "10px",
-                          }}
-                        >
-                          <Button
-                            className="whitespace-nowrap"
-                            variant="contained"
-                            color="primary"
-                            style={{
-                              padding: "23px",
-                              backgroundColor: "white",
-                              color: "black",
-                              border: "1px solid grey",
-                            }}
-                            onClick={handleClose}
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            className="whitespace-nowrap"
-                            variant="contained"
-                            color="secondary"
-                            style={{ padding: "23px", backgroundColor: "red" }}
-                            type="submit"
-                            onClick={handleSubmit}
-                          >
-                            Submit
-                          </Button>
-                        </div>
-                      </Box>
-                    </Fade>
-                  </Modal>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      padding: "15px",
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                  >
-                    Cancel
-                  </Button>
+                      </Fade>
+                    </Modal>
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        padding: "15px",
+                        backgroundColor: "white",
+                        color: "black",
+                        border: "1px solid grey",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

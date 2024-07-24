@@ -232,12 +232,14 @@ function InitiationApprovalProceed({
         </Fade>
       </Modal>
       <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
-          <div>
-            <div className="flex items-center w-full border-b justify-between">
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
+       
+            <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               <h2 className="text-2xl font-semibold">Team Assignment</h2>
             </div>
+            
             {currentActivityForm.canEdit && (
+              <div className="p-30">
               <>
                 <Box
                   sx={{
@@ -258,7 +260,7 @@ function InitiationApprovalProceed({
                   </FormControl>
                 </Box>
                 <Box
-                  sx={{ display: "flex", flexWrap: "wrap", marginTop: "15px" }}
+                  sx={{ display: "flex", flexWrap: "wrap", marginTop: "0" }}
                 >
                   <FormControl fullWidth sx={{ m: 1 }}>
                     <FormLabel
@@ -345,9 +347,12 @@ function InitiationApprovalProceed({
                   </FormControl>
                 </Box>
               </>
+              </div>
             )}
-          </div>
+            
+      
           {currentActivityForm.canEdit && (
+            <div className="p-30">
             <>
               <div
                 className="my-10"
@@ -391,24 +396,30 @@ function InitiationApprovalProceed({
                 </div>
               </div>
             </>
+            </div>
           )}
+          <div className="p-30">
           {!currentActivityForm.canEdit &&
             TeamAssignmentList.filter(
               (list) => list.roleName !== "Change Leader"
             ).map((list) => (
               <div
+<<<<<<< HEAD
                 key={list.id} // Assuming there's a unique id for each list item
                 className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+=======
+                className="inventory-grid grid items-center gap-4 py-6"
+>>>>>>> 3bf7c7426fb62ceebfe73931e0137345cac4695b
                 style={{ width: "40%" }}
               >
                 <div
                   className="flex items-center"
-                  style={{ marginTop: "15px" }}
+                  style={{ marginTop: "0" }}
                 >
                   <img
                     src="/assets/images/etc/userpic.png"
                     alt="Card cover image"
-                    className="rounded-full mr-4"
+                    className="rounded-full mr-24"
                     style={{ width: "4rem", height: "4rem" }}
                   />
                   <div className="flex flex-col">
@@ -422,6 +433,7 @@ function InitiationApprovalProceed({
                 </div>
               </div>
             ))}
+            </div>
         </Paper>
       </SwipeableViews>
     </div>

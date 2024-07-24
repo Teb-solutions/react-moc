@@ -182,7 +182,7 @@ const Access = () => {
   return (
     <>
       <div
-        style={{ backgroundColor: "white", borderBottom: "4px solid #ededed" }}
+        style={{ backgroundColor: "white", borderBottom: "1px solid #ededed" }}
       >
         <MocHeader />{" "}
         <div
@@ -193,10 +193,7 @@ const Access = () => {
           }}
         >
           <div className="flex d-flex flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
-            <InputLabel
-              id="category-select-label"
-              style={{ fontSize: "xx-large", color: "black" }}
-            >
+            <InputLabel id="category-select-label" style={{ fontSize: "xx-large", color: "black" }}>
               <b>Access</b>
             </InputLabel>
           </div>
@@ -208,7 +205,7 @@ const Access = () => {
             <div
               style={{
                 backgroundColor: "white",
-                borderBottom: "4px solid #ededed",
+                // borderBottom: "4px solid #ededed",
               }}
             >
               {" "}
@@ -216,14 +213,14 @@ const Access = () => {
                 style={{
                   marginLeft: "30px",
                   marginRight: "30px",
-                  marginBottom: "30px",
+                  marginBottom: "0",
                 }}
               >
                 <div className="flex d-flex pt-5 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
                   <InputLabel
-                    id="category-select-label"
+                    id="category-select-label" className="subtitle_custom"
                     style={{
-                      fontSize: "x-large",
+                      fontSize: "large",
                       color: "black",
                       paddingTop: "10px",
                     }}
@@ -247,16 +244,16 @@ const Access = () => {
                 </div>
               </div>
             </div>
-            <div style={{ margin: "20px" }}>
+            <div style={{ margin: "20px 30px" }}>
               {roleIdList
                 .filter((item) => item.parentId === 0)
                 .map((accordionItem) => (
-                  <Accordion
+                  <Accordion className="Access_list_box"
                     key={accordionItem.featureId}
                     style={{
                       marginTop: "15px",
                       borderRadius: "10px",
-                      padding: "15px",
+                      padding: "10px 15px",
                     }}
                     expanded={expandedAccordions.includes(
                       accordionItem.featureId
@@ -317,13 +314,13 @@ const Access = () => {
           <div style={{ backgroundColor: "white" }}>
             <div
               className="py-10"
-              style={{ marginTop: "60px", marginLeft: "30px" }}
+              style={{ marginTop: "18px", marginLeft: "30px" }}
             >
-              <div className="mx-6 text-3xl font-bold tracking-tighter">
+              <div className="text-3xl font-bold tracking-tighter">
                 Role
               </div>
               <div style={{ marginTop: "25px" }}>
-                <ul className="mx-6 mt-3 side-nav-s fuse-vertical-navigation-item-title-wrapper">
+                <ul className="mt-3 side-nav-s fuse-vertical-navigation-item-title-wrapper pr-30">
                   {roleList.map((role) => (
                     <li
                       key={role.name}
@@ -333,7 +330,7 @@ const Access = () => {
                         padding: "14px",
                         backgroundColor:
                           activeRole === role.name
-                            ? "lightgray"
+                            ? "#f5f5f5"
                             : "transparent",
                       }}
                     >

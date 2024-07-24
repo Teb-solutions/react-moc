@@ -45,22 +45,23 @@ export default function StickyHeadTable() {
 
   const columns = [
     { id: "index", label: "No", minWidth: 50 },
+    // { id: "index", label: "No", minWidth: 50 },
     {
       id: "name",
       label: "Name",
-      minWidth: 170,
+      // minWidth: 170,
       align: "left",
       format: (value) => value.toLocaleString("en-US"),
     },
 
     {
       id: "action",
-      label: "Status",
-      minWidth: 170,
+      label: "Action",
+      // minWidth: 170,
       align: "left",
       format: (value) => value.toFixed(2),
       render: (row) => (
-        <div>
+        <div className="action_button">
           {feature.includes("RLCU") && (
             <Button
               onClick={() => handleEdit(row)}
@@ -128,7 +129,7 @@ export default function StickyHeadTable() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "450px",
+    width: "400px",
     maxWidth: "80vw",
     height: "auto",
     borderRadius: "16px",
@@ -291,11 +292,13 @@ export default function StickyHeadTable() {
               }}
             >
               <div className="flex justify-between text-white">
-                <span>{!edit ? "Add" : "Edit"}</span>
-                <span onClick={handleClose}>X</span>
+                <span className="text-popup font-medium">{!edit ? "Add" : "Edit"}</span>
+                <span onClick={handleClose}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" fit="" height="24" width="24" preserveAspectRatio="xMidYMid meet" focusable="false">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg></span>
               </div>
             </Box>
-            <div style={{ textAlign: "center", marginTop: "30px" }}>
+            <div style={{ textAlign: "center", padding: "30px", marginTop: "0", paddingBottom: "0" }}>
               <Box
                 component="form"
                 sx={{
@@ -322,12 +325,12 @@ export default function StickyHeadTable() {
             <div
               className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
               style={{
-                marginTop: "25px",
-                marginBottom: "20px",
-
+                marginTop: "0",
+                marginBottom: "0",
                 justifyContent: "end",
-                backgroundColor: " rgba(248,250,252)",
-                padding: "10px",
+                // backgroundColor: " rgba(248,250,252)",
+                padding: "30px",
+                paddingBottom: "30px"
               }}
             >
               <Button

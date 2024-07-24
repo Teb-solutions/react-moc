@@ -149,100 +149,102 @@ function MocApp() {
     <Root
       header={<MocHeader />}
       content={
-        <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-40">
-          <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
-            <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
-              <FormControl className="flex w-full sm:w-136" variant="outlined">
-                <InputLabel id="category-select-label">Site</InputLabel>
-                <Select
-                  labelId="category-select-label"
-                  id="category-select"
-                  label="Category"
-                  value={selectedCategory}
-                  onChange={(event) => handleSelectedCategory(event)}
-                >
-                  <MenuItem value="all">
-                    <em>All</em>
-                  </MenuItem>
-                  {site?.map((category) => (
-                    <MenuItem value={category.value} key={category.value}>
-                      {category.text}
+       
+          <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-30">
+            <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+              <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
+                <FormControl className="flex w-full sm:w-136" variant="outlined">
+                  <InputLabel id="category-select-label">Site</InputLabel>
+                  <Select
+                    labelId="category-select-label"
+                    id="category-select"
+                    label="Category"
+                    value={selectedCategory}
+                    onChange={(event) => handleSelectedCategory(event)}
+                  >
+                    <MenuItem value="all">
+                      <em>All</em>
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl className="flex w-full sm:w-136" variant="outlined">
-                <InputLabel id="category-select-label">Type</InputLabel>
-                <Select
-                  labelId="category-select-label"
-                  id="category-select"
-                  label="Category"
-                  value={selectedCategoryType}
-                  onChange={handleSelectedCategoryType}
-                >
-                  <MenuItem value="all">
-                    <em>All</em>
-                  </MenuItem>
-                  {categories?.map((category) => (
-                    <MenuItem value={category.value} key={category.id}>
-                      {category.name}
+                    {site?.map((category) => (
+                      <MenuItem value={category.value} key={category.value}>
+                        {category.text}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl className="flex w-full sm:w-136" variant="outlined">
+                  <InputLabel id="category-select-label">Type</InputLabel>
+                  <Select
+                    labelId="category-select-label"
+                    id="category-select"
+                    label="Category"
+                    value={selectedCategoryType}
+                    onChange={handleSelectedCategoryType}
+                  >
+                    <MenuItem value="all">
+                      <em>All</em>
                     </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <TextField
-                label="Request No"
-                placeholder="Request No"
-                className="flex w-full sm:w-256 mx-8"
-                value={searchText}
-                inputProps={{
-                  "aria-label": "Search",
-                }}
-                onChange={handleSearchText}
-                variant="outlined"
-                InputLabelProps={{
-                  shrink: true,
-                }}
+                    {categories?.map((category) => (
+                      <MenuItem value={category.value} key={category.id}>
+                        {category.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <TextField
+                  label="Request No"
+                  placeholder="Request No"
+                  className="flex w-full sm:w-256 mx-8"
+                  value={searchText}
+                  inputProps={{
+                    "aria-label": "Search",
+                  }}
+                  onChange={handleSearchText}
+                  variant="outlined"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+              </div>
+
+              <FormControlLabel
+                label="Hide completed"
+                control={
+                  <Switch
+                    onChange={(ev) => {
+                      setHideCompleted(ev.target.checked);
+                    }}
+                    checked={hideCompleted}
+                    name="hideCompleted"
+                  />
+                }
               />
             </div>
-
-            <FormControlLabel
-              label="Hide completed"
-              control={
-                <Switch
-                  onChange={(ev) => {
-                    setHideCompleted(ev.target.checked);
-                  }}
-                  checked={hideCompleted}
-                  name="hideCompleted"
-                />
-              }
-            />
+            {filteredData &&
+              (filteredData.length > 0 ? (
+                <motion.div
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-32 mt-32 sm:mt-20"
+                  variants={container}
+                  initial="hidden"
+                  animate="show"
+                >
+                  {filteredData.map((course) => {
+                    return (
+                      <motion.div variants={item} key={course.id}>
+                        <CourseCard course={course} />
+                      </motion.div>
+                    );
+                  })}
+                </motion.div>
+              ) : (
+                <div className="flex flex-1 items-center justify-center">
+                  <Typography color="text.secondary" className="text-24 my-24">
+                    No courses found!
+                  </Typography>
+                </div>
+              ))}
           </div>
-          {filteredData &&
-            (filteredData.length > 0 ? (
-              <motion.div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-32 mt-32 sm:mt-40"
-                variants={container}
-                initial="hidden"
-                animate="show"
-              >
-                {filteredData.map((course) => {
-                  return (
-                    <motion.div variants={item} key={course.id}>
-                      <CourseCard course={course} />
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            ) : (
-              <div className="flex flex-1 items-center justify-center">
-                <Typography color="text.secondary" className="text-24 my-24">
-                  No courses found!
-                </Typography>
-              </div>
-            ))}
-        </div>
+        
       }
     />
   );

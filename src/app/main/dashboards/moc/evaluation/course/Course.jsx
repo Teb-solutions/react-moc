@@ -487,7 +487,6 @@ function Course() {
     height: "57%",
     borderRadius: "16px",
     bgcolor: "background.paper",
-
     boxShadow: 24,
     p: 4,
     padding: "0px",
@@ -503,7 +502,6 @@ function Course() {
     height: "74%",
     borderRadius: "16px",
     bgcolor: "background.paper",
-
     boxShadow: 24,
     p: 4,
   };
@@ -1046,245 +1044,230 @@ function Course() {
           <ToastContainer className="toast-container" />
           <SwipeableViews>
             <>
-              <div className=" p-16 pb-64 sm:p-24 ">
-                <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
-                  <div>
-                    <div
-                      _ngcontent-fyk-c288=""
-                      class="flex items-center w-full  border-b justify-between"
-                    >
-                      <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
-                        MOC Document Request
-                      </h2>
-                    </div>
-                    <div
-                      _ngcontent-fyk-c288=""
-                      class="px-6 mb-6 ng-star-inserted"
-                    >
-                      <div>&nbsp;</div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Request No{" "}
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.requestNo}
-                          </div>
-                        </div>
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Date
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {formatDate(contentDetailsIni?.requestDate)}
-                          </div>
-                        </div>
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Site In Charge
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.siteInChargeName}
-                          </div>
-                        </div>
+            <div className="justify-center p-16 pb-64 sm:p-24 ">
+                {currentPhase === "Initiation" && (
+                  <Paper className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
+                    <div>
+                      <div _ngcontent-fyk-c288="" class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
+                        <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+                          MOC Document Request
+                        </h2>
                       </div>
-                      <div>&nbsp;</div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Site
+                      <div _ngcontent-fyk-c288="" class="p-30 pt-24 pb-24 ng-star-inserted">                        
+                        <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary">
+                              Request No{" "}
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.requestNo}
+                            </div>
                           </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.siteName}
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Date
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {formatDate(contentDetails?.requestDate)}
+                            </div>
                           </div>
-                        </div>
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Division
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.divisionName}
-                          </div>
-                        </div>
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Function
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.functionName}
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Site In Charge
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.siteInChargeName}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div>&nbsp;</div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Type{" "}
+                        
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                        >
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Site
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.siteName}
+                            </div>
                           </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.typeString}
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Division
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.divisionName}
+                            </div>
                           </div>
-                        </div>
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Document Name
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.projectName}
-                          </div>
-                        </div>
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Document Description
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.projectDescription}
-                          </div>
-                        </div>
-                      </div>
-                      <div>&nbsp;</div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Document Type
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni.isNewDocument == true
-                              ? "New"
-                              : "Existing"}
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Function
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.functionName}
+                            </div>
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Reason for New Document
+                        
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                        >
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Type{" "}
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.typeString}
+                            </div>
                           </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.reasonForNewDocument}
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Document Name
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.projectName}
+                            </div>
+                          </div>
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Document Description
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.projectDescription}
+                            </div>
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Doc Controller
+                        
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                        >
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Document Type
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails.isNewDocument == true
+                                ? "New"
+                                : "Existing"}
+                            </div>
                           </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.docControllerName}
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Reason for New Document
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.reasonForNewDocument}
+                            </div>
+                          </div>
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Doc Controller
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetails?.docControllerName}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div>&nbsp;</div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Document Url
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            <a
+                        
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                        >
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Document Url
+                            </div>
+                            <div
                               _ngcontent-fyk-c288=""
                               target="_blank"
                               class="text-blue-500 hover:text-blue-800"
@@ -1296,33 +1279,32 @@ function Course() {
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div>&nbsp;</div>
+                      
 
-                    <div className="flex items-center justify-between w-full mt-8 px-6 py-3 border-t">
-                      <div>
-                        <button className="ml-1 sm:inline-flex cursor-pointer mat-button mat-stroked-button mat-button-base">
-                          <span className="mat-button-wrapper">
-                            <h1 className="mat-icon notranslate icon-size-4 mat-icon-no-color mr-3 justify-center" />
-                            {/* <Button
-                              className="whitespace-nowrap mt-5"
-                              style={{
-                                border: "1px solid",
-                                backgroundColor: "#0000",
-                                color: "black",
-                                borderColor: "rgba(203,213,225)",
-                              }}
-                              variant="contained"
-                              color="warning"
-                              startIcon={
-                                <FuseSvgIcon size={20}>
-                                  heroicons-solid:upload
-                                </FuseSvgIcon>
-                              }
-                              onClick={handleOpen}
-                            >
-                              Document
-                            </Button> */}
+                      <div className="flex items-center justify-between w-full p-30 pt-24 pb-24 border-t">
+                       
+                          <button className="ml-1 sm:inline-flex cursor-pointer mat-button mat-stroked-button mat-button-base">
+                            <span className="mat-button-wrapper">
+                              {/* <h1 className="mat-icon notranslate icon-size-4 mat-icon-no-color mr-3 justify-center" /> */}
+                              <Button
+                                className="whitespace-nowrap"
+                                style={{
+                                  border: "1px solid",
+                                  backgroundColor: "#0000",
+                                  color: "black",
+                                  borderColor: "rgba(203,213,225)",
+                                }}
+                                variant="contained"
+                                color="warning"
+                                startIcon={
+                                  <FuseSvgIcon size={20}>
+                                    heroicons-solid:upload
+                                  </FuseSvgIcon>
+                                }
+                                onClick={handleOpen}
+                              >
+                                Document
+                              </Button>
 
                             {/* <Modal
                                 aria-labelledby="transition-modal-title"
@@ -1383,8 +1365,9 @@ function Course() {
                                   </Box>
                                 </Fade>
                               </Modal> */}
-                          </span>
-                        </button>
+                            </span>
+                          </button>
+                  
                       </div>
                     </div>
                   </div>
@@ -1392,221 +1375,210 @@ function Course() {
 
                 {currentPhase === "Evaluation" && (
                   <>
-                    <Paper
-                      className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
-                      style={{ marginRight: "15px", width: "100%" }}
-                    >
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
-                      >
-                        <h2
-                          _ngcontent-fyk-c288=""
-                          class="text-2xl font-semibold"
-                        >
-                          Evaluation
-                        </h2>
+                    <Paper className="w-full mx-auto rounded-16 shadow overflow-hidden" style={{ marginRight: "0", width: "100%" }}>
+                      <div _ngcontent-fyk-c288="" class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
+                        <h2 _ngcontent-fyk-c288=""class="text-2xl font-semibold">Evaluation</h2>
                       </div>
-                      <div>&nbsp;</div>
-                      {!addStake ? (
-                        <div className="mt-2 mb-4 p-6 py-2">
-                          <b>Stakeholders</b>
-                        </div>
-                      ) : (
-                        <div className="font-semibold">
-                          <a
-                            rel="noopener noreferrer"
-                            onClick={() => setAddStake(false)}
-                          >
-                            Back to Stakeholders List
-                          </a>
-                        </div>
-                      )}
-                      {canEdits &&
-                        !addStake &&
-                        ChangeEvaluationDetail.map((list) => (
-                          <Accordion style={{ margin: "0px" }}>
-                            <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel1-content"
-                              id="panel1-header"
-                              style={{ minHeight: "60px" }}
+                      <div className="p-30 pt-24 pb-0">
+                        {!addStake ? (
+                          <div className="mb-10">
+                            <b>Stakeholders</b>
+                          </div>
+                        ) : (
+                          <div className="font-semibold">
+                            <a
+                              rel="noopener noreferrer"
+                              onClick={() => setAddStake(false)}
                             >
-                              <div
-                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                style={{ width: "40%" }}
+                              Back to Stakeholders List
+                            </a>
+                          </div>
+                        )}
+                        {canEdits &&
+                          !addStake &&
+                          ChangeEvaluationDetail.map((list) => (
+                            <Accordion style={{ margin: "0px" }}>
+                              <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1-content"
+                                id="panel1-header"
+                                style={{ minHeight: "60px" }}
                               >
-                                <div className="flex items-center">
-                                  <img
-                                    src="/assets/images/etc/userpic.png"
-                                    alt="Card cover image"
-                                    className="rounded-full mr-4"
-                                    style={{ width: "4rem", height: "4rem" }}
-                                  />
-                                  <div className="flex flex-col">
-                                    <span className="font-semibold leading-none">
-                                      {list?.staff}
-                                    </span>
-                                    <span className="text-sm text-secondary leading-none pt-5">
-                                      Consulted on{" "}
-                                      {formatDate(list?.consultedDate)}
-                                    </span>
+                                <div
+                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                  style={{ width: "40%" }}
+                                >
+                                  <div className="flex items-center">
+                                    <img
+                                      src="/assets/images/etc/userpic.png"
+                                      alt="Card cover image"
+                                      className="rounded-full mr-4"
+                                      style={{ width: "4rem", height: "4rem" }}
+                                    />
+                                    <div className="flex flex-col">
+                                      <span className="font-semibold leading-none">
+                                        {list?.staff}
+                                      </span>
+                                      <span className="text-sm text-secondary leading-none pt-5">
+                                        Consulted on{" "}
+                                        {formatDate(list?.consultedDate)}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
 
-                              <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
-                                <div className="flex items-center">
-                                  <div
-                                    className="py-0.5 px-3 rounded-full text-sm"
-                                    style={{
-                                      backgroundColor:
-                                        list.comments == "" ||
-                                        list.comments == null
-                                          ? "rgba(252,165,165)"
-                                          : "rgba(134,239,172)",
-                                      padding: "5px",
-                                    }}
-                                  >
-                                    {list.comments === ""
-                                      ? "No Comments Added"
-                                      : list.comments}
+                                <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                  <div className="flex items-center">
+                                    <div
+                                      className="py-0.5 px-3 rounded-full text-sm"
+                                      style={{
+                                        backgroundColor:
+                                          list.comments == "" ||
+                                          list.comments == null
+                                            ? "rgba(252,165,165)"
+                                            : "rgba(134,239,172)",
+                                        padding: "5px",
+                                      }}
+                                    >
+                                      {list.comments === ""
+                                        ? "No Comments Added"
+                                        : list.comments}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                              <Stepper orientation="vertical">
-                                <Step>
-                                  <div className="mat-expansion-panel-body ng-tns-c137-15">
-                                    <div className="mt-2 ng-tns-c137-15">
-                                      <div className="prose prose-sm max-w-5xl">
-                                        <div className="ng-star-inserted">
-                                          <span
-                                            className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
-                                            style={{
-                                              padding: "10px",
-                                            }}
-                                          >
-                                            {list.comments === ""
-                                              ? "No Comments Added"
-                                              : list.comments}
-                                          </span>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                <Stepper orientation="vertical">
+                                  <Step>
+                                    <div className="mat-expansion-panel-body ng-tns-c137-15">
+                                      <div className="mt-2 ng-tns-c137-15">
+                                        <div className="prose prose-sm max-w-5xl">
+                                          <div className="ng-star-inserted">
+                                            <span
+                                              className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                              style={{
+                                                padding: "10px",
+                                              }}
+                                            >
+                                              {list.comments === ""
+                                                ? "No Comments Added"
+                                                : list.comments}
+                                            </span>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </Step>
-                              </Stepper>
-                            </AccordionDetails>
-                          </Accordion>
-                        ))}
-                      {!canEdits &&
-                        ChangeEvaluationDetail.map((list) => (
-                          <Accordion style={{ margin: "0px" }}>
-                            <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel1-content"
-                              id="panel1-header"
-                              style={{ minHeight: "60px" }}
-                            >
-                              <div
-                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                style={{ width: "40%" }}
+                                  </Step>
+                                </Stepper>
+                              </AccordionDetails>
+                            </Accordion>
+                          ))}
+                        {!canEdits &&
+                          ChangeEvaluationDetail.map((list) => (
+                            <Accordion style={{ margin: "0px" }}>
+                              <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1-content"
+                                id="panel1-header"
+                                style={{ minHeight: "60px" }}
                               >
-                                <div className="flex items-center">
-                                  <img
-                                    src="/assets/images/etc/userpic.png"
-                                    alt="Card cover image"
-                                    className="rounded-full mr-4"
-                                    style={{ width: "4rem", height: "4rem" }}
-                                  />
-                                  <div className="flex flex-col">
-                                    <span className="font-semibold leading-none">
-                                      {list?.staff}
-                                    </span>
-                                    <span className="text-sm text-secondary leading-none pt-5">
-                                      Consulted on{" "}
-                                      {formatDate(list?.consultedDate)}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
-                                <div className="flex items-center">
-                                  <div
-                                    className="py-0.5 px-3 rounded-full text-sm"
-                                    style={{
-                                      backgroundColor:
-                                        list.comments == "" ||
-                                        list.comments == null
-                                          ? "rgba(252,165,165)"
-                                          : "rgba(134,239,172)",
-                                      padding: "5px",
-                                    }}
-                                  >
-                                    {list.comments === ""
-                                      ? "No Comments Added"
-                                      : "Comments Added"}
-                                  </div>
-                                </div>
-                              </div>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                              <Stepper orientation="vertical">
-                                <Step>
-                                  <div className="mat-expansion-panel-body ng-tns-c137-15">
-                                    <div className="mt-2 ng-tns-c137-15">
-                                      <div className="prose prose-sm max-w-5xl">
-                                        {list.comments ? (
-                                          <div className="ng-star-inserted">
-                                            <span
-                                              className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
-                                              style={{
-                                                backgroundColor:
-                                                  "rgba(241,245,249)",
-                                                padding: "10px",
-                                              }}
-                                            >
-                                              Comments
-                                            </span>
-                                            <span>complete</span>
-                                          </div>
-                                        ) : (
-                                          <div className="ng-star-inserted">
-                                            <span
-                                              className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
-                                              style={{
-                                                backgroundColor:
-                                                  "rgba(241,245,249)",
-                                                padding: "10px",
-                                              }}
-                                            >
-                                              No Comments Added
-                                            </span>
-                                          </div>
-                                        )}
-                                      </div>
+                                <div
+                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                  style={{ width: "40%" }}
+                                >
+                                  <div className="flex items-center">
+                                    <img
+                                      src="/assets/images/etc/userpic.png"
+                                      alt="Card cover image"
+                                      className="rounded-full mr-4"
+                                      style={{ width: "4rem", height: "4rem" }}
+                                    />
+                                    <div className="flex flex-col">
+                                      <span className="font-semibold leading-none">
+                                        {list?.staff}
+                                      </span>
+                                      <span className="text-sm text-secondary leading-none pt-5">
+                                        Consulted on{" "}
+                                        {formatDate(list?.consultedDate)}
+                                      </span>
                                     </div>
                                   </div>
-                                </Step>
-                              </Stepper>
-                            </AccordionDetails>
-                          </Accordion>
-                        ))}
-                      {!ChangeEvaluationDetail.length && (
-                        <div className="mt-5 mb-4 p-6 py-2">
-                          <h5>
-                            {errorss ? (
-                              <b className="text-red">{errorss}</b>
-                            ) : (
-                              "No stakeholders added"
-                            )}
-                          </h5>
-                        </div>
-                      )}
-                      <div>&nbsp;</div>
+                                </div>
+
+                                <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                  <div className="flex items-center">
+                                    <div
+                                      className="py-0.5 px-3 rounded-full text-sm"
+                                      style={{
+                                        backgroundColor:
+                                          list.comments == "" ||
+                                          list.comments == null
+                                            ? "rgba(252,165,165)"
+                                            : "rgba(134,239,172)",
+                                        padding: "5px",
+                                      }}
+                                    >
+                                      {list.comments === ""
+                                        ? "No Comments Added"
+                                        : "Comments Added"}
+                                    </div>
+                                  </div>
+                                </div>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                <Stepper orientation="vertical">
+                                  <Step>
+                                    <div className="mat-expansion-panel-body ng-tns-c137-15">
+                                      <div className="mt-2 ng-tns-c137-15">
+                                        <div className="prose prose-sm max-w-5xl">
+                                          {list.comments ? (
+                                            <div className="ng-star-inserted">
+                                              <span
+                                                className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                                style={{
+                                                  backgroundColor:
+                                                    "rgba(241,245,249)",
+                                                  padding: "10px",
+                                                }}
+                                              >
+                                                Comments
+                                              </span>
+                                              <span>complete</span>
+                                            </div>
+                                          ) : (
+                                            <div className="ng-star-inserted">
+                                              <span
+                                                className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                                style={{
+                                                  backgroundColor:
+                                                    "rgba(241,245,249)",
+                                                  padding: "10px",
+                                                }}
+                                              >
+                                                No Comments Added
+                                              </span>
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </Step>
+                                </Stepper>
+                              </AccordionDetails>
+                            </Accordion>
+                          ))}
+                        {!ChangeEvaluationDetail.length && (
+                          <div className="mt-5 mb-4 p-6 py-2">
+                            <h5>
+                              {errorss ? (
+                                <b className="text-red">{errorss}</b>
+                              ) : (
+                                "No stakeholders added"
+                              )}
+                            </h5>
+                          </div>
+                        )}
+                      </div>
                       {addStake &&
                         forms.map((form, index) => (
                           <div
@@ -1701,13 +1673,13 @@ function Course() {
 
                       {addStake && (
                         <>
-                          <div>&nbsp;</div>
-                          <div>&nbsp;</div>
+                          
+                          
                           <div
                             _ngcontent-fyk-c288=""
                             class="flex items-center w-full  border-b justify-between"
                           ></div>
-                          <div>&nbsp;</div>
+                          
 
                           <div className="flex justify-between">
                             <div>
@@ -1763,7 +1735,7 @@ function Course() {
                               </Button>
                             </div>
                           </div>
-                          <div>&nbsp;</div>
+                          
                           <div
                             _ngcontent-fyk-c288=""
                             class="flex items-center w-full  border-b justify-between"
@@ -1794,7 +1766,7 @@ function Course() {
                               Add Stakeholders
                             </Button>
                           )}
-                          <div>&nbsp;</div>
+                          
 
                           <Box
                             sx={{
@@ -1832,9 +1804,9 @@ function Course() {
                           >
                             Update
                           </Button>
-                          <div>&nbsp;</div>
-                          <div>&nbsp;</div>
-                          <div>&nbsp;</div>
+                          
+                          
+                          
                           <div
                             _ngcontent-fyk-c288=""
                             class="flex items-center w-full  border-b justify-between"
@@ -1858,9 +1830,7 @@ function Course() {
                       )}
                       {!canEdits && (
                         <div
-                          className=" mb-4 p-6 py-2"
-                          style={{ marginTop: "2.5rem" }}
-                        >
+                          className="p-30 pt-10 pb-24">
                           <div className="flex row">
                             <div className="ng-star-inserted">
                               <div>Consolidated Document Url</div>
@@ -1935,81 +1905,44 @@ function Course() {
                   </>
                 )}
                 {currentPhase === "Approval" && (
-                  <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
-                    <div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
-                      >
-                        <h2
-                          _ngcontent-fyk-c288=""
-                          class="text-2xl font-semibold"
-                        >
+                  <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">               
+                      <div _ngcontent-fyk-c288="" class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
+                        <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                           Summary Details
                         </h2>
                       </div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="px-6 mb-6 ng-star-inserted"
-                      >
-                        <div>&nbsp;</div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
+                      <div _ngcontent-fyk-c288="" class="p-30 pt-24 pb-24 mb-6 ng-star-inserted">                        
+                        <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div _ngcontent-fyk-c288="" class="mt-3 leading-6 text-secondary">
                               Request No{" "}
                             </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
+                            <div _ngcontent-fyk-c288="" class="text-lg leading-6 font-medium">
                               {" "}
                               {contentDetails?.requestNo}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div _ngcontent-fyk-c288="" class="mt-3 leading-6 text-secondary">
                               Initiator
                             </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
+                            <div _ngcontent-fyk-c288="" class="text-lg leading-6 font-medium">
                               {" "}
                               {contentDetails?.initiatorName}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div _ngcontent-fyk-c288="" class="mt-3 leading-6 text-secondary">
                               Initiated On
                             </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
+                            <div _ngcontent-fyk-c288="" class="text-lg leading-6 font-medium">
                               {" "}
                               {contentDetails?.requestDate}
                             </div>
                           </div>
                         </div>
-                        <div>&nbsp;</div>
-
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -2024,7 +1957,7 @@ function Course() {
                               {contentDetails?.requestTypeName}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -2039,7 +1972,7 @@ function Course() {
                               {contentDetails?.projectName}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -2054,13 +1987,9 @@ function Course() {
                               {contentDetails?.projectDescription}
                             </div>
                           </div>
-                        </div>
-                        <div>&nbsp;</div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="">
+                        </div>                        
+                        <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -2075,7 +2004,7 @@ function Course() {
                               {contentDetails?.documentType}New
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -2090,7 +2019,7 @@ function Course() {
                               {contentDetails?.reasonForNewDocument}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -2105,13 +2034,9 @@ function Course() {
                               {contentDetails?.docControllerName}
                             </div>
                           </div>
-                        </div>
-                        <div>&nbsp;</div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="">
+                        </div>                        
+                        <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -2127,81 +2052,59 @@ function Course() {
                               New
                             </div>
                           </div>
-                        </div>
-                        <div>&nbsp;</div>
-
-                        <div _ngcontent-fyk-c288="">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Document Url
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            <a
-                              _ngcontent-fyk-c288=""
-                              target="_blank"
-                              class="text-blue-500 hover:text-blue-800"
-                              style={{ background: "none", color: "blue" }}
-                              href={contentDetails?.consolidatedDocumentUrl}
-                            >
-                              {contentDetails?.consolidatedDocumentUrl}
-                            </a>
-                          </div>
-
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Consolidated Document Url
+                        </div>                       
+                        <div _ngcontent-fyk-c288="" class="grid w-full">
+                          <div className="my-6">
+                            <div _ngcontent-fyk-c288="" class="mt-3 leading-6 text-secondary">
+                              Document Url
                             </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
+                            <div _ngcontent-fyk-c288="" class="text-lg leading-6 font-medium">
                               {" "}
                               <a
                                 _ngcontent-fyk-c288=""
                                 target="_blank"
                                 class="text-blue-500 hover:text-blue-800"
                                 style={{ background: "none", color: "blue" }}
-                                href={contentDetails?.documentUrl}
-                              >
+                                href={contentDetails?.consolidatedDocumentUrl}>
+                                {contentDetails?.consolidatedDocumentUrl}
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                        <div _ngcontent-fyk-c288="" class="grid  w-full">
+
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div _ngcontent-fyk-c288="" class="mt-3 leading-6 text-secondary">
+                              Consolidated Document Url
+                            </div>
+                            <div _ngcontent-fyk-c288="" class="text-lg leading-6 font-medium">
+                              {" "}
+                              <a _ngcontent-fyk-c288=""
+                                target="_blank"
+                                class="text-blue-500 hover:text-blue-800"
+                                style={{ background: "none", color: "blue" }}
+                                href={contentDetails?.documentUrl}>
                                 {contentDetails?.documentUrl}
                               </a>
                             </div>
                           </div>
                         </div>
-                      </div>
-                      <div>&nbsp;</div>
-                    </div>
+                      </div>                   
                   </Paper>
                 )}
 
                 {currentPhase === "Implementation" && (
                   <>
                     <Paper
-                      className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
-                      style={{ marginRight: "15px", width: "100%" }}
+                      className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden"
+                      style={{ marginRight: "0", width: "100%" }}
                     >
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
-                      >
-                        <h2
-                          _ngcontent-fyk-c288=""
-                          class="text-2xl font-semibold"
-                        >
+                      <div _ngcontent-fyk-c288="" class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
+                        <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                           Implementation
                         </h2>
-
                         <Button
-                          className="whitespace-nowrap mt-5 mb-5"
+                          className="whitespace-nowrap"
                           style={{
                             border: "1px solid",
                             backgroundColor: "#0000",
@@ -2235,24 +2138,26 @@ function Course() {
                         >
                           <Fade in={open}>
                             <Box sx={style1}>
-                              <Box>
+                             
                                 <Box
-                                  className="flex justify-between"
-                                  style={{ margin: "30px" }}
+                                  className=""
                                 >
                                   <Typography
                                     id="transition-modal-title"
                                     variant="h6"
                                     component="h2"
-                                    style={{
-                                      fontSize: "4rem",
-                                      fontWeight: "800px !important",
+                                    className="p-30 pt-24 pb-24"
+                                    style={{                                    
+                                      backgroundColor: "rgb(79, 70, 229)",
+                                      borderTopLeftRadius: "16px",
+                                      borderTopRightRadius: "16px",
+                                      color: "white",
                                     }}
                                   >
                                     File Manager
                                   </Typography>
                                 </Box>
-                              </Box>
+                           
                               <Box>
                                 <Typography
                                   id="transition-modal-title"
@@ -2295,7 +2200,7 @@ function Course() {
                                       x
                                     </Button>
                                   </div>
-                                  <div>&nbsp;</div>
+                                  
                                   <div className="text-center">
                                     <label htmlFor="fileInput">
                                       <div className=" ">
@@ -2420,7 +2325,7 @@ function Course() {
                         </Modal>
                       </div>
 
-                      <Box sx={{ width: "100%" }}>
+                      <Box sx={{ width: "100%" }} className="p-30 pt-24 pb-24">
                         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                           <Tabs
                             value={value}
@@ -2432,11 +2337,11 @@ function Course() {
                           </Tabs>
                         </Box>
                         <CustomTabPanel value={value} index={0}>
+                          <div class="flex flex-col p-30 w-full border rounded">
                           <div
                             _ngcontent-fyk-c288=""
-                            class="flex items-center w-full  border-b justify-between"
-                          >
-                            <div className="flex items-center">
+                            class="flex items-center w-full  border-b justify-between">
+                            <div className="flex items-center" >
                               <h2
                                 _ngcontent-fyk-c288=""
                                 class="text-2xl font-semibold"
@@ -2652,7 +2557,7 @@ function Course() {
                                           </p>
                                         </div>
                                       </div>
-                                      <div>&nbsp;</div>
+                                      
                                       <div className="flex items-center justify-center my-3">
                                         <div className="flex-auto border-b"></div>
                                         <div
@@ -2666,7 +2571,7 @@ function Course() {
                                         </div>
                                         <div className="flex-auto border-b"></div>
                                       </div>
-                                      <div>&nbsp;</div>
+                                      
                                       {impComments.map((msg) => (
                                         <div
                                           key={msg.id}
@@ -2801,7 +2706,7 @@ function Course() {
                                       {task.isCompleted &&
                                         task.taskStatus !== 3 && (
                                           <>
-                                            <div>&nbsp;</div>
+                                            
 
                                             <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                               <div
@@ -2885,6 +2790,7 @@ function Course() {
                               </AccordionDetails>
                             </Accordion>
                           ))}
+                          </div>
                         </CustomTabPanel>
                         {!impActivity.isComplete &&
                           impActivity.status === "Pending" &&
@@ -2940,7 +2846,7 @@ function Course() {
                                   </FormControl>
                                 </Box>
                               )}
-                              <div>&nbsp;</div>
+                              
 
                               <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                 <div
@@ -3025,7 +2931,7 @@ function Course() {
                                 )}
                             </ul>
                           </div>
-                          <div>&nbsp;</div>
+                          
                           {!impActivity.isComplete &&
                             impActivity.status === "Pending" &&
                             value == 1 && (
@@ -3078,7 +2984,7 @@ function Course() {
                                     </Box>
                                   </FormControl>
                                 </Box>
-                                <div>&nbsp;</div>
+                                
 
                                 <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                   <div
@@ -3434,52 +3340,33 @@ function Course() {
                   </>
                 )}
                 {currentPhase === "docimplclosure" && (
-                  <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
+                  <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
                     <div
                       _ngcontent-fyk-c288=""
-                      class="flex items-center w-full  border-b justify-between"
+                      class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
                     >
                       <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                         Closure by Doc Controller
                       </h2>
                     </div>
-                    <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
-                      >
-                        <h2
-                          _ngcontent-fyk-c288=""
-                          class="text-2xl font-semibold"
-                        >
-                          Summary Details
-                        </h2>
-                      </div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="px-6 mb-6 ng-star-inserted"
-                      >
-                        <div>&nbsp;</div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
+                    <Paper className="w-full">
+                      <div _ngcontent-fyk-c288="" class="p-30 pt-24 pb-24 ng-star-inserted">
+                        <div _ngcontent-fyk-c288="" class="flex items-center w-full mb-10 justify-between">
+                          <h2 _ngcontent-fyk-c288="" class="text-xl font-semibold">
+                            Summary Details
+                          </h2>
+                        </div>                      
+                        <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div _ngcontent-fyk-c288="" class="mt-3 leading-6 text-secondary">
                               Request No{" "}
                             </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
+                            <div _ngcontent-fyk-c288="" class="text-lg leading-6 font-medium">
                               {" "}
                               {contentDetails?.requestNo}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3494,7 +3381,7 @@ function Course() {
                               {contentDetails?.initiatorName}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3510,13 +3397,10 @@ function Course() {
                             </div>
                           </div>
                         </div>
-                        <div>&nbsp;</div>
+                        
 
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3531,7 +3415,7 @@ function Course() {
                               {contentDetails?.requestTypeName}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288=""  className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3546,7 +3430,7 @@ function Course() {
                               {contentDetails?.projectName}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3562,12 +3446,12 @@ function Course() {
                             </div>
                           </div>
                         </div>
-                        <div>&nbsp;</div>
+                        
                         <div
                           _ngcontent-fyk-c288=""
                           class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                         >
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3582,7 +3466,7 @@ function Course() {
                               {contentDetails?.documentType}New
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3598,12 +3482,12 @@ function Course() {
                             </div>
                           </div>
                         </div>
-                        <div>&nbsp;</div>
+                        
                         <div
                           _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                          class="grid  w-full"
                         >
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3625,7 +3509,8 @@ function Course() {
                               </a>
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          
+                          <div _ngcontent-fyk-c288=""  className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3649,9 +3534,9 @@ function Course() {
                           </div>
                         </div>
                       </div>
-                      <div>&nbsp;</div>
+                      
                     </Paper>
-                    <div>&nbsp;</div>
+                    
                     {currentActivityForm.canEdit && (
                       <>
                         <div
@@ -3677,30 +3562,19 @@ function Course() {
                     )}
                   </Paper>
                 )}
-              </div>
+              
               {currentPhase === "Approval" &&
-                currentPhaseName === "Approval" && (
-                  <div className="flex justify-center p-16  pb-64 sm:p-24 ">
+                currentPhaseName === "Approval" && (                 
                     <>
                       <Paper
-                        className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
-                        style={{ marginRight: "15px", width: "100%" }}
-                      >
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="flex items-center w-full  border-b justify-between"
-                        >
-                          <h2
-                            _ngcontent-fyk-c288=""
-                            class="text-2xl font-semibold"
-                          >
-                            Stake Holders
-                          </h2>
+                        className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden"
+                        style={{ width: "100%" }}>
+                        <div _ngcontent-fyk-c288="" class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
+                          <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">Stake Holders</h2>
                           <TextField
                             variant="filled"
                             fullWidth
                             placeholder="Search"
-                            style={{ marginBottom: "15px" }}
                             value={searchTerm}
                             InputProps={{
                               startAdornment: (
@@ -3714,13 +3588,8 @@ function Course() {
                             }}
                             sx={{ width: 320 }}
                           />
-                        </div>
-                        <div>&nbsp;</div>
-
-                        <div
-                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                          style={{ width: "40%" }}
-                        >
+                        </div>                       
+                        <div className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24" style={{ width: "40%" }}>
                           <div className="flex items-center">
                             <img
                               src="/assets/images/etc/userpic.png"
@@ -3740,32 +3609,22 @@ function Course() {
                           </div>
                         </div>
                       </Paper>
-                    </>
-                  </div>
+                    </>                  
                 )}
               {currentPhase === "Approval" &&
-                currentPhaseName == "Implementation" && (
-                  <div className="flex justify-center p-16  pb-64 sm:p-24 ">
+                currentPhaseName == "Implementation" && (                 
                     <>
                       <Paper
-                        className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
-                        style={{ marginRight: "15px", width: "100%" }}
-                      >
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="flex items-center w-full  border-b justify-between"
-                        >
-                          <h2
-                            _ngcontent-fyk-c288=""
-                            class="text-2xl font-semibold"
-                          >
-                            Implementation Tasks
+                        className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden" style={{ width: "100%" }}>
+                        <div _ngcontent-fyk-c288="" class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
+                          <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+                            Implementation Tasks 
                           </h2>
                           <TextField
                             variant="filled"
                             fullWidth
                             placeholder="Search"
-                            style={{ marginBottom: "15px" }}
+                            style={{ marginBottom: "0" }}
                             value={searchTerm}
                             InputProps={{
                               startAdornment: (
@@ -3776,11 +3635,9 @@ function Course() {
                                   <SearchIcon />
                                 </InputAdornment>
                               ),
-                            }}
-                            sx={{ width: 320 }}
-                          />
+                            }}sx={{ width: 320 }}/>
                         </div>
-                        <div>&nbsp;</div>
+                        <div className="p-30 pt-24 pb-24">
                         {contentDetails?.implementationTask?.map((imptsk) => (
                           <table className="task-table mat-table">
                             <thead
@@ -3792,7 +3649,7 @@ function Course() {
                             <tbody className="task-table-body">
                               <tr className="task-table-row mat-row">
                                 <td className="task-table-cell mat-cell">
-                                  <div className="task-header flex items-center">
+                                  <div className="task-header flex items-center p-0">
                                     <div className="task-id flex flex-col">
                                       <span className="task-id-text font-semibold text-xl leading-none">
                                         Task #{imptsk?.id}
@@ -3825,29 +3682,29 @@ function Course() {
                                       </div>
                                     )}
                                   </div>
-                                  <div className="task-details px-6 mt-2">
+                                  <div className="task-details p-0 mt-10">
                                     <div className="task-detail prose prose-sm max-w-5xl">
-                                      <div className="task-detail-item mt-3">
-                                        <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                      <div className="task-detail-item mt-10 p-0">
+                                        <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
                                           What is Task
                                         </span>
-                                        <span className="task-detail-value">
+                                        <span className="task-detail-value d-inline-block">
                                           {imptsk.actionWhat}
                                         </span>
                                       </div>
-                                      <div className="task-detail-item mt-5">
-                                        <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                      <div className="task-detail-item mt-10 p-0">
+                                        <span className="task-detail-label bg-default rounded  d-inline-block d-inline-block text-secondary font-semibold">
                                           How is Task done
                                         </span>
-                                        <span className="task-detail-value">
+                                        <span className="task-detail-value d-inline-block">
                                           {imptsk.actionHow}
                                         </span>
                                       </div>
-                                      <div className="task-detail-item mt-5">
-                                        <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                      <div className="task-detail-item mt-10 p-0">
+                                        <span className="task-detail-label bg-default rounded  d-inline-block text-secondary font-semibold">
                                           Assigned to
                                         </span>
-                                        <span className="task-detail-value">
+                                        <span className="task-detail-value d-inline-block">
                                           {imptsk.assignedStaff}
                                         </span>
                                         <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
@@ -3864,10 +3721,7 @@ function Course() {
                                         </span>
                                       </div>
                                     </div>
-                                    <div
-                                      className="inventory-grid grid items-center gap-4 mt-5 ms-5 py-3 px-2 md:px-2"
-                                      style={{ width: "40%" }}
-                                    >
+                                    <div className="inventory-grid grid items-center gap-4 mt-10" style={{ width: "40%" }}>
                                       <div className="flex items-center mt-5">
                                         <img
                                           src="/assets/images/etc/userpic.png"
@@ -3897,7 +3751,7 @@ function Course() {
                                         </div>
                                       </div>
                                     </div>
-                                    <div>&nbsp;</div>
+                                    
                                     {currentActivityForm.canEdit &&
                                     !imptsk.implementationReviews.length ? (
                                       <div className="mat-form-field-wrapper">
@@ -3955,7 +3809,7 @@ function Course() {
                                         </div>
                                       </div>
                                     ) : (
-                                      <div>
+                                      <div className="mt-10">
                                         <Accordion
                                           expanded={expanded}
                                           onChange={handleExpansionChange}
@@ -4085,34 +3939,27 @@ function Course() {
                             </tfoot>
                           </table>
                         ))}
+                        </div>
                       </Paper>
-                    </>
-                  </div>
-                )}
-
-              <div className="flex justify-center p-16 pb-64 sm:p-24 ">
+                    </>                
+              )}
+             
                 {currentPhase === "Approval" && (
                   <>
                     <Paper
-                      className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
+                      className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden"
                       style={{ marginRight: "15px", width: "100%" }}
                     >
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
-                      >
-                        <h2
-                          _ngcontent-fyk-c288=""
-                          class="text-2xl font-semibold"
-                        >
+                      <div _ngcontent-fyk-c288="" class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
+                        <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                           Approval
                         </h2>
                       </div>
-                      <div>&nbsp;</div>
+                      
                       {appActivity.isComplete &&
                       appActivity.status != "Pending" ? (
                         <div
-                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                          className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
                           style={{ width: "40%" }}
                         >
                           <span className="font-semibold leading-none">
@@ -4121,7 +3968,7 @@ function Course() {
                         </div>
                       ) : (
                         <div
-                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                          className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
                           style={{ width: "100%" }}
                         >
                           {currentActivityForm.canEdit && (

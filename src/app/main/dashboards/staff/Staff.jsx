@@ -831,8 +831,8 @@ const Task = () => {
                           >
                             <Box
                               sx={{
-                                width: 800,
-                                maxWidth: "100%",
+                                width: 300,
+                                maxWidth: "48%",
                               }}
                             >
                               <TextField
@@ -845,17 +845,6 @@ const Task = () => {
                                 helperText={errors.email}
                               />
                             </Box>
-                          </div>
-                        </div>
-                        <div className="flex flex-col-reverse">
-                          <div
-                            style={{
-                              marginTop: "30px",
-                              justifyContent: "space-between",
-                              margin: "15px",
-                            }}
-                            className="flex flex-row "
-                          >
                             <Box
                               sx={{
                                 width: 380,
@@ -874,12 +863,14 @@ const Task = () => {
                             </Box>
                           </div>
                         </div>
+                       
+                       
                       </div>
-                      <div>&nbsp;</div>
+                    
                       <div
                         _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
-                      ></div>
+                        class="flex items-center w-full  border-b justify-between" style={{ margin: "18px" }}>
+                      </div>
                       <div className="flex-auto" style={{ margin: "18px" }}>
                         <div className="flex flex-col-reverse">
                           <div

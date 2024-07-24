@@ -34,6 +34,7 @@ import { styled } from "@mui/material/styles";
 import { ToastContainer, toast } from "react-toastify";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { useLocation } from "react-router-dom";
+import { display } from "@mui/system";
 
 const Task = () => {
   const style = {
@@ -938,15 +939,15 @@ const Task = () => {
                         {`${list.requestTypeName} / ${list.requestNo} / ${list.statusName}`}
                       </div>
                     </div>
-                    <div className="flex flex-col leading-5 text-md text-secondary space-y-2">
-                      <div>
+                    <div className="flex leading-5 text-md text-secondary space-y-2 mt-5">
+                      <div className="mr-30">
                         Initiated by <b>{list.initiatorName}</b> on{" "}
                         <b>{formatDate(list.requestDate)}</b>
                       </div>
-                      <div>
+                      <div className="mr-30">
                         Project Name: <b>{list.projectName}</b>
                       </div>
-                      <div>
+                      <div className="mr-30">
                         Change Leader: <b>{list.changeLeaderName}</b>
                       </div>
                     </div>
@@ -1390,7 +1391,7 @@ const Task = () => {
         {/* <button onClick={closeSidebar}>Close Sidebar</button> */}
         <div className="flex flex-auto">
           <form
-            className="flex flex-col flex-auto p-6 pt-10 sm:p-8 sm:pt-10 overflow-y-auto"
+            className="flex flex-col flex-auto p-30 overflow-y-auto"
             style={{ overflow: "hidden" }}
           >
             <div
@@ -1419,8 +1420,28 @@ const Task = () => {
                     )}
                   </button>
                 )}
-                <button className="focus:outline-none" onClick={closeSidebar}>
-                  close
+                <button
+                  className="focus:outline-none close_button"
+                  onClick={closeSidebar}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    fit=""
+                    height="24px"
+                    width="24px"
+                    preserveAspectRatio="xMidYMid meet"
+                    focusable="false"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    ></path>
+                  </svg>
                 </button>
               </div>
             </div>
@@ -1822,11 +1843,32 @@ const Task = () => {
                   <div className="flex items-center justify-between mt-4">
                     <div className="flex-auto"></div>
                     <button
-                      className="focus:outline-none px-4 py-2 text-white bg-blue-600 rounded-md flex items-center justify-center"
+                      className="focus:outline-none px-4 py-2 text-white bg-blue-600 rounded-md flex items-center justify-center button_rounded"
                       style={{ padding: "10px", marginRight: "10px" }}
                       onClick={handleOpen}
                     >
-                      <span className="ml-2 font-semibold">Submit</span>
+                      <span className="ml-2 font-semibold">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          fit=""
+                          height="24px"
+                          width="24px"
+                          preserveAspectRatio="xMidYMid meet"
+                          style={{ display: "inline-block" }}
+                          focusable="false"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          ></path>
+                        </svg>{" "}
+                        Submit
+                      </span>
                     </button>
                   </div>
                 </div>
