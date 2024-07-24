@@ -104,7 +104,7 @@ function InitiationApproval(props) {
       top: 13,
       border: `2px solid ${theme.palette.background.paper}`,
       padding: "0 4px",
-      backgroundColor: "#2c3e50", // Adjust background color to match the image
+      backgroundColor: "#000", // Adjust background color to match the image
       color: "white",
     },
   }))(Badge);
@@ -935,7 +935,7 @@ function InitiationApproval(props) {
           <div>
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               <h2 className="text-2xl font-semibold">Summary Details</h2>
-              <div style={{ marginBottom: "20px" }}>
+              <div>
                 <StyledBadge badgeContent={ApprovalDetails.documentCount}>
                   <Button
                     className="whitespace-nowrap mt-5"

@@ -63,7 +63,7 @@ function UserMenu() {
           onClick={handleClick}
           color="inherit"
         >
-          <div className="mx-4 hidden flex-col items-end md:flex">
+          <div className="mx-4  flex-col items-end md:flex">
             <Typography
               className="text-11 font-medium capitalize"
               color="text.secondary"
@@ -106,7 +106,7 @@ function UserMenu() {
         onClick={userMenuClick}
         color="inherit"
       >
-        <div className="mx-4 hidden flex-col items-end md:flex">
+        <div className="mx-4  flex-col items-end md:flex">
           <Typography
             className="text-11 font-medium capitalize"
             color="text.secondary"
