@@ -78,7 +78,7 @@ const SessionList = () => {
         _ngcontent-fyk-c288=""
         class="flex items-center w-full  border-b justify-between"
       ></div>
-      {sessionList.map((list) => (
+      {sessionList?.map((list) => (
         <>
           <Paper
             className="  sm:my-8  p-24   shadow overflow-hidden"

@@ -211,6 +211,13 @@ const EvaluationApproval = ({
         )
         .then((resp) => {
           toast.success("Review successfully updated");
+          apiAuth
+            .get(
+              `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+            )
+            .then((resp) => {
+              setContentDetails(resp.data.data);
+            });
           setHandelCommentRemark("");
         });
     }
@@ -234,6 +241,13 @@ const EvaluationApproval = ({
             });
         } else {
           toast.success("Review successfully Updated");
+          apiAuth
+            .get(
+              `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+            )
+            .then((resp) => {
+              setContentDetails(resp.data.data);
+            });
         }
         setHandelCommentRemark("");
       });

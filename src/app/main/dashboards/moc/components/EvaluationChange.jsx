@@ -359,7 +359,6 @@ function EvaluationChange({
   const [formValues, setFormValues] = useState({
     task: "",
     subTask: "",
-
     hazardousSituation: "",
     consequence: "",
     time: "",
@@ -867,7 +866,7 @@ function EvaluationChange({
       setPotentialTimeDetails(resp.data.data);
     });
   };
-
+  console.log(TaskhazardRiskApi, "ssssss");
   const handleInputChangeHazard = (event, option) => {
     setFormValues((prevValues) => ({
       ...prevValues,
@@ -891,7 +890,7 @@ function EvaluationChange({
       })
       .then((resp) => {
         setSubTaskhazardRiskApi(resp.data);
-
+        console.log(resp.data, "daaaa");
         setSubTaskhazardRiskView(true);
         setSubTaskhazardRiskViewName(option.text);
       })
@@ -1314,9 +1313,10 @@ function EvaluationChange({
         residualRisk: data?.residualRisk,
         residualRiskClassification: data?.residualRiskClassification,
       });
+
       const { classification, classificationValue } =
         calculateRiskClassification(data?.residualRisk);
-
+      console.log(formValues, "ppppppss");
       setClassification(classification);
 
       if (data.time) {
@@ -1342,7 +1342,7 @@ function EvaluationChange({
       });
     }
   };
-
+  const [hazaid, setHazaId] = useState(0);
   const handelEditRiskDetails = (id, subid) => {
     setPotentialFrequencyDetails([]);
     setFormValues({
@@ -1382,6 +1382,8 @@ function EvaluationChange({
     apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
       setEditRiskAnalysDetail(resp.data.data.riskAnalysisHazardSituation);
       const data = resp.data.data.riskAnalysisHazardSituation[0];
+      console.log(resp?.data?.data?.hazardType, "hazaaa");
+      setHazaId(resp?.data?.data?.hazardType);
       setFormValues({
         ...formValues,
         hazardType: resp?.data?.data?.hazardType,
@@ -1405,8 +1407,13 @@ function EvaluationChange({
         residualRiskClassification: data?.residualRiskClassification,
         id: data?.id,
       });
+
       const { classification, classificationValue } =
         calculateRiskClassification(data?.residualRisk);
+      // console.log("====================================");
+      // console.log(resp?.data?.data?.hazardType);
+      // console.log("====================================");
+      // setSubTaskhazardRiskApi(resp?.data?.data?.hazardType);
 
       setClassification(classification);
       if (data.time) {
@@ -2786,6 +2793,7 @@ function EvaluationChange({
                             onChange={handleChangeImpact}
                             className="mt-5"
                             error={!!errorsAddTask.particular}
+                            disabled={EditSubTask.length}
                           >
                             <MenuItem value="" disabled>
                               <em>None</em>
@@ -2817,6 +2825,7 @@ function EvaluationChange({
                             onChange={handleChangeImpact}
                             className="mt-5"
                             error={!!errorsAddTask.particularSubCategory}
+                            disabled={EditSubTask.length}
                           >
                             <MenuItem value="" disabled>
                               <em>None</em>
@@ -2993,12 +3002,15 @@ function EvaluationChange({
                                                                         "LowRisk"
                                                                       ? "yellow"
                                                                       : riskHazardSituation.residualRiskClassificationDisplay ===
-                                                                          "AverageRisk"
-                                                                        ? "orange"
+                                                                          "SignificantRisk"
+                                                                        ? "brown"
                                                                         : riskHazardSituation.residualRiskClassificationDisplay ===
-                                                                            "VeryLowRisk"
-                                                                          ? "green"
-                                                                          : "initial",
+                                                                            "AverageRisk"
+                                                                          ? "orange"
+                                                                          : riskHazardSituation.residualRiskClassificationDisplay ===
+                                                                              "VeryLowRisk"
+                                                                            ? "green"
+                                                                            : "initial",
                                                                 color: "white",
                                                                 padding: "5px",
                                                                 borderRadius:
@@ -3694,79 +3706,160 @@ function EvaluationChange({
                 )}
               </FormControl>
             </Box>
-            <Box
-              sx={{
-                width: TaskhazardRiskView ? 818 : 600,
-                maxWidth: "100%",
-                marginLeft: "9px",
-                marginTop: "15px",
-                display: "flex", // Added Flexbox
-                alignItems: "center", // Align items vertically
-              }}
-            >
-              <FormControl fullWidth sx={{ flexGrow: 1 }}>
-                <InputLabel id="division-label">Hazard Type *</InputLabel>
+            {viewrisk ? (
+              <Box
+                sx={{
+                  width: TaskhazardRiskView ? 818 : 600,
+                  maxWidth: "100%",
+                  marginLeft: "9px",
+                  marginTop: "15px",
+                  display: "flex", // Added Flexbox
+                  alignItems: "center", // Align items vertically
+                }}
+              >
+                <FormControl fullWidth>
+                  <FormLabel
+                    htmlFor="Time"
+                    className="font-semibold leading-none"
+                  >
+                    Hazard Type
+                  </FormLabel>
 
-                <Select
-                  labelId="division-label"
-                  name="hazardType"
-                  value={formValues.hazardType.value}
-                  onChange={(e) => {
-                    const selectedOption = subTaskhazardDetail.find(
-                      (option) => option.value === e.target.value
-                    );
-                    handleInputChangeHazard(e, selectedOption);
-                  }}
-                  error={!!errorsSub.hazardType}
-                >
-                  <MenuItem value="" disabled>
-                    <em>None</em>
-                  </MenuItem>
-                  {subTaskhazardDetail.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.text}
+                  <Select
+                    labelId="time-select-label"
+                    id="time-select"
+                    label="hazardType *"
+                    name="hazardType"
+                    value={
+                      formValues.hazardType.value
+                        ? formValues.hazardType.value
+                        : hazaid
+                    }
+                    onChange={(e) => {
+                      const selectedOption = subTaskhazardDetail.find(
+                        (option) => option.value === e.target.value
+                      );
+                      handleInputChangeHazard(e, selectedOption);
+                    }}
+                    error={!!errorsSub.hazardType}
+                    disabled
+                    sx={{
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "& .MuiSelect-icon": {
+                        display: "none",
+                      },
+                      "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                        {
+                          padding: "0px",
+                        },
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      <em>None</em>
                     </MenuItem>
-                  ))}
-                </Select>
-
-                {!!errorsSub.hazardType && (
-                  <FormHelperText error>{errorsSub.hazardType}</FormHelperText>
-                )}
-              </FormControl>
-              {TaskhazardRiskView && (
-                <>
-                  <Box sx={{ marginLeft: 2 }}>
-                    <a
-                      href={URL.createObjectURL(
-                        new Blob([TaskhazardRiskApi], {
-                          type: "application/pdf",
-                        })
-                      )}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ backgroundColor: "white", color: "blue" }}
-                    >
-                      {TaskhazardRiskViewName}.pdf
-                    </a>
-                  </Box>
-                </>
-              )}
-              <Box sx={{ marginLeft: 2 }}>
-                <a
-                  href={URL.createObjectURL(
-                    new Blob([generalGuidePdf], {
-                      type: "application/pdf",
-                    })
+                    {subTaskhazardDetail.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.text}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {!!errorsSub.hazardType && (
+                    <FormHelperText error>
+                      {errorsSub.hazardType}
+                    </FormHelperText>
                   )}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ backgroundColor: "white", color: "blue" }}
-                  onClick={handleGeneralGuideClick}
-                >
-                  General Guide
-                </a>
+                </FormControl>
               </Box>
-            </Box>
+            ) : (
+              <Box
+                sx={{
+                  width: TaskhazardRiskView ? 818 : 600,
+                  maxWidth: "100%",
+                  marginLeft: "9px",
+                  marginTop: "15px",
+                  display: "flex", // Added Flexbox
+                  alignItems: "center", // Align items vertically
+                }}
+              >
+                {console.log(hazaid, "pppppps")}
+                <FormControl fullWidth sx={{ flexGrow: 1 }}>
+                  <InputLabel id="division-label">Hazard Type *</InputLabel>
+                  <Select
+                    labelId="division-label"
+                    name="hazardType"
+                    value={
+                      formValues.hazardType.value
+                        ? formValues.hazardType.value
+                        : hazaid
+                    }
+                    onChange={(e) => {
+                      const selectedOption = subTaskhazardDetail.find(
+                        (option) => option.value === e.target.value
+                      );
+                      handleInputChangeHazard(e, selectedOption);
+                    }}
+                    error={!!errorsSub.hazardType}
+                  >
+                    <MenuItem value="" disabled>
+                      <em>None</em>
+                    </MenuItem>
+                    {subTaskhazardDetail.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.text}
+                      </MenuItem>
+                    ))}
+                  </Select>
+
+                  {!!errorsSub.hazardType && (
+                    <FormHelperText error>
+                      {errorsSub.hazardType}
+                    </FormHelperText>
+                  )}
+                </FormControl>
+                {TaskhazardRiskView && (
+                  <>
+                    <Box sx={{ marginLeft: 2 }}>
+                      <a
+                        href={URL.createObjectURL(
+                          new Blob([TaskhazardRiskApi], {
+                            type: "application/pdf",
+                          })
+                        )}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ backgroundColor: "white", color: "blue" }}
+                      >
+                        {TaskhazardRiskViewName}.pdf
+                      </a>
+                    </Box>
+                  </>
+                )}
+                <Box sx={{ marginLeft: 2 }}>
+                  <a
+                    href={URL.createObjectURL(
+                      new Blob([generalGuidePdf], {
+                        type: "application/pdf",
+                      })
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ backgroundColor: "white", color: "blue" }}
+                    onClick={handleGeneralGuideClick}
+                  >
+                    General Guide
+                  </a>
+                </Box>
+              </Box>
+            )}
+
             <Box
               sx={{
                 marginTop: "15px",
