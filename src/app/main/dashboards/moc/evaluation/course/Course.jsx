@@ -487,6 +487,7 @@ function Course() {
     height: "57%",
     borderRadius: "16px",
     bgcolor: "background.paper",
+
     boxShadow: 24,
     p: 4,
     padding: "0px",
@@ -502,6 +503,7 @@ function Course() {
     height: "74%",
     borderRadius: "16px",
     bgcolor: "background.paper",
+
     boxShadow: 24,
     p: 4,
   };
@@ -1151,20 +1153,12 @@ function Course() {
                           >
                             Function
                           </div>
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Site In Charge
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.siteInChargeName}
-                            </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetailsIni?.functionName}
                           </div>
                         </div>
                       </div>
@@ -1195,20 +1189,12 @@ function Course() {
                           >
                             Document Name
                           </div>
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Function
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.functionName}
-                            </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetailsIni?.projectName}
                           </div>
                         </div>
                         <div _ngcontent-fyk-c288="" className="my-6">
@@ -1239,20 +1225,14 @@ function Course() {
                           >
                             Document Type
                           </div>
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Document Description
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.projectDescription}
-                            </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetailsIni.isNewDocument == true
+                              ? "New"
+                              : "Existing"}
                           </div>
                         </div>
                         <div _ngcontent-fyk-c288="" className="my-6">
@@ -1277,20 +1257,12 @@ function Course() {
                           >
                             Doc Controller
                           </div>
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Doc Controller
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.docControllerName}
-                            </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetailsIni?.docControllerName}
                           </div>
                         </div>
                       </div>
@@ -1323,7 +1295,8 @@ function Course() {
                           </div>
                         </div>
                       </div>
-                      
+                    </div>
+                    <div>&nbsp;</div>
 
                     <div className="flex items-center justify-between w-full p-30 pt-24 pb-24 border-t">
                       <button className="ml-1 sm:inline-flex cursor-pointer mat-button mat-stroked-button mat-button-base">
@@ -1784,6 +1757,7 @@ function Course() {
                               </Button>
                             </div>
                           </div>
+
                           <div
                             _ngcontent-fyk-c288=""
                             class="flex items-center w-full  border-b justify-between"
@@ -1851,6 +1825,7 @@ function Course() {
                           >
                             Update
                           </Button>
+
                           <div
                             _ngcontent-fyk-c288=""
                             class="flex items-center w-full  border-b justify-between"
@@ -2206,6 +2181,7 @@ function Course() {
                         >
                           Implementation
                         </h2>
+
                         <Button
                           className="whitespace-nowrap "
                           style={{
@@ -2300,6 +2276,7 @@ function Course() {
                                       x
                                     </Button>
                                   </div>
+
                                   <div className="text-center">
                                     <label htmlFor="fileInput">
                                       <div className=" ">
@@ -3038,6 +3015,7 @@ function Course() {
                                 )}
                             </ul>
                           </div>
+
                           {!impActivity.isComplete &&
                             impActivity.status === "Pending" &&
                             value == 1 && (
@@ -3481,7 +3459,10 @@ function Course() {
                             >
                               Request No{" "}
                             </div>
-                            <div _ngcontent-fyk-c288="" class="text-lg leading-6 font-medium">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
                               {" "}
                               {contentDetails?.requestNo}
                             </div>
@@ -3568,6 +3549,7 @@ function Course() {
                             </div>
                           </div>
                         </div>
+
                         <div
                           _ngcontent-fyk-c288=""
                           class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
@@ -3771,7 +3753,9 @@ function Course() {
                                   <SearchIcon />
                                 </InputAdornment>
                               ),
-                            }}sx={{ width: 320 }}/>
+                            }}
+                            sx={{ width: 320 }}
+                          />
                         </div>
                         <div className="p-30 pt-24 pb-24">
                           {contentDetails?.implementationTask?.map((imptsk) => (
