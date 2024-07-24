@@ -365,7 +365,7 @@ const EvaluationApproval = ({
       setSelectedTasks(updatedTasks);
 
       // Show send popup when first checkbox is checked
-      if (updatedTasks.length === 1) {
+      if (updatedTasks?.length === 1) {
         setShowSendPopup(true);
       }
     } else {
@@ -376,7 +376,7 @@ const EvaluationApproval = ({
       setSelectedTasks(filteredTasks);
 
       // Hide send popup if no tasks are selected
-      if (filteredTasks.length === 0) {
+      if (filteredTasks?.length === 0) {
         setShowSendPopup(false);
       }
     }
@@ -782,7 +782,8 @@ const EvaluationApproval = ({
           }}
           onClick={handledateExtendopen}
         >
-          Send selected {selectedTasks.length} task(s) for external consultation
+          Send selected {selectedTasks?.length} task(s) for external
+          consultation
         </Button>
       </div>
       <SwipeableViews style={{ overflow: "hidden" }}>
@@ -1121,7 +1122,7 @@ const EvaluationApproval = ({
               </div>
               <div>&nbsp;</div>
 
-              {itm.reviews.length > 0 || showReview ? (
+              {itm.reviews?.length > 0 || showReview ? (
                 <div>
                   <Accordion
                     expanded={expanded == itm.id}
@@ -1239,9 +1240,9 @@ const EvaluationApproval = ({
                                 <button
                                   className="custom-update-button"
                                   onClick={() => {
-                                    if (itm.reviews.length > 0) {
+                                    if (itm.reviews?.length > 0) {
                                       const reviewId =
-                                        itm.reviews.length === 1
+                                        itm.reviews?.length === 1
                                           ? itm.reviews[0].id
                                           : itm.reviews[1].id;
                                       handelCommentImp(itm.id, reviewId, 2);
@@ -1593,7 +1594,7 @@ const EvaluationApproval = ({
                                   {contentDetails?.riskAnalysisList[0]?.riskAnalysisSubTasks?.map(
                                     (sub, index) => (
                                       <div key={index}>
-                                        {sub.riskAnalysisHazardTypes.length ===
+                                        {sub.riskAnalysisHazardTypes?.length ===
                                         0 ? (
                                           <>
                                             <div
@@ -1799,7 +1800,7 @@ const EvaluationApproval = ({
                         )}
                         <div>&nbsp;</div>
 
-                        {imptsk.changeImpactTaskReviews.length > 0 ||
+                        {imptsk.changeImpactTaskReviews?.length > 0 ||
                         showReview ? (
                           <div>
                             <Accordion
@@ -2354,7 +2355,7 @@ const EvaluationApproval = ({
                               </TableRow>
                             )
                         )}
-                        {remarkRequest.length == 0 && (
+                        {remarkRequest?.length == 0 && (
                           <TableRow>
                             <TableCell>
                               <div className="flex">
@@ -2508,7 +2509,7 @@ const EvaluationApproval = ({
                               </TableRow>
                             )
                         )}
-                        {remarkRequest.length == 0 && (
+                        {remarkRequest?.length == 0 && (
                           <TableRow>
                             <TableCell>
                               <div className="flex">
