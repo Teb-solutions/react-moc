@@ -233,13 +233,12 @@ function InitiationApprovalProceed({
       </Modal>
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
-       
-            <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
-              <h2 className="text-2xl font-semibold">Team Assignment</h2>
-            </div>
-            
-            {currentActivityForm.canEdit && (
-              <div className="p-30">
+          <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
+            <h2 className="text-2xl font-semibold">Team Assignment</h2>
+          </div>
+
+          {currentActivityForm.canEdit && (
+            <div className="p-30">
               <>
                 <Box
                   sx={{
@@ -259,9 +258,7 @@ function InitiationApprovalProceed({
                     <span>hello</span>
                   </FormControl>
                 </Box>
-                <Box
-                  sx={{ display: "flex", flexWrap: "wrap", marginTop: "0" }}
-                >
+                <Box sx={{ display: "flex", flexWrap: "wrap", marginTop: "0" }}>
                   <FormControl fullWidth sx={{ m: 1 }}>
                     <FormLabel
                       className="font-medium text-14"
@@ -347,93 +344,84 @@ function InitiationApprovalProceed({
                   </FormControl>
                 </Box>
               </>
-              </div>
-            )}
-            
-      
+            </div>
+          )}
+
           {currentActivityForm.canEdit && (
             <div className="p-30">
-            <>
-              <div
-                className="my-10"
-                style={{ borderTopWidth: "2px", marginTop: "40px" }}
-              ></div>
-              <div className="flex justify-end">
+              <>
                 <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{ marginTop: "15px" }}
-                >
-                  <Button
-                    className="whitespace-nowrap mt-5"
-                    style={{
-                      border: "1px solid",
-                      backgroundColor: "#0000",
-                      color: "black",
-                      borderColor: "rgba(203,213,225)",
-                    }}
-                    variant="contained"
-                    color="warning"
-                    onClick={handleClose}
+                  className="my-10"
+                  style={{ borderTopWidth: "2px", marginTop: "40px" }}
+                ></div>
+                <div className="flex justify-end">
+                  <div
+                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                    style={{ marginTop: "15px" }}
                   >
-                    Cancel
-                  </Button>
-                </div>
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{ marginTop: "25px" }}
-                >
-                  {AppActions.map((btn) => (
                     <Button
-                      className="whitespace-nowrap"
+                      className="whitespace-nowrap mt-5"
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "#0000",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                      }}
                       variant="contained"
-                      color="secondary"
-                      style={{ padding: "15px" }}
-                      onClick={() => handleOpen(btn)}
+                      color="warning"
+                      onClick={handleClose}
                     >
-                      {btn.name}
+                      Cancel
                     </Button>
-                  ))}
+                  </div>
+                  <div
+                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                    style={{ marginTop: "25px" }}
+                  >
+                    {AppActions.map((btn) => (
+                      <Button
+                        className="whitespace-nowrap"
+                        variant="contained"
+                        color="secondary"
+                        style={{ padding: "15px" }}
+                        onClick={() => handleOpen(btn)}
+                      >
+                        {btn.name}
+                      </Button>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </>
+              </>
             </div>
           )}
           <div className="p-30">
-          {!currentActivityForm.canEdit &&
-            TeamAssignmentList.filter(
-              (list) => list.roleName !== "Change Leader"
-            ).map((list) => (
-              <div
-<<<<<<< HEAD
-                key={list.id} // Assuming there's a unique id for each list item
-                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-=======
-                className="inventory-grid grid items-center gap-4 py-6"
->>>>>>> 3bf7c7426fb62ceebfe73931e0137345cac4695b
-                style={{ width: "40%" }}
-              >
+            {!currentActivityForm.canEdit &&
+              TeamAssignmentList.filter(
+                (list) => list.roleName !== "Change Leader"
+              ).map((list) => (
                 <div
-                  className="flex items-center"
-                  style={{ marginTop: "0" }}
+                  className="inventory-grid grid items-center gap-4 py-6"
+                  style={{ width: "40%" }}
                 >
-                  <img
-                    src="/assets/images/etc/userpic.png"
-                    alt="Card cover image"
-                    className="rounded-full mr-24"
-                    style={{ width: "4rem", height: "4rem" }}
-                  />
-                  <div className="flex flex-col">
-                    <span className="font-semibold leading-none">
-                      {list.staffName}
-                    </span>
-                    <span className="text-sm text-secondary leading-none pt-5">
-                      {list?.roleName}
-                    </span>
+                  <div className="flex items-center" style={{ marginTop: "0" }}>
+                    <img
+                      src="/assets/images/etc/userpic.png"
+                      alt="Card cover image"
+                      className="rounded-full mr-24"
+                      style={{ width: "4rem", height: "4rem" }}
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-semibold leading-none">
+                        {list.staffName}
+                      </span>
+                      <span className="text-sm text-secondary leading-none pt-5">
+                        {list?.roleName}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-            </div>
+              ))}
+          </div>
         </Paper>
       </SwipeableViews>
     </div>

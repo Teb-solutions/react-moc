@@ -791,106 +791,24 @@ const InitiationComplete = ({
               </h2>
             </div>
           </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <FormControl component="fieldset" fullWidth>
-                <FormLabel component="legend">
-                  Class Category
-                  <Link
-                    href="#"
-                    className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer"
-                  >
-                    (View Class Category Details)
-                  </Link>
-                </FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <RadioGroup
-                    row
-                    aria-labelledby="classCategory"
-                    name="classCategory"
-                    value={selectedClass}
-                    onChange={handleClassChange}
-                  >
-                    <FormControlLabel
-                      value="1"
-                      control={<Radio />}
-                      label="Class I"
-                    />
-                    <FormControlLabel
-                      value="2"
-                      control={<Radio />}
-                      label="Class II"
-                    />
-                  </RadioGroup>
-                ) : (
-                  <span>{currentSummeryById?.classCategoryString}</span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <FormLabel>Change Leader</FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <Select
-                    name="changeLeaderId"
-                    value={IniComp?.changeLeaderId}
-                    onChange={handleChange}
-                  >
-                    {class1.map((option) => (
-                      <MenuItem key={option.id} value={option.value}>
-                        {option.text}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                ) : (
-                  <span>{currentSummeryById?.changeLeader}</span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <FormLabel>
-                  Change Location (you can add multiple locations)
-                </FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <OutlinedInput
-                    name="changeLocation"
-                    value={IniComp?.changeLocation}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <span>{currentSummeryById?.changeLocation}</span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <FormLabel>Change Type</FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <RadioGroup
-                    row
-                    name="changeType"
-                    value={IniComp?.changeType}
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel
-                      value="1"
-                      control={<Radio />}
-                      label="Permanent"
           <div className="p-30">
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <FormControl component="fieldset" fullWidth>
-                  <FormLabel component="div" className="mt-3 leading-6 text-secondary">
+                  <FormLabel
+                    component="div"
+                    className="mt-3 leading-6 text-secondary"
+                  >
                     Class Category
                     <Link
                       href="#"
-                      className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer">
+                      className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer"
+                    >
                       (View Class Category Details)
                     </Link>
                   </FormLabel>
                   {currentActivityForm.canEdit ? (
-                    <RadioGroup 
+                    <RadioGroup
                       row
                       aria-labelledby="classCategory"
                       name="classCategory"
@@ -1004,65 +922,6 @@ const InitiationComplete = ({
                       value={IniComp.briefDescription}
                       onChange={handleChange}
                     />
-                  </RadioGroup>
-                ) : (
-                  <span>{currentSummeryById?.changeTypeString}</span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <FormLabel>Expected Change Completion Date</FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      value={IniComp.TerminationDate}
-                      onChange={handleChanges}
-                      renderInput={(params) => (
-                        <TextField fullWidth {...params} />
-                      )}
-                    />
-                  </LocalizationProvider>
-                ) : (
-                  <span>{currentSummeryById.changeTerminationDate}</span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <FormLabel>Brief Description</FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <OutlinedInput
-                    name="briefDescription"
-                    value={IniComp?.briefDescription}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <span>{currentSummeryById?.briefDescription}</span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <FormLabel>Change Benefits</FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <OutlinedInput
-                    name="changeBenefits"
-                    value={IniComp?.changeBenefits}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <span>{currentSummeryById?.changeBenefits}</span>
-                )}
-              </FormControl>
-            </Grid>
-          </Grid>
-          <Box mt={4} display="flex" justifyContent="space-between">
-            <StyledBadge
-              badgeContent={
-                listDocument.length ? listDocument.length : CountApprove
-              }
-            >
                   ) : (
                     <span>{currentSummeryById.briefDescription}</span>
                   )}
@@ -1085,38 +944,26 @@ const InitiationComplete = ({
             </Grid>
           </div>
           <div className="flex items-center justify-between w-full p-30 pt-24 pb-24 border-t">
-            <Box  display="flex" justifyContent="space-between">
-              {/* <StyledBadge badgeContent={AssetDetails.documentStatus}> */}
-              <Button
-                variant="outlined"
-                style={{
-                  padding: "10px 20px",
-                  borderColor: "grey",
-                }}
-                startIcon={
-                  <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
+            <Box display="flex" justifyContent="space-between">
+              <StyledBadge
+                badgeContent={
+                  listDocument.length ? listDocument.length : CountApprove
                 }
-                onClick={handleOpen1}
               >
-                Document
-              </Button>
-            </StyledBadge>
-            {currentActivityForm.canExecute && (
-              <Box display="flex" gap={2}>
-                {AppActions.map((btn) => (
-                  <Button
-                    key={btn.uid}
-                    variant="contained"
-                    color="secondary"
-                    onClick={() => handleOpen(btn)}
-                  >
-                    {btn.name}
-                  </Button>
-                ))}
-              </Box>
-            )}
-          </Box>
-              {/* </StyledBadge> */}
+                <Button
+                  variant="outlined"
+                  style={{
+                    padding: "10px 20px",
+                    borderColor: "grey",
+                  }}
+                  startIcon={
+                    <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
+                  }
+                  onClick={handleOpen1}
+                >
+                  Document
+                </Button>
+              </StyledBadge>
               {currentActivityForm.canExecute && (
                 <Box display="flex" gap={2}>
                   {AppActions.map((btn) => (
