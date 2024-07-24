@@ -1047,11 +1047,11 @@ function Course() {
           <SwipeableViews>
             <>
               <div className=" p-16 pb-64 sm:p-24 ">
-                <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
+                <Paper className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
                   <div>
                     <div
                       _ngcontent-fyk-c288=""
-                      class="flex items-center w-full  border-b justify-between"
+                      class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
                     >
                       <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                         MOC Document Request
@@ -1059,14 +1059,13 @@ function Course() {
                     </div>
                     <div
                       _ngcontent-fyk-c288=""
-                      class="px-6 mb-6 ng-star-inserted"
+                      class="p-30 pt-24 pb-24 ng-star-inserted"
                     >
-                      <div>&nbsp;</div>
                       <div
                         _ngcontent-fyk-c288=""
                         class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                       >
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1081,7 +1080,7 @@ function Course() {
                             {contentDetailsIni?.requestNo}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1096,7 +1095,7 @@ function Course() {
                             {formatDate(contentDetailsIni?.requestDate)}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1112,12 +1111,12 @@ function Course() {
                           </div>
                         </div>
                       </div>
-                      <div>&nbsp;</div>
+
                       <div
                         _ngcontent-fyk-c288=""
                         class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                       >
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1132,7 +1131,7 @@ function Course() {
                             {contentDetailsIni?.siteName}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1147,7 +1146,7 @@ function Course() {
                             {contentDetailsIni?.divisionName}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1163,12 +1162,12 @@ function Course() {
                           </div>
                         </div>
                       </div>
-                      <div>&nbsp;</div>
+
                       <div
                         _ngcontent-fyk-c288=""
                         class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                       >
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1183,7 +1182,7 @@ function Course() {
                             {contentDetailsIni?.typeString}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1198,7 +1197,7 @@ function Course() {
                             {contentDetailsIni?.projectName}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1214,12 +1213,12 @@ function Course() {
                           </div>
                         </div>
                       </div>
-                      <div>&nbsp;</div>
+
                       <div
                         _ngcontent-fyk-c288=""
                         class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                       >
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1236,7 +1235,7 @@ function Course() {
                               : "Existing"}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1251,7 +1250,7 @@ function Course() {
                             {contentDetailsIni?.reasonForNewDocument}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1267,12 +1266,12 @@ function Course() {
                           </div>
                         </div>
                       </div>
-                      <div>&nbsp;</div>
+
                       <div
                         _ngcontent-fyk-c288=""
                         class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                       >
-                        <div _ngcontent-fyk-c288="">
+                        <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -1299,32 +1298,31 @@ function Course() {
                     </div>
                     <div>&nbsp;</div>
 
-                    <div className="flex items-center justify-between w-full mt-8 px-6 py-3 border-t">
-                      <div>
-                        <button className="ml-1 sm:inline-flex cursor-pointer mat-button mat-stroked-button mat-button-base">
-                          <span className="mat-button-wrapper">
-                            <h1 className="mat-icon notranslate icon-size-4 mat-icon-no-color mr-3 justify-center" />
-                            {/* <Button
-                              className="whitespace-nowrap mt-5"
-                              style={{
-                                border: "1px solid",
-                                backgroundColor: "#0000",
-                                color: "black",
-                                borderColor: "rgba(203,213,225)",
-                              }}
-                              variant="contained"
-                              color="warning"
-                              startIcon={
-                                <FuseSvgIcon size={20}>
-                                  heroicons-solid:upload
-                                </FuseSvgIcon>
-                              }
-                              onClick={handleOpen}
-                            >
-                              Document
-                            </Button> */}
+                    <div className="flex items-center justify-between w-full p-30 pt-24 pb-24 border-t">
+                      <button className="ml-1 sm:inline-flex cursor-pointer mat-button mat-stroked-button mat-button-base">
+                        <span className="mat-button-wrapper">
+                          {/* <h1 className="mat-icon notranslate icon-size-4 mat-icon-no-color mr-3 justify-center" /> */}
+                          <Button
+                            className="whitespace-nowrap mt-5"
+                            style={{
+                              border: "1px solid",
+                              backgroundColor: "#0000",
+                              color: "black",
+                              borderColor: "rgba(203,213,225)",
+                            }}
+                            variant="contained"
+                            color="warning"
+                            startIcon={
+                              <FuseSvgIcon size={20}>
+                                heroicons-solid:upload
+                              </FuseSvgIcon>
+                            }
+                            onClick={handleOpen}
+                          >
+                            Document
+                          </Button>
 
-                            {/* <Modal
+                          {/* <Modal
                                 aria-labelledby="transition-modal-title"
                                 aria-describedby="transition-modal-description"
                                 open={open}
@@ -1378,14 +1376,13 @@ function Course() {
                     </div>
                   ))}
                 </Typography>
-              </Box>
+                 </Box>
                                     </Box>
                                   </Box>
                                 </Fade>
                               </Modal> */}
-                          </span>
-                        </button>
-                      </div>
+                        </span>
+                      </button>
                     </div>
                   </div>
                 </Paper>
@@ -1393,12 +1390,12 @@ function Course() {
                 {currentPhase === "Evaluation" && (
                   <>
                     <Paper
-                      className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
-                      style={{ marginRight: "15px", width: "100%" }}
+                      className="w-full mx-auto rounded-16 shadow overflow-hidden"
+                      style={{ marginRight: "0", width: "100%" }}
                     >
                       <div
                         _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
+                        class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
                       >
                         <h2
                           _ngcontent-fyk-c288=""
@@ -1407,206 +1404,206 @@ function Course() {
                           Evaluation
                         </h2>
                       </div>
-                      <div>&nbsp;</div>
-                      {!addStake ? (
-                        <div className="mt-2 mb-4 p-6 py-2">
-                          <b>Stakeholders</b>
-                        </div>
-                      ) : (
-                        <div className="font-semibold">
-                          <a
-                            rel="noopener noreferrer"
-                            onClick={() => setAddStake(false)}
-                          >
-                            Back to Stakeholders List
-                          </a>
-                        </div>
-                      )}
-                      {canEdits &&
-                        !addStake &&
-                        ChangeEvaluationDetail.map((list) => (
-                          <Accordion style={{ margin: "0px" }}>
-                            <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel1-content"
-                              id="panel1-header"
-                              style={{ minHeight: "60px" }}
+                      <div className="p-30 pt-24 pb-0">
+                        {!addStake ? (
+                          <div className="mb-10">
+                            <b>Stakeholders</b>
+                          </div>
+                        ) : (
+                          <div className="font-semibold">
+                            <a
+                              rel="noopener noreferrer"
+                              onClick={() => setAddStake(false)}
                             >
-                              <div
-                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                style={{ width: "40%" }}
+                              Back to Stakeholders List
+                            </a>
+                          </div>
+                        )}
+                        {canEdits &&
+                          !addStake &&
+                          ChangeEvaluationDetail.map((list) => (
+                            <Accordion style={{ margin: "0px" }}>
+                              <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1-content"
+                                id="panel1-header"
+                                style={{ minHeight: "60px" }}
                               >
-                                <div className="flex items-center">
-                                  <img
-                                    src="/assets/images/etc/userpic.png"
-                                    alt="Card cover image"
-                                    className="rounded-full mr-4"
-                                    style={{ width: "4rem", height: "4rem" }}
-                                  />
-                                  <div className="flex flex-col">
-                                    <span className="font-semibold leading-none">
-                                      {list?.staff}
-                                    </span>
-                                    <span className="text-sm text-secondary leading-none pt-5">
-                                      Consulted on{" "}
-                                      {formatDate(list?.consultedDate)}
-                                    </span>
+                                <div
+                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                  style={{ width: "40%" }}
+                                >
+                                  <div className="flex items-center">
+                                    <img
+                                      src="/assets/images/etc/userpic.png"
+                                      alt="Card cover image"
+                                      className="rounded-full mr-4"
+                                      style={{ width: "4rem", height: "4rem" }}
+                                    />
+                                    <div className="flex flex-col">
+                                      <span className="font-semibold leading-none">
+                                        {list?.staff}
+                                      </span>
+                                      <span className="text-sm text-secondary leading-none pt-5">
+                                        Consulted on{" "}
+                                        {formatDate(list?.consultedDate)}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
 
-                              <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
-                                <div className="flex items-center">
-                                  <div
-                                    className="py-0.5 px-3 rounded-full text-sm"
-                                    style={{
-                                      backgroundColor:
-                                        list.comments == "" ||
-                                        list.comments == null
-                                          ? "rgba(252,165,165)"
-                                          : "rgba(134,239,172)",
-                                      padding: "5px",
-                                    }}
-                                  >
-                                    {list.comments === ""
-                                      ? "No Comments Added"
-                                      : list.comments}
+                                <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                  <div className="flex items-center">
+                                    <div
+                                      className="py-0.5 px-3 rounded-full text-sm"
+                                      style={{
+                                        backgroundColor:
+                                          list.comments == "" ||
+                                          list.comments == null
+                                            ? "rgba(252,165,165)"
+                                            : "rgba(134,239,172)",
+                                        padding: "5px",
+                                      }}
+                                    >
+                                      {list.comments === ""
+                                        ? "No Comments Added"
+                                        : list.comments}
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                              <Stepper orientation="vertical">
-                                <Step>
-                                  <div className="mat-expansion-panel-body ng-tns-c137-15">
-                                    <div className="mt-2 ng-tns-c137-15">
-                                      <div className="prose prose-sm max-w-5xl">
-                                        <div className="ng-star-inserted">
-                                          <span
-                                            className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
-                                            style={{
-                                              padding: "10px",
-                                            }}
-                                          >
-                                            {list.comments === ""
-                                              ? "No Comments Added"
-                                              : list.comments}
-                                          </span>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                <Stepper orientation="vertical">
+                                  <Step>
+                                    <div className="mat-expansion-panel-body ng-tns-c137-15">
+                                      <div className="mt-2 ng-tns-c137-15">
+                                        <div className="prose prose-sm max-w-5xl">
+                                          <div className="ng-star-inserted">
+                                            <span
+                                              className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                              style={{
+                                                padding: "10px",
+                                              }}
+                                            >
+                                              {list.comments === ""
+                                                ? "No Comments Added"
+                                                : list.comments}
+                                            </span>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </Step>
-                              </Stepper>
-                            </AccordionDetails>
-                          </Accordion>
-                        ))}
-                      {!canEdits &&
-                        ChangeEvaluationDetail.map((list) => (
-                          <Accordion style={{ margin: "0px" }}>
-                            <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              aria-controls="panel1-content"
-                              id="panel1-header"
-                              style={{ minHeight: "60px" }}
-                            >
-                              <div
-                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                style={{ width: "40%" }}
+                                  </Step>
+                                </Stepper>
+                              </AccordionDetails>
+                            </Accordion>
+                          ))}
+                        {!canEdits &&
+                          ChangeEvaluationDetail.map((list) => (
+                            <Accordion style={{ margin: "0px" }}>
+                              <AccordionSummary
+                                expandIcon={<ExpandMoreIcon />}
+                                aria-controls="panel1-content"
+                                id="panel1-header"
+                                style={{ minHeight: "60px" }}
                               >
-                                <div className="flex items-center">
-                                  <img
-                                    src="/assets/images/etc/userpic.png"
-                                    alt="Card cover image"
-                                    className="rounded-full mr-4"
-                                    style={{ width: "4rem", height: "4rem" }}
-                                  />
-                                  <div className="flex flex-col">
-                                    <span className="font-semibold leading-none">
-                                      {list?.staff}
-                                    </span>
-                                    <span className="text-sm text-secondary leading-none pt-5">
-                                      Consulted on{" "}
-                                      {formatDate(list?.consultedDate)}
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
-                                <div className="flex items-center">
-                                  <div
-                                    className="py-0.5 px-3 rounded-full text-sm"
-                                    style={{
-                                      backgroundColor:
-                                        list.comments == "" ||
-                                        list.comments == null
-                                          ? "rgba(252,165,165)"
-                                          : "rgba(134,239,172)",
-                                      padding: "5px",
-                                    }}
-                                  >
-                                    {list.comments === ""
-                                      ? "No Comments Added"
-                                      : "Comments Added"}
-                                  </div>
-                                </div>
-                              </div>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                              <Stepper orientation="vertical">
-                                <Step>
-                                  <div className="mat-expansion-panel-body ng-tns-c137-15">
-                                    <div className="mt-2 ng-tns-c137-15">
-                                      <div className="prose prose-sm max-w-5xl">
-                                        {list.comments ? (
-                                          <div className="ng-star-inserted">
-                                            <span
-                                              className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
-                                              style={{
-                                                backgroundColor:
-                                                  "rgba(241,245,249)",
-                                                padding: "10px",
-                                              }}
-                                            >
-                                              Comments
-                                            </span>
-                                            <span>complete</span>
-                                          </div>
-                                        ) : (
-                                          <div className="ng-star-inserted">
-                                            <span
-                                              className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
-                                              style={{
-                                                backgroundColor:
-                                                  "rgba(241,245,249)",
-                                                padding: "10px",
-                                              }}
-                                            >
-                                              No Comments Added
-                                            </span>
-                                          </div>
-                                        )}
-                                      </div>
+                                <div
+                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                  style={{ width: "40%" }}
+                                >
+                                  <div className="flex items-center">
+                                    <img
+                                      src="/assets/images/etc/userpic.png"
+                                      alt="Card cover image"
+                                      className="rounded-full mr-4"
+                                      style={{ width: "4rem", height: "4rem" }}
+                                    />
+                                    <div className="flex flex-col">
+                                      <span className="font-semibold leading-none">
+                                        {list?.staff}
+                                      </span>
+                                      <span className="text-sm text-secondary leading-none pt-5">
+                                        Consulted on{" "}
+                                        {formatDate(list?.consultedDate)}
+                                      </span>
                                     </div>
                                   </div>
-                                </Step>
-                              </Stepper>
-                            </AccordionDetails>
-                          </Accordion>
-                        ))}
-                      {!ChangeEvaluationDetail.length && (
-                        <div className="mt-5 mb-4 p-6 py-2">
-                          <h5>
-                            {errorss ? (
-                              <b className="text-red">{errorss}</b>
-                            ) : (
-                              "No stakeholders added"
-                            )}
-                          </h5>
-                        </div>
-                      )}
-                      <div>&nbsp;</div>
+                                </div>
+
+                                <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                  <div className="flex items-center">
+                                    <div
+                                      className="py-0.5 px-3 rounded-full text-sm"
+                                      style={{
+                                        backgroundColor:
+                                          list.comments == "" ||
+                                          list.comments == null
+                                            ? "rgba(252,165,165)"
+                                            : "rgba(134,239,172)",
+                                        padding: "5px",
+                                      }}
+                                    >
+                                      {list.comments === ""
+                                        ? "No Comments Added"
+                                        : "Comments Added"}
+                                    </div>
+                                  </div>
+                                </div>
+                              </AccordionSummary>
+                              <AccordionDetails>
+                                <Stepper orientation="vertical">
+                                  <Step>
+                                    <div className="mat-expansion-panel-body ng-tns-c137-15">
+                                      <div className="mt-2 ng-tns-c137-15">
+                                        <div className="prose prose-sm max-w-5xl">
+                                          {list.comments ? (
+                                            <div className="ng-star-inserted">
+                                              <span
+                                                className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                                style={{
+                                                  backgroundColor:
+                                                    "rgba(241,245,249)",
+                                                  padding: "10px",
+                                                }}
+                                              >
+                                                Comments
+                                              </span>
+                                              <span>complete</span>
+                                            </div>
+                                          ) : (
+                                            <div className="ng-star-inserted">
+                                              <span
+                                                className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                                style={{
+                                                  backgroundColor:
+                                                    "rgba(241,245,249)",
+                                                  padding: "10px",
+                                                }}
+                                              >
+                                                No Comments Added
+                                              </span>
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </Step>
+                                </Stepper>
+                              </AccordionDetails>
+                            </Accordion>
+                          ))}
+                        {!ChangeEvaluationDetail.length && (
+                          <div className="mt-5 mb-4 p-6 py-2">
+                            <h5>
+                              {errorss ? (
+                                <b className="text-red">{errorss}</b>
+                              ) : (
+                                "No stakeholders added"
+                              )}
+                            </h5>
+                          </div>
+                        )}
+                      </div>
                       {addStake &&
                         forms.map((form, index) => (
                           <div
@@ -1701,13 +1698,10 @@ function Course() {
 
                       {addStake && (
                         <>
-                          <div>&nbsp;</div>
-                          <div>&nbsp;</div>
                           <div
                             _ngcontent-fyk-c288=""
                             class="flex items-center w-full  border-b justify-between"
                           ></div>
-                          <div>&nbsp;</div>
 
                           <div className="flex justify-between">
                             <div>
@@ -1763,7 +1757,7 @@ function Course() {
                               </Button>
                             </div>
                           </div>
-                          <div>&nbsp;</div>
+
                           <div
                             _ngcontent-fyk-c288=""
                             class="flex items-center w-full  border-b justify-between"
@@ -1794,7 +1788,6 @@ function Course() {
                               Add Stakeholders
                             </Button>
                           )}
-                          <div>&nbsp;</div>
 
                           <Box
                             sx={{
@@ -1832,9 +1825,7 @@ function Course() {
                           >
                             Update
                           </Button>
-                          <div>&nbsp;</div>
-                          <div>&nbsp;</div>
-                          <div>&nbsp;</div>
+
                           <div
                             _ngcontent-fyk-c288=""
                             class="flex items-center w-full  border-b justify-between"
@@ -1857,10 +1848,7 @@ function Course() {
                         </>
                       )}
                       {!canEdits && (
-                        <div
-                          className=" mb-4 p-6 py-2"
-                          style={{ marginTop: "2.5rem" }}
-                        >
+                        <div className="p-30 pt-10 pb-24">
                           <div className="flex row">
                             <div className="ng-star-inserted">
                               <div>Consolidated Document Url</div>
@@ -1935,202 +1923,195 @@ function Course() {
                   </>
                 )}
                 {currentPhase === "Approval" && (
-                  <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
-                    <div>
+                  <Paper className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
+                    >
+                      <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+                        Summary Details
+                      </h2>
+                    </div>
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="p-30 pt-24 pb-24 mb-6 ng-star-inserted"
+                    >
                       <div
                         _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
+                        class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                       >
-                        <h2
-                          _ngcontent-fyk-c288=""
-                          class="text-2xl font-semibold"
-                        >
-                          Summary Details
-                        </h2>
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Request No{" "}
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.requestNo}
+                          </div>
+                        </div>
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Initiator
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.initiatorName}
+                          </div>
+                        </div>
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Initiated On
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.requestDate}
+                          </div>
+                        </div>
                       </div>
+
                       <div
                         _ngcontent-fyk-c288=""
-                        class="px-6 mb-6 ng-star-inserted"
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                       >
-                        <div>&nbsp;</div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Request No{" "}
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.requestNo}
-                            </div>
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Type{" "}
                           </div>
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Initiator
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.initiatorName}
-                            </div>
-                          </div>
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Initiated On
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.requestDate}
-                            </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.requestTypeName}
                           </div>
                         </div>
-                        <div>&nbsp;</div>
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Name
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.projectName}
+                          </div>
+                        </div>
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Description
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.projectDescription}
+                          </div>
+                        </div>
+                      </div>
 
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Type{" "}
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.requestTypeName}
-                            </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                      >
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Type
                           </div>
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Document Name
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.projectName}
-                            </div>
-                          </div>
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Document Description
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.projectDescription}
-                            </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.documentType}New
                           </div>
                         </div>
-                        <div>&nbsp;</div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Document Type
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.documentType}New
-                            </div>
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Reason for New Document
                           </div>
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Reason for New Document
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.reasonForNewDocument}
-                            </div>
-                          </div>
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Doc Controller
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.docControllerName}
-                            </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.reasonForNewDocument}
                           </div>
                         </div>
-                        <div>&nbsp;</div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Validity Expiring On
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {formatDate(contentDetails?.docOldValidityDate)}
-                              New
-                            </div>
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Doc Controller
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.docControllerName}
                           </div>
                         </div>
-                        <div>&nbsp;</div>
+                      </div>
 
-                        <div _ngcontent-fyk-c288="">
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                      >
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Validity Expiring On
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {formatDate(contentDetails?.docOldValidityDate)}
+                            New
+                          </div>
+                        </div>
+                      </div>
+                      <div _ngcontent-fyk-c288="" class="grid w-full">
+                        <div className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -2152,33 +2133,34 @@ function Course() {
                               {contentDetails?.consolidatedDocumentUrl}
                             </a>
                           </div>
+                        </div>
+                      </div>
 
-                          <div _ngcontent-fyk-c288="">
-                            <div
+                      <div _ngcontent-fyk-c288="" class="grid  w-full">
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Consolidated Document Url
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            <a
                               _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
+                              target="_blank"
+                              class="text-blue-500 hover:text-blue-800"
+                              style={{ background: "none", color: "blue" }}
+                              href={contentDetails?.documentUrl}
                             >
-                              Consolidated Document Url
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              <a
-                                _ngcontent-fyk-c288=""
-                                target="_blank"
-                                class="text-blue-500 hover:text-blue-800"
-                                style={{ background: "none", color: "blue" }}
-                                href={contentDetails?.documentUrl}
-                              >
-                                {contentDetails?.documentUrl}
-                              </a>
-                            </div>
+                              {contentDetails?.documentUrl}
+                            </a>
                           </div>
                         </div>
                       </div>
-                      <div>&nbsp;</div>
                     </div>
                   </Paper>
                 )}
@@ -2186,12 +2168,12 @@ function Course() {
                 {currentPhase === "Implementation" && (
                   <>
                     <Paper
-                      className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
-                      style={{ marginRight: "15px", width: "100%" }}
+                      className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden"
+                      style={{ marginRight: "0", width: "100%" }}
                     >
                       <div
                         _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
+                        class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
                       >
                         <h2
                           _ngcontent-fyk-c288=""
@@ -2201,7 +2183,7 @@ function Course() {
                         </h2>
 
                         <Button
-                          className="whitespace-nowrap mt-5 mb-5"
+                          className="whitespace-nowrap "
                           style={{
                             border: "1px solid",
                             backgroundColor: "#0000",
@@ -2235,24 +2217,23 @@ function Course() {
                         >
                           <Fade in={open}>
                             <Box sx={style1}>
-                              <Box>
-                                <Box
-                                  className="flex justify-between"
-                                  style={{ margin: "30px" }}
+                              <Box className="">
+                                <Typography
+                                  id="transition-modal-title"
+                                  variant="h6"
+                                  component="h2"
+                                  className="p-30 pt-24 pb-24"
+                                  style={{
+                                    backgroundColor: "rgb(79, 70, 229)",
+                                    borderTopLeftRadius: "16px",
+                                    borderTopRightRadius: "16px",
+                                    color: "white",
+                                  }}
                                 >
-                                  <Typography
-                                    id="transition-modal-title"
-                                    variant="h6"
-                                    component="h2"
-                                    style={{
-                                      fontSize: "4rem",
-                                      fontWeight: "800px !important",
-                                    }}
-                                  >
-                                    File Manager
-                                  </Typography>
-                                </Box>
+                                  File Manager
+                                </Typography>
                               </Box>
+
                               <Box>
                                 <Typography
                                   id="transition-modal-title"
@@ -2295,7 +2276,7 @@ function Course() {
                                       x
                                     </Button>
                                   </div>
-                                  <div>&nbsp;</div>
+
                                   <div className="text-center">
                                     <label htmlFor="fileInput">
                                       <div className=" ">
@@ -2305,7 +2286,10 @@ function Course() {
                                             textAlign: "-webkit-center",
                                           }}
                                         >
-                                          <img src="/assets/images/etc/icon_N.png" />
+                                          <img
+                                            src="/assets/images/etc/icon_N.png"
+                                            alt=""
+                                          />
                                         </div>
                                         {selectedDocument?.name}
                                       </div>
@@ -2420,7 +2404,7 @@ function Course() {
                         </Modal>
                       </div>
 
-                      <Box sx={{ width: "100%" }}>
+                      <Box sx={{ width: "100%" }} className="p-30 pt-24 pb-24">
                         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                           <Tabs
                             value={value}
@@ -2432,146 +2416,21 @@ function Course() {
                           </Tabs>
                         </Box>
                         <CustomTabPanel value={value} index={0}>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="flex items-center w-full  border-b justify-between"
-                          >
-                            <div className="flex items-center">
-                              <h2
-                                _ngcontent-fyk-c288=""
-                                class="text-2xl font-semibold"
-                                style={{ marginRight: "15px" }}
-                              >
-                                {taskLists.length} Tasks
-                              </h2>
-                              {!impActivity.isComplete &&
-                                impActivity.status === "Pending" && (
-                                  <Button
-                                    className="whitespace-nowrap mt-5 mb-5"
-                                    style={{
-                                      border: "1px solid",
-                                      backgroundColor: "#0000",
-                                      color: "black",
-                                      borderColor: "rgba(203,213,225)",
-                                    }}
-                                    variant="contained"
-                                    color="warning"
-                                    onClick={handleOpenImplemntationTask}
-                                  >
-                                    Add New Task
-                                  </Button>
-                                )}
-                              <Button
-                                className="whitespace-nowrap mt-5 mb-5 ms-5"
-                                style={{
-                                  border: "1px solid",
-                                  backgroundColor: "#0000",
-                                  color: "black",
-                                  borderColor: "rgba(203,213,225)",
-                                }}
-                                variant="contained"
-                                color="warning"
-                                onClick={handleOpen}
-                              >
-                                Audits Lists
-                              </Button>
-                            </div>
-
-                            <TextField
-                              variant="filled"
-                              fullWidth
-                              placeholder="Search"
-                              style={{
-                                marginBottom: "15px",
-                                backgroundColor: "white",
-                              }}
-                              value={searchTerm}
-                              InputProps={{
-                                startAdornment: (
-                                  <InputAdornment
-                                    position="start"
-                                    style={{
-                                      marginTop: "0px",
-                                      paddingTop: "0px",
-                                    }}
-                                  >
-                                    <SearchIcon />
-                                  </InputAdornment>
-                                ),
-                              }}
-                              sx={{ width: 320 }}
-                            />
-                          </div>
-                          {taskLists.map((task) => (
-                            <Accordion key={task.id} style={{ margin: "0px" }}>
-                              <AccordionSummary
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls={`panel${task.id}-content`}
-                                id={`panel${task.id}-header`}
-                                style={{ minHeight: "60px" }}
-                                onClick={(e) => handelComments(e, task.id)}
-                              >
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
+                          <div class="flex flex-col p-30 w-full border rounded">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="flex items-center w-full  border-b justify-between"
+                            >
+                              <div className="flex items-center">
+                                <h2
+                                  _ngcontent-fyk-c288=""
+                                  class="text-2xl font-semibold"
+                                  style={{ marginRight: "15px" }}
                                 >
-                                  <div className="flex items-center">
-                                    Task #{task.id}
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
-                                >
-                                  <div className="flex items-center" style={{}}>
-                                    {task.isCompleted &&
-                                    task.taskStatus === 3 ? (
-                                      <span className="text-green">
-                                        Approved
-                                      </span>
-                                    ) : task.isCompleted &&
-                                      task.taskStatus !== 3 ? (
-                                      <span className="text-red">
-                                        Awaiting Approval
-                                      </span>
-                                    ) : (
-                                      <span className="text-black">
-                                        Not Completed
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
-                                >
-                                  <div className="flex items-center">
-                                    No Risks
-                                  </div>
-                                </div>
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
-                                >
-                                  <div className="flex items-center">
-                                    {task.assignedStaff}
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
-                                >
-                                  <div className="flex items-center">
-                                    {formatDate(task.dueDate)}
-                                  </div>
-                                </div>
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
-                                >
-                                  <div className="flex items-center">
+                                  {taskLists.length} Tasks
+                                </h2>
+                                {!impActivity.isComplete &&
+                                  impActivity.status === "Pending" && (
                                     <Button
                                       className="whitespace-nowrap mt-5 mb-5"
                                       style={{
@@ -2582,309 +2441,441 @@ function Course() {
                                       }}
                                       variant="contained"
                                       color="warning"
-                                      onClick={handleOpen}
+                                      onClick={handleOpenImplemntationTask}
                                     >
-                                      Audits
+                                      Add New Task
                                     </Button>
+                                  )}
+                                <Button
+                                  className="whitespace-nowrap mt-5 mb-5 ms-5"
+                                  style={{
+                                    border: "1px solid",
+                                    backgroundColor: "#0000",
+                                    color: "black",
+                                    borderColor: "rgba(203,213,225)",
+                                  }}
+                                  variant="contained"
+                                  color="warning"
+                                  onClick={handleOpen}
+                                >
+                                  Audits Lists
+                                </Button>
+                              </div>
+
+                              <TextField
+                                variant="filled"
+                                fullWidth
+                                placeholder="Search"
+                                style={{
+                                  marginBottom: "15px",
+                                  backgroundColor: "white",
+                                }}
+                                value={searchTerm}
+                                InputProps={{
+                                  startAdornment: (
+                                    <InputAdornment
+                                      position="start"
+                                      style={{
+                                        marginTop: "0px",
+                                        paddingTop: "0px",
+                                      }}
+                                    >
+                                      <SearchIcon />
+                                    </InputAdornment>
+                                  ),
+                                }}
+                                sx={{ width: 320 }}
+                              />
+                            </div>
+                            {taskLists.map((task) => (
+                              <Accordion
+                                key={task.id}
+                                style={{ margin: "0px" }}
+                              >
+                                <AccordionSummary
+                                  expandIcon={<ExpandMoreIcon />}
+                                  aria-controls={`panel${task.id}-content`}
+                                  id={`panel${task.id}-header`}
+                                  style={{ minHeight: "60px" }}
+                                  onClick={(e) => handelComments(e, task.id)}
+                                >
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    style={{ width: "17%" }}
+                                  >
+                                    <div className="flex items-center">
+                                      Task #{task.id}
+                                    </div>
                                   </div>
-                                </div>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <Stepper orientation="vertical">
-                                  <Step>
-                                    <div style={{ alignItems: "flex-start" }}>
-                                      <div className="flex flex-col items-start mt-5">
-                                        <div
-                                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                          style={{
-                                            padding: "20px",
-                                            backgroundColor: "#EBF8FF",
-                                          }}
-                                        >
-                                          <b>{task?.assignedByStaff}</b>
-                                          <p>
-                                            What is the task :{" "}
-                                            {task?.actionWhat}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      <div className="flex flex-col items-start mt-5">
-                                        <div
-                                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                          style={{
-                                            padding: "20px",
-                                            backgroundColor: "#EBF8FF",
-                                          }}
-                                        >
-                                          <p>
-                                            How is Task done : {task?.actionHow}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      {task?.particularName &&
-                                        task?.particularSubName && (
-                                          <div className="flex flex-col items-start mt-5">
-                                            <div
-                                              className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                              style={{
-                                                padding: "20px",
-                                                backgroundColor: "#EBF8FF",
-                                              }}
-                                            >
-                                              <p>
-                                                Impact :{" "}
-                                                {`${task?.particularName} > ${task?.particularSubName}`}
-                                              </p>
-                                            </div>
+
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    style={{ width: "17%" }}
+                                  >
+                                    <div
+                                      className="flex items-center"
+                                      style={{}}
+                                    >
+                                      {task.isCompleted &&
+                                      task.taskStatus === 3 ? (
+                                        <span className="text-green">
+                                          Approved
+                                        </span>
+                                      ) : task.isCompleted &&
+                                        task.taskStatus !== 3 ? (
+                                        <span className="text-red">
+                                          Awaiting Approval
+                                        </span>
+                                      ) : (
+                                        <span className="text-black">
+                                          Not Completed
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    style={{ width: "17%" }}
+                                  >
+                                    <div className="flex items-center">
+                                      No Risks
+                                    </div>
+                                  </div>
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    style={{ width: "17%" }}
+                                  >
+                                    <div className="flex items-center">
+                                      {task.assignedStaff}
+                                    </div>
+                                  </div>
+
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    style={{ width: "17%" }}
+                                  >
+                                    <div className="flex items-center">
+                                      {formatDate(task.dueDate)}
+                                    </div>
+                                  </div>
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    style={{ width: "17%" }}
+                                  >
+                                    <div className="flex items-center">
+                                      <Button
+                                        className="whitespace-nowrap mt-5 mb-5"
+                                        style={{
+                                          border: "1px solid",
+                                          backgroundColor: "#0000",
+                                          color: "black",
+                                          borderColor: "rgba(203,213,225)",
+                                        }}
+                                        variant="contained"
+                                        color="warning"
+                                        onClick={handleOpen}
+                                      >
+                                        Audits
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                  <Stepper orientation="vertical">
+                                    <Step>
+                                      <div style={{ alignItems: "flex-start" }}>
+                                        <div className="flex flex-col items-start mt-5">
+                                          <div
+                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                            style={{
+                                              padding: "20px",
+                                              backgroundColor: "#EBF8FF",
+                                            }}
+                                          >
+                                            <b>{task?.assignedByStaff}</b>
+                                            <p>
+                                              What is the task :{" "}
+                                              {task?.actionWhat}
+                                            </p>
                                           </div>
-                                        )}
-                                      <div className="flex flex-col items-start mt-5">
-                                        <div
-                                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                          style={{
-                                            padding: "20px",
-                                            backgroundColor: "#EBF8FF",
-                                          }}
-                                        >
-                                          <p>
-                                            Due Date :{" "}
-                                            {formatDate(task.dueDate)}
-                                          </p>
                                         </div>
-                                      </div>
-                                      <div>&nbsp;</div>
-                                      <div className="flex items-center justify-center my-3">
-                                        <div className="flex-auto border-b"></div>
-                                        <div
-                                          className="flex-0 "
-                                          style={{ fontSize: "xx-small" }}
-                                        >
-                                          <b>{task?.assignedByStaff}</b> has
-                                          assigned task to{" "}
-                                          <b>{task?.assignedStaff}</b> on{" "}
-                                          {formatDate(task.assignedAt)}
+                                        <div className="flex flex-col items-start mt-5">
+                                          <div
+                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                            style={{
+                                              padding: "20px",
+                                              backgroundColor: "#EBF8FF",
+                                            }}
+                                          >
+                                            <p>
+                                              How is Task done :{" "}
+                                              {task?.actionHow}
+                                            </p>
+                                          </div>
                                         </div>
-                                        <div className="flex-auto border-b"></div>
-                                      </div>
-                                      <div>&nbsp;</div>
-                                      {impComments.map((msg) => (
-                                        <div
-                                          key={msg.id}
-                                          className="flex flex-row flex-wrap mb-2"
-                                          style={{
-                                            width: "auto",
-                                            display: "block",
-                                            clear: "both",
-                                          }}
-                                        >
-                                          {msg?.remark && (
-                                            <div
-                                              className="flex flex-row items-start mt-5"
-                                              style={{ position: "relative" }}
-                                            >
-                                              <div
-                                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
-                                                style={{ padding: "10px" }}
-                                              >
-                                                <div
-                                                  className="font-semibold"
-                                                  style={{
-                                                    fontSize: "smaller",
-                                                  }}
-                                                >
-                                                  {" "}
-                                                  {task.assignedStaff}{" "}
-                                                </div>
-                                                <div
-                                                  dangerouslySetInnerHTML={{
-                                                    __html: msg?.remark,
-                                                  }}
-                                                ></div>
-                                                <div className="my-0.5 text-xs font-medium text-secondary">
-                                                  <small>
-                                                    {msg.startedDate &&
-                                                    !msg.workInProgressDate &&
-                                                    !msg.completedDate &&
-                                                    !msg.dueDate
-                                                      ? `Started on ${formatDates(msg.startedDate)}`
-                                                      : msg.workInProgressDate &&
-                                                          !msg.completedDate &&
-                                                          !msg.dueDate
-                                                        ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
-                                                        : msg.dueDate &&
-                                                            !msg.completedDate
-                                                          ? `Due on ${formatDates(msg.dueDate)}`
-                                                          : msg.completedDate
-                                                            ? `Completed on ${formatDates(msg.completedDate)}`
-                                                            : "Unknown"}
-                                                  </small>
-                                                </div>
-                                              </div>
-                                              <button
-                                                className="icon-button"
-                                                onClick={() =>
-                                                  handleOpen(msg.id)
-                                                }
-                                                style={{
-                                                  top: "-15px",
-                                                  right: "-20px",
-                                                }}
-                                              >
-                                                <FuseSvgIcon size={20}>
-                                                  heroicons-solid:document
-                                                </FuseSvgIcon>
-                                                <span className="count">
-                                                  {documentCounts[msg.id]}
-                                                </span>
-                                              </button>
-                                            </div>
-                                          )}
-                                          {msg.comments && (
+                                        {task?.particularName &&
+                                          task?.particularSubName && (
                                             <div className="flex flex-col items-start mt-5">
                                               <div
                                                 className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                                 style={{
-                                                  padding: "10px",
+                                                  padding: "20px",
                                                   backgroundColor: "#EBF8FF",
                                                 }}
                                               >
-                                                <div
-                                                  className="font-semibold"
-                                                  style={{
-                                                    fontSize: "smaller",
-                                                  }}
-                                                >
-                                                  {" "}
-                                                  {task.assignedByStaff}{" "}
-                                                </div>
-                                                <div
-                                                  className="min-w-4 leading-5 "
-                                                  dangerouslySetInnerHTML={{
-                                                    __html: msg.comments,
-                                                  }}
-                                                  style={{
-                                                    fontSize: "smaller",
-                                                  }}
-                                                ></div>
-                                                <div
-                                                  className="min-w-4 leading-5"
-                                                  style={{
-                                                    fontSize: "xx-small",
-                                                  }}
-                                                >
-                                                  {" "}
-                                                  {msg.approvalStatusDate && (
-                                                    <>
-                                                      {msg.approverId
-                                                        ? "Approved on"
-                                                        : "Rejected on"}{" "}
-                                                      {new Date(
-                                                        msg.approvalStatusDate
-                                                      ).toLocaleString(
-                                                        "en-US",
-                                                        {
-                                                          month: "short",
-                                                          day: "2-digit",
-                                                          hour: "numeric",
-                                                          minute: "numeric",
-                                                          hour12: true,
-                                                        }
-                                                      )}
-                                                    </>
-                                                  )}
-                                                </div>
+                                                <p>
+                                                  Impact :{" "}
+                                                  {`${task?.particularName} > ${task?.particularSubName}`}
+                                                </p>
                                               </div>
                                             </div>
                                           )}
+                                        <div className="flex flex-col items-start mt-5">
+                                          <div
+                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                            style={{
+                                              padding: "20px",
+                                              backgroundColor: "#EBF8FF",
+                                            }}
+                                          >
+                                            <p>
+                                              Due Date :{" "}
+                                              {formatDate(task.dueDate)}
+                                            </p>
+                                          </div>
                                         </div>
-                                      ))}
-                                      {task.isCompleted &&
-                                        task.taskStatus !== 3 && (
-                                          <>
-                                            <div>&nbsp;</div>
 
-                                            <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                        <div className="flex items-center justify-center my-3">
+                                          <div className="flex-auto border-b"></div>
+                                          <div
+                                            className="flex-0 "
+                                            style={{ fontSize: "xx-small" }}
+                                          >
+                                            <b>{task?.assignedByStaff}</b> has
+                                            assigned task to{" "}
+                                            <b>{task?.assignedStaff}</b> on{" "}
+                                            {formatDate(task.assignedAt)}
+                                          </div>
+                                          <div className="flex-auto border-b"></div>
+                                        </div>
+
+                                        {impComments.map((msg) => (
+                                          <div
+                                            key={msg.id}
+                                            className="flex flex-row flex-wrap mb-2"
+                                            style={{
+                                              width: "auto",
+                                              display: "block",
+                                              clear: "both",
+                                            }}
+                                          >
+                                            {msg?.remark && (
                                               <div
-                                                _ngcontent-fyk-c288=""
-                                                class="flex items-center w-full  border-b justify-between"
-                                              ></div>
-                                            </div>
-                                            {currentActivityForm.canEdit && (
-                                              <div
-                                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                                style={{ width: "100%" }}
+                                                className="flex flex-row items-start mt-5"
+                                                style={{ position: "relative" }}
                                               >
-                                                <Box
-                                                  sx={{
-                                                    display: "flex",
-                                                    flexWrap: "wrap",
-                                                  }}
+                                                <div
+                                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
+                                                  style={{ padding: "10px" }}
                                                 >
-                                                  <FormControl
-                                                    fullWidth
-                                                    sx={{
-                                                      m: 1,
-                                                      maxWidth: "100%",
+                                                  <div
+                                                    className="font-semibold"
+                                                    style={{
+                                                      fontSize: "smaller",
                                                     }}
                                                   >
-                                                    <span className="font-semibold leading-none">
-                                                      Comments*
-                                                    </span>
-                                                    <OutlinedInput
-                                                      id="reasonForNewDocument"
-                                                      name="reasonForNewDocument"
-                                                      onChange={(e) =>
-                                                        setComments(
-                                                          e.target.value
-                                                        )
-                                                      }
-                                                      label="Reason For Change*"
-                                                      className="mt-5"
-                                                    />
-                                                  </FormControl>
-                                                </Box>
+                                                    {" "}
+                                                    {task.assignedStaff}{" "}
+                                                  </div>
+                                                  <div
+                                                    dangerouslySetInnerHTML={{
+                                                      __html: msg?.remark,
+                                                    }}
+                                                  ></div>
+                                                  <div className="my-0.5 text-xs font-medium text-secondary">
+                                                    <small>
+                                                      {msg.startedDate &&
+                                                      !msg.workInProgressDate &&
+                                                      !msg.completedDate &&
+                                                      !msg.dueDate
+                                                        ? `Started on ${formatDates(msg.startedDate)}`
+                                                        : msg.workInProgressDate &&
+                                                            !msg.completedDate &&
+                                                            !msg.dueDate
+                                                          ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
+                                                          : msg.dueDate &&
+                                                              !msg.completedDate
+                                                            ? `Due on ${formatDates(msg.dueDate)}`
+                                                            : msg.completedDate
+                                                              ? `Completed on ${formatDates(msg.completedDate)}`
+                                                              : "Unknown"}
+                                                    </small>
+                                                  </div>
+                                                </div>
+                                                <button
+                                                  className="icon-button"
+                                                  onClick={() =>
+                                                    handleOpen(msg.id)
+                                                  }
+                                                  style={{
+                                                    top: "-15px",
+                                                    right: "-20px",
+                                                  }}
+                                                >
+                                                  <FuseSvgIcon size={20}>
+                                                    heroicons-solid:document
+                                                  </FuseSvgIcon>
+                                                  <span className="count">
+                                                    {documentCounts[msg.id]}
+                                                  </span>
+                                                </button>
                                               </div>
                                             )}
-                                            {currentActivityForm.canEdit && (
-                                              <div className="flex justify-start ">
-                                                <Button
-                                                  className="whitespace-nowrap ms-5 "
-                                                  variant="contained"
-                                                  color="secondary"
+                                            {msg.comments && (
+                                              <div className="flex flex-col items-start mt-5">
+                                                <div
+                                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                                   style={{
-                                                    marginTop: "10px",
-                                                    backgroundColor: "white",
-                                                    color: "black",
+                                                    padding: "10px",
+                                                    backgroundColor: "#EBF8FF",
                                                   }}
-                                                  onClick={(e) =>
-                                                    handelRejectImpl(e, task)
-                                                  }
                                                 >
-                                                  Reject
-                                                </Button>
-                                                <Button
-                                                  className="whitespace-nowrap ms-5 "
-                                                  variant="contained"
-                                                  color="secondary"
-                                                  style={{
-                                                    marginTop: "10px",
-                                                  }}
-                                                  onClick={(e) =>
-                                                    handelApproveImpl(e, task)
-                                                  }
-                                                >
-                                                  Approve
-                                                </Button>
+                                                  <div
+                                                    className="font-semibold"
+                                                    style={{
+                                                      fontSize: "smaller",
+                                                    }}
+                                                  >
+                                                    {" "}
+                                                    {task.assignedByStaff}{" "}
+                                                  </div>
+                                                  <div
+                                                    className="min-w-4 leading-5 "
+                                                    dangerouslySetInnerHTML={{
+                                                      __html: msg.comments,
+                                                    }}
+                                                    style={{
+                                                      fontSize: "smaller",
+                                                    }}
+                                                  ></div>
+                                                  <div
+                                                    className="min-w-4 leading-5"
+                                                    style={{
+                                                      fontSize: "xx-small",
+                                                    }}
+                                                  >
+                                                    {" "}
+                                                    {msg.approvalStatusDate && (
+                                                      <>
+                                                        {msg.approverId
+                                                          ? "Approved on"
+                                                          : "Rejected on"}{" "}
+                                                        {new Date(
+                                                          msg.approvalStatusDate
+                                                        ).toLocaleString(
+                                                          "en-US",
+                                                          {
+                                                            month: "short",
+                                                            day: "2-digit",
+                                                            hour: "numeric",
+                                                            minute: "numeric",
+                                                            hour12: true,
+                                                          }
+                                                        )}
+                                                      </>
+                                                    )}
+                                                  </div>
+                                                </div>
                                               </div>
                                             )}
-                                          </>
-                                        )}
-                                    </div>
-                                  </Step>
-                                </Stepper>
-                              </AccordionDetails>
-                            </Accordion>
-                          ))}
+                                          </div>
+                                        ))}
+                                        {task.isCompleted &&
+                                          task.taskStatus !== 3 && (
+                                            <>
+                                              <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                                <div
+                                                  _ngcontent-fyk-c288=""
+                                                  class="flex items-center w-full  border-b justify-between"
+                                                ></div>
+                                              </div>
+                                              {currentActivityForm.canEdit && (
+                                                <div
+                                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                                  style={{ width: "100%" }}
+                                                >
+                                                  <Box
+                                                    sx={{
+                                                      display: "flex",
+                                                      flexWrap: "wrap",
+                                                    }}
+                                                  >
+                                                    <FormControl
+                                                      fullWidth
+                                                      sx={{
+                                                        m: 1,
+                                                        maxWidth: "100%",
+                                                      }}
+                                                    >
+                                                      <span className="font-semibold leading-none">
+                                                        Comments*
+                                                      </span>
+                                                      <OutlinedInput
+                                                        id="reasonForNewDocument"
+                                                        name="reasonForNewDocument"
+                                                        onChange={(e) =>
+                                                          setComments(
+                                                            e.target.value
+                                                          )
+                                                        }
+                                                        label="Reason For Change*"
+                                                        className="mt-5"
+                                                      />
+                                                    </FormControl>
+                                                  </Box>
+                                                </div>
+                                              )}
+                                              {currentActivityForm.canEdit && (
+                                                <div className="flex justify-start ">
+                                                  <Button
+                                                    className="whitespace-nowrap ms-5 "
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    style={{
+                                                      marginTop: "10px",
+                                                      backgroundColor: "white",
+                                                      color: "black",
+                                                    }}
+                                                    onClick={(e) =>
+                                                      handelRejectImpl(e, task)
+                                                    }
+                                                  >
+                                                    Reject
+                                                  </Button>
+                                                  <Button
+                                                    className="whitespace-nowrap ms-5 "
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    style={{
+                                                      marginTop: "10px",
+                                                    }}
+                                                    onClick={(e) =>
+                                                      handelApproveImpl(e, task)
+                                                    }
+                                                  >
+                                                    Approve
+                                                  </Button>
+                                                </div>
+                                              )}
+                                            </>
+                                          )}
+                                      </div>
+                                    </Step>
+                                  </Stepper>
+                                </AccordionDetails>
+                              </Accordion>
+                            ))}
+                          </div>
                         </CustomTabPanel>
                         {!impActivity.isComplete &&
                           impActivity.status === "Pending" &&
@@ -2940,7 +2931,6 @@ function Course() {
                                   </FormControl>
                                 </Box>
                               )}
-                              <div>&nbsp;</div>
 
                               <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                 <div
@@ -3025,7 +3015,7 @@ function Course() {
                                 )}
                             </ul>
                           </div>
-                          <div>&nbsp;</div>
+
                           {!impActivity.isComplete &&
                             impActivity.status === "Pending" &&
                             value == 1 && (
@@ -3078,7 +3068,6 @@ function Course() {
                                     </Box>
                                   </FormControl>
                                 </Box>
-                                <div>&nbsp;</div>
 
                                 <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                   <div
@@ -3434,37 +3423,36 @@ function Course() {
                   </>
                 )}
                 {currentPhase === "docimplclosure" && (
-                  <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
+                  <Paper className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
                     <div
                       _ngcontent-fyk-c288=""
-                      class="flex items-center w-full  border-b justify-between"
+                      class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
                     >
                       <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                         Closure by Doc Controller
                       </h2>
                     </div>
-                    <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
+                    <Paper className="w-full">
                       <div
                         _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
+                        class="p-30 pt-24 pb-24 ng-star-inserted"
                       >
-                        <h2
+                        <div
                           _ngcontent-fyk-c288=""
-                          class="text-2xl font-semibold"
+                          class="flex items-center w-full mb-10 justify-between"
                         >
-                          Summary Details
-                        </h2>
-                      </div>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="px-6 mb-6 ng-star-inserted"
-                      >
-                        <div>&nbsp;</div>
+                          <h2
+                            _ngcontent-fyk-c288=""
+                            class="text-xl font-semibold"
+                          >
+                            Summary Details
+                          </h2>
+                        </div>
                         <div
                           _ngcontent-fyk-c288=""
                           class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                         >
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3479,7 +3467,7 @@ function Course() {
                               {contentDetails?.requestNo}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3494,7 +3482,7 @@ function Course() {
                               {contentDetails?.initiatorName}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3510,13 +3498,12 @@ function Course() {
                             </div>
                           </div>
                         </div>
-                        <div>&nbsp;</div>
 
                         <div
                           _ngcontent-fyk-c288=""
                           class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                         >
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3531,7 +3518,7 @@ function Course() {
                               {contentDetails?.requestTypeName}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3546,7 +3533,7 @@ function Course() {
                               {contentDetails?.projectName}
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3562,12 +3549,12 @@ function Course() {
                             </div>
                           </div>
                         </div>
-                        <div>&nbsp;</div>
+
                         <div
                           _ngcontent-fyk-c288=""
                           class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
                         >
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3582,7 +3569,7 @@ function Course() {
                               {contentDetails?.documentType}New
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3598,12 +3585,9 @@ function Course() {
                             </div>
                           </div>
                         </div>
-                        <div>&nbsp;</div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="">
+
+                        <div _ngcontent-fyk-c288="" class="grid w-full">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3625,7 +3609,7 @@ function Course() {
                               </a>
                             </div>
                           </div>
-                          <div _ngcontent-fyk-c288="">
+                          <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
@@ -3649,9 +3633,8 @@ function Course() {
                           </div>
                         </div>
                       </div>
-                      <div>&nbsp;</div>
                     </Paper>
-                    <div>&nbsp;</div>
+
                     {currentActivityForm.canEdit && (
                       <>
                         <div
@@ -3677,18 +3660,17 @@ function Course() {
                     )}
                   </Paper>
                 )}
-              </div>
-              {currentPhase === "Approval" &&
-                currentPhaseName === "Approval" && (
-                  <div className="flex justify-center p-16  pb-64 sm:p-24 ">
+
+                {currentPhase === "Approval" &&
+                  currentPhaseName === "Approval" && (
                     <>
                       <Paper
-                        className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
-                        style={{ marginRight: "15px", width: "100%" }}
+                        className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden"
+                        style={{ width: "100%" }}
                       >
                         <div
                           _ngcontent-fyk-c288=""
-                          class="flex items-center w-full  border-b justify-between"
+                          class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
                         >
                           <h2
                             _ngcontent-fyk-c288=""
@@ -3700,7 +3682,6 @@ function Course() {
                             variant="filled"
                             fullWidth
                             placeholder="Search"
-                            style={{ marginBottom: "15px" }}
                             value={searchTerm}
                             InputProps={{
                               startAdornment: (
@@ -3715,10 +3696,8 @@ function Course() {
                             sx={{ width: 320 }}
                           />
                         </div>
-                        <div>&nbsp;</div>
-
                         <div
-                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                          className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
                           style={{ width: "40%" }}
                         >
                           <div className="flex items-center">
@@ -3741,19 +3720,17 @@ function Course() {
                         </div>
                       </Paper>
                     </>
-                  </div>
-                )}
-              {currentPhase === "Approval" &&
-                currentPhaseName == "Implementation" && (
-                  <div className="flex justify-center p-16  pb-64 sm:p-24 ">
+                  )}
+                {currentPhase === "Approval" &&
+                  currentPhaseName == "Implementation" && (
                     <>
                       <Paper
-                        className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
-                        style={{ marginRight: "15px", width: "100%" }}
+                        className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden"
+                        style={{ width: "100%" }}
                       >
                         <div
                           _ngcontent-fyk-c288=""
-                          class="flex items-center w-full  border-b justify-between"
+                          class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
                         >
                           <h2
                             _ngcontent-fyk-c288=""
@@ -3765,7 +3742,7 @@ function Course() {
                             variant="filled"
                             fullWidth
                             placeholder="Search"
-                            style={{ marginBottom: "15px" }}
+                            style={{ marginBottom: "0" }}
                             value={searchTerm}
                             InputProps={{
                               startAdornment: (
@@ -3780,326 +3757,333 @@ function Course() {
                             sx={{ width: 320 }}
                           />
                         </div>
-                        <div>&nbsp;</div>
-                        {contentDetails?.implementationTask?.map((imptsk) => (
-                          <table className="task-table mat-table">
-                            <thead
-                              className="task-table-header"
-                              style={{ display: "none" }}
-                            >
-                              {/* Empty header */}
-                            </thead>
-                            <tbody className="task-table-body">
-                              <tr className="task-table-row mat-row">
-                                <td className="task-table-cell mat-cell">
-                                  <div className="task-header flex items-center">
-                                    <div className="task-id flex flex-col">
-                                      <span className="task-id-text font-semibold text-xl leading-none">
-                                        Task #{imptsk?.id}
-                                      </span>
-                                    </div>
-                                    {currentActivityForm.canEdit && (
-                                      <div className="task-button ml-auto">
-                                        <button
-                                          className="task-mark-reviewed-button mat-stroked-button"
-                                          onClick={() =>
-                                            handelreview(imptsk.id)
-                                          }
-                                        >
-                                          {reviewed[imptsk.id] ? (
-                                            <span
-                                              className="mat-button-wrapper"
-                                              style={{
-                                                backgroundColor:
-                                                  "rgba(220,252,231)",
-                                              }}
-                                            >
-                                              You have reviewed this just now
-                                            </span>
-                                          ) : (
-                                            <span className="mat-button-wrapper">
-                                              Click here to mark as reviewed
-                                            </span>
-                                          )}
-                                        </button>
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div className="task-details px-6 mt-2">
-                                    <div className="task-detail prose prose-sm max-w-5xl">
-                                      <div className="task-detail-item mt-3">
-                                        <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                                          What is Task
-                                        </span>
-                                        <span className="task-detail-value">
-                                          {imptsk.actionWhat}
+                        <div className="p-30 pt-24 pb-24">
+                          {contentDetails?.implementationTask?.map((imptsk) => (
+                            <table className="task-table mat-table">
+                              <thead
+                                className="task-table-header"
+                                style={{ display: "none" }}
+                              >
+                                {/* Empty header */}
+                              </thead>
+                              <tbody className="task-table-body">
+                                <tr className="task-table-row mat-row">
+                                  <td className="task-table-cell mat-cell">
+                                    <div className="task-header flex items-center p-0">
+                                      <div className="task-id flex flex-col">
+                                        <span className="task-id-text font-semibold text-xl leading-none">
+                                          Task #{imptsk?.id}
                                         </span>
                                       </div>
-                                      <div className="task-detail-item mt-5">
-                                        <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                                          How is Task done
-                                        </span>
-                                        <span className="task-detail-value">
-                                          {imptsk.actionHow}
-                                        </span>
-                                      </div>
-                                      <div className="task-detail-item mt-5">
-                                        <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                                          Assigned to
-                                        </span>
-                                        <span className="task-detail-value">
-                                          {imptsk.assignedStaff}
-                                        </span>
-                                        <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
-                                          Due Date
-                                        </span>
-                                        <span className="task-detail-value">
-                                          {formatDate(imptsk.dueDate)}
-                                        </span>
-                                        <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
-                                          Deadline
-                                        </span>
-                                        <span className="task-detail-value">
-                                          {imptsk?.deadlineDisplay}
-                                        </span>
-                                      </div>
-                                    </div>
-                                    <div
-                                      className="inventory-grid grid items-center gap-4 mt-5 ms-5 py-3 px-2 md:px-2"
-                                      style={{ width: "40%" }}
-                                    >
-                                      <div className="flex items-center mt-5">
-                                        <img
-                                          src="/assets/images/etc/userpic.png"
-                                          alt="Card cover image"
-                                          className="rounded-full mr-4"
-                                          style={{
-                                            width: "3rem",
-                                            height: "3rem",
-                                          }}
-                                        />
-                                        <div className="flex flex-col">
-                                          <span
-                                            className="font-semibold leading-none"
-                                            style={{
-                                              fontSize: "smaller",
-                                              fontWeight: "400",
-                                            }}
+                                      {currentActivityForm.canEdit && (
+                                        <div className="task-button ml-auto">
+                                          <button
+                                            className="task-mark-reviewed-button mat-stroked-button"
+                                            onClick={() =>
+                                              handelreview(imptsk.id)
+                                            }
                                           >
-                                            <b>{imptsk.assignedStaff}</b>{" "}
-                                            {imptsk?.actionComments}
+                                            {reviewed[imptsk.id] ? (
+                                              <span
+                                                className="mat-button-wrapper"
+                                                style={{
+                                                  backgroundColor:
+                                                    "rgba(220,252,231)",
+                                                }}
+                                              >
+                                                You have reviewed this just now
+                                              </span>
+                                            ) : (
+                                              <span className="mat-button-wrapper">
+                                                Click here to mark as reviewed
+                                              </span>
+                                            )}
+                                          </button>
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div className="task-details p-0 mt-10">
+                                      <div className="task-detail prose prose-sm max-w-5xl">
+                                        <div className="task-detail-item mt-10 p-0">
+                                          <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
+                                            What is Task
                                           </span>
-
-                                          <span className="text-sm text-secondary leading-none pt-5">
-                                            Completed on{" "}
-                                            {/* {formatDates(imptsk?.completedAt)} */}
+                                          <span className="task-detail-value d-inline-block">
+                                            {imptsk.actionWhat}
+                                          </span>
+                                        </div>
+                                        <div className="task-detail-item mt-10 p-0">
+                                          <span className="task-detail-label bg-default rounded  d-inline-block d-inline-block text-secondary font-semibold">
+                                            How is Task done
+                                          </span>
+                                          <span className="task-detail-value d-inline-block">
+                                            {imptsk.actionHow}
+                                          </span>
+                                        </div>
+                                        <div className="task-detail-item mt-10 p-0">
+                                          <span className="task-detail-label bg-default rounded  d-inline-block text-secondary font-semibold">
+                                            Assigned to
+                                          </span>
+                                          <span className="task-detail-value d-inline-block">
+                                            {imptsk.assignedStaff}
+                                          </span>
+                                          <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                                            Due Date
+                                          </span>
+                                          <span className="task-detail-value">
+                                            {formatDate(imptsk.dueDate)}
+                                          </span>
+                                          <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                                            Deadline
+                                          </span>
+                                          <span className="task-detail-value">
+                                            {imptsk?.deadlineDisplay}
                                           </span>
                                         </div>
                                       </div>
-                                    </div>
-                                    <div>&nbsp;</div>
-                                    {currentActivityForm.canEdit &&
-                                    !imptsk.implementationReviews.length ? (
-                                      <div className="mat-form-field-wrapper">
-                                        <div className="mat-form-field-flex">
+                                      <div
+                                        className="inventory-grid grid items-center gap-4 mt-10"
+                                        style={{ width: "40%" }}
+                                      >
+                                        <div className="flex items-center mt-5">
                                           <img
                                             src="/assets/images/etc/userpic.png"
                                             alt="Card cover image"
                                             className="rounded-full mr-4"
                                             style={{
-                                              width: "5rem",
-                                              height: "5rem",
+                                              width: "3rem",
+                                              height: "3rem",
                                             }}
                                           />
-                                          <div className="mat-form-field-infix">
-                                            <textarea
-                                              rows="2"
-                                              className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                              placeholder="Write a comment..."
-                                              id="ImpTaskReview265"
-                                              data-placeholder="Write a comment..."
-                                              aria-invalid="false"
-                                              aria-required="false"
-                                              style={{ height: "36px" }}
-                                              onChange={(e) =>
-                                                setHandelCommentRemark(
-                                                  e.target.value
-                                                )
-                                              }
-                                            ></textarea>
-                                            <button
-                                              className="mat-focus-indicator mat-raised-button mat-button-base"
-                                              style={{ float: "right" }}
-                                              onClick={() =>
-                                                handelCommentImp(imptsk.id)
-                                              }
+                                          <div className="flex flex-col">
+                                            <span
+                                              className="font-semibold leading-none"
+                                              style={{
+                                                fontSize: "smaller",
+                                                fontWeight: "400",
+                                              }}
                                             >
-                                              <span className="mat-button-wrapper">
-                                                Save
-                                              </span>
-                                              <span className="mat-ripple mat-button-ripple"></span>
-                                              <span className="mat-button-focus-overlay"></span>
-                                            </button>
-                                            <span className="mat-form-field-label-wrapper"></span>
+                                              <b>{imptsk.assignedStaff}</b>{" "}
+                                              {imptsk?.actionComments}
+                                            </span>
+
+                                            <span className="text-sm text-secondary leading-none pt-5">
+                                              Completed on{" "}
+                                              {/* {formatDates(imptsk?.completedAt)} */}
+                                            </span>
                                           </div>
                                         </div>
-
-                                        <div className="mat-form-field-subscript-wrapper">
-                                          <div
-                                            className="mat-form-field-hint-wrapper"
-                                            style={{
-                                              opacity: 1,
-                                              transform: "translateY(0%)",
-                                            }}
-                                          ></div>
-                                        </div>
                                       </div>
-                                    ) : (
-                                      <div>
-                                        <Accordion
-                                          expanded={expanded}
-                                          onChange={handleExpansionChange}
-                                        >
-                                          <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel1a-content"
-                                            id="panel1a-header"
+
+                                      {currentActivityForm.canEdit &&
+                                      !imptsk.implementationReviews.length ? (
+                                        <div className="mat-form-field-wrapper">
+                                          <div className="mat-form-field-flex">
+                                            <img
+                                              src="/assets/images/etc/userpic.png"
+                                              alt="Card cover image"
+                                              className="rounded-full mr-4"
+                                              style={{
+                                                width: "5rem",
+                                                height: "5rem",
+                                              }}
+                                            />
+                                            <div className="mat-form-field-infix">
+                                              <textarea
+                                                rows="2"
+                                                className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                                placeholder="Write a comment..."
+                                                id="ImpTaskReview265"
+                                                data-placeholder="Write a comment..."
+                                                aria-invalid="false"
+                                                aria-required="false"
+                                                style={{ height: "36px" }}
+                                                onChange={(e) =>
+                                                  setHandelCommentRemark(
+                                                    e.target.value
+                                                  )
+                                                }
+                                              ></textarea>
+                                              <button
+                                                className="mat-focus-indicator mat-raised-button mat-button-base"
+                                                style={{ float: "right" }}
+                                                onClick={() =>
+                                                  handelCommentImp(imptsk.id)
+                                                }
+                                              >
+                                                <span className="mat-button-wrapper">
+                                                  Save
+                                                </span>
+                                                <span className="mat-ripple mat-button-ripple"></span>
+                                                <span className="mat-button-focus-overlay"></span>
+                                              </button>
+                                              <span className="mat-form-field-label-wrapper"></span>
+                                            </div>
+                                          </div>
+
+                                          <div className="mat-form-field-subscript-wrapper">
+                                            <div
+                                              className="mat-form-field-hint-wrapper"
+                                              style={{
+                                                opacity: 1,
+                                                transform: "translateY(0%)",
+                                              }}
+                                            ></div>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <div className="mt-10">
+                                          <Accordion
+                                            expanded={expanded}
+                                            onChange={handleExpansionChange}
                                           >
-                                            <Typography>
-                                              <span className="text-brown">
-                                                {
-                                                  imptsk?.implementationReviews
-                                                    ?.length
-                                                }{" "}
-                                                Reviews
-                                              </span>{" "}
-                                              <span className="text-green">
-                                                (You have added{" "}
-                                                {
-                                                  imptsk?.implementationReviews
-                                                    ?.length
-                                                }{" "}
-                                                review)
-                                              </span>
-                                            </Typography>
-                                          </AccordionSummary>
-                                          <AccordionDetails>
-                                            <div className="mat-form-field-wrapper">
-                                              <div className="mat-form-field-flex">
-                                                <img
-                                                  src="/assets/images/etc/userpic.png"
-                                                  alt="Card cover image"
-                                                  className="rounded-full mr-4"
+                                            <AccordionSummary
+                                              expandIcon={<ExpandMoreIcon />}
+                                              aria-controls="panel1a-content"
+                                              id="panel1a-header"
+                                            >
+                                              <Typography>
+                                                <span className="text-brown">
+                                                  {
+                                                    imptsk
+                                                      ?.implementationReviews
+                                                      ?.length
+                                                  }{" "}
+                                                  Reviews
+                                                </span>{" "}
+                                                <span className="text-green">
+                                                  (You have added{" "}
+                                                  {
+                                                    imptsk
+                                                      ?.implementationReviews
+                                                      ?.length
+                                                  }{" "}
+                                                  review)
+                                                </span>
+                                              </Typography>
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+                                              <div className="mat-form-field-wrapper">
+                                                <div className="mat-form-field-flex">
+                                                  <img
+                                                    src="/assets/images/etc/userpic.png"
+                                                    alt="Card cover image"
+                                                    className="rounded-full mr-4"
+                                                    style={{
+                                                      width: "3rem",
+                                                      height: "3rem",
+                                                    }}
+                                                  />
+                                                  <div className="mat-form-field-infix">
+                                                    <textarea
+                                                      rows="2"
+                                                      className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                                      placeholder="Write a comment..."
+                                                      id="ImpTaskReview265"
+                                                      data-placeholder="Write a comment..."
+                                                      aria-invalid="false"
+                                                      aria-required="false"
+                                                      style={{ height: "36px" }}
+                                                      value={
+                                                        imptsk
+                                                          .implementationReviews[0]
+                                                          ?.remark
+                                                      }
+                                                      onChange={(e) =>
+                                                        setHandelCommentRemark(
+                                                          e.target.value
+                                                        )
+                                                      }
+                                                    ></textarea>
+
+                                                    <button
+                                                      className="mat-focus-indicator mat-raised-button mat-button-base"
+                                                      style={{ float: "right" }}
+                                                      onClick={() =>
+                                                        handelCommentImp(
+                                                          imptsk.id
+                                                        )
+                                                      }
+                                                    >
+                                                      <span className="mat-button-wrapper">
+                                                        Update
+                                                      </span>
+
+                                                      <span className="mat-ripple mat-button-ripple"></span>
+                                                      <span className="mat-button-focus-overlay"></span>
+                                                    </button>
+
+                                                    <span className="mat-form-field-label-wrapper"></span>
+                                                  </div>
+                                                </div>
+                                                <span
                                                   style={{
-                                                    width: "3rem",
-                                                    height: "3rem",
+                                                    fontSize: "x-small",
+                                                    paddingLeft: "60px",
                                                   }}
-                                                />
-                                                <div className="mat-form-field-infix">
-                                                  <textarea
-                                                    rows="2"
-                                                    className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                                    placeholder="Write a comment..."
-                                                    id="ImpTaskReview265"
-                                                    data-placeholder="Write a comment..."
-                                                    aria-invalid="false"
-                                                    aria-required="false"
-                                                    style={{ height: "36px" }}
-                                                    value={
-                                                      imptsk
-                                                        .implementationReviews[0]
-                                                        ?.remark
-                                                    }
-                                                    onChange={(e) =>
-                                                      setHandelCommentRemark(
-                                                        e.target.value
-                                                      )
-                                                    }
-                                                  ></textarea>
-
-                                                  <button
-                                                    className="mat-focus-indicator mat-raised-button mat-button-base"
-                                                    style={{ float: "right" }}
-                                                    onClick={() =>
-                                                      handelCommentImp(
-                                                        imptsk.id
-                                                      )
-                                                    }
-                                                  >
-                                                    <span className="mat-button-wrapper">
-                                                      Update
-                                                    </span>
-
-                                                    <span className="mat-ripple mat-button-ripple"></span>
-                                                    <span className="mat-button-focus-overlay"></span>
-                                                  </button>
-
-                                                  <span className="mat-form-field-label-wrapper"></span>
+                                                >
+                                                  {" "}
+                                                  {imptsk
+                                                    .implementationReviews[0]
+                                                    ?.updatedAt &&
+                                                    new Date(
+                                                      imptsk.implementationReviews[0]?.updatedAt
+                                                    ).toLocaleString("en-US", {
+                                                      month: "long",
+                                                      day: "numeric",
+                                                      year: "numeric",
+                                                      hour: "numeric",
+                                                      minute: "numeric",
+                                                      second: "numeric",
+                                                      hour12: true,
+                                                      timeZoneName: "short",
+                                                    })}
+                                                </span>
+                                                <div className="mat-form-field-subscript-wrapper">
+                                                  <div
+                                                    className="mat-form-field-hint-wrapper"
+                                                    style={{
+                                                      opacity: 1,
+                                                      transform:
+                                                        "translateY(0%)",
+                                                    }}
+                                                  ></div>
                                                 </div>
                                               </div>
-                                              <span
-                                                style={{
-                                                  fontSize: "x-small",
-                                                  paddingLeft: "60px",
-                                                }}
-                                              >
-                                                {" "}
-                                                {imptsk.implementationReviews[0]
-                                                  ?.updatedAt &&
-                                                  new Date(
-                                                    imptsk.implementationReviews[0]?.updatedAt
-                                                  ).toLocaleString("en-US", {
-                                                    month: "long",
-                                                    day: "numeric",
-                                                    year: "numeric",
-                                                    hour: "numeric",
-                                                    minute: "numeric",
-                                                    second: "numeric",
-                                                    hour12: true,
-                                                    timeZoneName: "short",
-                                                  })}
-                                              </span>
-                                              <div className="mat-form-field-subscript-wrapper">
-                                                <div
-                                                  className="mat-form-field-hint-wrapper"
-                                                  style={{
-                                                    opacity: 1,
-                                                    transform: "translateY(0%)",
-                                                  }}
-                                                ></div>
-                                              </div>
-                                            </div>
-                                          </AccordionDetails>
-                                        </Accordion>
-                                      </div>
-                                    )}
-                                  </div>
-                                </td>
-                              </tr>
-                            </tbody>
-                            <tfoot
-                              className="task-table-footer"
-                              style={{ display: "none", bottom: 0, zIndex: 10 }}
-                            >
-                              {/* Empty footer */}
-                            </tfoot>
-                          </table>
-                        ))}
+                                            </AccordionDetails>
+                                          </Accordion>
+                                        </div>
+                                      )}
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                              <tfoot
+                                className="task-table-footer"
+                                style={{
+                                  display: "none",
+                                  bottom: 0,
+                                  zIndex: 10,
+                                }}
+                              >
+                                {/* Empty footer */}
+                              </tfoot>
+                            </table>
+                          ))}
+                        </div>
                       </Paper>
                     </>
-                  </div>
-                )}
+                  )}
 
-              <div className="flex justify-center p-16 pb-64 sm:p-24 ">
                 {currentPhase === "Approval" && (
                   <>
                     <Paper
-                      className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
+                      className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden"
                       style={{ marginRight: "15px", width: "100%" }}
                     >
                       <div
                         _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
+                        class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
                       >
                         <h2
                           _ngcontent-fyk-c288=""
@@ -4108,11 +4092,11 @@ function Course() {
                           Approval
                         </h2>
                       </div>
-                      <div>&nbsp;</div>
+
                       {appActivity.isComplete &&
                       appActivity.status != "Pending" ? (
                         <div
-                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                          className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
                           style={{ width: "40%" }}
                         >
                           <span className="font-semibold leading-none">
@@ -4121,7 +4105,7 @@ function Course() {
                         </div>
                       ) : (
                         <div
-                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                          className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
                           style={{ width: "100%" }}
                         >
                           {currentActivityForm.canEdit && (
