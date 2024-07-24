@@ -191,7 +191,7 @@ const AssetCourse = () => {
     isShowDetail: "",
     parentId: "0",
   });
-
+  const [CountApprove, setCountApprove] = useState();
   const [openImplemntationTask, setOpenImplemntationTask] = useState(false);
   const [comments, setComments] = useState("");
   const [reviewed, setReviewed] = useState({});
@@ -755,6 +755,7 @@ const AssetCourse = () => {
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
+
                   apiAuth
                     .get(
                       `/ApprovalManager/Remark/${resp.data.data.activity.uid}`
@@ -763,6 +764,13 @@ const AssetCourse = () => {
                       setIsLoading(false);
 
                       setApprovalManager(resp.data?.data);
+                    });
+                  apiAuth
+                    .get(
+                      `/DocumentManager/DocumentCount?id=${resp.data.data.activity.uid}&documentType=Approval`
+                    )
+                    .then((resp) => {
+                      setCountApprove(resp.data.data);
                     });
                 });
               });
@@ -779,6 +787,13 @@ const AssetCourse = () => {
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
                 });
+                apiAuth
+                  .get(
+                    `/DocumentManager/DocumentCount?id=${resp.data.data.activity.uid}&documentType=Approval`
+                  )
+                  .then((resp) => {
+                    setCountApprove(resp.data.data);
+                  });
               });
 
             break;
@@ -1392,6 +1407,7 @@ const AssetCourse = () => {
                 valueRemark={valueRemark}
                 contentDetails={contentDetails}
                 assetEvaluationId={assetEvaluationId}
+                CountApprove={CountApprove}
               />
             )}
             {currentPhase === "InitiationComplete" && (
@@ -1403,6 +1419,7 @@ const AssetCourse = () => {
                 currentActivityForm={currentActivityForm}
                 currentSummeryById={currentSummeryById}
                 setContent={setContent}
+                CountApprove={CountApprove}
               />
             )}
             {currentPhase === "InitiationApprovalProceed" && (

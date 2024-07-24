@@ -41,6 +41,7 @@ const InitiationComplete = ({
   currentActivityForm,
   currentSummeryById,
   setContent,
+  CountApprove,
 }) => {
   const StyledBadge = withStyles((theme) => ({
     badge: {
@@ -245,7 +246,6 @@ const InitiationComplete = ({
   };
 
   const ListDoc1 = (id, activeid) => {
-    // /DocumentManager/DocList/dfe9f50848a94203868dfbcac5a64614/ChangeSummary?changeRequestToken=9e2cc18f-3d8e-400a-aba2-af0d1c0aeb37
     apiAuth
       .get(
         `/DocumentManager/DocList/${activeid}/ChangeSummary?changeRequestToken=${id}`
@@ -267,6 +267,19 @@ const InitiationComplete = ({
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
   };
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return "Invalid date";
+    }
+
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMMM dd, yyyy");
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      return "Invalid date";
+    }
+  };
 
   const handelFileDiscriptionChange = (event) => {
     const { name, value } = event.target;
@@ -274,6 +287,24 @@ const InitiationComplete = ({
       ...prevState,
       [name]: value,
     }));
+  };
+  const handelFileChange = (e) => {
+    // debugger;
+    const file = e.target.files[0];
+    // if (file) {
+    //   const url = URL.createObjectURL(file);
+    //   setFileUrl(url);
+    //   setFileName(file.name);
+    // }
+    setSelectedFile({
+      name: e.target.files[0].name,
+      description: "",
+      type: e.target.files[0].type,
+      document: e.target.files[0],
+      documentType: "ChangeSummary",
+      documentId: currentActivityForm.uid,
+      changeRequestToken: assetEvaluationId,
+    });
   };
 
   const handleSubmitAsset = (e) => {
@@ -285,6 +316,47 @@ const InitiationComplete = ({
     formData.append("documentType", selectedFile.documentType);
     formData.append("documentId", selectedFile.documentId);
     formData.append("changeRequestToken", selectedFile.changeRequestToken);
+    apiAuth
+      .post("DocumentManager/Create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        apiAuth
+          .get(
+            `/DocumentManager/DocList/${currentActivityForm.uid}/ChangeSummary?changeRequestToken=${assetEvaluationId}`
+          )
+          .then((response) => {
+            setOpenDrawer(false);
+            setListDocument(response?.data?.data);
+          });
+      })
+      .catch((error) => {
+        console.error("There was an error uploading the document!", error);
+      });
+  };
+
+  const handleDownload = () => {
+    apiAuth
+      .get(`/DocumentManager/download/${documenDowToken}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute("download", selectedDocument.name); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed", error);
+      });
   };
 
   return (
@@ -398,13 +470,9 @@ const InitiationComplete = ({
                   }}
                 >
                   File Manager
-                  {/* <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                              >
-                                0 Files
-                              </Typography> */}
+                  <Typography id="transition-modal-subtitle" component="h2">
+                    {listDocument.length} Files
+                  </Typography>
                 </Typography>
                 {currentActivityForm.canExecute && (
                   <Box>
@@ -867,21 +935,25 @@ const InitiationComplete = ({
             </Grid>
           </Grid>
           <Box mt={4} display="flex" justifyContent="space-between">
-            {/* <StyledBadge badgeContent={AssetDetails.documentStatus}> */}
-            <Button
-              variant="outlined"
-              style={{
-                padding: "10px 20px",
-                borderColor: "grey",
-              }}
-              startIcon={
-                <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
+            <StyledBadge
+              badgeContent={
+                listDocument.length ? listDocument.length : CountApprove
               }
-              onClick={handleOpen1}
             >
-              Document
-            </Button>
-            {/* </StyledBadge> */}
+              <Button
+                variant="outlined"
+                style={{
+                  padding: "10px 20px",
+                  borderColor: "grey",
+                }}
+                startIcon={
+                  <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
+                }
+                onClick={handleOpen1}
+              >
+                Document
+              </Button>
+            </StyledBadge>
             {currentActivityForm.canExecute && (
               <Box display="flex" gap={2}>
                 {AppActions.map((btn) => (

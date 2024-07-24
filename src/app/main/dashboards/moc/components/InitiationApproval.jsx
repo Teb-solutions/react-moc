@@ -35,6 +35,7 @@ function InitiationApproval(props) {
     valueRemark,
     assetEvaluationId,
     contentDetails,
+    CountApprove,
   } = props;
 
   const [open1, setOpen1] = useState(false);
@@ -125,7 +126,6 @@ function InitiationApproval(props) {
     color: "black",
   });
   const handelFileChange1 = (e) => {
-    debugger;
     const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
@@ -162,18 +162,26 @@ function InitiationApproval(props) {
 
   const ListDoc1 = (id) => {
     apiAuth
-      .get(`/ChangeRequest/RequestDetails?id=${assetEvaluationId}`)
-      .then((resp) => {
-        const data = resp?.data?.data;
-        const changeRequestId = resp?.data?.data?.changeRequestId;
-        apiAuth
-          .get(
-            `/DocumentManager/DocList/${changeRequestId}/ChangeRequest?changeRequestToken=${id}`
-          )
-          .then((Resp) => {
-            setListDocument1(Resp?.data?.data);
-          });
+      .get(
+        `/DocumentManager/DocList/${Activity.uid}/Approval?changeRequestToken=${id}`
+      )
+      .then((Resp) => {
+        setListDocument1(Resp?.data?.data);
       });
+
+    // apiAuth
+    //   .get(`/ChangeRequest/RequestDetails?id=${assetEvaluationId}`)
+    //   .then((resp) => {
+    //     const data = resp?.data?.data;
+    //     const changeRequestId = resp?.data?.data?.changeRequestId;
+    //     apiAuth
+    //       .get(
+    //         `/DocumentManager/DocList/${changeRequestId}/ChangeRequest?changeRequestToken=${id}`
+    //       )
+    //       .then((Resp) => {
+    //         setListDocument1(Resp?.data?.data);
+    //       });
+    //   });
   };
 
   const handleOpen = () => {
@@ -182,7 +190,8 @@ function InitiationApproval(props) {
   };
   const handleOpen1 = () => {
     setOpen1(true);
-    ListDoc(assetEvaluationId);
+    // ListDoc(assetEvaluationId);+
+
     // const newGuid = uuidv4();
     // setSelectedFile1((prevState) => ({
     //   ...prevState,
@@ -240,10 +249,10 @@ function InitiationApproval(props) {
     const formData = new FormData();
     formData.append("name", selectedFile1.name);
     formData.append("descritpion", selectedFile1.description);
-    formData.append("type", selectedFile1.type);
+    formData.append("type", 2);
     formData.append("document", selectedFile1.document);
     formData.append("documentType", selectedFile1.documentType);
-    formData.append("documentId", selectedFile1.documentId);
+    formData.append("documentId", Activity.uid);
     formData.append("changeRequestToken", selectedFile1.changeRequestToken);
     apiAuth
       .post("DocumentManager/Create", formData, {
@@ -255,7 +264,7 @@ function InitiationApproval(props) {
         console.log(response.data);
         apiAuth
           .get(
-            `/DocumentManager/DocList/${selectedFile1.documentId}/Approval?changeRequestToken=${selectedFile1.changeRequestToken}`
+            `/DocumentManager/DocList/${Activity.uid}/Approval?changeRequestToken=${assetEvaluationId}`
           )
           .then((response) => {
             setOpenDrawer1(false);
@@ -1054,7 +1063,11 @@ function InitiationApproval(props) {
                 </span>
               </div>
               <div className="flex items-center justify-between w-full mt-8 px-6 py-3 border-t">
-                <StyledBadge badgeContent={ApprovalDetails.documentCount}>
+                <StyledBadge
+                  badgeContent={
+                    listDocument1.length ? listDocument1.length : CountApprove
+                  }
+                >
                   <Button
                     className="whitespace-nowrap mt-5"
                     style={{
@@ -1123,7 +1136,11 @@ function InitiationApproval(props) {
 
               {currentActivityForm.canExecute && (
                 <div className="flex justify-end">
-                  <StyledBadge badgeContent={listDocument1.length}>
+                  <StyledBadge
+                    badgeContent={
+                      listDocument1.length ? listDocument1.length : CountApprove
+                    }
+                  >
                     <Button
                       className="whitespace-nowrap mt-5"
                       style={{

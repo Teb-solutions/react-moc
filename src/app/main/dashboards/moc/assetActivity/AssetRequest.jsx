@@ -114,6 +114,7 @@ function AssetRequest() {
     purchaseCategory: 2,
     projectName: "",
     projectDescription: "",
+    documentId: "",
   });
 
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -283,8 +284,13 @@ function AssetRequest() {
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    const updatedDocumentState = {
+      ...documentState,
+      documentId: selectedFile.documentId,
+    };
+
     apiAuth
-      .post("/ChangeRequest/Create", documentState)
+      .post("/ChangeRequest/Create", updatedDocumentState)
       .then((response) => {
         toast.success("Successfully Created");
         setTimeout(() => {
@@ -346,7 +352,7 @@ function AssetRequest() {
         siteId: docContent.siteId,
         siteInchargeId: docContent.siteInchargeId,
 
-        documentId: "9f3b2152-36f6-4cc2-86be-e17f96a0f81f",
+        documentId: selectedFile.documentId,
         documentStatus: 2,
         documentType: "Activity",
         requestDate: formatDate(docContent?.requestDate),
