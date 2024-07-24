@@ -1282,7 +1282,7 @@ const EvaluationApproval = ({
                 <tbody className="task-table-body">
                   <tr className="task-table-row mat-row">
                     <td className="task-table-cell mat-cell">
-                      <div className="task-header flex items-center">
+                      <div className="task-header p-0 flex items-center">
                         <div className="task-id flex flex-col">
                           <span
                             className="task-id-text font-semibold text-xl leading-none"
@@ -2051,7 +2051,7 @@ const EvaluationApproval = ({
               </table>
               <div
                 _ngcontent-fyk-c288=""
-                class="flex items-center w-full  border-b justify-between"
+                class="flex items-center w-full border-b mt-24 justify-between"
               ></div>
             </>
           ))}
