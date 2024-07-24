@@ -168,20 +168,6 @@ function InitiationApproval(props) {
       .then((Resp) => {
         setListDocument1(Resp?.data?.data);
       });
-
-    // apiAuth
-    //   .get(`/ChangeRequest/RequestDetails?id=${assetEvaluationId}`)
-    //   .then((resp) => {
-    //     const data = resp?.data?.data;
-    //     const changeRequestId = resp?.data?.data?.changeRequestId;
-    //     apiAuth
-    //       .get(
-    //         `/DocumentManager/DocList/${changeRequestId}/ChangeRequest?changeRequestToken=${id}`
-    //       )
-    //       .then((Resp) => {
-    //         setListDocument1(Resp?.data?.data);
-    //       });
-    //   });
   };
 
   const handleOpen = () => {
@@ -190,13 +176,7 @@ function InitiationApproval(props) {
   };
   const handleOpen1 = () => {
     setOpen1(true);
-    // ListDoc(assetEvaluationId);+
 
-    // const newGuid = uuidv4();
-    // setSelectedFile1((prevState) => ({
-    //   ...prevState,
-    //   documentId: newGuid,
-    // }));
     ListDoc1(assetEvaluationId);
   };
   const handelFileDiscriptionChange = (event) => {
@@ -249,9 +229,9 @@ function InitiationApproval(props) {
     const formData = new FormData();
     formData.append("name", selectedFile1.name);
     formData.append("descritpion", selectedFile1.description);
-    formData.append("type", 2);
+    formData.append("type", selectedFile1.type);
     formData.append("document", selectedFile1.document);
-    formData.append("documentType", selectedFile1.documentType);
+    formData.append("documentType", "Approval");
     formData.append("documentId", Activity.uid);
     formData.append("changeRequestToken", selectedFile1.changeRequestToken);
     apiAuth
