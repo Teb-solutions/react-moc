@@ -11,12 +11,14 @@ import { useState } from "react";
  * The DemoHeader component.
  */
 function MocHeader(props) {
-  const { activity, reqno } = props;
+  const { activity, reqno, risk } = props;
   const routeParams = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const urlContainsMoc = location.pathname.includes("moc");
+  const path = location.pathname;
 
+  // Check if the path is exactly "/moc" or "/risk"
+  const urlContainsMocOrRisk = path === "/moc" || path === "/risk";
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
@@ -31,6 +33,23 @@ function MocHeader(props) {
   };
   const handleOpenNewOrg = () => {
     navigate("/moc/orgactivity");
+  };
+  const handleNavigate = (type) => {
+    let path = "/risk/transportactivity";
+    switch (type) {
+      case "Transport":
+        path = "/risk/transportactivity";
+        break;
+      case "Routine":
+        path = "/risk/routineactivity";
+        break;
+      case "NonRoutine":
+        path = "/risk/nonroutineactivity";
+        break;
+      default:
+        path = "/risk/transportactivity";
+    }
+    navigate(path);
   };
 
   return (
@@ -61,10 +80,10 @@ function MocHeader(props) {
             className="font-medium"
             key="3"
             color="text.primary"
-            to="/moc"
+            to={risk == "risk" ? "/risk" : "/moc"}
             style={{ textDecoration: "none" }}
           >
-            MOC Requests
+            {risk == "risk" ? "RISK Requests" : "MOC Requests"}
           </Link>
           {reqno && (
             <Typography className="font-medium" key="3" color="text.primary">
@@ -77,23 +96,40 @@ function MocHeader(props) {
               {activity}
             </Typography>
           )}
-
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleOpenNewDoc}
-          >
-            <MenuItem onClick={handleOpenNewAsset}>Technical </MenuItem>
-            <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
-            <MenuItem onClick={handleOpenNewOrg}>Organisation</MenuItem>
-          </Menu>
+          {risk == "risk" ? (
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleOpenNewDoc}
+            >
+              <MenuItem onClick={() => handleNavigate("Transport")}>
+                Transport
+              </MenuItem>
+              <MenuItem onClick={() => handleNavigate("Routine")}>
+                Routine
+              </MenuItem>
+              <MenuItem onClick={() => handleNavigate("NonRoutine")}>
+                Non Routine
+              </MenuItem>
+            </Menu>
+          ) : (
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleOpenNewDoc}
+            >
+              <MenuItem onClick={handleOpenNewAsset}>Technical </MenuItem>
+              <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
+              <MenuItem onClick={handleOpenNewOrg}>Organisation</MenuItem>
+            </Menu>
+          )}
         </Breadcrumbs>
 
         <div className="flex sm:hidden" />
       </div>
       <div style={{ justifyContent: "end" }}>
         {" "}
-        {urlContainsMoc && Object.keys(routeParams).length === 0 && (
+        {urlContainsMocOrRisk && Object.keys(routeParams).length === 0 && (
           <Button
             className=""
             variant="contained"

@@ -29,12 +29,15 @@ import SecurityConfig from "./security/SecurityConfig";
 import RoleConfig from "./security/role/RoleConfig";
 import AccessConfig from "./security/access/AccessConfig";
 import OrgActivityConfig from "./moc/orgActivity/OrgActivityConfig";
+import RiskAppConfig from "./riskRegister/riskRegisterConfig";
+import TransportActivityConfig from "./riskRegister/TransportActivity/TransportConfig";
 /**
  * Dashboards
  */
 const dashboardsConfigs = [
   ProjectDashboardAppConfig,
   MocConfig,
+  RiskAppConfig,
   taskConfig,
   sessionListConfig,
   notificationConfig,
@@ -63,5 +66,6 @@ const dashboardsConfigs = [
   RoleConfig,
   AccessConfig,
   OrgActivityConfig,
+  TransportActivityConfig,
 ];
 export default dashboardsConfigs;
