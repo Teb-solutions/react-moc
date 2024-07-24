@@ -244,9 +244,7 @@ const Task = () => {
     return new Date(date).toLocaleString("en-US", {
       month: "short",
       day: "2-digit",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
+      year: "numeric",
     });
   };
 
@@ -318,6 +316,8 @@ const Task = () => {
   };
 
   const handleSubmit = () => {
+    setIsLoading(true);
+
     const path = window.location.pathname;
     const taskId = path.startsWith("/task/") ? path.split("/task/")[1] : null;
     const updatedTask = {
@@ -333,11 +333,15 @@ const Task = () => {
       .then((response) => {
         setOpen(false);
         toast.success("Task Comment Added");
-        setTimeout(() => {
-          location.reload();
-        }, 2000);
+
+        setIsLoading(false);
+        getRecords();
+        setSidebarOpen(false);
+        setComments("");
       })
       .catch((error) => {
+        setIsLoading(false);
+
         setOpen(false);
         toast.error("Some Error Occured");
       });
@@ -941,7 +945,8 @@ const Task = () => {
                     <div className="flex flex-col leading-5 text-md text-secondary space-y-2">
                       <div>
                         Initiated by <b>{list.initiatorName}</b> on{" "}
-                        <b>{formatDate(list.requestDate)}</b>
+                        <b>{formatDates(list.requestDate)}</b>
+                        {console.log(list.requestDate, "")}
                       </div>
                       <div>
                         Project Name: <b>{list.projectName}</b>

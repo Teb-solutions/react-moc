@@ -1141,6 +1141,7 @@ const AssetCourse = () => {
       });
   };
   const SubmitApprovelCreate = (e, uid, name, type) => {
+    setIsLoading(true);
     apiAuth
       .post(`/ApprovalManager/Create/${assetEvaluationId}`, {
         actionUID: uid,
@@ -1157,8 +1158,13 @@ const AssetCourse = () => {
         version: appActivity.version,
       })
       .then((resp) => {
+        setIsLoading(false);
+
         setValueRemark("");
         getRecords();
+      })
+      .catch((err) => {
+        setIsLoading(false);
       });
   };
   const SubmitImpCreate = (e, uid) => {
@@ -1421,6 +1427,7 @@ const AssetCourse = () => {
                 AppActivity={appActivity}
                 assetEvaluationId={assetEvaluationId}
                 setContent={setContent}
+                currentActivityForm={currentActivityForm}
               />
             )}
             {currentPhase === "EvaluationApproval" && (

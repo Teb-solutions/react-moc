@@ -32,6 +32,7 @@ import { apiAuth } from "src/utils/http";
 import { makeStyles } from "@mui/styles";
 import { withStyles } from "@mui/styles";
 import { toast, ToastContainer } from "react-toastify";
+import FuseLoading from "@fuse/core/FuseLoading";
 
 const InitiationComplete = ({
   assetEvaluationId,
@@ -56,6 +57,8 @@ const InitiationComplete = ({
   const [selectedClass, setSelectedClass] = useState(1);
   const [open, setOpen] = useState(false);
   const [open1, setOpen1] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const style = {
     position: "absolute",
     top: "50%",
@@ -148,6 +151,7 @@ const InitiationComplete = ({
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setIsLoading(true);
     const TermDate = new Date(IniComp.TerminationDate);
     const ChangeTermDate = new Date(IniComp.TerminationDate);
 
@@ -174,6 +178,8 @@ const InitiationComplete = ({
     apiAuth
       .post("/ChangeSummary/Create", formattedDocumentState)
       .then((response) => {
+        setIsLoading(false);
+
         toast.success("Successfully Created");
         setOpen(false);
         apiAuth
@@ -183,6 +189,8 @@ const InitiationComplete = ({
           });
       })
       .catch((error) => {
+        setIsLoading(false);
+
         toast.error("Some error occured");
       });
   };
@@ -275,6 +283,10 @@ const InitiationComplete = ({
     formData.append("documentId", selectedFile.documentId);
     formData.append("changeRequestToken", selectedFile.changeRequestToken);
   };
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
 
   return (
     <div className="w-full">
@@ -810,7 +822,7 @@ const InitiationComplete = ({
                 {currentActivityForm.canEdit ? (
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker
-                      value={IniComp.TerminationDate}
+                      value={IniComp?.TerminationDate}
                       onChange={handleChanges}
                       renderInput={(params) => (
                         <TextField fullWidth {...params} />
@@ -818,7 +830,7 @@ const InitiationComplete = ({
                     />
                   </LocalizationProvider>
                 ) : (
-                  <span>{currentSummeryById.changeTerminationDate}</span>
+                  <span>{currentSummeryById?.changeTerminationDate}</span>
                 )}
               </FormControl>
             </Grid>

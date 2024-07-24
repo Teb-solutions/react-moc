@@ -11,12 +11,15 @@ const CustomStepIcon = (props) => {
     <div
       className={`MuiStepIcon-root ${className} ${active ? "MuiStepIcon-active" : ""}`}
     >
-      {isComplete && status != "Sent back for review" ? (
+      {isComplete &&
+      status != "Sent back for review" &&
+      status != "Activity is send back for revision" ? (
         <CheckCircleIcon
           className="MuiStepIcon-completed"
           style={{ color: "#4f46e5", width: 30, height: 30 }}
         /> // Customize color here
-      ) : status == "Sent back for review" ? (
+      ) : status == "Sent back for review" ||
+        status == "Activity is send back for revision" ? (
         <CancelIcon style={{ color: "red", width: 30, height: 30 }} />
       ) : (
         <Chip

@@ -343,9 +343,9 @@ const Task = () => {
             .then((response) => {
               toast.success("Staff Created");
               setSidebarOpen(false);
-              setTimeout(() => {
-                location.reload();
-              }, 2000);
+              // setTimeout(() => {
+              //   location.reload();
+              // }, 2000);
             })
             .catch((error) => {
               toast.error("Some Error Occured");
