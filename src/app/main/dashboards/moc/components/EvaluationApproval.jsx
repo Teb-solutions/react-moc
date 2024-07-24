@@ -28,6 +28,7 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import React, { useEffect } from "react";
 import SwipeableViews from "react-swipeable-views";
 import SearchIcon from "@mui/icons-material/Search";
@@ -53,6 +54,20 @@ const EvaluationApproval = ({
   setContentDetails,
 }) => {
   const [reviewed, setReviewed] = useState({});
+  const [open1, setOpen1] = useState(false);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [fileDetails, setFileDetails] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [listDocument, setListDocument] = useState([]);
+  const [selectedFile, setSelectedFile] = useState({
+    name: "",
+    description: "",
+    type: "",
+    document: "binary",
+    documentType: "ChangeRequest",
+    documentId: "",
+    changeRequestToken: null,
+  });
   const [handelCommentRemark, setHandelCommentRemark] = useState("");
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [showSendPopup, setShowSendPopup] = useState(false);
@@ -177,6 +192,26 @@ const EvaluationApproval = ({
     p: 4,
     padding: "1px",
   };
+
+  const BoldLabel = styled("label")({
+    fontWeight: "bold",
+    color: "black",
+  });
+  const drawerStyle = (open) => ({
+    width: 350,
+    bgcolor: "background.paper",
+    borderTopRightRadius: "16px",
+    borderBottomRightRadius: "16px",
+    boxShadow: 24,
+    p: 2,
+    position: "absolute",
+    top: 0,
+    right: open ? 0 : -250, // Move drawer out of view when closed
+    height: "100%",
+    zIndex: 10,
+    transition: "right 0.3s ease", // Smooth transition for opening/closing
+  });
+
   const [expanded, setExpanded] = useState(false);
   const [clickedTasks, setClickedTasks] = useState({});
   const [showReview, setshowReview] = useState(false);
@@ -284,7 +319,6 @@ const EvaluationApproval = ({
     });
   };
   const handelreview = (id) => {
-    debugger;
     apiAuth
       .put(`/SummaryDetails/ConsultationReviewStatus/${assetEvaluationId}`, {
         Task: [id],
@@ -420,6 +454,105 @@ const EvaluationApproval = ({
   if (isLoading) {
     return <FuseLoading />;
   }
+
+  const ListDoc = (id, activeid) => {
+    apiAuth
+      .get(
+        `/DocumentManager/DocList/${activeid}/Approval?changeRequestToken=${id}`
+      )
+      .then((Resp) => {
+        setListDocument(Resp?.data?.data);
+      });
+  };
+
+  const handelDetailDoc = (doc) => {
+    setSelectedDocument(doc);
+    setFileDetails(true);
+    setDocumenDowToken(doc.token);
+  };
+
+  const toggleDrawer = (open) => () => {
+    setOpenDrawer(open);
+  };
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return "Invalid date";
+    }
+
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMMM dd, yyyy");
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      return "Invalid date";
+    }
+  };
+  const handelFileDiscriptionChange = (event) => {
+    const { name, value } = event.target;
+    setSelectedFile((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+  const handelFileChange = (e) => {
+    // debugger;
+    const file = e.target.files[0];
+    // if (file) {
+    //   const url = URL.createObjectURL(file);
+    //   setFileUrl(url);
+    //   setFileName(file.name);
+    // }
+    setSelectedFile({
+      name: e.target.files[0].name,
+      description: "",
+      type: e.target.files[0].type,
+      document: e.target.files[0],
+      documentType: "ChangeSummary",
+      documentId: AppActivity.uid,
+      changeRequestToken: assetEvaluationId,
+    });
+  };
+  const handleOpen1 = () => {
+    setOpen1(true);
+
+    ListDoc(assetEvaluationId, AppActivity.uid);
+  };
+
+  const handleModalClose = () => {
+    setOpen1(false);
+    setOpenDrawer(false);
+  };
+
+  const handleSubmitAsset = (e) => {
+    const formData = new FormData();
+    formData.append("name", selectedFile.name);
+    formData.append("descritpion", selectedFile.description);
+    formData.append("type", selectedFile.type);
+    formData.append("document", selectedFile.document);
+    formData.append("documentType", selectedFile.documentType);
+    formData.append("documentId", selectedFile.documentId);
+    formData.append("changeRequestToken", selectedFile.changeRequestToken);
+    apiAuth
+      .post("DocumentManager/Create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        apiAuth
+          .get(
+            `/DocumentManager/DocList/${currentActivityForm.uid}/ChangeSummary?changeRequestToken=${assetEvaluationId}`
+          )
+          .then((response) => {
+            setOpenDrawer(false);
+            setListDocument(response?.data?.data);
+          });
+      })
+      .catch((error) => {
+        console.error("There was an error uploading the document!", error);
+      });
+  };
 
   return (
     <div className="w-full h-full">
@@ -2431,12 +2564,351 @@ const EvaluationApproval = ({
               startIcon={
                 <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
               }
+              onClick={handleOpen1}
             >
               Document
             </Button>
           </div>
         </Paper>
       </SwipeableViews>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open1}
+        onClose={handleModalClose}
+        closeAfterTransition
+        // Customize backdrop appearance
+        BackdropComponent={Backdrop}
+        // Props for backdrop customization
+        BackdropProps={{
+          timeout: 500, // Adjust as needed
+          style: {
+            // Add backdrop styles here
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+        }}
+      >
+        <Fade in={open1}>
+          <Box sx={style1}>
+            <Box sx={{ flex: 1 }}>
+              <Box className="flex justify-between" style={{ margin: "30px" }}>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "3rem",
+                  }}
+                >
+                  File Manager
+                  <Typography id="transition-modal-subtitle" component="h2">
+                    {listDocument.length} Files
+                  </Typography>
+                </Typography>
+                {AppActivity?.canExecute && (
+                  <Box>
+                    <Button
+                      className=""
+                      variant="contained"
+                      color="secondary"
+                      onClick={toggleDrawer(true)}
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+              <Box>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                  component="div"
+                  style={{
+                    backgroundColor: "#e3eeff80",
+                  }}
+                >
+                  {listDocument.map((doc, index) => (
+                    <div className="content " key={index}>
+                      <div
+                        onClick={() => handelDetailDoc(doc)}
+                        style={{ textAlign: "-webkit-center" }}
+                      >
+                        {doc.fileType === "JPG" ? (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        ) : doc.fileType === "JPG" ? (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        ) : (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        )}
+                        <h6>{doc?.name}</h6>
+                        <h6>by {doc?.staffName}</h6>
+                      </div>
+                    </div>
+                  ))}
+                </Typography>
+              </Box>
+            </Box>
+            {openDrawer && !fileDetails && (
+              <Box sx={drawerStyle(openDrawer)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setOpenDrawer(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <Button
+                      className=""
+                      variant="contained"
+                      color="secondary"
+                      style={{
+                        backgroundColor: "#24a0ed",
+                        borderRadius: "5px",
+                        paddingLeft: "50px",
+                        paddingRight: "50px",
+                      }}
+                      component="span"
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Selecte File"
+                      variant="standard"
+                      disabled
+                      value={selectedFile.name}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="description"
+                      variant="standard"
+                      onChange={handelFileDiscriptionChange}
+                      value={selectedFile.description}
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleSubmitAsset}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Box>
+            )}
+
+            {fileDetails && (
+              <Box sx={drawerStyle(fileDetails)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setFileDetails(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange1(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <div className=" ">
+                      <div
+                        // onClick={handelDetailDoc}
+                        style={{
+                          textAlign: "-webkit-center",
+                        }}
+                      >
+                        <img src="/assets/images/etc/icon_N.png" />
+                      </div>
+                      {selectedDocument?.name}
+                    </div>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Created By"
+                      variant="standard"
+                      disabled
+                      value={selectedDocument?.staffName}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label=" Created At"
+                      name="description"
+                      variant="standard"
+                      disabled
+                      value={formatDate(selectedDocument?.createdAt)}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="Description"
+                      variant="standard"
+                      disabled
+                      value={
+                        selectedDocument?.description == null
+                          ? ""
+                          : selectedDocument?.descritpion
+                      }
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleDownload}
+                  >
+                    Download
+                  </Button>
+                </div>
+              </Box>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
     </div>
   );
 };
