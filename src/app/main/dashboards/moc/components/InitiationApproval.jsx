@@ -953,9 +953,9 @@ function InitiationApproval(props) {
       <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>
-            <div className="flex items-center w-full border-b justify-between">
+            <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               <h2 className="text-2xl font-semibold">Summary Details</h2>
-              <div style={{ marginBottom: "10px" }}>
+              <div style={{ marginBottom: "20px" }}>
                 <StyledBadge badgeContent={ApprovalDetails.documentCount}>
                   <Button
                     className="whitespace-nowrap mt-5"
@@ -982,9 +982,7 @@ function InitiationApproval(props) {
 
             <div className="px-6 mb-6">
               <div>&nbsp;</div>
-              <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
-                <h2 className="text-2xl font-semibold">MOC Document Request</h2>
-              </div>
+
               <div className="p-30">
                 <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
                   <div className="my-3">
