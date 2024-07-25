@@ -137,7 +137,12 @@ function MocHeader(props) {
             onClick={handleClick}
           >
             <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-            <span className="mx-4 sm:mx-8">Initiate New MOC Request</span>
+            <span className="mx-4 sm:mx-8">
+              {" "}
+              {risk == "risk"
+                ? "Initiate New Risk Register"
+                : "Initiate New MOC Request"}
+            </span>
           </Button>
         )}
       </div>

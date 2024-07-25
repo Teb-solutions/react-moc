@@ -290,6 +290,7 @@ function DocRequest() {
   const [formValid, setFormValid] = useState(true);
 
   const handleSubmit = (event) => {
+    setIsLoading(true);
     event.preventDefault();
     const date = new Date(documentState.docOldValidityDate);
     let formattedDate = null;
@@ -306,13 +307,18 @@ function DocRequest() {
     apiAuth
       .post("/DocMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
+        setIsLoading(false);
+
         toast.success("Successfully Created");
+
         setTimeout(() => {
           navigate("/dashboards/project");
         }, 1000);
         setOpen(false);
       })
       .catch((error) => {
+        setIsLoading(false);
+
         setOpen(true);
       });
   };

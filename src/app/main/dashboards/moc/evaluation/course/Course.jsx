@@ -265,10 +265,14 @@ function Course() {
 
   const handelTaskSubmit = (e) => {
     if (validateAddTask()) {
+      setIsLoading(true);
+
       apiAuth
         .put(`ChangeImpact/Create/Task/${evaluationId}`, taskAdd)
         .then((resp) => {
           setOpenImplemntationTask(false);
+          setIsLoading(false);
+
           setTaskAdd({
             particular: "",
             particularSubCategory: "",
@@ -282,6 +286,9 @@ function Course() {
             otherDetail: "",
             changeImpactHazard: "",
           });
+        })
+        .catch((err) => {
+          setIsLoading(false);
         });
       getRecords();
     }
@@ -344,6 +351,8 @@ function Course() {
   };
 
   const handelSubmit = (e) => {
+    setIsLoading(true);
+
     e.preventDefault();
     if (validate()) {
       const formattedForms = forms.map((form) => {
@@ -370,6 +379,8 @@ function Course() {
           formattedForms
         )
         .then((response) => {
+          setIsLoading(false);
+
           getRecords();
           apiAuth
             .get(
@@ -380,7 +391,9 @@ function Course() {
               setAddStake(false);
             });
         })
-        .catch((error) => {});
+        .catch((error) => {
+          setIsLoading(false);
+        });
     }
   };
 
@@ -396,6 +409,7 @@ function Course() {
   };
 
   const handleRemoveForm = (id) => {
+    setAddStake(false);
     const newForms = forms.filter((form) => form.id !== id);
     setForms(newForms);
     if (newForms.length <= 1)
@@ -783,6 +797,7 @@ function Course() {
   };
 
   const SubmitApprovel = (e, uid) => {
+    setIsLoading(true);
     if (forms.length < 1) {
       toast.error("At least one stakeholder is required.");
     }
@@ -811,13 +826,19 @@ function Course() {
                 }
               )
               .then((resp) => {
-                location.reload();
+                setIsLoading(false);
+                getRecords();
+                // location.reload();
+              })
+              .catch((err) => {
+                setIsLoading(false);
               });
           }
         }
       });
   };
   const SubmitApprovelCreate = (e, uid, name, type) => {
+    setIsLoading(true);
     apiAuth
       .post(`/ApprovalManager/Create/${evaluationId}`, {
         actionUID: uid,
@@ -836,29 +857,43 @@ function Course() {
       .then((resp) => {
         setValueRemark("");
         getRecords();
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        setIsLoading(false);
       });
   };
   const SubmitImpCreate = (e, uid) => {
-    apiAuth.get(`/ChangeImpact/ListTask?id=${evaluationId}`).then((resp) => {
-      if (handelApprover.approver == "") {
-        toast.error("Select an approver");
-      } else {
-        toast.success("MOC has Created");
-        apiAuth
-          .post(
-            `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver}`,
-            {
-              actionUID: uid,
-              activityUID: impActivity.uid,
+    if (handelApprover.approver == "") {
+      toast.error("Please Select An Approved");
+      return;
+    } else {
+      setIsLoading(true);
+      apiAuth.get(`/ChangeImpact/ListTask?id=${evaluationId}`).then((resp) => {
+        if (handelApprover.approver == "") {
+          toast.error("Select an approver");
+        } else {
+          toast.success("MOC has Created");
+          apiAuth
+            .post(
+              `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver}`,
+              {
+                actionUID: uid,
+                activityUID: impActivity.uid,
 
-              formUID: impActivity.formUID,
-            }
-          )
-          .then((resp) => {
-            getRecords();
-          });
-      }
-    });
+                formUID: impActivity.formUID,
+              }
+            )
+            .then((resp) => {
+              getRecords();
+              setIsLoading(false);
+            })
+            .catch((err) => {
+              setIsLoading(false);
+            });
+        }
+      });
+    }
   };
 
   const handelAddStake = () => {
@@ -901,6 +936,7 @@ function Course() {
   };
 
   const handelApproveImpl = (e, task) => {
+    setIsLoading(true);
     const updatedTask = {
       ...task,
       notes: comments,
@@ -914,10 +950,14 @@ function Course() {
       .post(`ChangeImpact/ActionTask?id=${evaluationId}`, updatedTask)
       .then((response) => {
         getRecords();
+        setIsLoading(false);
+
         console.log(response);
       })
       .catch((error) => {
         setOpen(false);
+        setIsLoading(false);
+
         console.error(error);
       });
   };
@@ -1016,6 +1056,7 @@ function Course() {
   };
 
   const handelCloseMoc = (uid) => {
+    setIsLoading(true);
     apiAuth
       .post(`/DocMoc/ImplementationSubmit/${evaluationId}/22`, {
         actionUID: uid,
@@ -1025,6 +1066,8 @@ function Course() {
       })
       .then((resp) => {
         toast.success("MOC Successfully Closed");
+        setIsLoading(false);
+
         setTimeout(() => {
           getRecords();
         }, 3000);
@@ -1868,7 +1911,7 @@ function Course() {
                     {canEdits && (
                       <Paper
                         className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
-                        style={{ width: "45%" }}
+                        style={{ width: "100%" }}
                       >
                         <div
                           _ngcontent-fyk-c288=""
