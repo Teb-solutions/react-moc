@@ -39,6 +39,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import TableContainer from "@mui/material/TableContainer";
+import { styled } from "@mui/material/styles";
 // Adjust the path based on your project structure
 
 function createData(
@@ -193,6 +194,25 @@ function ImplementationApproval({
     documentType: "ChangeRequest",
     documentId: "",
     changeRequestToken: null,
+  });
+
+  const drawerStyle = (open) => ({
+    width: 350,
+    bgcolor: "background.paper",
+    borderTopRightRadius: "16px",
+    borderBottomRightRadius: "16px",
+    boxShadow: 24,
+    p: 2,
+    position: "absolute",
+    top: 0,
+    right: open ? 0 : -250, // Move drawer out of view when closed
+    height: "100%",
+    zIndex: 10,
+    transition: "right 0.3s ease", // Smooth transition for opening/closing
+  });
+  const BoldLabel = styled("label")({
+    fontWeight: "bold",
+    color: "black",
   });
 
   const handelOpenAudit = async (audits, value) => {
