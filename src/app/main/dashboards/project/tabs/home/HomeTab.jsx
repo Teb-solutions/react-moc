@@ -9,17 +9,81 @@ import {
   Tab,
   Menu,
   MenuItem,
+  InputLabel,
+  TextField,
+  InputAdornment,
+  Table,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  FormControlLabel,
+  Switch,
+  TablePagination,
 } from "@mui/material";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { apiAuth } from "src/utils/http";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
+import SearchIcon from "@mui/icons-material/Search";
+
+import { useCallback } from "react";
+function createData(activity, assigned, type, number, initiated, date, status) {
+  return { activity, assigned, type, number, initiated, date, status };
+}
 
 function HomeTab() {
   const storedFeature = decryptFeature();
   const feature = storedFeature ? storedFeature : [];
-  const [tabValue, setTabValue] = useState(0);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10); // Set a high number to display all rows
+  const [riskMatrixList, setRiskMatrixList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const columns = [
+    { id: "activity", label: "Activity", minWidth: 170, align: "left" },
+    {
+      id: "assigned",
+      label: "Activity Assigned At",
+      minWidth: 170,
+      align: "left",
+    },
+    { id: "type", label: "MOC Type", minWidth: 170, align: "left" },
+    { id: "number", label: "MOC Number", minWidth: 170, align: "left" },
+    { id: "initiated", label: "Initiated By", minWidth: 170, align: "left" },
+    { id: "date", label: "Initiated Date", minWidth: 170, align: "left" },
+    { id: "status", label: "Status", minWidth: 170, align: "left" },
+  ];
+
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredDepartmentList = riskMatrixList.filter((row) => {
+    const query = searchQuery?.toLowerCase();
+
+    return (
+      row.type?.toLowerCase().includes(query) || // MOC Type
+      row.number?.toLowerCase().includes(query) || // MOC Number
+      row.activity?.toLowerCase().includes(query) // Activity
+    );
+  });
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  const handleChangeDense = (event, index) => {
+    const updatedDepartmentList = [...riskMatrixList];
+    updatedDepartmentList[index].isActive = event.target.checked;
+    setRiskMatrixList(updatedDepartmentList);
+  };
   const container = {
     show: {
       transition: {
@@ -31,12 +95,14 @@ function HomeTab() {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
   };
+  const [tabValue, setTabValue] = useState(0);
 
   const routeParams = useParams();
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [data, setData] = useState({});
+  const [pendingApproval, setPendingApproval] = useState({});
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -58,11 +124,37 @@ function HomeTab() {
     navigate("/moc");
   };
 
-  const fetchdataSetting = () => {
-    apiAuth.get(`/Dashboard/Get`).then((resp) => {
-      setData(resp.data.data);
-    });
+  const handelTask = () => {
+    navigate("/task");
   };
+
+  const fetchdataSetting = useCallback(async () => {
+    try {
+      apiAuth.get(`/Dashboard/Get`).then((resp) => {
+        debugger;
+
+        setData(resp?.data?.data);
+        const transformedData = resp?.data?.data?.approvalsPendingRequests?.map(
+          (item, index) =>
+            createData(
+              item.lastActivityName,
+              item.lastActivityStartedAt,
+              item.requestTypeName,
+              item.requestNo,
+              item.initiatorName,
+              item.requestDate,
+              item.statusName
+            )
+        );
+        console.log("====================================");
+        console.log(transformedData);
+        console.log("====================================");
+        setRiskMatrixList(transformedData);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
   useEffect(() => {
     fetchdataSetting();
@@ -75,6 +167,285 @@ function HomeTab() {
       initial="hidden"
       animate="show"
     >
+      <motion.div variants={item}>
+        <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-8 pt-12">
+            <Typography
+              className="px-16 text-lg font-medium tracking-tight leading-6 truncate"
+              color="text.secondary"
+            >
+              Summary
+            </Typography>
+          </div>
+          <Box
+            className="text-center mt-8"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            {data?.tasksDue !== undefined ? (
+              <Typography
+                className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500 cursor-pointer"
+                onClick={handelTask}
+              >
+                {data?.tasksDue}
+              </Typography>
+            ) : (
+              <Skeleton variant="text" width={100} height={60} />
+            )}
+            <Typography
+              className="text-lg font-medium text-blue-600 dark:text-blue-500 cursor-pointer"
+              onClick={handelTask}
+            >
+              Pending Tasks
+            </Typography>
+          </Box>
+          <Typography
+            className="flex items-baseline justify-center w-full mt-20 mb-24"
+            color="text.secondary"
+          >
+            <span className="truncate">Completed</span>:
+            {data?.tasksCompleted !== undefined ? (
+              <b className="px-8">{data?.tasksCompleted}</b>
+            ) : (
+              <Skeleton variant="text" width={40} />
+            )}
+          </Typography>
+        </Paper>
+      </motion.div>
+      <motion.div variants={item}>
+        <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-8 pt-12">
+            <Typography
+              className="px-16 text-lg font-medium tracking-tight leading-6 truncate"
+              color="text.secondary"
+            >
+              Overdue
+            </Typography>
+          </div>
+          <Box
+            className="text-center mt-8"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            {data?.tasksOverDue !== undefined ? (
+              <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500">
+                {data?.tasksOverDue}
+              </Typography>
+            ) : (
+              <Skeleton variant="text" width={100} height={60} />
+            )}
+            <Typography className="text-lg font-medium text-red-600">
+              Tasks
+            </Typography>
+          </Box>
+          <Typography
+            className="flex items-baseline justify-center w-full mt-20 mb-24"
+            color="text.secondary"
+          >
+            <span className="truncate">From yesterday</span>:
+            {data?.tasksOverDueYesterday !== undefined ? (
+              <b className="px-8">{data?.tasksOverDueYesterday}</b>
+            ) : (
+              <Skeleton variant="text" width={40} />
+            )}
+          </Typography>
+        </Paper>
+      </motion.div>
+      <motion.div variants={item}>
+        <Paper
+          className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden"
+          onClick={handleOpenMoc}
+          style={{ cursor: "pointer" }}
+        >
+          <div className="flex items-center justify-between px-8 pt-12">
+            <Typography
+              className="px-16 text-lg font-medium tracking-tight leading-6 truncate"
+              color="text.secondary"
+            >
+              MOC Requests
+            </Typography>
+          </div>
+          <Box
+            className="text-center mt-8"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            {data?.requestsOpen !== undefined ? (
+              <Typography
+                className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-amber-500 cursor-pointer"
+                onClick={handleOpenMoc}
+              >
+                {data?.requestsOpen}
+              </Typography>
+            ) : (
+              <Skeleton variant="text" width={100} height={60} />
+            )}
+            <Typography
+              className="text-lg font-medium text-amber-600 cursor-pointer"
+              onClick={handleOpenMoc}
+            >
+              Open
+            </Typography>
+          </Box>
+          <Typography
+            className="flex items-baseline justify-center w-full mt-20 mb-24"
+            color="text.secondary"
+          >
+            <span className="truncate">Closed today</span>:
+            {data?.requestsClosedToday !== undefined ? (
+              <b className="px-8">{data?.requestsClosedToday}</b>
+            ) : (
+              <Skeleton variant="text" width={40} />
+            )}
+          </Typography>
+        </Paper>
+      </motion.div>
+      <motion.div variants={item}>
+        <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
+          <div className="flex items-center justify-between px-8 pt-12">
+            <Typography
+              className="px-16 text-lg font-medium tracking-tight leading-6 truncate"
+              color="text.secondary"
+            >
+              Approvals
+            </Typography>
+          </div>
+          <Box
+            className="text-center mt-8"
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+          >
+            {data?.approvalsPending !== undefined ? (
+              <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500">
+                {data?.approvalsPending}
+              </Typography>
+            ) : (
+              <Skeleton variant="text" width={100} height={60} />
+            )}
+            <Typography className="text-lg font-medium text-green-600">
+              Pending
+            </Typography>
+          </Box>
+          <Typography
+            className="flex items-baseline justify-center w-full mt-20 mb-24"
+            color="text.secondary"
+          >
+            <span className="truncate">Due</span>:
+            {data?.tasksDue !== undefined ? (
+              <b className="px-8">{data?.tasksDue}</b>
+            ) : (
+              <Skeleton variant="text" width={40} />
+            )}
+          </Typography>
+        </Paper>
+      </motion.div>
+
+      <motion.div variants={item} className="sm:col-span-2 md:col-span-4">
+        <Paper className="flex flex-col flex-auto p-24 shadow rounded-2xl overflow-hidden">
+          <div style={{ backgroundColor: "white" }}>
+            <div>
+              <div className="flex d-flex flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
+                <InputLabel
+                  id="category-select-label"
+                  style={{ fontSize: "large", color: "black" }}
+                >
+                  <b>Approvals Pending ({riskMatrixList.length})</b>
+                </InputLabel>
+                <div className="flex items-center justify-between mt-4">
+                  <div className="flex-auto"></div>
+                  <TextField
+                    variant="filled"
+                    fullWidth
+                    placeholder="Search "
+                    style={{ marginRight: "15px", backgroundColor: "white" }}
+                    onChange={handleSearch}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment
+                          position="start"
+                          style={{ marginTop: "0px", paddingTop: "0px" }}
+                        >
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ width: 250 }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center w-full border-b justify-between"></div>
+            <Paper sx={{ width: "100%", overflow: "hidden" }}>
+              <TableContainer>
+                <Table stickyHeader aria-label="sticky table">
+                  <TableHead>
+                    <TableRow>
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{
+                            minWidth: column.minWidth,
+                          }}
+                        >
+                          {column.label}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredDepartmentList
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((row) => {
+                        return (
+                          <TableRow
+                            hover
+                            role="checkbox"
+                            tabIndex={-1}
+                            key={row.code}
+                          >
+                            {columns.map((column) => {
+                              const value = row[column.id];
+                              return (
+                                <TableCell
+                                  key={column.id}
+                                  align={column.align}
+                                  style={{ borderBottom: "1px solid #dddddd" }}
+                                >
+                                  {column.render
+                                    ? column.render(row) // Render custom actions
+                                    : column.format && typeof value === "number"
+                                      ? column.format(value)
+                                      : value}
+                                </TableCell>
+                              );
+                            })}
+                          </TableRow>
+                        );
+                      })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={riskMatrixList.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Paper>
+          </div>
+        </Paper>
+      </motion.div>
       <motion.div variants={item} className="sm:col-span-2 md:col-span-4">
         <Paper className="flex flex-col flex-auto p-24 shadow rounded-2xl overflow-hidden">
           <div className="flex flex-col sm:flex-row items-start justify-between">
@@ -175,170 +546,7 @@ function HomeTab() {
       </motion.div>
       {/* {data.length > 0 ? (
         <> */}
-      <motion.div variants={item}>
-        <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-8 pt-12">
-            <Typography
-              className="px-16 text-lg font-medium tracking-tight leading-6 truncate"
-              color="text.secondary"
-            >
-              Summary
-            </Typography>
-          </div>
-          <Box
-            className="text-center mt-8"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            {data?.tasksDue !== undefined ? (
-              <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-blue-500">
-                {data?.tasksDue}
-              </Typography>
-            ) : (
-              <Skeleton variant="text" width={100} height={60} />
-            )}
-            <Typography className="text-lg font-medium text-blue-600 dark:text-blue-500">
-              Pending Tasks
-            </Typography>
-          </Box>
-          <Typography
-            className="flex items-baseline justify-center w-full mt-20 mb-24"
-            color="text.secondary"
-          >
-            <span className="truncate">Completed</span>:
-            {data?.tasksCompleted !== undefined ? (
-              <b className="px-8">{data?.tasksCompleted}</b>
-            ) : (
-              <Skeleton variant="text" width={40} />
-            )}
-          </Typography>
-        </Paper>
-      </motion.div>
-      <motion.div variants={item}>
-        <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-8 pt-12">
-            <Typography
-              className="px-16 text-lg font-medium tracking-tight leading-6 truncate"
-              color="text.secondary"
-            >
-              Overdue
-            </Typography>
-          </div>
-          <Box
-            className="text-center mt-8"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            {data?.tasksOverDue !== undefined ? (
-              <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500">
-                {data?.tasksOverDue}
-              </Typography>
-            ) : (
-              <Skeleton variant="text" width={100} height={60} />
-            )}
-            <Typography className="text-lg font-medium text-red-600">
-              Tasks
-            </Typography>
-          </Box>
-          <Typography
-            className="flex items-baseline justify-center w-full mt-20 mb-24"
-            color="text.secondary"
-          >
-            <span className="truncate">From yesterday</span>:
-            {data?.tasksOverDueYesterday !== undefined ? (
-              <b className="px-8">{data?.tasksOverDueYesterday}</b>
-            ) : (
-              <Skeleton variant="text" width={40} />
-            )}
-          </Typography>
-        </Paper>
-      </motion.div>
-      <motion.div variants={item}>
-        <Paper
-          className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden"
-          onClick={handleOpenMoc}
-          style={{ cursor: "pointer" }}
-        >
-          <div className="flex items-center justify-between px-8 pt-12">
-            <Typography
-              className="px-16 text-lg font-medium tracking-tight leading-6 truncate"
-              color="text.secondary"
-            >
-              MOC Requests
-            </Typography>
-          </div>
-          <Box
-            className="text-center mt-8"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            {data?.requestsOpen !== undefined ? (
-              <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-amber-500">
-                {data?.requestsOpen}
-              </Typography>
-            ) : (
-              <Skeleton variant="text" width={100} height={60} />
-            )}
-            <Typography className="text-lg font-medium text-amber-600">
-              Open
-            </Typography>
-          </Box>
-          <Typography
-            className="flex items-baseline justify-center w-full mt-20 mb-24"
-            color="text.secondary"
-          >
-            <span className="truncate">Closed today</span>:
-            {data?.requestsClosedToday !== undefined ? (
-              <b className="px-8">{data?.requestsClosedToday}</b>
-            ) : (
-              <Skeleton variant="text" width={40} />
-            )}
-          </Typography>
-        </Paper>
-      </motion.div>
-      <motion.div variants={item}>
-        <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
-          <div className="flex items-center justify-between px-8 pt-12">
-            <Typography
-              className="px-16 text-lg font-medium tracking-tight leading-6 truncate"
-              color="text.secondary"
-            >
-              Approvals
-            </Typography>
-          </div>
-          <Box
-            className="text-center mt-8"
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-          >
-            {data?.approvalsPending !== undefined ? (
-              <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500">
-                {data?.approvalsPending}
-              </Typography>
-            ) : (
-              <Skeleton variant="text" width={100} height={60} />
-            )}
-            <Typography className="text-lg font-medium text-green-600">
-              Pending
-            </Typography>
-          </Box>
-          <Typography
-            className="flex items-baseline justify-center w-full mt-20 mb-24"
-            color="text.secondary"
-          >
-            <span className="truncate">Due</span>:
-            {data?.tasksDue !== undefined ? (
-              <b className="px-8">{data?.tasksDue}</b>
-            ) : (
-              <Skeleton variant="text" width={40} />
-            )}
-          </Typography>
-        </Paper>
-      </motion.div>
+
       {/* </>
       ) : (
         <div className="ui_div12">
