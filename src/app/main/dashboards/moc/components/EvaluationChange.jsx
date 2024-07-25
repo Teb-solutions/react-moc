@@ -1841,7 +1841,7 @@ function EvaluationChange({
                               )}
                               {itms?.reviews?.length == 0 && (
                                 <span
-                                  className="inline-flex bg-default rounded  mt-5 ms-5 text-secondary "
+                                  className="inline-flex bg-default rounded mt-5  ms-5 text-secondary "
                                   style={{
                                     paddingBottom: "10px",
                                   }}
@@ -1904,38 +1904,39 @@ function EvaluationChange({
                                   ))}
                                 </Accordion>
                               )}
-
-                              {AppActivity.canEdit &&
-                                JSON.parse(
-                                  localStorage.getItem("isActiveSession")
-                                ) && (
-                                  <Button
-                                    className=" mt-5"
-                                    variant="contained"
-                                    sx={{
-                                      backgroundColor: "white",
-                                      color: "black",
-                                      border: "1px solid black",
-                                      marginTop: "8px",
-                                    }}
-                                    startIcon={
-                                      <FuseSvgIcon size={20}>
-                                        heroicons-outline:user-add
-                                      </FuseSvgIcon>
-                                    }
-                                    onClick={() =>
-                                      handelEditConsultation(
-                                        itms.staff,
-                                        itms.consultedDate,
-                                        itms.consultedStaffId,
-                                        itms.id,
-                                        itms.comments
-                                      )
-                                    }
-                                  >
-                                    Edit Consultation
-                                  </Button>
-                                )}
+                              <div>
+                                {AppActivity.canEdit &&
+                                  JSON.parse(
+                                    localStorage.getItem("isActiveSession")
+                                  ) && (
+                                    <Button
+                                      className=" mt-5"
+                                      variant="contained"
+                                      sx={{
+                                        backgroundColor: "white",
+                                        color: "black",
+                                        border: "1px solid black",
+                                        marginTop: "8px",
+                                      }}
+                                      startIcon={
+                                        <FuseSvgIcon size={20}>
+                                          heroicons-outline:user-add
+                                        </FuseSvgIcon>
+                                      }
+                                      onClick={() =>
+                                        handelEditConsultation(
+                                          itms.staff,
+                                          itms.consultedDate,
+                                          itms.consultedStaffId,
+                                          itms.id,
+                                          itms.comments
+                                        )
+                                      }
+                                    >
+                                      Edit Consultation
+                                    </Button>
+                                  )}
+                              </div>
                             </div>
                           </Step>
                         </Stepper>
