@@ -619,7 +619,7 @@ const OrgImplementation = ({
                     x
                   </Button>
                 </div>
-                
+
                 <div className="text-center">
                   <label htmlFor="fileInput">
                     <div className=" ">
@@ -738,12 +738,10 @@ const OrgImplementation = ({
       </Modal>
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
-         
-            <div className="flex items-center w-full p-30 pt-24 pb-24 justify-between">
-              <h2 className="text-2xl font-semibold">Implementation</h2>
-            </div>
-          
-          
+          <div className="flex items-center w-full p-30 pt-24 pb-24 justify-between">
+            <h2 className="text-2xl font-semibold">Implementation</h2>
+          </div>
+
           <div
             _ngcontent-fyk-c288=""
             class="flex items-center w-full  border-b justify-between"
@@ -751,7 +749,8 @@ const OrgImplementation = ({
           <div className="p-30 pt-24 pb-24">
             <div
               _ngcontent-fyk-c288=""
-              class="flex items-center w-full justify-between border_box" >
+              class="flex items-center w-full justify-between border_box"
+            >
               <div className="flex items-center">
                 <h2
                   _ngcontent-fyk-c288=""
@@ -797,7 +796,7 @@ const OrgImplementation = ({
                     transition: "height 0.3s",
                     "&.Mui-expanded": {
                       minHeight: "100px",
-                    }
+                    },
                   }}
                   onChange={handleAccordionChange(detail.id)}
                 >
@@ -809,10 +808,15 @@ const OrgImplementation = ({
                     onClick={(e) => handelComments(e, detail.id)}
                   >
                     <div
-                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                      style={{ width: "17%" }}
+                    >
                       <div className="flex items-center">Task #{detail.id}</div>
                     </div>
-                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                    <div
+                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                      style={{ width: "17%" }}
+                    >
                       <div className="flex items-center" style={{}}>
                         {detail.isCompleted && detail.taskStatus === 3 ? (
                           <span className="text-green">Approved</span>
@@ -823,20 +827,32 @@ const OrgImplementation = ({
                         )}
                       </div>
                     </div>
-                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                    <div
+                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                      style={{ width: "17%" }}
+                    >
                       <div className="flex items-center">No Risks</div>
                     </div>
-                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                    <div
+                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                      style={{ width: "17%" }}
+                    >
                       <div className="flex items-center">
                         {detail.assignedStaff}
                       </div>
                     </div>
-                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                    <div
+                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                      style={{ width: "17%" }}
+                    >
                       <div className="flex items-center">
                         {formatDate(detail.dueDate)}
                       </div>
                     </div>
-                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "17%" }}>
+                    <div
+                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                      style={{ width: "17%" }}
+                    >
                       <div className="flex items-center">
                         <Button
                           className="whitespace-nowrap mt-5 mb-5"
@@ -907,22 +923,23 @@ const OrgImplementation = ({
                               <p>How is Task done : {detail?.actionHow}</p>
                             </div>
                           </div>
-                          {detail?.particularName && detail?.particularSubName && (
-                            <div className="flex flex-col items-start mt-5">
-                              <div
-                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                style={{
-                                  padding: "20px",
-                                  backgroundColor: "#dbeafe",
-                                }}
-                              >
-                                <p>
-                                  Impact :{" "}
-                                  {`${detail?.particularName} > ${detail?.particularSubName}`}
-                                </p>
+                          {detail?.particularName &&
+                            detail?.particularSubName && (
+                              <div className="flex flex-col items-start mt-5">
+                                <div
+                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                  style={{
+                                    padding: "20px",
+                                    backgroundColor: "#dbeafe",
+                                  }}
+                                >
+                                  <p>
+                                    Impact :{" "}
+                                    {`${detail?.particularName} > ${detail?.particularSubName}`}
+                                  </p>
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            )}
                           <div className="flex flex-col items-start mt-5">
                             <div
                               className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
@@ -934,20 +951,20 @@ const OrgImplementation = ({
                               <p>Due Date : {formatDate(detail.dueDate)}</p>
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center justify-center my-3">
                             <div className="flex-auto border-b"></div>
                             <div
                               className="flex-0 "
                               style={{ fontSize: "xx-small" }}
                             >
-                              <b>{detail?.assignedByStaff}</b> has assigned task to{" "}
-                              <b>{detail?.assignedStaff}</b> on{" "}
+                              <b>{detail?.assignedByStaff}</b> has assigned task
+                              to <b>{detail?.assignedStaff}</b> on{" "}
                               {formatDate(detail.assignedAt)}
                             </div>
                             <div className="flex-auto border-b"></div>
                           </div>
-                          
+
                           {impComments.map((msg) => (
                             <div
                               key={msg.id}
@@ -1077,8 +1094,6 @@ const OrgImplementation = ({
                           ))}
                           {detail.isCompleted && detail.taskStatus !== 3 && (
                             <>
-                              
-
                               <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                 <div
                                   _ngcontent-fyk-c288=""
@@ -1141,7 +1156,9 @@ const OrgImplementation = ({
                                     style={{
                                       marginTop: "10px",
                                     }}
-                                    onClick={(e) => handelApproveImpl(e, detail)}
+                                    onClick={(e) =>
+                                      handelApproveImpl(e, detail)
+                                    }
                                   >
                                     Approve
                                   </Button>
@@ -1157,8 +1174,11 @@ const OrgImplementation = ({
               ))}
             </div>
             {currentActivityForm.canEdit && (
-              <>              
-                <div _ngcontent-fyk-c288="" class="flex items-center w-full  border-b justify-between"></div>
+              <>
+                <div
+                  _ngcontent-fyk-c288=""
+                  class="flex items-center w-full  border-b justify-between"
+                ></div>
                 <div className="flex justify-end ">
                   {appActions?.map((btn) => (
                     <Button
@@ -1177,7 +1197,6 @@ const OrgImplementation = ({
               </>
             )}
           </div>
-
         </Paper>
       </SwipeableViews>
     </div>
