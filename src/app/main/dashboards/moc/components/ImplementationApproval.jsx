@@ -178,6 +178,23 @@ function ImplementationApproval({
   const [currentAudit, setCurrentAudit] = useState([]);
   const [docStaff, setDocStaff] = useState([]);
 
+  //modal part
+  const [open, setOpen] = useState(false);
+  const [listDocument, setListDocument] = useState([]);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [fileDetails, setFileDetails] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [documenDowToken, setDocumenDowToken] = useState("");
+  const [selectedFile, setSelectedFile] = useState({
+    name: "",
+    description: "",
+    type: "",
+    document: "binary",
+    documentType: "ChangeRequest",
+    documentId: "",
+    changeRequestToken: null,
+  });
+
   const handelOpenAudit = async (audits, value) => {
     setOpenAudit(true);
 
@@ -459,8 +476,394 @@ function ImplementationApproval({
       });
   };
 
+  const ListDoc = (docu_id, id) => {
+    apiAuth
+      .get(`/DocumentManager/DocList/${docu_id}/Task?changeRequestToken=${id}`)
+      .then((Resp) => {
+        setListDocument(Resp?.data?.data);
+      });
+  };
+
+  const handleOpen = (id) => {
+    // alert(id);
+    setOpen(true);
+    ListDoc(id, assetEvaluationId);
+    // https://mocapi.tebs.co.in/api/DocumentManager/DocList/319/Task?changeRequestToken=b5a9cc9d-9b65-40fa-8fda-f9ab1162a965
+  };
+
+  const handleModalClose = () => {
+    setOpen(false);
+    setOpenDrawer(false);
+  };
+  const handelDetailDoc = (doc) => {
+    setSelectedDocument(doc);
+    setFileDetails(true);
+    setDocumenDowToken(doc.token);
+  };
+  const handelFileDiscriptionChange = (event) => {
+    const { name, value } = event.target;
+    setSelectedFile((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleDownload = () => {
+    apiAuth
+      .get(`/DocumentManager/download/${documenDowToken}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute("download", selectedDocument.name); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed", error);
+      });
+  };
   return (
     <div className="w-full">
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={handleModalClose}
+        closeAfterTransition
+        // Customize backdrop appearance
+        BackdropComponent={Backdrop}
+        // Props for backdrop customization
+        BackdropProps={{
+          timeout: 500, // Adjust as needed
+          style: {
+            // Add backdrop styles here
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+        }}
+      >
+        <Fade in={open}>
+          <Box sx={style1}>
+            <Box sx={{ flex: 1 }}>
+              <Box className="flex justify-between" style={{ margin: "30px" }}>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "3rem",
+                  }}
+                >
+                  File Manager
+                  <Typography id="transition-modal-subtitle" component="h2">
+                    {} Files
+                  </Typography>
+                </Typography>
+                <Box>
+                  {/* <Button
+                    className=""
+                    variant="contained"
+                    color="secondary"
+                    onClick={toggleDrawer(true)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+                    <span className="mx-4 sm:mx-8">Upload File</span>
+                  </Button> */}
+                </Box>
+              </Box>
+              <Box>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                  component="div"
+                  style={{
+                    backgroundColor: "#e3eeff80",
+                  }}
+                >
+                  {listDocument.map((doc, index) => (
+                    <div className="content " key={index}>
+                      <div
+                        onClick={() => handelDetailDoc(doc)}
+                        style={{ textAlign: "-webkit-center" }}
+                      >
+                        {doc.fileType === "JPG" ? (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        ) : doc.fileType === "JPG" ? (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        ) : (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        )}
+                        <h6>{doc?.name}</h6>
+                        <h6>by {doc?.staffName}</h6>
+                      </div>
+                    </div>
+                  ))}
+                </Typography>
+              </Box>
+            </Box>
+            {openDrawer && !fileDetails && (
+              <Box sx={drawerStyle(openDrawer)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setOpenDrawer(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <Button
+                      className=""
+                      variant="contained"
+                      color="secondary"
+                      style={{
+                        backgroundColor: "#24a0ed",
+                        borderRadius: "5px",
+                        paddingLeft: "50px",
+                        paddingRight: "50px",
+                      }}
+                      component="span"
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Selecte File"
+                      variant="standard"
+                      disabled
+                      value={selectedFile.name}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="description"
+                      variant="standard"
+                      onChange={handelFileDiscriptionChange}
+                      value={selectedFile.description}
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleSubmitAsset}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Box>
+            )}
+
+            {fileDetails && (
+              <Box sx={drawerStyle(fileDetails)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setFileDetails(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <div className=" ">
+                      <div
+                        // onClick={handelDetailDoc}
+                        style={{
+                          textAlign: "-webkit-center",
+                        }}
+                      >
+                        <img src="/assets/images/etc/icon_N.png" />
+                      </div>
+                      {selectedDocument?.name}
+                    </div>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Created By"
+                      variant="standard"
+                      disabled
+                      value={selectedDocument.staffName}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label=" Created At"
+                      name="description"
+                      variant="standard"
+                      disabled
+                      value={formatDate(selectedDocument.createdAt)}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="Description"
+                      variant="standard"
+                      disabled
+                      value={
+                        selectedDocument.description == null
+                          ? ""
+                          : selectedDocument.descritpion
+                      }
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleDownload}
+                  >
+                    Download
+                  </Button>
+                </div>
+              </Box>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -1207,7 +1610,7 @@ function ImplementationApproval({
                                           </p>
                                         </div>
                                       </div>
-                                      
+
                                       <div className="flex items-center justify-center my-3">
                                         <div className="flex-auto border-b"></div>
                                         <div
@@ -1221,7 +1624,7 @@ function ImplementationApproval({
                                         </div>
                                         <div className="flex-auto border-b"></div>
                                       </div>
-                                      
+
                                       {impComments.map((msg) => (
                                         <div
                                           key={msg.id}
@@ -1356,8 +1759,6 @@ function ImplementationApproval({
                                       {detail.isCompleted &&
                                         detail.taskStatus !== 3 && (
                                           <>
-                                            
-
                                             <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                               <div
                                                 _ngcontent-fyk-c288=""
@@ -1493,42 +1894,45 @@ function ImplementationApproval({
 
               {activeStep === steps.length && (
                 <Paper square elevation={0} className="pt-24 pb-24">
-                  <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}style={{
-              border: "1px solid",
-              backgroundColor: "#0000",
-              color: "black",
-              borderColor: "rgba(203,213,225)",
-            }}>
+                  <Button
+                    onClick={handleReset}
+                    sx={{ mt: 1, mr: 1 }}
+                    style={{
+                      border: "1px solid",
+                      backgroundColor: "#0000",
+                      color: "black",
+                      borderColor: "rgba(203,213,225)",
+                    }}
+                  >
                     Reset
                   </Button>
                 </Paper>
               )}
             </Box>
           </div>
-          
+
           {/* <div
             _ngcontent-fyk-c288=""
             class="flex items-center w-full  border-b justify-between"
           ></div> */}
           <div className="p-30 pt-24 pb-24">
-
-          <Button
-            className="whitespace-nowrap mt-5 mb-5"
-            style={{
-              border: "1px solid",
-              backgroundColor: "#0000",
-              color: "black",
-              borderColor: "rgba(203,213,225)",
-            }}
-            variant="contained"
-            color="warning"
-            onClick={() => handelOpenAudit("", "fullList")}
-          >
-            <FuseSvgIcon className="text-48" size={24} color="action">
-              heroicons-outline:document-text
-            </FuseSvgIcon>
-            Audit Lists
-          </Button>
+            <Button
+              className="whitespace-nowrap mt-5 mb-5"
+              style={{
+                border: "1px solid",
+                backgroundColor: "#0000",
+                color: "black",
+                borderColor: "rgba(203,213,225)",
+              }}
+              variant="contained"
+              color="warning"
+              onClick={() => handelOpenAudit("", "fullList")}
+            >
+              <FuseSvgIcon className="text-48" size={24} color="action">
+                heroicons-outline:document-text
+              </FuseSvgIcon>
+              Audit Lists
+            </Button>
           </div>
           {lastActCode?.canExecute && (
             <div className="flex justify-end p-30">
