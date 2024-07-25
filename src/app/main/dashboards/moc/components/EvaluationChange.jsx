@@ -45,6 +45,7 @@ import { border } from "@mui/system";
 import "./componentStyle.css";
 import { useRef } from "react";
 import FuseLoading from "@fuse/core/FuseLoading";
+import Initiation from "./Initiation";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -102,6 +103,7 @@ function EvaluationChange({
   assetEvaluationId,
   setContent,
   currentActivityForm,
+  contentDetails,
 }) {
   const [open, setOpen] = useState(false);
   const [openSession, setOpenSession] = useState(false);
@@ -1577,6 +1579,10 @@ function EvaluationChange({
   return (
     <div className="w-full">
       <ToastContainer className="toast-container " />
+      <Initiation
+        contentDetails={contentDetails}
+        assetEvaluationId={assetEvaluationId}
+      />
       <SwipeableViews>
         {!risk ? (
           <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">

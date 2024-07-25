@@ -41,7 +41,8 @@ const useStyles = makeStyles({
 
 function Initiation(props) {
   const classes = useStyles();
-  const { contentDetails, assetEvaluationId } = props;
+  const { contentDetails, assetEvaluationId, contentDetailsini, appActivity } =
+    props;
   const StyledBadge = withStyles((theme) => ({
     badge: {
       right: -3,
@@ -131,7 +132,6 @@ function Initiation(props) {
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
-        debugger;
         link.href = url;
         link.setAttribute("download", selectedDocument.name); // or any other extension
         document.body.appendChild(link);
@@ -229,7 +229,11 @@ function Initiation(props) {
                 >
                   File Manager
                   <Typography id="transition-modal-subtitle" component="h2">
-                    {contentDetails.documentCount} Files
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.documentCount
+                    }{" "}
+                    Files
                   </Typography>
                 </Typography>
                 <Box>
@@ -537,7 +541,7 @@ function Initiation(props) {
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
           <div>
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
-              <h2 className="text-2xl font-semibold">MOC Document Request</h2>
+              <h2 className="text-2xl font-semibold">MOC Request</h2>
             </div>
             <div className="p-30">
               <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
@@ -546,21 +550,30 @@ function Initiation(props) {
                     Request No
                   </div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.requestNo}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.requestNo
+                    }
                   </div>
                 </div>
-                <div  className="my-3">
+                <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">Date</div>
                   <div className="text-lg leading-6 font-medium">
-                    {formatDate(contentDetails?.requestDate)}
+                    {formatDate(
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.requestDate
+                    )}
                   </div>
                 </div>
-                <div  className="my-3">
+                <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
                     Site In Charge
                   </div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.siteInChargeName}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.siteInChargeName
+                    }
                   </div>
                 </div>
               </div>
@@ -568,19 +581,28 @@ function Initiation(props) {
                 <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">Site</div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.siteName}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.siteName
+                    }
                   </div>
                 </div>
                 <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">Division</div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.divisionName}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.divisionName
+                    }
                   </div>
                 </div>
                 <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">Function</div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.functionName}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.functionName
+                    }
                   </div>
                 </div>
               </div>
@@ -588,7 +610,10 @@ function Initiation(props) {
                 <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">Type</div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.typeString}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.typeString
+                    }
                   </div>
                 </div>
                 <div className="my-3">
@@ -596,7 +621,10 @@ function Initiation(props) {
                     Project Value
                   </div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.projectValue}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.projectValue
+                    }
                   </div>
                 </div>
                 <div className="my-3">
@@ -604,7 +632,10 @@ function Initiation(props) {
                     Expense Nature
                   </div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.expenseNatureString}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.expenseNatureString
+                    }
                   </div>
                 </div>
               </div>
@@ -614,7 +645,10 @@ function Initiation(props) {
                     Expense Type
                   </div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.expenseTypeString}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.expenseTypeString
+                    }
                   </div>
                 </div>
                 <div className="my-3">
@@ -622,7 +656,10 @@ function Initiation(props) {
                     Purchase Category
                   </div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.purchaseCategoryString}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.purchaseCategoryString
+                    }
                   </div>
                 </div>
                 <div className="my-3">
@@ -630,7 +667,10 @@ function Initiation(props) {
                     {/* Doc Controller */}
                   </div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.docControllerName}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.docControllerName
+                    }
                   </div>
                 </div>
               </div>
@@ -640,7 +680,10 @@ function Initiation(props) {
                     Project Name
                   </div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.projectName}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.projectName
+                    }
                   </div>
                 </div>
                 <div className="my-3">
@@ -648,36 +691,46 @@ function Initiation(props) {
                     Project Description
                   </div>
                   <div className="text-lg leading-6 font-medium">
-                    {contentDetails?.projectDescription}
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.projectDescription
+                    }
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex items-center justify-between w-full p-30 pt-24 pb-24 border-t">
-              <div>
-                <StyledBadge badgeContent={contentDetails.documentCount}>
-                  <Button
-                    className="whitespace-nowrap mt-5"
-                    style={{
-                      border: "1px solid",
-                      backgroundColor: "transparent",
-                      color: "black",
-                      borderColor: "rgba(203,213,225)",
-                    }}
-                    variant="contained"
-                    color="warning"
-                    startIcon={
-                      <FuseSvgIcon size={20}>
-                        heroicons-solid:upload
-                      </FuseSvgIcon>
+            {appActivity?.code == "START" && (
+              <div className="flex items-center justify-between w-full p-30 pt-24 pb-24 border-t">
+                <div>
+                  <StyledBadge
+                    badgeContent={
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.documentCount
                     }
-                    onClick={handleOpen}
                   >
-                    Document
-                  </Button>
-                </StyledBadge>
+                    <Button
+                      className="whitespace-nowrap mt-5"
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "transparent",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                      }}
+                      variant="contained"
+                      color="warning"
+                      startIcon={
+                        <FuseSvgIcon size={20}>
+                          heroicons-solid:upload
+                        </FuseSvgIcon>
+                      }
+                      onClick={handleOpen}
+                    >
+                      Document
+                    </Button>
+                  </StyledBadge>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </Paper>
       </SwipeableViews>
