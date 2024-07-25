@@ -338,7 +338,7 @@ const riskCourse = () => {
 
   return (
     <FusePageSimple
-      header={<MocHeader activity={actName} reqno={reqNo} />}
+      header={<MocHeader risk={"risk"} activity={actName} reqno={reqNo} />}
       content={
         <div className="w-full">
           <ToastContainer className="toast-container" />
@@ -627,9 +627,9 @@ const riskCourse = () => {
                             borderColor: "white",
                           }}
                         >
-                          Change Evaluation Consultation
+                          Add Tasks
                         </Button>
-                        <Button
+                        {/* <Button
                           onClick={() => handleChange(1)}
                           className="ms-5"
                           variant={value === 1 ? "contained" : "outlined"}
@@ -641,7 +641,7 @@ const riskCourse = () => {
                           }}
                         >
                           Change Evaluation Impacts
-                        </Button>
+                        </Button> */}
                       </Box>
 
                       <CustomTabPanel value={value} index={0}>
@@ -663,7 +663,7 @@ const riskCourse = () => {
                                   </FuseSvgIcon>
                                 }
                               >
-                                Add New Consultation
+                                Add New Task
                               </Button>
                             )}
                           </div>

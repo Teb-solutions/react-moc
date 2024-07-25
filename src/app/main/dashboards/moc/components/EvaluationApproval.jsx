@@ -411,6 +411,7 @@ const EvaluationApproval = ({
           "Selected tasks successfully sent for external consultation"
         );
         handlehandledateExtendClose();
+        location.reload();
       });
   };
 
