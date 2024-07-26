@@ -30,29 +30,71 @@ import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import SearchIcon from "@mui/icons-material/Search";
 
 import { useCallback } from "react";
-function createData(activity, assigned, type, number, initiated, date, status) {
-  return { activity, assigned, type, number, initiated, date, status };
-}
+import FuseLoading from "@fuse/core/FuseLoading";
 
-function HomeTab() {
+function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
   const storedFeature = decryptFeature();
   const feature = storedFeature ? storedFeature : [];
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10); // Set a high number to display all rows
-  const [riskMatrixList, setRiskMatrixList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const columns = [
-    { id: "activity", label: "Activity", minWidth: 170, align: "left" },
+    {
+      id: "activity",
+      label: "Activity",
+      minWidth: 170,
+      align: "left",
+      render: (item) => {
+        return (
+          <Link
+            className="text-blue"
+            to={
+              item.type === "Asset"
+                ? `/moc/assetEvaluation/${item.token}`
+                : item.type === "Document"
+                  ? `/moc/evaluation/${item.token}`
+                  : `/moc/orgEvaluation/${item.token}`
+            }
+          >
+            {item.activity}
+          </Link>
+        );
+      },
+    },
     {
       id: "assigned",
       label: "Activity Assigned At",
       minWidth: 170,
       align: "left",
+      render: (item) => {
+        const date = new Date(item.assigned);
+        const formattedDate = date.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+        return <span>{formattedDate}</span>;
+      },
     },
     { id: "type", label: "MOC Type", minWidth: 170, align: "left" },
     { id: "number", label: "MOC Number", minWidth: 170, align: "left" },
     { id: "initiated", label: "Initiated By", minWidth: 170, align: "left" },
-    { id: "date", label: "Initiated Date", minWidth: 170, align: "left" },
+    {
+      id: "date",
+      label: "Initiated Date",
+      minWidth: 170,
+      align: "left",
+      render: (item) => {
+        const date = new Date(item.date);
+        const formattedDate = date.toLocaleDateString("en-US", {
+          month: "long",
+          day: "numeric",
+          year: "numeric",
+        });
+        return <span>{formattedDate}</span>;
+      },
+    },
     { id: "status", label: "Status", minWidth: 170, align: "left" },
   ];
 
@@ -60,7 +102,7 @@ function HomeTab() {
     setSearchQuery(event.target.value);
   };
 
-  const filteredDepartmentList = riskMatrixList.filter((row) => {
+  const filteredDepartmentList = riskMatrixList?.filter((row) => {
     const query = searchQuery?.toLowerCase();
 
     return (
@@ -84,6 +126,8 @@ function HomeTab() {
     updatedDepartmentList[index].isActive = event.target.checked;
     setRiskMatrixList(updatedDepartmentList);
   };
+
+  const handelView = () => {};
   const container = {
     show: {
       transition: {
@@ -101,8 +145,6 @@ function HomeTab() {
   const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
-  const [data, setData] = useState({});
-  const [pendingApproval, setPendingApproval] = useState({});
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -127,36 +169,6 @@ function HomeTab() {
   const handelTask = () => {
     navigate("/task");
   };
-
-  const fetchdataSetting = useCallback(async () => {
-    try {
-      apiAuth.get(`/Dashboard/Get`).then((resp) => {
-        setData(resp?.data?.data);
-        const transformedData = resp?.data?.data?.approvalsPendingRequests?.map(
-          (item, index) =>
-            createData(
-              item.lastActivityName,
-              item.lastActivityStartedAt,
-              item.requestTypeName,
-              item.requestNo,
-              item.initiatorName,
-              item.requestDate,
-              item.statusName
-            )
-        );
-        console.log("====================================");
-        console.log(transformedData);
-        console.log("====================================");
-        setRiskMatrixList(transformedData);
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchdataSetting();
-  }, []);
 
   return (
     <motion.div
@@ -341,109 +353,113 @@ function HomeTab() {
           </Typography>
         </Paper>
       </motion.div>
-
-      <motion.div variants={item} className="sm:col-span-2 md:col-span-4">
-        <Paper className="flex flex-col flex-auto p-24 shadow rounded-2xl overflow-hidden">
-          <div style={{ backgroundColor: "white" }}>
-            <div>
-              <div className="flex d-flex flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
-                <InputLabel
-                  id="category-select-label"
-                  style={{ fontSize: "large", color: "black" }}
-                >
-                  <b>Approvals Pending ({riskMatrixList.length})</b>
-                </InputLabel>
-                <div className="flex items-center justify-between mt-4">
-                  <div className="flex-auto"></div>
-                  <TextField
-                    variant="filled"
-                    fullWidth
-                    placeholder="Search "
-                    style={{ marginRight: "15px", backgroundColor: "white" }}
-                    onChange={handleSearch}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment
-                          position="start"
-                          style={{ marginTop: "0px", paddingTop: "0px" }}
-                        >
-                          <SearchIcon />
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{ width: 250 }}
-                  />
+      {riskMatrixList?.length && (
+        <motion.div variants={item} className="sm:col-span-2 md:col-span-4">
+          <Paper className="flex flex-col flex-auto p-24 shadow rounded-2xl overflow-hidden">
+            <div style={{ backgroundColor: "white" }}>
+              <div>
+                <div className="flex d-flex flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
+                  <InputLabel
+                    id="category-select-label"
+                    style={{ fontSize: "2px", color: "black" }}
+                  >
+                    <b>Approvals Pending ({riskMatrixList?.length})</b>
+                  </InputLabel>
+                  <div className="flex items-center justify-between mt-4">
+                    <div className="flex-auto"></div>
+                    <TextField
+                      variant="filled"
+                      fullWidth
+                      placeholder="Search "
+                      style={{ marginRight: "15px", backgroundColor: "white" }}
+                      onChange={handleSearch}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment
+                            position="start"
+                            style={{ marginTop: "0px", paddingTop: "0px" }}
+                          >
+                            <SearchIcon />
+                          </InputAdornment>
+                        ),
+                      }}
+                      sx={{ width: 250 }}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex items-center w-full border-b justify-between"></div>
-            <Paper sx={{ width: "100%", overflow: "hidden" }}>
-              <TableContainer>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      {columns.map((column) => (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{
-                            minWidth: column.minWidth,
-                          }}
-                        >
-                          {column.label}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {filteredDepartmentList
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      .map((row) => {
-                        return (
-                          <TableRow
-                            hover
-                            role="checkbox"
-                            tabIndex={-1}
-                            key={row.code}
+              <div className="flex items-center w-full border-b justify-between"></div>
+              <Paper sx={{ width: "100%", overflow: "hidden" }}>
+                <TableContainer>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        {columns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{
+                              minWidth: column.minWidth,
+                            }}
                           >
-                            {columns.map((column) => {
-                              const value = row[column.id];
-                              return (
-                                <TableCell
-                                  key={column.id}
-                                  align={column.align}
-                                  style={{ borderBottom: "1px solid #dddddd" }}
-                                >
-                                  {column.render
-                                    ? column.render(row) // Render custom actions
-                                    : column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : value}
-                                </TableCell>
-                              );
-                            })}
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={riskMatrixList.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Paper>
-          </div>
-        </Paper>
-      </motion.div>
+                            {column.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredDepartmentList
+                        ?.slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        ?.map((row) => {
+                          return (
+                            <TableRow
+                              hover
+                              role="checkbox"
+                              tabIndex={-1}
+                              key={row.code}
+                            >
+                              {columns.map((column) => {
+                                const value = row[column.id];
+                                return (
+                                  <TableCell
+                                    key={column.id}
+                                    align={column.align}
+                                    style={{
+                                      borderBottom: "1px solid #dddddd",
+                                    }}
+                                  >
+                                    {column.render
+                                      ? column.render(row) // Render custom actions
+                                      : column.format &&
+                                          typeof value === "number"
+                                        ? column.format(value)
+                                        : value}
+                                  </TableCell>
+                                );
+                              })}
+                            </TableRow>
+                          );
+                        })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[10, 25, 100]}
+                  component="div"
+                  count={riskMatrixList?.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Paper>
+            </div>
+          </Paper>
+        </motion.div>
+      )}
       <motion.div variants={item} className="sm:col-span-2 md:col-span-4">
         <Paper className="flex flex-col flex-auto p-24 shadow rounded-2xl overflow-hidden">
           <div className="flex flex-col sm:flex-row items-start justify-between">
@@ -458,7 +474,7 @@ function HomeTab() {
                 <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
                 <MenuItem onClick={handleOpenNewOrg}>Organisation</MenuItem>
               </Menu>
-              {Object.keys(routeParams).length === 0 &&
+              {Object.keys(routeParams)?.length === 0 &&
                 feature.includes("REQ") && (
                   <Button
                     className="HomeButton"

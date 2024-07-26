@@ -42,6 +42,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { ToastContainer, toast } from "react-toastify";
 import FuseLoading from "@fuse/core/FuseLoading";
+import Initiation from "./Initiation";
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -55,6 +56,7 @@ const EvaluationApproval = ({
   setContent,
   setContentDetails,
   CountApprove,
+  contentDetailsini,
 }) => {
   const [reviewed, setReviewed] = useState({});
   const [open1, setOpen1] = useState(false);
@@ -407,6 +409,7 @@ const EvaluationApproval = ({
   };
 
   const handleSubmit = () => {
+    setIsLoading(true);
     const taskIds = selectedTasks.map((task) => task.id);
     // Prepare payload in the required format
     const payload = {
@@ -426,7 +429,19 @@ const EvaluationApproval = ({
           "Selected tasks successfully sent for external consultation"
         );
         handlehandledateExtendClose();
-        location.reload();
+        apiAuth
+          .get(
+            `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+          )
+          .then((resp) => {
+            showSendPopup(false);
+            setIsLoading(false);
+
+            setContentDetails(resp.data.data);
+          });
+      })
+      .catch((err) => {
+        setIsLoading(false);
       });
   };
 
@@ -609,6 +624,36 @@ const EvaluationApproval = ({
   return (
     <div className="w-full h-full">
       <ToastContainer className="toast-container" />
+      <Initiation
+        contentDetailsini={contentDetailsini}
+        assetEvaluationId={assetEvaluationId}
+      />
+      <div
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 1000,
+          // backgroundColor: "white",
+          padding: "10px",
+          display: showSendPopup ? "flex" : "none",
+          justifyContent: "end",
+          color: "white",
+        }}
+      >
+        <Button
+          className="whitespace-nowrap ms-5"
+          variant="contained"
+          color="secondary"
+          style={{
+            padding: "10px",
+            borderRadius: "20px",
+          }}
+          onClick={handledateExtendopen}
+        >
+          Send selected {selectedTasks?.length} task(s) for external
+          consultation
+        </Button>
+      </div>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -812,32 +857,7 @@ const EvaluationApproval = ({
           </Box>
         </Fade>
       </Modal>
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 1000,
-          backgroundColor: "white",
-          padding: "10px",
-          display: showSendPopup ? "flex" : "none",
-          justifyContent: "end",
-          color: "white",
-        }}
-      >
-        <Button
-          className="whitespace-nowrap ms-5"
-          variant="contained"
-          color="secondary"
-          style={{
-            padding: "10px",
-            borderRadius: "20px",
-          }}
-          onClick={handledateExtendopen}
-        >
-          Send selected {selectedTasks?.length} task(s) for external
-          consultation
-        </Button>
-      </div>
+
       <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
           <div>
@@ -1141,7 +1161,7 @@ const EvaluationApproval = ({
                 {itm.requestTypeName != "Document" && AppActivity.canEdit && (
                   <div className="task-button ml-auto">
                     <button
-                      className="task-mark-reviewed-button mat-stroked-button"
+                      className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
                       onClick={() => handelreview(itm.id)}
                     >
                       {itm?.reviewd || clickedTasks[itm.id] ? (
@@ -1184,17 +1204,42 @@ const EvaluationApproval = ({
                       expandIcon={<ExpandMoreIcon />}
                       aria-controls="panel1a-content"
                       id="panel1a-header"
+                      style={{
+                        display: "flex",
+                        justifyContent: AppActivity.canEdit
+                          ? "space-between"
+                          : "flex-start",
+                      }}
                     >
-                      <Typography>
-                        <span className="text-brown">
-                          {itm?.reviews?.length} Review
-                        </span>{" "}
-                        {hasAddedComment(itm.reviews) && (
-                          <span className="text-green">
-                            (You have added 1 review)
-                          </span>
-                        )}
-                      </Typography>
+                      {AppActivity.canEdit && (
+                        <button
+                          className="custom-add-review-button"
+                          style={{ marginRight: 16 }}
+                        >
+                          Add Review
+                        </button>
+                      )}
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          flexGrow: 1, // This makes the div take up remaining space
+                          justifyContent: AppActivity.canEdit
+                            ? "flex-end"
+                            : "flex-start",
+                        }}
+                      >
+                        <Typography>
+                          <span className="text-brown">
+                            {itm?.reviews?.length} Review
+                          </span>{" "}
+                          {hasAddedComment(itm.reviews) && (
+                            <span className="text-green">
+                              (You have added 1 review)
+                            </span>
+                          )}
+                        </Typography>
+                      </div>
                     </AccordionSummary>
 
                     <AccordionDetails>
@@ -1481,7 +1526,7 @@ const EvaluationApproval = ({
                           AppActivity.canEdit && (
                             <div className="task-button ml-auto">
                               <button
-                                className="task-mark-reviewed-button mat-stroked-button"
+                                className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
                                 onClick={() => handelImpactreview(imptsk.id)}
                                 disabled={
                                   imptsk?.reviewd || clickedTasks[imptsk.id]
@@ -1863,20 +1908,45 @@ const EvaluationApproval = ({
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel1a-content"
                                 id="panel1a-header"
+                                style={{
+                                  display: "flex",
+                                  justifyContent: AppActivity.canEdit
+                                    ? "space-between"
+                                    : "flex-start",
+                                }}
                               >
-                                <Typography>
-                                  <span className="text-brown">
-                                    {imptsk?.changeImpactTaskReviews?.length}{" "}
-                                    Reviews
-                                  </span>{" "}
-                                  {hasAddedComment(
-                                    imptsk.changeImpactTaskReviews
-                                  ) && (
-                                    <span className="text-green">
-                                      (You have added 1 review)
-                                    </span>
-                                  )}
-                                </Typography>
+                                {AppActivity.canEdit && (
+                                  <button
+                                    className="custom-add-review-button"
+                                    style={{ marginRight: 16 }}
+                                  >
+                                    Add Review
+                                  </button>
+                                )}
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    flexGrow: 1, // This makes the div take up remaining space
+                                    justifyContent: AppActivity.canEdit
+                                      ? "flex-end"
+                                      : "flex-start",
+                                  }}
+                                >
+                                  <Typography>
+                                    <span className="text-brown">
+                                      {imptsk?.changeImpactTaskReviews?.length}{" "}
+                                      Reviews
+                                    </span>{" "}
+                                    {hasAddedComment(
+                                      imptsk.changeImpactTaskReviews
+                                    ) && (
+                                      <span className="text-green">
+                                        (You have added 1 review)
+                                      </span>
+                                    )}
+                                  </Typography>
+                                </div>
                               </AccordionSummary>
                               <AccordionDetails>
                                 {AppActivity.canEdit &&

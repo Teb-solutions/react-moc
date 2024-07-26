@@ -40,6 +40,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import TableContainer from "@mui/material/TableContainer";
 import { styled } from "@mui/material/styles";
+import Initiation from "./Initiation";
 // Adjust the path based on your project structure
 
 function createData(
@@ -60,6 +61,7 @@ function ImplementationApproval({
   AppActions,
   AppActivity,
   setContent,
+  contentDetailsini,
 }) {
   const columns = [
     { id: "index", label: "#", minWidth: 50 },
@@ -79,14 +81,14 @@ function ImplementationApproval({
     },
     {
       id: "date",
-      label: "Done By Date",
+      label: "Done By date",
       minWidth: 170,
       align: "left",
       format: (value) => value.toLocaleString("en-US"),
     },
     {
       id: "staff",
-      label: "Done BY staff",
+      label: "Done By staff",
       minWidth: 170,
       align: "left",
       format: (value) => value.toLocaleString("en-US"),
@@ -1330,6 +1332,11 @@ function ImplementationApproval({
           </Box>
         </Fade>
       </Modal>
+
+      <Initiation
+        contentDetailsini={contentDetailsini}
+        assetEvaluationId={assetEvaluationId}
+      />
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>

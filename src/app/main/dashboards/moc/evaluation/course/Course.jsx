@@ -822,9 +822,10 @@ function Course() {
   };
 
   const SubmitApprovel = (e, uid) => {
-    setIsLoading(true);
     if (forms.length < 1) {
       toast.error("At least one stakeholder is required.");
+    } else {
+      setIsLoading(true);
     }
     apiAuth
       .get(
@@ -851,8 +852,8 @@ function Course() {
                 }
               )
               .then((resp) => {
-                setIsLoading(false);
                 getRecords();
+                setIsLoading(false);
                 // location.reload();
               })
               .catch((err) => {
@@ -924,6 +925,10 @@ function Course() {
         }
       });
     }
+  };
+
+  const hasAddedComment = (comments) => {
+    return comments.some((comment) => comment.isCreatedByMe);
   };
 
   const handelAddStake = () => {
@@ -4163,28 +4168,29 @@ function Course() {
                             sx={{ width: 320 }}
                           />
                         </div>
-                        <div
-                          className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
-                          style={{ width: "40%" }}
-                        >
-                          <div className="flex items-center">
-                            <img
-                              src="/assets/images/etc/userpic.png"
-                              alt="Card cover image"
-                              className="rounded-full mr-4"
-                              style={{ width: "4rem", height: "4rem" }}
-                            />
-                            <div className="flex flex-col">
-                              <span className="font-semibold leading-none">
-                                {contentDetails.initiatorName}
-                              </span>
-                              <span className="text-sm text-secondary leading-none pt-5">
-                                Consulted on{" "}
-                                {formatDate(contentDetails?.requestDate)}
-                              </span>
+                        {contentDetails?.consultaion?.map((itm) => (
+                          <div
+                            className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
+                            style={{ width: "40%" }}
+                          >
+                            <div className="flex items-center">
+                              <img
+                                src="/assets/images/etc/userpic.png"
+                                alt="Card cover image"
+                                className="rounded-full mr-4"
+                                style={{ width: "4rem", height: "4rem" }}
+                              />
+                              <div className="flex flex-col">
+                                <span className="font-semibold leading-none">
+                                  {itm.staff}
+                                </span>
+                                <span className="text-sm text-secondary leading-none pt-5">
+                                  Consulted on {formatDate(itm?.consultedDate)}
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        ))}
                       </Paper>
                     </>
                   )}
@@ -4245,7 +4251,7 @@ function Course() {
                                       {currentActivityForm.canEdit && (
                                         <div className="task-button ml-auto">
                                           <button
-                                            className="task-mark-reviewed-button mat-stroked-button"
+                                            className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
                                             onClick={() =>
                                               handelreview(imptsk.id)
                                             }
@@ -4407,26 +4413,51 @@ function Course() {
                                               expandIcon={<ExpandMoreIcon />}
                                               aria-controls="panel1a-content"
                                               id="panel1a-header"
+                                              style={{
+                                                display: "flex",
+                                                justifyContent:
+                                                  currentActivityForm.canEdit
+                                                    ? "space-between"
+                                                    : "flex-start",
+                                              }}
                                             >
-                                              <Typography>
-                                                <span className="text-brown">
-                                                  {
-                                                    imptsk
-                                                      ?.implementationReviews
-                                                      ?.length
-                                                  }{" "}
-                                                  Reviews
-                                                </span>{" "}
-                                                <span className="text-green">
-                                                  (You have added{" "}
-                                                  {
-                                                    imptsk
-                                                      ?.implementationReviews
-                                                      ?.length
-                                                  }{" "}
-                                                  review)
-                                                </span>
-                                              </Typography>
+                                              {currentActivityForm.canEdit && (
+                                                <button
+                                                  className="custom-add-review-button"
+                                                  style={{ marginRight: 16 }}
+                                                >
+                                                  Add Review
+                                                </button>
+                                              )}
+                                              <div
+                                                style={{
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                  flexGrow: 1, // This makes the div take up remaining space
+                                                  justifyContent:
+                                                    currentActivityForm.canEdit
+                                                      ? "flex-end"
+                                                      : "flex-start",
+                                                }}
+                                              >
+                                                <Typography>
+                                                  <span className="text-brown">
+                                                    {
+                                                      imptsk
+                                                        ?.implementationReviews
+                                                        ?.length
+                                                    }{" "}
+                                                    Reviews
+                                                  </span>{" "}
+                                                  {hasAddedComment(
+                                                    imptsk?.implementationReviews
+                                                  ) && (
+                                                    <span className="text-green">
+                                                      (You have added 1 review)
+                                                    </span>
+                                                  )}
+                                                </Typography>
+                                              </div>
                                             </AccordionSummary>
                                             <AccordionDetails>
                                               <div className="mat-form-field-wrapper">
