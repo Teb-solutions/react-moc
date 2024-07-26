@@ -539,7 +539,7 @@ function Course() {
     transform: "translate(-50%, -50%)",
     width: "600px",
     maxWidth: "80vw",
-    height: "74%",
+    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -564,7 +564,8 @@ function Course() {
     right: open ? 0 : -250, // Move drawer out of view when closed
     height: "100%",
     zIndex: 10,
-    transition: "right 0.3s ease", // Smooth transition for opening/closing
+    transition: "right 0.3s ease",
+    overflow: "auto", // Smooth transition for opening/closing
   });
 
   useEffect(() => {

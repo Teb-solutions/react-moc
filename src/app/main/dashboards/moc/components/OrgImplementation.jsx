@@ -106,7 +106,7 @@ const OrgImplementation = ({
     transform: "translate(-50%, -50%)",
     width: "1100px",
     maxWidth: "80vw",
-    height: "55%",
+    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -130,7 +130,8 @@ const OrgImplementation = ({
     right: open ? 0 : -250, // Move drawer out of view when closed
     height: "100%",
     zIndex: 10,
-    transition: "right 0.3s ease", // Smooth transition for opening/closing
+    transition: "right 0.3s ease",
+    overflow: "auto", // Smooth transition for opening/closing
   });
   const [expanded, setExpanded] = useState(null);
   const [impComments, setImpComments] = useState([]);

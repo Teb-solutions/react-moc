@@ -58,7 +58,7 @@ const Task = () => {
     transform: "translate(-50%, -50%)",
     width: "1100px",
     maxWidth: "80vw",
-    height: "55%",
+    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -84,7 +84,9 @@ const Task = () => {
     right: open ? 0 : -250, // Move drawer out of view when closed
     height: "100%",
     zIndex: 10,
-    transition: "right 0.3s ease", // Smooth transition for opening/closing
+    transition: "right 0.3s ease",
+    overflow: "auto",
+    // Smooth transition for opening/closing
   });
 
   const { data: categories } = useGetAcademyCategoriesQuery();
@@ -1794,23 +1796,25 @@ const Task = () => {
                       onChange={(e) => setComments(e.target.value)}
                       value={comments}
                     ></textarea>
-                    <button
-                      style={{
-                        position: "absolute",
-                        right: "10px",
-                        bottom: "32px",
-                        padding: "5px 10px",
-                        color: "black",
-                        border: "none",
-                        borderRadius: "5px",
-                        cursor: "pointer",
-                      }}
-                      onClick={(e) => handleOpenDocModal(e, task)}
-                    >
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:document
-                      </FuseSvgIcon>
-                    </button>
+                    {task.taskType == 2 && (
+                      <button
+                        style={{
+                          position: "absolute",
+                          right: "10px",
+                          bottom: "32px",
+                          padding: "5px 10px",
+                          color: "black",
+                          border: "none",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                        }}
+                        onClick={(e) => handleOpenDocModal(e, task)}
+                      >
+                        <FuseSvgIcon size={20}>
+                          heroicons-outline:document
+                        </FuseSvgIcon>
+                      </button>
+                    )}
                   </div>
                   {task.taskType == 2 && (
                     <RadioGroup
