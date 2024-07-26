@@ -33,6 +33,7 @@ import { makeStyles } from "@mui/styles";
 import { withStyles } from "@mui/styles";
 import { toast, ToastContainer } from "react-toastify";
 import FuseLoading from "@fuse/core/FuseLoading";
+import Initiation from "./Initiation";
 
 const InitiationComplete = ({
   assetEvaluationId,
@@ -42,6 +43,7 @@ const InitiationComplete = ({
   currentActivityForm,
   currentSummeryById,
   setContent,
+  contentDetails,
 }) => {
   const StyledBadge = withStyles((theme) => ({
     badge: {
@@ -399,25 +401,25 @@ const InitiationComplete = ({
                   }}
                 >
                   File Manager
-                  {/* <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                              >
-                                0 Files
-                              </Typography> */}
+                  <Typography id="transition-modal-subtitle" component="h2">
+                    {listDocument.length} Files
+                  </Typography>
                 </Typography>
-                <Box>
-                  <Button
-                    className=""
-                    variant="contained"
-                    color="secondary"
-                    onClick={toggleDrawer(true)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-                    <span className="mx-4 sm:mx-8">Upload File</span>
-                  </Button>
-                </Box>
+                {AppActivity?.canExecute && (
+                  <Box>
+                    <Button
+                      className=""
+                      variant="contained"
+                      color="secondary"
+                      onClick={toggleDrawer(true)}
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </Box>
+                )}
               </Box>
               <Box>
                 <Typography
@@ -458,6 +460,7 @@ const InitiationComplete = ({
                   </Button>
                 </div>
                 <div>&nbsp;</div>
+
                 <div className="text-center">
                   <input
                     type="file"
@@ -710,6 +713,11 @@ const InitiationComplete = ({
           </Box>
         </Fade>
       </Modal>
+
+      <Initiation
+        contentDetails={contentDetails}
+        assetEvaluationId={assetEvaluationId}
+      />
 
       <SwipeableViews>
         <Paper className="w-full mx-auto my-8 p-16 rounded-16 shadow overflow-hidden">

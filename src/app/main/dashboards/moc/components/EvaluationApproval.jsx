@@ -16,6 +16,7 @@ import {
   ListItemText,
   MenuItem,
   Modal,
+  Badge,
   Paper,
   Select,
   Table,
@@ -28,6 +29,7 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
 import React, { useEffect } from "react";
 import SwipeableViews from "react-swipeable-views";
@@ -40,6 +42,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { ToastContainer, toast } from "react-toastify";
 import FuseLoading from "@fuse/core/FuseLoading";
+import Initiation from "./Initiation";
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -52,6 +55,8 @@ const EvaluationApproval = ({
   setRemarkRequest,
   setContent,
   setContentDetails,
+  CountApprove,
+  contentDetailsini,
 }) => {
   const [reviewed, setReviewed] = useState({});
   const [open1, setOpen1] = useState(false);
@@ -59,6 +64,7 @@ const EvaluationApproval = ({
   const [fileDetails, setFileDetails] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [listDocument, setListDocument] = useState([]);
+  const [documenDowToken, setDocumenDowToken] = useState("");
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     description: "",
@@ -211,6 +217,17 @@ const EvaluationApproval = ({
     zIndex: 10,
     transition: "right 0.3s ease", // Smooth transition for opening/closing
   });
+
+  const StyledBadge = withStyles((theme) => ({
+    Badge: {
+      right: -3,
+      top: 13,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: "0 4px",
+      backgroundColor: "#000", // Adjust background color to match the image
+      color: "white",
+    },
+  }))(Badge);
 
   const [expanded, setExpanded] = useState(false);
   const [clickedTasks, setClickedTasks] = useState({});
@@ -365,7 +382,7 @@ const EvaluationApproval = ({
       setSelectedTasks(updatedTasks);
 
       // Show send popup when first checkbox is checked
-      if (updatedTasks.length === 1) {
+      if (updatedTasks?.length === 1) {
         setShowSendPopup(true);
       }
     } else {
@@ -376,7 +393,7 @@ const EvaluationApproval = ({
       setSelectedTasks(filteredTasks);
 
       // Hide send popup if no tasks are selected
-      if (filteredTasks.length === 0) {
+      if (filteredTasks?.length === 0) {
         setShowSendPopup(false);
       }
     }
@@ -392,6 +409,7 @@ const EvaluationApproval = ({
   };
 
   const handleSubmit = () => {
+    setIsLoading(true);
     const taskIds = selectedTasks.map((task) => task.id);
     // Prepare payload in the required format
     const payload = {
@@ -411,6 +429,19 @@ const EvaluationApproval = ({
           "Selected tasks successfully sent for external consultation"
         );
         handlehandledateExtendClose();
+        apiAuth
+          .get(
+            `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+          )
+          .then((resp) => {
+            showSendPopup(false);
+            setIsLoading(false);
+
+            setContentDetails(resp.data.data);
+          });
+      })
+      .catch((err) => {
+        setIsLoading(false);
       });
   };
 
@@ -464,7 +495,19 @@ const EvaluationApproval = ({
         setListDocument(Resp?.data?.data);
       });
   };
+  const formatDateModal = (dateString) => {
+    if (!dateString) {
+      return "Invalid date";
+    }
 
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMMM dd, yyyy");
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      return "Invalid date";
+    }
+  };
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);
     setFileDetails(true);
@@ -504,10 +547,12 @@ const EvaluationApproval = ({
     // }
     setSelectedFile({
       name: e.target.files[0].name,
-      description: "",
+      description: e.target.files[0].description
+        ? e.target.files[0].description
+        : "",
       type: e.target.files[0].type,
       document: e.target.files[0],
-      documentType: "ChangeSummary",
+      documentType: "Approval",
       documentId: AppActivity.uid,
       changeRequestToken: assetEvaluationId,
     });
@@ -529,9 +574,9 @@ const EvaluationApproval = ({
     formData.append("descritpion", selectedFile.description);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
-    formData.append("documentType", selectedFile.documentType);
-    formData.append("documentId", selectedFile.documentId);
-    formData.append("changeRequestToken", selectedFile.changeRequestToken);
+    formData.append("documentType", "Approval");
+    formData.append("documentId", AppActivity.uid);
+    formData.append("changeRequestToken", assetEvaluationId);
     apiAuth
       .post("DocumentManager/Create", formData, {
         headers: {
@@ -542,7 +587,7 @@ const EvaluationApproval = ({
         console.log(response.data);
         apiAuth
           .get(
-            `/DocumentManager/DocList/${currentActivityForm.uid}/ChangeSummary?changeRequestToken=${assetEvaluationId}`
+            `/DocumentManager/DocList/${AppActivity.uid}/Approval?changeRequestToken=${assetEvaluationId}`
           )
           .then((response) => {
             setOpenDrawer(false);
@@ -554,9 +599,61 @@ const EvaluationApproval = ({
       });
   };
 
+  const handleDownload = () => {
+    apiAuth
+      .get(`/DocumentManager/download/${documenDowToken}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        setOpenDrawer(false);
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute("download", selectedDocument.name); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed", error);
+      });
+  };
+
   return (
     <div className="w-full h-full">
       <ToastContainer className="toast-container" />
+      <Initiation
+        contentDetailsini={contentDetailsini}
+        assetEvaluationId={assetEvaluationId}
+      />
+      <div
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 1000,
+          // backgroundColor: "white",
+          padding: "10px",
+          display: showSendPopup ? "flex" : "none",
+          justifyContent: "end",
+          color: "white",
+        }}
+      >
+        <Button
+          className="whitespace-nowrap ms-5"
+          variant="contained"
+          color="secondary"
+          style={{
+            padding: "10px",
+            borderRadius: "20px",
+          }}
+          onClick={handledateExtendopen}
+        >
+          Send selected {selectedTasks?.length} task(s) for external
+          consultation
+        </Button>
+      </div>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -760,31 +857,7 @@ const EvaluationApproval = ({
           </Box>
         </Fade>
       </Modal>
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 1000,
-          backgroundColor: "white",
-          padding: "10px",
-          display: showSendPopup ? "flex" : "none",
-          justifyContent: "end",
-          color: "white",
-        }}
-      >
-        <Button
-          className="whitespace-nowrap ms-5"
-          variant="contained"
-          color="secondary"
-          style={{
-            padding: "10px",
-            borderRadius: "20px",
-          }}
-          onClick={handledateExtendopen}
-        >
-          Send selected {selectedTasks.length} task(s) for external consultation
-        </Button>
-      </div>
+
       <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
           <div>
@@ -1088,7 +1161,7 @@ const EvaluationApproval = ({
                 {itm.requestTypeName != "Document" && AppActivity.canEdit && (
                   <div className="task-button ml-auto">
                     <button
-                      className="task-mark-reviewed-button mat-stroked-button"
+                      className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
                       onClick={() => handelreview(itm.id)}
                     >
                       {itm?.reviewd || clickedTasks[itm.id] ? (
@@ -1121,7 +1194,7 @@ const EvaluationApproval = ({
               </div>
               <div>&nbsp;</div>
 
-              {itm.reviews.length > 0 || showReview ? (
+              {itm.reviews?.length > 0 || showReview ? (
                 <div>
                   <Accordion
                     expanded={expanded == itm.id}
@@ -1131,17 +1204,42 @@ const EvaluationApproval = ({
                       expandIcon={<ExpandMoreIcon />}
                       aria-controls="panel1a-content"
                       id="panel1a-header"
+                      style={{
+                        display: "flex",
+                        justifyContent: AppActivity.canEdit
+                          ? "space-between"
+                          : "flex-start",
+                      }}
                     >
-                      <Typography>
-                        <span className="text-brown">
-                          {itm?.reviews?.length} Review
-                        </span>{" "}
-                        {hasAddedComment(itm.reviews) && (
-                          <span className="text-green">
-                            (You have added 1 review)
-                          </span>
-                        )}
-                      </Typography>
+                      {AppActivity.canEdit && (
+                        <button
+                          className="custom-add-review-button"
+                          style={{ marginRight: 16 }}
+                        >
+                          Add Review
+                        </button>
+                      )}
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          flexGrow: 1, // This makes the div take up remaining space
+                          justifyContent: AppActivity.canEdit
+                            ? "flex-end"
+                            : "flex-start",
+                        }}
+                      >
+                        <Typography>
+                          <span className="text-brown">
+                            {itm?.reviews?.length} Review
+                          </span>{" "}
+                          {hasAddedComment(itm.reviews) && (
+                            <span className="text-green">
+                              (You have added 1 review)
+                            </span>
+                          )}
+                        </Typography>
+                      </div>
                     </AccordionSummary>
 
                     <AccordionDetails>
@@ -1239,9 +1337,9 @@ const EvaluationApproval = ({
                                 <button
                                   className="custom-update-button"
                                   onClick={() => {
-                                    if (itm.reviews.length > 0) {
+                                    if (itm.reviews?.length > 0) {
                                       const reviewId =
-                                        itm.reviews.length === 1
+                                        itm.reviews?.length === 1
                                           ? itm.reviews[0].id
                                           : itm.reviews[1].id;
                                       handelCommentImp(itm.id, reviewId, 2);
@@ -1428,7 +1526,7 @@ const EvaluationApproval = ({
                           AppActivity.canEdit && (
                             <div className="task-button ml-auto">
                               <button
-                                className="task-mark-reviewed-button mat-stroked-button"
+                                className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
                                 onClick={() => handelImpactreview(imptsk.id)}
                                 disabled={
                                   imptsk?.reviewd || clickedTasks[imptsk.id]
@@ -1593,7 +1691,7 @@ const EvaluationApproval = ({
                                   {contentDetails?.riskAnalysisList[0]?.riskAnalysisSubTasks?.map(
                                     (sub, index) => (
                                       <div key={index}>
-                                        {sub.riskAnalysisHazardTypes.length ===
+                                        {sub.riskAnalysisHazardTypes?.length ===
                                         0 ? (
                                           <>
                                             <div
@@ -1799,7 +1897,7 @@ const EvaluationApproval = ({
                         )}
                         <div>&nbsp;</div>
 
-                        {imptsk.changeImpactTaskReviews.length > 0 ||
+                        {imptsk.changeImpactTaskReviews?.length > 0 ||
                         showReview ? (
                           <div>
                             <Accordion
@@ -1810,20 +1908,45 @@ const EvaluationApproval = ({
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls="panel1a-content"
                                 id="panel1a-header"
+                                style={{
+                                  display: "flex",
+                                  justifyContent: AppActivity.canEdit
+                                    ? "space-between"
+                                    : "flex-start",
+                                }}
                               >
-                                <Typography>
-                                  <span className="text-brown">
-                                    {imptsk?.changeImpactTaskReviews?.length}{" "}
-                                    Reviews
-                                  </span>{" "}
-                                  {hasAddedComment(
-                                    imptsk.changeImpactTaskReviews
-                                  ) && (
-                                    <span className="text-green">
-                                      (You have added 1 review)
-                                    </span>
-                                  )}
-                                </Typography>
+                                {AppActivity.canEdit && (
+                                  <button
+                                    className="custom-add-review-button"
+                                    style={{ marginRight: 16 }}
+                                  >
+                                    Add Review
+                                  </button>
+                                )}
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    flexGrow: 1, // This makes the div take up remaining space
+                                    justifyContent: AppActivity.canEdit
+                                      ? "flex-end"
+                                      : "flex-start",
+                                  }}
+                                >
+                                  <Typography>
+                                    <span className="text-brown">
+                                      {imptsk?.changeImpactTaskReviews?.length}{" "}
+                                      Reviews
+                                    </span>{" "}
+                                    {hasAddedComment(
+                                      imptsk.changeImpactTaskReviews
+                                    ) && (
+                                      <span className="text-green">
+                                        (You have added 1 review)
+                                      </span>
+                                    )}
+                                  </Typography>
+                                </div>
                               </AccordionSummary>
                               <AccordionDetails>
                                 {AppActivity.canEdit &&
@@ -2354,7 +2477,7 @@ const EvaluationApproval = ({
                               </TableRow>
                             )
                         )}
-                        {remarkRequest.length == 0 && (
+                        {remarkRequest?.length == 0 && (
                           <TableRow>
                             <TableCell>
                               <div className="flex">
@@ -2508,7 +2631,7 @@ const EvaluationApproval = ({
                               </TableRow>
                             )
                         )}
-                        {remarkRequest.length == 0 && (
+                        {remarkRequest?.length == 0 && (
                           <TableRow>
                             <TableCell>
                               <div className="flex">
@@ -2529,45 +2652,51 @@ const EvaluationApproval = ({
           <div>&nbsp;</div>
           <div>&nbsp;</div>
 
-          <div className="flex items-center w-full border-b justify-between"></div>
-          <div>&nbsp;</div>
-
-          {AppActivity?.canExecute && (
-            <div className="flex justify-end">
-              {AppActions.map((btn) => (
+          <div className="flex items-center w-full border-b justify-between">
+            <div className="flex justify-start">
+              <StyledBadge
+                badgeContent={
+                  listDocument.length ? listDocument.length : CountApprove
+                }
+              >
                 <Button
-                  key={btn.uid}
-                  className="whitespace-nowrap ms-5"
+                  className="whitespace-nowrap mt-5"
+                  style={{
+                    border: "1px solid",
+                    backgroundColor: "transparent",
+                    color: "black",
+                    borderColor: "rgba(203,213,225)",
+                  }}
                   variant="contained"
-                  color="secondary"
-                  style={{ marginTop: "10px" }}
-                  onClick={(e) =>
-                    SubmitApprovelCreate(e, btn.uid, btn.name, btn.type)
+                  color="warning"
+                  startIcon={
+                    <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
                   }
+                  onClick={handleOpen1}
                 >
-                  {btn.name}
+                  Document
                 </Button>
-              ))}
+              </StyledBadge>
             </div>
-          )}
-          <div className="flex justify-start">
-            <Button
-              className="whitespace-nowrap mt-5"
-              style={{
-                border: "1px solid",
-                backgroundColor: "transparent",
-                color: "black",
-                borderColor: "rgba(203,213,225)",
-              }}
-              variant="contained"
-              color="warning"
-              startIcon={
-                <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
-              }
-              onClick={handleOpen1}
-            >
-              Document
-            </Button>
+
+            {AppActivity?.canExecute && (
+              <div className="flex justify-end">
+                {AppActions.map((btn) => (
+                  <Button
+                    key={btn.uid}
+                    className="whitespace-nowrap ms-5"
+                    variant="contained"
+                    color="secondary"
+                    style={{ marginTop: "10px" }}
+                    onClick={(e) =>
+                      SubmitApprovelCreate(e, btn.uid, btn.name, btn.type)
+                    }
+                  >
+                    {btn.name}
+                  </Button>
+                ))}
+              </div>
+            )}
           </div>
         </Paper>
       </SwipeableViews>
@@ -2798,13 +2927,13 @@ const EvaluationApproval = ({
                     id="fileInput"
                     style={{ display: "none" }}
                     onChange={(e) => {
-                      handelFileChange1(e);
+                      handelFileChange(e);
                     }}
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
                       <div
-                        // onClick={handelDetailDoc}
+                        onClick={handelDetailDoc}
                         style={{
                           textAlign: "-webkit-center",
                         }}
@@ -2859,7 +2988,7 @@ const EvaluationApproval = ({
                       name="description"
                       variant="standard"
                       disabled
-                      value={formatDate(selectedDocument?.createdAt)}
+                      value={formatDateModal(selectedDocument?.createdAt)}
                     />
                   </Box>
                   <Box

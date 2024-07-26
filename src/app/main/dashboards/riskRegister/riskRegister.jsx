@@ -1,5 +1,6 @@
+import React from "react";
+import MocHeader from "../moc/MocHeader";
 import { styled } from "@mui/material/styles";
-import MocHeader from "./MocHeader";
 import FusePageCarded from "@fuse/core/FusePageCarded";
 import _ from "@lodash";
 import FormControl from "@mui/material/FormControl";
@@ -13,14 +14,10 @@ import { useEffect, useState, useMemo } from "react";
 import Switch from "@mui/material/Switch";
 import { FormControlLabel } from "@mui/material";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
-import {
-  useGetAcademyCategoriesQuery,
-  useGetAcademyCoursesQuery,
-} from "./evaluation/AcademyApi";
-import CourseCard from "./CourseCard";
+
 import { apiAuth } from "src/utils/http";
-import Loader from "../../loader/Loader";
 import FuseLoading from "@fuse/core/FuseLoading";
+import RiskCard from "./riskCard";
 
 const Root = styled(FusePageCarded)({
   "& .FusePageCarded-header": {},
@@ -48,7 +45,7 @@ const item = {
   },
 };
 
-function MocApp() {
+const RiskApp = () => {
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -85,10 +82,83 @@ function MocApp() {
       value: "Others",
     },
   ];
+
+  const [data, setData] = useState([]);
   useEffect(() => {
     function getRecords() {
       apiAuth.get("/ChangeRequest/List").then((resp) => {
-        setOriginalData(resp.data.data);
+        const initialData = {
+          requestTypeName: "Asset",
+          initiatorId: 14,
+          initiatorName: "Sreenivas Sathyamurthy",
+          isChangeLeader: false,
+          changeLeaderId: null,
+          changeLeaderName: null,
+          siteInChargeName: null,
+          statusName: "Draft",
+          siteName: null,
+          functionName: null,
+          divisionName: null,
+          typeString: null,
+          expenseNatureString: null,
+          expenseTypeString: null,
+          purchaseCategoryString: null,
+          documentCount: 0,
+          isPssrRequired: false,
+          logginedUser: 0,
+          changeType: null,
+          classCategory: null,
+          changeTerminationDate: null,
+          impPart1CompletedAt: null,
+          impPart2CompletedAt: null,
+          impPart3CompletedAt: null,
+          impPart4CompletedAt: null,
+          impPart5CompletedAt: null,
+          teamList: [],
+          taskList: null,
+          requestLifecycle: null,
+          changeSummaries: null,
+          changeRequestId: 297,
+          token: "4a31c6d6-be0f-41bf-96dc-7ccdbf4d243a",
+          type: 1,
+          requestDate: "2024-07-24T00:00:00",
+          requestNo: "RREQMAH24253",
+          siteInchargeId: 22,
+          version: 0,
+          projectName: "test from tebs",
+          projectDescription: "som desciription of document",
+          projectValue: 2500000,
+          divisionId: 35,
+          functionId: 19,
+          siteId: 28,
+          managementOfChange: true,
+          documentStatus: 2,
+          documentType: 0,
+          documentId: null,
+          expenseNature: 2,
+          expenseType: 1,
+          purchaseCategory: 1,
+          status: 1,
+          isNewDocument: null,
+          reasonForNewDocument: null,
+          docOldValidityDate: null,
+          documentUrl: null,
+          docControllerId: null,
+          docControllerName: null,
+          changeStaffId: null,
+          changeStaffName: null,
+          changeStaffDesignationId: null,
+          changeStaffDesignationName: null,
+          isNewStaff: null,
+          programCompletionDate: null,
+          completionPercent: 20,
+          isCompleted: false,
+          completedAt: null,
+          isActive: true,
+        };
+        const newData = Array(10).fill(initialData);
+        setData(newData);
+        setOriginalData(data);
         setIsLoading(false);
       });
       apiAuth.get("/LookupData/Lov/23").then((resp) => {
@@ -144,13 +214,12 @@ function MocApp() {
   if (isLoading) {
     return <FuseLoading />;
   }
-
   return (
     <Root
-      header={<MocHeader />}
+      header={<MocHeader risk={"risk"} />}
       content={
-        <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-30">
-          <div className="flex flex-col shrink-0 md:flex-row items-center justify-between space-y-16 sm:space-y-0">
+        <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-40">
+          <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
             <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
               <FormControl className="flex w-full sm:w-136" variant="outlined">
                 <InputLabel id="category-select-label">Site</InputLabel>
@@ -171,25 +240,7 @@ function MocApp() {
                   ))}
                 </Select>
               </FormControl>
-              <FormControl className="flex w-full sm:w-136" variant="outlined">
-                <InputLabel id="category-select-label">Type</InputLabel>
-                <Select
-                  labelId="category-select-label"
-                  id="category-select"
-                  label="Category"
-                  value={selectedCategoryType}
-                  onChange={handleSelectedCategoryType}
-                >
-                  <MenuItem value="all">
-                    <em>All</em>
-                  </MenuItem>
-                  {categories?.map((category) => (
-                    <MenuItem value={category.value} key={category.id}>
-                      {category.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+
               <TextField
                 label="Request No"
                 placeholder="Request No"
@@ -219,18 +270,18 @@ function MocApp() {
               }
             />
           </div>
-          {filteredData &&
-            (filteredData.length > 0 ? (
+          {data &&
+            (data.length > 0 ? (
               <motion.div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-32 mt-32 sm:mt-20"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-32 mt-32 sm:mt-40"
                 variants={container}
                 initial="hidden"
                 animate="show"
               >
-                {filteredData.map((course) => {
+                {data.map((course) => {
                   return (
                     <motion.div variants={item} key={course.id}>
-                      <CourseCard course={course} />
+                      <RiskCard course={course} />
                     </motion.div>
                   );
                 })}
@@ -246,6 +297,6 @@ function MocApp() {
       }
     />
   );
-}
+};
 
-export default MocApp;
+export default RiskApp;

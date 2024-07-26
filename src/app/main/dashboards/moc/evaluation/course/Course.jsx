@@ -105,6 +105,25 @@ function Course() {
       });
     setOpen(true);
   };
+
+  const [openDrawer, setOpenDrawer] = useState(false);
+
+  const handleModalClose = () => {
+    setOpenMoc(false);
+    setOpenDrawer(false);
+  };
+
+  const HandleTraining = () => {
+    apiAuth
+      .get(
+        `/DocumentManager/DocList/${evaluationId}/DocImplTrSheet?changeRequestToken=${evaluationId}`
+      )
+      .then((response) => {
+        setListDocument(response?.data?.data);
+      });
+    setOpenMoc(true);
+  };
+
   const handleClose = () => setOpen(false);
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(-1);
   const [expandedAccordionIndex, setExpandedAccordionIndex] = useState(-1);
@@ -197,6 +216,8 @@ function Course() {
     approver: "",
   });
 
+  const [openMoc, setOpenMoc] = useState(false);
+
   const handleOpenImplemntationTask = () => {
     setOpenImplemntationTask(true);
     apiAuth.get(`Staff/LOV`).then((resp) => {
@@ -241,6 +262,10 @@ function Course() {
     }
   };
 
+  const handleOpenMoc = () => {
+    setOpenMoc(true);
+  };
+
   const validateAddTask = () => {
     let tempErrors = {};
 
@@ -265,10 +290,14 @@ function Course() {
 
   const handelTaskSubmit = (e) => {
     if (validateAddTask()) {
+      setIsLoading(true);
+
       apiAuth
         .put(`ChangeImpact/Create/Task/${evaluationId}`, taskAdd)
         .then((resp) => {
           setOpenImplemntationTask(false);
+          setIsLoading(false);
+
           setTaskAdd({
             particular: "",
             particularSubCategory: "",
@@ -282,6 +311,9 @@ function Course() {
             otherDetail: "",
             changeImpactHazard: "",
           });
+        })
+        .catch((err) => {
+          setIsLoading(false);
         });
       getRecords();
     }
@@ -344,6 +376,8 @@ function Course() {
   };
 
   const handelSubmit = (e) => {
+    setIsLoading(true);
+
     e.preventDefault();
     if (validate()) {
       const formattedForms = forms.map((form) => {
@@ -370,6 +404,8 @@ function Course() {
           formattedForms
         )
         .then((response) => {
+          setIsLoading(false);
+
           getRecords();
           apiAuth
             .get(
@@ -380,7 +416,9 @@ function Course() {
               setAddStake(false);
             });
         })
-        .catch((error) => {});
+        .catch((error) => {
+          setIsLoading(false);
+        });
     }
   };
 
@@ -396,6 +434,7 @@ function Course() {
   };
 
   const handleRemoveForm = (id) => {
+    setAddStake(false);
     const newForms = forms.filter((form) => form.id !== id);
     setForms(newForms);
     if (newForms.length <= 1)
@@ -785,6 +824,8 @@ function Course() {
   const SubmitApprovel = (e, uid) => {
     if (forms.length < 1) {
       toast.error("At least one stakeholder is required.");
+    } else {
+      setIsLoading(true);
     }
     apiAuth
       .get(
@@ -811,13 +852,20 @@ function Course() {
                 }
               )
               .then((resp) => {
-                location.reload();
+                getRecords();
+                setIsLoading(false);
+                // location.reload();
+              })
+              .catch((err) => {
+                setIsLoading(false);
               });
           }
         }
       });
   };
   const SubmitApprovelCreate = (e, uid, name, type) => {
+    setIsLoading(true);
+
     apiAuth
       .post(`/ApprovalManager/Create/${evaluationId}`, {
         actionUID: uid,
@@ -834,31 +882,53 @@ function Course() {
         version: appActivity.version,
       })
       .then((resp) => {
-        setValueRemark("");
-        getRecords();
+        if (resp.data.statusCode != 400) {
+          setValueRemark("");
+          getRecords();
+          setIsLoading(false);
+        } else {
+          toast.error(resp.data.message);
+        }
+      })
+      .catch((err) => {
+        setIsLoading(false);
       });
   };
   const SubmitImpCreate = (e, uid) => {
-    apiAuth.get(`/ChangeImpact/ListTask?id=${evaluationId}`).then((resp) => {
-      if (handelApprover.approver == "") {
-        toast.error("Select an approver");
-      } else {
-        toast.success("MOC has Created");
-        apiAuth
-          .post(
-            `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver}`,
-            {
-              actionUID: uid,
-              activityUID: impActivity.uid,
+    if (handelApprover.approver == "") {
+      toast.error("Please Select An Approved");
+      return;
+    } else {
+      setIsLoading(true);
+      apiAuth.get(`/ChangeImpact/ListTask?id=${evaluationId}`).then((resp) => {
+        if (handelApprover.approver == "") {
+          toast.error("Select an approver");
+        } else {
+          toast.success("MOC has Created");
+          apiAuth
+            .post(
+              `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver}`,
+              {
+                actionUID: uid,
+                activityUID: impActivity.uid,
 
-              formUID: impActivity.formUID,
-            }
-          )
-          .then((resp) => {
-            getRecords();
-          });
-      }
-    });
+                formUID: impActivity.formUID,
+              }
+            )
+            .then((resp) => {
+              getRecords();
+              setIsLoading(false);
+            })
+            .catch((err) => {
+              setIsLoading(false);
+            });
+        }
+      });
+    }
+  };
+
+  const hasAddedComment = (comments) => {
+    return comments.some((comment) => comment.isCreatedByMe);
   };
 
   const handelAddStake = () => {
@@ -901,6 +971,7 @@ function Course() {
   };
 
   const handelApproveImpl = (e, task) => {
+    setIsLoading(true);
     const updatedTask = {
       ...task,
       notes: comments,
@@ -914,10 +985,14 @@ function Course() {
       .post(`ChangeImpact/ActionTask?id=${evaluationId}`, updatedTask)
       .then((response) => {
         getRecords();
+        setIsLoading(false);
+
         console.log(response);
       })
       .catch((error) => {
         setOpen(false);
+        setIsLoading(false);
+
         console.error(error);
       });
   };
@@ -990,6 +1065,7 @@ function Course() {
         responseType: "blob",
       })
       .then((response) => {
+        setFileDetails(false);
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -1016,6 +1092,7 @@ function Course() {
   };
 
   const handelCloseMoc = (uid) => {
+    setIsLoading(true);
     apiAuth
       .post(`/DocMoc/ImplementationSubmit/${evaluationId}/22`, {
         actionUID: uid,
@@ -1025,8 +1102,10 @@ function Course() {
       })
       .then((resp) => {
         toast.success("MOC Successfully Closed");
+
         setTimeout(() => {
           getRecords();
+          setIsLoading(false);
         }, 3000);
       });
   };
@@ -1302,8 +1381,8 @@ function Course() {
                       <button className="ml-1 sm:inline-flex cursor-pointer mat-button mat-stroked-button mat-button-base">
                         <span className="mat-button-wrapper">
                           {/* <h1 className="mat-icon notranslate icon-size-4 mat-icon-no-color mr-3 justify-center" /> */}
-                          <Button
-                            className="whitespace-nowrap "
+                          {/* <Button
+                            className="whitespace-nowrap"
                             style={{
                               border: "1px solid",
                               backgroundColor: "#0000",
@@ -1317,11 +1396,404 @@ function Course() {
                                 heroicons-solid:upload
                               </FuseSvgIcon>
                             }
-                            onClick={handleOpen}
+                            onClick={handleOpenMoc}
                           >
                             Document
-                          </Button>
+                          </Button> */}
+                          <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            open={openMoc}
+                            onClose={handleModalClose}
+                            closeAfterTransition
+                            // Customize backdrop appearance
+                            BackdropComponent={Backdrop}
+                            // Props for backdrop customization
+                            BackdropProps={{
+                              timeout: 500, // Adjust as needed
+                              style: {
+                                // Add backdrop styles here
+                                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                              },
+                            }}
+                          >
+                            <Fade in={openMoc}>
+                              <Box sx={style1}>
+                                <Box sx={{ flex: 1 }}>
+                                  <Box
+                                    className="flex justify-between"
+                                    style={{ margin: "30px" }}
+                                  >
+                                    <Typography
+                                      id="transition-modal-title"
+                                      variant="h6"
+                                      component="h2"
+                                      style={{
+                                        fontSize: "3rem",
+                                      }}
+                                    >
+                                      File Manager
+                                      <Typography
+                                        id="transition-modal-subtitle"
+                                        component="h2"
+                                      >
+                                        {listDocument.length} Files
+                                      </Typography>
+                                    </Typography>
+                                    {/* {currentActivityForm.canExecute && (
+                                      <Box>
+                                        <Button
+                                          className=""
+                                          variant="contained"
+                                          color="secondary"
+                                          onClick={toggleDrawer(true)}
+                                        >
+                                          <FuseSvgIcon size={20}>
+                                            heroicons-outline:plus
+                                          </FuseSvgIcon>
+                                          <span className="mx-4 sm:mx-8">
+                                            Upload File
+                                          </span>
+                                        </Button>
+                                      </Box>
+                                    )}*/}
+                                  </Box>
+                                  <Box>
+                                    <Typography
+                                      id="transition-modal-title"
+                                      variant="h6"
+                                      className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                                      component="div"
+                                      style={{
+                                        backgroundColor: "#e3eeff80",
+                                      }}
+                                    >
+                                      {listDocument.map((doc, index) => (
+                                        <div className="content " key={index}>
+                                          <div
+                                            onClick={() => handelDetailDoc(doc)}
+                                            style={{
+                                              textAlign: "-webkit-center",
+                                            }}
+                                          >
+                                            <img
+                                              src="/assets/images/etc/icon_N.png"
+                                              style={{}}
+                                            />
+                                            <h6>{doc?.name}</h6>
+                                            <h6>by {doc?.staffName}</h6>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                                {openDrawer && !fileDetails && (
+                                  <Box sx={drawerStyle(openDrawer)}>
+                                    <div className="flex justify-end">
+                                      <Button
+                                        className=""
+                                        variant="contained"
+                                        style={{ backgroundColor: "white" }}
+                                        onClick={() => setOpenDrawer(false)}
+                                      >
+                                        <FuseSvgIcon size={20}>
+                                          heroicons-outline:close
+                                        </FuseSvgIcon>
+                                        x
+                                      </Button>
+                                    </div>
+                                    <div>&nbsp;</div>
 
+                                    <div className="text-center">
+                                      <input
+                                        type="file"
+                                        id="fileInput"
+                                        style={{ display: "none" }}
+                                        onChange={(e) => {
+                                          handelFileChange(e);
+                                        }}
+                                      />
+                                      <label htmlFor="fileInput">
+                                        <Button
+                                          className=""
+                                          variant="contained"
+                                          color="secondary"
+                                          style={{
+                                            backgroundColor: "#24a0ed",
+                                            borderRadius: "5px",
+                                            paddingLeft: "50px",
+                                            paddingRight: "50px",
+                                          }}
+                                          component="span"
+                                        >
+                                          <FuseSvgIcon size={20}>
+                                            heroicons-outline:plus
+                                          </FuseSvgIcon>
+                                          <span className="mx-4 sm:mx-8">
+                                            Upload File
+                                          </span>
+                                        </Button>
+                                      </label>
+                                      <Box
+                                        component="form"
+                                        sx={{
+                                          "& > :not(style)": {
+                                            m: 1,
+                                            width: "25ch",
+                                          },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                      >
+                                        <TextField
+                                          id="standard-basic"
+                                          label={
+                                            <BoldLabel>Information</BoldLabel>
+                                          }
+                                          variant="standard"
+                                          disabled
+                                        />
+                                      </Box>
+                                      <Box
+                                        component="form"
+                                        sx={{
+                                          "& > :not(style)": {
+                                            m: 1,
+                                            width: "25ch",
+                                          },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                      >
+                                        <TextField
+                                          id="selectedFileName"
+                                          label="Selecte File"
+                                          variant="standard"
+                                          disabled
+                                          value={selectedFile.name}
+                                        />
+                                      </Box>
+                                      <Box
+                                        component="form"
+                                        sx={{
+                                          "& > :not(style)": {
+                                            m: 1,
+                                            width: "25ch",
+                                          },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                      >
+                                        <TextField
+                                          id="standard-basic"
+                                          label={
+                                            <BoldLabel>Description</BoldLabel>
+                                          }
+                                          name="description"
+                                          variant="standard"
+                                          onChange={handelFileDiscriptionChange}
+                                          value={selectedFile.description}
+                                        />
+                                      </Box>
+                                    </div>
+
+                                    <div
+                                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                                      style={{
+                                        marginTop: "15px",
+                                        justifyContent: "end",
+                                        backgroundColor: " rgba(248,250,252)",
+                                        padding: "10px",
+                                      }}
+                                    >
+                                      <Button
+                                        className="whitespace-nowrap"
+                                        variant="contained"
+                                        color="primary"
+                                        style={{
+                                          backgroundColor: "white",
+                                          color: "black",
+                                          border: "1px solid grey",
+                                        }}
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        className="whitespace-nowrap"
+                                        variant="contained"
+                                        color="secondary"
+                                        type="submit"
+                                        onClick={handleSubmitAsset}
+                                      >
+                                        Submit
+                                      </Button>
+                                    </div>
+                                  </Box>
+                                )}
+
+                                {fileDetails && (
+                                  <Box sx={drawerStyle(fileDetails)}>
+                                    <div className="flex justify-end">
+                                      <Button
+                                        className=""
+                                        variant="contained"
+                                        style={{ backgroundColor: "white" }}
+                                        onClick={() => setFileDetails(false)}
+                                      >
+                                        <FuseSvgIcon size={20}>
+                                          heroicons-outline:close
+                                        </FuseSvgIcon>
+                                        x
+                                      </Button>
+                                    </div>
+                                    <div>&nbsp;</div>
+                                    <div className="text-center">
+                                      <input
+                                        type="file"
+                                        id="fileInput"
+                                        style={{ display: "none" }}
+                                        onChange={(e) => {
+                                          handelFileChange(e);
+                                        }}
+                                      />
+                                      <label htmlFor="fileInput">
+                                        <div className=" ">
+                                          <div
+                                            onClick={handelDetailDoc}
+                                            style={{
+                                              textAlign: "-webkit-center",
+                                            }}
+                                          >
+                                            <img src="/assets/images/etc/icon_N.png" />
+                                          </div>
+                                        </div>
+                                      </label>
+                                      <Box
+                                        component="form"
+                                        sx={{
+                                          "& > :not(style)": {
+                                            m: 1,
+                                            width: "25ch",
+                                          },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                      >
+                                        <TextField
+                                          id="standard-basic"
+                                          label={
+                                            <BoldLabel>Information</BoldLabel>
+                                          }
+                                          variant="standard"
+                                          disabled
+                                        />
+                                      </Box>
+                                      <Box
+                                        component="form"
+                                        sx={{
+                                          "& > :not(style)": {
+                                            m: 1,
+                                            width: "25ch",
+                                          },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                      >
+                                        <TextField
+                                          id="selectedFileName"
+                                          label="Created By"
+                                          variant="standard"
+                                          disabled
+                                          value={selectedDocument.staffName}
+                                        />
+                                      </Box>
+                                      <Box
+                                        component="form"
+                                        sx={{
+                                          "& > :not(style)": {
+                                            m: 1,
+                                            width: "25ch",
+                                          },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                      >
+                                        <TextField
+                                          id="standard-basic"
+                                          label=" Created At"
+                                          name="description"
+                                          variant="standard"
+                                          disabled
+                                          value={formatDate(
+                                            selectedDocument.createdAt
+                                          )}
+                                        />
+                                      </Box>
+                                      <Box
+                                        component="form"
+                                        sx={{
+                                          "& > :not(style)": {
+                                            m: 1,
+                                            width: "25ch",
+                                          },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                      >
+                                        <TextField
+                                          id="standard-basic"
+                                          label={
+                                            <BoldLabel>Description</BoldLabel>
+                                          }
+                                          name="Description"
+                                          variant="standard"
+                                          disabled
+                                          value={
+                                            selectedDocument.description == null
+                                              ? ""
+                                              : selectedDocument.descritpion
+                                          }
+                                        />
+                                      </Box>
+                                    </div>
+
+                                    <div
+                                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                                      style={{
+                                        marginTop: "15px",
+                                        justifyContent: "end",
+                                        backgroundColor: " rgba(248,250,252)",
+                                        padding: "10px",
+                                      }}
+                                    >
+                                      <Button
+                                        className="whitespace-nowrap"
+                                        variant="contained"
+                                        color="secondary"
+                                        type="submit"
+                                        onClick={handleDownload}
+                                      >
+                                        Download
+                                      </Button>
+                                      <Button
+                                        className="whitespace-nowrap"
+                                        variant="contained"
+                                        color="primary"
+                                        style={{
+                                          backgroundColor: "white",
+                                          color: "black",
+                                          border: "1px solid grey",
+                                        }}
+                                      >
+                                        Delete
+                                      </Button>
+                                    </div>
+                                  </Box>
+                                )}
+                              </Box>
+                            </Fade>
+                          </Modal>
                           {/* <Modal
                                 aria-labelledby="transition-modal-title"
                                 aria-describedby="transition-modal-description"
@@ -1868,7 +2340,7 @@ function Course() {
                     {canEdits && (
                       <Paper
                         className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
-                        style={{ width: "45%" }}
+                        style={{ width: "100%" }}
                       >
                         <div
                           _ngcontent-fyk-c288=""
@@ -2197,7 +2669,7 @@ function Course() {
                               heroicons-solid:upload
                             </FuseSvgIcon>
                           }
-                          onClick={handleOpen}
+                          onClick={HandleTraining}
                         >
                           Training Attendence Sheet
                         </Button>
@@ -3696,28 +4168,29 @@ function Course() {
                             sx={{ width: 320 }}
                           />
                         </div>
-                        <div
-                          className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
-                          style={{ width: "40%" }}
-                        >
-                          <div className="flex items-center">
-                            <img
-                              src="/assets/images/etc/userpic.png"
-                              alt="Card cover image"
-                              className="rounded-full mr-4"
-                              style={{ width: "4rem", height: "4rem" }}
-                            />
-                            <div className="flex flex-col">
-                              <span className="font-semibold leading-none">
-                                {contentDetails.initiatorName}
-                              </span>
-                              <span className="text-sm text-secondary leading-none pt-5">
-                                Consulted on{" "}
-                                {formatDate(contentDetails?.requestDate)}
-                              </span>
+                        {contentDetails?.consultaion?.map((itm) => (
+                          <div
+                            className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
+                            style={{ width: "40%" }}
+                          >
+                            <div className="flex items-center">
+                              <img
+                                src="/assets/images/etc/userpic.png"
+                                alt="Card cover image"
+                                className="rounded-full mr-4"
+                                style={{ width: "4rem", height: "4rem" }}
+                              />
+                              <div className="flex flex-col">
+                                <span className="font-semibold leading-none">
+                                  {itm.staff}
+                                </span>
+                                <span className="text-sm text-secondary leading-none pt-5">
+                                  Consulted on {formatDate(itm?.consultedDate)}
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        ))}
                       </Paper>
                     </>
                   )}
@@ -3778,7 +4251,7 @@ function Course() {
                                       {currentActivityForm.canEdit && (
                                         <div className="task-button ml-auto">
                                           <button
-                                            className="task-mark-reviewed-button mat-stroked-button"
+                                            className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
                                             onClick={() =>
                                               handelreview(imptsk.id)
                                             }
@@ -3787,8 +4260,7 @@ function Course() {
                                               <span
                                                 className="mat-button-wrapper"
                                                 style={{
-                                                  backgroundColor:
-                                                    "rgba(220,252,231)",
+                                                  backgroundColor: "#7FFFD4",
                                                 }}
                                               >
                                                 You have reviewed this just now
@@ -3941,26 +4413,49 @@ function Course() {
                                               expandIcon={<ExpandMoreIcon />}
                                               aria-controls="panel1a-content"
                                               id="panel1a-header"
+                                              style={{
+                                                display: "flex",
+                                                justifyContent:
+                                                  currentActivityForm.canEdit
+                                                    ? "space-between"
+                                                    : "flex-start",
+                                              }}
                                             >
-                                              <Typography>
-                                                <span className="text-brown">
-                                                  {
-                                                    imptsk
-                                                      ?.implementationReviews
-                                                      ?.length
-                                                  }{" "}
-                                                  Reviews
-                                                </span>{" "}
-                                                <span className="text-green">
-                                                  (You have added{" "}
-                                                  {
-                                                    imptsk
-                                                      ?.implementationReviews
-                                                      ?.length
-                                                  }{" "}
-                                                  review)
-                                                </span>
-                                              </Typography>
+                                              {currentActivityForm.canEdit && (
+                                                <button
+                                                  className="custom-add-review-button"
+                                                  style={{ marginRight: 16 }}
+                                                >
+                                                  Add Review
+                                                </button>
+                                              )}
+                                              <div
+                                                style={{
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                  flexGrow: 1, // This makes the div take up remaining space
+                                                  justifyContent:
+                                                    currentActivityForm.canEdit
+                                                      ? "flex-end"
+                                                      : "flex-start",
+                                                }}
+                                              >
+                                                <Typography>
+                                                  <span className="text-brown">
+                                                    {
+                                                      imptsk
+                                                        ?.implementationReviews
+                                                        ?.length
+                                                    }{" "}
+                                                    Reviews
+                                                  </span>{" "}
+                                                  {hasAddedComment(
+                                                    imptsk?.implementationReviews
+                                                  ) && (
+                                                    <span className="text-green"></span>
+                                                  )}
+                                                </Typography>
+                                              </div>
                                             </AccordionSummary>
                                             <AccordionDetails>
                                               <div className="mat-form-field-wrapper">
@@ -3984,7 +4479,7 @@ function Course() {
                                                       aria-invalid="false"
                                                       aria-required="false"
                                                       style={{ height: "36px" }}
-                                                      value={
+                                                      defaultValue={
                                                         imptsk
                                                           .implementationReviews[0]
                                                           ?.remark

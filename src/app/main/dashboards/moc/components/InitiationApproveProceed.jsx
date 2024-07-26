@@ -25,6 +25,7 @@ import { parseISO, format } from "date-fns";
 import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
 import FuseLoading from "@fuse/core/FuseLoading";
+import Initiation from "./Initiation";
 
 function InitiationApprovalProceed({
   assetEvaluationId,
@@ -33,6 +34,7 @@ function InitiationApprovalProceed({
   currentActivityForm,
   TeamAssignmentList,
   setContent,
+  contentDetails,
 }) {
   const [staffList, setStaffList] = useState([]);
   const [open, setOpen] = useState(false);
@@ -237,6 +239,10 @@ function InitiationApprovalProceed({
           </Box>
         </Fade>
       </Modal>
+      <Initiation
+        contentDetails={contentDetails}
+        assetEvaluationId={assetEvaluationId}
+      />
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">

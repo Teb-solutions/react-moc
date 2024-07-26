@@ -290,6 +290,7 @@ function DocRequest() {
   const [formValid, setFormValid] = useState(true);
 
   const handleSubmit = (event) => {
+    setIsLoading(true);
     event.preventDefault();
     const date = new Date(documentState.docOldValidityDate);
     let formattedDate = null;
@@ -306,13 +307,18 @@ function DocRequest() {
     apiAuth
       .post("/DocMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
+        setIsLoading(false);
+
         toast.success("Successfully Created");
+
         setTimeout(() => {
           navigate("/dashboards/project");
         }, 1000);
         setOpen(false);
       })
       .catch((error) => {
+        setIsLoading(false);
+
         setOpen(true);
       });
   };
@@ -402,7 +408,7 @@ function DocRequest() {
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -417,7 +423,7 @@ function DocRequest() {
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -432,7 +438,7 @@ function DocRequest() {
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -444,12 +450,15 @@ function DocRequest() {
                     />
                   </Box>
                 </div>
-                <div style={{justifyContent: "space-between" }} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full">
+                <div
+                  style={{ justifyContent: "space-between" }}
+                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full"
+                >
                   <Box
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -465,7 +474,7 @@ function DocRequest() {
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -480,7 +489,7 @@ function DocRequest() {
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -497,8 +506,19 @@ function DocRequest() {
                   className="my-10"
                   style={{ borderTopWidth: "2px", marginTop: "45px" }}
                 ></div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full custom_margin" style={{ marginTop: "0" }}>
-                  <Box sx={{ display: "flex", flexWrap: "wrap", width: 480, maxWidth: "100%",marginTop: "25px" }}>
+                <div
+                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full custom_margin"
+                  style={{ marginTop: "0" }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      width: 480,
+                      maxWidth: "100%",
+                      marginTop: "25px",
+                    }}
+                  >
                     <FormControl
                       fullWidth
                       sx={{ m: 1 }}
@@ -520,7 +540,11 @@ function DocRequest() {
                     </FormControl>
                   </Box>
                   <Box
-                    sx={{ display: "flex", flexWrap: "wrap", marginTop: "25px" }}
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      marginTop: "25px",
+                    }}
                   >
                     <FormControl fullWidth sx={{ m: 1 }}>
                       <InputLabel htmlFor="projectDescription">
@@ -539,7 +563,7 @@ function DocRequest() {
                     sx={{
                       display: "flex",
                       flexWrap: "wrap",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <FormControl>
@@ -547,7 +571,7 @@ function DocRequest() {
                         id="documentType"
                         style={{ color: formValid ? "inherit" : "red" }}
                       >
-                        Document Type *
+                        Document Type <b className="text-red">*</b>
                       </FormLabel>
                       <RadioGroup
                         row
@@ -576,13 +600,16 @@ function DocRequest() {
                     </FormControl>
                   </Box>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-24 w-full custom_margin" style={{ marginTop: "0" }}>  
+                <div
+                  className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-24 w-full custom_margin"
+                  style={{ marginTop: "0" }}
+                >
                   {documentState.isNewDocument === true && (
                     <Box
                       sx={{
                         display: "flex",
                         flexWrap: "wrap",
-                        marginTop: "25px"
+                        marginTop: "25px",
                       }}
                     >
                       <FormControl
@@ -640,7 +667,7 @@ function DocRequest() {
                         sx={{
                           display: "flex",
                           flexWrap: "wrap",
-                          marginTop: "25px"
+                          marginTop: "25px",
                         }}
                       >
                         <FormControl
@@ -668,16 +695,25 @@ function DocRequest() {
                     </>
                   )}
                   <Box
-                    sx={{ display: "flex", flexWrap: "wrap", marginTop: "25px" }}
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      marginTop: "25px",
+                    }}
                   >
                     <FormControl
                       fullWidth
                       sx={{ m: 1 }}
                       error={!!errors.documentUrl}
                     >
-                      <InputLabel htmlFor="documentUrl">
-                        Document URL *
-                      </InputLabel>
+                      <FormLabel
+                        id="documentType"
+                        style={{ color: formValid ? "inherit" : "red" }}
+                      >
+                        Document URL (Provide the link of SharePoint File)
+                        <b className="text-red">*</b>
+                      </FormLabel>
+
                       <OutlinedInput
                         id="documentUrl"
                         name="documentUrl"
@@ -691,9 +727,16 @@ function DocRequest() {
                     </FormControl>
                   </Box>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-24 w-full custom_margin" style={{ marginTop: "0" }}> 
+                <div
+                  className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 gap-24 w-full custom_margin"
+                  style={{ marginTop: "0" }}
+                >
                   <Box
-                    sx={{ display: "flex", flexWrap: "wrap", marginTop: "25px"}}
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      marginTop: "25px",
+                    }}
                   >
                     <FormControl
                       fullWidth
@@ -704,7 +747,7 @@ function DocRequest() {
                         id="documentType"
                         style={{ color: formValid ? "inherit" : "red" }}
                       >
-                        Document Controller *
+                        Document Controller <b className="text-red">*</b>
                       </FormLabel>
                       <Autocomplete
                         id="docControllerId"
@@ -903,7 +946,10 @@ function DocRequest() {
                                   <Box
                                     component="form"
                                     sx={{
-                                      "& > :not(style)": { m: 1, width: "25ch" },
+                                      "& > :not(style)": {
+                                        m: 1,
+                                        width: "25ch",
+                                      },
                                     }}
                                     noValidate
                                     autoComplete="off"
@@ -918,7 +964,10 @@ function DocRequest() {
                                   <Box
                                     component="form"
                                     sx={{
-                                      "& > :not(style)": { m: 1, width: "25ch" },
+                                      "& > :not(style)": {
+                                        m: 1,
+                                        width: "25ch",
+                                      },
                                     }}
                                     noValidate
                                     autoComplete="off"
@@ -934,7 +983,10 @@ function DocRequest() {
                                   <Box
                                     component="form"
                                     sx={{
-                                      "& > :not(style)": { m: 1, width: "25ch" },
+                                      "& > :not(style)": {
+                                        m: 1,
+                                        width: "25ch",
+                                      },
                                     }}
                                     noValidate
                                     autoComplete="off"
@@ -1022,7 +1074,10 @@ function DocRequest() {
                                   <Box
                                     component="form"
                                     sx={{
-                                      "& > :not(style)": { m: 1, width: "25ch" },
+                                      "& > :not(style)": {
+                                        m: 1,
+                                        width: "25ch",
+                                      },
                                     }}
                                     noValidate
                                     autoComplete="off"
@@ -1037,7 +1092,10 @@ function DocRequest() {
                                   <Box
                                     component="form"
                                     sx={{
-                                      "& > :not(style)": { m: 1, width: "25ch" },
+                                      "& > :not(style)": {
+                                        m: 1,
+                                        width: "25ch",
+                                      },
                                     }}
                                     noValidate
                                     autoComplete="off"
@@ -1053,7 +1111,10 @@ function DocRequest() {
                                   <Box
                                     component="form"
                                     sx={{
-                                      "& > :not(style)": { m: 1, width: "25ch" },
+                                      "& > :not(style)": {
+                                        m: 1,
+                                        width: "25ch",
+                                      },
                                     }}
                                     noValidate
                                     autoComplete="off"
@@ -1072,7 +1133,10 @@ function DocRequest() {
                                   <Box
                                     component="form"
                                     sx={{
-                                      "& > :not(style)": { m: 1, width: "25ch" },
+                                      "& > :not(style)": {
+                                        m: 1,
+                                        width: "25ch",
+                                      },
                                     }}
                                     noValidate
                                     autoComplete="off"
@@ -1222,7 +1286,10 @@ function DocRequest() {
                               className="whitespace-nowrap"
                               variant="contained"
                               color="secondary"
-                              style={{ padding: "23px", backgroundColor: "red" }}
+                              style={{
+                                padding: "23px",
+                                backgroundColor: "red",
+                              }}
                               type="submit"
                               onClick={handleSubmit}
                             >

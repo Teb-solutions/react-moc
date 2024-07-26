@@ -22,6 +22,7 @@ import { withStyles } from "@mui/styles";
 import { apiAuth } from "src/utils/http";
 import { parseISO, format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
+import Initiation from "./Initiation";
 
 function InitiationApproval(props) {
   const {
@@ -930,6 +931,10 @@ function InitiationApproval(props) {
           </Box>
         </Fade>
       </Modal>
+      <Initiation
+        contentDetails={contentDetails}
+        assetEvaluationId={assetEvaluationId}
+      />
       <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>

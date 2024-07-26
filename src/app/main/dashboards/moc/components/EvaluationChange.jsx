@@ -45,6 +45,7 @@ import { border } from "@mui/system";
 import "./componentStyle.css";
 import { useRef } from "react";
 import FuseLoading from "@fuse/core/FuseLoading";
+import Initiation from "./Initiation";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -102,6 +103,7 @@ function EvaluationChange({
   assetEvaluationId,
   setContent,
   currentActivityForm,
+  contentDetails,
 }) {
   const [open, setOpen] = useState(false);
   const [openSession, setOpenSession] = useState(false);
@@ -1577,6 +1579,10 @@ function EvaluationChange({
   return (
     <div className="w-full">
       <ToastContainer className="toast-container " />
+      <Initiation
+        contentDetails={contentDetails}
+        assetEvaluationId={assetEvaluationId}
+      />
       <SwipeableViews>
         {!risk ? (
           <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
@@ -1841,7 +1847,7 @@ function EvaluationChange({
                               )}
                               {itms?.reviews?.length == 0 && (
                                 <span
-                                  className="inline-flex bg-default rounded  mt-5 ms-5 text-secondary "
+                                  className="inline-flex bg-default rounded mt-5  ms-5 text-secondary "
                                   style={{
                                     paddingBottom: "10px",
                                   }}
@@ -1904,38 +1910,39 @@ function EvaluationChange({
                                   ))}
                                 </Accordion>
                               )}
-
-                              {AppActivity.canEdit &&
-                                JSON.parse(
-                                  localStorage.getItem("isActiveSession")
-                                ) && (
-                                  <Button
-                                    className=" mt-5"
-                                    variant="contained"
-                                    sx={{
-                                      backgroundColor: "white",
-                                      color: "black",
-                                      border: "1px solid black",
-                                      marginTop: "8px",
-                                    }}
-                                    startIcon={
-                                      <FuseSvgIcon size={20}>
-                                        heroicons-outline:user-add
-                                      </FuseSvgIcon>
-                                    }
-                                    onClick={() =>
-                                      handelEditConsultation(
-                                        itms.staff,
-                                        itms.consultedDate,
-                                        itms.consultedStaffId,
-                                        itms.id,
-                                        itms.comments
-                                      )
-                                    }
-                                  >
-                                    Edit Consultation
-                                  </Button>
-                                )}
+                              <div>
+                                {AppActivity.canEdit &&
+                                  JSON.parse(
+                                    localStorage.getItem("isActiveSession")
+                                  ) && (
+                                    <Button
+                                      className=" mt-5"
+                                      variant="contained"
+                                      sx={{
+                                        backgroundColor: "white",
+                                        color: "black",
+                                        border: "1px solid black",
+                                        marginTop: "8px",
+                                      }}
+                                      startIcon={
+                                        <FuseSvgIcon size={20}>
+                                          heroicons-outline:user-add
+                                        </FuseSvgIcon>
+                                      }
+                                      onClick={() =>
+                                        handelEditConsultation(
+                                          itms.staff,
+                                          itms.consultedDate,
+                                          itms.consultedStaffId,
+                                          itms.id,
+                                          itms.comments
+                                        )
+                                      }
+                                    >
+                                      Edit Consultation
+                                    </Button>
+                                  )}
+                              </div>
                             </div>
                           </Step>
                         </Stepper>
