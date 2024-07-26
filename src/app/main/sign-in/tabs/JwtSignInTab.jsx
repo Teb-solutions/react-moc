@@ -223,7 +223,7 @@ const JwtSignInTab = () => {
             )}
           />
 
-          <Link className="text-md font-medium" to="/forgot-password">
+          <Link className="text-md font-medium text-blue" to="/forgot-password">
             Forgot password?
           </Link>
         </div>

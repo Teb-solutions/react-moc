@@ -797,9 +797,10 @@ function Course() {
   };
 
   const SubmitApprovel = (e, uid) => {
-    setIsLoading(true);
     if (forms.length < 1) {
       toast.error("At least one stakeholder is required.");
+    } else {
+      setIsLoading(true);
     }
     apiAuth
       .get(
@@ -826,8 +827,8 @@ function Course() {
                 }
               )
               .then((resp) => {
-                setIsLoading(false);
                 getRecords();
+                setIsLoading(false);
                 // location.reload();
               })
               .catch((err) => {
@@ -3743,28 +3744,29 @@ function Course() {
                             sx={{ width: 320 }}
                           />
                         </div>
-                        <div
-                          className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
-                          style={{ width: "40%" }}
-                        >
-                          <div className="flex items-center">
-                            <img
-                              src="/assets/images/etc/userpic.png"
-                              alt="Card cover image"
-                              className="rounded-full mr-4"
-                              style={{ width: "4rem", height: "4rem" }}
-                            />
-                            <div className="flex flex-col">
-                              <span className="font-semibold leading-none">
-                                {contentDetails.initiatorName}
-                              </span>
-                              <span className="text-sm text-secondary leading-none pt-5">
-                                Consulted on{" "}
-                                {formatDate(contentDetails?.requestDate)}
-                              </span>
+                        {contentDetails?.consultaion?.map((itm) => (
+                          <div
+                            className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
+                            style={{ width: "40%" }}
+                          >
+                            <div className="flex items-center">
+                              <img
+                                src="/assets/images/etc/userpic.png"
+                                alt="Card cover image"
+                                className="rounded-full mr-4"
+                                style={{ width: "4rem", height: "4rem" }}
+                              />
+                              <div className="flex flex-col">
+                                <span className="font-semibold leading-none">
+                                  {itm.staff}
+                                </span>
+                                <span className="text-sm text-secondary leading-none pt-5">
+                                  Consulted on {formatDate(itm?.consultedDate)}
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        </div>
+                        ))}
                       </Paper>
                     </>
                   )}
