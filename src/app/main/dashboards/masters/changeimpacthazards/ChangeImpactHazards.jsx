@@ -554,19 +554,21 @@ export default function StickyHeadTable() {
           </Box>
         </Fade>
       </Modal>
-      <div style={{ margin: "30px" }}>
-        <div className="flex d-flex flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
+      <div>
+        <div className="flex d-flex flex-col p-30 pt-24 pb-24 justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
             id="category-select-label"
-            style={{ fontSize: "xx-large", color: "black" }}
+            className="text-2xl mt-0"
+            style={{ color: "black" }}
           >
             <b>Change Impact Hazards</b>
           </InputLabel>
-          <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center d-sm-block justify-between mt-0">
             <div className="flex-auto"></div>
             <TextField
               variant="filled"
               fullWidth
+              className="my-4"
               placeholder="Search "
               style={{ marginRight: "15px", backgroundColor: "white" }}
               onChange={handleSearch}
@@ -586,6 +588,7 @@ export default function StickyHeadTable() {
               <Button
                 variant="contained"
                 color="secondary"
+                className="my-4"
                 onClick={handleOpen}
               >
                 <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
@@ -596,7 +599,7 @@ export default function StickyHeadTable() {
         </div>
       </div>
       <div className="flex items-center w-full border-b justify-between"></div>
-      <Paper sx={{ width: "100%", overflow: "hidden" }}>
+      <Paper className="box_reset" sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>

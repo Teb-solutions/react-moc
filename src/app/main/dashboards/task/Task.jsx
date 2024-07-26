@@ -34,7 +34,7 @@ import { styled } from "@mui/material/styles";
 import { ToastContainer, toast } from "react-toastify";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { useLocation } from "react-router-dom";
-import { display } from "@mui/system";
+import { display, minHeight } from "@mui/system";
 
 const Task = () => {
   const style = {
@@ -61,7 +61,6 @@ const Task = () => {
     height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
-
     boxShadow: 24,
     p: 4,
     padding: "0px",
@@ -81,8 +80,9 @@ const Task = () => {
     p: 2,
     position: "absolute",
     top: 0,
+    bottom: 1,
     right: open ? 0 : -250, // Move drawer out of view when closed
-    height: "100%",
+    height: "auto",
     zIndex: 10,
     transition: "right 0.3s ease",
     overflow: "auto",
@@ -523,14 +523,12 @@ const Task = () => {
         <Fade in={openDocModal}>
           <Box sx={style1}>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "30px" }}>
+              <Box className="flex justify-between p-30 pt-24 pb-24" >
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
                   component="h2"
-                  style={{
-                    fontSize: "3rem",
-                  }}
+                  className="text-2xl"
                 >
                   File Manager
                   {/* <Typography
@@ -1027,7 +1025,7 @@ const Task = () => {
                           task.completed &&
                           task.taskApprovalStatus === 3 && (
                             <div
-                              className="flex items-center text-green-400 font-semibold"
+                              className="flex items-center text-green-400 mr-5 font-semibold"
                               onClick={(e) => openSidebar(e, task)}
                             >
                               Approved
@@ -1037,7 +1035,7 @@ const Task = () => {
                           task.completed &&
                           task.taskApprovalStatus !== 3 && (
                             <div
-                              className="flex items-center text-blue-400 font-semibold"
+                              className="flex items-center text-blue-400 mr-5 font-semibold"
                               onClick={(e) => openSidebar(e, task)}
                             >
                               Awaiting Approval
@@ -1045,7 +1043,7 @@ const Task = () => {
                           )}
                         {task.taskType === 1 && task.completed && (
                           <div
-                            className="flex items-center text-green-400 font-semibold"
+                            className="flex items-center text-green-400 mr-5 font-semibold"
                             onClick={(e) => openSidebar(e, task)}
                           >
                             Completed
@@ -1053,7 +1051,7 @@ const Task = () => {
                         )}
                         {!task.completed && (
                           <div
-                            className="flex items-center text-red-600 font-semibold"
+                            className="flex items-center text-red-600 mr-5 font-semibold"
                             onClick={(e) => openSidebar(e, task)}
                           >
                             Pending

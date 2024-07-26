@@ -500,9 +500,9 @@ export default function StickyHeadTable() {
         </Fade>
       </Modal>
       <div>
-        <div className="flex d-flex p-30 pt-24 pb-24 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
+        <div className="flex d-flex p-30 pt-24 pb-24 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
-            className="text-2xl"
+            className="text-2xl mt-0"
             id="category-select-label"
             style={{ color: "black" }}
           >

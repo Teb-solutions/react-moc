@@ -185,15 +185,9 @@ const Access = () => {
         style={{ backgroundColor: "white", borderBottom: "1px solid #ededed" }}
       >
         <MocHeader />{" "}
-        <div
-          style={{
-            marginLeft: "30px",
-            marginRight: "30px",
-            marginBottom: "30px",
-          }}
-        >
-          <div className="flex d-flex flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
-            <InputLabel id="category-select-label" style={{ fontSize: "xx-large", color: "black" }}>
+        <div >
+          <div className="flex d-flex p-30 pt-24 pb-24 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
+            <InputLabel id="category-select-label" className="text-2xl mt-0" style={{ color: "black" }}>
               <b>Access</b>
             </InputLabel>
           </div>
@@ -216,7 +210,7 @@ const Access = () => {
                   marginBottom: "0",
                 }}
               >
-                <div className="flex d-flex pt-5 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
+                <div className="flex d-flex pt-5 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto  space-y-16 sm:space-y-0 sm:space-x-16">
                   <InputLabel
                     id="category-select-label" className="subtitle_custom"
                     style={{
