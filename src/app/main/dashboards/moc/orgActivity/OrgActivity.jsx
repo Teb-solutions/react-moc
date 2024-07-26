@@ -141,8 +141,6 @@ function OrgActivity() {
     apiAuth
       .post("/OrgMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
-        debugger;
-
         if (response.data.statusCode == 400) {
           toast.error(response.data.message);
         } else {
@@ -227,7 +225,10 @@ function OrgActivity() {
             <div className="p-24">
               <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-24 white_box rounded-2xl shadow">
                 <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
-                  <div _ngcontent-fyk-c288="" class="flex items-center w-full justify-between">
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="flex items-center w-full justify-between"
+                  >
                     <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                       New Organisation MOC Request
                     </h2>
@@ -241,7 +242,7 @@ function OrgActivity() {
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -256,7 +257,7 @@ function OrgActivity() {
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -271,7 +272,7 @@ function OrgActivity() {
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -291,7 +292,7 @@ function OrgActivity() {
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -307,7 +308,7 @@ function OrgActivity() {
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -322,7 +323,7 @@ function OrgActivity() {
                     sx={{
                       width: 480,
                       maxWidth: "100%",
-                      marginTop: "25px"
+                      marginTop: "25px",
                     }}
                   >
                     <TextField
@@ -339,7 +340,10 @@ function OrgActivity() {
                   className="mt-25px"
                   style={{ borderTopWidth: "2px" }}
                 ></div>
-                <div style={{ marginTop: "0" }} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full custom_margin">
+                <div
+                  style={{ marginTop: "0" }}
+                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full custom_margin"
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -378,7 +382,11 @@ function OrgActivity() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full custom_margin">
                   <Box
-                    sx={{ display: "flex", flexWrap: "wrap", marginTop: "25px" }}
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      marginTop: "25px",
+                    }}
                   >
                     <FormControl
                       fullWidth
@@ -420,7 +428,11 @@ function OrgActivity() {
                     </FormControl>
                   </Box>
                   <Box
-                    sx={{ display: "flex", flexWrap: "wrap", marginTop: "25px" }}
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      marginTop: "25px",
+                    }}
                   >
                     <FormControl
                       fullWidth
@@ -491,14 +503,17 @@ function OrgActivity() {
                     </FormControl>
                   </LocalizationProvider>
                 </div>
-                <div className="mt-25px" style={{ borderTopWidth: "2px"}}></div>
+                <div
+                  className="mt-25px"
+                  style={{ borderTopWidth: "2px" }}
+                ></div>
                 <div className="flex justify-between">
-                  <div className="flex items-center mt-25px " >
+                  <div className="flex items-center mt-25px ">
                     <Button
                       className="whitespace-nowrap"
                       variant="contained"
                       color="secondary"
-                      style={{ padding: "15px", marginRight:"10px" }}
+                      style={{ padding: "15px", marginRight: "10px" }}
                       onClick={handleOpen}
                     >
                       Submit
@@ -587,7 +602,10 @@ function OrgActivity() {
                               className="whitespace-nowrap"
                               variant="contained"
                               color="secondary"
-                              style={{ padding: "23px", backgroundColor: "red" }}
+                              style={{
+                                padding: "23px",
+                                backgroundColor: "red",
+                              }}
                               type="submit"
                               onClick={handleSubmit}
                             >

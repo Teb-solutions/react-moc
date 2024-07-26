@@ -10,36 +10,20 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import { darken } from "@mui/material/styles";
 import { selectUser } from "src/app/auth/user/store/userSlice";
 import { useAppSelector } from "app/store/hooks";
-import { useGetProjectDashboardProjectsQuery } from "./ProjectDashboardApi";
+
 import { Dashboard } from "../../../../../api/Api";
 import { apiAuth } from "src/utils/http";
 
 /**
  * The ProjectDashboardAppHeader page.
  */
-function ProjectDashboardAppHeader() {
-  const { data: projects, isLoading } = useGetProjectDashboardProjectsQuery();
+function ProjectDashboardAppHeader({ data }) {
   const user = useAppSelector(selectUser);
 
   const [selectedProject, setSelectedProject] = useState({
     id: 1,
     menuEl: null,
   });
-  const [data, setData] = useState([]);
-
-  const fetchdataSetting = useCallback(async () => {
-    try {
-      apiAuth.get(`/Dashboard/Get`).then((resp) => {
-        setData(resp?.data?.data);
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchdataSetting();
-  }, []);
 
   function handleChangeProject(id) {
     setSelectedProject({
@@ -60,10 +44,6 @@ function ProjectDashboardAppHeader() {
       id: selectedProject.id,
       menuEl: null,
     });
-  }
-
-  if (isLoading) {
-    return <FuseLoading />;
   }
 
   return (

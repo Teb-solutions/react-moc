@@ -9,7 +9,22 @@ import ProjectDashboardAppHeader from "./ProjectDashboardAppHeader";
 import HomeTab from "./tabs/home/HomeTab";
 import TeamTab from "./tabs/team/TeamTab";
 import BudgetTab from "./tabs/budget/BudgetTab";
-import { useGetProjectDashboardWidgetsQuery } from "./ProjectDashboardApi";
+import { useCallback } from "react";
+import { useEffect } from "react";
+import { apiAuth } from "src/utils/http";
+
+function createData(
+  activity,
+  assigned,
+  type,
+  number,
+  initiated,
+  date,
+  status,
+  token
+) {
+  return { activity, assigned, type, number, initiated, date, status, token };
+}
 
 const Root = styled(FusePageSimple)(({ theme }) => ({
   "& .FusePageSimple-header": {
@@ -22,12 +37,45 @@ const Root = styled(FusePageSimple)(({ theme }) => ({
  * The ProjectDashboardApp page.
  */
 function ProjectDashboardApp() {
-  const { isLoading } = useGetProjectDashboardWidgetsQuery();
+  const [isLoading, setIsLoading] = useState(true);
+
   const [tabValue, setTabValue] = useState(0);
+  const [data, setData] = useState({});
+  const [riskMatrixList, setRiskMatrixList] = useState([]);
 
   function handleChangeTab(event, value) {
     setTabValue(value);
   }
+
+  const fetchdataSetting = useCallback(async () => {
+    try {
+      apiAuth.get(`/Dashboard/Get`).then((resp) => {
+        setData(resp?.data?.data);
+        const transformedData = resp?.data?.data?.approvalsPendingRequests?.map(
+          (item, index) =>
+            createData(
+              item.lastActivityName,
+              item.lastActivityStartedAt,
+              item.requestTypeName,
+              item.requestNo,
+              item.initiatorName,
+              item.requestDate,
+              item.statusName,
+              item.token
+            )
+        );
+
+        setRiskMatrixList(transformedData);
+        setIsLoading(false);
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchdataSetting();
+  }, []);
 
   if (isLoading) {
     return <FuseLoading />;
@@ -35,7 +83,7 @@ function ProjectDashboardApp() {
 
   return (
     <Root
-      header={<ProjectDashboardAppHeader />}
+      header={<ProjectDashboardAppHeader data={data} />}
       content={
         <div className="w-full ">
           {/* <Tabs
@@ -72,7 +120,13 @@ function ProjectDashboardApp() {
 							label="Team"
 						/>
 					</Tabs> */}
-          {tabValue === 0 && <HomeTab />}
+          {tabValue === 0 && (
+            <HomeTab
+              data={data}
+              setRiskMatrixList={setRiskMatrixList}
+              riskMatrixList={riskMatrixList}
+            />
+          )}
           {/* {tabValue === 1 && <BudgetTab />}
 					{tabValue === 2 && <TeamTab />} */}
         </div>

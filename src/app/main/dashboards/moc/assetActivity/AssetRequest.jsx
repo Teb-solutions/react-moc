@@ -294,9 +294,8 @@ function AssetRequest() {
       .post("/ChangeRequest/Create", updatedDocumentState)
       .then((response) => {
         toast.success("Successfully Created");
+        setIsLoading(false);
         setTimeout(() => {
-          setIsLoading(false);
-
           navigate("/dashboards/project");
         }, 1000);
         setOpen(false);

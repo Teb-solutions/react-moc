@@ -39,6 +39,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import TableContainer from "@mui/material/TableContainer";
+import { styled } from "@mui/material/styles";
+import Initiation from "./Initiation";
 // Adjust the path based on your project structure
 
 function createData(
@@ -59,6 +61,7 @@ function ImplementationApproval({
   AppActions,
   AppActivity,
   setContent,
+  contentDetailsini,
 }) {
   const columns = [
     { id: "index", label: "#", minWidth: 50 },
@@ -78,14 +81,14 @@ function ImplementationApproval({
     },
     {
       id: "date",
-      label: "Done By Date",
+      label: "Done By date",
       minWidth: 170,
       align: "left",
       format: (value) => value.toLocaleString("en-US"),
     },
     {
       id: "staff",
-      label: "Done BY staff",
+      label: "Done By staff",
       minWidth: 170,
       align: "left",
       format: (value) => value.toLocaleString("en-US"),
@@ -193,6 +196,25 @@ function ImplementationApproval({
     documentType: "ChangeRequest",
     documentId: "",
     changeRequestToken: null,
+  });
+
+  const drawerStyle = (open) => ({
+    width: 350,
+    bgcolor: "background.paper",
+    borderTopRightRadius: "16px",
+    borderBottomRightRadius: "16px",
+    boxShadow: 24,
+    p: 2,
+    position: "absolute",
+    top: 0,
+    right: open ? 0 : -250, // Move drawer out of view when closed
+    height: "100%",
+    zIndex: 10,
+    transition: "right 0.3s ease", // Smooth transition for opening/closing
+  });
+  const BoldLabel = styled("label")({
+    fontWeight: "bold",
+    color: "black",
   });
 
   const handelOpenAudit = async (audits, value) => {
@@ -485,10 +507,8 @@ function ImplementationApproval({
   };
 
   const handleOpen = (id) => {
-    // alert(id);
     setOpen(true);
     ListDoc(id, assetEvaluationId);
-    // https://mocapi.tebs.co.in/api/DocumentManager/DocList/319/Task?changeRequestToken=b5a9cc9d-9b65-40fa-8fda-f9ab1162a965
   };
 
   const handleModalClose = () => {
@@ -561,7 +581,7 @@ function ImplementationApproval({
                 >
                   File Manager
                   <Typography id="transition-modal-subtitle" component="h2">
-                    {} Files
+                    {listDocument.length} Files
                   </Typography>
                 </Typography>
                 <Box>
@@ -1312,6 +1332,11 @@ function ImplementationApproval({
           </Box>
         </Fade>
       </Modal>
+
+      <Initiation
+        contentDetailsini={contentDetailsini}
+        assetEvaluationId={assetEvaluationId}
+      />
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>
@@ -1692,6 +1717,7 @@ function ImplementationApproval({
                                                   heroicons-solid:document
                                                 </FuseSvgIcon>
                                                 <span className="count">
+                                                  {listDocument.length}
                                                   {/* {documentCounts[msg.id]} */}
                                                 </span>
                                               </button>

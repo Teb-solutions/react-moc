@@ -97,6 +97,8 @@ const AssetCourse = () => {
   const { assetEvaluationId } = routeParams;
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
+  const [contentDetailsIni, setContentDetailsIni] = useState({});
+
   const [isLoading, setIsLoading] = useState(true);
   // const [AssetDetails, setAssetDetails] = useState({});
   const [currentSummeryById, setCurrentSummeryById] = useState({});
@@ -740,10 +742,22 @@ const AssetCourse = () => {
                 setIsLoading(false);
 
                 setReqNo(resp.data.data.requestNo);
-                setContentDetails(resp.data?.data);
+                setContentDetailsIni(resp.data?.data);
               });
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+            });
             break;
           case "InitiationApproval":
+            apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
             apiAuth
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
@@ -778,6 +792,14 @@ const AssetCourse = () => {
             break;
           case "InitiationComplete":
             apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
+            apiAuth
               .get(`/ChangeSummary/Get?id=${assetEvaluationId}`)
               .then((resp) => {
                 setCountApprove(0);
@@ -800,6 +822,14 @@ const AssetCourse = () => {
             break;
           case "InitiationApprovalProceed":
             apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
+            apiAuth
               .get(`TeamAssignment/List?id=${assetEvaluationId}`)
               .then((resp) => {
                 setTeamAssignmentList(resp.data.data);
@@ -814,6 +844,14 @@ const AssetCourse = () => {
             break;
           case "EvaluationChange":
             apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
+            apiAuth
               .get(`TeamAssignment/List?id=${assetEvaluationId}`)
               .then((resp) => {
                 setTeamAssignmentList(resp.data.data);
@@ -827,6 +865,14 @@ const AssetCourse = () => {
               });
             break;
           case "EvaluationApproval":
+            apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
             apiAuth
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
@@ -847,6 +893,13 @@ const AssetCourse = () => {
 
                     setTasks(updatedTasks);
                     loadRiskAnalysisChart(updatedTasks);
+                    apiAuth
+                      .get(
+                        `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
+                      )
+                      .then((resp) => {
+                        setCountApprove(resp.data.data);
+                      });
                   }
                 }
               });
@@ -865,6 +918,14 @@ const AssetCourse = () => {
             });
             break;
           case "EvaluationApprovalCooprate":
+            apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
             apiAuth
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
@@ -904,6 +965,14 @@ const AssetCourse = () => {
             break;
           case "EvaluationApprovalVp":
             apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
+            apiAuth
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
@@ -942,6 +1011,14 @@ const AssetCourse = () => {
             break;
           case "EvaluationApprovalVpHse":
             apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
+            apiAuth
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
@@ -979,6 +1056,14 @@ const AssetCourse = () => {
             });
             break;
           case "ImplementationApproval":
+            apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
             apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
               setIsLoading(false);
 
@@ -987,6 +1072,14 @@ const AssetCourse = () => {
             });
             break;
           case "ImplementationApprovalSite":
+            apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
             apiAuth
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
@@ -1010,6 +1103,14 @@ const AssetCourse = () => {
             break;
           case "ImplementationApprovalCoorp":
             apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
+            apiAuth
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
@@ -1032,6 +1133,14 @@ const AssetCourse = () => {
             break;
           case "ImplementationApprovalDiv":
             apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
+            apiAuth
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
@@ -1053,6 +1162,14 @@ const AssetCourse = () => {
 
             break;
           case "ImplementationApprovalHse":
+            apiAuth
+              .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setIsLoading(false);
+
+                setReqNo(resp.data.data.requestNo);
+                setContentDetailsIni(resp.data?.data);
+              });
             apiAuth
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
@@ -1394,188 +1511,203 @@ const AssetCourse = () => {
       content={
         <div className="w-full">
           <ToastContainer className="toast-container" />
+          <>
+            <div className=" p-16 pb-64 sm:p-24 ">
+              {currentPhase === "InitiationRequest" && (
+                <Initiation
+                  contentDetails={contentDetailsIni}
+                  assetEvaluationId={assetEvaluationId}
+                  appActivity={appActivity}
+                />
+              )}
+              {currentPhase === "InitiationApproval" && (
+                <InitiationApproval
+                  ApprovalDetails={contentDetails}
+                  ApprovalManager={ApprovalManager}
+                  Actions={appActions}
+                  Activity={appActivity}
+                  currentActivityForm={currentActivityForm}
+                  SubmitApprovelCreate={SubmitApprovelCreate}
+                  handleChangeRemark={handleChangeRemark}
+                  valueRemark={valueRemark}
+                  assetEvaluationId={assetEvaluationId}
+                  CountApprove={CountApprove}
+                  contentDetails={contentDetailsIni}
+                />
+              )}
+              {currentPhase === "InitiationComplete" && (
+                <InitiationComplete
+                  assetEvaluationId={assetEvaluationId}
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  AssetDetails={contentDetails}
+                  currentActivityForm={currentActivityForm}
+                  currentSummeryById={currentSummeryById}
+                  setContent={setContent}
+                  CountApprove={CountApprove}
+                  contentDetails={contentDetailsIni}
+                />
+              )}
+              {currentPhase === "InitiationApprovalProceed" && (
+                <InitiationApprovalProceed
+                  currentActivityForm={currentActivityForm}
+                  TeamAssignmentList={TeamAssignmentList}
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  assetEvaluationId={assetEvaluationId}
+                  setContent={setContent}
+                  contentDetails={contentDetailsIni}
+                />
+              )}
+              {currentPhase === "EvaluationChange" && (
+                <EvaluationChange
+                  TeamAssignmentList={TeamAssignmentList}
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  assetEvaluationId={assetEvaluationId}
+                  setContent={setContent}
+                  currentActivityForm={currentActivityForm}
+                  contentDetails={contentDetailsIni}
+                />
+              )}
+              {currentPhase === "EvaluationApproval" && (
+                <EvaluationApproval
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  assetEvaluationId={assetEvaluationId}
+                  contentDetails={contentDetails}
+                  setContentDetails={setContentDetails}
+                  showRiskAnalysisChart={showRiskAnalysisChart}
+                  riskAnalysisChartOptions={riskAnalysisChartOptions}
+                  lastActCode={lastActCode}
+                  currentActivityForm={currentActivityForm}
+                  remarkRequest={remarkRequest}
+                  setRemarkRequest={setRemarkRequest}
+                  setContent={setContent}
+                  contentDetailsini={contentDetailsIni}
+                  CountApprove={CountApprove}
+                />
+              )}
+              {currentPhase === "EvaluationApprovalCooprate" && (
+                <EvaluationApproval
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  assetEvaluationId={assetEvaluationId}
+                  contentDetails={contentDetails}
+                  showRiskAnalysisChart={showRiskAnalysisChart}
+                  riskAnalysisChartOptions={riskAnalysisChartOptions}
+                  lastActCode={lastActCode}
+                  currentActivityForm={currentActivityForm}
+                  remarkRequest={remarkRequest}
+                  setRemarkRequest={setRemarkRequest}
+                  setContent={setContent}
+                  contentDetailsini={contentDetailsIni}
+                />
+              )}
+              {currentPhase === "EvaluationApprovalVp" && (
+                <EvaluationApproval
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  assetEvaluationId={assetEvaluationId}
+                  contentDetails={contentDetails}
+                  showRiskAnalysisChart={showRiskAnalysisChart}
+                  riskAnalysisChartOptions={riskAnalysisChartOptions}
+                  lastActCode={lastActCode}
+                  currentActivityForm={currentActivityForm}
+                  remarkRequest={remarkRequest}
+                  setRemarkRequest={setRemarkRequest}
+                  handleStepChange={handleStepChange()}
+                  setContent={setContent}
+                  contentDetailsini={contentDetailsIni}
+                />
+              )}
+              {currentPhase === "EvaluationApprovalVpHse" && (
+                <EvaluationApproval
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  assetEvaluationId={assetEvaluationId}
+                  contentDetails={contentDetails}
+                  showRiskAnalysisChart={showRiskAnalysisChart}
+                  riskAnalysisChartOptions={riskAnalysisChartOptions}
+                  lastActCode={lastActCode}
+                  currentActivityForm={currentActivityForm}
+                  remarkRequest={remarkRequest}
+                  setRemarkRequest={setRemarkRequest}
+                  setContent={setContent}
+                  contentDetailsini={contentDetailsIni}
+                />
+              )}
+              {currentPhase === "ImplementationApproval" && (
+                <ImplementationApproval
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  assetEvaluationId={assetEvaluationId}
+                  currentActivityForm={currentActivityForm}
+                  lastActCode={lastActCode}
+                  setContent={setContent}
+                  contentDetailsini={contentDetailsIni}
+                />
+              )}
+              {currentPhase === "ImplementationApprovalSite" && (
+                <ImplementationApprovalSite
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  assetEvaluationId={assetEvaluationId}
+                  currentActivityForm={currentActivityForm}
+                  lastActCode={lastActCode}
+                  showApexAndContent={showApexAndContent}
+                  contentDetails={contentDetails}
+                  ApprovalManager={ApprovalManager}
+                  setContent={setContent}
+                  setContentDetails={setContentDetails}
+                  contentDetailsini={contentDetailsIni}
+                />
+              )}
+              {currentPhase === "ImplementationApprovalCoorp" && (
+                <ImplementationApprovalSite
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  assetEvaluationId={assetEvaluationId}
+                  currentActivityForm={currentActivityForm}
+                  lastActCode={lastActCode}
+                  showApexAndContent={showApexAndContent}
+                  contentDetails={contentDetails}
+                  ApprovalManager={ApprovalManager}
+                  setContent={setContent}
+                  contentDetailsini={contentDetailsIni}
+                />
+              )}
+              {currentPhase === "ImplementationApprovalDiv" && (
+                <ImplementationApprovalSite
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  assetEvaluationId={assetEvaluationId}
+                  currentActivityForm={currentActivityForm}
+                  lastActCode={lastActCode}
+                  showApexAndContent={showApexAndContent}
+                  contentDetails={contentDetails}
+                  ApprovalManager={ApprovalManager}
+                  setContent={setContent}
+                  contentDetailsini={contentDetailsIni}
+                />
+              )}
 
-          <div className="flex justify-center p-16 pb-64 sm:p-24 ">
-            {currentPhase === "InitiationRequest" && (
-              <Initiation
-                contentDetails={contentDetails}
-                assetEvaluationId={assetEvaluationId}
-              />
-            )}
-            {currentPhase === "InitiationApproval" && (
-              <InitiationApproval
-                ApprovalDetails={contentDetails}
-                ApprovalManager={ApprovalManager}
-                Actions={appActions}
-                Activity={appActivity}
-                currentActivityForm={currentActivityForm}
-                SubmitApprovelCreate={SubmitApprovelCreate}
-                handleChangeRemark={handleChangeRemark}
-                valueRemark={valueRemark}
-                contentDetails={contentDetails}
-                assetEvaluationId={assetEvaluationId}
-                CountApprove={CountApprove}
-              />
-            )}
-            {currentPhase === "InitiationComplete" && (
-              <InitiationComplete
-                assetEvaluationId={assetEvaluationId}
-                AppActions={appActions}
-                AppActivity={appActivity}
-                AssetDetails={contentDetails}
-                currentActivityForm={currentActivityForm}
-                currentSummeryById={currentSummeryById}
-                setContent={setContent}
-                CountApprove={CountApprove}
-              />
-            )}
-            {currentPhase === "InitiationApprovalProceed" && (
-              <InitiationApprovalProceed
-                currentActivityForm={currentActivityForm}
-                TeamAssignmentList={TeamAssignmentList}
-                AppActions={appActions}
-                AppActivity={appActivity}
-                assetEvaluationId={assetEvaluationId}
-                setContent={setContent}
-              />
-            )}
-            {currentPhase === "EvaluationChange" && (
-              <EvaluationChange
-                TeamAssignmentList={TeamAssignmentList}
-                AppActions={appActions}
-                AppActivity={appActivity}
-                assetEvaluationId={assetEvaluationId}
-                setContent={setContent}
-                currentActivityForm={currentActivityForm}
-              />
-            )}
-            {currentPhase === "EvaluationApproval" && (
-              <EvaluationApproval
-                AppActions={appActions}
-                AppActivity={appActivity}
-                assetEvaluationId={assetEvaluationId}
-                contentDetails={contentDetails}
-                setContentDetails={setContentDetails}
-                showRiskAnalysisChart={showRiskAnalysisChart}
-                riskAnalysisChartOptions={riskAnalysisChartOptions}
-                lastActCode={lastActCode}
-                currentActivityForm={currentActivityForm}
-                remarkRequest={remarkRequest}
-                setRemarkRequest={setRemarkRequest}
-                setContent={setContent}
-              />
-            )}
-            {currentPhase === "EvaluationApprovalCooprate" && (
-              <EvaluationApproval
-                AppActions={appActions}
-                AppActivity={appActivity}
-                assetEvaluationId={assetEvaluationId}
-                contentDetails={contentDetails}
-                showRiskAnalysisChart={showRiskAnalysisChart}
-                riskAnalysisChartOptions={riskAnalysisChartOptions}
-                lastActCode={lastActCode}
-                currentActivityForm={currentActivityForm}
-                remarkRequest={remarkRequest}
-                setRemarkRequest={setRemarkRequest}
-                setContent={setContent}
-              />
-            )}
-            {currentPhase === "EvaluationApprovalVp" && (
-              <EvaluationApproval
-                AppActions={appActions}
-                AppActivity={appActivity}
-                assetEvaluationId={assetEvaluationId}
-                contentDetails={contentDetails}
-                showRiskAnalysisChart={showRiskAnalysisChart}
-                riskAnalysisChartOptions={riskAnalysisChartOptions}
-                lastActCode={lastActCode}
-                currentActivityForm={currentActivityForm}
-                remarkRequest={remarkRequest}
-                setRemarkRequest={setRemarkRequest}
-                handleStepChange={handleStepChange()}
-                setContent={setContent}
-              />
-            )}
-            {currentPhase === "EvaluationApprovalVpHse" && (
-              <EvaluationApproval
-                AppActions={appActions}
-                AppActivity={appActivity}
-                assetEvaluationId={assetEvaluationId}
-                contentDetails={contentDetails}
-                showRiskAnalysisChart={showRiskAnalysisChart}
-                riskAnalysisChartOptions={riskAnalysisChartOptions}
-                lastActCode={lastActCode}
-                currentActivityForm={currentActivityForm}
-                remarkRequest={remarkRequest}
-                setRemarkRequest={setRemarkRequest}
-                setContent={setContent}
-              />
-            )}
-            {currentPhase === "ImplementationApproval" && (
-              <ImplementationApproval
-                AppActions={appActions}
-                AppActivity={appActivity}
-                assetEvaluationId={assetEvaluationId}
-                currentActivityForm={currentActivityForm}
-                lastActCode={lastActCode}
-                setContent={setContent}
-              />
-            )}
-            {currentPhase === "ImplementationApprovalSite" && (
-              <ImplementationApprovalSite
-                AppActions={appActions}
-                AppActivity={appActivity}
-                assetEvaluationId={assetEvaluationId}
-                currentActivityForm={currentActivityForm}
-                lastActCode={lastActCode}
-                showApexAndContent={showApexAndContent}
-                contentDetails={contentDetails}
-                ApprovalManager={ApprovalManager}
-                setContent={setContent}
-                setContentDetails={setContentDetails}
-              />
-            )}
-            {currentPhase === "ImplementationApprovalCoorp" && (
-              <ImplementationApprovalSite
-                AppActions={appActions}
-                AppActivity={appActivity}
-                assetEvaluationId={assetEvaluationId}
-                currentActivityForm={currentActivityForm}
-                lastActCode={lastActCode}
-                showApexAndContent={showApexAndContent}
-                contentDetails={contentDetails}
-                ApprovalManager={ApprovalManager}
-                setContent={setContent}
-              />
-            )}
-            {currentPhase === "ImplementationApprovalDiv" && (
-              <ImplementationApprovalSite
-                AppActions={appActions}
-                AppActivity={appActivity}
-                assetEvaluationId={assetEvaluationId}
-                currentActivityForm={currentActivityForm}
-                lastActCode={lastActCode}
-                showApexAndContent={showApexAndContent}
-                contentDetails={contentDetails}
-                ApprovalManager={ApprovalManager}
-                setContent={setContent}
-              />
-            )}
-
-            {currentPhase === "ImplementationApprovalHse" && (
-              <ImplementationApprovalSite
-                AppActions={appActions}
-                AppActivity={appActivity}
-                assetEvaluationId={assetEvaluationId}
-                currentActivityForm={currentActivityForm}
-                lastActCode={lastActCode}
-                showApexAndContent={showApexAndContent}
-                contentDetails={contentDetails}
-                ApprovalManager={ApprovalManager}
-                setContent={setContent}
-              />
-            )}
-          </div>
+              {currentPhase === "ImplementationApprovalHse" && (
+                <ImplementationApprovalSite
+                  AppActions={appActions}
+                  AppActivity={appActivity}
+                  assetEvaluationId={assetEvaluationId}
+                  currentActivityForm={currentActivityForm}
+                  lastActCode={lastActCode}
+                  showApexAndContent={showApexAndContent}
+                  contentDetails={contentDetails}
+                  ApprovalManager={ApprovalManager}
+                  setContent={setContent}
+                  contentDetailsini={contentDetailsIni}
+                />
+              )}
+            </div>
+          </>
         </div>
       }
       leftSidebarWidth={300}

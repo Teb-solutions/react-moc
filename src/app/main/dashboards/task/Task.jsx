@@ -173,7 +173,7 @@ const Task = () => {
     setSidebarOpen(true);
     if (task.sourceTaskId != null) {
       apiAuth
-        .get(`ChangeImpact/ListTaskCommentst?id=${task.sourceTaskId}`)
+        .get(`ChangeImpact/ListTaskCommentst?id=${task.order}`)
         .then((response) => {
           const comments = response.data.data;
           setTaskClick(comments);
@@ -317,6 +317,8 @@ const Task = () => {
   };
 
   const handleSubmit = () => {
+    setSidebarOpen(false);
+
     setIsLoading(true);
 
     const path = window.location.pathname;
@@ -337,7 +339,7 @@ const Task = () => {
 
         setIsLoading(false);
         getRecords();
-        setSidebarOpen(false);
+
         setComments("");
       })
       .catch((error) => {
