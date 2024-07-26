@@ -35,7 +35,7 @@ function MocHeader(props) {
 
   return (
     <div
-      className="flex space-y-12 sm:space-y-0 flex-1 w-full items-center justify-between py-8 sm:py-16 px-16 md:px-24"
+      className="flex d-sm-block flex-1 w-full items-center justify-between py-8 sm:py-16 px-16 md:px-24"
       style={{
         backgroundColor: Object.keys(routeParams).length !== 0 ? "white" : "",
       }}
@@ -91,7 +91,7 @@ function MocHeader(props) {
 
         <div className="flex sm:hidden" />
       </div>
-      <div style={{ justifyContent: "end" }}>
+      <div className="mt-10 md:mt-0" style={{ justifyContent: "end" }}>
         {" "}
         {urlContainsMoc && Object.keys(routeParams).length === 0 && (
           <Button

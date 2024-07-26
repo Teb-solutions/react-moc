@@ -130,9 +130,9 @@ function ImplementationApproval({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "1100px",
+    width: "900px",
     maxWidth: "80vw",
-    height: "55%",
+    // height: "55%",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -798,9 +798,8 @@ function ImplementationApproval({
       >
         <Fade in={openAudit}>
           <Box sx={style1}>
-            <Box
+            <Box  className="p-30 pt-24 pb-24"
               style={{
-                padding: "30px",
                 backgroundColor: "#4f46e5",
                 borderTopLeftRadius: "16px",
                 borderTopRightRadius: "16px",
@@ -809,103 +808,104 @@ function ImplementationApproval({
             >
               Audit List
             </Box>
-            <div
-              _ngcontent-fyk-c288=""
-              class="flex items-center w-full  border-b justify-end"
-              style={{ marginTop: "10px" }}
-            >
-              <TextField
-                variant="filled"
-                fullWidth
-                placeholder="Search"
-                style={{
-                  marginBottom: "15px",
-                  backgroundColor: "white",
-                  marginRight: "30px",
-                }}
-                //   value={searchTerm}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment
-                      position="start"
-                      style={{
-                        marginTop: "0px",
-                        paddingTop: "0px",
-                      }}
-                    >
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ width: 320 }}
-              />
-            </div>
-            <Box sx={{ overflow: "auto", padding: "5px 30px 0 30px" }}>
-              <TableContainer style={{ marginTop: "15px" }}>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      {columns?.map((column) => (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{
-                            minWidth: column.minWidth,
-                          }}
-                        >
-                          {column?.label}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {currentAudit
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      .map((row) => {
-                        return (
-                          <TableRow
-                            hover
-                            role="checkbox"
-                            tabIndex={-1}
-                            key={row.code}
-                            sx={{ padding: "default" }}
+            <div className="p-30 pt-24 pb-24">            
+              <div
+                _ngcontent-fyk-c288=""
+                class="flex items-center w-full border-b justify-end"
+                style={{ marginTop: "10px" }}
+              >
+                <TextField
+                  variant="filled"
+                  fullWidth
+                  placeholder="Search"
+                  style={{
+                    marginBottom: "15px",
+                    backgroundColor: "white"                
+                  }}
+                  //   value={searchTerm}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment
+                        position="start"
+                        style={{
+                          marginTop: "0px",
+                          paddingTop: "0px",
+                        }}
+                      >
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  sx={{ width: 320 }}
+                />
+              </div>
+              <Box sx={{ overflow: "auto" }}>
+                <TableContainer style={{ marginTop: "15px" }}>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        {columns?.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            style={{
+                              minWidth: column.minWidth,
+                            }}
                           >
-                            {columns.map((column) => {
-                              const value = row[column.id];
-                              return (
-                                <TableCell
-                                  key={column.id}
-                                  align={column.align}
-                                  style={{ borderBottom: "1px solid #dddddd" }}
-                                >
-                                  {column.render
-                                    ? column.render(row) // Render custom actions
-                                    : column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : value}
-                                </TableCell>
-                              );
-                            })}
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                style={{ display: "flex", marginTop: "10px" }}
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={currentAudit.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Box>
+                            {column?.label}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {currentAudit
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .map((row) => {
+                          return (
+                            <TableRow
+                              hover
+                              role="checkbox"
+                              tabIndex={-1}
+                              key={row.code}
+                              sx={{ padding: "default" }}
+                            >
+                              {columns.map((column) => {
+                                const value = row[column.id];
+                                return (
+                                  <TableCell
+                                    key={column.id}
+                                    align={column.align}
+                                    style={{ borderBottom: "1px solid #dddddd" }}
+                                  >
+                                    {column.render
+                                      ? column.render(row) // Render custom actions
+                                      : column.format && typeof value === "number"
+                                        ? column.format(value)
+                                        : value}
+                                  </TableCell>
+                                );
+                              })}
+                            </TableRow>
+                          );
+                        })}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  style={{ display: "flex", marginTop: "10px" }}
+                  rowsPerPageOptions={[10, 25, 100]}
+                  component="div"
+                  count={currentAudit.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Box>
+            </div>
           </Box>
         </Fade>
       </Modal>
@@ -915,7 +915,7 @@ function ImplementationApproval({
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               <h2 className="text-2xl font-semibold">Implementation</h2>
             </div>
-            <Box sx={{ width: "100%" }}>
+            <Box className="p-30 pt-24 pb-24" sx={{ width: "100%" }}>
               <Stepper activeStep={activeStep} orientation="vertical">
                 {steps?.map((step, index) => (
                   <Step key={step?.label}>
@@ -940,13 +940,12 @@ function ImplementationApproval({
                     <StepContent>
                       <div
                         _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between"
-                        style={{ marginTop: "10px" }}
+                        class="flex items-center w-full justify-between pt-10 pb-10"
                       >
                         <div className="flex items-center">
                           <h2
                             _ngcontent-fyk-c288=""
-                            class="text-2xl font-semibold"
+                            class="text-xl font-semibold"
                             style={{ marginRight: "15px" }}
                           >
                             {ImpDetails.length} Tasks
@@ -954,7 +953,7 @@ function ImplementationApproval({
                           {!lastActCode.isComplete &&
                             lastActCode.status === "Pending" && (
                               <Button
-                                className="whitespace-nowrap mt-5 mb-5"
+                                className="whitespace-nowrap "
                                 style={{
                                   border: "1px solid",
                                   backgroundColor: "#0000",
@@ -989,7 +988,6 @@ function ImplementationApproval({
                           fullWidth
                           placeholder="Search"
                           style={{
-                            marginBottom: "15px",
                             backgroundColor: "white",
                           }}
                           //   value={searchTerm}
@@ -1033,6 +1031,7 @@ function ImplementationApproval({
                               onChange={handleAccordionChange(detail.id)}
                             >
                               <AccordionSummary
+                                className="justify-content-Accordian_title"
                                 style={{ minHeight: "60px" }}
                                 expandIcon={<ExpandMoreIcon />}
                                 aria-controls={`panel${index + 1}-content`}
@@ -1041,7 +1040,7 @@ function ImplementationApproval({
                               >
                                 <div
                                   className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
+                                  // style={{ width: "17%" }}
                                 >
                                   <div className="flex items-center">
                                     Task #{detail.id}
@@ -1050,7 +1049,7 @@ function ImplementationApproval({
 
                                 <div
                                   className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
+                                  // style={{ width: "17%" }}
                                 >
                                   <div className="flex items-center" style={{}}>
                                     {detail.isCompleted &&
@@ -1072,7 +1071,7 @@ function ImplementationApproval({
                                 </div>
                                 <div
                                   className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
+                                  // style={{ width: "17%" }}
                                 >
                                   <div className="flex items-center">
                                     No Risks
@@ -1080,7 +1079,7 @@ function ImplementationApproval({
                                 </div>
                                 <div
                                   className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
+                                  // style={{ width: "17%" }}
                                 >
                                   <div className="flex items-center">
                                     {detail.assignedStaff}
@@ -1089,7 +1088,7 @@ function ImplementationApproval({
 
                                 <div
                                   className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
+                                  // style={{ width: "17%" }}
                                 >
                                   <div className="flex items-center">
                                     {formatDate(detail.dueDate)}
@@ -1097,11 +1096,11 @@ function ImplementationApproval({
                                 </div>
                                 <div
                                   className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  style={{ width: "17%" }}
+                                  // style={{ width: "17%" }}
                                 >
                                   <div className="flex items-center">
                                     <Button
-                                      className="whitespace-nowrap mt-5 mb-5"
+                                      className="whitespace-nowrap"
                                       style={{
                                         border: "1px solid",
                                         backgroundColor: "#0000",
@@ -1118,7 +1117,7 @@ function ImplementationApproval({
                                     </Button>
                                     {lastActCode?.canExecute && (
                                       <Button
-                                        className="whitespace-nowrap ms-5 mt-5 mb-5"
+                                        className="whitespace-nowrap ms-5"
                                         style={{
                                           border: "1px solid",
                                           backgroundColor: "#0000",
@@ -1447,13 +1446,12 @@ function ImplementationApproval({
                         className="flex mt-7"
                         style={{ justifyContent: "end" }}
                       >
-                        <Box sx={{ mb: 2 }}>
+                        <Box >
                           <div>
                             <Button
                               disabled={index === 0}
                               onClick={handleBack}
-                              sx={{
-                                mt: 1,
+                              sx={{                                
                                 mr: 1,
                                 backgroundColor:
                                   index !== 0 ? "black" : "default",
@@ -1473,7 +1471,7 @@ function ImplementationApproval({
                             <Button
                               variant="contained"
                               onClick={handleNext}
-                              sx={{ mt: 1, mr: 1 }}
+                              sx={{ mr: 1 }}
                               style={{
                                 color: "white",
                                 backgroundColor: "blue",
@@ -1513,7 +1511,7 @@ function ImplementationApproval({
           <div className="p-30 pt-24 pb-24">
 
           <Button
-            className="whitespace-nowrap mt-5 mb-5"
+            className="whitespace-nowrap"
             style={{
               border: "1px solid",
               backgroundColor: "#0000",

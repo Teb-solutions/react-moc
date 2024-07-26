@@ -539,7 +539,7 @@ function Initiation(props) {
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               <h2 className="text-2xl font-semibold">MOC Document Request</h2>
             </div>
-            <div className="p-30">
+            <div className="p-30 pt-24 pb-24">
               <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
                 <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
@@ -657,7 +657,7 @@ function Initiation(props) {
               <div>
                 <StyledBadge badgeContent={contentDetails.documentCount}>
                   <Button
-                    className="whitespace-nowrap mt-5"
+                    className="whitespace-nowrap"
                     style={{
                       border: "1px solid",
                       backgroundColor: "transparent",

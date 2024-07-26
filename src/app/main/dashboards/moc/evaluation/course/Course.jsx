@@ -1303,7 +1303,7 @@ function Course() {
                         <span className="mat-button-wrapper">
                           {/* <h1 className="mat-icon notranslate icon-size-4 mat-icon-no-color mr-3 justify-center" /> */}
                           <Button
-                            className="whitespace-nowrap mt-5"
+                            className="whitespace-nowrap "
                             style={{
                               border: "1px solid",
                               backgroundColor: "#0000",
@@ -3435,7 +3435,7 @@ function Course() {
                     <Paper className="w-full">
                       <div
                         _ngcontent-fyk-c288=""
-                        class="p-30 pt-24 pb-24 ng-star-inserted"
+                        class="p-30 pt-24 pb-24 mb-0 ng-star-inserted"
                       >
                         <div
                           _ngcontent-fyk-c288=""

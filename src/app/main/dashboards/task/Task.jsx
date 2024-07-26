@@ -840,11 +840,11 @@ const Task = () => {
           </Box>
         </Fade>
       </Modal>
-      <div className="" style={{ margin: "30px" }}>
+      <div className="p-30 pt-24 pb-24">
         <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
             id="category-select-label"
-            style={{ fontSize: "x-large" }}
+            className="text-2xl"
           >
             <b>Tasks</b>
           </InputLabel>
@@ -929,13 +929,13 @@ const Task = () => {
           return (
             <Paper
               key={list.changeRequestId}
-              className="sm:my-8 p-24 rounded-16 shadow overflow-hidden"
-              style={{ margin: "20px" }}
+              className="p-30 pt-24 pb-0  task_box"
+              
             >
-              <div className="flex flex-col p-4">
-                <div className="flex">
-                  <div className="flex flex-col flex-auto">
-                    <div className="flex items-center justify-between">
+              <div className="flex flex-wrap flex-col p-24 rounded-16 shadow overflow-hidden">
+                <div className="flex flex-wrap">
+                  <div className="flex flex-wrap flex-col flex-auto">
+                    <div className="flex flex-wrap items-center justify-between">
                       <div
                         className="py-0.5 px-3 mb-3 rounded-full text-sm font-semibold text-blue-800 bg-blue-100 dark:text-blue-50 dark:bg-blue-500"
                         style={{ padding: "5px" }}
@@ -943,7 +943,7 @@ const Task = () => {
                         {`${list.requestTypeName} / ${list.requestNo} / ${list.statusName}`}
                       </div>
                     </div>
-                    <div className="flex leading-5 text-md text-secondary space-y-2 mt-5">
+                    <div className="flex flex-wrap leading-5 text-md text-secondary space-y-2 mt-5">
                       <div className="mr-30">
                         Initiated by <b>{list.initiatorName}</b> on{" "}
                         <b>{formatDates(list.requestDate)}</b>
@@ -957,23 +957,20 @@ const Task = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="pl-4">
-                    <div
-                      className="text-lg p-4 border rounded cursor-pointer text-blue-500"
-                      style={{ padding: "15px" }}
-                    >
+                  <div className="pl-4 btn_margin">
+                    <div>
                       <a
-                        className="flex items-center min-w-0 h-full w-full pr-7"
+                        className="flex items-center min-w-0 h-full w-full  text-lg p-4 border rounded cursor-pointer text-blue-500"
                         href="#"
-                        style={{ textDecoration: "none" }}
-                        onClick={(e) => handelViewMoc(e, list)}
+                        style={{ textDecoration: "none", padding: "15px" }}
+                        onClick={(e) => handelViewMoc(e, list)}                    
                       >
                         View MOC details
                       </a>
                     </div>
                   </div>
                 </div>
-                <div>&nbsp;</div>
+              
                 <div className="cdk-drop-list divide-y border rounded mt-3">
                   <div className="w-full" style={{ padding: "2rem" }}>
                     <span className="font-semibold text-gray-500">
@@ -983,11 +980,11 @@ const Task = () => {
                   {filteredTasks.map((task, index) => (
                     <div
                       key={index}
-                      className="group w-full select-none border-t h-20 text-lg font-semibold dark:bg-transparent hover:bg-gray-100 dark:hover:bg-hover"
+                      className="group w-full select-none border-t h-20 task_table_content text-lg font-semibold dark:bg-transparent hover:bg-gray-100 dark:hover:bg-hover"
                       style={{ padding: "2.5rem" }}
                       onClick={(e) => openSidebar(e, task)}
                     >
-                      <div className="relative flex items-center h-full pl-3 w-full">
+                      <div className="relative flex d-sm-block  items-center h-full w-full">
                         <div className="z-10 absolute -top-px right-0 -bottom-px flex flex-0 w-1 bg-primary"></div>
                         <div
                           className="flex items-center mr-4"

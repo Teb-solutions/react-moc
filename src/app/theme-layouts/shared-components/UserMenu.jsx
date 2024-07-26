@@ -157,7 +157,7 @@ function UserMenu() {
           },
         }}
       >
-        <Typography component="span" className="flex">
+        <Typography component="span" className="flex hidden-small">
           Hi, {localStorage.getItem("username")?.split(" ")[0]}
         </Typography>
       </Tooltip>

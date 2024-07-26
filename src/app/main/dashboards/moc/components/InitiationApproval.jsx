@@ -938,7 +938,7 @@ function InitiationApproval(props) {
               <div>
                 <StyledBadge badgeContent={ApprovalDetails.documentCount}>
                   <Button
-                    className="whitespace-nowrap mt-5"
+                    className="whitespace-nowrap"
                     style={{
                       border: "1px solid",
                       backgroundColor: "transparent",
@@ -960,10 +960,7 @@ function InitiationApproval(props) {
               </div>
             </div>
 
-            <div className="px-6 mb-6">
-              <div>&nbsp;</div>
-
-              <div className="p-30">
+              <div className="p-30 pt-24 pb-24">
                 <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
                   <div className="my-3">
                     <div className="mt-3 leading-6 text-secondary">
@@ -1027,34 +1024,34 @@ function InitiationApproval(props) {
                   </div>
                 </div>
               </div>
-            </div>
+          
           </div>
         </Paper>
       </SwipeableViews>
       <SwipeableViews style={{ overflow: "hidden" }}>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow">
-          <div className="flex items-center w-full border-b justify-between">
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
+          <div className="flex items-center w-full border-b p-30 pt-24 pb-24 justify-between">
             <h2 className="text-2xl font-semibold">Approval</h2>
           </div>
-          <div>&nbsp;</div>
+       
           {Activity.isComplete && Activity.status !== "Pending" ? (
             <>
               <div
-                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
                 style={{ width: "40%" }}
               >
                 <span className="font-semibold leading-none">
                   Approver Comment: {ApprovalManager?.remark}
                 </span>
               </div>
-              <div className="flex items-center justify-between w-full mt-8 px-6 py-3 border-t">
+              <div className="flex items-center justify-between w-full mt-8 p-30 pt-24 pb-24 border-t">
                 <StyledBadge
                   badgeContent={
                     listDocument1.length ? listDocument1.length : CountApprove
                   }
                 >
                   <Button
-                    className="whitespace-nowrap mt-5"
+                    className="whitespace-nowrap"
                     style={{
                       border: "1px solid",
                       backgroundColor: "transparent",

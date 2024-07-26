@@ -396,17 +396,17 @@ const Task = () => {
     <>
       <ToastContainer className="toast-container " />
       <div style={{ margin: "20px" }}>
-        <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
+        <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
             id="category-select-label"
-            style={{ fontSize: "x-large" }}
+            className="text-2xl"
           >
             <b>Staff</b>
           </InputLabel>
         </div>
-        <div>&nbsp;</div>
-        <b style={{ fontSize: "x-large" }}>113 staffs</b>
-        <div>&nbsp;</div>
+   
+        <b className="text-xl">113 staffs</b>
+        
         <Box className="flex-grow-2">
           <TextField
             fullWidth
@@ -780,13 +780,11 @@ const Task = () => {
                         <div className="flex sidebarMarg flex-col-reverse">
                           <div
                             style={{
-                              marginTop: "30px",
-                              justifyContent: "space-between",
-                              margin: "15px",
+                              justifyContent: "space-between",                              
                             }}
-                            className="flex flex-row "
-                          >
+                            className="flex flex-row d-sm-block flex-wrap">
                             <Box
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 380,
                                 maxWidth: "48%",
@@ -803,6 +801,7 @@ const Task = () => {
                               />
                             </Box>
                             <Box
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 380,
                                 maxWidth: "48%",
@@ -823,13 +822,12 @@ const Task = () => {
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              marginTop: "30px",
-                              justifyContent: "space-between",
-                              margin: "15px",
+                              justifyContent: "space-between"
                             }}
-                            className="flex flex-row "
+                            className="flex flex-row d-sm-block flex-wrap"
                           >
                             <Box
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 300,
                                 maxWidth: "48%",
@@ -846,6 +844,7 @@ const Task = () => {
                               />
                             </Box>
                             <Box
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 380,
                                 maxWidth: "48%",
@@ -875,13 +874,12 @@ const Task = () => {
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              marginTop: "30px",
-                              justifyContent: "space-between",
-                              margin: "15px",
+                              justifyContent: "space-between"
                             }}
-                            className="flex flex-row "
+                            className="flex flex-row d-sm-block flex-wrap"
                           >
                             <FormControl
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 380,
                                 maxWidth: "48%",
@@ -916,6 +914,7 @@ const Task = () => {
                               )}
                             </FormControl>
                             <FormControl
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 380,
                                 maxWidth: "48%",
@@ -954,13 +953,12 @@ const Task = () => {
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              marginTop: "30px",
-                              justifyContent: "space-between",
-                              margin: "15px",
+                              justifyContent: "space-between"
                             }}
-                            className="flex flex-row "
+                            className="flex flex-row d-sm-block flex-wrap"
                           >
                             <FormControl
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 380,
                                 maxWidth: "48%",
@@ -995,6 +993,7 @@ const Task = () => {
                               )}
                             </FormControl>
                             <FormControl
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 380,
                                 maxWidth: "48%",
@@ -1033,13 +1032,12 @@ const Task = () => {
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              marginTop: "30px",
-                              justifyContent: "space-between",
-                              margin: "15px",
+                              justifyContent: "space-between"
                             }}
-                            className="flex flex-row "
+                            className="flex flex-row  d-sm-block flex-wrap"
                           >
                             <FormControl
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 380,
                                 maxWidth: "48%",
@@ -1074,6 +1072,7 @@ const Task = () => {
                               )}
                             </FormControl>
                             <FormControl
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 380,
                                 maxWidth: "48%",
@@ -1112,13 +1111,12 @@ const Task = () => {
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              marginTop: "30px",
-                              justifyContent: "space-between",
-                              margin: "15px",
+                              justifyContent: "space-between"
                             }}
-                            className="flex flex-row "
+                            className="flex flex-row d-sm-block flex-wrap"
                           >
                             <FormControl
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 380,
                                 maxWidth: "48%",
@@ -1148,6 +1146,7 @@ const Task = () => {
                               </Select>
                             </FormControl>
                             <FormControl
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 380,
                                 maxWidth: "48%",
@@ -1180,13 +1179,12 @@ const Task = () => {
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              marginTop: "30px",
-                              justifyContent: "space-between",
-                              margin: "15px",
+                              justifyContent: "space-between"
                             }}
-                            className="flex flex-row "
+                            className="flex flex-row d-sm-block flex-wrap"
                           >
                             <Box
+                              className="Fw-100 mt-10"
                               sx={{
                                 width: 800,
                                 maxWidth: "100%",
