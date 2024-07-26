@@ -88,7 +88,7 @@ const ImplementationApprovalSite = ({
         activityCode: lastActCode.code,
       })
       .then((response) => {
-        toast.success("Successfully marked the item as reviewed");
+        toast?.success("Successfully marked the item as reviewed");
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
           [id]: true,
@@ -109,7 +109,7 @@ const ImplementationApprovalSite = ({
         })
         .then((resp) => {
           setshowReview(true);
-          toast.success("Review successfully added");
+          toast?.success("Review successfully added");
           getRecords();
 
           setHandelCommentRemark("");
@@ -121,7 +121,7 @@ const ImplementationApprovalSite = ({
         })
         .then((resp) => {
           setshowReview(true);
-          toast.success("Review successfully Updated");
+          toast?.success("Review successfully Updated");
           getRecords();
 
           setHandelCommentRemark("");
@@ -154,7 +154,7 @@ const ImplementationApprovalSite = ({
             });
           setValueRemark("");
         } else {
-          toast.error(resp.data.message);
+          toast?.error(resp.data.message);
         }
       })
       .catch((error) => {});

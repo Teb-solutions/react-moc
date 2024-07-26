@@ -272,14 +272,14 @@ const OrgImplementation = ({
         formUID: appActivity.formUID,
       })
       .then((response) => {
-        toast.success("MOC successfully closed");
+        toast?.success("MOC successfully closed");
         setTimeout(() => {
           location.reload();
         }, 1000);
       })
       .catch((error) => {
         console.error(error);
-        toast.success("Some Error Occured");
+        toast?.success("Some Error Occured");
       });
   };
 

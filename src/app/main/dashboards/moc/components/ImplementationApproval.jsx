@@ -41,6 +41,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import TableContainer from "@mui/material/TableContainer";
 import { styled } from "@mui/material/styles";
 import Initiation from "./Initiation";
+import FuseLoading from "@fuse/core/FuseLoading";
 // Adjust the path based on your project structure
 
 function createData(
@@ -119,14 +120,11 @@ function ImplementationApproval({
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "600px",
-    maxWidth: "80vw",
     height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
-
+    maxWidth: "90%",
     boxShadow: 24,
-    p: 4,
-    padding: "1px",
   };
   const style1 = {
     position: "absolute",
@@ -188,6 +186,8 @@ function ImplementationApproval({
   const [fileDetails, setFileDetails] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [documenDowToken, setDocumenDowToken] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     description: "",
@@ -484,6 +484,7 @@ function ImplementationApproval({
   };
 
   const SubmitApprovelCreate = (e, btnid) => {
+    setIsLoading(true);
     apiAuth
       .post(`/ChangeImplementation/ExecuteActivity/${assetEvaluationId}`, {
         activityUID: lastActCode.uid,
@@ -495,6 +496,7 @@ function ImplementationApproval({
           .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
           .then((resp) => {
             setContent(resp.data.data.phases);
+            setIsLoading(false);
           });
       });
   };
@@ -549,6 +551,10 @@ function ImplementationApproval({
         console.error("Download failed", error);
       });
   };
+
+  if (isLoading) {
+    return <FuseLoading />;
+  }
   return (
     <div className="w-full">
       <Modal
@@ -947,7 +953,7 @@ function ImplementationApproval({
                     </div>
                   </div>{" "}
                 </div>
-                <div className="flex justify-end ">
+                <div className="flex justify-end p-30 pt-24 pb-24">
                   <Button
                     className="whitespace-nowrap ms-5 me-12 "
                     variant="contained"
@@ -1189,7 +1195,11 @@ function ImplementationApproval({
                     </div>
                   </div>{" "}
                 </div>
-                <div className="flex justify-end ">
+                <div
+                  className="flex justify-end [2:23 PM] Nissar M
+p-30 pt-24 pb-24
+  "
+                >
                   <Button
                     className="whitespace-nowrap ms-5 me-12 "
                     variant="contained"
@@ -1476,7 +1486,7 @@ function ImplementationApproval({
                                   // style={{ width: "17%" }}
                                 >
                                   <div className="flex items-center">
-                                    Task #{detail.id}
+                                    <b>Task #{detail.id}</b>
                                   </div>
                                 </div>
 
@@ -1497,7 +1507,7 @@ function ImplementationApproval({
                                       </span>
                                     ) : (
                                       <span className="text-black">
-                                        Not Completed
+                                        <b>Not Completed</b>
                                       </span>
                                     )}
                                   </div>
