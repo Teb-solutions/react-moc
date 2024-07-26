@@ -64,6 +64,7 @@ const EvaluationApproval = ({
   const [fileDetails, setFileDetails] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [listDocument, setListDocument] = useState([]);
+  const [listDocument1, setListDocument1] = useState([]);
   const [documenDowToken, setDocumenDowToken] = useState("");
   const [selectedFile, setSelectedFile] = useState({
     name: "",
@@ -632,7 +633,7 @@ const EvaluationApproval = ({
 
   const ListDoc1 = (id) => {
     apiAuth.get(`/DocumentManager/SummaryDoclist/${id}`).then((Resp) => {
-      setListDocument(Resp?.data?.data);
+      setListDocument1(Resp?.data?.data);
     });
   };
 
@@ -699,7 +700,7 @@ const EvaluationApproval = ({
                     backgroundColor: "#e3eeff80",
                   }}
                 >
-                  {listDocument.map((doc, index) => (
+                  {listDocument1.map((doc, index) => (
                     <div className="content " key={index}>
                       <div
                         onClick={() => handelDetailDoc(doc)}
@@ -1220,7 +1221,13 @@ const EvaluationApproval = ({
                 Summary Details
               </h2>
               <div>
-                <StyledBadge badgeContent={contentDetails.documentCount}>
+                <StyledBadge
+                  badgeContent={
+                    listDocument1.length
+                      ? listDocument1.length
+                      : contentDetails.documentCount
+                  }
+                >
                   <Button
                     className="whitespace-nowrap"
                     style={{
