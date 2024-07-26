@@ -120,7 +120,7 @@ function ImplementationApproval({
     transform: "translate(-50%, -50%)",
     width: "600px",
     maxWidth: "80vw",
-    height: "54%",
+    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -135,7 +135,7 @@ function ImplementationApproval({
     transform: "translate(-50%, -50%)",
     width: "900px",
     maxWidth: "80vw",
-    // height: "55%",
+    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -150,7 +150,7 @@ function ImplementationApproval({
     transform: "translate(-50%, -50%)",
     width: "800px",
     maxWidth: "80vw",
-    height: "25%",
+    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -210,7 +210,8 @@ function ImplementationApproval({
     right: open ? 0 : -250, // Move drawer out of view when closed
     height: "100%",
     zIndex: 10,
-    transition: "right 0.3s ease", // Smooth transition for opening/closing
+    transition: "right 0.3s ease",
+    overflow: "auto", // Smooth transition for opening/closing
   });
   const BoldLabel = styled("label")({
     fontWeight: "bold",

@@ -44,6 +44,7 @@ const InitiationComplete = ({
   currentSummeryById,
   setContent,
   contentDetails,
+  CountApprove,
 }) => {
   const StyledBadge = withStyles((theme) => ({
     badge: {
@@ -199,6 +200,7 @@ const InitiationComplete = ({
   const [openDrawer, setOpenDrawer] = useState(false);
   const [fileDetails, setFileDetails] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
+  const [documenDowToken, setDocumenDowToken] = useState("");
   const [listDocument, setListDocument] = useState([]);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
@@ -223,7 +225,19 @@ const InitiationComplete = ({
     boxShadow: 24,
     p: 4,
   };
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return "Invalid date";
+    }
 
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMMM dd, yyyy");
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      return "Invalid date";
+    }
+  };
   const BoldLabel = styled("label")({
     fontWeight: "bold",
     color: "black",
@@ -254,9 +268,18 @@ const InitiationComplete = ({
     setOpen1(false);
     setOpenDrawer(false);
   };
-
+  const ListDoc1 = (id, activeid) => {
+    apiAuth
+      .get(
+        `/DocumentManager/DocList/${activeid}/ChangeSummary?changeRequestToken=${id}`
+      )
+      .then((response) => {
+        setListDocument(response?.data?.data);
+      });
+  };
   const handleOpen1 = () => {
     setOpen1(true);
+    ListDoc1(assetEvaluationId, currentActivityForm.uid);
     // ListDoc(assetEvaluationId, AssetDetails?.changeRequestId);
     // const newGuid = uuidv4();
     // setSelectedFile((prevState) => ({
@@ -275,6 +298,19 @@ const InitiationComplete = ({
       [name]: value,
     }));
   };
+  const handelFileChange = (e) => {
+    const file = e.target.files[0];
+
+    setSelectedFile({
+      name: e.target.files[0].name,
+      description: "",
+      type: e.target.files[0].type,
+      document: e.target.files[0],
+      documentType: "ChangeSummary",
+      documentId: currentActivityForm.uid,
+      changeRequestToken: assetEvaluationId,
+    });
+  };
 
   const handleSubmitAsset = (e) => {
     const formData = new FormData();
@@ -285,11 +321,53 @@ const InitiationComplete = ({
     formData.append("documentType", selectedFile.documentType);
     formData.append("documentId", selectedFile.documentId);
     formData.append("changeRequestToken", selectedFile.changeRequestToken);
+    apiAuth
+      .post("DocumentManager/Create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        apiAuth
+          .get(
+            `/DocumentManager/DocList/${currentActivityForm.uid}/ChangeSummary?changeRequestToken=${assetEvaluationId}`
+          )
+          .then((response) => {
+            setOpenDrawer(false);
+            setListDocument(response?.data?.data);
+          });
+      })
+      .catch((error) => {
+        console.error("There was an error uploading the document!", error);
+      });
   };
 
   if (isLoading) {
     return <FuseLoading />;
   }
+
+  const handleDownload = () => {
+    apiAuth
+      .get(`/DocumentManager/download/${documenDowToken}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        setFileDetails(false);
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute("download", selectedDocument.name); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed", error);
+      });
+  };
 
   return (
     <div className="w-full">
@@ -873,21 +951,25 @@ const InitiationComplete = ({
             </Grid>
           </Grid>
           <Box mt={4} display="flex" justifyContent="space-between">
-            {/* <StyledBadge badgeContent={AssetDetails.documentStatus}> */}
-            <Button
-              variant="outlined"
-              style={{
-                padding: "10px 20px",
-                borderColor: "grey",
-              }}
-              startIcon={
-                <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
+            <StyledBadge
+              badgeContent={
+                listDocument.length ? listDocument.length : CountApprove
               }
-              onClick={handleOpen1}
             >
-              Document
-            </Button>
-            {/* </StyledBadge> */}
+              <Button
+                variant="outlined"
+                style={{
+                  padding: "10px 20px",
+                  borderColor: "grey",
+                }}
+                startIcon={
+                  <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
+                }
+                onClick={handleOpen1}
+              >
+                Document
+              </Button>
+            </StyledBadge>
             {currentActivityForm.canExecute && (
               <Box display="flex" gap={2}>
                 {AppActions.map((btn) => (

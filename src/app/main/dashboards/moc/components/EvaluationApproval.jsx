@@ -193,7 +193,7 @@ const EvaluationApproval = ({
     width: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
-
+    height: "auto",
     boxShadow: 24,
     p: 4,
     padding: "1px",

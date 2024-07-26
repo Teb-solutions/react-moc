@@ -59,7 +59,7 @@ function DocRequest() {
     transform: "translate(-50%, -50%)",
     width: "1200px",
     maxWidth: "80vw",
-    height: "60%",
+    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -84,7 +84,8 @@ function DocRequest() {
     right: open ? 0 : -250, // Move drawer out of view when closed
     height: "100%",
     zIndex: 10,
-    transition: "right 0.3s ease", // Smooth transition for opening/closing
+    transition: "right 0.3s ease",
+    overflow: "auto", // Smooth transition for opening/closing
   });
 
   const [docContent, setDocContent] = useState([]);
@@ -199,7 +200,7 @@ function DocRequest() {
     }
     setSelectedFile({
       name: e.target.files[0].name,
-      description: "",
+      description: e.target.file[0].description,
       type: e.target.files[0].type,
       document: e.target.files[0],
       documentType: "ChangeRequest",
