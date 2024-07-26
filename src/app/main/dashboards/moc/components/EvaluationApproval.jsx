@@ -131,9 +131,9 @@ const EvaluationApproval = ({
       .post(`/ApprovalManager/CreateComment/${assetEvaluationId}/0`, payload)
       .then((resp) => {
         if (type == "Consultaion") {
-          toast.success("Consultation comment added.");
+          toast?.success("Consultation comment added.");
         } else {
-          toast.success("Task comment added.");
+          toast?.success("Task comment added.");
         }
         setNewRemark("");
         setNewImpactTaskRemark("");
@@ -195,8 +195,7 @@ const EvaluationApproval = ({
     bgcolor: "background.paper",
     height: "auto",
     boxShadow: 24,
-    p: 4,
-    padding: "1px",
+    maxWidth: "95%",
   };
 
   const BoldLabel = styled("label")({
@@ -246,7 +245,7 @@ const EvaluationApproval = ({
           }
         )
         .then((resp) => {
-          toast.success("Review successfully added");
+          toast?.success("Review successfully added");
           setHandelCommentRemark("");
           apiAuth
             .get(
@@ -265,7 +264,7 @@ const EvaluationApproval = ({
           }
         )
         .then((resp) => {
-          toast.success("Review successfully updated");
+          toast?.success("Review successfully updated");
           apiAuth
             .get(
               `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
@@ -286,7 +285,7 @@ const EvaluationApproval = ({
       .then((resp) => {
         if (value == 1) {
           setshowReview(true);
-          toast.success("Review successfully added");
+          toast?.success("Review successfully added");
           apiAuth
             .get(
               `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
@@ -295,7 +294,7 @@ const EvaluationApproval = ({
               setContentDetails(resp.data.data);
             });
         } else {
-          toast.success("Review successfully Updated");
+          toast?.success("Review successfully Updated");
           apiAuth
             .get(
               `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
@@ -343,7 +342,7 @@ const EvaluationApproval = ({
         ActivityCode: lastActCode.code,
       })
       .then((response) => {
-        toast.success("Successfully marked the item as reviewed");
+        toast?.success("Successfully marked the item as reviewed");
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
           [id]: true,
@@ -363,7 +362,7 @@ const EvaluationApproval = ({
         ActivityCode: lastActCode.code,
       })
       .then((response) => {
-        toast.success("Successfully marked the item as reviewed");
+        toast?.success("Successfully marked the item as reviewed");
 
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
@@ -422,21 +421,22 @@ const EvaluationApproval = ({
       Version: lastActCode?.version,
     };
     console.log(payload, "payload");
-
     apiAuth
       .put(`/SummaryDetails/SendComment/${assetEvaluationId}`, payload)
       .then((response) => {
-        toast.success(
+        toast?.success(
           "Selected tasks successfully sent for external consultation"
         );
-        handlehandledateExtendClose();
+
         apiAuth
           .get(
             `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
           )
           .then((resp) => {
-            showSendPopup(false);
             setIsLoading(false);
+            setDateExtendOpen(false);
+
+            setShowSendPopup(false);
 
             setContentDetails(resp.data.data);
           });
@@ -476,7 +476,7 @@ const EvaluationApproval = ({
         } else {
           setIsLoading(false);
 
-          toast.error(response.data.message);
+          toast?.error(response.data.message);
         }
       })
       .catch((error) => {
@@ -835,9 +835,8 @@ const EvaluationApproval = ({
                     />
                   </Grid>
                   <div
-                    className="mt-5"
+                    className="p-30 pt-24 pb-24"
                     style={{
-                      marginTop: "10px",
                       display: "flex",
                       justifyContent: "end",
                     }}
@@ -1164,14 +1163,15 @@ const EvaluationApproval = ({
                     <button
                       className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
                       onClick={() => handelreview(itm.id)}
+                      style={{
+                        backgroundColor:
+                          itm?.reviewd || clickedTasks[itm.id]
+                            ? "rgba(220,252,231)"
+                            : "",
+                      }}
                     >
                       {itm?.reviewd || clickedTasks[itm.id] ? (
-                        <span
-                          className="mat-button-wrapper"
-                          style={{
-                            backgroundColor: "rgba(220,252,231)",
-                          }}
-                        >
+                        <span className="mat-button-wrapper">
                           You have reviewed this just now
                         </span>
                       ) : (
@@ -1532,14 +1532,15 @@ const EvaluationApproval = ({
                                 disabled={
                                   imptsk?.reviewd || clickedTasks[imptsk.id]
                                 }
+                                style={{
+                                  backgroundColor:
+                                    imptsk?.reviewd || clickedTasks[imptsk.id]
+                                      ? "rgba(220,252,231)"
+                                      : "",
+                                }}
                               >
                                 {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
-                                  <span
-                                    className="mat-button-wrapper"
-                                    style={{
-                                      backgroundColor: "rgba(220,252,231)",
-                                    }}
-                                  >
+                                  <span className="mat-button-wrapper">
                                     You have reviewed this just now
                                   </span>
                                 ) : (

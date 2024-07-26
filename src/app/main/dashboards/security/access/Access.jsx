@@ -72,6 +72,14 @@ const Access = () => {
     setExpandedAccordions(newExpandedAccordions);
   };
 
+  const handelClose = () => {
+    setLeftSidebarOpen(false);
+  };
+
+  const handelOpenSide = () => {
+    setLeftSidebarOpen(true);
+  };
+
   function getRecords() {
     apiAuth.get(`/Role/List`).then((resp) => {
       setIsLoading(false);
@@ -193,10 +201,23 @@ const Access = () => {
           }}
         >
           <div className="flex d-flex flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
-            <InputLabel id="category-select-label" style={{ fontSize: "xx-large", color: "black" }}>
+            <InputLabel
+              id="category-select-label"
+              style={{ fontSize: "xx-large", color: "black" }}
+            >
               <b>Access</b>
             </InputLabel>
           </div>
+          {!leftSidebarOpen && (
+            <FuseSvgIcon
+              className="text-48 cursor-pointer"
+              size={24}
+              color="action"
+              onClick={handelOpenSide}
+            >
+              heroicons-outline:menu
+            </FuseSvgIcon>
+          )}
         </div>
       </div>
       <FusePageSimple
@@ -218,7 +239,8 @@ const Access = () => {
               >
                 <div className="flex d-flex pt-5 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
                   <InputLabel
-                    id="category-select-label" className="subtitle_custom"
+                    id="category-select-label"
+                    className="subtitle_custom"
                     style={{
                       fontSize: "large",
                       color: "black",
@@ -248,7 +270,8 @@ const Access = () => {
               {roleIdList
                 .filter((item) => item.parentId === 0)
                 .map((accordionItem) => (
-                  <Accordion className="Access_list_box"
+                  <Accordion
+                    className="Access_list_box"
                     key={accordionItem.featureId}
                     style={{
                       marginTop: "15px",
@@ -316,9 +339,16 @@ const Access = () => {
               className="py-10"
               style={{ marginTop: "18px", marginLeft: "30px" }}
             >
-              <div className="text-3xl font-bold tracking-tighter">
-                Role
-              </div>
+              <FuseSvgIcon
+                className="text-48 cursor-pointer text-end"
+                size={24}
+                color="action"
+                onClick={handelClose}
+              >
+                heroicons-outline:menu
+              </FuseSvgIcon>
+
+              <div className="text-3xl font-bold tracking-tighter">Role</div>
               <div style={{ marginTop: "25px" }}>
                 <ul className="mt-3 side-nav-s fuse-vertical-navigation-item-title-wrapper pr-30">
                   {roleList.map((role) => (
@@ -329,9 +359,7 @@ const Access = () => {
                       style={{
                         padding: "14px",
                         backgroundColor:
-                          activeRole === role.name
-                            ? "#f5f5f5"
-                            : "transparent",
+                          activeRole === role.name ? "#f5f5f5" : "transparent",
                       }}
                     >
                       <span>{role.name}</span>

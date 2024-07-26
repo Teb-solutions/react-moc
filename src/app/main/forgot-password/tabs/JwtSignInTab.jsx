@@ -84,15 +84,15 @@ function jwtSignInTab() {
         .post(`/Account/ForgotPassword`, { email })
         .then((resp) => {
           if (resp.data.statusCode === 400) {
-            toast.error("Some error has occurred");
+            toast?.error("Some error has occurred");
           } else {
-            toast.success("OTP Sent Successfully");
+            toast?.success("OTP Sent Successfully");
             SetOtpTrue(true);
           }
         })
         .catch((err) => {
           console.error("Error sending OTP:", err);
-          toast.error("Failed to send OTP");
+          toast?.error("Failed to send OTP");
         });
     } else {
       // Reset Password
@@ -105,12 +105,12 @@ function jwtSignInTab() {
         .post(`/Account/ResetPassword`, payload)
         .then((resp) => {
           // Handle success response
-          toast.success("Password reset successfully");
+          toast?.success("Password reset successfully");
           // Optionally redirect or handle success UI state
         })
         .catch((err) => {
           console.error("Error resetting password:", err);
-          toast.error("Failed to reset password");
+          toast?.error("Failed to reset password");
         });
     }
   }

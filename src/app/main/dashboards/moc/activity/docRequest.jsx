@@ -310,7 +310,7 @@ function DocRequest() {
       .then((response) => {
         setIsLoading(false);
 
-        toast.success("Successfully Created");
+        toast?.success("Successfully Created");
 
         setTimeout(() => {
           navigate("/dashboards/project");

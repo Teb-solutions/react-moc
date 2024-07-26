@@ -11,7 +11,7 @@ const handleError = async (error) => {
   if (error.response) {
     if (error.response.status === 401) {
       // Show toast error message
-      toast.error("Session expired. Please log in again.");
+      toast?.error("Session expired. Please log in again.");
 
       // Clear local storage and redirect to login page
       localStorage.clear();
@@ -22,7 +22,7 @@ const handleError = async (error) => {
     }
 
     if (error.response.status === 403) {
-      toast.error("Access denied. Please log in.");
+      toast?.error("Access denied. Please log in.");
       localStorage.clear();
       setTimeout(() => {
         window.location = `${process.env.REACT_APP_PUBLIC_URL}/sign-in`;
@@ -38,7 +38,7 @@ const handleError = async (error) => {
         status: error.response.status,
         message: "App is under maintenance",
       };
-      toast.error("App is under maintenance");
+      toast?.error("App is under maintenance");
       setTimeout(() => {
         window.location = `${process.env.REACT_APP_PUBLIC_URL}/under-maintenance`;
       }, 2000); // Delay to allow toast to show
@@ -101,7 +101,7 @@ const handleResponseError = (error) => {
     // Clear local storage and redirect to login page
     localStorage.clear();
 
-    toast.error("Session expired. Please log in again.");
+    toast?.error("Session expired. Please log in again.");
 
     setTimeout(() => {
       window.location.href = `/sign-in`;

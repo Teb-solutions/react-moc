@@ -183,7 +183,7 @@ const InitiationComplete = ({
       .then((response) => {
         setIsLoading(false);
 
-        toast.success("Successfully Created");
+        toast?.success("Successfully Created");
         setOpen(false);
         apiAuth
           .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
@@ -194,7 +194,7 @@ const InitiationComplete = ({
       .catch((error) => {
         setIsLoading(false);
 
-        toast.error("Some error occured");
+        toast?.error("Some error occured");
       });
   };
   const [openDrawer, setOpenDrawer] = useState(false);

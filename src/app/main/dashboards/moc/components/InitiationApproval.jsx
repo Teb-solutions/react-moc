@@ -212,6 +212,8 @@ function InitiationApproval(props) {
         responseType: "blob",
       })
       .then((response) => {
+        setFileDetails(false);
+
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
 
@@ -966,71 +968,68 @@ function InitiationApproval(props) {
               </div>
             </div>
 
-              <div className="p-30 pt-24 pb-24">
-                <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
-                  <div className="my-3">
-                    <div className="mt-3 leading-6 text-secondary">
-                      Request No
-                    </div>
-                    <div className="text-lg leading-6 font-medium">
-                      {ApprovalDetails?.requestNo}
-                    </div>
+            <div className="p-30 pt-24 pb-24">
+              <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                <div className="my-3">
+                  <div className="mt-3 leading-6 text-secondary">
+                    Request No
                   </div>
-                  <div className="my-3">
-                    <div className="mt-3 leading-6 text-secondary">
-                      Initiator
-                    </div>
-                    <div className="text-lg leading-6 font-medium">
-                      {ApprovalDetails?.initiatorName}
-                    </div>
-                  </div>
-                  <div className="my-3">
-                    <div className="mt-3 leading-6 text-secondary">
-                      Initiated On
-                    </div>
-                    <div className="text-lg leading-6 font-medium">
-                      {ApprovalDetails?.requestDate}
-                    </div>
+                  <div className="text-lg leading-6 font-medium">
+                    {ApprovalDetails?.requestNo}
                   </div>
                 </div>
-
-                <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
-                  <div className="my-3">
-                    <div className="mt-3 leading-6 text-secondary">Type</div>
-                    <div className="text-lg leading-6 font-medium">
-                      {ApprovalDetails?.requestTypeName}
-                    </div>
-                  </div>
-                  <div className="my-3">
-                    <div className="mt-3 leading-6 text-secondary">
-                      Expense Nature
-                    </div>
-                    <div className="text-lg leading-6 font-medium">
-                      {ApprovalDetails?.expenseNature}
-                    </div>
-                  </div>
-                  <div className="my-3">
-                    <div className="mt-3 leading-6 text-secondary">
-                      Expense Type
-                    </div>
-                    <div className="text-lg leading-6 font-medium">
-                      {ApprovalDetails?.expenseType}
-                    </div>
+                <div className="my-3">
+                  <div className="mt-3 leading-6 text-secondary">Initiator</div>
+                  <div className="text-lg leading-6 font-medium">
+                    {ApprovalDetails?.initiatorName}
                   </div>
                 </div>
-
-                <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
-                  <div className="my-3">
-                    <div className="mt-3 leading-6 text-secondary">
-                      Project Description
-                    </div>
-                    <div className="text-lg leading-6 font-medium">
-                      {ApprovalDetails?.projectDescription}
-                    </div>
+                <div className="my-3">
+                  <div className="mt-3 leading-6 text-secondary">
+                    Initiated On
+                  </div>
+                  <div className="text-lg leading-6 font-medium">
+                    {ApprovalDetails?.requestDate}
                   </div>
                 </div>
               </div>
-          
+
+              <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                <div className="my-3">
+                  <div className="mt-3 leading-6 text-secondary">Type</div>
+                  <div className="text-lg leading-6 font-medium">
+                    {ApprovalDetails?.requestTypeName}
+                  </div>
+                </div>
+                <div className="my-3">
+                  <div className="mt-3 leading-6 text-secondary">
+                    Expense Nature
+                  </div>
+                  <div className="text-lg leading-6 font-medium">
+                    {ApprovalDetails?.expenseNature}
+                  </div>
+                </div>
+                <div className="my-3">
+                  <div className="mt-3 leading-6 text-secondary">
+                    Expense Type
+                  </div>
+                  <div className="text-lg leading-6 font-medium">
+                    {ApprovalDetails?.expenseType}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                <div className="my-3">
+                  <div className="mt-3 leading-6 text-secondary">
+                    Project Description
+                  </div>
+                  <div className="text-lg leading-6 font-medium">
+                    {ApprovalDetails?.projectDescription}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </Paper>
       </SwipeableViews>
@@ -1039,7 +1038,7 @@ function InitiationApproval(props) {
           <div className="flex items-center w-full border-b p-30 pt-24 pb-24 justify-between">
             <h2 className="text-2xl font-semibold">Approval</h2>
           </div>
-       
+
           {Activity.isComplete && Activity.status !== "Pending" ? (
             <>
               <div
