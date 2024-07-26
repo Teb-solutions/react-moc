@@ -1393,11 +1393,9 @@ const Task = () => {
         {/* <button onClick={closeSidebar}>Close Sidebar</button> */}
         <div className="flex flex-auto">
           <form
-            className="flex flex-col flex-auto p-30 overflow-y-auto"
-            style={{ overflow: "hidden" }}
-          >
+            className="flex flex-col flex-auto p-30 overflow-y-auto">
             <div
-              className="flex items-center justify-between -mt-3 -ml-4"
+              className="flex items-center justify-between"
               style={{ padding: "5px" }}
             >
               <span className="pr-4 pl-3.5">

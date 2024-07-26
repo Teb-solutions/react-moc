@@ -234,7 +234,7 @@ input:-webkit-autofill:active {
   /* top: 0; */
   right: -126%; /* Initially hidden */
   width: 500px;
-  height: 100%;
+  height: calc(100% - 50px);
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1;
