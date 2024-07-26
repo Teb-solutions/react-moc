@@ -1,8 +1,27 @@
-import { Paper } from "@mui/material";
-import React from "react";
+import { useState } from "react";
+import {
+  Backdrop,
+  Badge,
+  Box,
+  Button,
+  Fade,
+  Grid,
+  Modal,
+  OutlinedInput,
+  Paper,
+  FormControl,
+  FormLabel,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
+import { withStyles } from "@mui/styles";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import { styled } from "@mui/material/styles";
+import { apiAuth } from "src/utils/http";
 
-function MainComponent({ contentDetails, contentChanges }) {
+function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
   const formatDates = (date) => {
     return new Date(date).toLocaleString("en-US", {
       month: "short",
@@ -10,11 +29,449 @@ function MainComponent({ contentDetails, contentChanges }) {
       year: "numeric",
     });
   };
-  console.log("====================================");
-  console.log(contentChanges, "contentChanges");
-  console.log("====================================");
+  const style1 = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "1200px",
+    maxWidth: "80vw",
+    height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+    p: 4,
+  };
+  const drawerStyle = (open) => ({
+    width: 350,
+    bgcolor: "background.paper",
+    borderTopRightRadius: "16px",
+    borderBottomRightRadius: "16px",
+    boxShadow: 24,
+    p: 2,
+    position: "absolute",
+    top: 0,
+    right: open ? 0 : -250, // Move drawer out of view when closed
+    height: "100%",
+    zIndex: 10,
+    transition: "right 0.3s ease",
+    overflow: "auto", // Smooth transition for opening/closing
+  });
+  const StyledBadge = withStyles((theme) => ({
+    Badge: {
+      right: -3,
+      top: 13,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: "0 4px",
+      backgroundColor: "#000", // Adjust background color to match the image
+      color: "white",
+    },
+  }))(Badge);
+  const BoldLabel = styled("label")({
+    fontWeight: "bold",
+    color: "black",
+  });
+  const [open, setOpen] = useState(false);
+  const [listDocument, setListDocument] = useState([]);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [fileDetails, setFileDetails] = useState(false);
+  const [selectedDocument, setSelectedDocument] = useState(null);
+  const [documenDowToken, setDocumenDowToken] = useState("");
+  const formatDate1 = (dateString) => {
+    if (!dateString) {
+      return "Invalid date";
+    }
+
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMMM dd, yyyy");
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      return "Invalid date";
+    }
+  };
+  const ListDoc = (id) => {
+    apiAuth.get(`/DocumentManager/SummaryDoclist/${id}`).then((Resp) => {
+      setListDocument(Resp?.data?.data);
+    });
+  };
+  const handelFileDiscriptionChange = (event) => {
+    const { name, value } = event.target;
+    setSelectedFile((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+  const handelDetailDoc = (doc) => {
+    setSelectedDocument(doc);
+    setFileDetails(true);
+    setDocumenDowToken(doc.token);
+  };
+  const handleOpen = () => {
+    setOpen(true);
+    ListDoc(assetEvaluationId);
+  };
+  const handleModalClose = () => {
+    setOpen(false);
+    setOpenDrawer(false);
+  };
+  const handleDownload = () => {
+    apiAuth
+      .get(`/DocumentManager/download/${documenDowToken}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute("download", selectedDocument.name); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed", error);
+      });
+  };
   return (
     <div className="w-full">
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={handleModalClose}
+        closeAfterTransition
+        // Customize backdrop appearance
+        BackdropComponent={Backdrop}
+        // Props for backdrop customization
+        BackdropProps={{
+          timeout: 500, // Adjust as needed
+          style: {
+            // Add backdrop styles here
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+        }}
+      >
+        <Fade in={open}>
+          <Box sx={style1}>
+            <Box sx={{ flex: 1 }}>
+              <Box className="flex justify-between" style={{ margin: "30px" }}>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "3rem",
+                  }}
+                >
+                  File Manager
+                  <Typography id="transition-modal-subtitle" component="h2">
+                    {listDocument.length} Files
+                  </Typography>
+                </Typography>
+                <Box>
+                  {/* <Button
+                    className=""
+                    variant="contained"
+                    color="secondary"
+                    onClick={toggleDrawer(true)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+                    <span className="mx-4 sm:mx-8">Upload File</span>
+                  </Button> */}
+                </Box>
+              </Box>
+              <Box>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                  component="div"
+                  style={{
+                    backgroundColor: "#e3eeff80",
+                  }}
+                >
+                  {listDocument.map((doc, index) => (
+                    <div className="content " key={index}>
+                      <div
+                        onClick={() => handelDetailDoc(doc)}
+                        style={{ textAlign: "-webkit-center" }}
+                      >
+                        {doc.fileType === "JPG" ? (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        ) : doc.fileType === "JPG" ? (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        ) : (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        )}
+                        <h6>{doc?.name}</h6>
+                        <h6>by {doc?.staffName}</h6>
+                      </div>
+                    </div>
+                  ))}
+                </Typography>
+              </Box>
+            </Box>
+            {openDrawer && !fileDetails && (
+              <Box sx={drawerStyle(openDrawer)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setOpenDrawer(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <Button
+                      className=""
+                      variant="contained"
+                      color="secondary"
+                      style={{
+                        backgroundColor: "#24a0ed",
+                        borderRadius: "5px",
+                        paddingLeft: "50px",
+                        paddingRight: "50px",
+                      }}
+                      component="span"
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Selecte File"
+                      variant="standard"
+                      disabled
+                      value={selectedFile.name}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="description"
+                      variant="standard"
+                      onChange={handelFileDiscriptionChange}
+                      value={selectedFile.description}
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleSubmitAsset}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Box>
+            )}
+
+            {fileDetails && (
+              <Box sx={drawerStyle(fileDetails)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setFileDetails(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <div className=" ">
+                      <div
+                        // onClick={handelDetailDoc}
+                        style={{
+                          textAlign: "-webkit-center",
+                        }}
+                      >
+                        <img src="/assets/images/etc/icon_N.png" />
+                      </div>
+                      {selectedDocument?.name}
+                    </div>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Created By"
+                      variant="standard"
+                      disabled
+                      value={selectedDocument.staffName}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label=" Created At"
+                      name="description"
+                      variant="standard"
+                      disabled
+                      value={formatDate1(selectedDocument.createdAt)}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="Description"
+                      variant="standard"
+                      disabled
+                      value={
+                        selectedDocument.description == null
+                          ? ""
+                          : selectedDocument.descritpion
+                      }
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleDownload}
+                  >
+                    Download
+                  </Button>
+                </div>
+              </Box>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
       <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
           <div>
@@ -27,14 +484,55 @@ function MainComponent({ contentDetails, contentChanges }) {
                   ? "MOC Organisation Request"
                   : "Summary Details"}
               </h2>
+              {contentChanges ? (
+                <></>
+              ) : (
+                <div>
+                  <StyledBadge
+                    badgeContent={
+                      listDocument.length
+                        ? listDocument.length
+                        : contentDetails.documentCount
+                    }
+                  >
+                    <Button
+                      className="whitespace-nowrap"
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "transparent",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                      }}
+                      variant="contained"
+                      color="warning"
+                      startIcon={
+                        <FuseSvgIcon size={20}>
+                          heroicons-solid:upload
+                        </FuseSvgIcon>
+                      }
+                      onClick={handleOpen}
+                    >
+                      Document History
+                    </Button>
+                  </StyledBadge>
+                </div>
+              )}
             </div>
-            <div _ngcontent-fyk-c288="" class="p-30 pt-24 pb-24 mb-6 ng-star-inserted">              
+            <div
+              _ngcontent-fyk-c288=""
+              class="p-30 pt-24 pb-24 mb-6 ng-star-inserted"
+            >
               <div
                 _ngcontent-fyk-c288=""
                 class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
               >
                 <div _ngcontent-fyk-c288="" className="my-6">
-                  <div _ngcontent-fyk-c288=""class="mt-3 leading-6 text-secondary">Request No{" "}</div>
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="mt-3 leading-6 text-secondary"
+                  >
+                    Request No{" "}
+                  </div>
                   <div
                     _ngcontent-fyk-c288=""
                     class="text-lg leading-6 font-medium"
@@ -78,9 +576,11 @@ function MainComponent({ contentDetails, contentChanges }) {
                   </div>
                 </div>
               </div>
-              
 
-              <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+              <div
+                _ngcontent-fyk-c288=""
+                class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+              >
                 <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
@@ -133,9 +633,11 @@ function MainComponent({ contentDetails, contentChanges }) {
                   </div>
                 </div>
               </div>
-              
+
               <div
-                _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                _ngcontent-fyk-c288=""
+                class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+              >
                 <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
@@ -188,9 +690,11 @@ function MainComponent({ contentDetails, contentChanges }) {
                   </div>
                 </div>
               </div>
-            
-            
-              <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+
+              <div
+                _ngcontent-fyk-c288=""
+                class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+              >
                 <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
@@ -210,8 +714,8 @@ function MainComponent({ contentDetails, contentChanges }) {
                       : contentDetails?.projectDescription}
                   </div>
                 </div>
-              
-                <div className="my-6">                
+
+                <div className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -232,7 +736,7 @@ function MainComponent({ contentDetails, contentChanges }) {
                 </div>
 
                 {!contentChanges && (
-                  <div _ngcontent-fyk-c288=""  className="my-6">
+                  <div _ngcontent-fyk-c288="" className="my-6">
                     <div
                       _ngcontent-fyk-c288=""
                       class="mt-3 leading-6 text-secondary"
@@ -250,7 +754,6 @@ function MainComponent({ contentDetails, contentChanges }) {
                 )}
               </div>
             </div>
-         
           </div>
         </Paper>
       </SwipeableViews>
