@@ -57,6 +57,7 @@ import ImplementationApproval from "../components/ImplementationApproval";
 import ImplementationApprovalSite from "../components/ImplementationApprovalSite";
 import FuseLoading from "@fuse/core/FuseLoading";
 import CustomStepIcon from "../CustomStepIcon";
+import { useCallback } from "react";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -226,6 +227,26 @@ const AssetCourse = () => {
       [name]: value,
     }));
   };
+
+  const handleResize = useCallback(() => {
+    if (window.innerWidth <= 768) {
+      // Adjust this width as needed
+      setLeftSidebarOpen(false);
+    } else {
+      setLeftSidebarOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Set initial state
+    handleResize();
+
+    // Add resize event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on unmount
+    return () => window.removeEventListener("resize", handleResize);
+  }, [handleResize]);
 
   const handleChangeAddTask = (e) => {
     const { name, value } = e.target;
@@ -1232,16 +1253,16 @@ const AssetCourse = () => {
           ConsolidatedDocumentUrl: handelUrlChange.urlRemarks,
         })
         .then((resp) => {
-          toast.success("  Consolidated Document url successfully updated");
+          toast?.success("  Consolidated Document url successfully updated");
         });
     } else {
-      toast.error("Concolidated Document Url is not valid");
+      toast?.error("Concolidated Document Url is not valid");
     }
   };
 
   const SubmitApprovel = (e, uid) => {
     if (forms.length < 1) {
-      toast.error("At least one stakeholder is required.");
+      toast?.error("At least one stakeholder is required.");
     }
     apiAuth
       .get(
@@ -1253,10 +1274,10 @@ const AssetCourse = () => {
         // Check if any object in data has an empty tasks array
         const hasEmptyComment = data.some((item) => item.comments === "");
         if (resp.data.data.length === 0) {
-          toast.error("Minimum One stakeholders Required");
+          toast?.error("Minimum One stakeholders Required");
         } else {
           if (hasEmptyComment) {
-            toast.error("All stakeholders must update the task");
+            toast?.error("All stakeholders must update the task");
           } else {
             apiAuth
               .post(
@@ -1306,9 +1327,9 @@ const AssetCourse = () => {
       .get(`/ChangeImpact/ListTask?id=${assetEvaluationId}`)
       .then((resp) => {
         if (handelApprover.approver == "") {
-          toast.error("Select an approver");
+          toast?.error("Select an approver");
         } else {
-          toast.success("MOC has Created");
+          toast?.success("MOC has Created");
           apiAuth
             .post(
               `/DocMoc/ImplementationSubmit/${assetEvaluationId}/${handelApprover.approver}`,
@@ -1425,7 +1446,7 @@ const AssetCourse = () => {
         CheckLists
       )
       .then((response) => {
-        toast.success("Checklist successfully updated");
+        toast?.success("Checklist successfully updated");
         setOpen(false);
         console.log(response);
       });
@@ -1492,7 +1513,7 @@ const AssetCourse = () => {
         formUID: closeActivity.formUID,
       })
       .then((resp) => {
-        toast.success("MOC Successfully Closed");
+        toast?.success("MOC Successfully Closed");
         setTimeout(() => {
           getRecords();
         }, 3000);

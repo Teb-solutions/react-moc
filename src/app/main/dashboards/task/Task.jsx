@@ -337,7 +337,7 @@ const Task = () => {
       .put(`/Task/Update?id=${taskId}`, updatedTask)
       .then((response) => {
         setOpen(false);
-        toast.success("Task Comment Added");
+        toast?.success("Task Comment Added");
 
         setIsLoading(false);
         getRecords();
@@ -348,7 +348,7 @@ const Task = () => {
         setIsLoading(false);
 
         setOpen(false);
-        toast.error("Some Error Occured");
+        toast?.error("Some Error Occured");
       });
   };
 
@@ -844,10 +844,7 @@ const Task = () => {
       </Modal>
       <div className="p-30 pt-24 pb-24">
         <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
-          <InputLabel
-            id="category-select-label"
-            className="text-2xl"
-          >
+          <InputLabel id="category-select-label" className="text-2xl">
             <b>Tasks</b>
           </InputLabel>
 
@@ -932,7 +929,6 @@ const Task = () => {
             <Paper
               key={list.changeRequestId}
               className="p-30 pt-24 pb-0  task_box"
-              
             >
               <div className="flex flex-wrap flex-col p-24 rounded-16 shadow overflow-hidden">
                 <div className="flex flex-wrap">
@@ -965,14 +961,14 @@ const Task = () => {
                         className="flex items-center min-w-0 h-full w-full  text-lg p-4 border rounded cursor-pointer text-blue-500"
                         href="#"
                         style={{ textDecoration: "none", padding: "15px" }}
-                        onClick={(e) => handelViewMoc(e, list)}                    
+                        onClick={(e) => handelViewMoc(e, list)}
                       >
                         View MOC details
                       </a>
                     </div>
                   </div>
                 </div>
-              
+
                 <div className="cdk-drop-list divide-y border rounded mt-3">
                   <div className="w-full" style={{ padding: "2rem" }}>
                     <span className="font-semibold text-gray-500">
@@ -1394,8 +1390,7 @@ const Task = () => {
         {/* Add sidebar content here */}
         {/* <button onClick={closeSidebar}>Close Sidebar</button> */}
         <div className="flex flex-auto">
-          <form
-            className="flex flex-col flex-auto p-30 overflow-y-auto">
+          <form className="flex flex-col flex-auto p-30 overflow-y-auto">
             <div
               className="flex items-center justify-between"
               style={{ padding: "5px" }}

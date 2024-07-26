@@ -93,7 +93,7 @@ const JwtSignInTab = () => {
       apiAuth.post("/Account/Login", params).then((resp) => {
         if (resp.data.statusCode === 202) {
           console.log("Setting showMFA to true", resp);
-          toast.success("Otp Required");
+          toast?.success("Otp Required");
           setShowMFA(true);
           return;
         } else {
@@ -109,7 +109,7 @@ const JwtSignInTab = () => {
             const enData = encryptFeature(resp.data.data.features);
 
             if (enData) {
-              toast.success("Successfully Logined");
+              toast?.success("Successfully Logined");
               navigate("/dashboards/project");
               location.reload();
             }
@@ -117,7 +117,7 @@ const JwtSignInTab = () => {
             console.error("Encryption/Decryption error:", error);
           }
         } else {
-          toast.error("Some Error Occured");
+          toast?.error("Some Error Occured");
         }
       });
     } catch (error) {
@@ -213,11 +213,18 @@ const JwtSignInTab = () => {
           <Controller
             name="remember"
             control={control}
+            defaultValue={true} // Set default value here
             render={({ field }) => (
               <FormControl>
                 <FormControlLabel
                   label="Remember me"
-                  control={<Checkbox size="small" {...field} />}
+                  control={
+                    <Checkbox
+                      size="small"
+                      {...field}
+                      checked={field.value || false} // Ensure the checkbox reflects the current value
+                    />
+                  }
                 />
               </FormControl>
             )}
