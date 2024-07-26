@@ -213,11 +213,18 @@ const JwtSignInTab = () => {
           <Controller
             name="remember"
             control={control}
+            defaultValue={true} // Set default value here
             render={({ field }) => (
               <FormControl>
                 <FormControlLabel
                   label="Remember me"
-                  control={<Checkbox size="small" {...field} />}
+                  control={
+                    <Checkbox
+                      size="small"
+                      {...field}
+                      checked={field.value || false} // Ensure the checkbox reflects the current value
+                    />
+                  }
                 />
               </FormControl>
             )}

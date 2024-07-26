@@ -12,6 +12,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { apiAuth } from "src/utils/http";
 import { toast, ToastContainer } from "react-toastify";
+
 /**
  * Form Validation Schema
  */
@@ -20,10 +21,13 @@ const schema = z.object({
     .string()
     .email("You must enter a valid email")
     .nonempty("You must enter an email address"),
-  OTP: z.string().optional(),
+  OTP: z.string().nonempty("OTP is required").optional(),
   password: z
     .string()
-    .min(10, "Password must be at least 10 characters long")
+    .min(
+      10,
+      "Password should contain a minimum 10 characters, at least 1 Uppercase, 1 lowercase letter, 1 number and special character (!@#$%&*)"
+    )
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[0-9]/, "Password must contain at least one number")
@@ -34,7 +38,7 @@ const schema = z.object({
     .optional(),
   confirmPassword: z
     .string()
-    .min(10, "Password must be at least 10 characters long")
+    .min(10, "Confirm Password is required")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[0-9]/, "Password must contain at least one number")
@@ -49,16 +53,18 @@ const defaultValues = {
   remember: true,
 };
 
-function jwtSignInTab() {
+function JwtSignInTab() {
   const { axiosService } = useAuth();
-  const { control, formState, handleSubmit, setValue, setError } = useForm({
-    mode: "onChange",
-    defaultValues,
-    resolver: zodResolver(schema),
-  });
-  const { isValid, dirtyFields, errors } = formState;
-  const [otpTrue, SetOtpTrue] = useState(false);
-  const [reset, SetReset] = useState({
+  const { control, formState, handleSubmit, setValue, setError, trigger } =
+    useForm({
+      mode: "onChange", // Ensure validation is triggered on change
+      defaultValues,
+      resolver: zodResolver(schema),
+    });
+
+  const { isValid, dirtyFields, errors, touchedFields } = formState;
+  const [otpTrue, setOtpTrue] = useState(false);
+  const [reset, setReset] = useState({
     password: "",
     confirmPassword: "",
     token: "",
@@ -68,15 +74,24 @@ function jwtSignInTab() {
   useEffect(() => {
     setValue("email", "", { shouldDirty: true, shouldValidate: false });
   }, [setValue]);
+
   const handleChange = (name, value) => {
-    SetReset((prevState) => ({
+    setReset((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
   console.log(reset, "reeeee");
-  function onSubmit(formData) {
+
+  const onSubmit = async (formData) => {
+    // Trigger validation for all fields before proceeding
+    const isValidForm = await trigger(); // This will validate all fields
+
+    if (!isValidForm) {
+      return; // If validation fails, stop the submission
+    }
+
     const { email } = formData;
     if (!otpTrue) {
       // Send OTP
@@ -87,7 +102,7 @@ function jwtSignInTab() {
             toast?.error("Some error has occurred");
           } else {
             toast?.success("OTP Sent Successfully");
-            SetOtpTrue(true);
+            setOtpTrue(true);
           }
         })
         .catch((err) => {
@@ -104,8 +119,13 @@ function jwtSignInTab() {
       apiAuth
         .post(`/Account/ResetPassword`, payload)
         .then((resp) => {
+          if (resp.data.statusCode === 400) {
+            toast?.error(resp.data.message);
+          } else {
+            toast?.success("Password reset successfully");
+          }
           // Handle success response
-          toast?.success("Password reset successfully");
+
           // Optionally redirect or handle success UI state
         })
         .catch((err) => {
@@ -113,7 +133,7 @@ function jwtSignInTab() {
           toast?.error("Failed to reset password");
         });
     }
-  }
+  };
 
   return (
     <div className="w-full">
@@ -136,10 +156,21 @@ function jwtSignInTab() {
                 autoFocus
                 type="text"
                 error={!!errors.email}
-                helperText={errors?.email?.message}
+                helperText={
+                  errors.email
+                    ? errors.email.message
+                    : touchedFields.email
+                      ? ""
+                      : ""
+                }
                 variant="outlined"
                 required
                 fullWidth
+                onChange={(e) => {
+                  field.onChange(e);
+                  handleChange("email", e.target.value);
+                  trigger("email"); // Trigger validation on change
+                }}
               />
             )}
           />
@@ -157,11 +188,21 @@ function jwtSignInTab() {
                   autoFocus
                   type="text"
                   error={!!errors.OTP}
-                  helperText={errors?.OTP?.message}
+                  helperText={
+                    errors.OTP
+                      ? errors.OTP.message
+                      : touchedFields.OTP
+                        ? ""
+                        : ""
+                  }
                   variant="outlined"
                   required
                   fullWidth
-                  onChange={(e) => handleChange("token", e.target.value)}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleChange("token", e.target.value);
+                    trigger("OTP"); // Trigger validation on change
+                  }}
                 />
               )}
             />
@@ -172,15 +213,25 @@ function jwtSignInTab() {
                 <TextField
                   {...field}
                   className="mb-24"
-                  label="New Password "
+                  label="New Password"
                   autoFocus
-                  type="text"
+                  type="password"
                   error={!!errors.password}
-                  helperText={errors?.password?.message}
+                  helperText={
+                    errors.password
+                      ? errors.password.message
+                      : touchedFields.password
+                        ? ""
+                        : ""
+                  }
                   variant="outlined"
                   required
                   fullWidth
-                  onChange={(e) => handleChange("password", e.target.value)}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleChange("password", e.target.value);
+                    trigger("password"); // Trigger validation on change
+                  }}
                 />
               )}
             />
@@ -191,17 +242,25 @@ function jwtSignInTab() {
                 <TextField
                   {...field}
                   className="mb-24"
-                  label="Confirm Password "
+                  label="Confirm Password"
                   autoFocus
-                  type="text"
-                  error={!!errors.password}
-                  helperText={errors?.password?.message}
+                  type="password"
+                  error={!!errors.confirmPassword}
+                  helperText={
+                    errors.confirmPassword
+                      ? errors.confirmPassword.message
+                      : touchedFields.confirmPassword
+                        ? ""
+                        : ""
+                  }
                   variant="outlined"
                   required
                   fullWidth
-                  onChange={(e) =>
-                    handleChange("confirmPassword", e.target.value)
-                  }
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleChange("confirmPassword", e.target.value);
+                    trigger("confirmPassword"); // Trigger validation on change
+                  }}
                 />
               )}
             />
@@ -213,15 +272,22 @@ function jwtSignInTab() {
           color="secondary"
           className=" mt-16 w-full"
           aria-label="Sign in"
-          disabled={otpTrue ? !isValid : _.isEmpty(dirtyFields)}
+          disabled={
+            otpTrue
+              ? !isValid ||
+                !reset.token ||
+                !reset.password ||
+                !reset.confirmPassword
+              : _.isEmpty(dirtyFields)
+          }
           type="submit"
           size="large"
         >
-          {otpTrue ? "Submit" : "Send OTP"}{" "}
+          {otpTrue ? "Submit" : "Send OTP"}
         </Button>
       </form>
     </div>
   );
 }
 
-export default jwtSignInTab;
+export default JwtSignInTab;

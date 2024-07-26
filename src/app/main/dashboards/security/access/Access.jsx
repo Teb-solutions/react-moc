@@ -15,10 +15,13 @@ import { apiAuth } from "src/utils/http";
 import MocHeader from "../../moc/MocHeader";
 import { encryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
+import { useCallback } from "react";
 
 const Access = () => {
   const pageLayout = useRef(null);
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
+  const [smallScreen, setsmallScreen] = useState(false);
+
   const [activeRole, setActiveRole] = useState("Admin");
   const [roleList, setRoleList] = useState([]);
   const [roleIdList, setRoleIdList] = useState([]);
@@ -71,6 +74,28 @@ const Access = () => {
 
     setExpandedAccordions(newExpandedAccordions);
   };
+
+  const handleResize = useCallback(() => {
+    if (window.innerWidth <= 768) {
+      // Adjust this width as needed
+      setLeftSidebarOpen(false);
+      setsmallScreen(true);
+    } else {
+      setLeftSidebarOpen(true);
+      setsmallScreen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Set initial state
+    handleResize();
+
+    // Add resize event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on unmount
+    return () => window.removeEventListener("resize", handleResize);
+  }, [handleResize]);
 
   const handelClose = () => {
     setLeftSidebarOpen(false);
@@ -339,15 +364,16 @@ const Access = () => {
               className="py-10"
               style={{ marginTop: "18px", marginLeft: "30px" }}
             >
-              <FuseSvgIcon
-                className="text-48 cursor-pointer text-end"
-                size={24}
-                color="action"
-                onClick={handelClose}
-              >
-                heroicons-outline:menu
-              </FuseSvgIcon>
-
+              {smallScreen && (
+                <FuseSvgIcon
+                  className="text-48 cursor-pointer text-end"
+                  size={24}
+                  color="action"
+                  onClick={handelClose}
+                >
+                  heroicons-outline:menu
+                </FuseSvgIcon>
+              )}
               <div className="text-3xl font-bold tracking-tighter">Role</div>
               <div style={{ marginTop: "25px" }}>
                 <ul className="mt-3 side-nav-s fuse-vertical-navigation-item-title-wrapper pr-30">
