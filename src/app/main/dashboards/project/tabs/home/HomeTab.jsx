@@ -131,8 +131,6 @@ function HomeTab() {
   const fetchdataSetting = useCallback(async () => {
     try {
       apiAuth.get(`/Dashboard/Get`).then((resp) => {
-        debugger;
-
         setData(resp?.data?.data);
         const transformedData = resp?.data?.data?.approvalsPendingRequests?.map(
           (item, index) =>

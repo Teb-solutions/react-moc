@@ -847,6 +847,13 @@ const AssetCourse = () => {
 
                     setTasks(updatedTasks);
                     loadRiskAnalysisChart(updatedTasks);
+                    apiAuth
+                      .get(
+                        `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
+                      )
+                      .then((resp) => {
+                        setCountApprove(resp.data.data);
+                      });
                   }
                 }
               });
@@ -1463,6 +1470,7 @@ const AssetCourse = () => {
                 remarkRequest={remarkRequest}
                 setRemarkRequest={setRemarkRequest}
                 setContent={setContent}
+                CountApprove={CountApprove}
               />
             )}
             {currentPhase === "EvaluationApprovalCooprate" && (

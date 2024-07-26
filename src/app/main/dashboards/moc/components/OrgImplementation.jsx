@@ -316,7 +316,6 @@ const OrgImplementation = ({
   const [fileName, setFileName] = useState("");
 
   const handelDetailDoc = (doc) => {
-    debugger;
     setSelectedDocument(doc);
     setFileDetails(true);
     setDocumenDowToken(doc.token);

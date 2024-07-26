@@ -16,6 +16,7 @@ import {
   ListItemText,
   MenuItem,
   Modal,
+  Badge,
   Paper,
   Select,
   Table,
@@ -28,6 +29,7 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
+import { withStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
 import React, { useEffect } from "react";
 import SwipeableViews from "react-swipeable-views";
@@ -52,6 +54,7 @@ const EvaluationApproval = ({
   setRemarkRequest,
   setContent,
   setContentDetails,
+  CountApprove,
 }) => {
   const [reviewed, setReviewed] = useState({});
   const [open1, setOpen1] = useState(false);
@@ -59,6 +62,7 @@ const EvaluationApproval = ({
   const [fileDetails, setFileDetails] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [listDocument, setListDocument] = useState([]);
+  const [documenDowToken, setDocumenDowToken] = useState("");
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     description: "",
@@ -211,6 +215,17 @@ const EvaluationApproval = ({
     zIndex: 10,
     transition: "right 0.3s ease", // Smooth transition for opening/closing
   });
+
+  const StyledBadge = withStyles((theme) => ({
+    Badge: {
+      right: -3,
+      top: 13,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: "0 4px",
+      backgroundColor: "#000", // Adjust background color to match the image
+      color: "white",
+    },
+  }))(Badge);
 
   const [expanded, setExpanded] = useState(false);
   const [clickedTasks, setClickedTasks] = useState({});
@@ -465,7 +480,19 @@ const EvaluationApproval = ({
         setListDocument(Resp?.data?.data);
       });
   };
+  const formatDateModal = (dateString) => {
+    if (!dateString) {
+      return "Invalid date";
+    }
 
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMMM dd, yyyy");
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      return "Invalid date";
+    }
+  };
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);
     setFileDetails(true);
@@ -505,10 +532,12 @@ const EvaluationApproval = ({
     // }
     setSelectedFile({
       name: e.target.files[0].name,
-      description: "",
+      description: e.target.files[0].description
+        ? e.target.files[0].description
+        : "",
       type: e.target.files[0].type,
       document: e.target.files[0],
-      documentType: "ChangeSummary",
+      documentType: "Approval",
       documentId: AppActivity.uid,
       changeRequestToken: assetEvaluationId,
     });
@@ -530,9 +559,9 @@ const EvaluationApproval = ({
     formData.append("descritpion", selectedFile.description);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
-    formData.append("documentType", selectedFile.documentType);
-    formData.append("documentId", selectedFile.documentId);
-    formData.append("changeRequestToken", selectedFile.changeRequestToken);
+    formData.append("documentType", "Approval");
+    formData.append("documentId", AppActivity.uid);
+    formData.append("changeRequestToken", assetEvaluationId);
     apiAuth
       .post("DocumentManager/Create", formData, {
         headers: {
@@ -543,7 +572,7 @@ const EvaluationApproval = ({
         console.log(response.data);
         apiAuth
           .get(
-            `/DocumentManager/DocList/${currentActivityForm.uid}/ChangeSummary?changeRequestToken=${assetEvaluationId}`
+            `/DocumentManager/DocList/${AppActivity.uid}/Approval?changeRequestToken=${assetEvaluationId}`
           )
           .then((response) => {
             setOpenDrawer(false);
@@ -552,6 +581,28 @@ const EvaluationApproval = ({
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
+      });
+  };
+
+  const handleDownload = () => {
+    apiAuth
+      .get(`/DocumentManager/download/${documenDowToken}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        setOpenDrawer(false);
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute("download", selectedDocument.name); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed", error);
       });
   };
 
@@ -2531,45 +2582,51 @@ const EvaluationApproval = ({
           <div>&nbsp;</div>
           <div>&nbsp;</div>
 
-          <div className="flex items-center w-full border-b justify-between"></div>
-          <div>&nbsp;</div>
-
-          {AppActivity?.canExecute && (
-            <div className="flex justify-end">
-              {AppActions.map((btn) => (
+          <div className="flex items-center w-full border-b justify-between">
+            <div className="flex justify-start">
+              <StyledBadge
+                badgeContent={
+                  listDocument.length ? listDocument.length : CountApprove
+                }
+              >
                 <Button
-                  key={btn.uid}
-                  className="whitespace-nowrap ms-5"
+                  className="whitespace-nowrap mt-5"
+                  style={{
+                    border: "1px solid",
+                    backgroundColor: "transparent",
+                    color: "black",
+                    borderColor: "rgba(203,213,225)",
+                  }}
                   variant="contained"
-                  color="secondary"
-                  style={{ marginTop: "10px" }}
-                  onClick={(e) =>
-                    SubmitApprovelCreate(e, btn.uid, btn.name, btn.type)
+                  color="warning"
+                  startIcon={
+                    <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
                   }
+                  onClick={handleOpen1}
                 >
-                  {btn.name}
+                  Document
                 </Button>
-              ))}
+              </StyledBadge>
             </div>
-          )}
-          <div className="flex justify-start">
-            <Button
-              className="whitespace-nowrap mt-5"
-              style={{
-                border: "1px solid",
-                backgroundColor: "transparent",
-                color: "black",
-                borderColor: "rgba(203,213,225)",
-              }}
-              variant="contained"
-              color="warning"
-              startIcon={
-                <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
-              }
-              onClick={handleOpen1}
-            >
-              Document
-            </Button>
+
+            {AppActivity?.canExecute && (
+              <div className="flex justify-end">
+                {AppActions.map((btn) => (
+                  <Button
+                    key={btn.uid}
+                    className="whitespace-nowrap ms-5"
+                    variant="contained"
+                    color="secondary"
+                    style={{ marginTop: "10px" }}
+                    onClick={(e) =>
+                      SubmitApprovelCreate(e, btn.uid, btn.name, btn.type)
+                    }
+                  >
+                    {btn.name}
+                  </Button>
+                ))}
+              </div>
+            )}
           </div>
         </Paper>
       </SwipeableViews>
@@ -2800,13 +2857,13 @@ const EvaluationApproval = ({
                     id="fileInput"
                     style={{ display: "none" }}
                     onChange={(e) => {
-                      handelFileChange1(e);
+                      handelFileChange(e);
                     }}
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
                       <div
-                        // onClick={handelDetailDoc}
+                        onClick={handelDetailDoc}
                         style={{
                           textAlign: "-webkit-center",
                         }}
@@ -2861,7 +2918,7 @@ const EvaluationApproval = ({
                       name="description"
                       variant="standard"
                       disabled
-                      value={formatDate(selectedDocument?.createdAt)}
+                      value={formatDateModal(selectedDocument?.createdAt)}
                     />
                   </Box>
                   <Box

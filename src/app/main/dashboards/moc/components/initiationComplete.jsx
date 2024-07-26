@@ -399,25 +399,25 @@ const InitiationComplete = ({
                   }}
                 >
                   File Manager
-                  {/* <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                              >
-                                0 Files
-                              </Typography> */}
+                  <Typography id="transition-modal-subtitle" component="h2">
+                    {listDocument.length} Files
+                  </Typography>
                 </Typography>
-                <Box>
-                  <Button
-                    className=""
-                    variant="contained"
-                    color="secondary"
-                    onClick={toggleDrawer(true)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-                    <span className="mx-4 sm:mx-8">Upload File</span>
-                  </Button>
-                </Box>
+                {AppActivity?.canExecute && (
+                  <Box>
+                    <Button
+                      className=""
+                      variant="contained"
+                      color="secondary"
+                      onClick={toggleDrawer(true)}
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </Box>
+                )}
               </Box>
               <Box>
                 <Typography
@@ -458,6 +458,7 @@ const InitiationComplete = ({
                   </Button>
                 </div>
                 <div>&nbsp;</div>
+
                 <div className="text-center">
                   <input
                     type="file"

@@ -131,7 +131,7 @@ function Initiation(props) {
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
-        debugger;
+
         link.href = url;
         link.setAttribute("download", selectedDocument.name); // or any other extension
         document.body.appendChild(link);
@@ -549,13 +549,13 @@ function Initiation(props) {
                     {contentDetails?.requestNo}
                   </div>
                 </div>
-                <div  className="my-3">
+                <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">Date</div>
                   <div className="text-lg leading-6 font-medium">
                     {formatDate(contentDetails?.requestDate)}
                   </div>
                 </div>
-                <div  className="my-3">
+                <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
                     Site In Charge
                   </div>

@@ -505,10 +505,8 @@ function ImplementationApproval({
   };
 
   const handleOpen = (id) => {
-    // alert(id);
     setOpen(true);
     ListDoc(id, assetEvaluationId);
-    // https://mocapi.tebs.co.in/api/DocumentManager/DocList/319/Task?changeRequestToken=b5a9cc9d-9b65-40fa-8fda-f9ab1162a965
   };
 
   const handleModalClose = () => {
@@ -581,7 +579,7 @@ function ImplementationApproval({
                 >
                   File Manager
                   <Typography id="transition-modal-subtitle" component="h2">
-                    {} Files
+                    {listDocument.length} Files
                   </Typography>
                 </Typography>
                 <Box>
@@ -1712,6 +1710,7 @@ function ImplementationApproval({
                                                   heroicons-solid:document
                                                 </FuseSvgIcon>
                                                 <span className="count">
+                                                  {listDocument.length}
                                                   {/* {documentCounts[msg.id]} */}
                                                 </span>
                                               </button>
