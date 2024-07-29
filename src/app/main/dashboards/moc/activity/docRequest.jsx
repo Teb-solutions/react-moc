@@ -788,7 +788,7 @@ function DocRequest() {
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                     style={{ marginTop: "15px" }}
                   >
-                    <Button
+                    {/* <Button
                       className="whitespace-nowrap mt-5"
                       style={{
                         border: "1px solid",
@@ -806,7 +806,7 @@ function DocRequest() {
                       onClick={handleOpenDocModal}
                     >
                       Document
-                    </Button>
+                    </Button> */}
                   </div>
                   <div
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"

@@ -26,6 +26,7 @@ import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
 import FuseLoading from "@fuse/core/FuseLoading";
 import Initiation from "./Initiation";
+import { ToastContainer, toast } from "react-toastify";
 
 function InitiationApprovalProceed({
   assetEvaluationId,
@@ -112,32 +113,36 @@ function InitiationApprovalProceed({
   console.log(AppActivity, "payloadss");
 
   const handleSubmit = () => {
-    setIsLoading(true);
-    const payload = {
-      teamAssignments: [...teamAssignments, ...selectedStaffs],
-      executeActivity: {
-        activityUID: AppActivity.uid,
-        actionUID: AppActions[0].uid, // Assuming AppActions is an array, use the correct index or structure to access uid
-      },
-    };
-    apiAuth
-      .put(`/TeamAssignment/Create?id=${assetEvaluationId}`, payload)
-      .then((resp) => {
-        console.log("Response:", resp.data);
-        setIsLoading(false);
-
-        setOpen(false);
-        apiAuth
-          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
-          .then((resp) => {
-            setContent(resp.data.data.phases);
-          });
-        getRecords();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setIsLoading(false);
-      });
+    if (selectedStaffs[0]?.staffId == selectedTeamType) {
+      setOpen(false);
+      toast.error("Same staff cannot be added multiple times.");
+    } else {
+      setIsLoading(true);
+      const payload = {
+        teamAssignments: [...teamAssignments, ...selectedStaffs],
+        executeActivity: {
+          activityUID: AppActivity.uid,
+          actionUID: AppActions[0].uid, // Assuming AppActions is an array, use the correct index or structure to access uid
+        },
+      };
+      apiAuth
+        .put(`/TeamAssignment/Create?id=${assetEvaluationId}`, payload)
+        .then((resp) => {
+          console.log("Response:", resp.data);
+          setIsLoading(false);
+          setOpen(false);
+          apiAuth
+            .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+            .then((resp) => {
+              setContent(resp.data.data.phases);
+            });
+          getRecords();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setIsLoading(false);
+        });
+    }
   };
 
   if (isLoading) {
@@ -239,6 +244,7 @@ function InitiationApprovalProceed({
           </Box>
         </Fade>
       </Modal>
+      <ToastContainer className="toast-container" />
       <Initiation
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
@@ -259,16 +265,18 @@ function InitiationApprovalProceed({
                     // marginTop: "20px",
                   }}
                 >
-                  <FormControl fullWidth sx={{ m: 1 }}>
-                    <FormLabel
-                      className="font-medium text-14"
-                      component="legend"
-                    >
-                      Change Leader*
-                    </FormLabel>
+                  {TeamAssignmentList?.map((itm) => (
+                    <FormControl fullWidth sx={{ m: 1 }}>
+                      <FormLabel
+                        className="font-medium text-14"
+                        component="legend"
+                      >
+                        {itm?.roleName}*
+                      </FormLabel>
 
-                    <span>hello</span>
-                  </FormControl>
+                      <span> {itm?.staffName}</span>
+                    </FormControl>
+                  ))}
                 </Box>
                 <Box sx={{ display: "flex", flexWrap: "wrap", marginTop: "0" }}>
                   <FormControl fullWidth sx={{ m: 1 }}>

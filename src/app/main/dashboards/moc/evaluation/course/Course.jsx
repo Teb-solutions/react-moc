@@ -21,6 +21,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Autocomplete,
   FormHelperText,
   FormLabel,
   Step,
@@ -234,7 +235,7 @@ function Course() {
   const [reviewed, setReviewed] = useState({});
   const [errorss, setErrorStake] = useState("");
   const [handelApprover, setHandelApprover] = useState({
-    approver: "",
+    approver: null, // Store the entire selected object
   });
 
   const [openMoc, setOpenMoc] = useState(false);
@@ -257,12 +258,9 @@ function Course() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const handleChangeApprover = (e) => {
-    const { name, value } = e.target;
-    setHandelApprover((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+
+  const handleChangeApprover = (event, newValue) => {
+    setHandelApprover({ approver: newValue });
   };
 
   const handleChangeAddTask = (e) => {
@@ -318,6 +316,8 @@ function Course() {
         .then((resp) => {
           setOpenImplemntationTask(false);
           setIsLoading(false);
+
+          getRecords();
 
           setTaskAdd({
             particular: "",
@@ -397,8 +397,6 @@ function Course() {
   };
 
   const handelSubmit = (e) => {
-    setIsLoading(true);
-
     e.preventDefault();
     if (validate()) {
       const formattedForms = forms.map((form) => {
@@ -418,6 +416,7 @@ function Course() {
           consultedStaffId: form.data.consultedStaffId,
         };
       });
+      setIsLoading(true);
 
       apiAuth
         .post(
@@ -847,7 +846,7 @@ function Course() {
     if (forms.length < 1) {
       toast?.error("At least one stakeholder is required.");
     } else {
-      setIsLoading(true);
+      // setIsLoading(true);
     }
     apiAuth
       .get(
@@ -864,6 +863,8 @@ function Course() {
           if (hasEmptyComment) {
             toast?.error("All stakeholders must update the task");
           } else {
+            setIsLoading(true);
+
             apiAuth
               .post(
                 `/DocMoc/EvaluationSubmitForApproval/${changeEvaluationId}`,
@@ -926,10 +927,9 @@ function Course() {
         if (handelApprover.approver == "") {
           toast?.error("Select an approver");
         } else {
-          toast?.success("MOC has Created");
           apiAuth
             .post(
-              `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver}`,
+              `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver.value}`,
               {
                 actionUID: uid,
                 activityUID: impActivity.uid,
@@ -938,6 +938,8 @@ function Course() {
               }
             )
             .then((resp) => {
+              toast?.success("MOC has Created");
+
               getRecords();
               setIsLoading(false);
             })
@@ -1006,7 +1008,10 @@ function Course() {
     apiAuth
       .post(`ChangeImpact/ActionTask?id=${evaluationId}`, updatedTask)
       .then((response) => {
+        handelComments(e, task.id);
+        setComments("");
         getRecords();
+
         setIsLoading(false);
 
         console.log(response);
@@ -1031,7 +1036,10 @@ function Course() {
     apiAuth
       .post(`ChangeImpact/ActionTask?id=${evaluationId}`, updatedTask)
       .then((response) => {
+        handelComments(e, task.id);
+        setComments("");
         getRecords();
+
         console.log(response);
       })
       .catch((error) => {
@@ -1041,14 +1049,15 @@ function Course() {
   };
 
   const handleCheckboxChange = (id) => {
-    const updatedCheckList = CheckLists.map((item) => {
-      if (item.id === id) {
-        return { ...item, isChecked: !item.isChecked };
-      }
-      return item;
-    });
-    setCheckLists(updatedCheckList);
+    console.log(id, "CheckLists");
+    setCheckLists((prevCheckLists) =>
+      prevCheckLists.map((item) =>
+        item.id === id ? { ...item, isChecked: !item.isChecked } : item
+      )
+    );
   };
+
+  console.log(CheckLists, "CheckLists");
 
   const saveChanges = () => {
     apiAuth
@@ -1150,19 +1159,33 @@ function Course() {
               <div className=" p-16 pb-64 sm:p-24 ">
                 <Paper className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
                   <div>
-                    <div _ngcontent-fyk-c288="" class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
+                    >
                       <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                         MOC Document Request
                       </h2>
                     </div>
                     <div
-                      _ngcontent-fyk-c288="" class="p-30 pt-24 pb-24 ng-star-inserted">
-                      <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                      _ngcontent-fyk-c288=""
+                      class="p-30 pt-24 pb-24 ng-star-inserted"
+                    >
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                      >
                         <div _ngcontent-fyk-c288="" className="my-6">
-                          <div _ngcontent-fyk-c288="" class="mt-3 leading-6 text-secondary">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
                             Request No{" "}
                           </div>
-                          <div _ngcontent-fyk-c288="" class="text-lg leading-6 font-medium">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
                             {" "}
                             {contentDetailsIni?.requestNo}
                           </div>
@@ -1383,7 +1406,6 @@ function Course() {
                         </div>
                       </div>
                     </div>
-                
 
                     <div className="flex items-center justify-between w-full p-30 pt-24 pb-24 border-t">
                       <button className="ml-1 sm:inline-flex cursor-pointer mat-button mat-stroked-button mat-button-base">
@@ -2048,7 +2070,7 @@ function Course() {
                                               >
                                                 Comments
                                               </span>
-                                              <span>complete</span>
+                                              <span>{list?.comments}</span>
                                             </div>
                                           ) : (
                                             <div className="ng-star-inserted">
@@ -2083,117 +2105,182 @@ function Course() {
                             </h5>
                           </div>
                         )}
-                     
-                      {addStake &&
-                        forms.map((form, index) => (
-                          <div
-                            style={{
-                              // margin: "30px",
-                              justifyContent: "space-start",
-                            }}
-                            className="flex flex-row pt-24 pb-24"
-                            key={index}
-                          >
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                              <FormControl
+
+                        {addStake &&
+                          forms.map((form, index) => (
+                            <div
+                              style={{
+                                // margin: "30px",
+                                justifyContent: "space-start",
+                              }}
+                              className="flex flex-row pt-24 pb-24"
+                              key={index}
+                            >
+                              <LocalizationProvider
+                                dateAdapter={AdapterDateFns}
+                              >
+                                <FormControl
+                                  sx={
+                                    {
+                                      // marginLeft: "10px",
+                                    }
+                                  }
+                                >
+                                  <Box sx={{}}>
+                                    <DatePicker
+                                      label="Validity Expires On *"
+                                      name="consultedDate"
+                                      value={form.data.consultedDate}
+                                      onChange={(date) =>
+                                        handleChangeStaffDate(form.id, date)
+                                      }
+                                      renderInput={(params) => (
+                                        <TextField
+                                          fullWidth
+                                          {...params}
+                                          error={!!errors[index]?.consultedDate}
+                                        />
+                                      )}
+                                    />
+                                  </Box>
+                                  {errors[index]?.consultedDate && (
+                                    <span style={{ color: "red" }}>
+                                      {errors[index].consultedDate}
+                                    </span>
+                                  )}
+                                </FormControl>
+                              </LocalizationProvider>
+                              <Box
                                 sx={{
-                                  // marginLeft: "10px",
+                                  width: 860,
+                                  maxWidth: "50%",
+                                  marginLeft: "5rem",
                                 }}
                               >
-                                <Box sx={{}}>
-                                  <DatePicker
-                                    label="Validity Expires On *"
-                                    name="consultedDate"
-                                    value={form.data.consultedDate}
-                                    onChange={(date) =>
-                                      handleChangeStaffDate(form.id, date)
+                                <FormControl fullWidth>
+                                  <InputLabel id="division-label">
+                                    Search Staff
+                                  </InputLabel>
+                                  <Select
+                                    labelId="division-label"
+                                    id="consultedStaffId"
+                                    name="consultedStaffId"
+                                    value={form.data.consultedStaffId}
+                                    onChange={(event) =>
+                                      handleChangeStaff(form.id, event)
                                     }
-                                    renderInput={(params) => (
-                                      <TextField
-                                        fullWidth
-                                        {...params}
-                                        error={!!errors[index]?.consultedDate}
-                                      />
-                                    )}
-                                  />
-                                </Box>
-                                {errors[index]?.consultedDate && (
-                                  <span style={{ color: "red" }}>
-                                    {errors[index].consultedDate}
-                                  </span>
-                                )}
-                              </FormControl>
-                            </LocalizationProvider>
-                            <Box
-                              sx={{
-                                width: 860,
-                                maxWidth: "50%",
-                                marginLeft: "5rem",
-                              }}
-                            >
-                              <FormControl fullWidth>
-                                <InputLabel id="division-label">
-                                  Search Staff
-                                </InputLabel>
-                                <Select
-                                  labelId="division-label"
-                                  id="consultedStaffId"
-                                  name="consultedStaffId"
-                                  value={form.data.consultedStaffId}
-                                  onChange={(event) =>
-                                    handleChangeStaff(form.id, event)
-                                  }
-                                  error={!!errors[index]?.consultedStaffId}
-                                >
-                                  <MenuItem value="" disabled>
-                                    <em>None</em>
-                                  </MenuItem>
-                                  {docStaff.map((option) => (
-                                    <MenuItem
-                                      key={option.id}
-                                      value={option.value}
-                                    >
-                                      {option.text}
+                                    error={!!errors[index]?.consultedStaffId}
+                                  >
+                                    <MenuItem value="" disabled>
+                                      <em>None</em>
                                     </MenuItem>
-                                  ))}
-                                </Select>
-                                {errors[index]?.consultedStaffId && (
-                                  <span style={{ color: "red" }}>
-                                    {errors[index].consultedStaffId}
-                                  </span>
-                                )}
-                              </FormControl>
-                            </Box>
-                            <Button
-                              className="whitespace-nowrap mt-5"
-                              startIcon={
-                                <FuseSvgIcon size={20}>
-                                  heroicons-solid:trash
-                                </FuseSvgIcon>
-                              }
-                              onClick={() => handleRemoveForm(form.id)}
-                            ></Button>
-                          </div>
-                        ))}
-
-                      {addStake && (
-                        <>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="flex items-center w-full  border-b justify-between"
-                          ></div>
-
-                          <div className="flex justify-between pt-24 pb-24">
-                            <div>
+                                    {docStaff.map((option) => (
+                                      <MenuItem
+                                        key={option.id}
+                                        value={option.value}
+                                      >
+                                        {option.text}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+                                  {errors[index]?.consultedStaffId && (
+                                    <span style={{ color: "red" }}>
+                                      {errors[index].consultedStaffId}
+                                    </span>
+                                  )}
+                                </FormControl>
+                              </Box>
                               <Button
-                                className="whitespace-nowrap"
+                                className="whitespace-nowrap mt-5"
+                                startIcon={
+                                  <FuseSvgIcon size={20}>
+                                    heroicons-solid:trash
+                                  </FuseSvgIcon>
+                                }
+                                onClick={() => handleRemoveForm(form.id)}
+                              ></Button>
+                            </div>
+                          ))}
+
+                        {addStake && (
+                          <>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="flex items-center w-full  border-b justify-between"
+                            ></div>
+
+                            <div className="flex justify-between pt-24 pb-24">
+                              <div>
+                                <Button
+                                  className="whitespace-nowrap"
+                                  style={{
+                                    border: "1px solid",
+                                    backgroundColor: "#0000",
+                                    color: "black",
+                                    borderColor: "rgba(203,213,225)",
+                                    // marginLeft: "10px",
+                                    // marginTop: "10px",
+                                  }}
+                                  variant="contained"
+                                  color="warning"
+                                  startIcon={
+                                    <FuseSvgIcon size={20}>
+                                      heroicons-solid:plus
+                                    </FuseSvgIcon>
+                                  }
+                                  onClick={handelNewForm}
+                                >
+                                  Add New
+                                </Button>
+                              </div>
+                              <div>
+                                <Button
+                                  className="whitespace-nowrap "
+                                  style={{
+                                    border: "1px solid",
+                                    backgroundColor: "#0000",
+                                    color: "black",
+                                    borderColor: "rgba(203,213,225)",
+                                    marginLeft: "10px",
+                                    // marginTop: "10px",
+                                  }}
+                                  variant="contained"
+                                  onClick={() => setAddStake(false)}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  className="whitespace-nowrap  "
+                                  variant="contained"
+                                  color="secondary"
+                                  style={{
+                                    marginLeft: " 10px",
+                                    // marginTop: "8px",
+                                  }}
+                                  onClick={handelSubmit}
+                                >
+                                  Submit
+                                </Button>
+                              </div>
+                            </div>
+
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="flex items-center w-full  border-b justify-between"
+                            ></div>
+                          </>
+                        )}
+
+                        {canEdits && (
+                          <>
+                            {!addStake && (
+                              <Button
+                                className="whitespace-nowrap mt-5"
                                 style={{
                                   border: "1px solid",
                                   backgroundColor: "#0000",
                                   color: "black",
                                   borderColor: "rgba(203,213,225)",
-                                  // marginLeft: "10px",
-                                  // marginTop: "10px",
                                 }}
                                 variant="contained"
                                 color="warning"
@@ -2202,149 +2289,89 @@ function Course() {
                                     heroicons-solid:plus
                                   </FuseSvgIcon>
                                 }
-                                onClick={handelNewForm}
+                                onClick={handelAddStake}
                               >
-                                Add New
+                                Add Stakeholders
                               </Button>
-                            </div>
-                            <div>
-                              <Button
-                                className="whitespace-nowrap "
-                                style={{
-                                  border: "1px solid",
-                                  backgroundColor: "#0000",
-                                  color: "black",
-                                  borderColor: "rgba(203,213,225)",
-                                  marginLeft: "10px",
-                                  // marginTop: "10px",
-                                }}
-                                variant="contained"
-                                onClick={() => setAddStake(false)}
-                              >
-                                Cancel
-                              </Button>
-                              <Button
-                                className="whitespace-nowrap  "
-                                variant="contained"
-                                color="secondary"
-                                style={{
-                                  marginLeft: " 10px",
-                                  // marginTop: "8px",
-                                }}
-                                onClick={handelSubmit}
-                              >
-                                Submit
-                              </Button>
-                            </div>
-                          </div>
+                            )}
 
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="flex items-center w-full  border-b justify-between"
-                          ></div>
-                        </>
-                      )}
-
-                      {canEdits && (
-                        <>
-                          {!addStake && (
-                            <Button
-                              className="whitespace-nowrap mt-5"
-                              style={{
-                                border: "1px solid",
-                                backgroundColor: "#0000",
-                                color: "black",
-                                borderColor: "rgba(203,213,225)",
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexWrap: "wrap",
                               }}
-                              variant="contained"
-                              color="warning"
-                              startIcon={
-                                <FuseSvgIcon size={20}>
-                                  heroicons-solid:plus
-                                </FuseSvgIcon>
-                              }
-                              onClick={handelAddStake}
                             >
-                              Add Stakeholders
-                            </Button>
-                          )}
-
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexWrap: "wrap",
-                            }}
-                          >
-                            <FormControl
-                              fullWidth
-                              sx={{ mt: 1, mb: 1 }}
-                              error={!!errorsUrl.handelUrlChange}
-                            >
-                              <span> Consolidated Document Url *</span>
-                              <OutlinedInput
-                                id="documentUrl"
-                                value={handelUrlChange.urlRemarks}
-                                onChange={handleUrlChange}
-                              />
-                              {!!errorsUrl.handelUrlChange && (
-                                <FormHelperText>
-                                  {errorsUrl.handelUrlChange}
-                                </FormHelperText>
-                              )}
-                            </FormControl>
-                          </Box>
-                          <Button
-                            className="whitespace-nowrap mb-5 "
-                            variant="contained"
-                            color="secondary"
-                            style={{
-                              paddingLeft: " 40px",
-                              paddingRight: "40px",
-                            }}
-                            onClick={handelUrlUpdate}
-                          >
-                            Update
-                          </Button>
-
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="flex items-center w-full mb-10 mt-10  border-b justify-between"
-                          ></div>
-                          <div className="flex justify-end ">
-                            {evalActions.map((btn) => (
-                              <Button
-                                className="whitespace-nowrap ms-5 "
-                                variant="contained"
-                                color="secondary"
-                                style={{
-                                  marginTop: "10px",
-                                }}
-                                onClick={(e) => SubmitApprovel(e, btn.uid)}
+                              <FormControl
+                                fullWidth
+                                sx={{ mt: 1, mb: 1 }}
+                                error={!!errorsUrl.handelUrlChange}
                               >
-                                {btn.name}
-                              </Button>
-                            ))}
-                          </div>
-                        </>
-                      )}
-                      {!canEdits && (
-                        <div className=" pt-10 pb-24">
-                          <div className="flex row">
-                            <div className="ng-star-inserted">
-                              <div>Consolidated Document Url</div>
-                              <div className="font-semibold">
-                                <a
-                                  href="https://consolidatedurl.com"
-                                  rel="noopener noreferrer"
+                                <span> Consolidated Document Url *</span>
+                                <OutlinedInput
+                                  id="documentUrl"
+                                  value={handelUrlChange.urlRemarks}
+                                  onChange={handleUrlChange}
+                                />
+                                {!!errorsUrl.handelUrlChange && (
+                                  <FormHelperText>
+                                    {errorsUrl.handelUrlChange}
+                                  </FormHelperText>
+                                )}
+                              </FormControl>
+                            </Box>
+                            <Button
+                              className="whitespace-nowrap mb-5 "
+                              variant="contained"
+                              color="secondary"
+                              style={{
+                                paddingLeft: " 40px",
+                                paddingRight: "40px",
+                              }}
+                              onClick={handelUrlUpdate}
+                            >
+                              Update
+                            </Button>
+
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="flex items-center w-full mb-10 mt-10  border-b justify-between"
+                            ></div>
+                            <div className="flex justify-end ">
+                              {evalActions.map((btn) => (
+                                <Button
+                                  className="whitespace-nowrap ms-5 "
+                                  variant="contained"
+                                  color="secondary"
+                                  style={{
+                                    marginTop: "10px",
+                                  }}
+                                  onClick={(e) => SubmitApprovel(e, btn.uid)}
                                 >
-                                  {contentDetails?.remarks}
-                                </a>
+                                  {btn.name}
+                                </Button>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                        {!canEdits && (
+                          <div className=" pt-10 pb-24">
+                            <div className="flex row">
+                              <div className="ng-star-inserted">
+                                <div>Consolidated Document Url</div>
+                                <div className="font-semibold">
+                                  <a
+                                    href={contentDetails?.remarks}
+                                    rel="noopener noreferrer"
+                                    className="text-blue"
+                                  >
+                                    {contentDetails?.remarks}
+                                  </a>
+                                </div>
                               </div>
                             </div>
                           </div>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
                     </Paper>
                     {canEdits && (
                       <Paper
@@ -2355,7 +2382,10 @@ function Course() {
                           _ngcontent-fyk-c288=""
                           class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
                         >
-                          <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+                          <h2
+                            _ngcontent-fyk-c288=""
+                            class="text-2xl font-semibold"
+                          >
                             Help
                           </h2>
                         </div>
@@ -2609,9 +2639,9 @@ function Course() {
                               target="_blank"
                               class="text-blue-500 hover:text-blue-800"
                               style={{ background: "none", color: "blue" }}
-                              href={contentDetails?.consolidatedDocumentUrl}
+                              href={contentDetails?.documentUrl}
                             >
-                              {contentDetails?.consolidatedDocumentUrl}
+                              {contentDetails?.documentUrl}
                             </a>
                           </div>
                         </div>
@@ -2635,9 +2665,9 @@ function Course() {
                               target="_blank"
                               class="text-blue-500 hover:text-blue-800"
                               style={{ background: "none", color: "blue" }}
-                              href={contentDetails?.documentUrl}
+                              href={contentDetails?.consolidatedDocumentUrl}
                             >
-                              {contentDetails?.documentUrl}
+                              {contentDetails?.consolidatedDocumentUrl}
                             </a>
                           </div>
                         </div>
@@ -2752,9 +2782,8 @@ function Course() {
                                       onClick={() => setFileDetails(false)}
                                     >
                                       <FuseSvgIcon size={20}>
-                                        heroicons-outline:close
+                                        heroicons-outline:x
                                       </FuseSvgIcon>
-                                      x
                                     </Button>
                                   </div>
 
@@ -2893,7 +2922,7 @@ function Course() {
                             aria-label="basic tabs example"
                           >
                             <Tab label="Task" {...a11yProps(0)} />
-                            <Tab label="Check List" {...a11yProps(1)} />
+                            <Tab label="Checklist" {...a11yProps(1)} />
                           </Tabs>
                         </Box>
                         <CustomTabPanel value={value} index={0}>
@@ -3366,18 +3395,10 @@ function Course() {
                               style={{ width: "100%" }}
                             >
                               {currentActivityForm.canEdit && (
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    flexWrap: "wrap",
-                                  }}
-                                >
+                                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                                   <FormControl
                                     fullWidth
-                                    sx={{
-                                      m: 1,
-                                      maxWidth: "100%",
-                                    }}
+                                    sx={{ m: 1, maxWidth: "100%" }}
                                   >
                                     <span className="font-semibold leading-none">
                                       Select Approver*
@@ -3390,23 +3411,18 @@ function Course() {
                                       }}
                                     >
                                       <FormControl fullWidth sx={{ m: 1 }}>
-                                        <Select
-                                          labelId="functionName-label"
+                                        <Autocomplete
                                           id="approverId"
-                                          name="approver"
+                                          options={docStaff}
+                                          getOptionLabel={(option) =>
+                                            option.text
+                                          }
                                           value={handelApprover.approver}
                                           onChange={handleChangeApprover}
-                                          label="Document Controller *"
-                                        >
-                                          {docStaff.map((option) => (
-                                            <MenuItem
-                                              key={option.id}
-                                              value={option.value}
-                                            >
-                                              {option.text}
-                                            </MenuItem>
-                                          ))}
-                                        </Select>
+                                          renderInput={(params) => (
+                                            <TextField {...params} />
+                                          )}
+                                        />
                                       </FormControl>
                                     </Box>
                                   </FormControl>
@@ -3433,7 +3449,7 @@ function Course() {
                                         SubmitImpCreate(e, btn.uid)
                                       }
                                     >
-                                      {btn.name}
+                                      {btn.name}ss
                                     </Button>
                                   ))}
                                 </div>
@@ -3456,9 +3472,7 @@ function Course() {
                                             ? "grey"
                                             : "black",
                                       }}
-                                      disabled={
-                                        currentActivityForm.canEdit == false
-                                      }
+                                      disabled={!currentActivityForm.canEdit}
                                       onChange={() => {
                                         handleCheckboxChange(item.id);
                                       }}
@@ -3672,21 +3686,24 @@ function Course() {
                                       >
                                         Impact Particular Subcategory*
                                       </FormLabel>
-                                      <Select
-                                        variant="outlined"
+                                      <Autocomplete
+                                        options={particularSub}
+                                        getOptionLabel={(option) => option.text}
                                         onChange={handleChangeAddTask}
-                                        name="particularSubCategory"
-                                        value={taskAdd.particularSubCategory}
-                                      >
-                                        {particularSub.map((option) => (
-                                          <MenuItem
-                                            key={option.id}
-                                            value={option.value}
-                                          >
-                                            {option.text}
-                                          </MenuItem>
-                                        ))}
-                                      </Select>
+                                        value={
+                                          particularSub.find(
+                                            (option) =>
+                                              option.value ===
+                                              taskAdd.particularSubCategory
+                                          ) || null
+                                        }
+                                        renderInput={(params) => (
+                                          <TextField
+                                            {...params}
+                                            variant="outlined"
+                                          />
+                                        )}
+                                      />
                                       {!!errorsAddTask.particularSubCategory && (
                                         <FormHelperText>
                                           {errorsAddTask.particularSubCategory}
@@ -3827,7 +3844,6 @@ function Course() {
                                         </FormLabel>
                                         <Box sx={{}}>
                                           <DatePicker
-                                            // label="Validity Expires On *"
                                             name="dueDate"
                                             value={taskAdd.dueDate}
                                             onChange={(date) =>
@@ -4261,14 +4277,14 @@ function Course() {
                                             onClick={() =>
                                               handelreview(imptsk.id)
                                             }
+                                            style={{
+                                              backgroundColor:
+                                                reviewed[imptsk.id] &&
+                                                "#7FFFD4",
+                                            }}
                                           >
                                             {reviewed[imptsk.id] ? (
-                                              <span
-                                                className="mat-button-wrapper"
-                                                style={{
-                                                  backgroundColor: "#7FFFD4",
-                                                }}
-                                              >
+                                              <span className="mat-button-wrapper">
                                                 You have reviewed this just now
                                               </span>
                                             ) : (
@@ -4381,7 +4397,11 @@ function Course() {
                                                 data-placeholder="Write a comment..."
                                                 aria-invalid="false"
                                                 aria-required="false"
-                                                style={{ height: "36px" }}
+                                                style={{
+                                                  height: "40px",
+                                                  width: "100%",
+                                                  paddingRight: "100px",
+                                                }}
                                                 onChange={(e) =>
                                                   setHandelCommentRemark(
                                                     e.target.value
@@ -4389,17 +4409,13 @@ function Course() {
                                                 }
                                               ></textarea>
                                               <button
-                                                className="mat-focus-indicator mat-raised-button mat-button-base"
+                                                className="custom-update-button"
                                                 style={{ float: "right" }}
                                                 onClick={() =>
                                                   handelCommentImp(imptsk.id)
                                                 }
                                               >
-                                                <span className="custom-update-button">
-                                                  Save
-                                                </span>
-                                                <span className="mat-ripple mat-button-ripple"></span>
-                                                <span className="mat-button-focus-overlay"></span>
+                                                Save
                                               </button>
                                               <span className="mat-form-field-label-wrapper"></span>
                                             </div>
@@ -4509,7 +4525,7 @@ function Course() {
                                                     ></textarea>
 
                                                     <button
-                                                      className="mat-focus-indicator mat-raised-button mat-button-base"
+                                                      className="custom-update-button"
                                                       style={{ float: "right" }}
                                                       onClick={() =>
                                                         handelCommentImp(
@@ -4517,10 +4533,7 @@ function Course() {
                                                         )
                                                       }
                                                     >
-                                                      <span className="custom-update-button">
-                                                        Update
-                                                      </span>
-
+                                                      Update
                                                       <span className="mat-ripple mat-button-ripple"></span>
                                                       <span className="mat-button-focus-overlay"></span>
                                                     </button>
