@@ -30,7 +30,7 @@ import {
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 
 import Box from "@mui/material/Box";
-import React from "react";
+
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
