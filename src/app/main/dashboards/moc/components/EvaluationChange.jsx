@@ -862,6 +862,10 @@ function EvaluationChange({
 
   const handelRisk = (id, type) => {
     setEditRiskAnalysDetail([]);
+    setHazaId(0);
+    setSubTaskhazardRiskView(false);
+
+    setSubTaskhazardRiskViewName("");
     sethazardTypeValue(type);
     setRisk(true);
     setFormValues({
@@ -4218,7 +4222,6 @@ function EvaluationChange({
                     }}
                     className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-24 w-full"
                   >
-                    {console.log(hazaid, "pppppps")}
                     <FormControl
                       fullWidth
                       sx={{ flexGrow: 1, margin: "20px 0 0 0" }}
@@ -4274,7 +4277,6 @@ function EvaluationChange({
                               marginRight: "15px",
                             }}
                           >
-                            {console.log(TaskhazardRiskViewName, "225hellll5")}
                             {TaskhazardRiskViewName}.pdf
                           </a>
                         </>
