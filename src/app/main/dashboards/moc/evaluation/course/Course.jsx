@@ -1129,33 +1129,19 @@ function Course() {
               <div className=" p-16 pb-64 sm:p-24 ">
                 <Paper className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
                   <div>
-                    <div
-                      _ngcontent-fyk-c288=""
-                      class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
-                    >
+                    <div _ngcontent-fyk-c288="" class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
                       <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                         MOC Document Request
                       </h2>
                     </div>
                     <div
-                      _ngcontent-fyk-c288=""
-                      class="p-30 pt-24 pb-24 ng-star-inserted"
-                    >
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
+                      _ngcontent-fyk-c288="" class="p-30 pt-24 pb-24 ng-star-inserted">
+                      <div _ngcontent-fyk-c288="" class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
                         <div _ngcontent-fyk-c288="" className="my-6">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
+                          <div _ngcontent-fyk-c288="" class="mt-3 leading-6 text-secondary">
                             Request No{" "}
                           </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
+                          <div _ngcontent-fyk-c288="" class="text-lg leading-6 font-medium">
                             {" "}
                             {contentDetailsIni?.requestNo}
                           </div>
@@ -1376,7 +1362,7 @@ function Course() {
                         </div>
                       </div>
                     </div>
-                    <div>&nbsp;</div>
+                
 
                     <div className="flex items-center justify-between w-full p-30 pt-24 pb-24 border-t">
                       <button className="ml-1 sm:inline-flex cursor-pointer mat-button mat-stroked-button mat-button-base">
@@ -1877,7 +1863,7 @@ function Course() {
                           Evaluation
                         </h2>
                       </div>
-                      <div className="p-30 pt-24 pb-0">
+                      <div className="p-30 pt-24 pb-24">
                         {!addStake ? (
                           <div className="mb-10">
                             <b>Stakeholders</b>
@@ -2066,7 +2052,7 @@ function Course() {
                             </Accordion>
                           ))}
                         {!ChangeEvaluationDetail.length && (
-                          <div className="mt-5 mb-4 p-6 py-2">
+                          <div className="mt-5 mb-4 ">
                             <h5>
                               {errorss ? (
                                 <b className="text-red">{errorss}</b>
@@ -2076,21 +2062,21 @@ function Course() {
                             </h5>
                           </div>
                         )}
-                      </div>
+                     
                       {addStake &&
                         forms.map((form, index) => (
                           <div
                             style={{
-                              marginTop: "30px",
+                              // margin: "30px",
                               justifyContent: "space-start",
                             }}
-                            className="flex flex-row "
+                            className="flex flex-row pt-24 pb-24"
                             key={index}
                           >
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                               <FormControl
                                 sx={{
-                                  marginLeft: "10px",
+                                  // marginLeft: "10px",
                                 }}
                               >
                                 <Box sx={{}}>
@@ -2176,17 +2162,17 @@ function Course() {
                             class="flex items-center w-full  border-b justify-between"
                           ></div>
 
-                          <div className="flex justify-between">
+                          <div className="flex justify-between pt-24 pb-24">
                             <div>
                               <Button
-                                className="whitespace-nowrap mt-5"
+                                className="whitespace-nowrap"
                                 style={{
                                   border: "1px solid",
                                   backgroundColor: "#0000",
                                   color: "black",
                                   borderColor: "rgba(203,213,225)",
-                                  marginLeft: "10px",
-                                  marginTop: "10px",
+                                  // marginLeft: "10px",
+                                  // marginTop: "10px",
                                 }}
                                 variant="contained"
                                 color="warning"
@@ -2202,14 +2188,14 @@ function Course() {
                             </div>
                             <div>
                               <Button
-                                className="whitespace-nowrap mt-5"
+                                className="whitespace-nowrap "
                                 style={{
                                   border: "1px solid",
                                   backgroundColor: "#0000",
                                   color: "black",
                                   borderColor: "rgba(203,213,225)",
                                   marginLeft: "10px",
-                                  marginTop: "10px",
+                                  // marginTop: "10px",
                                 }}
                                 variant="contained"
                                 onClick={() => setAddStake(false)}
@@ -2222,7 +2208,7 @@ function Course() {
                                 color="secondary"
                                 style={{
                                   marginLeft: " 10px",
-                                  marginTop: "8px",
+                                  // marginTop: "8px",
                                 }}
                                 onClick={handelSubmit}
                               >
@@ -2270,7 +2256,7 @@ function Course() {
                           >
                             <FormControl
                               fullWidth
-                              sx={{ m: 1 }}
+                              sx={{ mt: 1, mb: 1 }}
                               error={!!errorsUrl.handelUrlChange}
                             >
                               <span> Consolidated Document Url *</span>
@@ -2287,7 +2273,7 @@ function Course() {
                             </FormControl>
                           </Box>
                           <Button
-                            className="whitespace-nowrap ms-5 "
+                            className="whitespace-nowrap mb-5 "
                             variant="contained"
                             color="secondary"
                             style={{
@@ -2301,7 +2287,7 @@ function Course() {
 
                           <div
                             _ngcontent-fyk-c288=""
-                            class="flex items-center w-full  border-b justify-between"
+                            class="flex items-center w-full mb-10 mt-10  border-b justify-between"
                           ></div>
                           <div className="flex justify-end ">
                             {evalActions.map((btn) => (
@@ -2321,7 +2307,7 @@ function Course() {
                         </>
                       )}
                       {!canEdits && (
-                        <div className="p-30 pt-10 pb-24">
+                        <div className=" pt-10 pb-24">
                           <div className="flex row">
                             <div className="ng-star-inserted">
                               <div>Consolidated Document Url</div>
@@ -2337,21 +2323,22 @@ function Course() {
                           </div>
                         </div>
                       )}
+                    </div>
                     </Paper>
                     {canEdits && (
                       <Paper
-                        className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden"
+                        className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden"
                         style={{ width: "100%" }}
                       >
                         <div
                           _ngcontent-fyk-c288=""
-                          class="flex items-center w-full  border-b justify-between"
+                          class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
                         >
-                          <h2 _ngcontent-fyk-c288="" class="">
+                          <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                             Help
                           </h2>
                         </div>
-                        <div className="prose">
+                        <div className="prose p-30 pt-24 pb-24">
                           <ul className="text-sm">
                             <li>
                               After stakeholders are added, a task is assigned
@@ -3819,7 +3806,7 @@ function Course() {
                                         </FormLabel>
                                         <Box sx={{}}>
                                           <DatePicker
-                                            label="Validity Expires On *"
+                                            // label="Validity Expires On *"
                                             name="dueDate"
                                             value={taskAdd.dueDate}
                                             onChange={(date) =>
@@ -3905,10 +3892,10 @@ function Course() {
                         Closure by Doc Controller
                       </h2>
                     </div>
-                    <Paper className="w-full">
+                    <Paper className="w-full box_reset">
                       <div
                         _ngcontent-fyk-c288=""
-                        class="p-30 pt-24 pb-24 mb-0 ng-star-inserted"
+                        class="p-30 pt-24 pb-24  mb-0 ng-star-inserted"
                       >
                         <div
                           _ngcontent-fyk-c288=""
@@ -4114,15 +4101,12 @@ function Course() {
                           _ngcontent-fyk-c288=""
                           class="flex items-center w-full  border-b justify-between"
                         ></div>
-                        <div className="flex justify-end ">
+                        <div className="flex justify-end p-30 pt-24 pb-24">
                           {closeActions.map((btn) => (
                             <Button
-                              className="whitespace-nowrap ms-5 "
+                              className="whitespace-nowrap"
                               variant="contained"
                               color="secondary"
-                              style={{
-                                marginTop: "10px",
-                              }}
                               onClick={(e) => handelCloseMoc(btn.uid)}
                             >
                               {btn.name}
@@ -4318,7 +4302,7 @@ function Course() {
                                         className="inventory-grid grid items-center gap-4 mt-10"
                                         style={{ width: "40%" }}
                                       >
-                                        <div className="flex items-center mt-5">
+                                        <div className="flex items-center mt-10 pb-24">
                                           <img
                                             src="/assets/images/etc/userpic.png"
                                             alt="Card cover image"

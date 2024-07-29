@@ -1874,7 +1874,7 @@ function ImplementationApproval({
                         return null;
                       })}
                       <div
-                        className="flex mt-7"
+                        className="flex mt-7 pt-24"
                         style={{ justifyContent: "end" }}
                       >
                         <Box>

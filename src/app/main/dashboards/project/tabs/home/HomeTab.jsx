@@ -355,13 +355,14 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
       </motion.div>
       {riskMatrixList?.length && (
         <motion.div variants={item} className="sm:col-span-2 md:col-span-4">
-          <Paper className="flex flex-col flex-auto p-24 shadow rounded-2xl overflow-hidden">
+          <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
             <div style={{ backgroundColor: "white" }}>
               <div>
-                <div className="flex d-flex flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
+                <div className="flex d-flex p-30 pt-24 pb-24 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
                   <InputLabel
                     id="category-select-label"
-                    style={{ fontSize: "2px", color: "black" }}
+                    className="text-2xl"
+                    style={{ color: "black" }}
                   >
                     <b>Approvals Pending ({riskMatrixList?.length})</b>
                   </InputLabel>
@@ -371,7 +372,7 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
                       variant="filled"
                       fullWidth
                       placeholder="Search "
-                      style={{ marginRight: "15px", backgroundColor: "white" }}
+                      style={{ marginRight: "0", backgroundColor: "white" }}
                       onChange={handleSearch}
                       InputProps={{
                         startAdornment: (
@@ -389,7 +390,7 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
                 </div>
               </div>
               <div className="flex items-center w-full border-b justify-between"></div>
-              <Paper sx={{ width: "100%", overflow: "hidden" }}>
+              <Paper className="p-30 pt-24 pb-24" sx={{ width: "100%", overflow: "hidden" }}>
                 <TableContainer>
                   <Table stickyHeader aria-label="sticky table">
                     <TableHead>
@@ -461,7 +462,7 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
         </motion.div>
       )}
       <motion.div variants={item} className="sm:col-span-2 md:col-span-4">
-        <Paper className="flex flex-col flex-auto p-24 shadow rounded-2xl overflow-hidden">
+        <Paper className="flex flex-col flex-auto p-30 pt-24 pb-24 shadow rounded-2xl overflow-hidden">
           <div className="flex flex-col sm:flex-row items-start justify-between">
             <Typography className="text-lg font-medium tracking-tight leading-6 truncate">
               Decision Tree
