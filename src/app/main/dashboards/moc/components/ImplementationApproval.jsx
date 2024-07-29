@@ -1885,7 +1885,7 @@ p-30 pt-24 pb-24
                         return null;
                       })}
                       <div
-                        className="flex mt-7"
+                        className="flex mt-7 pt-24"
                         style={{ justifyContent: "end" }}
                       >
                         <Box>

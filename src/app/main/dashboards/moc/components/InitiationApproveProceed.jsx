@@ -250,13 +250,13 @@ function InitiationApprovalProceed({
           </div>
 
           {currentActivityForm.canEdit && (
-            <div className="p-30">
+            <div className="p-30 pt-24 pb-24">
               <>
                 <Box
                   sx={{
                     display: "flex",
                     flexWrap: "wrap",
-                    marginTop: "20px",
+                    // marginTop: "20px",
                   }}
                 >
                   <FormControl fullWidth sx={{ m: 1 }}>
@@ -315,7 +315,7 @@ function InitiationApprovalProceed({
                   </FormControl>
                 </Box>
                 <Box
-                  sx={{ display: "flex", flexWrap: "wrap", marginTop: "15px" }}
+                  sx={{ display: "flex", flexWrap: "wrap"}}
                 >
                   <FormControl fullWidth sx={{ m: 1 }}>
                     <FormLabel
@@ -362,19 +362,21 @@ function InitiationApprovalProceed({
           )}
 
           {currentActivityForm.canEdit && (
-            <div className="p-30">
-              <>
-                <div
+            <>
+            <div
                   className="my-10"
-                  style={{ borderTopWidth: "2px", marginTop: "40px" }}
+                  style={{ borderTopWidth: "2px",  }}
                 ></div>
+            <div className="p-30 pt-24 pb-24">
+            
+                
                 <div className="flex justify-end">
                   <div
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                    style={{ marginTop: "15px" }}
+                    // style={{ marginTop: "15px" }}
                   >
                     <Button
-                      className="whitespace-nowrap mt-5"
+                      className="whitespace-nowrap"
                       style={{
                         border: "1px solid",
                         backgroundColor: "#0000",
@@ -390,7 +392,7 @@ function InitiationApprovalProceed({
                   </div>
                   <div
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                    style={{ marginTop: "25px" }}
+                    // style={{ marginTop: "25px" }}
                   >
                     {AppActions.map((btn) => (
                       <Button
@@ -405,14 +407,16 @@ function InitiationApprovalProceed({
                     ))}
                   </div>
                 </div>
-              </>
+             
             </div>
+            </>
           )}
-          <div className="p-30">
+          
             {!currentActivityForm.canEdit &&
               TeamAssignmentList.filter(
                 (list) => list.roleName !== "Change Leader"
               ).map((list) => (
+                <div className="p-30 pt-24 pb-24">
                 <div
                   className="inventory-grid grid items-center gap-4 py-6"
                   style={{ width: "40%" }}
@@ -434,8 +438,9 @@ function InitiationApprovalProceed({
                     </div>
                   </div>
                 </div>
+                </div>
               ))}
-          </div>
+          
         </Paper>
       </SwipeableViews>
     </div>

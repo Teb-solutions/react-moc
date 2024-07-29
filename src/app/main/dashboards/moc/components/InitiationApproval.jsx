@@ -102,8 +102,8 @@ function InitiationApproval(props) {
   });
   const StyledBadge = withStyles((theme) => ({
     Badge: {
-      right: -3,
-      top: 13,
+      right: 0,
+      top: 5,
       border: `2px solid ${theme.palette.background.paper}`,
       padding: "0 4px",
       backgroundColor: "#000", // Adjust background color to match the image
@@ -1079,11 +1079,11 @@ function InitiationApproval(props) {
             </>
           ) : (
             <div
-              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+              className="inventory-grid grid items-center gap-4 "
               style={{ width: "100%" }}
             >
               {currentActivityForm.canEdit && (
-                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                <Box sx={{ display: "flex", flexWrap: "wrap" }} className="p-30 pt-24 pb-24">
                   <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
                     <FormLabel
                       htmlFor="reasonForNewDocument"
@@ -1117,19 +1117,18 @@ function InitiationApproval(props) {
                   </FormControl>
                 </Box>
               )}
-              <div>&nbsp;</div>
-              <div>&nbsp;</div>
+              
               <div className="flex items-center w-full border-b justify-between"></div>
 
               {currentActivityForm.canExecute && (
-                <div className="flex justify-end">
+                <div className="flex justify-end p-30 pt-24 pb-24">
                   <StyledBadge
                     badgeContent={
                       listDocument1.length ? listDocument1.length : CountApprove
                     }
                   >
                     <Button
-                      className="whitespace-nowrap mt-5"
+                      className="whitespace-nowrap my-1"
                       style={{
                         border: "1px solid",
                         backgroundColor: "transparent",
@@ -1151,10 +1150,10 @@ function InitiationApproval(props) {
                   {Actions.map((btn) => (
                     <Button
                       key={btn.uid}
-                      className="whitespace-nowrap ms-5"
+                      className="whitespace-nowrap ms-5 my-1"
                       variant="contained"
                       color="secondary"
-                      style={{ marginTop: "10px" }}
+                      // style={{ marginTop: "10px" }}
                       onClick={(e) =>
                         SubmitApprovelCreate(e, btn.uid, btn.name, btn.type)
                       }

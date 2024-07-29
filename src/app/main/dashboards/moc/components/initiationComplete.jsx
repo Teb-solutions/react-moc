@@ -799,13 +799,13 @@ const InitiationComplete = ({
       />
 
       <SwipeableViews>
-        <Paper className="w-full mx-auto my-8 p-16 rounded-16 shadow overflow-hidden">
-          <Typography variant="h4" component="h2" gutterBottom>
+        <Paper className="w-full mx-auto rounded-16 shadow overflow-hidden lg:mt-16">
+          <Typography variant="h4" component="h2" className="p-30 pt-24 pb-24 border-b" gutterBottom>
             <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
               Change Summary
             </h2>
           </Typography>
-          <Grid container spacing={2}>
+          <Grid className="p-30 pt-24 pb-24 border-b" container spacing={2}>
             <Grid item xs={12}>
               <FormControl component="fieldset" fullWidth>
                 <FormLabel component="legend">

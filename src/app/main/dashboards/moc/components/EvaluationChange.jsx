@@ -1586,18 +1586,18 @@ function EvaluationChange({
         {!risk ? (
           <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
             <div>
-              <div className="flex items-center w-full border-b justify-between p-30 py-24">
-                <h2 className="text-2xl font-semibold">Evaluation ffff</h2>
+              <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
+                <h2 className="text-2xl font-semibold">Evaluation</h2>
                 <div>
                   {AppActivity.canEdit && (
                     <Button
-                      className="whitespace-nowrap mt-5"
+                      className="whitespace-nowrap mt-0  ms-3"
                       style={{
                         border: "1px solid",
                         backgroundColor: "transparent",
                         color: "black",
                         borderColor: "rgba(203,213,225)",
-                        marginRight: "5px",
+                        marginRight: "0",
                       }}
                       variant="contained"
                       color="warning"
@@ -1618,7 +1618,7 @@ function EvaluationChange({
                     </Button>
                   )}
                   <Button
-                    className="whitespace-nowrap mt-5"
+                    className="whitespace-nowrap mt-0 ms-5"
                     style={{
                       border: "1px solid",
                       backgroundColor: "transparent",
@@ -1640,7 +1640,7 @@ function EvaluationChange({
               </div>
             </div>
             {AppActivity.canEdit && (
-              <div className="ng-star-inserted mt-5">
+              <div className="ng-star-inserted p-30 pt-24 pb-0 ">
                 <div className="ng-star-inserted ">
                   {Session?.activeSession?.status == 1 && (
                     <div
@@ -1656,20 +1656,20 @@ function EvaluationChange({
                   )}
                   {!Session?.hasActiveSession && (
                     <div
-                      className="mt-4 py-2 px-5 rounded-lg bg-red-100 dark:bg-red-700"
+                      className="rounded-lg bg-red-100 dark:bg-red-700"
                       style={{
                         backgroundColor: "rgb(255 196 202)",
                         padding: "5px",
                       }}
                     >
-                      Please start session to make any changes.
+                      Please start session to make any changes. 
                     </div>
                   )}
                 </div>
               </div>
             )}
             {/* )} */}
-            <Box sx={{ width: "100%" }} className="hello p-30">
+            <Box sx={{ width: "100%" }} className="hello p-30 pt-24 pb-24">
               <Box sx={{ display: "flex" }}>
                 <Button
                   onClick={() => handleChange(0)}
@@ -2530,16 +2530,17 @@ function EvaluationChange({
                                                           <Grid
                                                             container
                                                             spacing={2}
-                                                            className="inventory-grid"
+                                                            className="inventory-grid w-100 mt-0 ml-0"                                                            
                                                             sx={{
                                                               paddingY: 2,
                                                               paddingX: {
                                                                 xs: 2,
-                                                                md: 3,
+                                                                md: 2,
                                                               },
                                                             }}
                                                           >
                                                             <Grid
+                                                              className="pl-0 pt-0"
                                                               item
                                                               xs={12}
                                                               md={3}
@@ -2563,7 +2564,7 @@ function EvaluationChange({
                                                                               "SignificantRisk"
                                                                             ? "purple"
                                                                             : "green",
-                                                                  width: "35%",
+                                                                  width: "auto",
                                                                   padding:
                                                                     "3px",
                                                                   color:
@@ -2573,6 +2574,7 @@ function EvaluationChange({
                                                                       : "white",
                                                                   borderRadius:
                                                                     "5px",
+                                                                    display:"inline-block",
                                                                   textAlign:
                                                                     "center",
                                                                   fontSize:
@@ -2590,6 +2592,7 @@ function EvaluationChange({
                                                               </Typography>
                                                             </Grid>
                                                             <Grid
+                                                              className="pl-0 pt-0"
                                                               item
                                                               xs={12}
                                                               md={3}
@@ -2612,6 +2615,7 @@ function EvaluationChange({
                                                             </Grid>
                                                             <Grid
                                                               item
+                                                              className="pl-0 pt-0"
                                                               xs={12}
                                                               md={3}
                                                             >
@@ -2633,6 +2637,7 @@ function EvaluationChange({
                                                             </Grid>
                                                             <Grid
                                                               item
+                                                              className="pl-0 pt-0"
                                                               xs={12}
                                                               md={3}
                                                             >
@@ -2653,37 +2658,17 @@ function EvaluationChange({
                                                               </Typography>
                                                             </Grid>
                                                           </Grid>
-                                                          <h6
-                                                            style={{
-                                                              paddingLeft:
-                                                                "10px",
-                                                              paddingBottom:
-                                                                "5px",
-                                                            }}
-                                                          >
+                                                          <div className="px-20 pt-0 pb-24">
+                                                          <h6>
                                                             {sub.subTaskName}
                                                           </h6>
-                                                          <h6
-                                                            style={{
-                                                              paddingLeft:
-                                                                "10px",
-                                                              paddingBottom:
-                                                                "5px",
-                                                            }}
-                                                          >
+                                                          <h6>
                                                             -{" "}
                                                             {
                                                               hazardType.hazardTypeDisplay
                                                             }
                                                           </h6>
-                                                          <h6
-                                                            style={{
-                                                              paddingLeft:
-                                                                "10px",
-                                                              paddingBottom:
-                                                                "5px",
-                                                            }}
-                                                          >
+                                                          <h6>
                                                             -{" "}
                                                             {
                                                               situation.hazardousSituation
@@ -2695,13 +2680,7 @@ function EvaluationChange({
                                                                 "isActiveSession"
                                                               )
                                                             ) && (
-                                                              <div
-                                                                className="mt-2 ms-5"
-                                                                style={{
-                                                                  marginLeft:
-                                                                    "10px",
-                                                                }}
-                                                              >
+                                                              <div className="my-5">
                                                                 <a
                                                                   title="View Details"
                                                                   className="inline-flex items-center leading-6 text-primary cursor-pointer hover:underline dark:hover:bg-hover"
@@ -2727,7 +2706,7 @@ function EvaluationChange({
 
                                                                 <a
                                                                   title="Edit"
-                                                                  className="inline-flex items-center leading-6 text-primary ml-2 cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                  className="inline-flex items-center leading-6 text-primary mx-5 cursor-pointer hover:underline dark:hover:bg-hover"
                                                                   onClick={() =>
                                                                     handelEditRiskDetails(
                                                                       situation.id,
@@ -2748,8 +2727,7 @@ function EvaluationChange({
                                                                   </span>
                                                                 </a>
 
-                                                                <a
-                                                                  title="Remove"
+                                                                <a title="Remove"
                                                                   className="inline-flex items-center leading-6 text-primary ml-2 cursor-pointer hover:underline dark:hover:bg-hover"
                                                                   onClick={() =>
                                                                     handelRemoveDetails(
@@ -2779,12 +2757,10 @@ function EvaluationChange({
                                                               )
                                                             ) && (
                                                               <span
-                                                                className="text-white"
+                                                                className="text-white d-inline-block"
                                                                 style={{
                                                                   backgroundColor:
-                                                                    "#2563eb",
-                                                                  marginLeft:
-                                                                    "10px",
+                                                                    "#2563eb",                                                                  
                                                                   borderRadius:
                                                                     "5px",
                                                                   padding:
@@ -2805,6 +2781,8 @@ function EvaluationChange({
                                                                 Analysis
                                                               </span>
                                                             )}
+
+                                                            </div>
                                                         </div>
                                                       )
                                                     )}
@@ -2997,7 +2975,7 @@ function EvaluationChange({
                                                 )
                                               )}
 
-                                            <div className="task-details px-6 mt-2">
+                                            <div className="task-details px-0 mt-2">
                                               <div className="task-detail prose prose-sm max-w-5xl">
                                                 <div className="task-detail-item mt-3">
                                                   <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
@@ -3037,7 +3015,6 @@ function EvaluationChange({
                                                 </div>
                                               </div>
 
-                                              <div>&nbsp;</div>
                                             </div>
 
                                             {imptsk?.changeImpactTaskReviews
@@ -3110,7 +3087,7 @@ function EvaluationChange({
                                                 )}
                                               </Accordion>
                                             ) : (
-                                              <span className="ms-10">
+                                              <span className="pl-10 py-10 d-inline-block">
                                                 No Comments Added
                                               </span>
                                             )}
@@ -3159,13 +3136,13 @@ function EvaluationChange({
                                           style={{ marginTop: "5px" }}
                                         ></div>
                                         <Button
-                                          className="ms-5"
+                                          className="ms-5 mt-10 mb-10"
                                           variant="contained"
                                           sx={{
                                             backgroundColor: "white",
                                             color: "black",
                                             border: "1px solid black",
-                                            marginTop: "8px",
+                                            
                                           }}
                                           startIcon={
                                             <FuseSvgIcon size={20}>
@@ -3220,7 +3197,7 @@ function EvaluationChange({
                           margin: "20px",
                         }}
                       >
-                        <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
+                        <FormControl fullWidth sx={{ mb: 1, maxWidth: "100%" }}>
                           <FormLabel
                             htmlFor="particular"
                             className="font-semibold leading-none"
@@ -3252,7 +3229,7 @@ function EvaluationChange({
                           )}
                         </FormControl>
 
-                        <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
+                        <FormControl fullWidth sx={{ mb:1, maxWidth: "100%" }}>
                           <FormLabel
                             htmlFor="particularSubCategory"
                             className="font-semibold leading-none"
@@ -3285,14 +3262,12 @@ function EvaluationChange({
                         </FormControl>
                         {impactForm.particular == 78 ? (
                           <>
-                            <div>&nbsp;</div>
-                            <div className="flex items-center w-full bg-gray-50 border-b justify-between"></div>
-                            <div>&nbsp;</div>
-                            <Box sx={{ width: "100%", margin: "20px" }}>
+                            <div className="flex items-center w-full bg-gray-50 border-b mb-10 justify-between"></div>
+                            <Box sx={{ width: "100%" }}>
                               <Grid
                                 container
                                 spacing={2}
-                                className="inventory-grid"
+                                className="inventory-grid m-0 w-100"
                                 sx={{
                                   position: "sticky",
                                   top: 0,
@@ -3553,7 +3528,7 @@ function EvaluationChange({
                                 <>
                                   <FormControl
                                     fullWidth
-                                    sx={{ m: 1, maxWidth: "90%" }}
+                                    sx={{ mb: 1, maxWidth: "90%" }}
                                     key={detail.id}
                                   >
                                     <Select
@@ -3604,7 +3579,7 @@ function EvaluationChange({
 
                             {impactForm.particular == 78 ||
                             EditSubTask.length ? (
-                              <Box sx={{ width: "100%", margin: "20px" }}>
+                              <Box sx={{ width: "100%", margin: "0" }}>
                                 <div className="flex justify-end">
                                   <Button
                                     className="whitespace-nowrap mt-5"
@@ -3691,16 +3666,16 @@ function EvaluationChange({
                               <div className="flex flex-col-reverse">
                                 <div
                                   style={{
-                                    marginTop: "30px",
+                                    // marginTop: "30px",
                                     justifyContent: "space-between",
-                                    margin: "15px",
+                                    padding: "15px 15px 0",
                                   }}
-                                  className="flex flex-row "
+                                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-24 w-full"
                                 >
                                   <Box
                                     sx={{
                                       width: 560,
-                                      maxWidth: "60%",
+                                      maxWidth: "100%",
                                     }}
                                   >
                                     <TextField
@@ -3723,7 +3698,7 @@ function EvaluationChange({
                                   <Box
                                     sx={{
                                       width: 560,
-                                      maxWidth: "60%",
+                                      maxWidth: "100%",
                                     }}
                                   >
                                     <TextField
@@ -3745,16 +3720,16 @@ function EvaluationChange({
                               <div className="flex flex-col-reverse">
                                 <div
                                   style={{
-                                    marginTop: "30px",
+                                    // marginTop: "30px",
                                     justifyContent: "space-between",
-                                    margin: "15px",
+                                    padding: "15px 15px 0",
                                   }}
-                                  className="flex flex-row "
+                                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-24 w-full"
                                 >
                                   <FormControl
                                     sx={{
                                       width: 560,
-                                      maxWidth: "60%",
+                                      maxWidth: "100%",
                                     }}
                                   >
                                     <FormLabel
@@ -3790,7 +3765,7 @@ function EvaluationChange({
                                   <FormControl
                                     sx={{
                                       width: 560,
-                                      maxWidth: "60%",
+                                      maxWidth: "100%",
                                     }}
                                   >
                                     <FormLabel
@@ -3852,11 +3827,11 @@ function EvaluationChange({
                               <div className="flex flex-col-reverse">
                                 <div
                                   style={{
-                                    marginTop: "30px",
+                                    // marginTop: "30px",
                                     justifyContent: "space-between",
-                                    margin: "15px",
+                                    padding: "15px 15px 0",
                                   }}
-                                  className="flex flex-row "
+                                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-24 w-full"
                                 >
                                   <LocalizationProvider
                                     dateAdapter={AdapterDateFns}
@@ -3864,7 +3839,7 @@ function EvaluationChange({
                                     <FormControl
                                       sx={{
                                         width: 560,
-                                        maxWidth: "60%",
+                                        maxWidth: "100%",
                                       }}
                                       error={!!errorsTask[`dueDate_${index}`]}
                                     >
@@ -3911,14 +3886,15 @@ function EvaluationChange({
                             </div>
                           </Paper>
                         ))}
+                        <div className=" pt-24 pb-24">
                       <Button
-                        className="whitespace-nowrap mt-5"
+                        className="whitespace-nowrap"
                         style={{
                           border: "1px solid",
                           backgroundColor: "#0000",
                           color: "black",
                           borderColor: "rgba(203,213,225)",
-                          marginLeft: "30px",
+                          marginLeft: "20px",
                         }}
                         variant="contained"
                         startIcon={
@@ -3930,20 +3906,21 @@ function EvaluationChange({
                       >
                         Add New Task
                       </Button>
+                      </div>
                       <div
                         className="my-10"
                         style={{ borderTopWidth: "2px" }}
                       ></div>
                       <div className="flex justify-end">
                         <div
-                          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                          style={{ marginTop: "15px" }}
+                          className="flex items-center p-30 pt-24 pb-24 space-x-12"
+                          // style={{ marginTop: "15px" }}
                         >
                           <Button
                             className="whitespace-nowrap"
                             variant="contained"
                             color="secondary"
-                            style={{ margin: "15px" }}
+                            // style={{ margin: "15px" }}
                             //   onClick={() => handleOpen(btn)}
                             startIcon={
                               <FuseSvgIcon size={20}>
@@ -3990,16 +3967,16 @@ function EvaluationChange({
             {AddCunsultation && !editConsultation && (
               <>
                 <div
-                  className="my-10"
-                  style={{ borderTopWidth: "2px", marginTop: "40px" }}
+                  // className="my-10"
+                  style={{ borderTopWidth: "2px" }}
                 ></div>
 
                 <div
-                  className="flex justify-between items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{ marginTop: "15px" }}
+                  className="flex justify-between items-center p-30 pb-24 pt-24 space-x-12"
+                  // style={{ marginTop: "15px" }}
                 >
                   <Button
-                    className="whitespace-nowrap mt-5"
+                    className="whitespace-nowrap"
                     style={{
                       border: "1px solid",
                       backgroundColor: "black",
@@ -4019,7 +3996,7 @@ function EvaluationChange({
 
                   <div className="flex items-center space-x-12">
                     <Button
-                      className="whitespace-nowrap mt-5"
+                      className="whitespace-nowrap"
                       style={{
                         border: "1px solid",
                         backgroundColor: "#0000",
@@ -4032,7 +4009,7 @@ function EvaluationChange({
                       Cancel
                     </Button>
                     <Button
-                      className="whitespace-nowrap mt-12"
+                      className="whitespace-nowrap"
                       variant="contained"
                       color="secondary"
                       style={{ padding: "15px" }}
@@ -4080,342 +4057,399 @@ function EvaluationChange({
               )}
           </Paper>
         ) : (
-          <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
+          <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
             <div>
-              <div className="flex items-center w-full border-b pb-5 justify-between">
+              <div className="flex items-center w-full p-30 pt-24 pb-24 border-b pb-5 justify-between">
                 <h2 className="text-2xl font-semibold">New Risk Analysis</h2>
               </div>
-              <div className="font-semibold ps-5 mt-5 ">
-                <Link rel="noopener noreferrer" onClick={goBack}>
+              <div className="font-semibold p-30 pt-24 pb-0 ">
+                <Link rel="noopener noreferrer" onClick={goBack} className="text-blue">
                   {viewrisk ? "Back to Impact List" : "Go Back"}
                 </Link>
               </div>
             </div>
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                marginTop: "5px",
-              }}
-            >
-              <FormControl fullWidth sx={taskFormControlStyles}>
-                <FormLabel
-                  htmlFor="hazardDetail"
-                  className="font-semibold leading-none"
-                >
-                  Task
-                </FormLabel>
-                {viewrisk ? (
-                  <>
-                    &nbsp;&nbsp; &nbsp;&nbsp;
-                    <span>{subTaskDetail.taskName}</span>
-                  </>
-                ) : (
-                  <OutlinedInput
-                    id="hazardDetail"
-                    name="hazardDetail"
-                    value={subTaskDetail.taskName}
-                    onChange={handleChangeImpact}
-                    label="Reason For Change*"
-                    className="mt-5"
-                    disabled
-                  />
-                )}
-              </FormControl>
-              <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
-                <FormLabel
-                  htmlFor="hazardDetail"
-                  className="font-semibold leading-none"
-                >
-                  Sub Task
-                </FormLabel>
-                {viewrisk ? (
-                  <>
-                    &nbsp;&nbsp; &nbsp;&nbsp;
-                    <span>{subTaskDetail.subTaskName}</span>
-                  </>
-                ) : (
-                  <OutlinedInput
-                    id="hazardDetail"
-                    name="hazardDetail"
-                    value={subTaskDetail.subTaskName}
-                    onChange={handleChangeImpact}
-                    label="Reason For Change*"
-                    className="mt-5"
-                    disabled
-                  />
-                )}
-              </FormControl>
-            </Box>
-            {viewrisk ? (
+            <div className="p-30 pt-24 pb-24">
               <Box
                 sx={{
-                  width: TaskhazardRiskView ? 818 : 600,
-                  maxWidth: "100%",
-                  marginLeft: "9px",
+                  // display: "flex",
+                  // flexWrap: "wrap",
                   marginTop: "15px",
-                  display: "flex", // Added Flexbox
-                  alignItems: "center", // Align items vertically
                 }}
               >
-                <FormControl fullWidth>
+                <FormControl fullWidth sx={taskFormControlStyles} className="m-0">
                   <FormLabel
-                    htmlFor="Time"
+                    htmlFor="hazardDetail"
                     className="font-semibold leading-none"
                   >
-                    Hazard Type
+                    Task
                   </FormLabel>
-
-                  <Select
-                    labelId="time-select-label"
-                    id="time-select"
-                    label="hazardType *"
-                    name="hazardType"
-                    value={
-                      formValues.hazardType.value
-                        ? formValues.hazardType.value
-                        : hazaid
-                    }
-                    onChange={(e) => {
-                      const selectedOption = subTaskhazardDetail.find(
-                        (option) => option.value === e.target.value
-                      );
-                      handleInputChangeHazard(e, selectedOption);
-                    }}
-                    error={!!errorsSub.hazardType}
-                    disabled
-                    sx={{
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                      },
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                      },
-                      "&:hover .MuiOutlinedInput-notchedOutline": {
-                        border: "none",
-                      },
-                      "& .MuiSelect-icon": {
-                        display: "none",
-                      },
-                      "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                        {
-                          padding: "0px",
-                        },
-                    }}
-                  >
-                    <MenuItem value="" disabled>
-                      <em>None</em>
-                    </MenuItem>
-                    {subTaskhazardDetail.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.text}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {!!errorsSub.hazardType && (
-                    <FormHelperText error>
-                      {errorsSub.hazardType}
-                    </FormHelperText>
+                  {viewrisk ? (
+                    <>
+                  
+                      <span>{subTaskDetail.taskName}</span>
+                    </>
+                  ) : (
+                    <OutlinedInput
+                      id="hazardDetail"
+                      name="hazardDetail"
+                      value={subTaskDetail.taskName}
+                      onChange={handleChangeImpact}
+                      label="Reason For Change*"
+                      className="mt-5"
+                      disabled
+                    />
                   )}
                 </FormControl>
-              </Box>
-            ) : (
+                <FormControl fullWidth sx={{ margin:"15px 0 0 0", maxWidth: "100%" }}>
+                  <FormLabel
+                    htmlFor="hazardDetail"
+                    className="font-semibold leading-none"
+                  >
+                    Sub Task
+                  </FormLabel>
+                  {viewrisk ? (
+                    <>
+                  
+                      <span>{subTaskDetail.subTaskName}</span>
+                    </>
+                  ) : (
+                    <OutlinedInput
+                      id="hazardDetail"
+                      name="hazardDetail"
+                      value={subTaskDetail.subTaskName}
+                      onChange={handleChangeImpact}
+                      label="Reason For Change*"
+                      className="mt-5"
+                      disabled
+                    />
+                  )}
+                </FormControl>
+             
+              {viewrisk ? (
+                <Box  className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 w-full"
+                  sx={{
+                    width: TaskhazardRiskView ? 818 : 600,
+                    maxWidth: "100%",
+                    
+                  }}
+                >
+                  <FormControl fullWidth sx={{margin:"20px 0 0 0"}}>
+                    <FormLabel
+                      htmlFor="Time"
+                      className="font-semibold leading-none"
+                    >
+                      Hazard Type
+                    </FormLabel>
+
+                    <Select
+                      labelId="time-select-label"
+                      id="time-select"
+                      label="hazardType *"
+                      name="hazardType"
+                      value={
+                        formValues.hazardType.value
+                          ? formValues.hazardType.value
+                          : hazaid
+                      }
+                      onChange={(e) => {
+                        const selectedOption = subTaskhazardDetail.find(
+                          (option) => option.value === e.target.value
+                        );
+                        handleInputChangeHazard(e, selectedOption);
+                      }}
+                      error={!!errorsSub.hazardType}
+                      disabled
+                      sx={{
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "none",
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          border: "none",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                          border: "none",
+                        },
+                        "& .MuiSelect-icon": {
+                          display: "none",
+                        },
+                        "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                          {
+                            padding: "0px",
+                          },
+                      }}
+                    >
+                      <MenuItem value="" disabled>
+                        <em>None</em>
+                      </MenuItem>
+                      {subTaskhazardDetail.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.text}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {!!errorsSub.hazardType && (
+                      <FormHelperText error>
+                        {errorsSub.hazardType}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Box>
+              ) : (
+                <Box
+                  sx={{
+                    width: TaskhazardRiskView ? 818 : 600,                  
+                  }}
+                   className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-24 w-full"
+                >
+                  {console.log(hazaid, "pppppps")}
+                  <FormControl fullWidth sx={{ flexGrow: 1, margin: "20px 0 0 0" }} >
+                    <InputLabel id="division-label">Hazard Type *</InputLabel>
+                    <Select
+                      labelId="division-label"
+                      name="hazardType"
+                      value={
+                        formValues.hazardType.value
+                          ? formValues.hazardType.value
+                          : hazaid
+                      }
+                      onChange={(e) => {
+                        const selectedOption = subTaskhazardDetail.find(
+                          (option) => option.value === e.target.value
+                        );
+                        handleInputChangeHazard(e, selectedOption);
+                      }}
+                      error={!!errorsSub.hazardType}
+                    >
+                      <MenuItem value="" disabled>
+                        <em>None</em>
+                      </MenuItem>
+                      {subTaskhazardDetail.map((option) => (
+                        <MenuItem key={option.value} value={option.value}>
+                          {option.text}
+                        </MenuItem>
+                      ))}
+                    </Select>
+
+                    {!!errorsSub.hazardType && (
+                      <FormHelperText error>
+                        {errorsSub.hazardType}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                 
+                      <Box sx={{ margin: "15px 0 0 0", padding:"12px 0 0 0" }}>
+                      {TaskhazardRiskView && (
+                    <>
+                        <a
+                          href={URL.createObjectURL(
+                            new Blob([TaskhazardRiskApi], {
+                              type: "application/pdf",
+                            })
+                          )}
+                          target="_blank"
+                          className="text-blue"
+                          rel="noopener noreferrer"
+                          style={{ backgroundColor: "white", marginRight:"15px" }}
+                        >
+                          {TaskhazardRiskViewName}.pdf
+                        </a>
+                        </>
+                  )}
+                  
+                    <a
+                      href={URL.createObjectURL(
+                        new Blob([generalGuidePdf], {
+                          type: "application/pdf",
+                        })
+                      )}
+                      target="_blank"
+                      className="text-blue"
+                      rel="noopener noreferrer"
+                      style={{ backgroundColor: "white", color: "blue" }}
+                      onClick={handleGeneralGuideClick}
+                    >
+                      General Guide
+                    </a>
+                  </Box>
+                </Box>
+              )}
+             </Box>
               <Box
                 sx={{
-                  width: TaskhazardRiskView ? 818 : 600,
-                  maxWidth: "100%",
-                  marginLeft: "9px",
-                  marginTop: "15px",
-                  display: "flex", // Added Flexbox
-                  alignItems: "center", // Align items vertically
+                  // marginTop: "15px",
                 }}
               >
-                {console.log(hazaid, "pppppps")}
-                <FormControl fullWidth sx={{ flexGrow: 1 }}>
-                  <InputLabel id="division-label">Hazard Type *</InputLabel>
-                  <Select
-                    labelId="division-label"
-                    name="hazardType"
-                    value={
-                      formValues.hazardType.value
-                        ? formValues.hazardType.value
-                        : hazaid
-                    }
-                    onChange={(e) => {
-                      const selectedOption = subTaskhazardDetail.find(
-                        (option) => option.value === e.target.value
-                      );
-                      handleInputChangeHazard(e, selectedOption);
-                    }}
-                    error={!!errorsSub.hazardType}
-                  >
-                    <MenuItem value="" disabled>
-                      <em>None</em>
-                    </MenuItem>
-                    {subTaskhazardDetail.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.text}
-                      </MenuItem>
-                    ))}
-                  </Select>
-
-                  {!!errorsSub.hazardType && (
-                    <FormHelperText error>
-                      {errorsSub.hazardType}
-                    </FormHelperText>
-                  )}
-                </FormControl>
-                {TaskhazardRiskView && (
-                  <>
-                    <Box sx={{ marginLeft: 2 }}>
-                      <a
-                        href={URL.createObjectURL(
-                          new Blob([TaskhazardRiskApi], {
-                            type: "application/pdf",
-                          })
-                        )}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ backgroundColor: "white", color: "blue" }}
+                <div className="flex-auto">
+                  <div className="flex flex-col-reverse">
+                    <div
+                      style={{
+                        // marginTop: "30px",
+                        justifyContent: "space-between",
+                        // margin: "10px",
+                      }}
+                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-24 w-full"
+                    >
+                      <Box
+                        sx={{
+                          width: 600,
+                          maxWidth: "100%",
+                          margin:"15px 0 0 0"
+                        }}
                       >
-                        {TaskhazardRiskViewName}.pdf
-                      </a>
-                    </Box>
-                  </>
-                )}
-                <Box sx={{ marginLeft: 2 }}>
-                  <a
-                    href={URL.createObjectURL(
-                      new Blob([generalGuidePdf], {
-                        type: "application/pdf",
-                      })
-                    )}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ backgroundColor: "white", color: "blue" }}
-                    onClick={handleGeneralGuideClick}
-                  >
-                    General Guide
-                  </a>
-                </Box>
-              </Box>
-            )}
-
-            <Box
-              sx={{
-                marginTop: "15px",
-              }}
-            >
-              <div className="flex-auto">
-                <div className="flex flex-col-reverse">
-                  <div
-                    style={{
-                      marginTop: "30px",
-                      justifyContent: "space-between",
-                      margin: "10px",
-                    }}
-                    className="flex flex-row "
-                  >
-                    <Box
-                      sx={{
-                        width: 600,
-                        maxWidth: "100%",
-                      }}
-                    >
-                      {viewrisk ? (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column", // Stack items vertically
-                          }}
-                        >
-                          <FormLabel
-                            htmlFor="hazardDetail"
-                            className="font-semibold leading-none"
+                        {viewrisk ? (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column", // Stack items vertically
+                            }}
                           >
-                            Hazardous Situation
-                          </FormLabel>
-                          &nbsp;&nbsp; &nbsp;&nbsp;
-                          <span>{formValues.hazardousSituation}</span>
-                        </Box>
-                      ) : (
-                        <TextField
-                          fullWidth
-                          label="Hazardous Situation *"
-                          name="hazardousSituation"
-                          value={formValues.hazardousSituation}
-                          onChange={handelRiskInputChange}
-                          error={!!errorsSub.hazardousSituation}
-                          helperText={errorsSub.hazardousSituation}
-                        />
-                      )}
-                    </Box>
-                    <Box
-                      sx={{
-                        width: 600,
-                        maxWidth: "100%",
-                      }}
-                    >
-                      {viewrisk ? (
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column", // Stack items vertically
-                          }}
-                        >
-                          <FormLabel
-                            htmlFor="hazardDetail"
-                            className="font-semibold leading-none"
+                            <FormLabel
+                              htmlFor="hazardDetail"
+                              className="font-semibold leading-none"
+                            >
+                              Hazardous Situation
+                            </FormLabel>
+                            <span>{formValues.hazardousSituation}</span>
+                          </Box>
+                        ) : (
+                          <TextField
+                            fullWidth
+                            label="Hazardous Situation *"
+                            name="hazardousSituation"
+                            value={formValues.hazardousSituation}
+                            onChange={handelRiskInputChange}
+                            error={!!errorsSub.hazardousSituation}
+                            helperText={errorsSub.hazardousSituation}
+                          />
+                        )}
+                      </Box>
+                      <Box
+                        sx={{
+                          width: 600,
+                          maxWidth: "100%",
+                          margin:"15px 0 0 0"
+                        }}
+                      >
+                        {viewrisk ? (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexDirection: "column", // Stack items vertically
+                            }}
                           >
-                            Consequence
-                          </FormLabel>
-                          &nbsp;&nbsp; &nbsp;&nbsp;
-                          <span>{formValues.consequence}</span>
-                        </Box>
-                      ) : (
-                        <TextField
-                          fullWidth
-                          label="Consequence *"
-                          name="consequence"
-                          value={formValues.consequence}
-                          onChange={handelRiskInputChange}
-                          error={!!errorsSub.consequence}
-                          helperText={errorsSub.consequence}
-                        />
-                      )}
-                    </Box>
+                            <FormLabel
+                              htmlFor="hazardDetail"
+                              className="font-semibold leading-none"
+                            >
+                              Consequence
+                            </FormLabel>
+                            &nbsp;&nbsp; &nbsp;&nbsp;
+                            <span>{formValues.consequence}</span>
+                          </Box>
+                        ) : (
+                          <TextField
+                            fullWidth
+                            label="Consequence *"
+                            name="consequence"
+                            value={formValues.consequence}
+                            onChange={handelRiskInputChange}
+                            error={!!errorsSub.consequence}
+                            helperText={errorsSub.consequence}
+                          />
+                        )}
+                      </Box>
+                    </div>
                   </div>
-                </div>
-                <h3 style={{ padding: "10px" }}>
-                  <b>Potential Risk</b>
-                </h3>
-                <div className="flex flex-col-reverse">
-                  <div
-                    style={{
-                      marginTop: "30px",
-                      justifyContent: "space-between",
-                      margin: "10px",
-                    }}
-                    className="flex flex-row "
-                  >
-                    {viewrisk ? (
-                      <>
+                  <h3 style={{ padding: "10px 0", margin: "15px 0 0 0" }}>
+                    <b>Potential Risk</b>
+                  </h3>
+                  <div className="flex flex-col-reverse">
+                    <div
+                      style={{
+                        // marginTop: "30px",
+                        justifyContent: "space-between",
+                        // margin: "15px 0 0 0",
+                      }}
+                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full"
+                    >
+                      {viewrisk ? (
+                        <>
+                          <Box
+                            sx={{
+                              width: 280,
+                              maxWidth: "100%",
+                              display: "flex",
+                              flexDirection: "column",
+                              margin: "15px 0 0 0"
+                            }}
+                          >
+                            <FormControl fullWidth>
+                              <FormLabel
+                                htmlFor="Time"
+                                className="font-semibold leading-none"
+                              >
+                                Time
+                              </FormLabel>
+
+                              <Select
+                                labelId="time-select-label"
+                                id="time-select"
+                                label="Time *"
+                                name="time"
+                                value={formValues.time}
+                                onChange={handelRiskInputChange}
+                                error={!!errorsSub.time}
+                                disabled
+                                sx={{
+                                  "& .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                    {
+                                      border: "none",
+                                    },
+                                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "& .MuiSelect-icon": {
+                                    display: "none",
+                                  },
+                                  "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                    {
+                                      padding: "0px",
+                                    },
+                                }}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {potentialTimeDetails.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {!!errorsSub.time && (
+                                <FormHelperText error>
+                                  {errorsSub.time}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Box>
+                        </>
+                      ) : (
                         <Box
                           sx={{
-                            width: 280,
-                            maxWidth: "38%",
-                            display: "flex",
-                            flexDirection: "column",
+                            width: 380,
+                            maxWidth: "100%",
+                            margin: "15px 0 0 0"
                           }}
                         >
                           <FormControl fullWidth>
-                            <FormLabel
-                              htmlFor="Time"
-                              className="font-semibold leading-none"
-                            >
-                              Time
-                            </FormLabel>
-
+                            <InputLabel id="time-select-label">Time *</InputLabel>
                             <Select
                               labelId="time-select-label"
                               id="time-select"
@@ -4424,35 +4458,12 @@ function EvaluationChange({
                               value={formValues.time}
                               onChange={handelRiskInputChange}
                               error={!!errorsSub.time}
-                              disabled
-                              sx={{
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "& .MuiSelect-icon": {
-                                  display: "none",
-                                },
-                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
-                              }}
                             >
                               <MenuItem value="" disabled>
                                 <em>None</em>
                               </MenuItem>
                               {potentialTimeDetails.map((option) => (
-                                <MenuItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
+                                <MenuItem key={option.value} value={option.value}>
                                   {option.text}
                                 </MenuItem>
                               ))}
@@ -4464,60 +4475,84 @@ function EvaluationChange({
                             )}
                           </FormControl>
                         </Box>
-                      </>
-                    ) : (
-                      <Box
-                        sx={{
-                          width: 380,
-                          maxWidth: "48%",
-                        }}
-                      >
-                        <FormControl fullWidth>
-                          <InputLabel id="time-select-label">Time *</InputLabel>
-                          <Select
-                            labelId="time-select-label"
-                            id="time-select"
-                            label="Time *"
-                            name="time"
-                            value={formValues.time}
-                            onChange={handelRiskInputChange}
-                            error={!!errorsSub.time}
-                          >
-                            <MenuItem value="" disabled>
-                              <em>None</em>
-                            </MenuItem>
-                            {potentialTimeDetails.map((option) => (
-                              <MenuItem key={option.value} value={option.value}>
-                                {option.text}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          {!!errorsSub.time && (
-                            <FormHelperText error>
-                              {errorsSub.time}
-                            </FormHelperText>
-                          )}
-                        </FormControl>
-                      </Box>
-                    )}
+                      )}
 
-                    {viewrisk ? (
-                      <>
+                      {viewrisk ? (
+                        <>
+                          <Box
+                            sx={{
+                              width: 280,
+                              maxWidth: "100%",
+                              display: "flex",
+                              flexDirection: "column",
+                              margin: "15px 0 0 0"
+                            }}
+                          >
+                            <FormControl fullWidth>
+                              <FormLabel
+                                htmlFor="Frequency"
+                                className="font-semibold leading-none"
+                              >
+                                Frequency
+                              </FormLabel>
+                              <Select
+                                labelId="time-select-label"
+                                id="time-select"
+                                label="Frequency *"
+                                name="frequencyDetails"
+                                value={formValues.frequencyDetails}
+                                onChange={handelRiskInputChange}
+                                error={!!errorsSub.frequencyDetails}
+                                disabled
+                                sx={{
+                                  "& .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                    {
+                                      border: "none",
+                                    },
+                                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "& .MuiSelect-icon": {
+                                    display: "none",
+                                  },
+                                  "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                    {
+                                      padding: "0px",
+                                    },
+                                }}
+                              >
+                                {potentialFrequencyDetails.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {!!errorsSub.frequencyDetails && (
+                                <FormHelperText error>
+                                  {errorsSub.frequencyDetails}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Box>
+                        </>
+                      ) : (
                         <Box
                           sx={{
-                            width: 280,
-                            maxWidth: "38%",
-                            display: "flex",
-                            flexDirection: "column",
+                            width: 380,
+                            maxWidth: "100%",
+                            margin: "15px 0 0 0"
                           }}
                         >
                           <FormControl fullWidth>
-                            <FormLabel
-                              htmlFor="Frequency"
-                              className="font-semibold leading-none"
-                            >
-                              Frequency
-                            </FormLabel>
+                            <InputLabel id="time-select-label">
+                              Frequency *
+                            </InputLabel>
                             <Select
                               labelId="time-select-label"
                               id="time-select"
@@ -4526,32 +4561,9 @@ function EvaluationChange({
                               value={formValues.frequencyDetails}
                               onChange={handelRiskInputChange}
                               error={!!errorsSub.frequencyDetails}
-                              disabled
-                              sx={{
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "& .MuiSelect-icon": {
-                                  display: "none",
-                                },
-                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
-                              }}
                             >
                               {potentialFrequencyDetails.map((option) => (
-                                <MenuItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
+                                <MenuItem key={option.value} value={option.value}>
                                   {option.text}
                                 </MenuItem>
                               ))}
@@ -4563,54 +4575,665 @@ function EvaluationChange({
                             )}
                           </FormControl>
                         </Box>
-                      </>
-                    ) : (
+                      )}
+
                       <Box
                         sx={{
                           width: 380,
-                          maxWidth: "48%",
+                          maxWidth: "100%",
+                          margin: "15px 0 0 0"
                         }}
                       >
-                        <FormControl fullWidth>
-                          <InputLabel id="time-select-label">
-                            Frequency *
-                          </InputLabel>
-                          <Select
-                            labelId="time-select-label"
-                            id="time-select"
-                            label="Frequency *"
-                            name="frequencyDetails"
-                            value={formValues.frequencyDetails}
-                            onChange={handelRiskInputChange}
-                            error={!!errorsSub.frequencyDetails}
-                          >
-                            {potentialFrequencyDetails.map((option) => (
-                              <MenuItem key={option.value} value={option.value}>
-                                {option.text}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          {!!errorsSub.frequencyDetails && (
-                            <FormHelperText error>
-                              {errorsSub.frequencyDetails}
-                            </FormHelperText>
-                          )}
-                        </FormControl>
+                        {viewrisk ? (
+                          <>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column", // Stack items vertically
+                              }}
+                            >
+                              <FormLabel
+                                htmlFor="hazardDetail"
+                                className="font-semibold leading-none"
+                              >
+                                Frequency Scoring
+                              </FormLabel>
+                              &nbsp;&nbsp; &nbsp;&nbsp;
+                              <span style={{ color: "#a3a9b4" }}>
+                                {formValues.frequencyScoring}
+                              </span>
+                            </Box>
+                          </>
+                        ) : (
+                          <>
+                            <TextField
+                              fullWidth
+                              label="Frequency Scoring"
+                              name="frequencyScoring"
+                              value={formValues.frequencyScoring}
+                              disabled
+                            />
+                          </>
+                        )}
                       </Box>
-                    )}
-
-                    <Box
-                      sx={{
-                        width: 380,
-                        maxWidth: "48%",
+                    </div>
+                  </div>{" "}
+                  <div className="flex flex-col-reverse">
+                    <div
+                      style={{
+                        // marginTop: "30px",
+                        justifyContent: "space-between",
+                        // margin: "15px 0 0 0",
                       }}
+                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full "
+                    >
+                      <Box
+                        sx={{
+                          width: 380,
+                          maxWidth: "100%",
+                          margin: "15px 0 0 0"
+                        }}
+                      >
+                        {viewrisk ? (
+                          <>
+                            <FormControl fullWidth>
+                              <FormLabel
+                                htmlFor=" Likelihood Scoring"
+                                className="font-semibold leading-none"
+                              >
+                                Likelihood Scoring
+                              </FormLabel>
+                              <Select
+                                labelId="likelihood-select-label"
+                                id="likelihood-select"
+                                label="Likelihood Scoring"
+                                name="likelihoodScoring"
+                                onChange={handelRiskInputChange}
+                                value={formValues.likelihoodScoring}
+                                error={!!errorsSub.likelihoodScoring}
+                                disabled
+                                sx={{
+                                  "& .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                    {
+                                      border: "none",
+                                    },
+                                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "& .MuiSelect-icon": {
+                                    display: "none",
+                                  },
+                                  "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                    {
+                                      padding: "0px",
+                                    },
+                                }}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {likelihoodValues.map((value) => (
+                                  <MenuItem key={value} value={value}>
+                                    {value}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.likelihoodScoring && (
+                                <FormHelperText error>
+                                  {errorsSub.likelihoodScoring}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </>
+                        ) : (
+                          <>
+                            <FormControl fullWidth>
+                              <InputLabel id="likelihood-select-label">
+                                Likelihood Scoring
+                              </InputLabel>
+                              <Select
+                                labelId="likelihood-select-label"
+                                id="likelihood-select"
+                                label="Likelihood Scoring"
+                                name="likelihoodScoring"
+                                onChange={handelRiskInputChange}
+                                value={formValues.likelihoodScoring}
+                                error={!!errorsSub.likelihoodScoring}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {likelihoodValues.map((value) => (
+                                  <MenuItem key={value} value={value}>
+                                    {value}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.likelihoodScoring && (
+                                <FormHelperText error>
+                                  {errorsSub.likelihoodScoring}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </>
+                        )}
+                      </Box>
+                      <Box
+                        sx={{
+                          width: 380,
+                          maxWidth: "100%",
+                          margin: "15px 0 0 0"
+                        }}
+                      >
+                        {viewrisk ? (
+                          <>
+                            <FormLabel
+                              htmlFor="Frequency"
+                              className="font-semibold leading-none"
+                            >
+                              Frequency
+                            </FormLabel>
+                            <FormControl fullWidth>
+                              <Select
+                                labelId="severity-select-label"
+                                id="severity-select"
+                                label="Severity Scoring"
+                                name="severityScoring"
+                                value={formValues.severityScoring}
+                                onChange={handelRiskInputChange}
+                                error={!!errorsSub.severityScoring}
+                                disabled
+                                sx={{
+                                  "& .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                    {
+                                      border: "none",
+                                    },
+                                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "& .MuiSelect-icon": {
+                                    display: "none",
+                                  },
+                                  "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                    {
+                                      padding: "0px",
+                                    },
+                                }}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {likelihoodValues.map((value) => (
+                                  <MenuItem key={value} value={value}>
+                                    {value}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.severityScoring && (
+                                <FormHelperText error>
+                                  {errorsSub.severityScoring}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </>
+                        ) : (
+                          <>
+                            <FormControl fullWidth>
+                              <InputLabel id="severity-select-label">
+                                Severity Scoring
+                              </InputLabel>
+                              <Select
+                                labelId="severity-select-label"
+                                id="severity-select"
+                                label="Severity Scoring"
+                                name="severityScoring"
+                                value={formValues.severityScoring}
+                                onChange={handelRiskInputChange}
+                                error={!!errorsSub.severityScoring}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {likelihoodValues.map((value) => (
+                                  <MenuItem key={value} value={value}>
+                                    {value}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.severityScoring && (
+                                <FormHelperText error>
+                                  {errorsSub.severityScoring}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </>
+                        )}
+                      </Box>
+                      <Box
+                        sx={{
+                          width: 380,
+                          maxWidth: "100%",
+                          margin: "15px 0 0 0"
+                        }}
+                      >
+                        {viewrisk ? (
+                          <>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                flexDirection: "column", // Stack items vertically
+                              }}
+                            >
+                              <FormLabel
+                                htmlFor="hazardDetail"
+                                className="font-semibold leading-none"
+                              >
+                                Potential Risk
+                              </FormLabel>
+                              &nbsp;&nbsp; &nbsp;&nbsp;
+                              <span style={{ color: "#a3a9b4" }}>
+                                {formValues.potentialRisk}
+                              </span>
+                            </Box>
+                          </>
+                        ) : (
+                          <>
+                            <TextField
+                              fullWidth
+                              label="Potential Risk"
+                              name="potentialRisk"
+                              value={formValues.potentialRisk}
+                              disabled
+                            />
+                          </>
+                        )}
+                      </Box>
+                    </div>
+                  </div>{" "}
+                  <h3 style={{ padding: "10px 0", margin: "15px 0 0 0" }}>
+                    <b>Control Measures</b>
+                  </h3>
+                  <div className="flex flex-col-reverse">
+                    <div
+                      style={{
+                        // marginTop: "30px",
+                        justifyContent: "space-between",
+                        // margin: "15px 0 0 0",
+                      }}
+                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full"
                     >
                       {viewrisk ? (
                         <>
                           <Box
                             sx={{
+                              width: 280,
+                              maxWidth: "100%",
                               display: "flex",
                               flexDirection: "column", // Stack items vertically
+                              margin: "15px 0 0 0"
+                            }}
+                          >
+                            <FormLabel
+                              htmlFor="hazardDetail"
+                              className="font-semibold leading-none"
+                            >
+                              Human
+                            </FormLabel>
+                            &nbsp;&nbsp; &nbsp;&nbsp;
+                            <span>{formValues.humanControlMeasure}</span>
+                          </Box>
+                        </>
+                      ) : (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            margin: "15px 0 0 0"
+                          }}
+                        >
+                          <TextField
+                            fullWidth
+                            label="Human * "
+                            name="humanControlMeasure"
+                            onChange={handelRiskInputChange}
+                            value={formValues.humanControlMeasure}
+                            error={errorsSub.humanControlMeasure}
+                            helperText={errorsSub.humanControlMeasure}
+                          />
+                        </Box>
+                      )}
+                      {viewrisk ? (
+                        <>
+                          <Box
+                            sx={{
+                              width: 280,
+                              maxWidth: "100%",
+                              display: "flex",
+                              flexDirection: "column", // Stack items vertically
+                              margin: "15px 0 0 0"
+                            }}
+                          >
+                            <FormLabel
+                              htmlFor="hazardDetail"
+                              className="font-semibold leading-none"
+                            >
+                              Technical
+                            </FormLabel>
+                            &nbsp;&nbsp; &nbsp;&nbsp;
+                            <span>{formValues.technicalControlMeasure}</span>
+                          </Box>
+                        </>
+                      ) : (
+                        <Box
+                          sx={{
+                            width: 480,
+                            maxWidth: "100%",
+                            margin: "15px 0 0 0"
+                          }}
+                        >
+                          <TextField
+                            fullWidth
+                            label="Technical *"
+                            name="technicalControlMeasure"
+                            onChange={handelRiskInputChange}
+                            value={formValues.technicalControlMeasure}
+                            error={errorsSub.technicalControlMeasure}
+                            helperText={errorsSub.technicalControlMeasure}
+                          />
+                        </Box>
+                      )}
+
+                      {viewrisk ? (
+                        <>
+                          <Box
+                            sx={{
+                              width: 280,
+                              maxWidth: "100%",
+                              display: "flex",
+                              margin: "15px 0 0 0",
+                              flexDirection: "column", // Stack items vertically
+                            }}
+                          >
+                            <FormLabel
+                              htmlFor="hazardDetail"
+                              className="font-semibold leading-none"
+                            >
+                              Organisational
+                            </FormLabel>
+                            &nbsp;&nbsp; &nbsp;&nbsp;
+                            <span>{formValues.organisationalControlMeasure}</span>
+                          </Box>
+                        </>
+                      ) : (
+                        <Box
+                          sx={{
+                            width: 380,
+                            maxWidth: "100%",
+                            margin: "15px 0 0 0"
+                          }}
+                        >
+                          <TextField
+                            fullWidth
+                            label="Organisational *"
+                            name="organisationalControlMeasure"
+                            onChange={handelRiskInputChange}
+                            value={formValues.organisationalControlMeasure}
+                            error={errorsSub.organisationalControlMeasure}
+                            helperText={errorsSub.organisationalControlMeasure}
+                          />
+                        </Box>
+                      )}
+                    </div>
+                  </div>{" "}
+                  <h3 style={{ padding: "10px 0", margin: "15px 0 0 0" }}>
+                    <b>Residual Risk</b>
+                  </h3>
+                  <div className="flex flex-col-reverse">
+                    <div
+                      style={{
+                        // marginTop: "30px",
+                        justifyContent: "space-between",
+                        // margin: "10px",
+                      }}
+                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full"
+                    >
+                      {viewrisk ? (
+                        <>
+                          <Box
+                            sx={{
+                              width: 280,
+                              maxWidth: "100%",
+                              display: "flex",
+                              margin: "15px 0 0 0",
+                              flexDirection: "column",
+                            }}
+                          >
+                            <FormControl fullWidth>
+                              <FormLabel
+                                id="time-select-label"
+                                className="font-semibold leading-none"
+                              >
+                                Time
+                              </FormLabel>
+                              <Select
+                                labelId="time-select-label"
+                                id="time-select"
+                                label="Time * "
+                                name="modifiedTime"
+                                value={formValues.modifiedTime}
+                                onChange={(e) => handelResidualRiskInputChange(e)}
+                                error={!!errorsSub.modifiedTime}
+                                disabled
+                                sx={{
+                                  "& .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                    {
+                                      border: "none",
+                                    },
+                                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "& .MuiSelect-icon": {
+                                    display: "none",
+                                  },
+                                  "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                    {
+                                      padding: "0px",
+                                    },
+                                }}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {potentialTimeDetails.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.modifiedTime && (
+                                <FormHelperText error>
+                                  {errorsSub.modifiedTime}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Box>
+                        </>
+                      ) : (
+                        <>
+                          <Box
+                            sx={{
+                              width: 380,
+                              maxWidth: "100%",
+                              margin: "15px 0 0 0"
+                            }}
+                          >
+                            <FormControl fullWidth>
+                              <InputLabel id="time-select-label">
+                                Time *
+                              </InputLabel>
+                              <Select
+                                labelId="time-select-label"
+                                id="time-select"
+                                label="Time * "
+                                name="modifiedTime"
+                                value={formValues.modifiedTime}
+                                onChange={(e) => handelResidualRiskInputChange(e)}
+                                error={!!errorsSub.modifiedTime}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {potentialTimeDetails.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.modifiedTime && (
+                                <FormHelperText error>
+                                  {errorsSub.modifiedTime}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Box>
+                        </>
+                      )}
+
+                      {viewrisk ? (
+                        <>
+                          <Box
+                            sx={{
+                              width: 280,
+                              maxWidth: "100%",
+                              display: "flex",
+                              flexDirection: "column",
+                              margin: "15px 0 0 0"
+                            }}
+                          >
+                            <FormControl fullWidth>
+                              <FormLabel
+                                id="time-select-label"
+                                className="font-semibold leading-none"
+                              >
+                                Frequency
+                              </FormLabel>
+                              <Select
+                                labelId="time-select-label"
+                                id="time-select"
+                                label="Frequency *"
+                                name="modifiedFrequencyDetails"
+                                value={formValues.modifiedFrequencyDetails}
+                                onChange={(e) => handelResidualRiskInputChange(e)}
+                                error={!!errorsSub.modifiedFrequencyDetails}
+                                disabled
+                                sx={{
+                                  "& .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                    {
+                                      border: "none",
+                                    },
+                                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "& .MuiSelect-icon": {
+                                    display: "none",
+                                  },
+                                  "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                    {
+                                      padding: "0px",
+                                    },
+                                }}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {potentialFrequencyDetails.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.modifiedFrequencyDetails && (
+                                <FormHelperText error>
+                                  {errorsSub.modifiedFrequencyDetails}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Box>
+                        </>
+                      ) : (
+                        <>
+                          <Box
+                            sx={{
+                              width: 380,
+                              maxWidth: "100%",
+                              margin: "15px 0 0 0"
+                            }}
+                          >
+                            <FormControl fullWidth>
+                              <InputLabel id="time-select-label">
+                                Frequency *
+                              </InputLabel>
+                              <Select
+                                labelId="time-select-label"
+                                id="time-select"
+                                label="Frequency *"
+                                name="modifiedFrequencyDetails"
+                                value={formValues.modifiedFrequencyDetails}
+                                onChange={(e) => handelResidualRiskInputChange(e)}
+                                error={!!errorsSub.modifiedFrequencyDetails}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {potentialFrequencyDetails.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.text}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.modifiedFrequencyDetails && (
+                                <FormHelperText error>
+                                  {errorsSub.modifiedFrequencyDetails}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Box>
+                        </>
+                      )}
+                      {viewrisk ? (
+                        <>
+                          {" "}
+                          <Box
+                            sx={{
+                              width: 280,
+                              maxWidth: "100%",
+                              display: "flex",
+                              flexDirection: "column",
+                              margin: "15px 0 0 0"
                             }}
                           >
                             <FormLabel
@@ -4621,971 +5244,347 @@ function EvaluationChange({
                             </FormLabel>
                             &nbsp;&nbsp; &nbsp;&nbsp;
                             <span style={{ color: "#a3a9b4" }}>
-                              {formValues.frequencyScoring}
+                              {formValues.residualFrequencyScoring}
                             </span>
                           </Box>
                         </>
                       ) : (
                         <>
-                          <TextField
-                            fullWidth
-                            label="Frequency Scoring"
-                            name="frequencyScoring"
-                            value={formValues.frequencyScoring}
-                            disabled
-                          />
-                        </>
-                      )}
-                    </Box>
-                  </div>
-                </div>{" "}
-                <div className="flex flex-col-reverse">
-                  <div
-                    style={{
-                      marginTop: "30px",
-                      justifyContent: "space-between",
-                      margin: "10px",
-                    }}
-                    className="flex flex-row "
-                  >
-                    <Box
-                      sx={{
-                        width: 380,
-                        maxWidth: "48%",
-                      }}
-                    >
-                      {viewrisk ? (
-                        <>
-                          <FormControl fullWidth>
-                            <FormLabel
-                              htmlFor=" Likelihood Scoring"
-                              className="font-semibold leading-none"
-                            >
-                              Likelihood Scoring
-                            </FormLabel>
-                            <Select
-                              labelId="likelihood-select-label"
-                              id="likelihood-select"
-                              label="Likelihood Scoring"
-                              name="likelihoodScoring"
-                              onChange={handelRiskInputChange}
-                              value={formValues.likelihoodScoring}
-                              error={!!errorsSub.likelihoodScoring}
-                              disabled
-                              sx={{
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "& .MuiSelect-icon": {
-                                  display: "none",
-                                },
-                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
-                              }}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {likelihoodValues.map((value) => (
-                                <MenuItem key={value} value={value}>
-                                  {value}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.likelihoodScoring && (
-                              <FormHelperText error>
-                                {errorsSub.likelihoodScoring}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </>
-                      ) : (
-                        <>
-                          <FormControl fullWidth>
-                            <InputLabel id="likelihood-select-label">
-                              Likelihood Scoring
-                            </InputLabel>
-                            <Select
-                              labelId="likelihood-select-label"
-                              id="likelihood-select"
-                              label="Likelihood Scoring"
-                              name="likelihoodScoring"
-                              onChange={handelRiskInputChange}
-                              value={formValues.likelihoodScoring}
-                              error={!!errorsSub.likelihoodScoring}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {likelihoodValues.map((value) => (
-                                <MenuItem key={value} value={value}>
-                                  {value}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.likelihoodScoring && (
-                              <FormHelperText error>
-                                {errorsSub.likelihoodScoring}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </>
-                      )}
-                    </Box>
-                    <Box
-                      sx={{
-                        width: 380,
-                        maxWidth: "48%",
-                      }}
-                    >
-                      {viewrisk ? (
-                        <>
-                          <FormLabel
-                            htmlFor="Frequency"
-                            className="font-semibold leading-none"
+                          {" "}
+                          <Box
+                            sx={{
+                              width: 380,
+                              maxWidth: "100%",
+                              margin: "15px 0 0 0"
+                            }}
                           >
-                            Frequency
-                          </FormLabel>
-                          <FormControl fullWidth>
-                            <Select
-                              labelId="severity-select-label"
-                              id="severity-select"
-                              label="Severity Scoring"
-                              name="severityScoring"
-                              value={formValues.severityScoring}
-                              onChange={handelRiskInputChange}
-                              error={!!errorsSub.severityScoring}
+                            <TextField
+                              fullWidth
+                              label="Frequency Scoring *"
+                              name="handelResidualRiskInputChange"
+                              value={formValues.residualFrequencyScoring}
                               disabled
-                              sx={{
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "& .MuiSelect-icon": {
-                                  display: "none",
-                                },
-                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
-                              }}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {likelihoodValues.map((value) => (
-                                <MenuItem key={value} value={value}>
-                                  {value}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.severityScoring && (
-                              <FormHelperText error>
-                                {errorsSub.severityScoring}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </>
-                      ) : (
-                        <>
-                          <FormControl fullWidth>
-                            <InputLabel id="severity-select-label">
-                              Severity Scoring
-                            </InputLabel>
-                            <Select
-                              labelId="severity-select-label"
-                              id="severity-select"
-                              label="Severity Scoring"
-                              name="severityScoring"
-                              value={formValues.severityScoring}
-                              onChange={handelRiskInputChange}
-                              error={!!errorsSub.severityScoring}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {likelihoodValues.map((value) => (
-                                <MenuItem key={value} value={value}>
-                                  {value}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.severityScoring && (
-                              <FormHelperText error>
-                                {errorsSub.severityScoring}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
+                            />
+                          </Box>
                         </>
                       )}
-                    </Box>
-                    <Box
-                      sx={{
-                        width: 380,
-                        maxWidth: "48%",
+                    </div>
+                  </div>{" "}
+                  <div className="flex flex-col-reverse">
+                    <div
+                      style={{
+                        // marginTop: "30px",
+                        justifyContent: "space-between",
+                     
                       }}
+                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full"
                     >
                       {viewrisk ? (
                         <>
                           <Box
                             sx={{
+                              width: 280,
+                              maxWidth: "100%",
                               display: "flex",
-                              flexDirection: "column", // Stack items vertically
+                              flexDirection: "column",
+                              margin: "15px 0 0 0",
+                            }}
+                          >
+                            <FormControl fullWidth>
+                              <FormLabel
+                                id="time-select-label"
+                                className="font-semibold leading-none"
+                              >
+                                Likelihood Scoring
+                              </FormLabel>
+                              <Select
+                                labelId="likelihood-select-label"
+                                id="likelihood-select"
+                                label="Likelihood Scoring"
+                                name="residualLikelihoodScoring"
+                                value={formValues.residualLikelihoodScoring}
+                                onChange={(e) => handelResidualRiskInputChange(e)}
+                                error={!!errorsSub.residualLikelihoodScoring}
+                                disabled
+                                sx={{
+                                  "& .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                    {
+                                      border: "none",
+                                    },
+                                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "& .MuiSelect-icon": {
+                                    display: "none",
+                                  },
+                                  "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                    {
+                                      padding: "0px",
+                                    },
+                                }}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {likelihoodValues.map((value) => (
+                                  <MenuItem key={value} value={value}>
+                                    {value}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.residualLikelihoodScoring && (
+                                <FormHelperText error>
+                                  {errorsSub.residualLikelihoodScoring}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Box>
+                        </>
+                      ) : (
+                        <>
+                          <Box
+                            sx={{
+                              width: 380,
+                              maxWidth: "100%",
+                              margin: "15px 0 0 0",
+                            }}
+                          >
+                            <FormControl fullWidth>
+                              <InputLabel id="likelihood-select-label">
+                                Likelihood Scoring
+                              </InputLabel>
+                              <Select
+                                labelId="likelihood-select-label"
+                                id="likelihood-select"
+                                label="Likelihood Scoring"
+                                name="residualLikelihoodScoring"
+                                value={formValues.residualLikelihoodScoring}
+                                onChange={(e) => handelResidualRiskInputChange(e)}
+                                error={!!errorsSub.residualLikelihoodScoring}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {likelihoodValues.map((value) => (
+                                  <MenuItem key={value} value={value}>
+                                    {value}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.residualLikelihoodScoring && (
+                                <FormHelperText error>
+                                  {errorsSub.residualLikelihoodScoring}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Box>
+                        </>
+                      )}
+
+                      {viewrisk ? (
+                        <>
+                          <Box
+                            sx={{
+                              width: 280,
+                              maxWidth: "100%",
+                              display: "flex",
+                              flexDirection: "column",
+                              margin: "15px 0 0 0",
+                            }}
+                          >
+                            <FormControl fullWidth>
+                              <FormLabel
+                                id="time-select-label"
+                                className="font-semibold leading-none"
+                              >
+                                Severity Scoring
+                              </FormLabel>
+                              <Select
+                                labelId="severity-select-label"
+                                id="severity-select"
+                                label="Residual Severity Scoring"
+                                name="residualSeverityScoring"
+                                value={formValues.residualSeverityScoring}
+                                onChange={(e) => handelResidualRiskInputChange(e)}
+                                error={!!errorsSub.residualSeverityScoring}
+                                disabled
+                                sx={{
+                                  "& .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                    {
+                                      border: "none",
+                                    },
+                                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                                    border: "none",
+                                  },
+                                  "& .MuiSelect-icon": {
+                                    display: "none",
+                                  },
+                                  "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                    {
+                                      padding: "0px",
+                                    },
+                                }}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {likelihoodValues.map((value) => (
+                                  <MenuItem key={value} value={value}>
+                                    {value}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.residualSeverityScoring && (
+                                <FormHelperText error>
+                                  {errorsSub.residualSeverityScoring}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Box>
+                        </>
+                      ) : (
+                        <>
+                          <Box
+                            sx={{
+                              width: 380,
+                              maxWidth: "100%",
+                              margin: "15px 0 0 0",
+                            }}
+                          >
+                            <FormControl fullWidth>
+                              <InputLabel id="severity-select-label">
+                                Severity Scoring
+                              </InputLabel>
+                              <Select
+                                labelId="severity-select-label"
+                                id="severity-select"
+                                label="Residual Severity Scoring"
+                                name="residualSeverityScoring"
+                                value={formValues.residualSeverityScoring}
+                                onChange={(e) => handelResidualRiskInputChange(e)}
+                                error={!!errorsSub.residualSeverityScoring}
+                              >
+                                <MenuItem value="" disabled>
+                                  <em>None</em>
+                                </MenuItem>
+                                {likelihoodValues.map((value) => (
+                                  <MenuItem key={value} value={value}>
+                                    {value}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                              {errorsSub.residualSeverityScoring && (
+                                <FormHelperText error>
+                                  {errorsSub.residualSeverityScoring}
+                                </FormHelperText>
+                              )}
+                            </FormControl>
+                          </Box>
+                        </>
+                      )}
+
+                      {viewrisk ? (
+                        <>
+                          <Box
+                            sx={{
+                              width: 280,
+                              maxWidth: "100%",
+                              display: "flex",
+                              flexDirection: "column",
+                              margin: "15px 0 0 0",
                             }}
                           >
                             <FormLabel
-                              htmlFor="hazardDetail"
+                              htmlFor="Residual Risk"
                               className="font-semibold leading-none"
                             >
-                              Potential Risk
+                              Residual Risk
                             </FormLabel>
                             &nbsp;&nbsp; &nbsp;&nbsp;
                             <span style={{ color: "#a3a9b4" }}>
-                              {formValues.potentialRisk}
+                              {formValues.residualRisk}
                             </span>
                           </Box>
                         </>
                       ) : (
                         <>
-                          <TextField
-                            fullWidth
-                            label="Potential Risk"
-                            name="potentialRisk"
-                            value={formValues.potentialRisk}
-                            disabled
-                          />
+                          <Box
+                            sx={{
+                              width: 380,
+                              maxWidth: "100%",
+                              margin: "15px 0 0 0",
+                            }}
+                          >
+                            <TextField
+                              fullWidth
+                              label="Residual Risk"
+                              name="residualRisk"
+                              value={formValues.residualRisk}
+                              disabled
+                            />
+                          </Box>
                         </>
                       )}
-                    </Box>
-                  </div>
-                </div>{" "}
-                <h3 style={{ padding: "10px" }}>
-                  <b>Control Measures</b>
-                </h3>
-                <div className="flex flex-col-reverse">
-                  <div
-                    style={{
-                      marginTop: "30px",
-                      justifyContent: "space-between",
-                      margin: "10px",
-                    }}
-                    className="flex flex-row "
-                  >
-                    {viewrisk ? (
-                      <>
-                        <Box
-                          sx={{
-                            width: 280,
-                            maxWidth: "38%",
-                            display: "flex",
-                            flexDirection: "column", // Stack items vertically
-                          }}
-                        >
-                          <FormLabel
-                            htmlFor="hazardDetail"
-                            className="font-semibold leading-none"
-                          >
-                            Human
-                          </FormLabel>
-                          &nbsp;&nbsp; &nbsp;&nbsp;
-                          <span>{formValues.humanControlMeasure}</span>
-                        </Box>
-                      </>
-                    ) : (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexDirection: "column",
-                        }}
-                      >
-                        <TextField
-                          fullWidth
-                          label="Human * "
-                          name="humanControlMeasure"
-                          onChange={handelRiskInputChange}
-                          value={formValues.humanControlMeasure}
-                          error={errorsSub.humanControlMeasure}
-                          helperText={errorsSub.humanControlMeasure}
-                        />
-                      </Box>
-                    )}
-                    {viewrisk ? (
-                      <>
-                        <Box
-                          sx={{
-                            width: 280,
-                            maxWidth: "48%",
-                            display: "flex",
-                            flexDirection: "column", // Stack items vertically
-                          }}
-                        >
-                          <FormLabel
-                            htmlFor="hazardDetail"
-                            className="font-semibold leading-none"
-                          >
-                            Technical
-                          </FormLabel>
-                          &nbsp;&nbsp; &nbsp;&nbsp;
-                          <span>{formValues.technicalControlMeasure}</span>
-                        </Box>
-                      </>
-                    ) : (
-                      <Box
-                        sx={{
-                          width: 480,
-                          maxWidth: "68%",
-                        }}
-                      >
-                        <TextField
-                          fullWidth
-                          label="Technical *"
-                          name="technicalControlMeasure"
-                          onChange={handelRiskInputChange}
-                          value={formValues.technicalControlMeasure}
-                          error={errorsSub.technicalControlMeasure}
-                          helperText={errorsSub.technicalControlMeasure}
-                        />
-                      </Box>
-                    )}
-
-                    {viewrisk ? (
-                      <>
-                        <Box
-                          sx={{
-                            width: 280,
-                            maxWidth: "38%",
-                            display: "flex",
-                            flexDirection: "column", // Stack items vertically
-                          }}
-                        >
-                          <FormLabel
-                            htmlFor="hazardDetail"
-                            className="font-semibold leading-none"
-                          >
-                            Organisational
-                          </FormLabel>
-                          &nbsp;&nbsp; &nbsp;&nbsp;
-                          <span>{formValues.organisationalControlMeasure}</span>
-                        </Box>
-                      </>
-                    ) : (
-                      <Box
-                        sx={{
-                          width: 380,
-                          maxWidth: "48%",
-                        }}
-                      >
-                        <TextField
-                          fullWidth
-                          label="Organisational *"
-                          name="organisationalControlMeasure"
-                          onChange={handelRiskInputChange}
-                          value={formValues.organisationalControlMeasure}
-                          error={errorsSub.organisationalControlMeasure}
-                          helperText={errorsSub.organisationalControlMeasure}
-                        />
-                      </Box>
-                    )}
-                  </div>
-                </div>{" "}
-                <h3 style={{ padding: "10px" }}>
-                  <b>Residual Risk</b>
-                </h3>
-                <div className="flex flex-col-reverse">
-                  <div
-                    style={{
-                      marginTop: "30px",
-                      justifyContent: "space-between",
-                      margin: "10px",
-                    }}
-                    className="flex flex-row "
-                  >
-                    {viewrisk ? (
-                      <>
-                        <Box
-                          sx={{
-                            width: 280,
-                            maxWidth: "38%",
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
-                          <FormControl fullWidth>
-                            <FormLabel
-                              id="time-select-label"
-                              className="font-semibold leading-none"
-                            >
-                              Time
-                            </FormLabel>
-                            <Select
-                              labelId="time-select-label"
-                              id="time-select"
-                              label="Time * "
-                              name="modifiedTime"
-                              value={formValues.modifiedTime}
-                              onChange={(e) => handelResidualRiskInputChange(e)}
-                              error={!!errorsSub.modifiedTime}
-                              disabled
-                              sx={{
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "& .MuiSelect-icon": {
-                                  display: "none",
-                                },
-                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
-                              }}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {potentialTimeDetails.map((option) => (
-                                <MenuItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.modifiedTime && (
-                              <FormHelperText error>
-                                {errorsSub.modifiedTime}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </Box>
-                      </>
-                    ) : (
-                      <>
-                        <Box
-                          sx={{
-                            width: 380,
-                            maxWidth: "48%",
-                          }}
-                        >
-                          <FormControl fullWidth>
-                            <InputLabel id="time-select-label">
-                              Time *
-                            </InputLabel>
-                            <Select
-                              labelId="time-select-label"
-                              id="time-select"
-                              label="Time * "
-                              name="modifiedTime"
-                              value={formValues.modifiedTime}
-                              onChange={(e) => handelResidualRiskInputChange(e)}
-                              error={!!errorsSub.modifiedTime}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {potentialTimeDetails.map((option) => (
-                                <MenuItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.modifiedTime && (
-                              <FormHelperText error>
-                                {errorsSub.modifiedTime}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </Box>
-                      </>
-                    )}
-
-                    {viewrisk ? (
-                      <>
-                        <Box
-                          sx={{
-                            width: 280,
-                            maxWidth: "48%",
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
-                          <FormControl fullWidth>
-                            <FormLabel
-                              id="time-select-label"
-                              className="font-semibold leading-none"
-                            >
-                              Frequency
-                            </FormLabel>
-                            <Select
-                              labelId="time-select-label"
-                              id="time-select"
-                              label="Frequency *"
-                              name="modifiedFrequencyDetails"
-                              value={formValues.modifiedFrequencyDetails}
-                              onChange={(e) => handelResidualRiskInputChange(e)}
-                              error={!!errorsSub.modifiedFrequencyDetails}
-                              disabled
-                              sx={{
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "& .MuiSelect-icon": {
-                                  display: "none",
-                                },
-                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
-                              }}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {potentialFrequencyDetails.map((option) => (
-                                <MenuItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.modifiedFrequencyDetails && (
-                              <FormHelperText error>
-                                {errorsSub.modifiedFrequencyDetails}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </Box>
-                      </>
-                    ) : (
-                      <>
-                        <Box
-                          sx={{
-                            width: 380,
-                            maxWidth: "48%",
-                          }}
-                        >
-                          <FormControl fullWidth>
-                            <InputLabel id="time-select-label">
-                              Frequency *
-                            </InputLabel>
-                            <Select
-                              labelId="time-select-label"
-                              id="time-select"
-                              label="Frequency *"
-                              name="modifiedFrequencyDetails"
-                              value={formValues.modifiedFrequencyDetails}
-                              onChange={(e) => handelResidualRiskInputChange(e)}
-                              error={!!errorsSub.modifiedFrequencyDetails}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {potentialFrequencyDetails.map((option) => (
-                                <MenuItem
-                                  key={option.value}
-                                  value={option.value}
-                                >
-                                  {option.text}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.modifiedFrequencyDetails && (
-                              <FormHelperText error>
-                                {errorsSub.modifiedFrequencyDetails}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </Box>
-                      </>
-                    )}
-                    {viewrisk ? (
-                      <>
-                        {" "}
-                        <Box
-                          sx={{
-                            width: 280,
-                            maxWidth: "38%",
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
-                          <FormLabel
-                            htmlFor="hazardDetail"
-                            className="font-semibold leading-none"
-                          >
-                            Frequency Scoring
-                          </FormLabel>
-                          &nbsp;&nbsp; &nbsp;&nbsp;
-                          <span style={{ color: "#a3a9b4" }}>
-                            {formValues.residualFrequencyScoring}
-                          </span>
-                        </Box>
-                      </>
-                    ) : (
-                      <>
-                        {" "}
-                        <Box
-                          sx={{
-                            width: 380,
-                            maxWidth: "48%",
-                          }}
-                        >
-                          <TextField
-                            fullWidth
-                            label="Frequency Scoring *"
-                            name="handelResidualRiskInputChange"
-                            value={formValues.residualFrequencyScoring}
-                            disabled
-                          />
-                        </Box>
-                      </>
-                    )}
-                  </div>
-                </div>{" "}
-                <div className="flex flex-col-reverse">
-                  <div
-                    style={{
-                      marginTop: "30px",
-                      justifyContent: "space-between",
-                      margin: "10px",
-                    }}
-                    className="flex flex-row "
-                  >
-                    {viewrisk ? (
-                      <>
-                        <Box
-                          sx={{
-                            width: 280,
-                            maxWidth: "38%",
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
-                          <FormControl fullWidth>
-                            <FormLabel
-                              id="time-select-label"
-                              className="font-semibold leading-none"
-                            >
-                              Likelihood Scoring
-                            </FormLabel>
-                            <Select
-                              labelId="likelihood-select-label"
-                              id="likelihood-select"
-                              label="Likelihood Scoring"
-                              name="residualLikelihoodScoring"
-                              value={formValues.residualLikelihoodScoring}
-                              onChange={(e) => handelResidualRiskInputChange(e)}
-                              error={!!errorsSub.residualLikelihoodScoring}
-                              disabled
-                              sx={{
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "& .MuiSelect-icon": {
-                                  display: "none",
-                                },
-                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
-                              }}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {likelihoodValues.map((value) => (
-                                <MenuItem key={value} value={value}>
-                                  {value}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.residualLikelihoodScoring && (
-                              <FormHelperText error>
-                                {errorsSub.residualLikelihoodScoring}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </Box>
-                      </>
-                    ) : (
-                      <>
-                        <Box
-                          sx={{
-                            width: 380,
-                            maxWidth: "48%",
-                          }}
-                        >
-                          <FormControl fullWidth>
-                            <InputLabel id="likelihood-select-label">
-                              Likelihood Scoring
-                            </InputLabel>
-                            <Select
-                              labelId="likelihood-select-label"
-                              id="likelihood-select"
-                              label="Likelihood Scoring"
-                              name="residualLikelihoodScoring"
-                              value={formValues.residualLikelihoodScoring}
-                              onChange={(e) => handelResidualRiskInputChange(e)}
-                              error={!!errorsSub.residualLikelihoodScoring}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {likelihoodValues.map((value) => (
-                                <MenuItem key={value} value={value}>
-                                  {value}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.residualLikelihoodScoring && (
-                              <FormHelperText error>
-                                {errorsSub.residualLikelihoodScoring}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </Box>
-                      </>
-                    )}
-
-                    {viewrisk ? (
-                      <>
-                        <Box
-                          sx={{
-                            width: 280,
-                            maxWidth: "48%",
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
-                          <FormControl fullWidth>
-                            <FormLabel
-                              id="time-select-label"
-                              className="font-semibold leading-none"
-                            >
-                              Severity Scoring
-                            </FormLabel>
-                            <Select
-                              labelId="severity-select-label"
-                              id="severity-select"
-                              label="Residual Severity Scoring"
-                              name="residualSeverityScoring"
-                              value={formValues.residualSeverityScoring}
-                              onChange={(e) => handelResidualRiskInputChange(e)}
-                              error={!!errorsSub.residualSeverityScoring}
-                              disabled
-                              sx={{
-                                "& .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
-                                "&:hover .MuiOutlinedInput-notchedOutline": {
-                                  border: "none",
-                                },
-                                "& .MuiSelect-icon": {
-                                  display: "none",
-                                },
-                                "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
-                              }}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {likelihoodValues.map((value) => (
-                                <MenuItem key={value} value={value}>
-                                  {value}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.residualSeverityScoring && (
-                              <FormHelperText error>
-                                {errorsSub.residualSeverityScoring}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </Box>
-                      </>
-                    ) : (
-                      <>
-                        <Box
-                          sx={{
-                            width: 380,
-                            maxWidth: "48%",
-                          }}
-                        >
-                          <FormControl fullWidth>
-                            <InputLabel id="severity-select-label">
-                              Severity Scoring
-                            </InputLabel>
-                            <Select
-                              labelId="severity-select-label"
-                              id="severity-select"
-                              label="Residual Severity Scoring"
-                              name="residualSeverityScoring"
-                              value={formValues.residualSeverityScoring}
-                              onChange={(e) => handelResidualRiskInputChange(e)}
-                              error={!!errorsSub.residualSeverityScoring}
-                            >
-                              <MenuItem value="" disabled>
-                                <em>None</em>
-                              </MenuItem>
-                              {likelihoodValues.map((value) => (
-                                <MenuItem key={value} value={value}>
-                                  {value}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                            {errorsSub.residualSeverityScoring && (
-                              <FormHelperText error>
-                                {errorsSub.residualSeverityScoring}
-                              </FormHelperText>
-                            )}
-                          </FormControl>
-                        </Box>
-                      </>
-                    )}
-
-                    {viewrisk ? (
-                      <>
-                        <Box
-                          sx={{
-                            width: 280,
-                            maxWidth: "38%",
-                            display: "flex",
-                            flexDirection: "column",
-                          }}
-                        >
-                          <FormLabel
-                            htmlFor="Residual Risk"
-                            className="font-semibold leading-none"
-                          >
-                            Residual Risk
-                          </FormLabel>
-                          &nbsp;&nbsp; &nbsp;&nbsp;
-                          <span style={{ color: "#a3a9b4" }}>
-                            {formValues.residualRisk}
-                          </span>
-                        </Box>
-                      </>
-                    ) : (
-                      <>
-                        <Box
-                          sx={{
-                            width: 380,
-                            maxWidth: "48%",
-                          }}
-                        >
-                          <TextField
-                            fullWidth
-                            label="Residual Risk"
-                            name="residualRisk"
-                            value={formValues.residualRisk}
-                            disabled
-                          />
-                        </Box>
-                      </>
-                    )}
-                  </div>
-                </div>{" "}
-              </div>
-            </Box>
-            <div
-              className="flex justify-end"
-              style={{
-                paddingLeft: "10px",
-                paddingBottom: "5px",
-              }}
-            >
-              <Button
-                variant="contained"
-                disabled
+                    </div>
+                  </div>{" "}
+                </div>
+              </Box>
+              <div
+                className="flex justify-end"
                 style={{
-                  backgroundColor:
-                    formValues.residualRiskClassification == 1
-                      ? "red"
-                      : formValues.residualRiskClassification == 2
-                        ? "purple"
-                        : formValues.residualRiskClassification == 3
-                          ? "orange"
-                          : formValues.residualRiskClassification == 4
-                            ? "yellow"
-                            : formValues.residualRiskClassification == 5
-                              ? "green"
-                              : "",
-                  borderRadius: "5px",
-                  padding: "10px 20px",
-                  fontSize: "14px",
-                  color:
-                    formValues.residualRiskClassification == 4
-                      ? "#000"
-                      : "white",
-                  cursor: "pointer",
+                  paddingLeft: "10px",
+                  paddingBottom: "5px",
+                  margin: "15px 0 0 0",
                 }}
               >
-                {Classifications}
-              </Button>
+                <Button
+                  variant="contained"
+                  disabled
+                  style={{
+                    backgroundColor:
+                      formValues.residualRiskClassification == 1
+                        ? "red"
+                        : formValues.residualRiskClassification == 2
+                          ? "purple"
+                          : formValues.residualRiskClassification == 3
+                            ? "orange"
+                            : formValues.residualRiskClassification == 4
+                              ? "yellow"
+                              : formValues.residualRiskClassification == 5
+                                ? "green"
+                                : "",
+                    borderRadius: "5px",
+                    padding: "10px 20px",
+                    fontSize: "14px",
+                    color:
+                      formValues.residualRiskClassification == 4
+                        ? "#000"
+                        : "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  {Classifications}
+                </Button>
+              </div>
             </div>
-
-            <div>&nbsp;</div>
             <div className="flex items-center w-full border-b pb-5 justify-between"></div>
-            <div className="flex justify-end ">
+            <div className="flex justify-end p-30 pt-24 pb-24">
               {!viewrisk && (
                 <>
                   <Button
-                    className="whitespace-nowrap mt-5"
+                    className="whitespace-nowrap"
                     style={{
                       border: "1px solid",
                       backgroundColor: "#0000",
                       color: "black",
                       borderColor: "rgba(203,213,225)",
-                      marginLeft: "10px",
-                      marginTop: "10px",
+                      marginLeft: "10px"
                     }}
                     variant="contained"
                   >
@@ -5594,10 +5593,7 @@ function EvaluationChange({
                   <Button
                     className="whitespace-nowrap ms-5 "
                     variant="contained"
-                    color="secondary"
-                    style={{
-                      marginTop: "10px",
-                    }}
+                    color="secondary"                    
                     onClick={() =>
                       handelRiskSubmit(
                         editRiskAnalysDetail.length ? "Update" : "Submit"
@@ -5617,7 +5613,7 @@ function EvaluationChange({
                     color: "black",
                     borderColor: "rgba(203,213,225)",
                     marginLeft: "10px",
-                    marginTop: "10px",
+                    // marginTop: "10px",
                   }}
                   variant="contained"
                   onClick={goBack}

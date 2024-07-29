@@ -45,8 +45,8 @@ function Initiation(props) {
     props;
   const StyledBadge = withStyles((theme) => ({
     badge: {
-      right: -3,
-      top: 13,
+      right: 0,
+      top: 5,
       border: `2px solid ${theme.palette.background.paper}`,
       padding: "0 4px",
       backgroundColor: "#2c3e50", // Adjust background color to match the image
@@ -712,7 +712,7 @@ function Initiation(props) {
                     }
                   >
                     <Button
-                      className="whitespace-nowrap mt-5"
+                      className="whitespace-nowrap "
                       style={{
                         border: "1px solid",
                         backgroundColor: "transparent",

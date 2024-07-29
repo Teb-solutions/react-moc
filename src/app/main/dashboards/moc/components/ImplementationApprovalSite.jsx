@@ -240,7 +240,7 @@ const ImplementationApprovalSite = ({
                             </div>
                           )}
                         </div>
-                        <div className="task-details p-0 mt-10">
+                        <div className="task-details p-0 mb-10 pb-10 mt-10">
                           <div className="task-detail prose prose-sm max-w-5xl">
                             <div className="task-detail-item mt-10 p-0">
                               <span className="task-detail-label bg-default rounded d-inline-block text-secondary font-semibold">
@@ -312,12 +312,13 @@ const ImplementationApprovalSite = ({
                               </div>
                             </div>
                           </div>
-                          <div>&nbsp;</div>
+                        
 
                           {imptsk.implementationReviews.length > 0 ||
                           showReview ? (
                             <div>
                               <Accordion
+                               className=" mt-10 pt-10"
                                 expanded={expanded == imptsk.id}
                                 onChange={handleExpansionChange(imptsk.id)}
                               >
@@ -606,6 +607,7 @@ const ImplementationApprovalSite = ({
                               </div>
                             )
                           )}
+                          
                         </div>
                       </td>
                     </tr>
@@ -633,63 +635,58 @@ const ImplementationApprovalSite = ({
           <div className="flex items-center w-full border-b p-30 pt-24 pb-24 justify-between">
             <h2 className="text-2xl font-semibold">Approval</h2>
           </div>
-          <div className="p-30 pt-24 pb-24">
+          <div>
             {AppActivity.isComplete && AppActivity.status !== "Pending" ? (
-              <div
-                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                style={{ width: "40%" }}
-              >
+              <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "40%" }}>
                 <span className="font-semibold leading-none">
                   Approver Comment: {ApprovalManager?.remark}
                 </span>
               </div>
             ) : (
-              <div
-                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                style={{ width: "100%" }}
-              >
-                {currentActivityForm.canEdit && (
-                  <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                    <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
-                      <FormLabel
-                        htmlFor="reasonForNewDocument"
-                        className="font-semibold leading-none"
-                      >
-                        Comment
-                      </FormLabel>
-                      <OutlinedInput
-                        id="reasonForNewDocument"
-                        name="reasonForNewDocument"
-                        onChange={handleChangeRemark}
-                        label="Reason For Change*"
-                        className="mt-5"
-                        value={valueRemark}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            borderRadius: "8px",
-                            backgroundColor: "#f0f0f0",
-                            "& fieldset": {
-                              borderColor: "#ccc",
+              <div className="inventory-grid grid items-center gap-4 " style={{ width: "100%" }}>
+                <div className="p-30 pt-24 pb-24 w-full border-b">
+                  {currentActivityForm.canEdit && (
+                    <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                      <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
+                        <FormLabel
+                          htmlFor="reasonForNewDocument"
+                          className="font-semibold leading-none"
+                        >
+                          Comment
+                        </FormLabel>
+                        <OutlinedInput
+                          id="reasonForNewDocument"
+                          name="reasonForNewDocument"
+                          onChange={handleChangeRemark}
+                          label="Reason For Change*"
+                          className="mt-5"
+                          value={valueRemark}
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "8px",
+                              backgroundColor: "#f0f0f0",
+                              "& fieldset": {
+                                borderColor: "#ccc",
+                              },
+                              "&:hover fieldset": {
+                                borderColor: "#999",
+                              },
+                              "&.Mui-focused fieldset": {
+                                borderColor: "#333",
+                              },
                             },
-                            "&:hover fieldset": {
-                              borderColor: "#999",
-                            },
-                            "&.Mui-focused fieldset": {
-                              borderColor: "#333",
-                            },
-                          },
-                        }}
-                      />
-                    </FormControl>
-                  </Box>
-                )}
-                <div>&nbsp;</div>
-                <div>&nbsp;</div>
-                <div className="flex items-center w-full border-b justify-between"></div>
+                          }}
+                        />
+                      </FormControl>
+                    </Box>
+                  )}             
+                  {/* <div className="flex items-center w-full border-b justify-between"></div> */}
+                </div>
+                <div className="p-30 pt-24 pb-24">
                 {currentActivityForm.canExecute && (
                   <div className="flex justify-end">
                     <Button
-                      className="whitespace-nowrap mt-12"
+                      className="whitespace-nowrap"
                       style={{
                         border: "1px solid",
                         backgroundColor: "#0000",
@@ -710,7 +707,6 @@ const ImplementationApprovalSite = ({
                         className="whitespace-nowrap ms-5"
                         variant="contained"
                         color="secondary"
-                        style={{ marginTop: "10px" }}
                         onClick={(e) =>
                           SubmitApprovelCreate(e, btn.uid, btn.name, btn.type)
                         }
@@ -720,6 +716,7 @@ const ImplementationApprovalSite = ({
                     ))}
                   </div>
                 )}
+                </div>
               </div>
             )}
           </div>

@@ -218,26 +218,25 @@ const Access = () => {
         style={{ backgroundColor: "white", borderBottom: "1px solid #ededed" }}
       >
         <MocHeader />{" "}
-        <div>
-          <div className="flex d-flex p-30 pt-24 pb-24 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
-            <InputLabel
-              id="category-select-label"
-              className="text-2xl mt-0"
-              style={{ color: "black" }}
-            >
+        <div >
+          <div className="flex d-flex p-30 pt-24 pb-24 flex-col justify-between border-b flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
+            <InputLabel id="category-select-label" className="text-2xl mt-0" style={{ color: "black" }}>
               <b>Access</b>
             </InputLabel>
           </div>
-          {!leftSidebarOpen && (
-            <FuseSvgIcon
-              className="text-48 cursor-pointer"
-              size={24}
-              color="action"
-              onClick={handelOpenSide}
-            >
-              heroicons-outline:menu
-            </FuseSvgIcon>
-          )}
+          <div className="desktop_hide text-end p-30 pt-24 pb-24">
+            {!leftSidebarOpen && (
+              <FuseSvgIcon
+                className="text-48 cursor-pointer "
+                size={24}
+                style={{display: "inline-block;"}}
+                color="action"
+                onClick={handelOpenSide}
+              >
+                heroicons-outline:menu
+              </FuseSvgIcon>
+            )}
+          </div>
         </div>
       </div>
       <FusePageSimple
@@ -356,20 +355,20 @@ const Access = () => {
         leftSidebarContent={
           <div style={{ backgroundColor: "white" }}>
             <div
-              className="py-10"
-              style={{ marginTop: "18px", marginLeft: "30px" }}
-            >
-              {smallScreen && (
-                <FuseSvgIcon
-                  className="text-48 cursor-pointer text-end"
-                  size={24}
-                  color="action"
-                  onClick={handelClose}
-                >
-                  heroicons-outline:menu
-                </FuseSvgIcon>
-              )}
-              <div className="text-3xl font-bold tracking-tighter">Role</div>
+              className="py-10" style={{ marginTop: "18px", marginLeft: "30px" }}>
+                <div className="close_popup">                
+                  <FuseSvgIcon
+                    className="text-48 cursor-pointer text-end desktop_hide"
+                    size={24}
+                    color="action"
+                    onClick={handelClose}
+                  >
+                    heroicons-outline:x
+                  </FuseSvgIcon>
+                </div>
+              <div className="text-3xl font-bold tracking-tighter">
+                Role
+              </div>
               <div style={{ marginTop: "25px" }}>
                 <ul className="mt-3 side-nav-s fuse-vertical-navigation-item-title-wrapper pr-30">
                   {roleList.map((role) => (
