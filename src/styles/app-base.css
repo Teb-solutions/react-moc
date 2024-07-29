@@ -787,7 +787,7 @@ body.sidebar1-open .maincntainer {
 .custom-update-button {
   position: absolute;
   right: 10px;
-  top: 60%;
+  top: 55%;
   transform: translateY(-50%);
 
   border-radius: 22px !important;
@@ -1032,5 +1032,10 @@ body.sidebar1-open .maincntainer {
   body.sidebar1-open .maincntainer {
     padding-right: 100%;
   }
-  .sidebar1{right: -100%;width: 100%; max-width: 100%; top: 50px;}
+  .sidebar1 {
+    right: -100%;
+    width: 100%;
+    max-width: 100%;
+    top: 50px;
+  }
 }

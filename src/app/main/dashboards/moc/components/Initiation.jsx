@@ -291,8 +291,7 @@ function Initiation(props) {
                     style={{ backgroundColor: "white" }}
                     onClick={() => setOpenDrawer(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>

@@ -347,8 +347,7 @@ function InitiationApproval(props) {
                     style={{ backgroundColor: "white" }}
                     onClick={() => setOpenDrawer(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -473,8 +472,7 @@ function InitiationApproval(props) {
                     style={{ backgroundColor: "white" }}
                     onClick={() => setFileDetails(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -686,8 +684,7 @@ function InitiationApproval(props) {
                     style={{ backgroundColor: "white" }}
                     onClick={() => setOpenDrawer1(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -812,8 +809,7 @@ function InitiationApproval(props) {
                     style={{ backgroundColor: "white" }}
                     onClick={() => setFileDetails1(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -989,7 +985,14 @@ function InitiationApproval(props) {
                     Initiated On
                   </div>
                   <div className="text-lg leading-6 font-medium">
-                    {ApprovalDetails?.requestDate}
+                    {new Date(ApprovalDetails?.requestDate).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
                   </div>
                 </div>
               </div>
