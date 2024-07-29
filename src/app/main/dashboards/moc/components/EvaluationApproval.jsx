@@ -64,6 +64,7 @@ const EvaluationApproval = ({
   const [fileDetails, setFileDetails] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [listDocument, setListDocument] = useState([]);
+  const [listDocument1, setListDocument1] = useState([]);
   const [documenDowToken, setDocumenDowToken] = useState("");
   const [selectedFile, setSelectedFile] = useState({
     name: "",
@@ -87,6 +88,8 @@ const EvaluationApproval = ({
 
   const [newRemark, setNewRemark] = useState("");
   const [newImpactTaskRemark, setNewImpactTaskRemark] = useState("");
+
+  const [open, setOpen] = useState(false);
 
   const handleInputChange = (event, type) => {
     if (type === "Consultaion") {
@@ -131,9 +134,9 @@ const EvaluationApproval = ({
       .post(`/ApprovalManager/CreateComment/${assetEvaluationId}/0`, payload)
       .then((resp) => {
         if (type == "Consultaion") {
-          toast.success("Consultation comment added.");
+          toast?.success("Consultation comment added.");
         } else {
-          toast.success("Task comment added.");
+          toast?.success("Task comment added.");
         }
         setNewRemark("");
         setNewImpactTaskRemark("");
@@ -190,13 +193,14 @@ const EvaluationApproval = ({
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "auto",
+    width: "1200px",
+    maxWidth: "80vw",
+    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
     boxShadow: 24,
-    p: 4,
-    padding: "1px",
+    maxWidth: "95%",
   };
 
   const BoldLabel = styled("label")({
@@ -246,7 +250,7 @@ const EvaluationApproval = ({
           }
         )
         .then((resp) => {
-          toast.success("Review successfully added");
+          toast?.success("Review successfully added");
           setHandelCommentRemark("");
           apiAuth
             .get(
@@ -265,7 +269,7 @@ const EvaluationApproval = ({
           }
         )
         .then((resp) => {
-          toast.success("Review successfully updated");
+          toast?.success("Review successfully updated");
           apiAuth
             .get(
               `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
@@ -286,7 +290,7 @@ const EvaluationApproval = ({
       .then((resp) => {
         if (value == 1) {
           setshowReview(true);
-          toast.success("Review successfully added");
+          toast?.success("Review successfully added");
           apiAuth
             .get(
               `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
@@ -295,7 +299,7 @@ const EvaluationApproval = ({
               setContentDetails(resp.data.data);
             });
         } else {
-          toast.success("Review successfully Updated");
+          toast?.success("Review successfully Updated");
           apiAuth
             .get(
               `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
@@ -343,7 +347,7 @@ const EvaluationApproval = ({
         ActivityCode: lastActCode.code,
       })
       .then((response) => {
-        toast.success("Successfully marked the item as reviewed");
+        toast?.success("Successfully marked the item as reviewed");
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
           [id]: true,
@@ -363,7 +367,7 @@ const EvaluationApproval = ({
         ActivityCode: lastActCode.code,
       })
       .then((response) => {
-        toast.success("Successfully marked the item as reviewed");
+        toast?.success("Successfully marked the item as reviewed");
 
         setReviewed((prevReviewed) => ({
           ...prevReviewed,
@@ -422,21 +426,22 @@ const EvaluationApproval = ({
       Version: lastActCode?.version,
     };
     console.log(payload, "payload");
-
     apiAuth
       .put(`/SummaryDetails/SendComment/${assetEvaluationId}`, payload)
       .then((response) => {
-        toast.success(
+        toast?.success(
           "Selected tasks successfully sent for external consultation"
         );
-        handlehandledateExtendClose();
+
         apiAuth
           .get(
             `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
           )
           .then((resp) => {
-            showSendPopup(false);
             setIsLoading(false);
+            setDateExtendOpen(false);
+
+            setShowSendPopup(false);
 
             setContentDetails(resp.data.data);
           });
@@ -476,7 +481,7 @@ const EvaluationApproval = ({
         } else {
           setIsLoading(false);
 
-          toast.error(response.data.message);
+          toast?.error(response.data.message);
         }
       })
       .catch((error) => {
@@ -569,6 +574,11 @@ const EvaluationApproval = ({
     setOpenDrawer(false);
   };
 
+  const handleModalClose1 = () => {
+    setOpen(false);
+    setOpenDrawer(false);
+  };
+
   const handleSubmitAsset = (e) => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
@@ -622,8 +632,353 @@ const EvaluationApproval = ({
       });
   };
 
+  const ListDoc1 = (id) => {
+    apiAuth.get(`/DocumentManager/SummaryDoclist/${id}`).then((Resp) => {
+      setListDocument1(Resp?.data?.data);
+    });
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+    ListDoc1(assetEvaluationId);
+  };
+
   return (
     <div className="w-full h-full">
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={open}
+        onClose={handleModalClose1}
+        closeAfterTransition
+        // Customize backdrop appearance
+        BackdropComponent={Backdrop}
+        // Props for backdrop customization
+        BackdropProps={{
+          timeout: 500, // Adjust as needed
+          style: {
+            // Add backdrop styles here
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+        }}
+      >
+        <Fade in={open}>
+          <Box sx={style1}>
+            <Box sx={{ flex: 1 }}>
+              <Box className="flex justify-between" style={{ margin: "30px" }}>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "3rem",
+                  }}
+                >
+                  File Manager
+                  <Typography id="transition-modal-subtitle" component="h2">
+                    {contentDetails.documentCount} Files
+                  </Typography>
+                </Typography>
+                <Box>
+                  {/* <Button
+                    className=""
+                    variant="contained"
+                    color="secondary"
+                    onClick={toggleDrawer(true)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+                    <span className="mx-4 sm:mx-8">Upload File</span>
+                  </Button> */}
+                </Box>
+              </Box>
+              <Box>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                  component="div"
+                  style={{
+                    backgroundColor: "#e3eeff80",
+                  }}
+                >
+                  {listDocument1.map((doc, index) => (
+                    <div className="content " key={index}>
+                      <div
+                        onClick={() => handelDetailDoc(doc)}
+                        style={{ textAlign: "-webkit-center" }}
+                      >
+                        {doc.fileType === "JPG" ? (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        ) : doc.fileType === "JPG" ? (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        ) : (
+                          <img src="/assets/images/etc/icon_N.png" style={{}} />
+                        )}
+                        <h6>{doc?.name}</h6>
+                        <h6>by {doc?.staffName}</h6>
+                      </div>
+                    </div>
+                  ))}
+                </Typography>
+              </Box>
+            </Box>
+            {openDrawer && !fileDetails && (
+              <Box sx={drawerStyle(openDrawer)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setOpenDrawer(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <Button
+                      className=""
+                      variant="contained"
+                      color="secondary"
+                      style={{
+                        backgroundColor: "#24a0ed",
+                        borderRadius: "5px",
+                        paddingLeft: "50px",
+                        paddingRight: "50px",
+                      }}
+                      component="span"
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Selecte File"
+                      variant="standard"
+                      disabled
+                      value={selectedFile.name}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="description"
+                      variant="standard"
+                      onChange={handelFileDiscriptionChange}
+                      value={selectedFile.description}
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleSubmitAsset}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Box>
+            )}
+
+            {fileDetails && (
+              <Box sx={drawerStyle(fileDetails)}>
+                <div className="flex justify-end">
+                  <Button
+                    className=""
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setFileDetails(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
+                    x
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <div className=" ">
+                      <div
+                        // onClick={handelDetailDoc}
+                        style={{
+                          textAlign: "-webkit-center",
+                        }}
+                      >
+                        <img src="/assets/images/etc/icon_N.png" />
+                      </div>
+                      {selectedDocument?.name}
+                    </div>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Created By"
+                      variant="standard"
+                      disabled
+                      value={selectedDocument.staffName}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label=" Created At"
+                      name="description"
+                      variant="standard"
+                      disabled
+                      value={formatDate(selectedDocument.createdAt)}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& > :not(style)": { m: 1, width: "25ch" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="Description"
+                      variant="standard"
+                      disabled
+                      value={
+                        selectedDocument.description == null
+                          ? ""
+                          : selectedDocument.descritpion
+                      }
+                    />
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: " rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleDownload}
+                  >
+                    Download
+                  </Button>
+                </div>
+              </Box>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
       <ToastContainer className="toast-container" />
       <Initiation
         contentDetailsini={contentDetailsini}
@@ -835,9 +1190,8 @@ const EvaluationApproval = ({
                     />
                   </Grid>
                   <div
-                    className="mt-5"
+                    className="p-30 pt-24 pb-24"
                     style={{
-                      marginTop: "10px",
                       display: "flex",
                       justifyContent: "end",
                     }}
@@ -862,13 +1216,39 @@ const EvaluationApproval = ({
       <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 p-24  rounded-16 shadow overflow-hidden">
           <div>
-            <div
-              _ngcontent-fyk-c288=""
-              class="flex items-center w-full  border-b justify-between"
-            >
-              <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
+            <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
+              <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold ">
                 Summary Details
               </h2>
+              <div>
+                <StyledBadge
+                  badgeContent={
+                    listDocument1.length
+                      ? listDocument1.length
+                      : contentDetails.documentCount
+                  }
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    style={{
+                      border: "1px solid",
+                      backgroundColor: "transparent",
+                      color: "black",
+                      borderColor: "rgba(203,213,225)",
+                    }}
+                    variant="contained"
+                    color="warning"
+                    startIcon={
+                      <FuseSvgIcon size={20}>
+                        heroicons-solid:upload
+                      </FuseSvgIcon>
+                    }
+                    onClick={handleOpen}
+                  >
+                    Document History
+                  </Button>
+                </StyledBadge>
+              </div>
             </div>
             <div _ngcontent-fyk-c288="" class="px-6 mb-6 ng-star-inserted">
               <div>&nbsp;</div>
@@ -1164,14 +1544,15 @@ const EvaluationApproval = ({
                     <button
                       className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
                       onClick={() => handelreview(itm.id)}
+                      style={{
+                        backgroundColor:
+                          itm?.reviewd || clickedTasks[itm.id]
+                            ? "rgba(220,252,231)"
+                            : "",
+                      }}
                     >
                       {itm?.reviewd || clickedTasks[itm.id] ? (
-                        <span
-                          className="mat-button-wrapper"
-                          style={{
-                            backgroundColor: "rgba(220,252,231)",
-                          }}
-                        >
+                        <span className="mat-button-wrapper">
                           You have reviewed this just now
                         </span>
                       ) : (
@@ -1532,14 +1913,15 @@ const EvaluationApproval = ({
                                 disabled={
                                   imptsk?.reviewd || clickedTasks[imptsk.id]
                                 }
+                                style={{
+                                  backgroundColor:
+                                    imptsk?.reviewd || clickedTasks[imptsk.id]
+                                      ? "rgba(220,252,231)"
+                                      : "",
+                                }}
                               >
                                 {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
-                                  <span
-                                    className="mat-button-wrapper"
-                                    style={{
-                                      backgroundColor: "rgba(220,252,231)",
-                                    }}
-                                  >
+                                  <span className="mat-button-wrapper">
                                     You have reviewed this just now
                                   </span>
                                 ) : (

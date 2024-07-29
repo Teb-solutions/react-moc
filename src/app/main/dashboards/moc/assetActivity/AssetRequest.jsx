@@ -294,7 +294,7 @@ function AssetRequest() {
     apiAuth
       .post("/ChangeRequest/Create", updatedDocumentState)
       .then((response) => {
-        toast.success("Successfully Created");
+        toast?.success("Successfully Created");
         setIsLoading(false);
         setTimeout(() => {
           navigate("/dashboards/project");
@@ -305,7 +305,7 @@ function AssetRequest() {
         setIsLoading(false);
 
         setOpen(true);
-        toast.success("Some Error Occured");
+        toast?.success("Some Error Occured");
       });
   };
 

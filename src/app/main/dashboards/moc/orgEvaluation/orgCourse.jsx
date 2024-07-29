@@ -117,6 +117,26 @@ const orgCourse = () => {
     getRecords();
   }, []);
 
+  const handleResize = useCallback(() => {
+    if (window.innerWidth <= 768) {
+      // Adjust this width as needed
+      setLeftSidebarOpen(false);
+    } else {
+      setLeftSidebarOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Set initial state
+    handleResize();
+
+    // Add resize event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on unmount
+    return () => window.removeEventListener("resize", handleResize);
+  }, [handleResize]);
+
   const formatDate = (dateString) => {
     if (!dateString) {
       return "Invalid date";

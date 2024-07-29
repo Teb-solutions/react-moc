@@ -144,7 +144,8 @@ function FirebaseSignInTab() {
             render={({ field }) => (
               <FormControl>
                 <FormControlLabel
-                  label="Remember me"
+                  label="Remember mess"
+                  checked
                   control={<Checkbox size="small" {...field} />}
                 />
               </FormControl>

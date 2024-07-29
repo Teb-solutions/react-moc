@@ -142,9 +142,9 @@ function OrgActivity() {
       .post("/OrgMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
         if (response.data.statusCode == 400) {
-          toast.error(response.data.message);
+          toast?.error(response.data.message);
         } else {
-          toast.success("Successfully Created");
+          toast?.success("Successfully Created");
           setTimeout(() => {
             navigate("/dashboards/project");
           }, 1000);

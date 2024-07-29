@@ -341,27 +341,27 @@ const Task = () => {
           apiAuth
             .post(path, formDatas)
             .then((response) => {
-              toast.success("Staff Created");
+              toast?.success("Staff Created");
               setSidebarOpen(false);
               // setTimeout(() => {
               //   location.reload();
               // }, 2000);
             })
             .catch((error) => {
-              toast.error("Some Error Occured");
+              toast?.error("Some Error Occured");
             });
         } else {
           apiAuth
             .put(path, formDatas)
             .then((response) => {
-              toast.success("Staff Updated");
+              toast?.success("Staff Updated");
               setSidebarOpen(false);
               setTimeout(() => {
                 location.reload();
               }, 2000);
             })
             .catch((error) => {
-              toast.error("Some Error Occured");
+              toast?.error("Some Error Occured");
             });
         }
       } catch (error) {
@@ -397,16 +397,13 @@ const Task = () => {
       <ToastContainer className="toast-container " />
       <div style={{ margin: "20px" }}>
         <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
-          <InputLabel
-            id="category-select-label"
-            className="text-2xl"
-          >
+          <InputLabel id="category-select-label" className="text-2xl">
             <b>Staff</b>
           </InputLabel>
         </div>
-   
+
         <b className="text-xl">113 staffs</b>
-        
+
         <Box className="flex-grow-2">
           <TextField
             fullWidth
@@ -780,9 +777,10 @@ const Task = () => {
                         <div className="flex sidebarMarg flex-col-reverse">
                           <div
                             style={{
-                              justifyContent: "space-between",                              
+                              justifyContent: "space-between",
                             }}
-                            className="flex flex-row d-sm-block flex-wrap">
+                            className="flex flex-row d-sm-block flex-wrap"
+                          >
                             <Box
                               className="Fw-100 mt-10"
                               sx={{
@@ -822,7 +820,7 @@ const Task = () => {
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              justifyContent: "space-between"
+                              justifyContent: "space-between",
                             }}
                             className="flex flex-row d-sm-block flex-wrap"
                           >
@@ -862,19 +860,18 @@ const Task = () => {
                             </Box>
                           </div>
                         </div>
-                       
-                       
                       </div>
-                    
+
                       <div
                         _ngcontent-fyk-c288=""
-                        class="flex items-center w-full  border-b justify-between" style={{ margin: "18px" }}>
-                      </div>
+                        class="flex items-center w-full  border-b justify-between"
+                        style={{ margin: "18px" }}
+                      ></div>
                       <div className="flex-auto" style={{ margin: "18px" }}>
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              justifyContent: "space-between"
+                              justifyContent: "space-between",
                             }}
                             className="flex flex-row d-sm-block flex-wrap"
                           >
@@ -953,7 +950,7 @@ const Task = () => {
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              justifyContent: "space-between"
+                              justifyContent: "space-between",
                             }}
                             className="flex flex-row d-sm-block flex-wrap"
                           >
@@ -1032,7 +1029,7 @@ const Task = () => {
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              justifyContent: "space-between"
+                              justifyContent: "space-between",
                             }}
                             className="flex flex-row  d-sm-block flex-wrap"
                           >
@@ -1111,7 +1108,7 @@ const Task = () => {
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              justifyContent: "space-between"
+                              justifyContent: "space-between",
                             }}
                             className="flex flex-row d-sm-block flex-wrap"
                           >
@@ -1179,7 +1176,7 @@ const Task = () => {
                         <div className="flex flex-col-reverse">
                           <div
                             style={{
-                              justifyContent: "space-between"
+                              justifyContent: "space-between",
                             }}
                             className="flex flex-row d-sm-block flex-wrap"
                           >

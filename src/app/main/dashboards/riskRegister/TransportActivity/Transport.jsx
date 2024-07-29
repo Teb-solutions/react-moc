@@ -308,7 +308,7 @@ function TransportApp() {
   //   };
 
   const handleOpen = () => {
-    toast.success("Successfully Completed");
+    toast?.success("Successfully Completed");
     setTimeout(() => navigate("/dashboards/project"), 1000);
 
     if (!validate()) {
@@ -357,7 +357,7 @@ function TransportApp() {
   //     apiAuth
   //       .post("/ChangeRequest/Create", documentState)
   //       .then((response) => {
-  //         toast.success("Successfully Created");
+  //         toast?.success("Successfully Created");
   //         setTimeout(() => {
   //           setIsLoading(false);
 
@@ -369,7 +369,7 @@ function TransportApp() {
   //         setIsLoading(false);
 
   //         setOpen(true);
-  //         toast.success("Some Error Occured");
+  //         toast?.success("Some Error Occured");
   //       });
   //   };
 

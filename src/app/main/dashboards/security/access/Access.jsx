@@ -15,10 +15,13 @@ import { apiAuth } from "src/utils/http";
 import MocHeader from "../../moc/MocHeader";
 import { encryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
+import { useCallback } from "react";
 
 const Access = () => {
   const pageLayout = useRef(null);
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
+  const [smallScreen, setsmallScreen] = useState(false);
+
   const [activeRole, setActiveRole] = useState("Admin");
   const [roleList, setRoleList] = useState([]);
   const [roleIdList, setRoleIdList] = useState([]);
@@ -72,10 +75,32 @@ const Access = () => {
     setExpandedAccordions(newExpandedAccordions);
   };
 
+  const handleResize = useCallback(() => {
+    if (window.innerWidth <= 768) {
+      // Adjust this width as needed
+      setLeftSidebarOpen(false);
+      setsmallScreen(true);
+    } else {
+      setLeftSidebarOpen(true);
+      setsmallScreen(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Set initial state
+    handleResize();
+
+    // Add resize event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on unmount
+    return () => window.removeEventListener("resize", handleResize);
+  }, [handleResize]);
+
   const handelClose = () => {
     setLeftSidebarOpen(false);
   };
- 
+
   const handelOpenSide = () => {
     setLeftSidebarOpen(true);
   };
@@ -233,7 +258,8 @@ const Access = () => {
               >
                 <div className="flex d-flex pt-5 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto  space-y-16 sm:space-y-0 sm:space-x-16">
                   <InputLabel
-                    id="category-select-label" className="subtitle_custom"
+                    id="category-select-label"
+                    className="subtitle_custom"
                     style={{
                       fontSize: "large",
                       color: "black",
@@ -263,7 +289,8 @@ const Access = () => {
               {roleIdList
                 .filter((item) => item.parentId === 0)
                 .map((accordionItem) => (
-                  <Accordion className="Access_list_box"
+                  <Accordion
+                    className="Access_list_box"
                     key={accordionItem.featureId}
                     style={{
                       marginTop: "15px",
@@ -352,9 +379,7 @@ const Access = () => {
                       style={{
                         padding: "14px",
                         backgroundColor:
-                          activeRole === role.name
-                            ? "#f5f5f5"
-                            : "transparent",
+                          activeRole === role.name ? "#f5f5f5" : "transparent",
                       }}
                     >
                       <span>{role.name}</span>

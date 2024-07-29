@@ -73,7 +73,6 @@ const style1 = {
   transform: "translate(-50%, -50%)",
   width: "800px",
   maxWidth: "80vw",
-  maxHeight: "75vh", // Adjust the max height to ensure it's not too large
   overflowY: "auto", // Enable scrolling if content exceeds maxHeight
   borderRadius: "16px",
   backgroundColor: "#fff", // Adjust as needed
@@ -304,7 +303,7 @@ function EvaluationChange({
         { TeamList: selectedItems }
       )
       .then((resp) => {
-        toast.success("Evaluation session has been successfully created.");
+        toast?.success("Evaluation session has been successfully created.");
         setIsLoading(false);
 
         getRecords();
@@ -1379,7 +1378,7 @@ function EvaluationChange({
         .delete(`/RiskAnalysis/${id}`)
         .then((resp) => {
           console.log(resp.message, "hhh");
-          toast.success("Deleted");
+          toast?.success("Deleted");
           setIsLoading(false);
 
           getRecords();
@@ -1493,7 +1492,7 @@ function EvaluationChange({
       .then((resp) => {
         setIsLoading(false);
 
-        toast.success("Evaluation Submitted Successfully");
+        toast?.success("Evaluation Submitted Successfully");
         apiAuth
           .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
           .then((resp) => {
@@ -1503,7 +1502,7 @@ function EvaluationChange({
       .catch((err) => {
         setIsLoading(false);
 
-        toast.error("Some Error Occured");
+        toast?.error("Some Error Occured");
       });
   };
 
@@ -1520,7 +1519,7 @@ function EvaluationChange({
       .then((resp) => {
         setIsLoading(false);
 
-        toast.success("Evaluation session has been stopped.");
+        toast?.success("Evaluation session has been stopped.");
         setOpen(false);
         localStorage.setItem("isActiveSession", false);
         getRecords();
@@ -5661,7 +5660,7 @@ function EvaluationChange({
 
             {SessionList[0]?.isActive ? (
               <>
-                <div style={{ margin: "20px" }}>
+                <div className="pb-0 p-30 pt-24">
                   <div
                     style={{
                       display: "flex",
@@ -5742,7 +5741,7 @@ function EvaluationChange({
                   )}
                 </div>
                 {Session?.activeSession?.status == 2 && (
-                  <div className="flex justify-end">
+                  <div className="flex justify-end p-30 pt-24 pb-24">
                     <button
                       className="stop-session"
                       onClick={handleStopSession}
