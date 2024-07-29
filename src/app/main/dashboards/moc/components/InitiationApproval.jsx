@@ -1086,7 +1086,10 @@ function InitiationApproval(props) {
               style={{ width: "100%" }}
             >
               {currentActivityForm.canEdit && (
-                <Box sx={{ display: "flex", flexWrap: "wrap" }} className="p-30 pt-24 pb-24">
+                <Box
+                  sx={{ display: "flex", flexWrap: "wrap" }}
+                  className="p-30 pt-24 pb-24"
+                >
                   <FormControl fullWidth sx={{ m: 1, maxWidth: "100%" }}>
                     <FormLabel
                       htmlFor="reasonForNewDocument"
@@ -1120,7 +1123,7 @@ function InitiationApproval(props) {
                   </FormControl>
                 </Box>
               )}
-              
+
               <div className="flex items-center w-full border-b justify-between"></div>
 
               {currentActivityForm.canExecute && (

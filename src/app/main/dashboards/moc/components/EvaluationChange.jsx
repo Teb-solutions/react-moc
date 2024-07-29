@@ -29,6 +29,7 @@ import {
   TextField,
   Typography,
   Autocomplete,
+  TableContainer,
 } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -884,7 +885,9 @@ function EvaluationChange({
       residualLikelihoodScoring: "",
       residualSeverityScoring: "",
       residualRisk: "",
+      residualRiskClassification: "",
     });
+    setHazaId("");
 
     apiAuth.get(`/RiskAnalysis/SubTaskDetail?id=${id}`).then((resp) => {
       setSubTaskDetail(resp.data.data);
@@ -1808,7 +1811,7 @@ function EvaluationChange({
                                           No Comments Added.
                                         </span>
                                       ) : (
-                                        <div className="">
+                                        <div className="mb-12">
                                           <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
                                             comments
                                           </span>
@@ -2422,379 +2425,358 @@ function EvaluationChange({
                                       </div>
                                     )
                                   )}
-
                                   {itms?.riskAnalysisList?.length !== 0 && (
-                                    <Paper style={{ margin: "10px" }}>
-                                      <div
-                                        className="flex items-center w-full justify-between"
-                                        style={{
-                                          borderRadius: "20px",
-                                          backgroundColor: "rgb(241 248 255)",
-                                        }}
-                                      >
-                                        <h6
-                                          className="text-small font-semibold"
-                                          style={{ padding: "15px" }}
-                                        >
-                                          Risk Details
-                                        </h6>
-                                        <h6
-                                          className="text-1xl font-semibold"
-                                          style={{ padding: "10px" }}
-                                        >
-                                          Human Measures
-                                        </h6>
-                                        <h6
-                                          className="text-1xl font-semibold"
-                                          style={{ padding: "10px" }}
-                                        >
-                                          Technical Measures
-                                        </h6>
-                                        <h6
-                                          className="text-1xl font-semibold"
-                                          style={{ padding: "10px" }}
-                                        >
-                                          ORGANISATIONAL MEASURES
-                                        </h6>
-                                      </div>
-
-                                      {itms?.riskAnalysisList[0]?.riskAnalysisSubTasks?.map(
-                                        (sub, index) => (
-                                          <div key={index}>
-                                            {sub.riskAnalysisHazardTypes
-                                              .length === 0 ? (
-                                              <>
-                                                <div
-                                                  _ngcontent-fyk-c288=""
-                                                  class="flex items-center w-full  border-b justify-between"
-                                                ></div>
-                                                <div>
-                                                  <Grid
-                                                    container
-                                                    className="inventory-grid"
-                                                    sx={{
-                                                      paddingY: 2,
-                                                      paddingX: {
-                                                        xs: 2,
-                                                        md: 1,
-                                                      },
-                                                    }}
-                                                  >
-                                                    <Grid item xs={12} md={4}>
-                                                      <h6
-                                                        style={{
-                                                          paddingBottom: "5px",
-                                                        }}
+                                    <TableContainer
+                                      component={Paper}
+                                      style={{ margin: "10px" }}
+                                    >
+                                      <Table>
+                                        <TableHead>
+                                          <TableRow
+                                            style={{
+                                              backgroundColor:
+                                                "rgb(241 248 255)",
+                                            }}
+                                          >
+                                            <TableCell
+                                              style={{ padding: "15px" }}
+                                            >
+                                              Risk Details
+                                            </TableCell>
+                                            <TableCell
+                                              style={{ padding: "10px" }}
+                                            >
+                                              Human Measures
+                                            </TableCell>
+                                            <TableCell
+                                              style={{ padding: "10px" }}
+                                            >
+                                              Technical Measures
+                                            </TableCell>
+                                            <TableCell
+                                              style={{ padding: "10px" }}
+                                            >
+                                              Organisational Measures
+                                            </TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {itms?.riskAnalysisList[0]?.riskAnalysisSubTasks?.map(
+                                            (sub, index) => (
+                                              <React.Fragment key={index}>
+                                                {sub.riskAnalysisHazardTypes
+                                                  .length === 0 ? (
+                                                  <TableRow>
+                                                    <TableCell colSpan={4}>
+                                                      <Grid
+                                                        container
+                                                        className="inventory-grid"
                                                       >
-                                                        {sub.subTaskName}
-                                                      </h6>
-                                                    </Grid>
-
-                                                    <Grid item xs={12}>
-                                                      {AppActivity.canEdit &&
-                                                        JSON.parse(
-                                                          localStorage.getItem(
-                                                            "isActiveSession"
-                                                          )
-                                                        ) && (
-                                                          <span
-                                                            className="text-white"
+                                                        <Grid
+                                                          item
+                                                          xs={12}
+                                                          md={4}
+                                                        >
+                                                          <Typography
+                                                            variant="h6"
                                                             style={{
-                                                              backgroundColor:
-                                                                "#2563eb",
-                                                              borderRadius:
+                                                              paddingBottom:
                                                                 "5px",
-                                                              padding: "4px",
-                                                              fontSize: "10px",
-                                                              cursor: "pointer",
-                                                            }}
-                                                            onClick={() =>
-                                                              handelRisk(sub.id)
-                                                            }
-                                                          >
-                                                            Create New Risk
-                                                            Analysis
-                                                          </span>
-                                                        )}
-                                                    </Grid>
-                                                  </Grid>
-                                                </div>
-                                              </>
-                                            ) : (
-                                              sub.riskAnalysisHazardTypes?.map(
-                                                (hazardType) => (
-                                                  <div key={hazardType.id}>
-                                                    {hazardType.riskAnalysisHazardSituation?.map(
-                                                      (situation) => (
-                                                        <div key={situation.id}>
-                                                          <Grid
-                                                            container
-                                                            spacing={2}
-                                                            className="inventory-grid w-100 mt-0 ml-0"
-                                                            sx={{
-                                                              paddingY: 2,
-                                                              paddingX: {
-                                                                xs: 2,
-                                                                md: 2,
-                                                              },
                                                             }}
                                                           >
-                                                            <Grid
-                                                              className="pl-0 pt-0"
-                                                              item
-                                                              xs={12}
-                                                              md={3}
-                                                            >
-                                                              <Typography
-                                                                variant="body2"
-                                                                color="text.primary"
-                                                                fontWeight="fontWeightRegular"
+                                                            {sub.subTaskName}
+                                                          </Typography>
+                                                        </Grid>
+                                                        <Grid item xs={12}>
+                                                          {AppActivity.canEdit &&
+                                                            JSON.parse(
+                                                              localStorage.getItem(
+                                                                "isActiveSession"
+                                                              )
+                                                            ) && (
+                                                              <span
+                                                                className="text-white"
                                                                 style={{
                                                                   backgroundColor:
-                                                                    situation.residualRiskClassificationDisplay ===
-                                                                    "HighRisk"
-                                                                      ? "red"
-                                                                      : situation.residualRiskClassificationDisplay ===
-                                                                          "LowRisk"
-                                                                        ? "yellow"
-                                                                        : situation.residualRiskClassificationDisplay ===
-                                                                            "AverageRisk"
-                                                                          ? "orange"
-                                                                          : situation.residualRiskClassificationDisplay ===
-                                                                              "SignificantRisk"
-                                                                            ? "purple"
-                                                                            : "green",
-                                                                  width: "auto",
-                                                                  padding:
-                                                                    "3px",
-                                                                  color:
-                                                                    situation.residualRiskClassificationDisplay ===
-                                                                    "LowRisk"
-                                                                      ? "#000"
-                                                                      : "white",
+                                                                    "#2563eb",
                                                                   borderRadius:
                                                                     "5px",
-                                                                  display:
-                                                                    "inline-block",
-                                                                  textAlign:
-                                                                    "center",
+                                                                  padding:
+                                                                    "4px",
                                                                   fontSize:
-                                                                    "12px",
-                                                                  fontWeight:
-                                                                    situation.residualRiskClassificationDisplay ===
-                                                                    "LowRisk"
-                                                                      ? ""
-                                                                      : "bold",
-                                                                }}
-                                                              >
-                                                                {
-                                                                  situation.residualRiskClassificationDisplay
-                                                                }
-                                                              </Typography>
-                                                            </Grid>
-                                                            <Grid
-                                                              className="pl-0 pt-0"
-                                                              item
-                                                              xs={12}
-                                                              md={3}
-                                                            >
-                                                              <Typography
-                                                                variant="body2"
-                                                                color="text.primary"
-                                                                fontWeight="fontWeightRegular"
-                                                                style={{
-                                                                  marginLeft:
                                                                     "10px",
-                                                                  fontSize:
-                                                                    "12px",
+                                                                  cursor:
+                                                                    "pointer",
                                                                 }}
-                                                              >
-                                                                {
-                                                                  situation.humanControlMeasure
+                                                                onClick={() =>
+                                                                  handelRisk(
+                                                                    sub.id
+                                                                  )
                                                                 }
-                                                              </Typography>
-                                                            </Grid>
-                                                            <Grid
-                                                              item
-                                                              className="pl-0 pt-0"
-                                                              xs={12}
-                                                              md={3}
+                                                              >
+                                                                Create New Risk
+                                                                Analysis
+                                                              </span>
+                                                            )}
+                                                        </Grid>
+                                                      </Grid>
+                                                    </TableCell>
+                                                  </TableRow>
+                                                ) : (
+                                                  sub.riskAnalysisHazardTypes?.map(
+                                                    (hazardType) => (
+                                                      <React.Fragment
+                                                        key={hazardType.id}
+                                                      >
+                                                        {hazardType.riskAnalysisHazardSituation?.map(
+                                                          (situation) => (
+                                                            <React.Fragment
+                                                              key={situation.id}
                                                             >
-                                                              <Typography
-                                                                variant="body2"
-                                                                color="text.primary"
-                                                                fontWeight="fontWeightRegular"
-                                                                style={{
-                                                                  marginLeft:
-                                                                    "42px",
-                                                                  fontSize:
-                                                                    "12px",
-                                                                }}
-                                                              >
-                                                                {
-                                                                  situation.technicalControlMeasure
-                                                                }
-                                                              </Typography>
-                                                            </Grid>
-                                                            <Grid
-                                                              item
-                                                              className="pl-0 pt-0"
-                                                              xs={12}
-                                                              md={3}
-                                                            >
-                                                              <Typography
-                                                                variant="body2"
-                                                                color="text.primary"
-                                                                fontWeight="fontWeightRegular"
-                                                                style={{
-                                                                  marginLeft:
-                                                                    "82px",
-                                                                  fontSize:
-                                                                    "12px",
-                                                                }}
-                                                              >
-                                                                {
-                                                                  situation.organisationalControlMeasure
-                                                                }
-                                                              </Typography>
-                                                            </Grid>
-                                                          </Grid>
-                                                          <div className="px-20 pt-0 pb-24">
-                                                            <h6>
-                                                              {sub.subTaskName}
-                                                            </h6>
-                                                            <h6>
-                                                              -{" "}
-                                                              {
-                                                                hazardType.hazardTypeDisplay
-                                                              }
-                                                            </h6>
-                                                            <h6>
-                                                              -{" "}
-                                                              {
-                                                                situation.hazardousSituation
-                                                              }
-                                                            </h6>
-                                                            {AppActivity.canEdit &&
-                                                              JSON.parse(
-                                                                localStorage.getItem(
-                                                                  "isActiveSession"
-                                                                )
-                                                              ) && (
-                                                                <div className="my-5">
-                                                                  <a
-                                                                    title="View Details"
-                                                                    className="inline-flex items-center leading-6 text-primary cursor-pointer hover:underline dark:hover:bg-hover"
-                                                                    onClick={() =>
-                                                                      handelViewDetails(
-                                                                        situation.id,
-                                                                        sub.id
-                                                                      )
-                                                                    }
-                                                                  >
-                                                                    <span className="inline-flex items-center">
-                                                                      <span
-                                                                        className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
-                                                                        style={{
-                                                                          fontSize:
-                                                                            "12px",
-                                                                        }}
-                                                                      >
-                                                                        View
-                                                                      </span>
-                                                                    </span>
-                                                                  </a>
-
-                                                                  <a
-                                                                    title="Edit"
-                                                                    className="inline-flex items-center leading-6 text-primary mx-5 cursor-pointer hover:underline dark:hover:bg-hover"
-                                                                    onClick={() =>
-                                                                      handelEditRiskDetails(
-                                                                        situation.id,
-                                                                        sub.id
-                                                                      )
-                                                                    }
-                                                                  >
-                                                                    <span className="inline-flex items-center">
-                                                                      <span
-                                                                        className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
-                                                                        style={{
-                                                                          fontSize:
-                                                                            "12px",
-                                                                        }}
-                                                                      >
-                                                                        Edit
-                                                                      </span>
-                                                                    </span>
-                                                                  </a>
-
-                                                                  <a
-                                                                    title="Remove"
-                                                                    className="inline-flex items-center leading-6 text-primary ml-2 cursor-pointer hover:underline dark:hover:bg-hover"
-                                                                    onClick={() =>
-                                                                      handelRemoveDetails(
-                                                                        situation.id,
-                                                                        sub.id
-                                                                      )
-                                                                    }
-                                                                  >
-                                                                    <span className="inline-flex items-center">
-                                                                      <span
-                                                                        className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
-                                                                        style={{
-                                                                          fontSize:
-                                                                            "12px",
-                                                                        }}
-                                                                      >
-                                                                        Remove
-                                                                      </span>
-                                                                    </span>
-                                                                  </a>
-                                                                </div>
-                                                              )}
-                                                            {AppActivity.canEdit &&
-                                                              JSON.parse(
-                                                                localStorage.getItem(
-                                                                  "isActiveSession"
-                                                                )
-                                                              ) && (
-                                                                <span
-                                                                  className="text-white d-inline-block"
+                                                              <TableRow>
+                                                                <TableCell
                                                                   style={{
-                                                                    backgroundColor:
-                                                                      "#2563eb",
-                                                                    borderRadius:
-                                                                      "5px",
                                                                     padding:
-                                                                      "3px",
-                                                                    fontSize:
-                                                                      "10px",
-                                                                    cursor:
-                                                                      "pointer",
+                                                                      "2px 16px",
                                                                   }}
-                                                                  onClick={() =>
-                                                                    handelRisk(
-                                                                      sub.id,
-                                                                      hazardType.hazardType
-                                                                    )
-                                                                  }
                                                                 >
-                                                                  Create New
-                                                                  Risk Analysis
-                                                                </span>
-                                                              )}
-                                                          </div>
-                                                        </div>
-                                                      )
-                                                    )}
-                                                  </div>
-                                                )
-                                              )
-                                            )}
-                                          </div>
-                                        )
-                                      )}
-                                    </Paper>
+                                                                  <Typography
+                                                                    variant="body2"
+                                                                    style={{
+                                                                      backgroundColor:
+                                                                        situation.residualRiskClassificationDisplay ===
+                                                                        "HighRisk"
+                                                                          ? "red"
+                                                                          : situation.residualRiskClassificationDisplay ===
+                                                                              "LowRisk"
+                                                                            ? "yellow"
+                                                                            : situation.residualRiskClassificationDisplay ===
+                                                                                "AverageRisk"
+                                                                              ? "orange"
+                                                                              : situation.residualRiskClassificationDisplay ===
+                                                                                  "SignificantRisk"
+                                                                                ? "purple"
+                                                                                : "green",
+                                                                      width:
+                                                                        "auto",
+                                                                      padding:
+                                                                        "3px",
+                                                                      color:
+                                                                        situation.residualRiskClassificationDisplay ===
+                                                                        "LowRisk"
+                                                                          ? "#000"
+                                                                          : "white",
+                                                                      borderRadius:
+                                                                        "5px",
+                                                                      display:
+                                                                        "inline-block",
+                                                                      textAlign:
+                                                                        "center",
+                                                                      fontSize:
+                                                                        "12px",
+                                                                      fontWeight:
+                                                                        situation.residualRiskClassificationDisplay ===
+                                                                        "LowRisk"
+                                                                          ? ""
+                                                                          : "bold",
+                                                                    }}
+                                                                  >
+                                                                    {
+                                                                      situation.residualRiskClassificationDisplay
+                                                                    }
+                                                                  </Typography>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  <Typography
+                                                                    variant="body2"
+                                                                    style={{
+                                                                      fontSize:
+                                                                        "12px",
+                                                                    }}
+                                                                  >
+                                                                    {
+                                                                      situation.humanControlMeasure
+                                                                    }
+                                                                  </Typography>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  <Typography
+                                                                    variant="body2"
+                                                                    style={{
+                                                                      fontSize:
+                                                                        "12px",
+                                                                    }}
+                                                                  >
+                                                                    {
+                                                                      situation.technicalControlMeasure
+                                                                    }
+                                                                  </Typography>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  <Typography
+                                                                    variant="body2"
+                                                                    style={{
+                                                                      fontSize:
+                                                                        "12px",
+                                                                    }}
+                                                                  >
+                                                                    {
+                                                                      situation.organisationalControlMeasure
+                                                                    }
+                                                                  </Typography>
+                                                                </TableCell>
+                                                              </TableRow>
+                                                              <TableRow>
+                                                                <TableCell
+                                                                  style={{
+                                                                    padding:
+                                                                      "2px 16px",
+                                                                  }}
+                                                                >
+                                                                  <div className=" pt-0 pb-24">
+                                                                    <h6>
+                                                                      {
+                                                                        sub.subTaskName
+                                                                      }
+                                                                    </h6>
+                                                                    <h6>
+                                                                      -{" "}
+                                                                      {
+                                                                        hazardType.hazardTypeDisplay
+                                                                      }
+                                                                    </h6>
+                                                                    <h6>
+                                                                      -{" "}
+                                                                      {
+                                                                        situation.hazardousSituation
+                                                                      }
+                                                                    </h6>
+                                                                    {AppActivity.canEdit &&
+                                                                      JSON.parse(
+                                                                        localStorage.getItem(
+                                                                          "isActiveSession"
+                                                                        )
+                                                                      ) && (
+                                                                        <div className="my-5">
+                                                                          <a
+                                                                            title="View Details"
+                                                                            className="inline-flex items-center leading-6 text-primary cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                            onClick={() =>
+                                                                              handelViewDetails(
+                                                                                situation.id,
+                                                                                sub.id
+                                                                              )
+                                                                            }
+                                                                          >
+                                                                            <span className="inline-flex items-center">
+                                                                              <span
+                                                                                className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                style={{
+                                                                                  fontSize:
+                                                                                    "12px",
+                                                                                }}
+                                                                              >
+                                                                                View
+                                                                              </span>
+                                                                            </span>
+                                                                          </a>
+
+                                                                          <a
+                                                                            title="Edit"
+                                                                            className="inline-flex items-center leading-6 text-primary mx-5 cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                            onClick={() =>
+                                                                              handelEditRiskDetails(
+                                                                                situation.id,
+                                                                                sub.id
+                                                                              )
+                                                                            }
+                                                                          >
+                                                                            <span className="inline-flex items-center">
+                                                                              <span
+                                                                                className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                style={{
+                                                                                  fontSize:
+                                                                                    "12px",
+                                                                                }}
+                                                                              >
+                                                                                Edit
+                                                                              </span>
+                                                                            </span>
+                                                                          </a>
+
+                                                                          <a
+                                                                            title="Remove"
+                                                                            className="inline-flex items-center leading-6 text-primary ml-2 cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                            onClick={() =>
+                                                                              handelRemoveDetails(
+                                                                                situation.id,
+                                                                                sub.id
+                                                                              )
+                                                                            }
+                                                                          >
+                                                                            <span className="inline-flex items-center">
+                                                                              <span
+                                                                                className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                style={{
+                                                                                  fontSize:
+                                                                                    "12px",
+                                                                                }}
+                                                                              >
+                                                                                Remove
+                                                                              </span>
+                                                                            </span>
+                                                                          </a>
+                                                                        </div>
+                                                                      )}
+                                                                    {AppActivity.canEdit &&
+                                                                      JSON.parse(
+                                                                        localStorage.getItem(
+                                                                          "isActiveSession"
+                                                                        )
+                                                                      ) && (
+                                                                        <span
+                                                                          className="text-white d-inline-block"
+                                                                          style={{
+                                                                            backgroundColor:
+                                                                              "#2563eb",
+                                                                            borderRadius:
+                                                                              "5px",
+                                                                            padding:
+                                                                              "3px",
+                                                                            fontSize:
+                                                                              "10px",
+                                                                            cursor:
+                                                                              "pointer",
+                                                                          }}
+                                                                          onClick={() =>
+                                                                            handelRisk(
+                                                                              sub.id,
+                                                                              hazardType.hazardType
+                                                                            )
+                                                                          }
+                                                                        >
+                                                                          Create
+                                                                          New
+                                                                          Risk
+                                                                          Analysis
+                                                                        </span>
+                                                                      )}
+                                                                  </div>
+                                                                </TableCell>
+                                                              </TableRow>
+                                                            </React.Fragment>
+                                                          )
+                                                        )}
+                                                      </React.Fragment>
+                                                    )
+                                                  )
+                                                )}
+                                              </React.Fragment>
+                                            )
+                                          )}
+                                        </TableBody>
+                                      </Table>
+                                    </TableContainer>
                                   )}
 
                                   {itms?.changeImpactTasks?.map((imptsk) => (
@@ -3231,33 +3213,43 @@ function EvaluationChange({
                         <FormControl fullWidth sx={{ mb: 1, maxWidth: "100%" }}>
                           <FormLabel
                             htmlFor="particularSubCategory"
-                            className="font-semibold leading-none"
+                            className="font-semibold leading-none m-4"
                           >
                             Particular Sub Category *
                           </FormLabel>
-                          <Select
+                          <Autocomplete
                             id="particularSubCategory"
                             name="particularSubCategory"
-                            value={impactForm.particularSubCategory}
-                            onChange={handleChangeImpact}
-                            className="mt-5"
-                            error={!!errorsAddTask.particularSubCategory}
-                            disabled={EditSubTask.length}
-                          >
-                            <MenuItem value="" disabled>
-                              <em>None</em>
-                            </MenuItem>
-                            {particularSubList.map((option) => (
-                              <MenuItem key={option.id} value={option.value}>
-                                <ListItemText primary={option.text} />
-                              </MenuItem>
-                            ))}
-                          </Select>
-                          {!!errorsAddTask?.particularSubCategory && (
-                            <FormHelperText error>
-                              {errorsAddTask.particularSubCategory}
-                            </FormHelperText>
-                          )}
+                            className="mt-4"
+                            value={
+                              particularSubList.find(
+                                (option) =>
+                                  option.value ===
+                                  impactForm.particularSubCategory
+                              ) || null
+                            }
+                            options={particularSubList}
+                            getOptionLabel={(option) => option.text}
+                            onChange={(event, newValue) => {
+                              handleChangeImpact({
+                                target: {
+                                  name: "particularSubCategory",
+                                  value: newValue.value,
+                                },
+                              });
+                            }}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                variant="outlined"
+                                error={!!errorsAddTask?.particularSubCategory}
+                                helperText={
+                                  errorsAddTask?.particularSubCategory
+                                }
+                                disabled={EditSubTask.length > 0}
+                              />
+                            )}
+                          />
                         </FormControl>
                         {impactForm.particular == 78 ? (
                           <>
@@ -3606,6 +3598,7 @@ function EvaluationChange({
                           <FormControl
                             fullWidth
                             sx={{ m: 1, maxWidth: "100%" }}
+                            className="mt-10"
                           >
                             <FormLabel
                               htmlFor="hazardDetail"
@@ -3677,9 +3670,14 @@ function EvaluationChange({
                                       maxWidth: "100%",
                                     }}
                                   >
+                                    <FormLabel
+                                      className="font-medium text-14"
+                                      component="legend"
+                                    >
+                                      What is the Task
+                                    </FormLabel>
                                     <TextField
                                       fullWidth
-                                      label="What is the Task"
                                       name="actionWhat"
                                       value={task.actionWhat}
                                       onChange={(e) =>
@@ -3700,9 +3698,14 @@ function EvaluationChange({
                                       maxWidth: "100%",
                                     }}
                                   >
+                                    <FormLabel
+                                      className="font-medium text-14"
+                                      component="legend"
+                                    >
+                                      How is the task done
+                                    </FormLabel>
                                     <TextField
                                       fullWidth
-                                      label="How is the task done"
                                       name="actionHow"
                                       value={task.actionHow}
                                       onChange={(e) =>
@@ -3842,10 +3845,14 @@ function EvaluationChange({
                                       }}
                                       error={!!errorsTask[`dueDate_${index}`]}
                                     >
-                                      {console.log(task.dueDate, "dueeee")}
+                                      <FormLabel
+                                        className="font-medium text-14"
+                                        component="legend"
+                                      >
+                                        Due Date *
+                                      </FormLabel>
                                       <Box sx={{}}>
                                         <DatePicker
-                                          label="Due Date *"
                                           name="dueDate"
                                           value={
                                             task.dueDate
@@ -4029,17 +4036,11 @@ function EvaluationChange({
                   ></div>
 
                   <div className="flex justify-end">
-                    <div
-                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                      style={{ marginTop: "15px" }}
-                    ></div>
-                    <div
-                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                      style={{ marginTop: "15px" }}
-                    >
+                    <div className="flex items-center  sm:mt-0 sm:mx-8 space-x-12"></div>
+                    <div className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12 p-30 pt-24 pb-24">
                       {AppActions.map((btn) => (
                         <Button
-                          className="whitespace-nowrap"
+                          className="whitespace-nowrap "
                           variant="contained"
                           color="secondary"
                           style={{ padding: "15px" }}
@@ -4325,7 +4326,10 @@ function EvaluationChange({
                             >
                               Hazardous Situation
                             </FormLabel>
-                            <span>{formValues.hazardousSituation}</span>
+
+                            <span className="pt-5">
+                              {formValues.hazardousSituation}
+                            </span>
                           </Box>
                         ) : (
                           <TextField
@@ -4359,8 +4363,9 @@ function EvaluationChange({
                             >
                               Consequence
                             </FormLabel>
-                            &nbsp;&nbsp; &nbsp;&nbsp;
-                            <span>{formValues.consequence}</span>
+                            <span className="pt-5">
+                              {formValues.consequence}
+                            </span>
                           </Box>
                         ) : (
                           <TextField
@@ -5949,7 +5954,7 @@ function EvaluationChange({
                               <>
                                 {session.isExpired && (
                                   <span
-                                    className="bg-red-200 rounded px-3 py-1 text-secondary font-semibold"
+                                    className="bg-red-100 rounded px-5 py-1 text-secondary font-semibold"
                                     style={{
                                       backgroundColor: "rgba(254,202,202)",
                                     }}
@@ -5958,12 +5963,12 @@ function EvaluationChange({
                                   </span>
                                 )}
                                 {session.isActive && (
-                                  <span className="bg-green-100 rounded px-3 py-1 text-secondary font-semibold">
+                                  <span className="bg-green-100 rounded px-5 py-1 text-secondary font-semibold">
                                     Active
                                   </span>
                                 )}
                                 {session.isSessionEnded && (
-                                  <span className="bg-red-200 rounded px-3 py-1 text-secondary font-semibold">
+                                  <span className="bg-red-100 rounded  px-5 py-1 text-grey font-semibold">
                                     Ended
                                   </span>
                                 )}

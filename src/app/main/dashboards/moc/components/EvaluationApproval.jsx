@@ -731,8 +731,7 @@ const EvaluationApproval = ({
                     style={{ backgroundColor: "white" }}
                     onClick={() => setOpenDrawer(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -857,8 +856,7 @@ const EvaluationApproval = ({
                     style={{ backgroundColor: "white" }}
                     onClick={() => setFileDetails(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -929,7 +927,13 @@ const EvaluationApproval = ({
                       name="description"
                       variant="standard"
                       disabled
-                      value={formatDate(selectedDocument.createdAt)}
+                      value={new Date(
+                        selectedDocument.createdAt
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     />
                   </Box>
                   <Box
@@ -3032,18 +3036,16 @@ const EvaluationApproval = ({
               </Grid>
             </Grid>
           </div>
-          <div>&nbsp;</div>
-          <div>&nbsp;</div>
 
           <div className="flex items-center w-full border-b justify-between">
-            <div className="flex justify-start">
+            <div className="flex justify-start p-12 pt-24 pb-24">
               <StyledBadge
                 badgeContent={
                   listDocument.length ? listDocument.length : CountApprove
                 }
               >
                 <Button
-                  className="whitespace-nowrap mt-5"
+                  className="whitespace-nowrap "
                   style={{
                     border: "1px solid",
                     backgroundColor: "transparent",
@@ -3173,8 +3175,7 @@ const EvaluationApproval = ({
                     style={{ backgroundColor: "white" }}
                     onClick={() => setOpenDrawer(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -3299,8 +3300,7 @@ const EvaluationApproval = ({
                     style={{ backgroundColor: "white" }}
                     onClick={() => setFileDetails(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>

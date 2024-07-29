@@ -359,11 +359,7 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
             <div style={{ backgroundColor: "white" }}>
               <div>
                 <div className="flex d-flex p-30 pt-24 pb-24 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
-                  <InputLabel
-                    id="category-select-label"
-                    className="text-2xl"
-                    style={{ color: "black" }}
-                  >
+                  <InputLabel style={{ color: "black" }}>
                     <b>Approvals Pending ({riskMatrixList?.length})</b>
                   </InputLabel>
                   <div className="flex items-center justify-between mt-4">
@@ -390,8 +386,16 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
                 </div>
               </div>
               <div className="flex items-center w-full border-b justify-between"></div>
-              <Paper className="p-30 pt-24 pb-24" sx={{ width: "100%", overflow: "hidden" }}>
-                <TableContainer>
+              <Paper
+                className="p-30 pt-24 pb-24"
+                sx={{ width: "100%", overflow: "hidden" }}
+              >
+                <TableContainer
+                  style={{
+                    boxShadow:
+                      "0 5px 5px -3px #0003, 0 8px 10px 1px #00000024, 0 3px 14px 2px #0000001f",
+                  }}
+                >
                   <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                       <TableRow>
@@ -430,6 +434,7 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
                                     align={column.align}
                                     style={{
                                       borderBottom: "1px solid #dddddd",
+                                      height: "48px",
                                     }}
                                   >
                                     {column.render

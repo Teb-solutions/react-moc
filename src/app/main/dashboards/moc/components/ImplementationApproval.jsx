@@ -841,7 +841,13 @@ function ImplementationApproval({
                       name="description"
                       variant="standard"
                       disabled
-                      value={formatDate(selectedDocument.createdAt)}
+                      value={new Date(
+                        selectedDocument.createdAt
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     />
                   </Box>
                   <Box
@@ -1360,207 +1366,198 @@ p-30 pt-24 pb-24
             </div>
             <Box className="p-30 pt-24 pb-24" sx={{ width: "100%" }}>
               <Stepper activeStep={activeStep} orientation="vertical">
-                {steps?.map((step, index) => (
-                  <Step key={step?.label}>
-                    <StepLabel
-                      StepIconProps={{
-                        sx: {
-                          "&.MuiStepIcon-root": { color: "blue" },
-                          "&.MuiStepIcon-active": { color: "blue" },
-                          "&.MuiStepIcon-completed": { color: "blue" },
-                        },
-                      }}
-                      sx={{
-                        backgroundColor:
-                          activeStep === index ? "#f0f0f0" : "#f9f9f9",
-                        padding: "15px",
-                        borderRadius: "10px",
-                        marginTop: "0",
-                      }}
-                    >
-                      {step?.label}
-                    </StepLabel>
-                    <StepContent>
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="flex items-center w-full justify-between pt-10 pb-10"
+                {steps?.map((step, index) => {
+                  const tasksForStep = ImpDetails.filter(
+                    (detail) =>
+                      ChangeDeadlineLabel.get(detail.deadline) === step.label
+                  );
+                  return (
+                    <Step key={step?.label}>
+                      <StepLabel
+                        StepIconProps={{
+                          sx: {
+                            "&.MuiStepIcon-root": { color: "blue" },
+                            "&.MuiStepIcon-active": { color: "blue" },
+                            "&.MuiStepIcon-completed": { color: "blue" },
+                          },
+                        }}
+                        sx={{
+                          backgroundColor:
+                            activeStep === index ? "#f0f0f0" : "#f9f9f9",
+                          padding: "15px",
+                          borderRadius: "10px",
+                          marginTop: "0",
+                        }}
                       >
-                        <div className="flex items-center">
-                          <h2
-                            _ngcontent-fyk-c288=""
-                            class="text-xl font-semibold"
-                            style={{ marginRight: "15px" }}
-                          >
-                            {ImpDetails.length} Tasks
-                          </h2>
-                          {!lastActCode.isComplete &&
-                            lastActCode.status === "Pending" && (
-                              <Button
-                                className="whitespace-nowrap "
-                                style={{
-                                  border: "1px solid",
-                                  backgroundColor: "#0000",
-                                  color: "black",
-                                  borderColor: "rgba(203,213,225)",
-                                }}
-                                variant="contained"
-                                color="warning"
-                                onClick={handleOpenImplemntationTask}
-                              >
-                                Add New Task
-                              </Button>
-                            )}
-                          {/* <Button
-                            className="whitespace-nowrap mt-5 mb-5 ms-5"
-                            style={{
-                              border: "1px solid",
-                              backgroundColor: "#0000",
-                              color: "black",
-                              borderColor: "rgba(203,213,225)",
-                            }}
-                            variant="contained"
-                            color="warning"
-                            // onClick={handleOpen}
-                          >
-                            Audits Lists
-                          </Button> */}
-                        </div>
-
-                        <TextField
-                          variant="filled"
-                          fullWidth
-                          placeholder="Search"
-                          style={{
-                            backgroundColor: "white",
-                          }}
-                          //   value={searchTerm}
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment
-                                position="start"
-                                style={{
-                                  marginTop: "0px",
-                                  paddingTop: "0px",
-                                }}
-                              >
-                                <SearchIcon />
-                              </InputAdornment>
-                            ),
-                          }}
-                          sx={{ width: 320 }}
-                        />
-                      </div>
-                      {ImpDetails.map((detail) => {
-                        const deadlineLabel = ChangeDeadlineLabel.get(
-                          detail.deadline
-                        );
-
-                        if (deadlineLabel === step?.label) {
-                          return (
-                            <Accordion
-                              key={detail.id}
-                              expanded={expanded === detail.id}
-                              sx={{
-                                mt: 2,
-                                minHeight: "70px",
-                                transition: "height 0.3s",
-                                "&.Mui-expanded": {
-                                  minHeight: "100px",
-                                },
-                                "@media (max-width: 600px)": {
-                                  mt: 4,
-                                },
-                              }}
-                              onChange={handleAccordionChange(detail.id)}
+                        {step?.label}
+                      </StepLabel>
+                      <StepContent>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="flex items-center w-full justify-between pt-10 pb-10"
+                        >
+                          <div className="flex items-center">
+                            <h2
+                              _ngcontent-fyk-c288=""
+                              class="text-xl font-semibold"
+                              style={{ marginRight: "15px" }}
                             >
-                              <AccordionSummary
-                                className="justify-content-Accordian_title"
-                                style={{ minHeight: "60px" }}
-                                expandIcon={<ExpandMoreIcon />}
-                                aria-controls={`panel${index + 1}-content`}
-                                id={`panel${index + 1}-header`}
-                                onClick={(e) => handelComments(e, detail.id)}
+                              {tasksForStep.length} Tasks
+                            </h2>
+                            {!lastActCode.isComplete &&
+                              lastActCode.status === "Pending" && (
+                                <Button
+                                  className="whitespace-nowrap "
+                                  style={{
+                                    border: "1px solid",
+                                    backgroundColor: "#0000",
+                                    color: "black",
+                                    borderColor: "rgba(203,213,225)",
+                                  }}
+                                  variant="contained"
+                                  color="warning"
+                                  onClick={handleOpenImplemntationTask}
+                                >
+                                  Add New Task
+                                </Button>
+                              )}
+                            {/* <Button
+                              className="whitespace-nowrap mt-5 mb-5 ms-5"
+                              style={{
+                                border: "1px solid",
+                                backgroundColor: "#0000",
+                                color: "black",
+                                borderColor: "rgba(203,213,225)",
+                              }}
+                              variant="contained"
+                              color="warning"
+                              // onClick={handleOpen}
+                            >
+                              Audits Lists
+                            </Button> */}
+                          </div>
+
+                          <TextField
+                            variant="filled"
+                            fullWidth
+                            placeholder="Search"
+                            style={{
+                              backgroundColor: "white",
+                            }}
+                            //   value={searchTerm}
+                            InputProps={{
+                              startAdornment: (
+                                <InputAdornment
+                                  position="start"
+                                  style={{
+                                    marginTop: "0px",
+                                    paddingTop: "0px",
+                                  }}
+                                >
+                                  <SearchIcon />
+                                </InputAdornment>
+                              ),
+                            }}
+                            sx={{ width: 320 }}
+                          />
+                        </div>
+                        {ImpDetails.map((detail) => {
+                          const deadlineLabel = ChangeDeadlineLabel.get(
+                            detail.deadline
+                          );
+
+                          if (deadlineLabel === step?.label) {
+                            return (
+                              <Accordion
+                                key={detail.id}
+                                expanded={expanded === detail.id}
+                                sx={{
+                                  mt: 2,
+                                  minHeight: "70px",
+                                  transition: "height 0.3s",
+                                  "&.Mui-expanded": {
+                                    minHeight: "100px",
+                                  },
+                                  "@media (max-width: 600px)": {
+                                    mt: 4,
+                                  },
+                                }}
+                                onChange={handleAccordionChange(detail.id)}
                               >
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  // style={{ width: "17%" }}
+                                <AccordionSummary
+                                  className="justify-content-Accordian_title"
+                                  style={{ minHeight: "60px" }}
+                                  expandIcon={<ExpandMoreIcon />}
+                                  aria-controls={`panel${index + 1}-content`}
+                                  id={`panel${index + 1}-header`}
+                                  onClick={(e) => handelComments(e, detail.id)}
                                 >
-                                  <div className="flex items-center">
-                                    <b>Task #{detail.id}</b>
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    // style={{ width: "17%" }}
+                                  >
+                                    <div className="flex items-center">
+                                      <b>Task #{detail.id}</b>
+                                    </div>
                                   </div>
-                                </div>
 
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  // style={{ width: "17%" }}
-                                >
-                                  <div className="flex items-center" style={{}}>
-                                    {detail.isCompleted &&
-                                    detail.taskStatus === 3 ? (
-                                      <span className="text-green">
-                                        Approved
-                                      </span>
-                                    ) : detail.isCompleted &&
-                                      detail.taskStatus !== 3 ? (
-                                      <span className="text-red">
-                                        Awaiting Approval
-                                      </span>
-                                    ) : (
-                                      <span className="text-black">
-                                        <b>Not Completed</b>
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  // style={{ width: "17%" }}
-                                >
-                                  <div className="flex items-center">
-                                    No Risks
-                                  </div>
-                                </div>
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  // style={{ width: "17%" }}
-                                >
-                                  <div className="flex items-center">
-                                    {detail.assignedStaff}
-                                  </div>
-                                </div>
-
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  // style={{ width: "17%" }}
-                                >
-                                  <div className="flex items-center">
-                                    {formatDate(detail.dueDate)}
-                                  </div>
-                                </div>
-                                <div
-                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                  // style={{ width: "17%" }}
-                                >
-                                  <div className="flex items-center">
-                                    <Button
-                                      className="whitespace-nowrap"
-                                      style={{
-                                        border: "1px solid",
-                                        backgroundColor: "#0000",
-                                        color: "black",
-                                        borderColor: "rgba(203,213,225)",
-                                      }}
-                                      variant="contained"
-                                      color="warning"
-                                      onClick={() =>
-                                        handelOpenAudit(detail.audits, "")
-                                      }
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    // style={{ width: "17%" }}
+                                  >
+                                    <div
+                                      className="flex items-center"
+                                      style={{}}
                                     >
-                                      Audits
-                                    </Button>
-                                    {lastActCode?.canExecute && (
+                                      {detail.isCompleted &&
+                                      detail.taskStatus === 3 ? (
+                                        <span className="text-green">
+                                          Approved
+                                        </span>
+                                      ) : detail.isCompleted &&
+                                        detail.taskStatus !== 3 ? (
+                                        <span className="text-red">
+                                          Awaiting Approval
+                                        </span>
+                                      ) : (
+                                        <span className="text-black">
+                                          <b>Not Completed</b>
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    // style={{ width: "17%" }}
+                                  >
+                                    <div className="flex items-center">
+                                      No Risks
+                                    </div>
+                                  </div>
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    // style={{ width: "17%" }}
+                                  >
+                                    <div className="flex items-center">
+                                      {detail.assignedStaff}
+                                    </div>
+                                  </div>
+
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    // style={{ width: "17%" }}
+                                  >
+                                    <div className="flex items-center">
+                                      {formatDate(detail.dueDate)}
+                                    </div>
+                                  </div>
+                                  <div
+                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                    // style={{ width: "17%" }}
+                                  >
+                                    <div className="flex items-center">
                                       <Button
-                                        className="whitespace-nowrap ms-5"
+                                        className="whitespace-nowrap"
                                         style={{
                                           border: "1px solid",
                                           backgroundColor: "#0000",
@@ -1570,365 +1567,391 @@ p-30 pt-24 pb-24
                                         variant="contained"
                                         color="warning"
                                         onClick={() =>
-                                          handelOpenAuditComment(detail.id)
+                                          handelOpenAudit(detail.audits, "")
                                         }
                                       >
-                                        <FuseSvgIcon
-                                          className="text-48"
-                                          size={24}
-                                          color="action"
-                                        >
-                                          heroicons-outline:document-text
-                                        </FuseSvgIcon>
+                                        Audits
                                       </Button>
-                                    )}
+                                      {lastActCode?.canExecute && (
+                                        <Button
+                                          className="whitespace-nowrap ms-5"
+                                          style={{
+                                            border: "1px solid",
+                                            backgroundColor: "#0000",
+                                            color: "black",
+                                            borderColor: "rgba(203,213,225)",
+                                          }}
+                                          variant="contained"
+                                          color="warning"
+                                          onClick={() =>
+                                            handelOpenAuditComment(detail.id)
+                                          }
+                                        >
+                                          <FuseSvgIcon
+                                            className="text-48"
+                                            size={24}
+                                            color="action"
+                                          >
+                                            heroicons-outline:document-text
+                                          </FuseSvgIcon>
+                                        </Button>
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                <Stepper orientation="vertical">
-                                  <Step>
-                                    <div style={{ alignItems: "flex-start" }}>
-                                      <div className="flex flex-col items-start mt-5">
-                                        <div
-                                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                          style={{
-                                            padding: "20px",
-                                            backgroundColor: "#dbeafe",
-                                          }}
-                                        >
-                                          <b>{detail?.assignedByStaff}</b>
-                                          <p>
-                                            What is the task :{" "}
-                                            {detail?.actionWhat}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      <div className="flex flex-col items-start mt-5">
-                                        <div
-                                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                          style={{
-                                            padding: "20px",
-                                            backgroundColor: "#dbeafe",
-                                          }}
-                                        >
-                                          <p>
-                                            How is Task done :{" "}
-                                            {detail?.actionHow}
-                                          </p>
-                                        </div>
-                                      </div>
-                                      {detail?.particularName &&
-                                        detail?.particularSubName && (
-                                          <div className="flex flex-col items-start mt-5">
-                                            <div
-                                              className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                              style={{
-                                                padding: "20px",
-                                                backgroundColor: "#dbeafe",
-                                              }}
-                                            >
-                                              <p>
-                                                Impact :{" "}
-                                                {`${detail?.particularName} > ${detail?.particularSubName}`}
-                                              </p>
-                                            </div>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                  <Stepper orientation="vertical">
+                                    <Step>
+                                      <div style={{ alignItems: "flex-start" }}>
+                                        <div className="flex flex-col items-start mt-5">
+                                          <div
+                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                            style={{
+                                              padding: "20px",
+                                              backgroundColor: "#dbeafe",
+                                            }}
+                                          >
+                                            <b>{detail?.assignedByStaff}</b>
+                                            <p>
+                                              What is the task :{" "}
+                                              {detail?.actionWhat}
+                                            </p>
                                           </div>
-                                        )}
-                                      <div className="flex flex-col items-start mt-5">
-                                        <div
-                                          className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                          style={{
-                                            padding: "20px",
-                                            backgroundColor: "#dbeafe",
-                                          }}
-                                        >
-                                          <p>
-                                            Due Date :{" "}
-                                            {formatDate(detail.dueDate)}
-                                          </p>
                                         </div>
-                                      </div>
-
-                                      <div className="flex items-center justify-center my-3">
-                                        <div className="flex-auto border-b"></div>
-                                        <div
-                                          className="flex-0 "
-                                          style={{ fontSize: "xx-small" }}
-                                        >
-                                          <b>{detail?.assignedByStaff}</b> has
-                                          assigned task to{" "}
-                                          <b>{detail?.assignedStaff}</b> on{" "}
-                                          {formatDate(detail.assignedAt)}
+                                        <div className="flex flex-col items-start mt-5">
+                                          <div
+                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                            style={{
+                                              padding: "20px",
+                                              backgroundColor: "#dbeafe",
+                                            }}
+                                          >
+                                            <p>
+                                              How is Task done :{" "}
+                                              {detail?.actionHow}
+                                            </p>
+                                          </div>
                                         </div>
-                                        <div className="flex-auto border-b"></div>
-                                      </div>
-
-                                      {impComments.map((msg) => (
-                                        <div
-                                          key={msg.id}
-                                          className="flex flex-row flex-wrap mb-2"
-                                          style={{
-                                            width: "auto",
-                                            display: "block",
-                                            clear: "both",
-                                          }}
-                                        >
-                                          {msg?.remark && (
-                                            <div
-                                              className="flex flex-row items-start mt-5"
-                                              style={{ position: "relative" }}
-                                            >
-                                              <div
-                                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
-                                                style={{ padding: "10px" }}
-                                              >
-                                                <div
-                                                  className="font-semibold"
-                                                  style={{
-                                                    fontSize: "smaller",
-                                                  }}
-                                                >
-                                                  {" "}
-                                                  {detail.assignedStaff}{" "}
-                                                </div>
-                                                <div
-                                                  dangerouslySetInnerHTML={{
-                                                    __html: msg?.remark,
-                                                  }}
-                                                ></div>
-                                                <div className="my-0.5 text-xs font-medium text-secondary">
-                                                  <small>
-                                                    {msg.startedDate &&
-                                                    !msg.workInProgressDate &&
-                                                    !msg.completedDate &&
-                                                    !msg.dueDate
-                                                      ? `Started on ${formatDate(msg.startedDate)}`
-                                                      : msg.workInProgressDate &&
-                                                          !msg.completedDate &&
-                                                          !msg.dueDate
-                                                        ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
-                                                        : msg.dueDate &&
-                                                            !msg.completedDate
-                                                          ? `Due on ${formatDate(msg.dueDate)}`
-                                                          : msg.completedDate
-                                                            ? `Completed on ${formatDate(msg.completedDate)}`
-                                                            : "Unknown"}
-                                                  </small>
-                                                </div>
-                                              </div>
-                                              <button
-                                                className="icon-button"
-                                                onClick={() =>
-                                                  handleOpen(msg.id)
-                                                }
-                                                style={{
-                                                  top: "-15px",
-                                                  right: "-20px",
-                                                }}
-                                              >
-                                                <FuseSvgIcon size={20}>
-                                                  heroicons-solid:document
-                                                </FuseSvgIcon>
-                                                <span className="count">
-                                                  {listDocument.length}
-                                                  {/* {documentCounts[msg.id]} */}
-                                                </span>
-                                              </button>
-                                            </div>
-                                          )}
-                                          {msg.comments && (
+                                        {detail?.particularName &&
+                                          detail?.particularSubName && (
                                             <div className="flex flex-col items-start mt-5">
                                               <div
                                                 className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                                 style={{
-                                                  padding: "10px",
+                                                  padding: "20px",
                                                   backgroundColor: "#dbeafe",
                                                 }}
                                               >
-                                                <div
-                                                  className="font-semibold"
-                                                  style={{
-                                                    fontSize: "smaller",
-                                                  }}
-                                                >
-                                                  {" "}
-                                                  {detail.assignedByStaff}{" "}
-                                                </div>
-                                                <div
-                                                  className="min-w-4 leading-5 "
-                                                  dangerouslySetInnerHTML={{
-                                                    __html: msg.comments,
-                                                  }}
-                                                  style={{
-                                                    fontSize: "smaller",
-                                                  }}
-                                                ></div>
-                                                <div
-                                                  className="min-w-4 leading-5"
-                                                  style={{
-                                                    fontSize: "xx-small",
-                                                  }}
-                                                >
-                                                  {" "}
-                                                  {msg.approvalStatusDate && (
-                                                    <>
-                                                      {msg.approverId
-                                                        ? "Approved on"
-                                                        : "Rejected on"}{" "}
-                                                      {new Date(
-                                                        msg.approvalStatusDate
-                                                      ).toLocaleString(
-                                                        "en-US",
-                                                        {
-                                                          month: "short",
-                                                          day: "2-digit",
-                                                          hour: "numeric",
-                                                          minute: "numeric",
-                                                          hour12: true,
-                                                        }
-                                                      )}
-                                                    </>
-                                                  )}
-                                                </div>
+                                                <p>
+                                                  Impact :{" "}
+                                                  {`${detail?.particularName} > ${detail?.particularSubName}`}
+                                                </p>
                                               </div>
                                             </div>
                                           )}
+                                        <div className="flex flex-col items-start mt-5">
+                                          <div
+                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                            style={{
+                                              padding: "20px",
+                                              backgroundColor: "#dbeafe",
+                                            }}
+                                          >
+                                            <p>
+                                              Due Date :{" "}
+                                              {formatDate(detail.dueDate)}
+                                            </p>
+                                          </div>
                                         </div>
-                                      ))}
-                                      {detail.isCompleted &&
-                                        detail.taskStatus !== 3 && (
-                                          <>
-                                            <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+
+                                        <div className="flex items-center justify-center my-3">
+                                          <div className="flex-auto border-b"></div>
+                                          <div
+                                            className="flex-0 "
+                                            style={{ fontSize: "xx-small" }}
+                                          >
+                                            <b>{detail?.assignedByStaff}</b> has
+                                            assigned task to{" "}
+                                            <b>{detail?.assignedStaff}</b> on{" "}
+                                            {formatDate(detail.assignedAt)}
+                                          </div>
+                                          <div className="flex-auto border-b"></div>
+                                        </div>
+
+                                        {impComments.map((msg) => (
+                                          <div
+                                            key={msg.id}
+                                            className="flex flex-row flex-wrap mb-2"
+                                            style={{
+                                              width: "auto",
+                                              display: "block",
+                                              clear: "both",
+                                            }}
+                                          >
+                                            {msg?.remark && (
                                               <div
-                                                _ngcontent-fyk-c288=""
-                                                class="flex items-center w-full  border-b justify-between"
-                                              ></div>
-                                            </div>
-                                            {currentActivityForm.canEdit && (
-                                              <div
-                                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                                style={{ width: "100%" }}
+                                                className="flex flex-row items-start mt-5"
+                                                style={{ position: "relative" }}
                                               >
-                                                <Box
-                                                  sx={{
-                                                    display: "flex",
-                                                    flexWrap: "wrap",
-                                                  }}
+                                                <div
+                                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
+                                                  style={{ padding: "10px" }}
                                                 >
-                                                  <FormControl
-                                                    fullWidth
-                                                    sx={{
-                                                      m: 1,
-                                                      maxWidth: "100%",
+                                                  <div
+                                                    className="font-semibold"
+                                                    style={{
+                                                      fontSize: "smaller",
                                                     }}
                                                   >
-                                                    <span className="font-semibold leading-none">
-                                                      Comments*
-                                                    </span>
-                                                    <OutlinedInput
-                                                      id="reasonForNewDocument"
-                                                      name="reasonForNewDocument"
-                                                      onChange={(e) =>
-                                                        setComments(
-                                                          e.target.value
-                                                        )
-                                                      }
-                                                      label="Reason For Change*"
-                                                      className="mt-5"
-                                                    />
-                                                  </FormControl>
-                                                </Box>
+                                                    {" "}
+                                                    {detail.assignedStaff}{" "}
+                                                  </div>
+                                                  <div
+                                                    dangerouslySetInnerHTML={{
+                                                      __html: msg?.remark,
+                                                    }}
+                                                  ></div>
+                                                  <div className="my-0.5 text-xs font-medium text-secondary">
+                                                    <small>
+                                                      {msg.startedDate &&
+                                                      !msg.workInProgressDate &&
+                                                      !msg.completedDate &&
+                                                      !msg.dueDate
+                                                        ? `Started on ${formatDate(msg.startedDate)}`
+                                                        : msg.workInProgressDate &&
+                                                            !msg.completedDate &&
+                                                            !msg.dueDate
+                                                          ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
+                                                          : msg.dueDate &&
+                                                              !msg.completedDate
+                                                            ? `Due on ${formatDate(msg.dueDate)}`
+                                                            : msg.completedDate
+                                                              ? `Completed on ${formatDate(msg.completedDate)}`
+                                                              : "Unknown"}
+                                                    </small>
+                                                  </div>
+                                                </div>
+                                                <button
+                                                  className="icon-button"
+                                                  onClick={() =>
+                                                    handleOpen(msg.id)
+                                                  }
+                                                  style={{
+                                                    top: "-15px",
+                                                    right: "-20px",
+                                                  }}
+                                                >
+                                                  <FuseSvgIcon size={20}>
+                                                    heroicons-solid:document
+                                                  </FuseSvgIcon>
+                                                  <span className="count">
+                                                    {listDocument.length}
+                                                    {/* {documentCounts[msg.id]} */}
+                                                  </span>
+                                                </button>
                                               </div>
                                             )}
-                                            {currentActivityForm.canEdit && (
-                                              <div className="flex justify-start ">
-                                                <Button
-                                                  className="whitespace-nowrap ms-5 "
-                                                  variant="contained"
-                                                  color="secondary"
+                                            {msg.comments && (
+                                              <div className="flex flex-col items-start mt-5">
+                                                <div
+                                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                                   style={{
-                                                    marginTop: "10px",
-                                                    backgroundColor: "white",
-                                                    color: "black",
+                                                    padding: "10px",
+                                                    backgroundColor: "#dbeafe",
                                                   }}
-                                                  onClick={(e) =>
-                                                    handelRejectImpl(e, detail)
-                                                  }
                                                 >
-                                                  Reject
-                                                </Button>
-                                                <Button
-                                                  className="whitespace-nowrap ms-5 "
-                                                  variant="contained"
-                                                  color="secondary"
-                                                  style={{
-                                                    marginTop: "10px",
-                                                  }}
-                                                  onClick={(e) =>
-                                                    handelApproveImpl(e, detail)
-                                                  }
-                                                >
-                                                  Approve
-                                                </Button>
+                                                  <div
+                                                    className="font-semibold"
+                                                    style={{
+                                                      fontSize: "smaller",
+                                                    }}
+                                                  >
+                                                    {" "}
+                                                    {
+                                                      detail.assignedByStaff
+                                                    }{" "}
+                                                  </div>
+                                                  <div
+                                                    className="min-w-4 leading-5 "
+                                                    dangerouslySetInnerHTML={{
+                                                      __html: msg.comments,
+                                                    }}
+                                                    style={{
+                                                      fontSize: "smaller",
+                                                    }}
+                                                  ></div>
+                                                  <div
+                                                    className="min-w-4 leading-5"
+                                                    style={{
+                                                      fontSize: "xx-small",
+                                                    }}
+                                                  >
+                                                    {" "}
+                                                    {msg.approvalStatusDate && (
+                                                      <>
+                                                        {msg.approverId
+                                                          ? "Approved on"
+                                                          : "Rejected on"}{" "}
+                                                        {new Date(
+                                                          msg.approvalStatusDate
+                                                        ).toLocaleString(
+                                                          "en-US",
+                                                          {
+                                                            month: "short",
+                                                            day: "2-digit",
+                                                            hour: "numeric",
+                                                            minute: "numeric",
+                                                            hour12: true,
+                                                          }
+                                                        )}
+                                                      </>
+                                                    )}
+                                                  </div>
+                                                </div>
                                               </div>
                                             )}
-                                          </>
-                                        )}
-                                    </div>
-                                  </Step>
-                                </Stepper>
-                              </AccordionDetails>
-                            </Accordion>
-                          );
-                        }
-                        return null;
-                      })}
-                      <div
-                        className="flex mt-7 pt-24"
-                        style={{ justifyContent: "end" }}
-                      >
-                        <Box>
-                          <div>
-                            <Button
-                              disabled={index === 0}
-                              onClick={handleBack}
-                              sx={{
-                                mr: 1,
-                                backgroundColor:
-                                  index !== 0 ? "black" : "default",
-                                color: index !== 0 ? "white" : "default",
-                                "&:hover": {
+                                          </div>
+                                        ))}
+                                        {detail.isCompleted &&
+                                          detail.taskStatus !== 3 && (
+                                            <>
+                                              <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                                <div
+                                                  _ngcontent-fyk-c288=""
+                                                  class="flex items-center w-full  border-b justify-between"
+                                                ></div>
+                                              </div>
+                                              {currentActivityForm.canEdit && (
+                                                <div
+                                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                                  style={{ width: "100%" }}
+                                                >
+                                                  <Box
+                                                    sx={{
+                                                      display: "flex",
+                                                      flexWrap: "wrap",
+                                                    }}
+                                                  >
+                                                    <FormControl
+                                                      fullWidth
+                                                      sx={{
+                                                        m: 1,
+                                                        maxWidth: "100%",
+                                                      }}
+                                                    >
+                                                      <span className="font-semibold leading-none">
+                                                        Comments*
+                                                      </span>
+                                                      <OutlinedInput
+                                                        id="reasonForNewDocument"
+                                                        name="reasonForNewDocument"
+                                                        onChange={(e) =>
+                                                          setComments(
+                                                            e.target.value
+                                                          )
+                                                        }
+                                                        label="Reason For Change*"
+                                                        className="mt-5"
+                                                      />
+                                                    </FormControl>
+                                                  </Box>
+                                                </div>
+                                              )}
+                                              {currentActivityForm.canEdit && (
+                                                <div className="flex justify-start ">
+                                                  <Button
+                                                    className="whitespace-nowrap ms-5 "
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    style={{
+                                                      marginTop: "10px",
+                                                      backgroundColor: "white",
+                                                      color: "black",
+                                                    }}
+                                                    onClick={(e) =>
+                                                      handelRejectImpl(
+                                                        e,
+                                                        detail
+                                                      )
+                                                    }
+                                                  >
+                                                    Reject
+                                                  </Button>
+                                                  <Button
+                                                    className="whitespace-nowrap ms-5 "
+                                                    variant="contained"
+                                                    color="secondary"
+                                                    style={{
+                                                      marginTop: "10px",
+                                                    }}
+                                                    onClick={(e) =>
+                                                      handelApproveImpl(
+                                                        e,
+                                                        detail
+                                                      )
+                                                    }
+                                                  >
+                                                    Approve
+                                                  </Button>
+                                                </div>
+                                              )}
+                                            </>
+                                          )}
+                                      </div>
+                                    </Step>
+                                  </Stepper>
+                                </AccordionDetails>
+                              </Accordion>
+                            );
+                          }
+                          return null;
+                        })}
+                        <div
+                          className="flex mt-7 pt-24"
+                          style={{ justifyContent: "end" }}
+                        >
+                          <Box>
+                            <div>
+                              <Button
+                                disabled={index === 0}
+                                onClick={handleBack}
+                                sx={{
+                                  mr: 1,
                                   backgroundColor:
                                     index !== 0 ? "black" : "default",
-                                },
-                              }}
-                              style={{
-                                paddingLeft: "35px",
-                                paddingRight: "35px",
-                              }}
-                            >
-                              Back
-                            </Button>
-                            <Button
-                              variant="contained"
-                              onClick={handleNext}
-                              sx={{ mr: 1 }}
-                              style={{
-                                color: "white",
-                                backgroundColor: "blue",
-                                paddingLeft: "35px",
-                                paddingRight: "35px",
-                              }}
-                            >
-                              {index === steps.length - 1 ? "Finish" : "Next"}
-                            </Button>
-                          </div>
-                        </Box>
-                      </div>
-                    </StepContent>
-                  </Step>
-                ))}
+                                  color: index !== 0 ? "white" : "default",
+                                  "&:hover": {
+                                    backgroundColor:
+                                      index !== 0 ? "black" : "default",
+                                  },
+                                }}
+                                style={{
+                                  paddingLeft: "35px",
+                                  paddingRight: "35px",
+                                }}
+                              >
+                                Back
+                              </Button>
+                              <Button
+                                variant="contained"
+                                onClick={handleNext}
+                                sx={{ mr: 1 }}
+                                style={{
+                                  color: "white",
+                                  backgroundColor: "blue",
+                                  paddingLeft: "35px",
+                                  paddingRight: "35px",
+                                }}
+                              >
+                                {index === steps.length - 1 ? "Finish" : "Next"}
+                              </Button>
+                            </div>
+                          </Box>
+                        </div>
+                      </StepContent>
+                    </Step>
+                  );
+                })}
               </Stepper>
 
               {activeStep === steps.length && (
