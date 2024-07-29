@@ -13,6 +13,7 @@ import { useAppSelector } from "app/store/hooks";
 
 import { Dashboard } from "../../../../../api/Api";
 import { apiAuth } from "src/utils/http";
+import { Link } from "react-router-dom";
 
 /**
  * The ProjectDashboardAppHeader page.
@@ -72,12 +73,13 @@ function ProjectDashboardAppHeader({ data }) {
               <FuseSvgIcon size={20} color="action">
                 heroicons-solid:bell
               </FuseSvgIcon>
-              <Typography
-                className="mx-6 leading-6 truncate"
+              <Link
+                to={"/tasks"}
+                className="mx-6 leading-6 truncate text-blue"
                 color="text.secondary"
               >
                 You have {data?.tasksDue} pending tasks
-              </Typography>
+              </Link>
             </div>
           </div>
         </div>

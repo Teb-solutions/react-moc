@@ -271,15 +271,15 @@ const InitiationComplete = ({
   const ListDoc1 = (id, activeid) => {
     apiAuth
       .get(
-        `/DocumentManager/DocList/${activeid}/ChangeSummary?changeRequestToken=${id}`
+        `/DocumentManager/DocList/${id}/ChangeSummary?changeRequestToken=${activeid}`
       )
       .then((response) => {
         setListDocument(response?.data?.data);
       });
   };
-  const handleOpen1 = () => {
+  const handleOpen1 = (id) => {
     setOpen1(true);
-    ListDoc1(assetEvaluationId, currentActivityForm.uid);
+    ListDoc1(id, assetEvaluationId);
     // ListDoc(assetEvaluationId, AssetDetails?.changeRequestId);
     // const newGuid = uuidv4();
     // setSelectedFile((prevState) => ({
@@ -800,7 +800,12 @@ const InitiationComplete = ({
 
       <SwipeableViews>
         <Paper className="w-full mx-auto rounded-16 shadow overflow-hidden lg:mt-16">
-          <Typography variant="h4" component="h2" className="p-30 pt-24 pb-24 border-b" gutterBottom>
+          <Typography
+            variant="h4"
+            component="h2"
+            className="p-30 pt-24 pb-24 border-b"
+            gutterBottom
+          >
             <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
               Change Summary
             </h2>
@@ -950,7 +955,12 @@ const InitiationComplete = ({
               </FormControl>
             </Grid>
           </Grid>
-          <Box mt={4} display="flex" justifyContent="space-between">
+          <Box
+            mt={2}
+            display="flex"
+            justifyContent="space-between"
+            className=" p-24 pt-10"
+          >
             <StyledBadge
               badgeContent={
                 listDocument.length ? listDocument.length : CountApprove

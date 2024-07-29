@@ -823,21 +823,20 @@ const AssetCourse = () => {
               });
             apiAuth
               .get(`/ChangeSummary/Get?id=${assetEvaluationId}`)
-              .then((resp) => {
-                setCountApprove(0);
-                setCurrentSummeryById(resp.data.data);
+              .then((resps) => {
+                setCurrentSummeryById(resps.data.data);
+                apiAuth
+                  .get(
+                    `/DocumentManager/DocumentCount?id=${resps.data.data.id}&documentType=ChangeSummary`
+                  )
+                  .then((resp) => {
+                    setCountApprove(resp.data.data);
+                  });
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
                   setIsLoading(false);
 
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
-                  apiAuth
-                    .get(
-                      `/DocumentManager/DocumentCount?id=${resp.data.data.activity.uid}&documentType=ChangeSummary`
-                    )
-                    .then((resp) => {
-                      setCountApprove(resp.data.data);
-                    });
                 });
               });
 

@@ -322,9 +322,7 @@ function InitiationApprovalProceed({
                     />
                   </FormControl>
                 </Box>
-                <Box
-                  sx={{ display: "flex", flexWrap: "wrap"}}
-                >
+                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                   <FormControl fullWidth sx={{ m: 1 }}>
                     <FormLabel
                       className="font-medium text-14"
@@ -371,13 +369,8 @@ function InitiationApprovalProceed({
 
           {currentActivityForm.canEdit && (
             <>
-            <div
-                  className="my-10"
-                  style={{ borderTopWidth: "2px",  }}
-                ></div>
-            <div className="p-30 pt-24 pb-24">
-            
-                
+              <div className="my-10" style={{ borderTopWidth: "2px" }}></div>
+              <div className="p-30 pt-24 pb-24">
                 <div className="flex justify-end">
                   <div
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
@@ -415,16 +408,14 @@ function InitiationApprovalProceed({
                     ))}
                   </div>
                 </div>
-             
-            </div>
+              </div>
             </>
           )}
-          
+          <div className="p-30 pt-24 pb-24">
             {!currentActivityForm.canEdit &&
               TeamAssignmentList.filter(
                 (list) => list.roleName !== "Change Leader"
               ).map((list) => (
-                <div className="p-30 pt-24 pb-24">
                 <div
                   className="inventory-grid grid items-center gap-4 py-6"
                   style={{ width: "40%" }}
@@ -446,9 +437,8 @@ function InitiationApprovalProceed({
                     </div>
                   </div>
                 </div>
-                </div>
               ))}
-          
+          </div>
         </Paper>
       </SwipeableViews>
     </div>

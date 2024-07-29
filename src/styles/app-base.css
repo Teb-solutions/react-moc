@@ -841,7 +841,7 @@ body.sidebar1-open .maincntainer {
 }
 .muiltr-4q8sm7-MuiFormLabel-root-MuiInputLabel-root {
   color: #1e293b;
-  font-size: 2.5rem !important;
+  font-size: 1.5rem !important;
 }
 .p-24 {
   padding: 1.4rem !important;
@@ -990,43 +990,119 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
   border-radius: 4px 4px 0 0;
 }
 /* .text-xl{font-size: 18px !important;} */
-.border_accordian{border: 1px solid rgba(226,232,240, 1);}
-.muiltr-1oe5gwb-MuiInputBase-root-MuiFilledInput-root{border: 1px solid rgba(203,213,225, 1) !important;}
-.muiltr-1sod0hp-MuiTabs-indicator{display: none;}
-.muiltr-uc5miz-MuiButtonBase-root-MuiTab-root.Mui-selected {color: rgba(30, 41, 59, 1);border: 0;background: rgba(51, 65, 85, 0.1) !important;border-radius: 30px;}
-.muiltr-mri9va-MuiBadge-badge {background: #2c3e50;color: #fff;top: 19px;right: 0;}
-.justify-content-Accordian_title {justify-content: space-between !important;}
-.task_box {background: none;box-shadow: none;}
-.flex-wrap{flex-wrap: wrap;}
-.box_reset{box-shadow: none; border-radius: 0 !important;}
-.mt-0{margin-top: 0 !important;}
-.muiltr-bni3t0-MuiSelect-select-MuiInputBase-input.MuiSelect-select{line-height:1.4375em ;}
-.w-100{width: 100%;}
-.pl-0{padding-left: 0 !important;}
+.border_accordian {
+  border: 1px solid rgba(226, 232, 240, 1);
+}
+.muiltr-1oe5gwb-MuiInputBase-root-MuiFilledInput-root {
+  border: 1px solid rgba(203, 213, 225, 1) !important;
+}
+.muiltr-1sod0hp-MuiTabs-indicator {
+  display: none;
+}
+.muiltr-uc5miz-MuiButtonBase-root-MuiTab-root.Mui-selected {
+  color: rgba(30, 41, 59, 1);
+  border: 0;
+  background: rgba(51, 65, 85, 0.1) !important;
+  border-radius: 30px;
+}
+.muiltr-mri9va-MuiBadge-badge {
+  background: #2c3e50;
+  color: #fff;
+  top: 5px;
+  right: 0;
+}
+.justify-content-Accordian_title {
+  justify-content: space-between !important;
+}
+.task_box {
+  background: none;
+  box-shadow: none;
+}
+.flex-wrap {
+  flex-wrap: wrap;
+}
+.box_reset {
+  box-shadow: none;
+  border-radius: 0 !important;
+}
+.mt-0 {
+  margin-top: 0 !important;
+}
+.muiltr-bni3t0-MuiSelect-select-MuiInputBase-input.MuiSelect-select {
+  line-height: 1.4375em;
+}
+.w-100 {
+  width: 100%;
+}
+.pl-0 {
+  padding-left: 0 !important;
+}
 @media (min-width: 1200px) {
-  .desktop_hide{display: none;}
+  .desktop_hide {
+    display: none;
+  }
 }
 @media (max-width: 1199px) {
-.btn_margin{padding-left: 0 !important; margin:10px 0;}
-.close_popup{position: absolute; right: -36px; top: 15px;}
-.muiltr-18fjwz5-MuiPaper-root-MuiDrawer-paper{overflow: inherit !important;}
-.close_popup svg{color: rgb(255 255 255);}
+  .btn_margin {
+    padding-left: 0 !important;
+    margin: 10px 0;
+  }
+  .close_popup {
+    position: absolute;
+    right: -36px;
+    top: 15px;
+  }
+  .muiltr-18fjwz5-MuiPaper-root-MuiDrawer-paper {
+    overflow: inherit !important;
+  }
+  .close_popup svg {
+    color: rgb(255 255 255);
+  }
 }
 @media (max-width: 768px) {
-.px-24 {padding-left: 1.6rem !important;padding-right: 1.6rem !important;}
-.muiltr-10oypuz-MuiBadge-badge{font-size: 10px; top: 7px; right: 4px;}
-.hidden-small{display: none !important;}
-.d-sm-block{display: block !important;}
-.mt_sm-10{margin-top: 10px;}
-.task_table_content{height: auto !important;}
-.task_table_content > div > div{margin: 5px 0;}
-.sidebar1{right: -100%;width: 400px; max-width: 100%; top: 50px;}
-body.sidebar1-open .maincntainer {
-  padding-right: 400px;
-}
-.Fw-100{width: 100%; max-width: 100%;}
-.muiltr-5g2394-MuiTable-root td{white-space: nowrap;}
-.muiltr-4q8sm7-MuiFormLabel-root-MuiInputLabel-root{font-size: 2rem !important;}
+  .px-24 {
+    padding-left: 1.6rem !important;
+    padding-right: 1.6rem !important;
+  }
+  .muiltr-10oypuz-MuiBadge-badge {
+    font-size: 10px;
+    top: 7px;
+    right: 4px;
+  }
+  .hidden-small {
+    display: none !important;
+  }
+  .d-sm-block {
+    display: block !important;
+  }
+  .mt_sm-10 {
+    margin-top: 10px;
+  }
+  .task_table_content {
+    height: auto !important;
+  }
+  .task_table_content > div > div {
+    margin: 5px 0;
+  }
+  .sidebar1 {
+    right: -100%;
+    width: 400px;
+    max-width: 100%;
+    top: 50px;
+  }
+  body.sidebar1-open .maincntainer {
+    padding-right: 400px;
+  }
+  .Fw-100 {
+    width: 100%;
+    max-width: 100%;
+  }
+  .muiltr-5g2394-MuiTable-root td {
+    white-space: nowrap;
+  }
+  .muiltr-4q8sm7-MuiFormLabel-root-MuiInputLabel-root {
+    font-size: 2rem !important;
+  }
 }
 @media (max-width: 479px) {
   body.sidebar1-open .maincntainer {
