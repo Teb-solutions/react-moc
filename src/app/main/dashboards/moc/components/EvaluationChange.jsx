@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Accordion,
   AccordionDetails,
@@ -43,7 +43,7 @@ import { Link } from "react-router-dom";
 import CountdownTimer from "./CountdownTimer ";
 import { border } from "@mui/system";
 import "./componentStyle.css";
-import { useRef } from "react";
+
 import FuseLoading from "@fuse/core/FuseLoading";
 import Initiation from "./Initiation";
 function CustomTabPanel(props) {
@@ -1287,6 +1287,7 @@ function EvaluationChange({
   const [viewrisk, setViewRisk] = useState(false);
 
   const handelViewDetails = (id, subid) => {
+    setPotentialFrequencyDetails([]);
     setFormValues({
       ...formValues,
       hazardType: "",
@@ -1308,7 +1309,6 @@ function EvaluationChange({
       residualSeverityScoring: "",
       residualRisk: "",
     });
-    setPotentialFrequencyDetails([]);
 
     setViewRisk(true);
     setRisk(true);
@@ -1321,7 +1321,7 @@ function EvaluationChange({
     apiAuth.get(`/LookupData/Lov/29`).then((resp) => {
       setPotentialTimeDetails(resp.data.data);
     });
-    apiAuth.get(`/LookupData/Lov/30/${value}`).then((resp) => {
+    apiAuth.get(`/LookupData/Lov/30/0`).then((resp) => {
       setPotentialFrequencyDetails(resp.data.data);
     });
     apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
@@ -1354,21 +1354,21 @@ function EvaluationChange({
 
       const { classification, classificationValue } =
         calculateRiskClassification(data?.residualRisk);
-      console.log(formValues, "ppppppss");
+
       setClassification(classification);
 
-      if (data.time) {
-        apiAuth.get(`/LookupData/Lov/30/${data.time}`).then((resp) => {
-          setPotentialFrequencyDetails(resp.data.data);
-        });
-      }
-      if (data.frequencyDetails) {
-        apiAuth
-          .get(`/LookupData/Lov/30/${data.frequencyDetails}`)
-          .then((resp) => {
-            setPotentialFrequencyDetails(resp.data.data);
-          });
-      }
+      // if (data.time) {
+      //   apiAuth.get(`/LookupData/Lov/30/${data.time}`).then((resp) => {
+      //     setPotentialFrequencyDetails(resp.data.data);
+      //   });
+      // }
+      // if (data.frequencyDetails) {
+      //   apiAuth
+      //     .get(`/LookupData/Lov/30/${data.frequencyDetails}`)
+      //     .then((resp) => {
+      //       setPotentialFrequencyDetails(resp.data.data);
+      //     });
+      // }
     });
   };
   const handelRemoveDetails = (id, subId) => {
@@ -1387,89 +1387,98 @@ function EvaluationChange({
     }
   };
   const [hazaid, setHazaId] = useState(0);
-  const handelEditRiskDetails = (id, subid) => {
-    setPotentialFrequencyDetails([]);
-    setFormValues({
-      ...formValues,
-      hazardType: "",
-      hazardousSituation: "",
-      consequence: "",
-      time: "",
-      frequencyDetails: "",
-      frequencyScoring: "",
-      likelihoodScoring: "",
-      severityScoring: "",
-      potentialRisk: "",
-      humanControlMeasure: "",
-      technicalControlMeasure: "",
-      organisationalControlMeasure: "",
-      modifiedTime: "",
-      modifiedFrequencyDetails: "",
-      residualFrequencyScoring: "",
-      residualLikelihoodScoring: "",
-      residualSeverityScoring: "",
-      residualRisk: "",
-    });
-    setRisk(true);
-    apiAuth.get(`/RiskAnalysis/SubTaskDetail?id=${subid}`).then((resp) => {
-      setSubTaskDetail(resp.data.data);
-    });
-    apiAuth.get(`/LookupData/Lov/28`).then((resp) => {
-      setSubTaskhazardDetail(resp.data.data);
-    });
-    apiAuth.get(`/LookupData/Lov/29`).then((resp) => {
-      setPotentialTimeDetails(resp.data.data);
-    });
-    apiAuth.get(`/LookupData/Lov/30/${value}`).then((resp) => {
-      setPotentialFrequencyDetails(resp.data.data);
-    });
-    apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
-      setEditRiskAnalysDetail(resp.data.data.riskAnalysisHazardSituation);
-      const data = resp.data.data.riskAnalysisHazardSituation[0];
-      console.log(resp?.data?.data?.hazardType, "hazaaa");
-      setHazaId(resp?.data?.data?.hazardType);
+  const handelEditRiskDetails = useCallback(
+    (id, subid) => {
+      setPotentialFrequencyDetails([]);
       setFormValues({
         ...formValues,
-        hazardType: resp?.data?.data?.hazardType,
-        hazardousSituation: data?.hazardousSituation,
-        consequence: data?.consequence,
-        time: data?.time,
-        frequencyDetails: data?.frequencyDetails,
-        frequencyScoring: data?.frequencyScoring,
-        likelihoodScoring: data?.likelihoodScoring,
-        severityScoring: data?.severityScoring,
-        potentialRisk: data?.potentialRisk,
-        humanControlMeasure: data?.humanControlMeasure,
-        technicalControlMeasure: data?.technicalControlMeasure,
-        organisationalControlMeasure: data?.organisationalControlMeasure,
-        modifiedTime: data?.modifiedTime,
-        modifiedFrequencyDetails: data?.modifiedFrequencyDetails,
-        residualFrequencyScoring: data?.residualFrequencyScoring,
-        residualLikelihoodScoring: data?.residualLikelihoodScoring,
-        residualSeverityScoring: data?.residualSeverityScoring,
-        residualRisk: data?.residualRisk,
-        residualRiskClassification: data?.residualRiskClassification,
-        id: data?.id,
+        hazardType: "",
+        hazardousSituation: "",
+        consequence: "",
+        time: "",
+        frequencyDetails: "",
+        frequencyScoring: "",
+        likelihoodScoring: "",
+        severityScoring: "",
+        potentialRisk: "",
+        humanControlMeasure: "",
+        technicalControlMeasure: "",
+        organisationalControlMeasure: "",
+        modifiedTime: "",
+        modifiedFrequencyDetails: "",
+        residualFrequencyScoring: "",
+        residualLikelihoodScoring: "",
+        residualSeverityScoring: "",
+        residualRisk: "",
+      });
+      setRisk(true);
+      apiAuth.get(`/RiskAnalysis/SubTaskDetail?id=${subid}`).then((resp) => {
+        setSubTaskDetail(resp.data.data);
       });
 
-      const { classification, classificationValue } =
-        calculateRiskClassification(data?.residualRisk);
+      apiAuth.get(`/LookupData/Lov/29`).then((resp) => {
+        setPotentialTimeDetails(resp.data.data);
+      });
+      apiAuth.get(`/LookupData/Lov/30/0`).then((resp) => {
+        setPotentialFrequencyDetails(resp.data.data);
+      });
+      apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
+        setEditRiskAnalysDetail(resp.data.data.riskAnalysisHazardSituation);
+        const data = resp.data.data.riskAnalysisHazardSituation[0];
 
-      setClassification(classification);
-      if (data.time) {
-        apiAuth.get(`/LookupData/Lov/30/${data.time}`).then((resp) => {
-          setPotentialFrequencyDetails(resp.data.data);
+        setHazaId(resp?.data?.data?.hazardType);
+        setFormValues({
+          ...formValues,
+          hazardType: resp?.data?.data?.hazardType,
+          hazardousSituation: data?.hazardousSituation,
+          consequence: data?.consequence,
+          time: data?.time,
+          frequencyDetails: data?.frequencyDetails,
+          frequencyScoring: data?.frequencyScoring,
+          likelihoodScoring: data?.likelihoodScoring,
+          severityScoring: data?.severityScoring,
+          potentialRisk: data?.potentialRisk,
+          humanControlMeasure: data?.humanControlMeasure,
+          technicalControlMeasure: data?.technicalControlMeasure,
+          organisationalControlMeasure: data?.organisationalControlMeasure,
+          modifiedTime: data?.modifiedTime,
+          modifiedFrequencyDetails: data?.modifiedFrequencyDetails,
+          residualFrequencyScoring: data?.residualFrequencyScoring,
+          residualLikelihoodScoring: data?.residualLikelihoodScoring,
+          residualSeverityScoring: data?.residualSeverityScoring,
+          residualRisk: data?.residualRisk,
+          residualRiskClassification: data?.residualRiskClassification,
+          id: data?.id,
         });
-      }
-      if (data.frequencyDetails) {
-        apiAuth
-          .get(`/LookupData/Lov/30/${data.frequencyDetails}`)
-          .then((resp) => {
-            setPotentialFrequencyDetails(resp.data.data);
-          });
-      }
-    });
-  };
+        apiAuth.get(`/LookupData/Lov/28`).then((resp0) => {
+          setSubTaskhazardRiskView(true);
+          setSubTaskhazardDetail(resp0.data.data);
+          const result = resp0.data.data.find(
+            (item) => item.value === resp?.data?.data?.hazardType
+          );
+
+          setSubTaskhazardRiskViewName(result.text);
+        });
+        const { classification, classificationValue } =
+          calculateRiskClassification(data?.residualRisk);
+
+        setClassification(classification);
+        // if (data.time) {
+        //   apiAuth.get(`/LookupData/Lov/30/${data.time}`).then((resp) => {
+        //     setPotentialFrequencyDetails(resp.data.data);
+        //   });
+        // }
+        // if (data.frequencyDetails) {
+        //   apiAuth
+        //     .get(`/LookupData/Lov/30/${data.frequencyDetails}`)
+        //     .then((resp) => {
+        //       setPotentialFrequencyDetails(resp.data.data);
+        //     });
+        // }
+      });
+    },
+    [TaskhazardRiskViewName]
+  );
 
   const taskFormControlStyles = viewrisk
     ? {
@@ -4265,6 +4274,7 @@ function EvaluationChange({
                               marginRight: "15px",
                             }}
                           >
+                            {console.log(TaskhazardRiskViewName, "225hellll5")}
                             {TaskhazardRiskViewName}.pdf
                           </a>
                         </>
