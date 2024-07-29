@@ -540,7 +540,7 @@ function Initiation(props) {
       </Modal>
 
       <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
+        <Paper className="w-full mx-auto my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
           <div>
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               <h2 className="text-2xl font-semibold">MOC Request</h2>

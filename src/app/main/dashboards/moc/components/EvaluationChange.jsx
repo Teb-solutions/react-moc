@@ -29,6 +29,7 @@ import {
   TextField,
   Typography,
   Autocomplete,
+  TableContainer,
 } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -1584,20 +1585,20 @@ function EvaluationChange({
       />
       <SwipeableViews>
         {!risk ? (
-          <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
+          <Paper className="w-full mx-auto my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
             <div>
-              <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
+              <div className="flex items-center flex-wrap w-full border-b justify-between p-30 pt-24 pb-24">
                 <h2 className="text-2xl font-semibold">Evaluation</h2>
                 <div>
                   {AppActivity.canEdit && (
                     <Button
-                      className="whitespace-nowrap mt-0  ms-3"
+                      className="whitespace-nowrap my-5 sm:my-0 mr-5"
                       style={{
                         border: "1px solid",
                         backgroundColor: "transparent",
                         color: "black",
                         borderColor: "rgba(203,213,225)",
-                        marginRight: "0",
+                        
                       }}
                       variant="contained"
                       color="warning"
@@ -1618,7 +1619,7 @@ function EvaluationChange({
                     </Button>
                   )}
                   <Button
-                    className="whitespace-nowrap mt-0 ms-5"
+                    className="whitespace-nowrap mt-0"
                     style={{
                       border: "1px solid",
                       backgroundColor: "transparent",
@@ -1670,7 +1671,7 @@ function EvaluationChange({
             )}
             {/* )} */}
             <Box sx={{ width: "100%" }} className="hello p-30 pt-24 pb-24">
-              <Box sx={{ display: "flex" }}>
+              <Box className="sm:d-flex flex-wrap">
                 <Button
                   onClick={() => handleChange(0)}
                   variant={value === 0 ? "contained" : "outlined"}
@@ -1684,7 +1685,7 @@ function EvaluationChange({
                 </Button>
                 <Button
                   onClick={() => handleChange(1)}
-                  className="ms-5"
+                  className="sm:ms-5 mt-4 sm:mt-0"
                   variant={value === 1 ? "contained" : "outlined"}
                   sx={{
                     backgroundColor: value === 1 ? "#e6e6e6" : "transparent",
@@ -1708,7 +1709,7 @@ function EvaluationChange({
                       >
                         <div
                           className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                          style={{ width: "40%" }}
+                          // style={{ width: "40%" }}
                         >
                           <div className="flex items-center">
                             <img
@@ -2303,13 +2304,14 @@ function EvaluationChange({
                           <AccordionSummary
                             expandIcon={<ExpandMoreIcon />}
                             aria-controls="panel1-content"
+                            
                             id="panel1-header"
                             style={{ minHeight: "60px" }}
                           >
+                            <div className="flex flex-wrap justify-between">
                             <div
-                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                              style={{ width: "40%" }}
-                            >
+                              className="inventory-grid grid grid_inventory_box items-center gap-4 py-3 px-2 md:px-2"// style={{ width: "40%" }}
+                              >
                               <div className="flex items-center">
                                 <img
                                   src="/assets/images/etc/userpic.png"
@@ -2333,7 +2335,7 @@ function EvaluationChange({
 
                             <div
                               className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                              style={{ width: "20%" }}
+                              // style={{ width: "20%" }}
                             >
                               <div className="flex items-center">
                                 <div
@@ -2355,7 +2357,7 @@ function EvaluationChange({
                             </div>
                             <div
                               className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                              style={{ width: "20%" }}
+                              // style={{ width: "20%" }}
                             >
                               <div className="flex items-center">
                                 <div className="py-0.5 px-3 rounded-full text-sm">
@@ -2366,7 +2368,7 @@ function EvaluationChange({
                             </div>
                             <div
                               className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                              style={{ width: "20%" }}
+                              // style={{ width: "20%" }}
                             >
                               <div className="flex items-center">
                                 <div
@@ -2385,6 +2387,7 @@ function EvaluationChange({
                                     : "No Reviews"}
                                 </div>
                               </div>
+                            </div>
                             </div>
                           </AccordionSummary>
                           <AccordionDetails>
@@ -2423,379 +2426,360 @@ function EvaluationChange({
                                     )
                                   )}
 
-                                  {itms?.riskAnalysisList?.length !== 0 && (
-                                    <Paper style={{ margin: "10px" }}>
-                                      <div
-                                        className="flex items-center w-full justify-between"
-                                        style={{
-                                          borderRadius: "20px",
-                                          backgroundColor: "rgb(241 248 255)",
-                                        }}
-                                      >
-                                        <h6
-                                          className="text-small font-semibold"
-                                          style={{ padding: "15px" }}
-                                        >
-                                          Risk Details
-                                        </h6>
-                                        <h6
-                                          className="text-1xl font-semibold"
-                                          style={{ padding: "10px" }}
-                                        >
-                                          Human Measures
-                                        </h6>
-                                        <h6
-                                          className="text-1xl font-semibold"
-                                          style={{ padding: "10px" }}
-                                        >
-                                          Technical Measures
-                                        </h6>
-                                        <h6
-                                          className="text-1xl font-semibold"
-                                          style={{ padding: "10px" }}
-                                        >
-                                          ORGANISATIONAL MEASURES
-                                        </h6>
-                                      </div>
-
-                                      {itms?.riskAnalysisList[0]?.riskAnalysisSubTasks?.map(
-                                        (sub, index) => (
-                                          <div key={index}>
-                                            {sub.riskAnalysisHazardTypes
-                                              .length === 0 ? (
-                                              <>
-                                                <div
-                                                  _ngcontent-fyk-c288=""
-                                                  class="flex items-center w-full  border-b justify-between"
-                                                ></div>
-                                                <div>
-                                                  <Grid
-                                                    container
-                                                    className="inventory-grid"
-                                                    sx={{
-                                                      paddingY: 2,
-                                                      paddingX: {
-                                                        xs: 2,
-                                                        md: 1,
-                                                      },
-                                                    }}
-                                                  >
-                                                    <Grid item xs={12} md={4}>
-                                                      <h6
-                                                        style={{
-                                                          paddingBottom: "5px",
-                                                        }}
+{itms?.riskAnalysisList?.length !== 0 && (
+                                    <TableContainer
+                                      component={Paper}
+                                      style={{ margin: "0 0 10px 0" }}
+                                    >
+                                      <Table>
+                                        <TableHead>
+                                          <TableRow
+                                            style={{
+                                              backgroundColor:
+                                                "rgb(241 248 255)",
+                                            }}
+                                          >
+                                            <TableCell
+                                              // style={{ padding: "15px" }}
+                                            >
+                                              Risk Details
+                                            </TableCell>
+                                            <TableCell
+                                              // style={{ padding: "10px" }}
+                                            >
+                                              Human Measures
+                                            </TableCell>
+                                            <TableCell
+                                              // style={{ padding: "10px" }}
+                                            >
+                                              Technical Measures
+                                            </TableCell>
+                                            <TableCell
+                                              // style={{ padding: "10px" }}
+                                            >
+                                              Organisational Measures
+                                            </TableCell>
+                                          </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                          {itms?.riskAnalysisList[0]?.riskAnalysisSubTasks?.map(
+                                            (sub, index) => (
+                                              <React.Fragment key={index}>
+                                                {sub.riskAnalysisHazardTypes
+                                                  .length === 0 ? (
+                                                  <TableRow>
+                                                    <TableCell colSpan={4}>
+                                                      <Grid
+                                                        container
+                                                        className="inventory-grid"
                                                       >
-                                                        {sub.subTaskName}
-                                                      </h6>
-                                                    </Grid>
-
-                                                    <Grid item xs={12}>
-                                                      {AppActivity.canEdit &&
-                                                        JSON.parse(
-                                                          localStorage.getItem(
-                                                            "isActiveSession"
-                                                          )
-                                                        ) && (
-                                                          <span
-                                                            className="text-white"
+                                                        <Grid
+                                                          item
+                                                          xs={12}
+                                                          md={4}
+                                                        >
+                                                          <Typography
+                                                            variant="h6"
                                                             style={{
-                                                              backgroundColor:
-                                                                "#2563eb",
-                                                              borderRadius:
+                                                              paddingBottom:
                                                                 "5px",
-                                                              padding: "4px",
-                                                              fontSize: "10px",
-                                                              cursor: "pointer",
-                                                            }}
-                                                            onClick={() =>
-                                                              handelRisk(sub.id)
-                                                            }
-                                                          >
-                                                            Create New Risk
-                                                            Analysis
-                                                          </span>
-                                                        )}
-                                                    </Grid>
-                                                  </Grid>
-                                                </div>
-                                              </>
-                                            ) : (
-                                              sub.riskAnalysisHazardTypes?.map(
-                                                (hazardType) => (
-                                                  <div key={hazardType.id}>
-                                                    {hazardType.riskAnalysisHazardSituation?.map(
-                                                      (situation) => (
-                                                        <div key={situation.id}>
-                                                          <Grid
-                                                            container
-                                                            spacing={2}
-                                                            className="inventory-grid w-100 mt-0 ml-0"
-                                                            sx={{
-                                                              paddingY: 2,
-                                                              paddingX: {
-                                                                xs: 2,
-                                                                md: 2,
-                                                              },
                                                             }}
                                                           >
-                                                            <Grid
-                                                              className="pl-0 pt-0"
-                                                              item
-                                                              xs={12}
-                                                              md={3}
-                                                            >
-                                                              <Typography
-                                                                variant="body2"
-                                                                color="text.primary"
-                                                                fontWeight="fontWeightRegular"
+                                                            {sub.subTaskName}
+                                                          </Typography>
+                                                        </Grid>
+                                                        <Grid item xs={12}>
+                                                          {AppActivity.canEdit &&
+                                                            JSON.parse(
+                                                              localStorage.getItem(
+                                                                "isActiveSession"
+                                                              )
+                                                            ) && (
+                                                              <span
+                                                                className="text-white"
                                                                 style={{
                                                                   backgroundColor:
-                                                                    situation.residualRiskClassificationDisplay ===
-                                                                    "HighRisk"
-                                                                      ? "red"
-                                                                      : situation.residualRiskClassificationDisplay ===
-                                                                          "LowRisk"
-                                                                        ? "yellow"
-                                                                        : situation.residualRiskClassificationDisplay ===
-                                                                            "AverageRisk"
-                                                                          ? "orange"
-                                                                          : situation.residualRiskClassificationDisplay ===
-                                                                              "SignificantRisk"
-                                                                            ? "purple"
-                                                                            : "green",
-                                                                  width: "auto",
-                                                                  padding:
-                                                                    "3px",
-                                                                  color:
-                                                                    situation.residualRiskClassificationDisplay ===
-                                                                    "LowRisk"
-                                                                      ? "#000"
-                                                                      : "white",
+                                                                    "#2563eb",
                                                                   borderRadius:
                                                                     "5px",
-                                                                  display:
-                                                                    "inline-block",
-                                                                  textAlign:
-                                                                    "center",
+                                                                  padding:
+                                                                    "4px",
                                                                   fontSize:
-                                                                    "12px",
-                                                                  fontWeight:
-                                                                    situation.residualRiskClassificationDisplay ===
-                                                                    "LowRisk"
-                                                                      ? ""
-                                                                      : "bold",
-                                                                }}
-                                                              >
-                                                                {
-                                                                  situation.residualRiskClassificationDisplay
-                                                                }
-                                                              </Typography>
-                                                            </Grid>
-                                                            <Grid
-                                                              className="pl-0 pt-0"
-                                                              item
-                                                              xs={12}
-                                                              md={3}
-                                                            >
-                                                              <Typography
-                                                                variant="body2"
-                                                                color="text.primary"
-                                                                fontWeight="fontWeightRegular"
-                                                                style={{
-                                                                  marginLeft:
                                                                     "10px",
-                                                                  fontSize:
-                                                                    "12px",
+                                                                  cursor:
+                                                                    "pointer",
                                                                 }}
-                                                              >
-                                                                {
-                                                                  situation.humanControlMeasure
+                                                                onClick={() =>
+                                                                  handelRisk(
+                                                                    sub.id
+                                                                  )
                                                                 }
-                                                              </Typography>
-                                                            </Grid>
-                                                            <Grid
-                                                              item
-                                                              className="pl-0 pt-0"
-                                                              xs={12}
-                                                              md={3}
+                                                              >
+                                                                Create New Risk
+                                                                Analysis
+                                                              </span>
+                                                            )}
+                                                        </Grid>
+                                                      </Grid>
+                                                    </TableCell>
+                                                  </TableRow>
+                                                ) : (
+                                                  sub.riskAnalysisHazardTypes?.map(
+                                                    (hazardType) => (
+                                                      <React.Fragment
+                                                        key={hazardType.id}
+                                                      >
+                                                        {hazardType.riskAnalysisHazardSituation?.map(
+                                                          (situation) => (
+                                                            <React.Fragment
+                                                              key={situation.id}
                                                             >
-                                                              <Typography
-                                                                variant="body2"
-                                                                color="text.primary"
-                                                                fontWeight="fontWeightRegular"
-                                                                style={{
-                                                                  marginLeft:
-                                                                    "42px",
-                                                                  fontSize:
-                                                                    "12px",
-                                                                }}
-                                                              >
-                                                                {
-                                                                  situation.technicalControlMeasure
-                                                                }
-                                                              </Typography>
-                                                            </Grid>
-                                                            <Grid
-                                                              item
-                                                              className="pl-0 pt-0"
-                                                              xs={12}
-                                                              md={3}
-                                                            >
-                                                              <Typography
-                                                                variant="body2"
-                                                                color="text.primary"
-                                                                fontWeight="fontWeightRegular"
-                                                                style={{
-                                                                  marginLeft:
-                                                                    "82px",
-                                                                  fontSize:
-                                                                    "12px",
-                                                                }}
-                                                              >
-                                                                {
-                                                                  situation.organisationalControlMeasure
-                                                                }
-                                                              </Typography>
-                                                            </Grid>
-                                                          </Grid>
-                                                          <div className="px-20 pt-0 pb-24">
-                                                            <h6>
-                                                              {sub.subTaskName}
-                                                            </h6>
-                                                            <h6>
-                                                              -{" "}
-                                                              {
-                                                                hazardType.hazardTypeDisplay
-                                                              }
-                                                            </h6>
-                                                            <h6>
-                                                              -{" "}
-                                                              {
-                                                                situation.hazardousSituation
-                                                              }
-                                                            </h6>
-                                                            {AppActivity.canEdit &&
-                                                              JSON.parse(
-                                                                localStorage.getItem(
-                                                                  "isActiveSession"
-                                                                )
-                                                              ) && (
-                                                                <div className="my-5">
-                                                                  <a
-                                                                    title="View Details"
-                                                                    className="inline-flex items-center leading-6 text-primary cursor-pointer hover:underline dark:hover:bg-hover"
-                                                                    onClick={() =>
-                                                                      handelViewDetails(
-                                                                        situation.id,
-                                                                        sub.id
-                                                                      )
-                                                                    }
-                                                                  >
-                                                                    <span className="inline-flex items-center">
-                                                                      <span
-                                                                        className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
-                                                                        style={{
-                                                                          fontSize:
-                                                                            "12px",
-                                                                        }}
-                                                                      >
-                                                                        View
-                                                                      </span>
-                                                                    </span>
-                                                                  </a>
-
-                                                                  <a
-                                                                    title="Edit"
-                                                                    className="inline-flex items-center leading-6 text-primary mx-5 cursor-pointer hover:underline dark:hover:bg-hover"
-                                                                    onClick={() =>
-                                                                      handelEditRiskDetails(
-                                                                        situation.id,
-                                                                        sub.id
-                                                                      )
-                                                                    }
-                                                                  >
-                                                                    <span className="inline-flex items-center">
-                                                                      <span
-                                                                        className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
-                                                                        style={{
-                                                                          fontSize:
-                                                                            "12px",
-                                                                        }}
-                                                                      >
-                                                                        Edit
-                                                                      </span>
-                                                                    </span>
-                                                                  </a>
-
-                                                                  <a
-                                                                    title="Remove"
-                                                                    className="inline-flex items-center leading-6 text-primary ml-2 cursor-pointer hover:underline dark:hover:bg-hover"
-                                                                    onClick={() =>
-                                                                      handelRemoveDetails(
-                                                                        situation.id,
-                                                                        sub.id
-                                                                      )
-                                                                    }
-                                                                  >
-                                                                    <span className="inline-flex items-center">
-                                                                      <span
-                                                                        className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
-                                                                        style={{
-                                                                          fontSize:
-                                                                            "12px",
-                                                                        }}
-                                                                      >
-                                                                        Remove
-                                                                      </span>
-                                                                    </span>
-                                                                  </a>
-                                                                </div>
-                                                              )}
-                                                            {AppActivity.canEdit &&
-                                                              JSON.parse(
-                                                                localStorage.getItem(
-                                                                  "isActiveSession"
-                                                                )
-                                                              ) && (
-                                                                <span
-                                                                  className="text-white d-inline-block"
+                                                              <TableRow>
+                                                                <TableCell
                                                                   style={{
-                                                                    backgroundColor:
-                                                                      "#2563eb",
-                                                                    borderRadius:
-                                                                      "5px",
                                                                     padding:
-                                                                      "3px",
-                                                                    fontSize:
-                                                                      "10px",
-                                                                    cursor:
-                                                                      "pointer",
+                                                                      "2px 16px",
                                                                   }}
-                                                                  onClick={() =>
-                                                                    handelRisk(
-                                                                      sub.id,
-                                                                      hazardType.hazardType
-                                                                    )
-                                                                  }
                                                                 >
-                                                                  Create New
-                                                                  Risk Analysis
-                                                                </span>
-                                                              )}
-                                                          </div>
-                                                        </div>
-                                                      )
-                                                    )}
-                                                  </div>
-                                                )
-                                              )
-                                            )}
-                                          </div>
-                                        )
-                                      )}
-                                    </Paper>
+                                                                  <Typography
+                                                                    variant="body2"
+                                                                    style={{
+                                                                      backgroundColor:
+                                                                        situation.residualRiskClassificationDisplay ===
+                                                                        "HighRisk"
+                                                                          ? "red"
+                                                                          : situation.residualRiskClassificationDisplay ===
+                                                                              "LowRisk"
+                                                                            ? "yellow"
+                                                                            : situation.residualRiskClassificationDisplay ===
+                                                                                "AverageRisk"
+                                                                              ? "orange"
+                                                                              : situation.residualRiskClassificationDisplay ===
+                                                                                  "SignificantRisk"
+                                                                                ? "purple"
+                                                                                : "green",
+                                                                      width:
+                                                                        "auto",
+                                                                      padding:
+                                                                        "3px",
+                                                                      color:
+                                                                        situation.residualRiskClassificationDisplay ===
+                                                                        "LowRisk"
+                                                                          ? "#000"
+                                                                          : "white",
+                                                                      borderRadius:
+                                                                        "5px",
+                                                                      display:
+                                                                        "inline-block",
+                                                                      textAlign:
+                                                                        "center",
+                                                                      fontSize:
+                                                                        "12px",
+                                                                      fontWeight:
+                                                                        situation.residualRiskClassificationDisplay ===
+                                                                        "LowRisk"
+                                                                          ? ""
+                                                                          : "bold",
+                                                                    }}
+                                                                  >
+                                                                    {
+                                                                      situation.residualRiskClassificationDisplay
+                                                                    }
+                                                                  </Typography>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  <Typography
+                                                                    variant="body2"
+                                                                    style={{
+                                                                      fontSize:
+                                                                        "12px",
+                                                                    }}
+                                                                  >
+                                                                    {
+                                                                      situation.humanControlMeasure
+                                                                    }
+                                                                  </Typography>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  <Typography
+                                                                    variant="body2"
+                                                                    style={{
+                                                                      fontSize:
+                                                                        "12px",
+                                                                    }}
+                                                                  >
+                                                                    {
+                                                                      situation.technicalControlMeasure
+                                                                    }
+                                                                  </Typography>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                  <Typography
+                                                                    variant="body2"
+                                                                    style={{
+                                                                      fontSize:
+                                                                        "12px",
+                                                                    }}
+                                                                  >
+                                                                    {
+                                                                      situation.organisationalControlMeasure
+                                                                    }
+                                                                  </Typography>
+                                                                </TableCell>
+                                                              </TableRow>
+                                                              <TableRow>
+                                                                <TableCell
+                                                                  style={{
+                                                                    padding:
+                                                                      "2px 16px",
+                                                                  }}
+                                                                >
+                                                                  <div className=" pt-0 pb-24">
+                                                                    <h6>
+                                                                      {
+                                                                        sub.subTaskName
+                                                                      }
+                                                                    </h6>
+                                                                    <h6>
+                                                                      -{" "}
+                                                                      {
+                                                                        hazardType.hazardTypeDisplay
+                                                                      }
+                                                                    </h6>
+                                                                    <h6>
+                                                                      -{" "}
+                                                                      {
+                                                                        situation.hazardousSituation
+                                                                      }
+                                                                    </h6>
+                                                                    {AppActivity.canEdit &&
+                                                                      JSON.parse(
+                                                                        localStorage.getItem(
+                                                                          "isActiveSession"
+                                                                        )
+                                                                      ) && (
+                                                                        <div className="my-5">
+                                                                          <a
+                                                                            title="View Details"
+                                                                            className="inline-flex items-center leading-6 text-primary cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                            onClick={() =>
+                                                                              handelViewDetails(
+                                                                                situation.id,
+                                                                                sub.id
+                                                                              )
+                                                                            }
+                                                                          >
+                                                                            <span className="inline-flex items-center">
+                                                                              <span
+                                                                                className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                style={{
+                                                                                  fontSize:
+                                                                                    "12px",
+                                                                                }}
+                                                                              >
+                                                                                View
+                                                                              </span>
+                                                                            </span>
+                                                                          </a>
+ 
+                                                                          <a
+                                                                            title="Edit"
+                                                                            className="inline-flex items-center leading-6 text-primary mx-5 cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                            onClick={() =>
+                                                                              handelEditRiskDetails(
+                                                                                situation.id,
+                                                                                sub.id
+                                                                              )
+                                                                            }
+                                                                          >
+                                                                            <span className="inline-flex items-center">
+                                                                              <span
+                                                                                className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                style={{
+                                                                                  fontSize:
+                                                                                    "12px",
+                                                                                }}
+                                                                              >
+                                                                                Edit
+                                                                              </span>
+                                                                            </span>
+                                                                          </a>
+ 
+                                                                          <a
+                                                                            title="Remove"
+                                                                            className="inline-flex items-center leading-6 text-primary ml-2 cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                            onClick={() =>
+                                                                              handelRemoveDetails(
+                                                                                situation.id,
+                                                                                sub.id
+                                                                              )
+                                                                            }
+                                                                          >
+                                                                            <span className="inline-flex items-center">
+                                                                              <span
+                                                                                className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                style={{
+                                                                                  fontSize:
+                                                                                    "12px",
+                                                                                }}
+                                                                              >
+                                                                                Remove
+                                                                              </span>
+                                                                            </span>
+                                                                          </a>
+                                                                        </div>
+                                                                      )}
+                                                                    {AppActivity.canEdit &&
+                                                                      JSON.parse(
+                                                                        localStorage.getItem(
+                                                                          "isActiveSession"
+                                                                        )
+                                                                      ) && (
+                                                                        <span
+                                                                          className="text-white d-inline-block"
+                                                                          style={{
+                                                                            backgroundColor:
+                                                                              "#2563eb",
+                                                                            borderRadius:
+                                                                              "5px",
+                                                                            padding:
+                                                                              "3px",
+                                                                            fontSize:
+                                                                              "10px",
+                                                                            cursor:
+                                                                              "pointer",
+                                                                          }}
+                                                                          onClick={() =>
+                                                                            handelRisk(
+                                                                              sub.id,
+                                                                              hazardType.hazardType
+                                                                            )
+                                                                          }
+                                                                        >
+                                                                          Create
+                                                                          New
+                                                                          Risk
+                                                                          Analysis
+                                                                        </span>
+                                                                      )}
+                                                                  </div>
+                                                                </TableCell>
+                                                              </TableRow>
+                                                            </React.Fragment>
+                                                          )
+                                                        )}
+                                                      </React.Fragment>
+                                                    )
+                                                  )
+                                                )}
+                                              </React.Fragment>
+                                            )
+                                          )}
+                                        </TableBody>
+                                      </Table>
+                                    </TableContainer>
                                   )}
+ 
 
                                   {itms?.changeImpactTasks?.map((imptsk) => (
                                     <table className="task-table mat-table">
@@ -2808,7 +2792,7 @@ function EvaluationChange({
                                       <tbody className="task-table-body">
                                         <tr className="task-table-row mat-row">
                                           <td className="task-table-cell mat-cell">
-                                            <div className="task-header flex items-center">
+                                            <div className="task-header px-0 flex items-center">
                                               <div className="task-id flex flex-col">
                                                 <span className="task-id-text font-semibold text-xl leading-none">
                                                   Task #{imptsk?.sourceTaskId}
@@ -2836,58 +2820,58 @@ function EvaluationChange({
                                               previousTasks[imptsk.id].map(
                                                 (itm) => (
                                                   <div
-                                                    className="task-details px-6 mt-2 border"
+                                                    className="task-details px-0 mt-0 pt-0 border"
                                                     key={itm.id}
                                                   >
                                                     <div class="mt-3 ms-9 font-semibold">
                                                       V{itm.evaluationVersion}
                                                     </div>
-                                                    <div className="task-detail prose prose-sm max-w-5xl">
-                                                      <div className="task-detail-item mt-3">
-                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                    <div className="task-detail prose prose-sm max-w-5xl mt-0 pt-0">
+                                                      <div className="task-detail-item mt-0 pt-0">
+                                                        <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
                                                           Impact
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {itm.particularName +
                                                             ">" +
                                                             itm.particularSubName}
                                                         </span>
                                                       </div>
                                                       <div className="task-detail-item mt-3">
-                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                        <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
                                                           What is Task
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {itm.actionWhat}
                                                         </span>
                                                       </div>
                                                       <div className="task-detail-item mt-5">
-                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                        <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
                                                           How is Task done
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {itm.actionHow}
                                                         </span>
                                                       </div>
                                                       <div className="task-detail-item mt-5">
-                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                        <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
                                                           Assigned to
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {itm.assignedStaff}
                                                         </span>
-                                                        <span className="task-detail-label bg-default rounded ml-2 text-secondary font-semibold">
+                                                        <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-10 text-secondary font-semibold">
                                                           Due Date
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {formatDate(
                                                             itm.dueDate
                                                           )}
                                                         </span>
-                                                        <span className="task-detail-label bg-default rounded ml-2 text-secondary font-semibold">
+                                                        <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-10 text-secondary font-semibold">
                                                           Deadline
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {itm?.deadlineDisplay}
                                                         </span>
                                                       </div>
@@ -2976,41 +2960,41 @@ function EvaluationChange({
                                                 )
                                               )}
 
-                                            <div className="task-details px-0 mt-2">
-                                              <div className="task-detail prose prose-sm max-w-5xl">
-                                                <div className="task-detail-item mt-3">
-                                                  <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                            <div className="task-details pt-0 px-0 mt-0">
+                                              <div className="task-detail prose prose-sm max-w-5xl mt-0">
+                                                <div className="task-detail-item mt-0 p-0">
+                                                  <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
                                                     What is Task
                                                   </span>
-                                                  <span className="task-detail-value">
+                                                  <span className="task-detail-value d-inline-block mt-10">
                                                     {imptsk.actionWhat}
                                                   </span>
                                                 </div>
-                                                <div className="task-detail-item mt-5">
-                                                  <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                                <div className="task-detail-item mt-0 p-0">
+                                                  <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
                                                     How is Task done
                                                   </span>
-                                                  <span className="task-detail-value">
+                                                  <span className="task-detail-value d-inline-block mt-10">
                                                     {imptsk.actionHow}
                                                   </span>
                                                 </div>
-                                                <div className="task-detail-item mt-5">
-                                                  <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                                <div className="task-detail-item mt-0 p-0">
+                                                  <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
                                                     Assigned to
                                                   </span>
-                                                  <span className="task-detail-value">
+                                                  <span className="task-detail-value d-inline-block mt-10 mr-3">
                                                     {imptsk.assignedStaff}
                                                   </span>
-                                                  <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                                                  <span className="task-detail-label bg-default mt-10 rounded d-inline-block ml-2 text-secondary font-semibold">
                                                     Due Date
                                                   </span>
-                                                  <span className="task-detail-value">
+                                                  <span className="task-detail-value d-inline-block mt-10">
                                                     {formatDate(imptsk.dueDate)}
                                                   </span>
-                                                  <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                                                  <span className="task-detail-label bg-default rounded mt-10 d-inline-block ml-2 text-secondary font-semibold">
                                                     Deadline
                                                   </span>
-                                                  <span className="task-detail-value">
+                                                  <span className="task-detail-value d-inline-block mt-10">
                                                     {imptsk?.deadlineDisplay}
                                                   </span>
                                                 </div>

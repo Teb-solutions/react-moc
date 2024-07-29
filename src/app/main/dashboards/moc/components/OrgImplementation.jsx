@@ -744,14 +744,14 @@ const OrgImplementation = ({
 
           <div
             _ngcontent-fyk-c288=""
-            class="flex items-center w-full  border-b justify-between"
+            class="flex items-center w-full border-b justify-between"
           ></div>
           <div className="p-30 pt-24 pb-24">
             <div
               _ngcontent-fyk-c288=""
-              class="flex items-center w-full justify-between border_box"
+              class="flex flex-wrap items-center w-full justify-between border_box"
             >
-              <div className="flex items-center">
+              <div className="flex  items-center">
                 <h2
                   _ngcontent-fyk-c288=""
                   class="text-xl font-semibold"
@@ -807,15 +807,16 @@ const OrgImplementation = ({
                     id={`panel${index + 1}-header`}
                     onClick={(e) => handelComments(e, detail.id)}
                   >
+                    <div className="flex flex-wrap justify-between w-100 pr-10">
                     <div
                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                     >
                       <div className="flex items-center">Task #{detail.id}</div>
                     </div>
                     <div
                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                     >
                       <div className="flex items-center" style={{}}>
                         {detail.isCompleted && detail.taskStatus === 3 ? (
@@ -829,13 +830,13 @@ const OrgImplementation = ({
                     </div>
                     <div
                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                     >
                       <div className="flex items-center">No Risks</div>
                     </div>
                     <div
                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                     >
                       <div className="flex items-center">
                         {detail.assignedStaff}
@@ -843,7 +844,7 @@ const OrgImplementation = ({
                     </div>
                     <div
                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                     >
                       <div className="flex items-center">
                         {formatDate(detail.dueDate)}
@@ -851,7 +852,7 @@ const OrgImplementation = ({
                     </div>
                     <div
                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                     >
                       <div className="flex items-center">
                         <Button
@@ -894,6 +895,7 @@ const OrgImplementation = ({
                           </Button>
                         )}
                       </div>
+                    </div>
                     </div>
                   </AccordionSummary>
                   <AccordionDetails>

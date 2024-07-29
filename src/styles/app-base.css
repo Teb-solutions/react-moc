@@ -431,7 +431,7 @@ body.sidebar1-open .maincntainer {
   padding: 0.25rem 0.75rem;
   color: #888888;
   font-weight: bold;
-  padding: 10px;
+  padding: 6px;
 }
 
 .task-detail-value {
@@ -1003,6 +1003,9 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
 .muiltr-bni3t0-MuiSelect-select-MuiInputBase-input.MuiSelect-select{line-height:1.4375em ;}
 .w-100{width: 100%;}
 .pl-0{padding-left: 0 !important;}
+.muiltr-o4b71y-MuiAccordionSummary-content{flex-wrap: wrap;}
+.grid_inventory_box{max-width: 40%;}
+.muiltr-y31q5n-MuiTypography-root{overflow: hidden;}
 @media (min-width: 1200px) {
   .desktop_hide{display: none;}
 }
@@ -1024,9 +1027,16 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
 body.sidebar1-open .maincntainer {
   padding-right: 400px;
 }
+.p-30{padding: 1.5rem;}
+.pt-24{padding-top: 1rem;}
+.pb-24{padding-bottom: 1rem;}
 .Fw-100{width: 100%; max-width: 100%;}
 .muiltr-5g2394-MuiTable-root td{white-space: nowrap;}
 .muiltr-4q8sm7-MuiFormLabel-root-MuiInputLabel-root{font-size: 2rem !important;}
+.grid_inventory_box{max-width: 100%;}
+.text-2xl {
+  font-size: 1.8rem !important;
+}
 }
 @media (max-width: 479px) {
   body.sidebar1-open .maincntainer {
