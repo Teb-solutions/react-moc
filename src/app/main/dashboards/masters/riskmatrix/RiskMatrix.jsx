@@ -26,6 +26,7 @@ import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
+import MocHeader from "../../moc/MocHeader";
 
 function createData(index, location, activity, riskevaluation) {
   return { index, location, activity, riskevaluation };
@@ -109,14 +110,33 @@ export default function StickyHeadTable() {
 
   const handleChangeDense = (event, index) => {
     const updatedDepartmentList = [...riskMatrixList];
-    updatedDepartmentList[index].isActive = event.target.checked;
+    const updatedRow = updatedDepartmentList[index];
+    updatedRow.isActive = event.target.checked;
+
+    // Update the state immediately to reflect the change in the UI
     setRiskMatrixList(updatedDepartmentList);
+
+    // Call the update API
+    apiAuth
+      .put(`/LookupData/Update/${updatedRow.id}`, {
+        ...updatedRow,
+        isActive: updatedRow.isActive,
+      })
+      .then((resp) => {
+        getRecords(); // Fetch the updated records
+      })
+      .catch((error) => {
+        console.error("Failed to update the status:", error);
+      });
   };
+
   if (isLoading) {
     return <FuseLoading />;
   }
   return (
     <div style={{ backgroundColor: "white" }}>
+      <MocHeader master={"Master"} type={"Risk Matrix"} />
+
       <div style={{ margin: "30px" }}>
         <div className="flex d-flex flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel

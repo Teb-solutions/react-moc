@@ -28,6 +28,7 @@ import Loader from "src/app/main/loader/Loader";
 import { FormControl } from "@mui/base";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
+import MocHeader from "../../moc/MocHeader";
 
 function createData(
   index,
@@ -309,8 +310,24 @@ export default function StickyHeadTable() {
 
   const handleChangeDense = (event, index) => {
     const updatedDepartmentList = [...hazardList];
-    updatedDepartmentList[index].isActive = event.target.checked;
+    const updatedRow = updatedDepartmentList[index];
+    updatedRow.isActive = event.target.checked;
+
+    // Update the state immediately to reflect the change in the UI
     SetHazardList(updatedDepartmentList);
+
+    // Call the update API
+    apiAuth
+      .put(`/LookupData/Update/${updatedRow.id}`, {
+        ...updatedRow,
+        isActive: updatedRow.isActive,
+      })
+      .then((resp) => {
+        getRecords(); // Fetch the updated records
+      })
+      .catch((error) => {
+        console.error("Failed to update the status:", error);
+      });
   };
 
   if (isLoading) {
@@ -319,6 +336,8 @@ export default function StickyHeadTable() {
 
   return (
     <div style={{ backgroundColor: "white" }}>
+      <MocHeader master={"Master"} type={"Change Impact Hazards"} />
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -358,16 +377,36 @@ export default function StickyHeadTable() {
                 alignItems: "center",
               }}
             >
-              <span className="text-popup font-medium">{lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}</span>
-              <span onClick={handleClose} style={{ cursor: "pointer" }}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" fit="" height="24" width="24" preserveAspectRatio="xMidYMid meet" focusable="false">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
+              <span className="text-popup font-medium">
+                {lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}
+              </span>
+              <span onClick={handleClose} style={{ cursor: "pointer" }}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  fit=""
+                  height="24"
+                  width="24"
+                  preserveAspectRatio="xMidYMid meet"
+                  focusable="false"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
               </span>
             </Box>
             <Box sx={{ p: 4 }}>
               <Box sx={{ mb: 3 }}>
                 <FormControl sx={{ m: 1 }}>
-                  <InputLabel id="functionName-label" className="custom_label">Particular *</InputLabel>
+                  <InputLabel id="functionName-label" className="custom_label">
+                    Particular *
+                  </InputLabel>
 
                   <Select
                     labelId="functionName-label"
@@ -426,10 +465,10 @@ export default function StickyHeadTable() {
                 borderBottomLeftRadius: "16px",
                 borderBottomRightRadius: "16px",
                 marginTop: "0",
-                marginBottom: "0",               
+                marginBottom: "0",
                 padding: "30px",
                 paddingBottom: "30px",
-                paddingTop:"0"
+                paddingTop: "0",
               }}
             >
               <Button

@@ -1587,7 +1587,7 @@ function EvaluationChange({
           <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
             <div>
               <div className="flex items-center w-full border-b justify-between p-30 py-24">
-                <h2 className="text-2xl font-semibold">Evaluation ffff</h2>
+                <h2 className="text-2xl font-semibold">Evaluation</h2>
                 <div>
                   {AppActivity.canEdit && (
                     <Button

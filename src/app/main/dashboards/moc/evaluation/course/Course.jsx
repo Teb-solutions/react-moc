@@ -20,6 +20,7 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Autocomplete,
   FormHelperText,
   FormLabel,
   Step,
@@ -46,6 +47,7 @@ import DocPhasesEnum from "./docPhaseEnum";
 import { ToastContainer, toast } from "react-toastify";
 import FuseLoading from "@fuse/core/FuseLoading";
 import CustomStepIcon from "../../CustomStepIcon";
+import { useCallback } from "react";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -233,7 +235,7 @@ function Course() {
   const [reviewed, setReviewed] = useState({});
   const [errorss, setErrorStake] = useState("");
   const [handelApprover, setHandelApprover] = useState({
-    approver: "",
+    approver: null, // Store the entire selected object
   });
 
   const [openMoc, setOpenMoc] = useState(false);
@@ -256,12 +258,9 @@ function Course() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const handleChangeApprover = (e) => {
-    const { name, value } = e.target;
-    setHandelApprover((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+
+  const handleChangeApprover = (event, newValue) => {
+    setHandelApprover({ approver: newValue });
   };
 
   const handleChangeAddTask = (e) => {
@@ -317,6 +316,8 @@ function Course() {
         .then((resp) => {
           setOpenImplemntationTask(false);
           setIsLoading(false);
+
+          getRecords();
 
           setTaskAdd({
             particular: "",
@@ -396,8 +397,6 @@ function Course() {
   };
 
   const handelSubmit = (e) => {
-    setIsLoading(true);
-
     e.preventDefault();
     if (validate()) {
       const formattedForms = forms.map((form) => {
@@ -417,6 +416,7 @@ function Course() {
           consultedStaffId: form.data.consultedStaffId,
         };
       });
+      setIsLoading(true);
 
       apiAuth
         .post(
@@ -846,7 +846,7 @@ function Course() {
     if (forms.length < 1) {
       toast?.error("At least one stakeholder is required.");
     } else {
-      setIsLoading(true);
+      // setIsLoading(true);
     }
     apiAuth
       .get(
@@ -863,6 +863,8 @@ function Course() {
           if (hasEmptyComment) {
             toast?.error("All stakeholders must update the task");
           } else {
+            setIsLoading(true);
+
             apiAuth
               .post(
                 `/DocMoc/EvaluationSubmitForApproval/${changeEvaluationId}`,
@@ -925,10 +927,9 @@ function Course() {
         if (handelApprover.approver == "") {
           toast?.error("Select an approver");
         } else {
-          toast?.success("MOC has Created");
           apiAuth
             .post(
-              `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver}`,
+              `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver.value}`,
               {
                 actionUID: uid,
                 activityUID: impActivity.uid,
@@ -937,6 +938,8 @@ function Course() {
               }
             )
             .then((resp) => {
+              toast?.success("MOC has Created");
+
               getRecords();
               setIsLoading(false);
             })
@@ -1005,7 +1008,10 @@ function Course() {
     apiAuth
       .post(`ChangeImpact/ActionTask?id=${evaluationId}`, updatedTask)
       .then((response) => {
+        handelComments(e, task.id);
+        setComments("");
         getRecords();
+
         setIsLoading(false);
 
         console.log(response);
@@ -1030,7 +1036,10 @@ function Course() {
     apiAuth
       .post(`ChangeImpact/ActionTask?id=${evaluationId}`, updatedTask)
       .then((response) => {
+        handelComments(e, task.id);
+        setComments("");
         getRecords();
+
         console.log(response);
       })
       .catch((error) => {
@@ -1040,14 +1049,15 @@ function Course() {
   };
 
   const handleCheckboxChange = (id) => {
-    const updatedCheckList = CheckLists.map((item) => {
-      if (item.id === id) {
-        return { ...item, isChecked: !item.isChecked };
-      }
-      return item;
-    });
-    setCheckLists(updatedCheckList);
+    console.log(id, "CheckLists");
+    setCheckLists((prevCheckLists) =>
+      prevCheckLists.map((item) =>
+        item.id === id ? { ...item, isChecked: !item.isChecked } : item
+      )
+    );
   };
+
+  console.log(CheckLists, "CheckLists");
 
   const saveChanges = () => {
     apiAuth
@@ -2061,7 +2071,7 @@ function Course() {
                                               >
                                                 Comments
                                               </span>
-                                              <span>complete</span>
+                                              <span>{list?.comments}</span>
                                             </div>
                                           ) : (
                                             <div className="ng-star-inserted">
@@ -2347,8 +2357,9 @@ function Course() {
                               <div>Consolidated Document Url</div>
                               <div className="font-semibold">
                                 <a
-                                  href="https://consolidatedurl.com"
+                                  href={contentDetails?.remarks}
                                   rel="noopener noreferrer"
+                                  className="text-blue"
                                 >
                                   {contentDetails?.remarks}
                                 </a>
@@ -2621,9 +2632,9 @@ function Course() {
                               target="_blank"
                               class="text-blue-500 hover:text-blue-800"
                               style={{ background: "none", color: "blue" }}
-                              href={contentDetails?.consolidatedDocumentUrl}
+                              href={contentDetails?.documentUrl}
                             >
-                              {contentDetails?.consolidatedDocumentUrl}
+                              {contentDetails?.documentUrl}
                             </a>
                           </div>
                         </div>
@@ -2647,9 +2658,9 @@ function Course() {
                               target="_blank"
                               class="text-blue-500 hover:text-blue-800"
                               style={{ background: "none", color: "blue" }}
-                              href={contentDetails?.documentUrl}
+                              href={contentDetails?.consolidatedDocumentUrl}
                             >
-                              {contentDetails?.documentUrl}
+                              {contentDetails?.consolidatedDocumentUrl}
                             </a>
                           </div>
                         </div>
@@ -2764,9 +2775,8 @@ function Course() {
                                       onClick={() => setFileDetails(false)}
                                     >
                                       <FuseSvgIcon size={20}>
-                                        heroicons-outline:close
+                                        heroicons-outline:x
                                       </FuseSvgIcon>
-                                      x
                                     </Button>
                                   </div>
 
@@ -2905,7 +2915,7 @@ function Course() {
                             aria-label="basic tabs example"
                           >
                             <Tab label="Task" {...a11yProps(0)} />
-                            <Tab label="Check List" {...a11yProps(1)} />
+                            <Tab label="Checklist" {...a11yProps(1)} />
                           </Tabs>
                         </Box>
                         <CustomTabPanel value={value} index={0}>
@@ -3378,18 +3388,10 @@ function Course() {
                               style={{ width: "100%" }}
                             >
                               {currentActivityForm.canEdit && (
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    flexWrap: "wrap",
-                                  }}
-                                >
+                                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                                   <FormControl
                                     fullWidth
-                                    sx={{
-                                      m: 1,
-                                      maxWidth: "100%",
-                                    }}
+                                    sx={{ m: 1, maxWidth: "100%" }}
                                   >
                                     <span className="font-semibold leading-none">
                                       Select Approver*
@@ -3402,23 +3404,18 @@ function Course() {
                                       }}
                                     >
                                       <FormControl fullWidth sx={{ m: 1 }}>
-                                        <Select
-                                          labelId="functionName-label"
+                                        <Autocomplete
                                           id="approverId"
-                                          name="approver"
+                                          options={docStaff}
+                                          getOptionLabel={(option) =>
+                                            option.text
+                                          }
                                           value={handelApprover.approver}
                                           onChange={handleChangeApprover}
-                                          label="Document Controller *"
-                                        >
-                                          {docStaff.map((option) => (
-                                            <MenuItem
-                                              key={option.id}
-                                              value={option.value}
-                                            >
-                                              {option.text}
-                                            </MenuItem>
-                                          ))}
-                                        </Select>
+                                          renderInput={(params) => (
+                                            <TextField {...params} />
+                                          )}
+                                        />
                                       </FormControl>
                                     </Box>
                                   </FormControl>
@@ -3445,7 +3442,7 @@ function Course() {
                                         SubmitImpCreate(e, btn.uid)
                                       }
                                     >
-                                      {btn.name}
+                                      {btn.name}ss
                                     </Button>
                                   ))}
                                 </div>
@@ -3468,9 +3465,7 @@ function Course() {
                                             ? "grey"
                                             : "black",
                                       }}
-                                      disabled={
-                                        currentActivityForm.canEdit == false
-                                      }
+                                      disabled={!currentActivityForm.canEdit}
                                       onChange={() => {
                                         handleCheckboxChange(item.id);
                                       }}
@@ -3684,21 +3679,24 @@ function Course() {
                                       >
                                         Impact Particular Subcategory*
                                       </FormLabel>
-                                      <Select
-                                        variant="outlined"
+                                      <Autocomplete
+                                        options={particularSub}
+                                        getOptionLabel={(option) => option.text}
                                         onChange={handleChangeAddTask}
-                                        name="particularSubCategory"
-                                        value={taskAdd.particularSubCategory}
-                                      >
-                                        {particularSub.map((option) => (
-                                          <MenuItem
-                                            key={option.id}
-                                            value={option.value}
-                                          >
-                                            {option.text}
-                                          </MenuItem>
-                                        ))}
-                                      </Select>
+                                        value={
+                                          particularSub.find(
+                                            (option) =>
+                                              option.value ===
+                                              taskAdd.particularSubCategory
+                                          ) || null
+                                        }
+                                        renderInput={(params) => (
+                                          <TextField
+                                            {...params}
+                                            variant="outlined"
+                                          />
+                                        )}
+                                      />
                                       {!!errorsAddTask.particularSubCategory && (
                                         <FormHelperText>
                                           {errorsAddTask.particularSubCategory}
@@ -3839,7 +3837,6 @@ function Course() {
                                         </FormLabel>
                                         <Box sx={{}}>
                                           <DatePicker
-                                            label="Validity Expires On *"
                                             name="dueDate"
                                             value={taskAdd.dueDate}
                                             onChange={(date) =>
@@ -4276,14 +4273,14 @@ function Course() {
                                             onClick={() =>
                                               handelreview(imptsk.id)
                                             }
+                                            style={{
+                                              backgroundColor:
+                                                reviewed[imptsk.id] &&
+                                                "#7FFFD4",
+                                            }}
                                           >
                                             {reviewed[imptsk.id] ? (
-                                              <span
-                                                className="mat-button-wrapper"
-                                                style={{
-                                                  backgroundColor: "#7FFFD4",
-                                                }}
-                                              >
+                                              <span className="mat-button-wrapper">
                                                 You have reviewed this just now
                                               </span>
                                             ) : (
@@ -4396,7 +4393,11 @@ function Course() {
                                                 data-placeholder="Write a comment..."
                                                 aria-invalid="false"
                                                 aria-required="false"
-                                                style={{ height: "36px" }}
+                                                style={{
+                                                  height: "40px",
+                                                  width: "100%",
+                                                  paddingRight: "100px",
+                                                }}
                                                 onChange={(e) =>
                                                   setHandelCommentRemark(
                                                     e.target.value
@@ -4404,17 +4405,13 @@ function Course() {
                                                 }
                                               ></textarea>
                                               <button
-                                                className="mat-focus-indicator mat-raised-button mat-button-base"
+                                                className="custom-update-button"
                                                 style={{ float: "right" }}
                                                 onClick={() =>
                                                   handelCommentImp(imptsk.id)
                                                 }
                                               >
-                                                <span className="custom-update-button">
-                                                  Save
-                                                </span>
-                                                <span className="mat-ripple mat-button-ripple"></span>
-                                                <span className="mat-button-focus-overlay"></span>
+                                                Save
                                               </button>
                                               <span className="mat-form-field-label-wrapper"></span>
                                             </div>
@@ -4524,7 +4521,7 @@ function Course() {
                                                     ></textarea>
 
                                                     <button
-                                                      className="mat-focus-indicator mat-raised-button mat-button-base"
+                                                      className="custom-update-button"
                                                       style={{ float: "right" }}
                                                       onClick={() =>
                                                         handelCommentImp(
@@ -4532,10 +4529,7 @@ function Course() {
                                                         )
                                                       }
                                                     >
-                                                      <span className="custom-update-button">
-                                                        Update
-                                                      </span>
-
+                                                      Update
                                                       <span className="mat-ripple mat-button-ripple"></span>
                                                       <span className="mat-button-focus-overlay"></span>
                                                     </button>

@@ -27,6 +27,7 @@ import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
+import MocHeader from "../../moc/MocHeader";
 
 function createData(
   index,
@@ -48,7 +49,7 @@ export default function StickyHeadTable() {
     // { id: "index", label: "#", minWidth: 50 },
     // { id: "code", label: "Code", minWidth: 100 },
     { id: "index", label: "#" },
-    { id: "code", label: "Code"},
+    { id: "code", label: "Code" },
     {
       id: "description",
       label: "Description",
@@ -278,8 +279,24 @@ export default function StickyHeadTable() {
 
   const handleChangeDense = (event, index) => {
     const updatedDepartmentList = [...highriskactivityList];
-    updatedDepartmentList[index].isActive = event.target.checked;
+    const updatedRow = updatedDepartmentList[index];
+    updatedRow.isActive = event.target.checked;
+
+    // Update the state immediately to reflect the change in the UI
     SetHighriskactivityList(updatedDepartmentList);
+
+    // Call the update API
+    apiAuth
+      .put(`/LookupData/Update/${updatedRow.id}`, {
+        ...updatedRow,
+        isActive: updatedRow.isActive,
+      })
+      .then((resp) => {
+        getRecords(); // Fetch the updated records
+      })
+      .catch((error) => {
+        console.error("Failed to update the status:", error);
+      });
   };
 
   if (isLoading) {
@@ -288,6 +305,8 @@ export default function StickyHeadTable() {
 
   return (
     <div style={{ backgroundColor: "white" }}>
+      <MocHeader master={"Master"} type={"High Risk Activity"} />
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -312,13 +331,39 @@ export default function StickyHeadTable() {
               }}
             >
               <div className="flex justify-between text-white">
-                <span className="text-popup font-medium">{lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}</span>
-                <span onClick={handleClose}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" fit="" height="24" width="24" preserveAspectRatio="xMidYMid meet" focusable="false">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg></span>
+                <span className="text-popup font-medium">
+                  {lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}
+                </span>
+                <span onClick={handleClose}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    fit=""
+                    height="24"
+                    width="24"
+                    preserveAspectRatio="xMidYMid meet"
+                    focusable="false"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    ></path>
+                  </svg>
+                </span>
               </div>
             </Box>
-            <div style={{ textAlign: "center", padding: "30px", marginTop: "0", paddingBottom: "0" }}>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "30px",
+                marginTop: "0",
+                paddingBottom: "0",
+              }}
+            >
               <Box
                 component="form"
                 sx={{
@@ -370,7 +415,7 @@ export default function StickyHeadTable() {
                 justifyContent: "end",
                 // backgroundColor: " rgba(248,250,252)",
                 padding: "30px",
-                paddingBottom: "30px"
+                paddingBottom: "30px",
               }}
             >
               <Button

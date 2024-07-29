@@ -534,8 +534,7 @@ const InitiationComplete = ({
                     style={{ backgroundColor: "white" }}
                     onClick={() => setOpenDrawer(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -661,8 +660,7 @@ const InitiationComplete = ({
                     style={{ backgroundColor: "white" }}
                     onClick={() => setFileDetails(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -730,7 +728,13 @@ const InitiationComplete = ({
                       name="description"
                       variant="standard"
                       disabled
-                      value={formatDate(selectedDocument.createdAt)}
+                      value={new Date(
+                        selectedDocument.createdAt
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     />
                   </Box>
                   <Box
@@ -747,11 +751,7 @@ const InitiationComplete = ({
                       name="Description"
                       variant="standard"
                       disabled
-                      value={
-                        selectedDocument.description == null
-                          ? ""
-                          : selectedDocument.descritpion
-                      }
+                      value={selectedDocument?.descritpion}
                     />
                   </Box>
                 </div>
@@ -965,7 +965,7 @@ const InitiationComplete = ({
                 startIcon={
                   <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
                 }
-                onClick={handleOpen1}
+                onClick={() => handleOpen1(currentSummeryById.id)}
               >
                 Document
               </Button>
