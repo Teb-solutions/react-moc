@@ -164,13 +164,11 @@ input:-webkit-autofill:active {
   height: 1px !important;
 }
 
-.muiltr-mnnd27-MuiInputBase-input-MuiFilledInput-input,
-.muiltr-1o72s96 {
+.muiltr-mnnd27-MuiInputBase-input-MuiFilledInput-input {
   padding-top: 2px;
 }
 
-.muiltr-1oe5gwb-MuiInputBase-root-MuiFilledInput-root,
-.muiltr-rdcfip {
+.muiltr-1oe5gwb-MuiInputBase-root-MuiFilledInput-root {
   min-height: 47px;
   background-color: white;
   border: 1px solid gray;
@@ -808,15 +806,13 @@ body.sidebar1-open .maincntainer {
   color: black;
 }
 
-.muiltr-6od3lo-MuiChip-label,
-.muiltr-9iedg7 {
+.muiltr-6od3lo-MuiChip-label {
   padding-left: 0px;
   padding-right: 0px;
   white-space: unset;
   text-overflow: unset;
 }
-.muiltr-1pab1ov-MuiButtonBase-root-MuiButton-root,
-.shadow_none {
+.muiltr-1pab1ov-MuiButtonBase-root-MuiButton-root {
   box-shadow: none !important;
 }
 .bgnone {
@@ -903,12 +899,10 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
 .switch_check .Mui-checked + .MuiSwitch-track {
   background-color: rgba(100, 116, 139, 0.54) !important;
 }
-.muiltr-yz7uio-MuiTableCell-root:first-child,
-.muiltr-1i748lq:first-child {
+.muiltr-yz7uio-MuiTableCell-root:first-child {
   padding-left: 30px;
 }
-.muiltr-5g2394-MuiTable-root td:first-child,
-.muiltr-1xzua5t td:first-child {
+.muiltr-5g2394-MuiTable-root td:first-child {
   padding-left: 30px;
 }
 /* .muiltr-5g2394-MuiTable-root td:nth-child(3){width: 40%;} */

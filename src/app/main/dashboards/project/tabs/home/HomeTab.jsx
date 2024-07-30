@@ -475,6 +475,7 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
                 anchorEl={anchorEl}
                 open={Boolean(anchorEl)}
                 onClose={() => setAnchorEl(null)}
+                className="shadow_none"
               >
                 <MenuItem onClick={handleOpenNewAsset}>Technical</MenuItem>
                 <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>

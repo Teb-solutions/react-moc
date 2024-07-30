@@ -280,6 +280,7 @@ const Access = () => {
                     <FormControlLabel
                       control={
                         <Switch
+                          className="switch_check"
                           checked={allExpanded}
                           onChange={handleToggleAll}
                         />
@@ -331,6 +332,7 @@ const Access = () => {
                                 <FormControlLabel
                                   control={
                                     <Switch
+                          className="switch_check"
                                       checked={detailItem.isActive} // Control the Switch with state
                                       onChange={() =>
                                         handleSwitchChange(

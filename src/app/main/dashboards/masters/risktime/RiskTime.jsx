@@ -650,6 +650,7 @@ export default function StickyHeadTable() {
                               <FormControlLabel
                                 control={
                                   <Switch
+                                    className="switch_check"
                                     checked={row.isActive} // Reflects the isActive property of the department
                                     onChange={(event) =>
                                       handleChangeDense(
