@@ -13,14 +13,14 @@ import { useAppSelector } from "app/store/hooks";
 
 import { Dashboard } from "../../../../../api/Api";
 import { apiAuth } from "src/utils/http";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 /**
  * The ProjectDashboardAppHeader page.
  */
 function ProjectDashboardAppHeader({ data }) {
   const user = useAppSelector(selectUser);
-
+  const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState({
     id: 1,
     menuEl: null,
@@ -46,6 +46,17 @@ function ProjectDashboardAppHeader({ data }) {
       menuEl: null,
     });
   }
+
+  const handelNav = (e, value) => {
+    e.preventDefault();
+    if (value == "session") {
+      navigate("/session");
+    } else if (value == "notification") {
+      navigate("/notifications");
+    } else {
+      navigate("/tasks");
+    }
+  };
 
   return (
     <div className="flex flex-col w-full px-24 sm:px-24">
@@ -91,6 +102,7 @@ function ProjectDashboardAppHeader({ data }) {
             startIcon={
               <FuseSvgIcon size={20}>heroicons-solid:mail</FuseSvgIcon>
             }
+            onClick={(e) => handelNav(e, "session")}
           >
             Sessions
           </Button>
@@ -101,6 +113,7 @@ function ProjectDashboardAppHeader({ data }) {
             startIcon={
               <FuseSvgIcon size={20}>heroicons-solid:mail</FuseSvgIcon>
             }
+            onClick={(e) => handelNav(e, "notification")}
           >
             Notifications
           </Button>
@@ -111,6 +124,7 @@ function ProjectDashboardAppHeader({ data }) {
             startIcon={
               <FuseSvgIcon size={20}>heroicons-solid:check-circle</FuseSvgIcon>
             }
+            onClick={(e) => handelNav(e, "tasks")}
           >
             Tasks
           </Button>

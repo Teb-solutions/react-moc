@@ -28,6 +28,7 @@ import Loader from "src/app/main/loader/Loader";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
 import MocHeader from "../../moc/MocHeader";
+import { ToastContainer, toast } from "react-toastify";
 
 function createData(
   index,
@@ -213,9 +214,14 @@ export default function StickyHeadTable() {
 
   const handleSubmitDelete = () => {
     apiAuth.delete(`/LookupData/Delete/${Id}`).then((resp) => {
-      setOpen(false);
+      if (resp.data.statusCode == "424") {
+        toast.error(resp.data.message);
+        setDelete(false);
+      } else {
+        setDelete(false);
 
-      getRecords();
+        getRecords();
+      }
     });
   };
 
@@ -245,15 +251,22 @@ export default function StickyHeadTable() {
       if (lookupAdd.crudMode == "UPDATE") {
         apiAuth.put(`/LookupData/Update/${Id}`, lookupAdd).then((resp) => {
           setOpen(false);
-
+          toast.success("Updated.");
           getRecords();
         });
       } else {
-        apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
+        if (lookupAdd.code.length < 2) {
           setOpen(false);
 
-          getRecords();
-        });
+          toast.error("Code Maximum length is 2 charcters");
+        } else {
+          apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
+            setOpen(false);
+            toast.success("Created.");
+
+            getRecords();
+          });
+        }
       }
     }
   };
@@ -303,6 +316,7 @@ export default function StickyHeadTable() {
 
   return (
     <div style={{ backgroundColor: "white" }}>
+      <ToastContainer className="toast-container " />
       <MocHeader master={"Master"} type={"Department"} />
       <Modal
         aria-labelledby="transition-modal-title"
@@ -331,7 +345,11 @@ export default function StickyHeadTable() {
                 <span className="text-popup font-medium">
                   {lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}
                 </span>
-                <span onClick={handleClose}>
+                <span
+                  onClick={handleClose}
+                  style={{ cursor: "pointer" }}
+                  className="cursor-pointer"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -375,6 +393,9 @@ export default function StickyHeadTable() {
                   className="flex-grow-1 "
                   label="Code *"
                   name="code"
+                  inputProps={{
+                    maxLength: 5, // Limit to 30 characters, which approximates 5 words
+                  }}
                   value={lookupAdd.code}
                   variant="outlined"
                   onChange={handleAdd}

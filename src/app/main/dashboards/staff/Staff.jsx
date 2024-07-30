@@ -145,7 +145,7 @@ const Task = () => {
     setOpenDetails(false);
     setApiImage("");
     setEditIconImage(false);
-    setSidebarOpen(!sidebarOpen);
+    setSidebarOpen(true);
     setHandelUpdate(true);
     setAddIconImage(true);
     setPersonDetails("");
@@ -196,12 +196,15 @@ const Task = () => {
   };
 
   const handelOpenProfile = async (e, task) => {
+    setSidebarOpen(false);
+
     e.preventDefault();
     setOpenDetails(true);
     setEditIconImage(false);
     setAddIconImage(false);
-
-    setSidebarOpen(!sidebarOpen);
+    setTimeout(() => {
+      setSidebarOpen(true);
+    }, 300);
     setId(task.staffId); // Set photoUrl to 'yes' when an image is uploaded, else ''
 
     await apiAuth
@@ -536,6 +539,12 @@ const Task = () => {
             <div className="w-full">
               <div className="relative flex flex-auto flex-col w-full">
                 <div className="flex-auto">
+                  <Button
+                    className="staffClose"
+                    onClick={() => setSidebarOpen(false)}
+                  >
+                    <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
+                  </Button>
                   <div className="flex flex-col flex-auto flex-shrink">
                     <img
                       src="/assets/images/etc/profile.jpg"

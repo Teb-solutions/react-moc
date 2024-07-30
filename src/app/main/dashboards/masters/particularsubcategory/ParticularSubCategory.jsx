@@ -29,7 +29,7 @@ import { FormControl } from "@mui/base";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
 import MocHeader from "../../moc/MocHeader";
-
+import { ToastContainer, toast } from "react-toastify";
 function createData(
   index,
   code,
@@ -238,9 +238,14 @@ export default function StickyHeadTable() {
 
   const handleSubmitDelete = () => {
     apiAuth.delete(`/LookupData/Delete/${Id}`).then((resp) => {
-      setOpen(false);
+      if (resp.data.statusCode == "424") {
+        toast.error(resp.data.message);
+        setDelete(false);
+      } else {
+        setDelete(false);
 
-      getRecords();
+        getRecords();
+      }
     });
   };
 
@@ -267,16 +272,25 @@ export default function StickyHeadTable() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      if (lookupAdd.crudMode === "UPDATE") {
+      if (lookupAdd.crudMode == "UPDATE") {
         apiAuth.put(`/LookupData/Update/${Id}`, lookupAdd).then((resp) => {
           setOpen(false);
+          toast.success("Updated.");
           getRecords();
         });
       } else {
-        apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
+        if (lookupAdd.code.length < 2) {
           setOpen(false);
-          getRecords();
-        });
+
+          toast.error("Code Maximum length is 2 charcters");
+        } else {
+          apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
+            setOpen(false);
+            toast.success("Created.");
+
+            getRecords();
+          });
+        }
       }
     }
   };
@@ -332,6 +346,7 @@ export default function StickyHeadTable() {
 
   return (
     <div style={{ backgroundColor: "white" }}>
+      <ToastContainer className="toast-container " />
       <MocHeader master={"Master"} type={"Particular Sub Category"} />
 
       <Modal
@@ -430,6 +445,9 @@ export default function StickyHeadTable() {
                   id="code"
                   fullWidth
                   label="Code *"
+                  inputProps={{
+                    maxLength: 5, // Limit to 30 characters, which approximates 5 words
+                  }}
                   name="code"
                   value={lookupAdd.code}
                   variant="outlined"
@@ -591,7 +609,7 @@ export default function StickyHeadTable() {
           </Box>
         </Fade>
       </Modal>
-      <div >
+      <div>
         <div className="flex d-flex flex-col p-30 pt-24 pb-24 justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
             id="category-select-label"

@@ -271,6 +271,7 @@ const orgCourse = () => {
                 lastActCode={lastActCode}
                 currentActivityForm={currentActivityForm}
                 orgEvaluationId={orgEvaluationId}
+                setImpDetails={setImpDetails}
               />
             )}
           </div>

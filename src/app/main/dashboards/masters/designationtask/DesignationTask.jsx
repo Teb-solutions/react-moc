@@ -29,6 +29,7 @@ import { FormControl } from "@mui/base";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
 import MocHeader from "../../moc/MocHeader";
+import { ToastContainer, toast } from "react-toastify";
 
 function createData(
   index,
@@ -241,9 +242,14 @@ export default function StickyHeadTable() {
 
   const handleSubmitDelete = () => {
     apiAuth.delete(`/LookupData/Delete/${Id}`).then((resp) => {
-      setOpen(false);
+      if (resp.data.statusCode == "424") {
+        toast.error(resp.data.message);
+        setDelete(false);
+      } else {
+        setDelete(false);
 
-      getRecords();
+        getRecords();
+      }
     });
   };
 
@@ -271,14 +277,15 @@ export default function StickyHeadTable() {
     e.preventDefault();
     if (validate()) {
       if (lookupAdd.crudMode == "UPDATE") {
-        apiAuth.put(`/DesignationTask/${Id}`, lookupAdd).then((resp) => {
+        apiAuth.put(`/LookupData/Update/${Id}`, lookupAdd).then((resp) => {
           setOpen(false);
-
+          toast.success("Updated.");
           getRecords();
         });
       } else {
-        apiAuth.post(`/DesignationTask/Create`, lookupAdd).then((resp) => {
+        apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
           setOpen(false);
+          toast.success("Created.");
 
           getRecords();
         });
@@ -336,6 +343,7 @@ export default function StickyHeadTable() {
 
   return (
     <div style={{ backgroundColor: "white" }}>
+      <ToastContainer className="toast-container " />
       <MocHeader master={"Master"} type={"Designation Task"} />
 
       <Modal
@@ -380,7 +388,11 @@ export default function StickyHeadTable() {
               <span className="text-popup font-medium">
                 {lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}
               </span>
-              <span onClick={handleClose} style={{ cursor: "pointer" }}>
+              <span
+                onClick={handleClose}
+                style={{ cursor: "pointer" }}
+                className="cursor-pointer"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -436,7 +448,7 @@ export default function StickyHeadTable() {
                 <TextField
                   id="code"
                   fullWidth
-                  label="Code *"
+                  label="Task Name *"
                   name="code"
                   value={lookupAdd.code}
                   variant="outlined"
@@ -449,7 +461,7 @@ export default function StickyHeadTable() {
                 <TextField
                   id="description"
                   fullWidth
-                  label="Description *"
+                  label="Task Description *"
                   name="description"
                   value={lookupAdd.description}
                   variant="outlined"
@@ -603,7 +615,7 @@ export default function StickyHeadTable() {
           <InputLabel
             id="category-select-label"
             className="text-2xl mt-0"
-            style={{color: "black" }}
+            style={{ color: "black" }}
           >
             <b>Designation Tasks</b>
           </InputLabel>
@@ -612,7 +624,7 @@ export default function StickyHeadTable() {
             <TextField
               variant="filled"
               fullWidth
-               className="my-4"
+              className="my-4"
               placeholder="Search "
               style={{ marginRight: "15px", backgroundColor: "white" }}
               onChange={handleSearch}
@@ -632,7 +644,7 @@ export default function StickyHeadTable() {
               <Button
                 variant="contained"
                 color="secondary"
-                 className="my-4"
+                className="my-4"
                 onClick={handleOpen}
               >
                 <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>

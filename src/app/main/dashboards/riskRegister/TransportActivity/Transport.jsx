@@ -808,9 +808,8 @@ function TransportApp() {
                                   onClick={() => setOpenDrawer(false)}
                                 >
                                   <FuseSvgIcon size={20}>
-                                    heroicons-outline:close
+                                    heroicons-outline:x
                                   </FuseSvgIcon>
-                                  x
                                 </Button>
                               </div>
                               <div>&nbsp;</div>
@@ -938,9 +937,8 @@ function TransportApp() {
                                   onClick={() => setFileDetails(false)}
                                 >
                                   <FuseSvgIcon size={20}>
-                                    heroicons-outline:close
+                                    heroicons-outline:x
                                   </FuseSvgIcon>
-                                  x
                                 </Button>
                               </div>
                               <div>&nbsp;</div>

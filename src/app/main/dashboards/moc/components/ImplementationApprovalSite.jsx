@@ -386,14 +386,13 @@ const ImplementationApprovalSite = ({
                                 disabled={
                                   imptsk?.reviewd || clickedTasks[imptsk.id]
                                 }
+                                style={{
+                                  backgroundColor:
+                                    clickedTasks[imptsk.id] && "#7FFFD4",
+                                }}
                               >
                                 {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
-                                  <span
-                                    className="mat-button-wrapper"
-                                    style={{
-                                      backgroundColor: "rgba(220,252,231)",
-                                    }}
-                                  >
+                                  <span className="mat-button-wrapper">
                                     You have reviewed this just now
                                   </span>
                                 ) : (
