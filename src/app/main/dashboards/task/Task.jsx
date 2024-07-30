@@ -1442,10 +1442,10 @@ const Task = () => {
                 </button>
               </div>
             </div>
-            <div>&nbsp;</div>
+            
 
-            <hr className="my-4" />
-            <div>&nbsp;</div>
+            <hr className="mb-24 mt-24" />
+            
 
             <div className="w-full">
               <div className="relative flex flex-auto flex-col w-full">

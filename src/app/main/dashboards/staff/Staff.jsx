@@ -37,7 +37,7 @@ const Task = () => {
   };
   const styles = {
     container: {
-      padding: "7rem",
+      padding: "30px",
     },
     gridContainer: {
       display: "grid",
@@ -52,7 +52,7 @@ const Task = () => {
     },
     textMd: {
       marginTop: "1rem",
-      fontSize: "1rem",
+      // fontSize: "1rem",
       fontWeight: "600",
     },
     textSecondary: {
@@ -62,7 +62,8 @@ const Task = () => {
     },
     borderT: {
       marginTop: "1rem",
-      borderTop: "1px solid grey",
+      marginBottom: "1rem",
+      borderTop: "1px solid #e2e8f0",
     },
   };
 
@@ -402,9 +403,9 @@ const Task = () => {
           </InputLabel>
         </div>
 
-        <b className="text-xl">113 staffs</b>
+        <b className="text-md">113 staffs</b>
 
-        <Box className="flex-grow-2">
+        <Box className="flex-grow-2 mt-10">
           <TextField
             fullWidth
             label="Search by Task Name"
@@ -761,6 +762,7 @@ const Task = () => {
                           <FormControlLabel
                             control={
                               <Switch
+                                className="switch_check"
                                 checked={formData.isActive}
                                 onChange={handleToggleChange}
                                 // Reflects the isActive property of the department
@@ -865,7 +867,7 @@ const Task = () => {
                       <div
                         _ngcontent-fyk-c288=""
                         class="flex items-center w-full  border-b justify-between"
-                        style={{ margin: "18px" }}
+                        // style={{ margin: "18px" }}
                       ></div>
                       <div className="flex-auto" style={{ margin: "18px" }}>
                         <div className="flex flex-col-reverse">
@@ -1241,7 +1243,7 @@ const Task = () => {
                     </>
                   )}
                 </div>
-                <div>&nbsp;</div>
+               
               </div>
             </div>
           </form>

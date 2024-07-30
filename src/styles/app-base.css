@@ -164,11 +164,11 @@ input:-webkit-autofill:active {
   height: 1px !important;
 }
 
-.muiltr-mnnd27-MuiInputBase-input-MuiFilledInput-input {
+.muiltr-mnnd27-MuiInputBase-input-MuiFilledInput-input, .muiltr-1o72s96 {
   padding-top: 2px;
 }
 
-.muiltr-1oe5gwb-MuiInputBase-root-MuiFilledInput-root {
+.muiltr-1oe5gwb-MuiInputBase-root-MuiFilledInput-root, .muiltr-rdcfip{
   min-height: 47px;
   background-color: white;
   border: 1px solid gray;
@@ -806,12 +806,13 @@ body.sidebar1-open .maincntainer {
   color: black;
 }
 
-.muiltr-6od3lo-MuiChip-label {
+.muiltr-6od3lo-MuiChip-label, .muiltr-9iedg7 {
   padding-left: 0px;
   padding-right: 0px;
-  white-space: "none";
+  white-space: unset;
+  text-overflow: unset;
 }
-.muiltr-1pab1ov-MuiButtonBase-root-MuiButton-root {
+.muiltr-1pab1ov-MuiButtonBase-root-MuiButton-root, .shadow_none {
   box-shadow: none !important;
 }
 .bgnone {
@@ -841,7 +842,6 @@ body.sidebar1-open .maincntainer {
 }
 .muiltr-4q8sm7-MuiFormLabel-root-MuiInputLabel-root {
   color: #1e293b;
-  font-size: 1.5rem !important;
 }
 .p-24 {
   padding: 1.4rem !important;
@@ -893,17 +893,16 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
 .action_button button .muiltr-1gnd1fd-MuiButton-endIcon {
   margin-left: 0;
 }
-.muiltr-kpgjex-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked {
+.switch_check .Mui-checked {
   color: #1e293b;
 }
-.muiltr-kpgjex-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked
-  + .MuiSwitch-track {
+.switch_check .Mui-checked + .MuiSwitch-track {
   background-color: rgba(100, 116, 139, 0.54) !important;
 }
-.muiltr-yz7uio-MuiTableCell-root:first-child {
+.muiltr-yz7uio-MuiTableCell-root:first-child, .muiltr-1i748lq:first-child {
   padding-left: 30px;
 }
-.muiltr-5g2394-MuiTable-root td:first-child {
+.muiltr-5g2394-MuiTable-root td:first-child, .muiltr-1xzua5t td:first-child {
   padding-left: 30px;
 }
 /* .muiltr-5g2394-MuiTable-root td:nth-child(3){width: 40%;} */
