@@ -1008,58 +1008,37 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
 .muiltr-y31q5n-MuiTypography-root{overflow: hidden;}
 .ml-10{margin-left: 1.0rem !important;}
 @media (min-width: 1200px) {
-  .desktop_hide {
-    display: none;
-  }
+  .desktop_hide {display: none;}
 }
 @media (max-width: 1199px) {
-  .btn_margin {
-    padding-left: 0 !important;
-    margin: 10px 0;
-  }
-  .close_popup {
-    position: absolute;
-    right: -36px;
-    top: 15px;
-  }
-  .muiltr-18fjwz5-MuiPaper-root-MuiDrawer-paper {
-    overflow: inherit !important;
-  }
-  .close_popup svg {
-    color: rgb(255 255 255);
-  }
+  .btn_margin {padding-left: 0 !important;margin: 10px 0;}
+  .close_popup {position: absolute;right: -36px;top: 15px;}
+  .muiltr-18fjwz5-MuiPaper-root-MuiDrawer-paper {overflow: inherit !important;}
+  .close_popup svg {color: rgb(255 255 255);}
 }
 @media (max-width: 768px) {
-.px-24 {padding-left: 1.6rem !important;padding-right: 1.6rem !important;}
-.muiltr-10oypuz-MuiBadge-badge{font-size: 10px; top: 7px; right: 4px;}
-.hidden-small{display: none !important;}
-.d-sm-block{display: block !important;}
-.mt_sm-10{margin-top: 10px;}
-.task_table_content{height: auto !important;}
-.task_table_content > div > div{margin: 5px 0;}
-.sidebar1{right: -100%;width: 400px; max-width: 100%; top: 50px;}
-body.sidebar1-open .maincntainer {
-  padding-right: 400px;
-}
-.p-30{padding: 1.5rem;}
-.pt-24{padding-top: 1rem;}
-.pb-24{padding-bottom: 1rem;}
-.Fw-100{width: 100%; max-width: 100%;}
-.muiltr-5g2394-MuiTable-root td{white-space: nowrap;}
-.muiltr-4q8sm7-MuiFormLabel-root-MuiInputLabel-root{font-size: 2rem !important;}
-.grid_inventory_box{max-width: 100%;}
-.text-2xl {
-  font-size: 1.8rem !important;
-}
+  .px-24 {padding-left: 1.6rem !important;padding-right: 1.6rem !important;}
+  .muiltr-10oypuz-MuiBadge-badge{font-size: 10px; top: 7px; right: 4px;}
+  .hidden-small{display: none !important;}
+  .d-sm-block{display: block !important;}
+  .mt_sm-10{margin-top: 10px;}
+  .task_table_content{height: auto !important;}
+  .task_table_content > div > div{margin: 5px 0;}
+  .sidebar1{right: -100%;width: 400px; max-width: 100%; top: 50px;}
+  body.sidebar1-open .maincntainer {padding-right: 400px;}
+  .p-30{padding: 1.5rem;}
+  .pt-24{padding-top: 1rem;}
+  .pb-24{padding-bottom: 1rem;}
+  .Fw-100{width: 100%; max-width: 100%;}
+  .muiltr-5g2394-MuiTable-root td{white-space: nowrap;}
+  .muiltr-4q8sm7-MuiFormLabel-root-MuiInputLabel-root{font-size: 2rem !important;}
+  .grid_inventory_box{max-width: 100%;}
+  .text-2xl {font-size: 1.8rem !important;}
 }
 @media (max-width: 479px) {
-  body.sidebar1-open .maincntainer {
-    padding-right: 100%;
-  }
-  .sidebar1 {
-    right: -100%;
-    width: 100%;
-    max-width: 100%;
-    top: 50px;
-  }
+  body.sidebar1-open .maincntainer {padding-right: 100%;}
+  .sidebar1 {right: -100%;width: 100%;max-width: 100%;top: 50px;}
+  .dashboard_buttons{display: block !important;}
+  .dashboard_buttons button{width: 100%; margin-left: 0 !important; margin-top: 5px;}
+  .my-32 {margin-top: 2.2rem; margin-bottom: 2.2rem;}
 }

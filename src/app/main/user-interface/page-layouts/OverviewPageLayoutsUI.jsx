@@ -40,7 +40,7 @@ function OverviewPageLayoutsUI() {
 				</div>
 			}
 			content={
-				<div className="flex-auto p-24 sm:p-40">
+				<div className="flex-auto p-24 sm:p-30">
 					<div className="prose prose-sm dark:prose-invert">
 						<Typography className="text-20 font-700 mb-16">Introduction</Typography>
 						<Typography>

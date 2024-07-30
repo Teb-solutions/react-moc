@@ -3009,9 +3009,10 @@ function Course() {
                                   style={{ minHeight: "60px" }}
                                   onClick={(e) => handelComments(e, task.id)}
                                 >
+                                  <div className="d-flex flex-wrap justify-between w-100 pr-10">
                                   <div
                                     className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                   >
                                     <div className="flex items-center">
                                       Task #{task.id}
@@ -3020,7 +3021,7 @@ function Course() {
 
                                   <div
                                     className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                   >
                                     <div
                                       className="flex items-center"
@@ -3045,7 +3046,7 @@ function Course() {
                                   </div>
                                   <div
                                     className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                   >
                                     <div className="flex items-center">
                                       No Risks
@@ -3053,7 +3054,7 @@ function Course() {
                                   </div>
                                   <div
                                     className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                   >
                                     <div className="flex items-center">
                                       {task.assignedStaff}
@@ -3062,7 +3063,7 @@ function Course() {
 
                                   <div
                                     className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                   >
                                     <div className="flex items-center">
                                       {formatDate(task.dueDate)}
@@ -3070,7 +3071,7 @@ function Course() {
                                   </div>
                                   <div
                                     className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                   >
                                     <div className="flex items-center">
                                       <Button
@@ -3088,6 +3089,7 @@ function Course() {
                                         Audits
                                       </Button>
                                     </div>
+                                  </div>
                                   </div>
                                 </AccordionSummary>
                                 <AccordionDetails>
@@ -3172,7 +3174,7 @@ function Course() {
                                         {impComments.map((msg) => (
                                           <div
                                             key={msg.id}
-                                            className="flex flex-row flex-wrap mb-2"
+                                            className="flex flex-row flex-wrap mb-10"
                                             style={{
                                               width: "auto",
                                               display: "block",
@@ -3228,8 +3230,8 @@ function Course() {
                                                     handleOpen(msg.id)
                                                   }
                                                   style={{
-                                                    top: "-15px",
-                                                    right: "-20px",
+                                                    top: "0",
+                                                    right: "-6px",
                                                   }}
                                                 >
                                                   <FuseSvgIcon size={20}>

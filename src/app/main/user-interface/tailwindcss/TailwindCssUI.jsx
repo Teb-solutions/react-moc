@@ -39,7 +39,7 @@ function TailwindCssUI() {
 				</div>
 			}
 			content={
-				<div className="flex-auto p-24 sm:p-40">
+				<div className="flex-auto p-24 sm:p-30">
 					<div>
 						<Typography className="mb-16">
 							As per the official page of Tailwind CSS, it is a highly customizable, low-level CSS

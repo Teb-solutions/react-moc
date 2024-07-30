@@ -56,7 +56,7 @@ function TypographyUI() {
 				</div>
 			}
 			content={
-				<div className="flex-auto p-24 sm:p-40 w-full">
+				<div className="flex-auto p-24 sm:p-30 w-full">
 					<div className="flex flex-wrap mb-16">
 						<div className="flex w-full sm:w-1/2">
 							<Typography variant="h1">Display 4</Typography>
