@@ -444,9 +444,9 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                       variant="standard"
                       disabled
                       value={
-                        selectedDocument.description == null
+                        selectedDocument?.description === null
                           ? ""
-                          : selectedDocument.descritpion
+                          : selectedDocument?.descritpion
                       }
                     />
                   </Box>

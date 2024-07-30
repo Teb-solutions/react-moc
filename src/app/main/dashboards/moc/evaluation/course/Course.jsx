@@ -1795,6 +1795,7 @@ function Course() {
                                           >
                                             <img src="/assets/images/etc/icon_N.png" />
                                           </div>
+                                          <h6>{selectedDocument?.name}</h6>
                                         </div>
                                       </label>
                                       <Box
@@ -1874,13 +1875,14 @@ function Course() {
                                           label={
                                             <BoldLabel>Description</BoldLabel>
                                           }
-                                          name="Description"
+                                          name="description"
                                           variant="standard"
                                           disabled
                                           value={
-                                            selectedDocument.description == null
+                                            selectedDocument?.description ===
+                                            null
                                               ? ""
-                                              : selectedDocument.descritpion
+                                              : selectedDocument?.descritpion
                                           }
                                         />
                                       </Box>
@@ -3004,10 +3006,14 @@ function Course() {
                                         label={
                                           <BoldLabel>Description</BoldLabel>
                                         }
-                                        name="Description"
+                                        name="description"
                                         variant="standard"
                                         disabled
-                                        value={selectedDocument.descritpion}
+                                        value={
+                                          selectedDocument?.description === null
+                                            ? ""
+                                            : selectedDocument?.descritpion
+                                        }
                                       />
                                     </Box>
                                   </div>

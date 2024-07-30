@@ -506,9 +506,9 @@ function Initiation(props) {
                       variant="standard"
                       disabled
                       value={
-                        selectedDocument.description == null
+                        selectedDocument?.description === null
                           ? ""
-                          : selectedDocument.descritpion
+                          : selectedDocument?.descritpion
                       }
                     />
                   </Box>

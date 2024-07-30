@@ -1148,6 +1148,13 @@ const AssetCourse = () => {
                   setIsLoading(false);
 
                   setApprovalManager(resp.data?.data);
+                  apiAuth
+                    .get(
+                      `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
+                    )
+                    .then((resp) => {
+                      setCountApprove(resp.data.data);
+                    });
                 });
             });
 
@@ -1526,7 +1533,6 @@ const AssetCourse = () => {
     setLeftSidebarOpen(true);
   };
 
-
   if (isLoading) {
     return <FuseLoading />;
   }
@@ -1687,6 +1693,7 @@ const AssetCourse = () => {
                   setContent={setContent}
                   setContentDetails={setContentDetails}
                   contentDetailsini={contentDetailsIni}
+                  CountApprove={CountApprove}
                 />
               )}
               {currentPhase === "ImplementationApprovalCoorp" && (
@@ -1701,6 +1708,7 @@ const AssetCourse = () => {
                   ApprovalManager={ApprovalManager}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
+                  CountApprove={CountApprove}
                 />
               )}
               {currentPhase === "ImplementationApprovalDiv" && (
@@ -1715,6 +1723,7 @@ const AssetCourse = () => {
                   ApprovalManager={ApprovalManager}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
+                  CountApprove={CountApprove}
                 />
               )}
 
@@ -1730,6 +1739,7 @@ const AssetCourse = () => {
                   ApprovalManager={ApprovalManager}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
+                  CountApprove={CountApprove}
                 />
               )}
             </div>
@@ -1740,16 +1750,16 @@ const AssetCourse = () => {
       leftSidebarOpen={leftSidebarOpen}
       leftSidebarContent={
         <>
-         <div className="desktop_hide text-end p-30 pt-24 pb-24">
-              <FuseSvgIcon
-                className="text-48 cursor-pointer "
-                size={24}
-                style={{display: "inline-block;"}}
-                color="action"
-                onClick={handelOpenSide}
-              >
-                heroicons-outline:menu
-              </FuseSvgIcon>
+          <div className="desktop_hide text-end p-30 pt-24 pb-24">
+            <FuseSvgIcon
+              className="text-48 cursor-pointer "
+              size={24}
+              style={{ display: "inline-block;" }}
+              color="action"
+              onClick={handelOpenSide}
+            >
+              heroicons-outline:menu
+            </FuseSvgIcon>
           </div>
           {content.map((resp, respIndex) => (
             <Accordion

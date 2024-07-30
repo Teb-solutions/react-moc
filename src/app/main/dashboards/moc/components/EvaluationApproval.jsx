@@ -951,9 +951,9 @@ const EvaluationApproval = ({
                       variant="standard"
                       disabled
                       value={
-                        selectedDocument.description == null
+                        selectedDocument?.description === null
                           ? ""
-                          : selectedDocument.descritpion
+                          : selectedDocument?.descritpion
                       }
                     />
                   </Box>
@@ -3381,7 +3381,13 @@ const EvaluationApproval = ({
                       name="description"
                       variant="standard"
                       disabled
-                      value={formatDateModal(selectedDocument?.createdAt)}
+                      value={new Date(
+                        selectedDocument.createdAt
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     />
                   </Box>
                   <Box
@@ -3399,7 +3405,7 @@ const EvaluationApproval = ({
                       variant="standard"
                       disabled
                       value={
-                        selectedDocument?.description == null
+                        selectedDocument?.description === null
                           ? ""
                           : selectedDocument?.descritpion
                       }
