@@ -1522,6 +1522,11 @@ const AssetCourse = () => {
     handleStepChange();
   }, []);
 
+  const handelOpenSide = () => {
+    setLeftSidebarOpen(true);
+  };
+
+
   if (isLoading) {
     return <FuseLoading />;
   }
@@ -1735,6 +1740,17 @@ const AssetCourse = () => {
       leftSidebarOpen={leftSidebarOpen}
       leftSidebarContent={
         <>
+         <div className="desktop_hide text-end p-30 pt-24 pb-24">
+              <FuseSvgIcon
+                className="text-48 cursor-pointer "
+                size={24}
+                style={{display: "inline-block;"}}
+                color="action"
+                onClick={handelOpenSide}
+              >
+                heroicons-outline:menu
+              </FuseSvgIcon>
+          </div>
           {content.map((resp, respIndex) => (
             <Accordion
               key={respIndex}
