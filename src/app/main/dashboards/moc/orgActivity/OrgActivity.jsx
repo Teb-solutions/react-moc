@@ -144,6 +144,7 @@ function OrgActivity() {
       .post("/OrgMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
         if (response.data.statusCode == 400) {
+          setOpen(false);
           setIsLoading(false);
 
           toast?.error(response.data.message);

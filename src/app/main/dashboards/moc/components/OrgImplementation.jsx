@@ -3,6 +3,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Backdrop,
+  Badge,
   Box,
   Button,
   Fade,
@@ -33,6 +34,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { apiAuth } from "src/utils/http";
 import { ToastContainer, toast } from "react-toastify";
 import { styled } from "@mui/material/styles";
+import { withStyles } from "@mui/styles";
 function createData(
   index,
 
@@ -50,6 +52,7 @@ const OrgImplementation = ({
   lastActCode,
   currentActivityForm,
   orgEvaluationId,
+  setImpDetails,
 }) => {
   const columns = [
     { id: "index", label: "#", minWidth: 50 },
@@ -133,6 +136,17 @@ const OrgImplementation = ({
     transition: "right 0.3s ease",
     overflow: "auto", // Smooth transition for opening/closing
   });
+
+  const StyledBadge = withStyles((theme) => ({
+    Badge: {
+      right: -2,
+      top: 6,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: "0 4px",
+      backgroundColor: "#000", // Adjust background color to match the image
+      color: "white",
+    },
+  }))(Badge);
   const [expanded, setExpanded] = useState(null);
   const [impComments, setImpComments] = useState([]);
   const [comments, setComments] = useState("");
@@ -180,6 +194,11 @@ const OrgImplementation = ({
       comments: value,
     }));
   };
+  function getRecords() {
+    apiAuth.get(`/OrgMoc/GetImplementation/${orgEvaluationId}`).then((resp) => {
+      setImpDetails(resp.data?.data?.taskList);
+    });
+  }
 
   const handelAuditCommentSubmit = () => {
     apiAuth
@@ -615,8 +634,7 @@ const OrgImplementation = ({
                     style={{ backgroundColor: "white" }}
                     onClick={() => setFileDetails(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
 
@@ -808,94 +826,98 @@ const OrgImplementation = ({
                     onClick={(e) => handelComments(e, detail.id)}
                   >
                     <div className="flex flex-wrap justify-between w-100 pr-10">
-                    <div
-                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
-                    >
-                      <div className="flex items-center">Task #{detail.id}</div>
-                    </div>
-                    <div
-                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
-                    >
-                      <div className="flex items-center" style={{}}>
-                        {detail.isCompleted && detail.taskStatus === 3 ? (
-                          <span className="text-green">Approved</span>
-                        ) : detail.isCompleted && detail.taskStatus !== 3 ? (
-                          <span className="text-red">Awaiting Approval</span>
-                        ) : (
-                          <span className="text-black">Not Completed</span>
-                        )}
+                      <div
+                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                        // style={{ width: "17%" }}
+                      >
+                        <div className="flex items-center">
+                          Task #{detail.id}
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
-                    >
-                      <div className="flex items-center">No Risks</div>
-                    </div>
-                    <div
-                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
-                    >
-                      <div className="flex items-center">
-                        {detail.assignedStaff}
+                      <div
+                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                        // style={{ width: "17%" }}
+                      >
+                        <div className="flex items-center" style={{}}>
+                          {detail.isCompleted && detail.taskStatus === 3 ? (
+                            <span className="text-green">Approved</span>
+                          ) : detail.isCompleted && detail.taskStatus !== 3 ? (
+                            <span className="text-red">Awaiting Approval</span>
+                          ) : (
+                            <span className="text-black">Not Completed</span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div
-                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
-                    >
-                      <div className="flex items-center">
-                        {formatDate(detail.dueDate)}
+                      <div
+                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                        // style={{ width: "17%" }}
+                      >
+                        <div className="flex items-center">No Risks</div>
                       </div>
-                    </div>
-                    <div
-                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
-                    >
-                      <div className="flex items-center">
-                        <Button
-                          className="whitespace-nowrap mt-5 mb-5"
-                          style={{
-                            border: "1px solid",
-                            backgroundColor: "#0000",
-                            color: "black",
-                            borderColor: "rgba(203,213,225)",
-                          }}
-                          variant="contained"
-                          color="warning"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handelOpenAudit(detail.audits, "");
-                          }}
-                        >
-                          Audits
-                        </Button>
-                        {lastActCode?.canExecute && (
-                          <Button
-                            className="whitespace-nowrap ms-5 mt-5 mb-5"
-                            style={{
-                              border: "1px solid",
-                              backgroundColor: "#0000",
-                              color: "black",
-                              borderColor: "rgba(203,213,225)",
-                            }}
-                            variant="contained"
-                            color="warning"
-                            onClick={() => handelOpenAuditComment(detail.id)}
-                          >
-                            <FuseSvgIcon
-                              className="text-48"
-                              size={24}
-                              color="action"
+                      <div
+                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                        // style={{ width: "17%" }}
+                      >
+                        <div className="flex items-center">
+                          {detail.assignedStaff}
+                        </div>
+                      </div>
+                      <div
+                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                        // style={{ width: "17%" }}
+                      >
+                        <div className="flex items-center">
+                          {formatDate(detail.dueDate)}
+                        </div>
+                      </div>
+                      <div
+                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                        // style={{ width: "17%" }}
+                      >
+                        <div className="flex items-center">
+                          <StyledBadge badgeContent={detail?.audits?.length}>
+                            <Button
+                              className="whitespace-nowrap mt-5 mb-5"
+                              style={{
+                                border: "1px solid",
+                                backgroundColor: "#0000",
+                                color: "black",
+                                borderColor: "rgba(203,213,225)",
+                              }}
+                              variant="contained"
+                              color="warning"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handelOpenAudit(detail.audits, "");
+                              }}
                             >
-                              heroicons-outline:document-text
-                            </FuseSvgIcon>
-                          </Button>
-                        )}
+                              Audits
+                            </Button>
+                          </StyledBadge>
+                          {lastActCode?.canExecute && (
+                            <Button
+                              className="whitespace-nowrap ms-5 mt-5 mb-5"
+                              style={{
+                                border: "1px solid",
+                                backgroundColor: "#0000",
+                                color: "black",
+                                borderColor: "rgba(203,213,225)",
+                              }}
+                              variant="contained"
+                              color="warning"
+                              onClick={() => handelOpenAuditComment(detail.id)}
+                            >
+                              <FuseSvgIcon
+                                className="text-48"
+                                size={24}
+                                color="action"
+                              >
+                                heroicons-outline:document-text
+                              </FuseSvgIcon>
+                            </Button>
+                          )}
+                        </div>
                       </div>
-                    </div>
                     </div>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -1020,22 +1042,21 @@ const OrgImplementation = ({
                                     </div>
                                   </div>
 
-                                  <button
-                                    className="icon-button"
-                                    onClick={() => handleOpen(msg.id)}
-                                    style={{
-                                      top: "-15px",
-                                      right: "-20px",
-                                    }}
+                                  <StyledBadge
+                                    badgeContent={documentCounts[msg.id]}
                                   >
-                                    <FuseSvgIcon size={20}>
-                                      heroicons-solid:document
-                                    </FuseSvgIcon>
-                                    <span className="count">
-                                      {" "}
-                                      {documentCounts[msg.id]}
-                                    </span>
-                                  </button>
+                                    <button
+                                      className="icon-button"
+                                      onClick={() => handleOpen(msg.id)}
+                                      style={{
+                                        top: "-0px",
+                                      }}
+                                    >
+                                      <FuseSvgIcon size={20}>
+                                        heroicons-solid:document
+                                      </FuseSvgIcon>
+                                    </button>
+                                  </StyledBadge>
                                 </div>
                               )}
                               {msg.comments && (
