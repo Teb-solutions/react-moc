@@ -224,8 +224,7 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                     style={{ backgroundColor: "white" }}
                     onClick={() => setOpenDrawer(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -350,8 +349,7 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                     style={{ backgroundColor: "white" }}
                     onClick={() => setFileDetails(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -422,7 +420,13 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                       name="description"
                       variant="standard"
                       disabled
-                      value={formatDate1(selectedDocument.createdAt)}
+                      value={new Date(
+                        selectedDocument.createdAt
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
                     />
                   </Box>
                   <Box
