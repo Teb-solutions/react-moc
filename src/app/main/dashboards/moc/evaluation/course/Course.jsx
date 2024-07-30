@@ -25,6 +25,7 @@ import {
   FormHelperText,
   FormLabel,
   Step,
+  Badge,
   StepContent,
   StepLabel,
 } from "@mui/material";
@@ -48,6 +49,7 @@ import DocPhasesEnum from "./docPhaseEnum";
 import { ToastContainer, toast } from "react-toastify";
 import FuseLoading from "@fuse/core/FuseLoading";
 import CustomStepIcon from "../../CustomStepIcon";
+import { withStyles } from "@mui/styles";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -129,12 +131,30 @@ function Course() {
   };
 
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [selectedFile, setSelectedFile] = useState({
+    name: "",
+    description: "",
+    type: "",
+    document: "binary",
+    documentType: "DocImplTrSheet",
+    documentId: "",
+    changeRequestToken: null,
+  });
 
   const handleModalClose = () => {
     setOpenMoc(false);
     setOpenDrawer(false);
   };
-
+  const handelFileDiscriptionChange = (event) => {
+    const { name, value } = event.target;
+    setSelectedFile((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+  const toggleDrawer = (open) => () => {
+    setOpenDrawer(open);
+  };
   const HandleTraining = () => {
     apiAuth
       .get(
@@ -144,6 +164,53 @@ function Course() {
         setListDocument(response?.data?.data);
       });
     setOpenMoc(true);
+  };
+
+  const handelFileChange = (e) => {
+    const file = e.target.files[0];
+
+    setSelectedFile({
+      ...selectedFile,
+      name: e.target.files[0].name,
+
+      type: e.target.files[0].type,
+      document: e.target.files[0],
+      documentType: "DocImplTrSheet",
+      documentId: evaluationId,
+      changeRequestToken: evaluationId,
+    });
+  };
+
+  const handleSubmitAsset = (e) => {
+    const formData = new FormData();
+    formData.append("name", selectedFile.name);
+    formData.append("descritpion", selectedFile.description);
+    formData.append("type", selectedFile.type);
+    formData.append("document", selectedFile.document);
+    formData.append("documentType", selectedFile.documentType);
+    formData.append("documentId", selectedFile.documentId);
+    formData.append("changeRequestToken", selectedFile.changeRequestToken);
+
+    apiAuth
+      .post("DocumentManager/Create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
+        apiAuth
+          .get(
+            `/DocumentManager/DocList/${evaluationId}/DocImplTrSheet?changeRequestToken=${evaluationId}`
+          )
+          .then((response) => {
+            setOpenDrawer(false);
+            setListDocument(response?.data?.data);
+          });
+      })
+      .catch((error) => {
+        console.error("There was an error uploading the document!", error);
+      });
   };
 
   const handleClose = () => setOpen(false);
@@ -195,6 +262,16 @@ function Course() {
   const [value, setValue] = useState(0);
   const [valueRemark, setValueRemark] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const StyledBadge = withStyles((theme) => ({
+    badge: {
+      right: -3,
+      top: 13,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: "0 4px",
+      backgroundColor: "#2c3e50", // Adjust background color to match the image
+      color: "white",
+    },
+  }))(Badge);
 
   const [data, setData] = useState({
     consultedDate: null,
@@ -543,7 +620,7 @@ function Course() {
     transform: "translate(-50%, -50%)",
     width: "1100px",
     maxWidth: "80vw",
-    height: "57%",
+    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -772,6 +849,13 @@ function Course() {
                     .then((resp) => {
                       setTaskLists(resp.data.data.taskList);
                       setCheckLists(resp.data.data.checkList);
+                      apiAuth
+                        .get(
+                          `/DocumentManager/DocList/${evaluationId}/DocImplTrSheet?changeRequestToken=${evaluationId}`
+                        )
+                        .then((response) => {
+                          setListDocument(response?.data?.data);
+                        });
                     });
                 });
               });
@@ -1084,6 +1168,7 @@ function Course() {
   };
 
   const handelDetailDoc = (doc) => {
+    debugger;
     setSelectedDocument(doc);
     setFileDetails(true);
     setDocumenDowToken(doc.token);
@@ -1470,7 +1555,7 @@ function Course() {
                                         {listDocument.length} Files
                                       </Typography>
                                     </Typography>
-                                    {/* {currentActivityForm.canExecute && (
+                                    {currentActivityForm.canExecute && (
                                       <Box>
                                         <Button
                                           className=""
@@ -1486,7 +1571,7 @@ function Course() {
                                           </span>
                                         </Button>
                                       </Box>
-                                    )}*/}
+                                    )}
                                   </Box>
                                   <Box>
                                     <Typography
@@ -1600,6 +1685,7 @@ function Course() {
                                           id="selectedFileName"
                                           label="Selecte File"
                                           variant="standard"
+                                          name="name"
                                           disabled
                                           value={selectedFile.name}
                                         />
@@ -2692,27 +2778,27 @@ function Course() {
                         >
                           Implementation
                         </h2>
-
-                        <Button
-                          className="whitespace-nowrap "
-                          style={{
-                            border: "1px solid",
-                            backgroundColor: "#0000",
-                            color: "black",
-                            borderColor: "rgba(203,213,225)",
-                          }}
-                          variant="contained"
-                          color="warning"
-                          startIcon={
-                            <FuseSvgIcon size={20}>
-                              heroicons-solid:upload
-                            </FuseSvgIcon>
-                          }
-                          onClick={HandleTraining}
-                        >
-                          Training Attendence Sheet
-                        </Button>
-
+                        <StyledBadge badgeContent={listDocument.length}>
+                          <Button
+                            className="whitespace-nowrap "
+                            style={{
+                              border: "1px solid",
+                              backgroundColor: "#0000",
+                              color: "black",
+                              borderColor: "rgba(203,213,225)",
+                            }}
+                            variant="contained"
+                            color="warning"
+                            startIcon={
+                              <FuseSvgIcon size={20}>
+                                heroicons-solid:upload
+                              </FuseSvgIcon>
+                            }
+                            onClick={HandleTraining}
+                          >
+                            Training Attendence Sheet
+                          </Button>
+                        </StyledBadge>
                         <Modal
                           aria-labelledby="transition-modal-title"
                           aria-describedby="transition-modal-description"
