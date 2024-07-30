@@ -16,7 +16,6 @@ import SwipeableViews from "react-swipeable-views";
 import { parseISO, format } from "date-fns";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-
 import { styled } from "@mui/material/styles";
 import {
   Accordion,
@@ -276,7 +275,6 @@ function Course() {
     isEditable: true,
     taskReviewId: "",
   });
-
   const StyledBadge = withStyles((theme) => ({
     Badge: {
       right: -3,
@@ -636,6 +634,7 @@ function Course() {
 
     boxShadow: 24,
     p: 4,
+    padding: "0px",
   };
 
   const styleImp = {
@@ -1177,7 +1176,6 @@ function Course() {
   };
 
   const handelDetailDoc = (doc) => {
-    debugger;
     setSelectedDocument(doc);
     setFileDetails(true);
     setDocumenDowToken(doc.token);
@@ -1952,7 +1950,7 @@ function Course() {
                                             fontSize: "3rem",
                                           }}
                                         >
-                                        Manager  File 
+                                          File Manager
                                         </Typography>
                                       </Box>
                                       <Box>
@@ -3381,7 +3379,7 @@ function Course() {
                                                     }}
                                                   ></div>
                                                   <div
-                                                    className="min-w-4 leading-5 m=10"
+                                                    className="min-w-4 leading-5"
                                                     style={{
                                                       fontSize: "xx-small",
                                                     }}

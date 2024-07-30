@@ -443,7 +443,7 @@ function TransportApp() {
           <form
           //    onSubmit={handleSubmit}
           >
-            <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-40">
+            <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-30">
               <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                 <div
                   _ngcontent-fyk-c288=""

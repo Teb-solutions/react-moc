@@ -347,16 +347,16 @@ const riskCourse = () => {
             {currentActivityForm.code == "START" && (
               <div className="w-full">
                 <SwipeableViews>
-                  <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
+                  <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
                     <div>
-                      <div className="flex items-center w-full border-b justify-between">
+                      <div className="flex items-center w-full border-b p-30 pt-24 pb-24 justify-between">
                         <h2 className="text-2xl font-semibold">
                           Risk Register Details
                         </h2>
                       </div>
-                      <div className="px-6 mb-6">
+                      <div className="p-30 pt-24 pb-24">
                         <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
-                          <div>
+                          <div className="my-6">
                             <div className="mt-3 leading-6 text-secondary">
                               Request No
                             </div>
@@ -364,7 +364,7 @@ const riskCourse = () => {
                               CHSEQMAH24282
                             </div>
                           </div>
-                          <div>
+                          <div className="my-6">
                             <div className="mt-3 leading-6 text-secondary">
                               Date
                             </div>
@@ -372,7 +372,7 @@ const riskCourse = () => {
                               24/2024
                             </div>
                           </div>
-                          <div>
+                          <div className="my-6">
                             <div className="mt-3 leading-6 text-secondary">
                               Site In Charge
                             </div>
@@ -382,7 +382,7 @@ const riskCourse = () => {
                           </div>
                         </div>
                         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
-                          <div>
+                          <div className="my-6">
                             <div className="mt-3 leading-6 text-secondary">
                               Site
                             </div>
@@ -390,7 +390,7 @@ const riskCourse = () => {
                               Mumbai
                             </div>
                           </div>
-                          <div>
+                          <div className="my-6">
                             <div className="mt-3 leading-6 text-secondary">
                               Division
                             </div>
@@ -398,7 +398,7 @@ const riskCourse = () => {
                               Test Risk
                             </div>
                           </div>
-                          <div>
+                          <div className="my-6">
                             <div className="mt-3 leading-6 text-secondary">
                               Function
                             </div>
@@ -409,7 +409,7 @@ const riskCourse = () => {
                         </div>
 
                         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
-                          <div>
+                          <div className="my-6">
                             <div className="mt-3 leading-6 text-secondary">
                               Type
                             </div>
@@ -417,7 +417,7 @@ const riskCourse = () => {
                               Routine
                             </div>
                           </div>
-                          <div>
+                          <div className="my-6">
                             <div className="mt-3 leading-6 text-secondary">
                               Title
                             </div>
@@ -425,7 +425,7 @@ const riskCourse = () => {
                               Test Routine
                             </div>
                           </div>
-                          <div>
+                          <div className="my-6">
                             <div className="mt-3 leading-6 text-secondary">
                               Description
                             </div>
@@ -435,10 +435,10 @@ const riskCourse = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="flex items-center justify-between w-full mt-8 px-6 py-3 border-t">
+                      <div className="flex items-center justify-between w-full p-30 pt-24 pb-24 border-t">
                         <div>
                           <Button
-                            className="whitespace-nowrap mt-5"
+                            className="whitespace-nowrap"
                             style={{
                               border: "1px solid",
                               backgroundColor: "transparent",
@@ -461,90 +461,91 @@ const riskCourse = () => {
                   </Paper>
                 </SwipeableViews>
                 <SwipeableViews>
-                  <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
-                    <div>
-                      <div className="flex items-center w-full border-b justify-between">
+                  <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
+                    
+                      <div className="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
                         <h2 className="text-2xl font-semibold">
                           Team Assignment
                         </h2>
                       </div>
-                    </div>
+                      <div className="p-30 pt-24 pb-24">                      
+                        <div
+                          // Assuming there's a unique id for each list item
+                          className="inventory-grid grid items-center gap-4 "
+                          // style={{ width: "40%" }}
+                        >
+                          <div
+                            className="flex items-center"
+                            style={{ marginTop: "15px" }}
+                          >
+                            <img
+                              src="/assets/images/etc/userpic.png"
+                              alt="Card cover image"
+                              className="rounded-full mr-4"
+                              style={{ width: "4rem", height: "4rem" }}
+                            />
+                            <div className="flex flex-col">
+                              <span className="font-semibold leading-none">
+                                Sreeninivas Sathyamurthy
+                              </span>
+                              <span className="text-sm text-secondary leading-none pt-5">
+                                Maintenance in chage
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          // Assuming there's a unique id for each list item
+                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                          // style={{ width: "40%" }}
+                        >
+                          <div
+                            className="flex items-center"
+                            style={{ marginTop: "15px" }}
+                          >
+                            <img
+                              src="/assets/images/etc/userpic.png"
+                              alt="Card cover image"
+                              className="rounded-full mr-4"
+                              style={{ width: "4rem", height: "4rem" }}
+                            />
+                            <div className="flex flex-col">
+                              <span className="font-semibold leading-none">
+                                Giresh
+                              </span>
+                              <span className="text-sm text-secondary leading-none pt-5">
+                                Operations In Charge
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          // Assuming there's a unique id for each list item
+                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                          // style={{ width: "40%" }}
+                        >
+                          <div
+                            className="flex items-center"
+                            style={{ marginTop: "15px" }}
+                          >
+                            <img
+                              src="/assets/images/etc/userpic.png"
+                              alt="Card cover image"
+                              className="rounded-full mr-4"
+                              style={{ width: "4rem", height: "4rem" }}
+                            />
+                            <div className="flex flex-col">
+                              <span className="font-semibold leading-none">
+                                Tebs Dev Team
+                              </span>
+                              <span className="text-sm text-secondary leading-none pt-5">
+                                Task Reoresentative
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
-                    <div
-                      // Assuming there's a unique id for each list item
-                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      style={{ width: "40%" }}
-                    >
-                      <div
-                        className="flex items-center"
-                        style={{ marginTop: "15px" }}
-                      >
-                        <img
-                          src="/assets/images/etc/userpic.png"
-                          alt="Card cover image"
-                          className="rounded-full mr-4"
-                          style={{ width: "4rem", height: "4rem" }}
-                        />
-                        <div className="flex flex-col">
-                          <span className="font-semibold leading-none">
-                            Sreeninivas Sathyamurthy
-                          </span>
-                          <span className="text-sm text-secondary leading-none pt-5">
-                            Maintenance in chage
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      // Assuming there's a unique id for each list item
-                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      style={{ width: "40%" }}
-                    >
-                      <div
-                        className="flex items-center"
-                        style={{ marginTop: "15px" }}
-                      >
-                        <img
-                          src="/assets/images/etc/userpic.png"
-                          alt="Card cover image"
-                          className="rounded-full mr-4"
-                          style={{ width: "4rem", height: "4rem" }}
-                        />
-                        <div className="flex flex-col">
-                          <span className="font-semibold leading-none">
-                            Giresh
-                          </span>
-                          <span className="text-sm text-secondary leading-none pt-5">
-                            Operations In Charge
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      // Assuming there's a unique id for each list item
-                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      style={{ width: "40%" }}
-                    >
-                      <div
-                        className="flex items-center"
-                        style={{ marginTop: "15px" }}
-                      >
-                        <img
-                          src="/assets/images/etc/userpic.png"
-                          alt="Card cover image"
-                          className="rounded-full mr-4"
-                          style={{ width: "4rem", height: "4rem" }}
-                        />
-                        <div className="flex flex-col">
-                          <span className="font-semibold leading-none">
-                            Tebs Dev Team
-                          </span>
-                          <span className="text-sm text-secondary leading-none pt-5">
-                            Task Reoresentative
-                          </span>
-                        </div>
-                      </div>
-                    </div>
                   </Paper>
                 </SwipeableViews>
               </div>
@@ -552,9 +553,9 @@ const riskCourse = () => {
             {currentActivityForm.code == "IS_Change_NEEDED" && (
               <div className="w-full">
                 <SwipeableViews>
-                  <Paper className="w-full mx-auto sm:my-8 lg:mt-16 p-24 rounded-16 shadow overflow-hidden">
-                    <div>
-                      <div className="flex items-center w-full border-b pb-5 justify-between">
+                  <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
+                   
+                      <div className="flex items-center w-full border-b p-30 pt-24 pb-24 justify-between">
                         <h2 className="text-2xl font-semibold">Evaluation</h2>
                         <div>
                           {currentActivityForm.canEdit && (
@@ -598,122 +599,147 @@ const riskCourse = () => {
                           </Button>
                         </div>
                       </div>
-                    </div>
-                    {currentActivityForm.canEdit && (
-                      <div className="ng-star-inserted mt-5">
-                        <div className="ng-star-inserted">
-                          <div
-                            className="mt-4 py-2 px-5 rounded-lg bg-red-100 dark:bg-red-700"
-                            style={{
-                              backgroundColor: "rgb(255 196 202)",
-                              padding: "5px",
-                            }}
-                          >
-                            Please start session to make any changes.
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    {/* )} */}
-                    <Box sx={{ width: "100%", mt: 2 }} className="hello">
-                      <Box sx={{ display: "flex" }}>
-                        <Button
-                          onClick={() => handleChange(0)}
-                          variant={value === 0 ? "contained" : "outlined"}
-                          sx={{
-                            backgroundColor:
-                              value === 0 ? "#e6e6e6" : "transparent",
-                            color: value === 0 ? "black" : "black",
-                            borderColor: "white",
-                          }}
-                        >
-                          Add Tasks
-                        </Button>
-                        {/* <Button
-                          onClick={() => handleChange(1)}
-                          className="ms-5"
-                          variant={value === 1 ? "contained" : "outlined"}
-                          sx={{
-                            backgroundColor:
-                              value === 1 ? "#e6e6e6" : "transparent",
-                            color: value === 1 ? "black" : "black",
-                            borderColor: "white",
-                          }}
-                        >
-                          Change Evaluation Impacts
-                        </Button> */}
-                      </Box>
-
-                      <CustomTabPanel value={value} index={0}>
-                        <div className="flex justify-start">
-                          <div
-                            className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                            style={{ marginTop: "15px" }}
-                          >
-                            {currentActivityForm.canEdit && (
-                              <Button
-                                className="whitespace-nowrap"
-                                variant="contained"
-                                color="secondary"
-                                style={{ padding: "15px" }}
-                                onClick={handleAddConsultation}
-                                startIcon={
-                                  <FuseSvgIcon size={20}>
-                                    heroicons-outline:plus
-                                  </FuseSvgIcon>
-                                }
-                              >
-                                Add New Task
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </CustomTabPanel>
-
-                      <CustomTabPanel value={value} index={1}>
-                        <Paper>
-                          {AddImpact && (
-                            <>
+                      <div className=" p-30 pt-24 pb-24">                 
+                        {currentActivityForm.canEdit && (
+                          <div className="ng-star-inserted mt-5">
+                            <div className="ng-star-inserted">
                               <div
-                                className="font-semibold ps-5"
-                                style={{ padding: "15px" }}
-                              >
-                                <a
-                                  rel="noopener noreferrer"
-                                  onClick={handlebackImpactList}
-                                >
-                                  Back to Impact View
-                                </a>
-                              </div>
-                              <div
-                                className="my-10"
-                                style={{ borderTopWidth: "2px" }}
-                              ></div>
-
-                              <Button
-                                className="whitespace-nowrap mt-5"
+                                className="mt-4 py-2 px-5 rounded-lg bg-red-100 dark:bg-red-700"
                                 style={{
-                                  border: "1px solid",
-                                  backgroundColor: "#0000",
-                                  color: "black",
-                                  borderColor: "rgba(203,213,225)",
-                                  marginLeft: "30px",
+                                  backgroundColor: "rgb(255 196 202)",
+                                  padding: "5px",
                                 }}
-                                variant="contained"
-                                startIcon={
-                                  <FuseSvgIcon size={20}>
-                                    heroicons-outline:plus
-                                  </FuseSvgIcon>
-                                }
-                                onClick={handleAddNewTask}
                               >
-                                Add New Task
-                              </Button>
+                                Please start session to make any changes.
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        {/* )} */}
+                        <Box sx={{ width: "100%", mt: 2 }} className="hello">
+                          <Box sx={{ display: "flex" }}>
+                            <Button
+                              onClick={() => handleChange(0)}
+                              variant={value === 0 ? "contained" : "outlined"}
+                              sx={{
+                                backgroundColor:
+                                  value === 0 ? "#e6e6e6" : "transparent",
+                                color: value === 0 ? "black" : "black",
+                                borderColor: "white",
+                              }}
+                            >
+                              Add Tasks
+                            </Button>
+                            {/* <Button
+                              onClick={() => handleChange(1)}
+                              className="ms-5"
+                              variant={value === 1 ? "contained" : "outlined"}
+                              sx={{
+                                backgroundColor:
+                                  value === 1 ? "#e6e6e6" : "transparent",
+                                color: value === 1 ? "black" : "black",
+                                borderColor: "white",
+                              }}
+                            >
+                              Change Evaluation Impacts
+                            </Button> */}
+                          </Box>
+
+                          <CustomTabPanel value={value} index={0}>
+                            <div className="flex justify-start">
                               <div
-                                className="my-10"
-                                style={{ borderTopWidth: "2px" }}
-                              ></div>
-                              <div className="flex justify-end">
+                                className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                                style={{ marginTop: "15px" }}
+                              >
+                                {currentActivityForm.canEdit && (
+                                  <Button
+                                    className="whitespace-nowrap"
+                                    variant="contained"
+                                    color="secondary"
+                                    style={{ padding: "15px" }}
+                                    onClick={handleAddConsultation}
+                                    startIcon={
+                                      <FuseSvgIcon size={20}>
+                                        heroicons-outline:plus
+                                      </FuseSvgIcon>
+                                    }
+                                  >
+                                    Add New Task
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
+                          </CustomTabPanel>
+
+                          <CustomTabPanel value={value} index={1}>
+                            <Paper>
+                              {AddImpact && (
+                                <>
+                                  <div
+                                    className="font-semibold ps-5"
+                                    style={{ padding: "15px" }}
+                                  >
+                                    <a
+                                      rel="noopener noreferrer"
+                                      onClick={handlebackImpactList}
+                                    >
+                                      Back to Impact View
+                                    </a>
+                                  </div>
+                                  <div
+                                    className="my-10"
+                                    style={{ borderTopWidth: "2px" }}
+                                  ></div>
+
+                                  <Button
+                                    className="whitespace-nowrap mt-5"
+                                    style={{
+                                      border: "1px solid",
+                                      backgroundColor: "#0000",
+                                      color: "black",
+                                      borderColor: "rgba(203,213,225)",
+                                      marginLeft: "30px",
+                                    }}
+                                    variant="contained"
+                                    startIcon={
+                                      <FuseSvgIcon size={20}>
+                                        heroicons-outline:plus
+                                      </FuseSvgIcon>
+                                    }
+                                    onClick={handleAddNewTask}
+                                  >
+                                    Add New Task
+                                  </Button>
+                                  <div
+                                    className="my-10"
+                                    style={{ borderTopWidth: "2px" }}
+                                  ></div>
+                                  <div className="flex justify-end">
+                                    <div
+                                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                                      style={{ marginTop: "15px" }}
+                                    >
+                                      <Button
+                                        className="whitespace-nowrap"
+                                        variant="contained"
+                                        color="secondary"
+                                        style={{ margin: "15px" }}
+                                        //   onClick={() => handleOpen(btn)}
+                                        startIcon={
+                                          <FuseSvgIcon size={20}>
+                                            heroicons-outline:plus
+                                          </FuseSvgIcon>
+                                        }
+                                      >
+                                        Submit
+                                      </Button>
+                                    </div>
+                                  </div>
+                                </>
+                              )}
+                            </Paper>
+                            {currentActivityForm.canEdit && !AddImpact && (
+                              <div className="flex justify-start">
                                 <div
                                   className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                                   style={{ marginTop: "15px" }}
@@ -722,117 +748,92 @@ const riskCourse = () => {
                                     className="whitespace-nowrap"
                                     variant="contained"
                                     color="secondary"
-                                    style={{ margin: "15px" }}
-                                    //   onClick={() => handleOpen(btn)}
+                                    style={{ padding: "15px" }}
                                     startIcon={
                                       <FuseSvgIcon size={20}>
                                         heroicons-outline:plus
                                       </FuseSvgIcon>
                                     }
+                                    // onClick={handleAddImpact}
                                   >
-                                    Submit
+                                    Add New Impact
                                   </Button>
                                 </div>
                               </div>
-                            </>
-                          )}
-                        </Paper>
-                        {currentActivityForm.canEdit && !AddImpact && (
-                          <div className="flex justify-start">
-                            <div
-                              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                            )}
+                          </CustomTabPanel>
+                        </Box>
+                        {AddCunsultation && !editConsultation && (
+                          <>
+                            {/* <div
+                              className="my-10"
+                              style={{ borderTopWidth: "2px", marginTop: "40px" }}
+                            ></div> */}
+
+                            {/* <div
+                              className="flex justify-between items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                               style={{ marginTop: "15px" }}
                             >
                               <Button
-                                className="whitespace-nowrap"
+                                className="whitespace-nowrap mt-5"
+                                style={{
+                                  border: "1px solid",
+                                  backgroundColor: "black",
+                                  color: "white",
+                                  marginLeft: "10px",
+                                }}
                                 variant="contained"
-                                color="secondary"
-                                style={{ padding: "15px" }}
                                 startIcon={
                                   <FuseSvgIcon size={20}>
                                     heroicons-outline:plus
                                   </FuseSvgIcon>
                                 }
-                                // onClick={handleAddImpact}
+                                onClick={handleAddConsultation}
                               >
-                                Add New Impact
+                                Add Stake
                               </Button>
-                            </div>
-                          </div>
+
+                              <div className="flex items-center space-x-12">
+                                <Button
+                                  className="whitespace-nowrap mt-5"
+                                  style={{
+                                    border: "1px solid",
+                                    backgroundColor: "#0000",
+                                    color: "black",
+                                    borderColor: "rgba(203,213,225)",
+                                    marginLeft: "10px",
+                                  }}
+                                  variant="contained"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  className="whitespace-nowrap mt-12"
+                                  variant="contained"
+                                  color="secondary"
+                                  style={{ padding: "15px" }}
+                                >
+                                  Submit
+                                </Button>
+                              </div>
+                            </div> */}
+                          </>
                         )}
-                      </CustomTabPanel>
-                    </Box>
-                    {AddCunsultation && !editConsultation && (
-                      <>
-                        {/* <div
-                          className="my-10"
-                          style={{ borderTopWidth: "2px", marginTop: "40px" }}
-                        ></div> */}
-
-                        {/* <div
-                          className="flex justify-between items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                          style={{ marginTop: "15px" }}
-                        >
-                          <Button
-                            className="whitespace-nowrap mt-5"
-                            style={{
-                              border: "1px solid",
-                              backgroundColor: "black",
-                              color: "white",
-                              marginLeft: "10px",
-                            }}
-                            variant="contained"
-                            startIcon={
-                              <FuseSvgIcon size={20}>
-                                heroicons-outline:plus
-                              </FuseSvgIcon>
-                            }
-                            onClick={handleAddConsultation}
-                          >
-                            Add Stake
-                          </Button>
-
-                          <div className="flex items-center space-x-12">
-                            <Button
-                              className="whitespace-nowrap mt-5"
-                              style={{
-                                border: "1px solid",
-                                backgroundColor: "#0000",
-                                color: "black",
-                                borderColor: "rgba(203,213,225)",
-                                marginLeft: "10px",
-                              }}
-                              variant="contained"
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              className="whitespace-nowrap mt-12"
-                              variant="contained"
-                              color="secondary"
-                              style={{ padding: "15px" }}
-                            >
-                              Submit
-                            </Button>
-                          </div>
-                        </div> */}
-                      </>
-                    )}
-
+                      </div>
                     <>
                       <div
                         className="my-10"
-                        style={{ borderTopWidth: "2px", marginTop: "40px" }}
+                        style={{ borderTopWidth: "2px"}}
                       ></div>
 
-                      <div className="flex justify-end">
-                        <div
+                      {/* <div className="flex justify-end"> */}
+                        {/* <div
                           className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                           style={{ marginTop: "15px" }}
-                        ></div>
+                        ></div> */}
                         <div
-                          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                          style={{ marginTop: "15px" }}
+                          className="flex items-center justify-end p-30 pt-24 pb-24"
+                          // style={{ marginTop: "15px" }}
                         >
                           <Button
                             className="whitespace-nowrap"
@@ -845,7 +846,7 @@ const riskCourse = () => {
                             submit for approval
                           </Button>
                         </div>
-                      </div>
+                      {/* </div> */}
                     </>
                   </Paper>
                 </SwipeableViews>

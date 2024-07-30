@@ -153,7 +153,7 @@ function Courses() {
         </Box>
       }
       content={
-        <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-40">
+        <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-30">
           <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
             <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
               <FormControl className="flex w-full sm:w-136" variant="outlined">
