@@ -2481,7 +2481,7 @@ function EvaluationChange({
                                                 {sub.riskAnalysisHazardTypes
                                                   .length === 0 ? (
                                                   <TableRow>
-                                                    <TableCell colSpan={4}>
+                                                    <TableCell>
                                                       <Grid
                                                         container
                                                         className="inventory-grid"
@@ -2497,6 +2497,7 @@ function EvaluationChange({
                                                               paddingBottom:
                                                                 "5px",
                                                             }}
+                                                            className="text-sm"
                                                           >
                                                             {sub.subTaskName}
                                                           </Typography>

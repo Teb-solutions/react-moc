@@ -221,14 +221,13 @@ const ImplementationApprovalSite = ({
                                 disabled={
                                   imptsk?.reviewd || clickedTasks[imptsk.id]
                                 }
+                                style={{
+                                  backgroundColor:
+                                    clickedTasks[imptsk.id] && "#7FFFD4",
+                                }}
                               >
                                 {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
-                                  <span
-                                    className="mat-button-wrapper"
-                                    style={{
-                                      backgroundColor: "rgba(220,252,231)",
-                                    }}
-                                  >
+                                  <span className="mat-button-wrapper">
                                     You have reviewed this just now
                                   </span>
                                 ) : (
@@ -312,13 +311,12 @@ const ImplementationApprovalSite = ({
                               </div>
                             </div>
                           </div>
-                        
 
                           {imptsk.implementationReviews.length > 0 ||
                           showReview ? (
                             <div>
                               <Accordion
-                               className=" mt-10 pt-10"
+                                className=" mt-10 pt-10"
                                 expanded={expanded == imptsk.id}
                                 onChange={handleExpansionChange(imptsk.id)}
                               >
@@ -607,7 +605,6 @@ const ImplementationApprovalSite = ({
                               </div>
                             )
                           )}
-                          
                         </div>
                       </td>
                     </tr>
@@ -638,14 +635,20 @@ const ImplementationApprovalSite = ({
           <div>
             {AppActivity.isComplete && AppActivity.status !== "Pending" ? (
               <div className="p-30 pt-24 pb-24">
-              <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "40%" }}>
-                <span className="font-semibold leading-none">
-                  Approver Comment: {ApprovalManager?.remark}
-                </span>
-              </div>
+                <div
+                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                  style={{ width: "40%" }}
+                >
+                  <span className="font-semibold leading-none">
+                    Approver Comment: {ApprovalManager?.remark}
+                  </span>
+                </div>
               </div>
             ) : (
-              <div className="inventory-grid grid items-center gap-4 " style={{ width: "100%" }}>
+              <div
+                className="inventory-grid grid items-center gap-4 "
+                style={{ width: "100%" }}
+              >
                 <div className="p-30 pt-24 pb-24 w-full border-b">
                   {currentActivityForm.canEdit && (
                     <Box sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -681,43 +684,47 @@ const ImplementationApprovalSite = ({
                         />
                       </FormControl>
                     </Box>
-                  )}             
+                  )}
                   {/* <div className="flex items-center w-full border-b justify-between"></div> */}
                 </div>
                 <div className="p-30 pt-24 pb-24">
-                {currentActivityForm.canExecute && (
-                  <div className="flex justify-end">
-                    <Button
-                      className="whitespace-nowrap"
-                      style={{
-                        border: "1px solid",
-                        backgroundColor: "#0000",
-                        color: "black",
-                        borderColor: "rgba(203,213,225)",
-                      }}
-                      variant="contained"
-                      color="warning"
-                    >
-                      <FuseSvgIcon className="text-48" size={24} color="action">
-                        heroicons-outline:upload
-                      </FuseSvgIcon>
-                      Document
-                    </Button>
-                    {AppActions.map((btn) => (
+                  {currentActivityForm.canExecute && (
+                    <div className="flex justify-end">
                       <Button
-                        key={btn.uid}
-                        className="whitespace-nowrap ms-5"
+                        className="whitespace-nowrap"
+                        style={{
+                          border: "1px solid",
+                          backgroundColor: "#0000",
+                          color: "black",
+                          borderColor: "rgba(203,213,225)",
+                        }}
                         variant="contained"
-                        color="secondary"
-                        onClick={(e) =>
-                          SubmitApprovelCreate(e, btn.uid, btn.name, btn.type)
-                        }
+                        color="warning"
                       >
-                        {btn.name}
+                        <FuseSvgIcon
+                          className="text-48"
+                          size={24}
+                          color="action"
+                        >
+                          heroicons-outline:upload
+                        </FuseSvgIcon>
+                        Document
                       </Button>
-                    ))}
-                  </div>
-                )}
+                      {AppActions.map((btn) => (
+                        <Button
+                          key={btn.uid}
+                          className="whitespace-nowrap ms-5"
+                          variant="contained"
+                          color="secondary"
+                          onClick={(e) =>
+                            SubmitApprovelCreate(e, btn.uid, btn.name, btn.type)
+                          }
+                        >
+                          {btn.name}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
