@@ -16,7 +16,6 @@ import SwipeableViews from "react-swipeable-views";
 import { parseISO, format } from "date-fns";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { withStyles } from "@mui/styles";
 
 import { styled } from "@mui/material/styles";
 import {
@@ -30,7 +29,6 @@ import {
   Badge,
   StepContent,
   StepLabel,
-  Badge,
 } from "@mui/material";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 
@@ -265,16 +263,6 @@ function Course() {
   const [value, setValue] = useState(0);
   const [valueRemark, setValueRemark] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const StyledBadge = withStyles((theme) => ({
-    badge: {
-      right: -3,
-      top: 13,
-      border: `2px solid ${theme.palette.background.paper}`,
-      padding: "0 4px",
-      backgroundColor: "#2c3e50", // Adjust background color to match the image
-      color: "white",
-    },
-  }))(Badge);
 
   const [data, setData] = useState({
     consultedDate: null,
