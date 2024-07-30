@@ -61,8 +61,9 @@ const NotificationPopup = ({ notification, setNotification }) => {
     });
   };
   return (
-    <List>
-      <Box
+    <>
+    <Box
+   
         style={{
           padding: "30px",
           backgroundColor: "#4f46e5",
@@ -101,6 +102,9 @@ const NotificationPopup = ({ notification, setNotification }) => {
           </Tooltip>
         </div>
       </Box>
+      <div className="p-30 pt-24 pb-24 mb-24" style={{maxHeight: "480px",  overflowY: "auto",}}>
+    <List className="pt-0">
+      
       {notification?.length === 0 ? (
         <Box
           display="flex"
@@ -141,7 +145,8 @@ const NotificationPopup = ({ notification, setNotification }) => {
         </Box>
       ) : (
         notification.map((notification) => (
-          <ListItem key={notification.id} divider>
+         
+          <ListItem key={notification.id} divider sx={{position:"relative"}}>
             <Box
               display="flex"
               justifyContent="space-between"
@@ -149,7 +154,7 @@ const NotificationPopup = ({ notification, setNotification }) => {
               width="100%"
             >
               <Box>
-                <ListItemText
+                <ListItemText className="m-0"
                   primary={
                     <Typography
                       variant="subtitle1"
@@ -196,6 +201,9 @@ const NotificationPopup = ({ notification, setNotification }) => {
                   style={{
                     width: "10px",
                     height: "10px",
+                    position:"absolute",
+                    top:"20px",
+                    right:0,
                     backgroundColor: "blue",
                     borderRadius: "50%",
                   }}
@@ -204,9 +212,12 @@ const NotificationPopup = ({ notification, setNotification }) => {
               </Tooltip>
             </Box>
           </ListItem>
+        
         ))
       )}
     </List>
+    </div>
+    </>
   );
 };
 

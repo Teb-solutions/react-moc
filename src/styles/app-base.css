@@ -1006,6 +1006,7 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
 .muiltr-o4b71y-MuiAccordionSummary-content{flex-wrap: wrap;}
 .grid_inventory_box{max-width: 40%;}
 .muiltr-y31q5n-MuiTypography-root{overflow: hidden;}
+.ml-10{margin-left: 1.0rem !important;}
 @media (min-width: 1200px) {
   .desktop_hide {
     display: none;

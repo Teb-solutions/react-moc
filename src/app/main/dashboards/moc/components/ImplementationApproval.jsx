@@ -1401,7 +1401,7 @@ function ImplementationApproval({
                               class="text-lg font-semibold"
                               style={{ marginRight: "15px" }}
                             >
-                              {tasksForStep.length} Tasks
+                              {ImpDetails.length} Tasks
                             </h2>
                             {!lastActCode.isComplete &&
                               lastActCode.status === "Pending" && (
@@ -1492,89 +1492,73 @@ function ImplementationApproval({
                                   id={`panel${index + 1}-header`}
                                   onClick={(e) => handelComments(e, detail.id)}
                                 >
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
-                                  >
-                                    <div className="flex items-center">
-                                      <b>Task #{detail.id}</b>
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
-                                  >
+                                  <div className="d-flex flex-wrap justify-between w-100 pr-10">
                                     <div
-                                      className="flex items-center"
-                                      style={{}}
+                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                      // style={{ width: "17%" }}
                                     >
-                                      {detail.isCompleted &&
-                                      detail.taskStatus === 3 ? (
-                                        <span className="text-green">
-                                          Approved
-                                        </span>
-                                      ) : detail.isCompleted &&
-                                        detail.taskStatus !== 3 ? (
-                                        <span className="text-red">
-                                          Awaiting Approval
-                                        </span>
-                                      ) : (
-                                        <span className="text-black">
-                                          <b>Not Completed</b>
-                                        </span>
-                                      )}
+                                      <div className="flex items-center">
+                                        <b>Task #{detail.id}</b>
+                                      </div>
                                     </div>
-                                  </div>
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
-                                  >
-                                    <div className="flex items-center">
-                                      No Risks
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
-                                  >
-                                    <div className="flex items-center">
-                                      {detail.assignedStaff}
-                                    </div>
-                                  </div>
 
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
-                                  >
-                                    <div className="flex items-center">
-                                      {formatDate(detail.dueDate)}
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
-                                  >
-                                    <div className="flex items-center">
-                                      <Button
-                                        className="whitespace-nowrap"
-                                        style={{
-                                          border: "1px solid",
-                                          backgroundColor: "#0000",
-                                          color: "black",
-                                          borderColor: "rgba(203,213,225)",
-                                        }}
-                                        variant="contained"
-                                        color="warning"
-                                        onClick={() =>
-                                          handelOpenAudit(detail.audits, "")
-                                        }
+                                    <div
+                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                      // style={{ width: "17%" }}
+                                    >
+                                      <div
+                                        className="flex items-center"
+                                        style={{}}
                                       >
-                                        Audits
-                                      </Button>
-                                      {lastActCode?.canExecute && (
+                                        {detail.isCompleted &&
+                                        detail.taskStatus === 3 ? (
+                                          <span className="text-green">
+                                            Approved
+                                          </span>
+                                        ) : detail.isCompleted &&
+                                          detail.taskStatus !== 3 ? (
+                                          <span className="text-red">
+                                            Awaiting Approval
+                                          </span>
+                                        ) : (
+                                          <span className="text-black">
+                                            <b>Not Completed</b>
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div
+                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                      // style={{ width: "17%" }}
+                                    >
+                                      <div className="flex items-center">
+                                        No Risks
+                                      </div>
+                                    </div>
+                                    <div
+                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                      // style={{ width: "17%" }}
+                                    >
+                                      <div className="flex items-center">
+                                        {detail.assignedStaff}
+                                      </div>
+                                    </div>
+
+                                    <div
+                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                      // style={{ width: "17%" }}
+                                    >
+                                      <div className="flex items-center">
+                                        {formatDate(detail.dueDate)}
+                                      </div>
+                                    </div>
+                                    <div
+                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                      // style={{ width: "17%" }}
+                                    >
+                                      <div className="flex items-center">
                                         <Button
-                                          className="whitespace-nowrap ms-5"
+                                          className="whitespace-nowrap"
                                           style={{
                                             border: "1px solid",
                                             backgroundColor: "#0000",
@@ -1584,21 +1568,40 @@ function ImplementationApproval({
                                           variant="contained"
                                           color="warning"
                                           onClick={() =>
-                                            handelOpenAuditComment(detail.id)
+                                            handelOpenAudit(detail.audits, "")
                                           }
                                         >
-                                          <FuseSvgIcon
-                                            className="text-48"
-                                            size={24}
-                                            color="action"
-                                          >
-                                            heroicons-outline:document-text
-                                          </FuseSvgIcon>
+                                          Audits
                                         </Button>
-                                      )}
+                                        {lastActCode?.canExecute && (
+                                          <Button
+                                            className="whitespace-nowrap ms-5"
+                                            style={{
+                                              border: "1px solid",
+                                              backgroundColor: "#0000",
+                                              color: "black",
+                                              borderColor: "rgba(203,213,225)",
+                                            }}
+                                            variant="contained"
+                                            color="warning"
+                                            onClick={() =>
+                                              handelOpenAuditComment(detail.id)
+                                            }
+                                          >
+                                            <FuseSvgIcon
+                                              className="text-48"
+                                              size={24}
+                                              color="action"
+                                            >
+                                              heroicons-outline:document-text
+                                            </FuseSvgIcon>
+                                          </Button>
+                                        )}
+                                      </div>
                                     </div>
                                   </div>
                                 </AccordionSummary>
+
                                 <AccordionDetails>
                                   <Stepper orientation="vertical">
                                     <Step>
