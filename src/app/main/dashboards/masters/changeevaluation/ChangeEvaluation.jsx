@@ -346,7 +346,11 @@ export default function StickyHeadTable() {
                 <span className="text-popup font-medium">
                   {lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}
                 </span>
-                <span onClick={handleClose}>
+                <span
+                  onClick={handleClose}
+                  style={{ cursor: "pointer" }}
+                  className="cursor-pointer"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

@@ -283,18 +283,12 @@ export default function StickyHeadTable() {
           getRecords();
         });
       } else {
-        if (lookupAdd.code.length < 2) {
+        apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
           setOpen(false);
+          toast.success("Created.");
 
-          toast.error("Please enter at least 2 words.");
-        } else {
-          apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
-            setOpen(false);
-            toast.success("Created.");
-
-            getRecords();
-          });
-        }
+          getRecords();
+        });
       }
     }
   };
@@ -394,7 +388,11 @@ export default function StickyHeadTable() {
               <span className="text-popup font-medium">
                 {lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}
               </span>
-              <span onClick={handleClose} style={{ cursor: "pointer" }}>
+              <span
+                onClick={handleClose}
+                style={{ cursor: "pointer" }}
+                className="cursor-pointer"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -450,11 +448,8 @@ export default function StickyHeadTable() {
                 <TextField
                   id="code"
                   fullWidth
-                  label="Code *"
+                  label="Task Name *"
                   name="code"
-                  inputProps={{
-                    maxLength: 5, // Limit to 30 characters, which approximates 5 words
-                  }}
                   value={lookupAdd.code}
                   variant="outlined"
                   onChange={handleAdd}
@@ -466,7 +461,7 @@ export default function StickyHeadTable() {
                 <TextField
                   id="description"
                   fullWidth
-                  label="Description *"
+                  label="Task Description *"
                   name="description"
                   value={lookupAdd.description}
                   variant="outlined"

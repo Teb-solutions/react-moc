@@ -416,7 +416,7 @@ export default function StickyHeadTable() {
               <Box sx={{ mb: 3 }}>
                 <FormControl sx={{ m: 1 }}>
                   <InputLabel id="functionName-label" className="custom_label">
-                    Particular *
+                    Risk Time *
                   </InputLabel>
 
                   <Select
@@ -425,7 +425,7 @@ export default function StickyHeadTable() {
                     name="parentId"
                     value={lookupAdd.parentId}
                     onChange={handleAdd}
-                    label="Particular"
+                    label="Risk Time*"
                     fullWidth
                     error={!!errors.parentId}
                   >
