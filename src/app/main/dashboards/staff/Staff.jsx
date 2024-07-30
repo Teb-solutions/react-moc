@@ -145,7 +145,7 @@ const Task = () => {
     setOpenDetails(false);
     setApiImage("");
     setEditIconImage(false);
-    setSidebarOpen(!sidebarOpen);
+    setSidebarOpen(true);
     setHandelUpdate(true);
     setAddIconImage(true);
     setPersonDetails("");

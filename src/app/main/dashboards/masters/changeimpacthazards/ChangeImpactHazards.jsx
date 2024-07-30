@@ -283,7 +283,7 @@ export default function StickyHeadTable() {
         if (lookupAdd.code.length < 2) {
           setOpen(false);
 
-          toast.error("Please enter at least 2 words.");
+          toast.error("Code Maximum length is 2 charcters");
         } else {
           apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
             setOpen(false);
