@@ -89,8 +89,7 @@ function UserMenu() {
         PaperProps={{
           style: {
             width: "400px", // Set the width of the popover
-            maxHeight: "500px", // Set the max height of the popover
-            overflowY: "auto", // Enable scrolling if content overflows
+            
           },
         }}
       >

@@ -841,13 +841,7 @@ function ImplementationApproval({
                       name="description"
                       variant="standard"
                       disabled
-                      value={new Date(
-                        selectedDocument.createdAt
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
+                      value={formatDate(selectedDocument.createdAt)}
                     />
                   </Box>
                   <Box
@@ -1013,20 +1007,21 @@ function ImplementationApproval({
                   fontWeight: "800px !important",
                 }}
               >
-                <div className="flex-auto">
+                <div className="flex-auto p-30 pt-24 pb-24 border-b">
                   <div className="flex flex-col-reverse">
                     <div
                       style={{
-                        marginTop: "30px",
+                        // marginTop: "30px",
                         justifyContent: "space-between",
-                        margin: "15px",
+                        // margin: "15px",
                       }}
-                      className="flex flex-row "
+                      className="sm:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 sm:gap-24 w-full"
                     >
                       <Box
+                        className="mt-10"
                         sx={{
-                          width: 380,
-                          maxWidth: "48%",
+                          width: "100%",
+                          maxWidth: "100%",
                         }}
                       >
                         <FormLabel
@@ -1046,9 +1041,10 @@ function ImplementationApproval({
                       </Box>
 
                       <Box
+                        className="mt-10"
                         sx={{
-                          width: 380,
-                          maxWidth: "48%",
+                          width: "100%",
+                          maxWidth: "100%",
                         }}
                       >
                         <FormLabel
@@ -1071,16 +1067,17 @@ function ImplementationApproval({
                   <div className="flex flex-col-reverse">
                     <div
                       style={{
-                        marginTop: "30px",
+                        // marginTop: "30px",
                         justifyContent: "space-between",
-                        margin: "15px",
+                        // margin: "15px",
                       }}
-                      className="flex flex-row "
+                      className="sm:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 sm:gap-24 w-full"
                     >
                       <FormControl
+                        className="mt-10"
                         sx={{
-                          width: 380,
-                          maxWidth: "48%",
+                          width: "100%",
+                          maxWidth: "100%",
                         }}
                       >
                         <Box>
@@ -1099,9 +1096,10 @@ function ImplementationApproval({
                         </Box>
                       </FormControl>
                       <FormControl
+                        className="mt-10"
                         sx={{
-                          width: 380,
-                          maxWidth: "48%",
+                          width: "100%",
+                          maxWidth: "100%",
                         }}
                         error={!!errorsAddTask.assignedStaffId}
                       >
@@ -1134,16 +1132,17 @@ function ImplementationApproval({
                   <div className="flex flex-col-reverse">
                     <div
                       style={{
-                        marginTop: "30px",
+                        // marginTop: "30px",
                         justifyContent: "space-between",
-                        margin: "15px",
+                        // margin: "15px",
                       }}
-                      className="flex flex-row "
+                      className="sm:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 sm:gap-24 w-full"
                     >
                       <Box
+                        className="mt-10"
                         sx={{
-                          width: 380,
-                          maxWidth: "48%",
+                          width: "100%",
+                          maxWidth: "100%",
                         }}
                       >
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -1173,9 +1172,10 @@ function ImplementationApproval({
                         </LocalizationProvider>
                       </Box>
                       <Box
+                        className="mt-10"
                         sx={{
-                          width: 380,
-                          maxWidth: "48%",
+                          width: "100%",
+                          maxWidth: "100%",
                         }}
                       >
                         <FormLabel
@@ -1201,18 +1201,16 @@ function ImplementationApproval({
                     </div>
                   </div>{" "}
                 </div>
-                <div
-                  className="flex justify-end [2:23 PM] Nissar M
-p-30 pt-24 pb-24
-  "
-                >
+                <div className="flex justify-end p-30 pt-24 pb-24">
                   <Button
                     className="whitespace-nowrap ms-5 me-12 "
                     variant="contained"
                     color="secondary"
-                    style={{
-                      marginTop: "10px",
-                    }}
+                    style={
+                      {
+                        // marginTop: "10px",
+                      }
+                    }
                     onClick={handelTaskSubmit}
                   >
                     Save
@@ -1360,7 +1358,7 @@ p-30 pt-24 pb-24
       />
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
-          <div>
+          <div class="border-b">
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               <h2 className="text-2xl font-semibold">Implementation</h2>
             </div>
@@ -1371,6 +1369,7 @@ p-30 pt-24 pb-24
                     (detail) =>
                       ChangeDeadlineLabel.get(detail.deadline) === step.label
                   );
+
                   return (
                     <Step key={step?.label}>
                       <StepLabel
@@ -1394,15 +1393,15 @@ p-30 pt-24 pb-24
                       <StepContent>
                         <div
                           _ngcontent-fyk-c288=""
-                          class="flex items-center w-full justify-between pt-10 pb-10"
+                          class="flex flex-wrap items-center w-full justify-between pt-10 pb-10"
                         >
-                          <div className="flex items-center">
+                          <div className="flex flex-wrap items-center">
                             <h2
                               _ngcontent-fyk-c288=""
-                              class="text-xl font-semibold"
+                              class="text-lg font-semibold"
                               style={{ marginRight: "15px" }}
                             >
-                              {tasksForStep.length} Tasks
+                              {ImpDetails.length} Tasks
                             </h2>
                             {!lastActCode.isComplete &&
                               lastActCode.status === "Pending" && (
@@ -1422,25 +1421,26 @@ p-30 pt-24 pb-24
                                 </Button>
                               )}
                             {/* <Button
-                              className="whitespace-nowrap mt-5 mb-5 ms-5"
-                              style={{
-                                border: "1px solid",
-                                backgroundColor: "#0000",
-                                color: "black",
-                                borderColor: "rgba(203,213,225)",
-                              }}
-                              variant="contained"
-                              color="warning"
-                              // onClick={handleOpen}
-                            >
-                              Audits Lists
-                            </Button> */}
+                            className="whitespace-nowrap mt-5 mb-5 ms-5"
+                            style={{
+                              border: "1px solid",
+                              backgroundColor: "#0000",
+                              color: "black",
+                              borderColor: "rgba(203,213,225)",
+                            }}
+                            variant="contained"
+                            color="warning"
+                            // onClick={handleOpen}
+                          >
+                            Audits Lists
+                          </Button> */}
                           </div>
 
                           <TextField
                             variant="filled"
                             fullWidth
                             placeholder="Search"
+                            className="mt-10 md:mt-0"
                             style={{
                               backgroundColor: "white",
                             }}
@@ -1601,6 +1601,7 @@ p-30 pt-24 pb-24
                                     </div>
                                   </div>
                                 </AccordionSummary>
+
                                 <AccordionDetails>
                                   <Stepper orientation="vertical">
                                     <Step>
@@ -1669,7 +1670,7 @@ p-30 pt-24 pb-24
                                         <div className="flex items-center justify-center my-3">
                                           <div className="flex-auto border-b"></div>
                                           <div
-                                            className="flex-0 "
+                                            className="flex-0 mt-10 "
                                             style={{ fontSize: "xx-small" }}
                                           >
                                             <b>{detail?.assignedByStaff}</b> has
@@ -1957,7 +1958,7 @@ p-30 pt-24 pb-24
               </Stepper>
 
               {activeStep === steps.length && (
-                <Paper square elevation={0} className="pt-24 pb-24">
+                <Paper square elevation={0} className="pt-10 pb-10">
                   <Button
                     onClick={handleReset}
                     sx={{ mt: 1, mr: 1 }}
@@ -1979,7 +1980,7 @@ p-30 pt-24 pb-24
             _ngcontent-fyk-c288=""
             class="flex items-center w-full  border-b justify-between"
           ></div> */}
-          <div className="p-30 pt-24 pb-24">
+          <div className="p-30 pt-24 pb-24 border-b">
             <Button
               className="whitespace-nowrap "
               style={{
@@ -2007,7 +2008,7 @@ p-30 pt-24 pb-24
                     className="whitespace-nowrap ms-5"
                     variant="contained"
                     color="secondary"
-                    style={{ marginTop: "10px" }}
+                    // style={{ marginTop: "10px" }}
                     onClick={(e) => SubmitApprovelCreate(e, btn.uid)}
                   >
                     {btn.name}

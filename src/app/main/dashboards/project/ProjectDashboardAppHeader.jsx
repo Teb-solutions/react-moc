@@ -83,7 +83,7 @@ function ProjectDashboardAppHeader({ data }) {
             </div>
           </div>
         </div>
-        <div className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12">
+        <div className="flex flex-wrap items-center mt-10 sm:mt-24 sm:mt-0 sm:mx-8 space-x-12">
           <Button
             className="whitespace-nowrap"
             variant="contained"
@@ -95,7 +95,7 @@ function ProjectDashboardAppHeader({ data }) {
             Sessions
           </Button>
           <Button
-            className="whitespace-nowrap"
+            className="whitespace-nowrap ml-10"
             variant="contained"
             color="primary"
             startIcon={

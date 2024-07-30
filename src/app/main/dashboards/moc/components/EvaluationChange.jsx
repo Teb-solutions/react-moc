@@ -1600,20 +1600,19 @@ function EvaluationChange({
       />
       <SwipeableViews>
         {!risk ? (
-          <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
+          <Paper className="w-full mx-auto my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
             <div>
-              <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
+              <div className="flex items-center flex-wrap w-full border-b justify-between p-30 pt-24 pb-24">
                 <h2 className="text-2xl font-semibold">Evaluation</h2>
                 <div>
                   {AppActivity.canEdit && (
                     <Button
-                      className="whitespace-nowrap mt-0  ms-3"
+                      className="whitespace-nowrap my-5 sm:my-0 mr-5"
                       style={{
                         border: "1px solid",
                         backgroundColor: "transparent",
                         color: "black",
                         borderColor: "rgba(203,213,225)",
-                        marginRight: "0",
                       }}
                       variant="contained"
                       color="warning"
@@ -1634,7 +1633,7 @@ function EvaluationChange({
                     </Button>
                   )}
                   <Button
-                    className="whitespace-nowrap mt-0 ms-5"
+                    className="whitespace-nowrap mt-0"
                     style={{
                       border: "1px solid",
                       backgroundColor: "transparent",
@@ -1686,7 +1685,7 @@ function EvaluationChange({
             )}
             {/* )} */}
             <Box sx={{ width: "100%" }} className="hello p-30 pt-24 pb-24">
-              <Box sx={{ display: "flex" }}>
+              <Box className="sm:d-flex flex-wrap">
                 <Button
                   onClick={() => handleChange(0)}
                   variant={value === 0 ? "contained" : "outlined"}
@@ -1700,7 +1699,7 @@ function EvaluationChange({
                 </Button>
                 <Button
                   onClick={() => handleChange(1)}
-                  className="ms-5"
+                  className="sm:ms-5 mt-4 sm:mt-0"
                   variant={value === 1 ? "contained" : "outlined"}
                   sx={{
                     backgroundColor: value === 1 ? "#e6e6e6" : "transparent",
@@ -1724,7 +1723,7 @@ function EvaluationChange({
                       >
                         <div
                           className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                          style={{ width: "40%" }}
+                          // style={{ width: "40%" }}
                         >
                           <div className="flex items-center">
                             <img
@@ -2322,83 +2321,84 @@ function EvaluationChange({
                             id="panel1-header"
                             style={{ minHeight: "60px" }}
                           >
-                            <div
-                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                              style={{ width: "40%" }}
-                            >
-                              <div className="flex items-center">
-                                <img
-                                  src="/assets/images/etc/userpic.png"
-                                  alt="Card cover image"
-                                  className="rounded-full mr-4"
-                                  style={{ width: "4rem", height: "4rem" }}
-                                />
-                                <div className="flex flex-col">
-                                  <span
-                                    className="font-semibold leading-none "
-                                    style={{ fontSize: "12px" }}
-                                  >
-                                    {itms.particularName}
-                                  </span>
-                                  <span className="text-sm text-secondary leading-none pt-5">
-                                    {itms.particularSubName}
-                                  </span>
+                            <div className="flex flex-wrap justify-between">
+                              <div
+                                className="inventory-grid grid grid_inventory_box items-center gap-4 py-3 px-2 md:px-2" // style={{ width: "40%" }}
+                              >
+                                <div className="flex items-center">
+                                  <img
+                                    src="/assets/images/etc/userpic.png"
+                                    alt="Card cover image"
+                                    className="rounded-full mr-4"
+                                    style={{ width: "4rem", height: "4rem" }}
+                                  />
+                                  <div className="flex flex-col">
+                                    <span
+                                      className="font-semibold leading-none "
+                                      style={{ fontSize: "12px" }}
+                                    >
+                                      {itms.particularName}
+                                    </span>
+                                    <span className="text-sm text-secondary leading-none pt-5">
+                                      {itms.particularSubName}
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
 
-                            <div
-                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                              style={{ width: "20%" }}
-                            >
-                              <div className="flex items-center">
-                                <div
-                                  className=" rounded-full text-sm"
-                                  style={{
-                                    backgroundColor:
-                                      itms.riskCount > 0
-                                        ? "rgba(252,165,165)"
-                                        : "",
-                                    paddingLeft: "10px",
-                                    paddingRight: "10px",
-                                  }}
-                                >
-                                  {itms.riskCount > 0
-                                    ? `${itms?.riskCount} Risks`
-                                    : "No Risks"}
+                              <div
+                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                // style={{ width: "20%" }}
+                              >
+                                <div className="flex items-center">
+                                  <div
+                                    className=" rounded-full text-sm"
+                                    style={{
+                                      backgroundColor:
+                                        itms.riskCount > 0
+                                          ? "rgba(252,165,165)"
+                                          : "",
+                                      paddingLeft: "10px",
+                                      paddingRight: "10px",
+                                    }}
+                                  >
+                                    {itms.riskCount > 0
+                                      ? `${itms?.riskCount} Risks`
+                                      : "No Risks"}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div
-                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                              style={{ width: "20%" }}
-                            >
-                              <div className="flex items-center">
-                                <div className="py-0.5 px-3 rounded-full text-sm">
-                                  {itms.changeImpactTasks.length}
-                                  {""}Tasks
+                              <div
+                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                // style={{ width: "20%" }}
+                              >
+                                <div className="flex items-center">
+                                  <div className="py-0.5 px-3 rounded-full text-sm">
+                                    {itms.changeImpactTasks.length}
+                                    {""}Tasks
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            <div
-                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                              style={{ width: "20%" }}
-                            >
-                              <div className="flex items-center">
-                                <div
-                                  className="py-0.5 px-3 rounded-full text-sm"
-                                  style={{
-                                    backgroundColor:
-                                      itms.reviewsCount > 0
-                                        ? "rgba(252,165,165)"
-                                        : "",
-                                    padding: "5px",
-                                    marginLeft: "15px",
-                                  }}
-                                >
-                                  {itms.reviewsCount > 0
-                                    ? `${itms?.reviewsCount} Reviews`
-                                    : "No Reviews"}
+                              <div
+                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                // style={{ width: "20%" }}
+                              >
+                                <div className="flex items-center">
+                                  <div
+                                    className="py-0.5 px-3 rounded-full text-sm"
+                                    style={{
+                                      backgroundColor:
+                                        itms.reviewsCount > 0
+                                          ? "rgba(252,165,165)"
+                                          : "",
+                                      padding: "5px",
+                                      marginLeft: "15px",
+                                    }}
+                                  >
+                                    {itms.reviewsCount > 0
+                                      ? `${itms?.reviewsCount} Reviews`
+                                      : "No Reviews"}
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -2438,10 +2438,11 @@ function EvaluationChange({
                                       </div>
                                     )
                                   )}
+
                                   {itms?.riskAnalysisList?.length !== 0 && (
                                     <TableContainer
                                       component={Paper}
-                                      style={{ margin: "10px" }}
+                                      style={{ margin: "0 0 10px 0" }}
                                     >
                                       <Table>
                                         <TableHead>
@@ -2452,22 +2453,22 @@ function EvaluationChange({
                                             }}
                                           >
                                             <TableCell
-                                              style={{ padding: "15px" }}
+                                            // style={{ padding: "15px" }}
                                             >
                                               Risk Details
                                             </TableCell>
                                             <TableCell
-                                              style={{ padding: "10px" }}
+                                            // style={{ padding: "10px" }}
                                             >
                                               Human Measures
                                             </TableCell>
                                             <TableCell
-                                              style={{ padding: "10px" }}
+                                            // style={{ padding: "10px" }}
                                             >
                                               Technical Measures
                                             </TableCell>
                                             <TableCell
-                                              style={{ padding: "10px" }}
+                                            // style={{ padding: "10px" }}
                                             >
                                               Organisational Measures
                                             </TableCell>
@@ -2803,7 +2804,7 @@ function EvaluationChange({
                                       <tbody className="task-table-body">
                                         <tr className="task-table-row mat-row">
                                           <td className="task-table-cell mat-cell">
-                                            <div className="task-header flex items-center">
+                                            <div className="task-header px-0 flex items-center">
                                               <div className="task-id flex flex-col">
                                                 <span className="task-id-text font-semibold text-xl leading-none">
                                                   Task #{imptsk?.sourceTaskId}
@@ -2831,58 +2832,58 @@ function EvaluationChange({
                                               previousTasks[imptsk.id].map(
                                                 (itm) => (
                                                   <div
-                                                    className="task-details px-6 mt-2 border"
+                                                    className="task-details px-0 mt-0 pt-0 border"
                                                     key={itm.id}
                                                   >
                                                     <div class="mt-3 ms-9 font-semibold">
                                                       V{itm.evaluationVersion}
                                                     </div>
-                                                    <div className="task-detail prose prose-sm max-w-5xl">
-                                                      <div className="task-detail-item mt-3">
-                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                    <div className="task-detail prose prose-sm max-w-5xl mt-0 pt-0">
+                                                      <div className="task-detail-item mt-0 pt-0">
+                                                        <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
                                                           Impact
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {itm.particularName +
                                                             ">" +
                                                             itm.particularSubName}
                                                         </span>
                                                       </div>
                                                       <div className="task-detail-item mt-3">
-                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                        <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
                                                           What is Task
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {itm.actionWhat}
                                                         </span>
                                                       </div>
                                                       <div className="task-detail-item mt-5">
-                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                        <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
                                                           How is Task done
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {itm.actionHow}
                                                         </span>
                                                       </div>
                                                       <div className="task-detail-item mt-5">
-                                                        <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                                        <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
                                                           Assigned to
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {itm.assignedStaff}
                                                         </span>
-                                                        <span className="task-detail-label bg-default rounded ml-2 text-secondary font-semibold">
+                                                        <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-10 text-secondary font-semibold">
                                                           Due Date
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {formatDate(
                                                             itm.dueDate
                                                           )}
                                                         </span>
-                                                        <span className="task-detail-label bg-default rounded ml-2 text-secondary font-semibold">
+                                                        <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-10 text-secondary font-semibold">
                                                           Deadline
                                                         </span>
-                                                        <span className="task-detail-value">
+                                                        <span className="task-detail-value d-inline-block mt-10">
                                                           {itm?.deadlineDisplay}
                                                         </span>
                                                       </div>
@@ -2971,41 +2972,41 @@ function EvaluationChange({
                                                 )
                                               )}
 
-                                            <div className="task-details px-0 mt-2">
-                                              <div className="task-detail prose prose-sm max-w-5xl">
-                                                <div className="task-detail-item mt-3">
-                                                  <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                            <div className="task-details pt-0 px-0 mt-0">
+                                              <div className="task-detail prose prose-sm max-w-5xl mt-0">
+                                                <div className="task-detail-item mt-0 p-0">
+                                                  <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
                                                     What is Task
                                                   </span>
-                                                  <span className="task-detail-value">
+                                                  <span className="task-detail-value d-inline-block mt-10">
                                                     {imptsk.actionWhat}
                                                   </span>
                                                 </div>
-                                                <div className="task-detail-item mt-5">
-                                                  <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                                <div className="task-detail-item mt-0 p-0">
+                                                  <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
                                                     How is Task done
                                                   </span>
-                                                  <span className="task-detail-value">
+                                                  <span className="task-detail-value d-inline-block mt-10">
                                                     {imptsk.actionHow}
                                                   </span>
                                                 </div>
-                                                <div className="task-detail-item mt-5">
-                                                  <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                                <div className="task-detail-item mt-0 p-0">
+                                                  <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
                                                     Assigned to
                                                   </span>
-                                                  <span className="task-detail-value">
+                                                  <span className="task-detail-value d-inline-block mt-10 mr-3">
                                                     {imptsk.assignedStaff}
                                                   </span>
-                                                  <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                                                  <span className="task-detail-label bg-default mt-10 rounded d-inline-block ml-2 text-secondary font-semibold">
                                                     Due Date
                                                   </span>
-                                                  <span className="task-detail-value">
+                                                  <span className="task-detail-value d-inline-block mt-10">
                                                     {formatDate(imptsk.dueDate)}
                                                   </span>
-                                                  <span className="task-detail-label bg-default rounded  ml-2 text-secondary font-semibold">
+                                                  <span className="task-detail-label bg-default rounded mt-10 d-inline-block ml-2 text-secondary font-semibold">
                                                     Deadline
                                                   </span>
-                                                  <span className="task-detail-value">
+                                                  <span className="task-detail-value d-inline-block mt-10">
                                                     {imptsk?.deadlineDisplay}
                                                   </span>
                                                 </div>

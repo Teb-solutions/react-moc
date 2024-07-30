@@ -637,10 +637,12 @@ const ImplementationApprovalSite = ({
           </div>
           <div>
             {AppActivity.isComplete && AppActivity.status !== "Pending" ? (
+              <div className="p-30 pt-24 pb-24">
               <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2" style={{ width: "40%" }}>
                 <span className="font-semibold leading-none">
                   Approver Comment: {ApprovalManager?.remark}
                 </span>
+              </div>
               </div>
             ) : (
               <div className="inventory-grid grid items-center gap-4 " style={{ width: "100%" }}>
