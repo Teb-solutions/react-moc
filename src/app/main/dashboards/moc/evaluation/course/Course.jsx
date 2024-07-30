@@ -16,6 +16,8 @@ import SwipeableViews from "react-swipeable-views";
 import { parseISO, format } from "date-fns";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { withStyles } from "@mui/styles";
+
 import { styled } from "@mui/material/styles";
 import {
   Accordion,
@@ -27,6 +29,7 @@ import {
   Step,
   StepContent,
   StepLabel,
+  Badge,
 } from "@mui/material";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 
@@ -209,6 +212,17 @@ function Course() {
     taskReviewId: "",
   });
 
+  const StyledBadge = withStyles((theme) => ({
+    Badge: {
+      right: -3,
+      top: 6,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: "0 4px",
+      backgroundColor: "#000", // Adjust background color to match the image
+      color: "white",
+    },
+  }))(Badge);
+
   const [taskAdd, setTaskAdd] = useState({
     particular: 0,
     particularSubCategory: 0,
@@ -268,6 +282,14 @@ function Course() {
     setTaskAdd((prevState) => ({
       ...prevState,
       [name]: value,
+    }));
+  };
+  const handleSubCategoryChange = (newValue) => {
+    debugger;
+
+    setTaskAdd((prevState) => ({
+      ...prevState,
+      particularSubCategory: newValue ? newValue.value : "",
     }));
 
     if (!!errorsAddTask[name]) {
@@ -541,15 +563,14 @@ function Course() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "1100px",
+    width: "1200px",
     maxWidth: "80vw",
-    height: "57%",
+    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
     boxShadow: 24,
     p: 4,
-    padding: "0px",
   };
 
   const styleImp = {
@@ -1111,12 +1132,17 @@ function Course() {
       });
   };
 
-  const handelCommentImp = (id) => {
+  const handelCommentImp = (id, value) => {
     apiAuth
       .put(`/Task/ImpAddReview/${id}/IMPL_APPROVAL_VP_DIV`, {
         remark: handelCommentRemark,
       })
       .then((resp) => {
+        if (value == 1) {
+          toast?.success("Review successfully added");
+        } else {
+          toast?.success("Review successfully Updated");
+        }
         setHandelCommentRemark("");
         getRecords();
       });
@@ -1852,7 +1878,7 @@ function Course() {
                                             fontSize: "3rem",
                                           }}
                                         >
-                                          File Manager
+                                        Manager  File 
                                         </Typography>
                                       </Box>
                                       <Box>
@@ -1969,7 +1995,7 @@ function Course() {
                                     >
                                       {list.comments === ""
                                         ? "No Comments Added"
-                                        : list.comments}
+                                        : "Comments Added"}
                                     </div>
                                   </div>
                                 </div>
@@ -1987,9 +2013,18 @@ function Course() {
                                                 padding: "10px",
                                               }}
                                             >
-                                              {list.comments === ""
-                                                ? "No Comments Added"
-                                                : list.comments}
+                                              {list.comments === "" ? (
+                                                "No Comments Added"
+                                              ) : (
+                                                <div className="mb-12">
+                                                  <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                                    comments
+                                                  </span>
+                                                  <span className="task-detail-value">
+                                                    {list.comments}
+                                                  </span>
+                                                </div>
+                                              )}
                                             </span>
                                           </div>
                                         </div>
@@ -2306,7 +2341,11 @@ function Course() {
                                 sx={{ mt: 1, mb: 1 }}
                                 error={!!errorsUrl.handelUrlChange}
                               >
-                                <span> Consolidated Document Url *</span>
+                                <span>
+                                  {" "}
+                                  Consolidated Document Url (Provide the link of
+                                  SharePoint File)*
+                                </span>
                                 <OutlinedInput
                                   id="documentUrl"
                                   value={handelUrlChange.urlRemarks}
@@ -2357,7 +2396,10 @@ function Course() {
                           <div className=" pt-10 pb-24">
                             <div className="flex row">
                               <div className="ng-star-inserted">
-                                <div>Consolidated Document Url</div>
+                                <div>
+                                  Consolidated Document Url (Provide the link of
+                                  SharePoint File)
+                                </div>
                                 <div className="font-semibold">
                                   <a
                                     href={contentDetails?.remarks}
@@ -2728,49 +2770,58 @@ function Course() {
                         >
                           <Fade in={open}>
                             <Box sx={style1}>
-                              <Box className="">
-                                <Typography
-                                  id="transition-modal-title"
-                                  variant="h6"
-                                  component="h2"
-                                  className="p-30 pt-24 pb-24"
-                                  style={{
-                                    backgroundColor: "rgb(79, 70, 229)",
-                                    borderTopLeftRadius: "16px",
-                                    borderTopRightRadius: "16px",
-                                    color: "white",
-                                  }}
+                              <Box sx={{ flex: 1 }}>
+                                <Box
+                                  className="flex justify-between"
+                                  style={{ margin: "30px" }}
                                 >
-                                  File Manager
-                                </Typography>
-                              </Box>
+                                  <Typography
+                                    id="transition-modal-title"
+                                    variant="h6"
+                                    component="h2"
+                                    style={{
+                                      fontSize: "3rem",
+                                    }}
+                                  >
+                                    File Manager
+                                    <Typography
+                                      id="transition-modal-subtitle"
+                                      component="h2"
+                                    >
+                                      {listDocument.length} Files
+                                    </Typography>
+                                  </Typography>
+                                </Box>
 
-                              <Box>
-                                <Typography
-                                  id="transition-modal-title"
-                                  variant="h6"
-                                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
-                                  component="div"
-                                  style={{
-                                    backgroundColor: "#e3eeff80",
-                                  }}
-                                >
-                                  {listDocument.map((doc, index) => (
-                                    <div className="content " key={index}>
-                                      <div
-                                        onClick={() => handelDetailDoc(doc)}
-                                        style={{ textAlign: "-webkit-center" }}
-                                      >
-                                        <img
-                                          src="/assets/images/etc/icon_N.png"
-                                          style={{}}
-                                        />
-                                        <h6>{doc?.name}</h6>
-                                        <h6>by {doc?.staffName}</h6>
+                                <Box>
+                                  <Typography
+                                    id="transition-modal-title"
+                                    variant="h6"
+                                    className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                                    component="div"
+                                    style={{
+                                      backgroundColor: "#e3eeff80",
+                                    }}
+                                  >
+                                    {listDocument.map((doc, index) => (
+                                      <div className="content " key={index}>
+                                        <div
+                                          onClick={() => handelDetailDoc(doc)}
+                                          style={{
+                                            textAlign: "-webkit-center",
+                                          }}
+                                        >
+                                          <img
+                                            src="/assets/images/etc/icon_N.png"
+                                            style={{}}
+                                          />
+                                          <h6>{doc?.name}</h6>
+                                          <h6>by {doc?.staffName}</h6>
+                                        </div>
                                       </div>
-                                    </div>
-                                  ))}
-                                </Typography>
+                                    ))}
+                                  </Typography>
+                                </Box>
                               </Box>
                               {fileDetails && (
                                 <Box sx={drawerStyle(fileDetails)}>
@@ -2956,7 +3007,7 @@ function Course() {
                                       Add New Task
                                     </Button>
                                   )}
-                                <Button
+                                {/* <Button
                                   className="whitespace-nowrap mt-5 mb-5 ms-5"
                                   style={{
                                     border: "1px solid",
@@ -2969,7 +3020,7 @@ function Course() {
                                   onClick={handleOpen}
                                 >
                                   Audits Lists
-                                </Button>
+                                </Button> */}
                               </div>
 
                               <TextField
@@ -3009,84 +3060,68 @@ function Course() {
                                   style={{ minHeight: "60px" }}
                                   onClick={(e) => handelComments(e, task.id)}
                                 >
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
-                                  >
-                                    <div className="flex items-center">
-                                      Task #{task.id}
+                                  <div className="d-flex flex-wrap justify-between w-100 pr-10">
+                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                      <div className="flex items-center">
+                                        Task #{task.id}
+                                      </div>
                                     </div>
-                                  </div>
 
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
-                                  >
-                                    <div
-                                      className="flex items-center"
-                                      style={{}}
-                                    >
-                                      {task.isCompleted &&
-                                      task.taskStatus === 3 ? (
-                                        <span className="text-green">
-                                          Approved
-                                        </span>
-                                      ) : task.isCompleted &&
-                                        task.taskStatus !== 3 ? (
-                                        <span className="text-red">
-                                          Awaiting Approval
-                                        </span>
-                                      ) : (
-                                        <span className="text-black">
-                                          Not Completed
-                                        </span>
-                                      )}
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
-                                  >
-                                    <div className="flex items-center">
-                                      No Risks
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
-                                  >
-                                    <div className="flex items-center">
-                                      {task.assignedStaff}
-                                    </div>
-                                  </div>
-
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
-                                  >
-                                    <div className="flex items-center">
-                                      {formatDate(task.dueDate)}
-                                    </div>
-                                  </div>
-                                  <div
-                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    style={{ width: "17%" }}
-                                  >
-                                    <div className="flex items-center">
-                                      <Button
-                                        className="whitespace-nowrap mt-5 mb-5"
-                                        style={{
-                                          border: "1px solid",
-                                          backgroundColor: "#0000",
-                                          color: "black",
-                                          borderColor: "rgba(203,213,225)",
-                                        }}
-                                        variant="contained"
-                                        color="warning"
-                                        onClick={handleOpen}
+                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                      <div
+                                        className="flex items-center"
+                                        style={{}}
                                       >
-                                        Audits
-                                      </Button>
+                                        {task.isCompleted &&
+                                        task.taskStatus === 3 ? (
+                                          <span className="text-green">
+                                            Approved
+                                          </span>
+                                        ) : task.isCompleted &&
+                                          task.taskStatus !== 3 ? (
+                                          <span className="text-red">
+                                            Awaiting Approval
+                                          </span>
+                                        ) : (
+                                          <span className="text-black">
+                                            Not Completed
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                      <div className="flex items-center">
+                                        No Risks
+                                      </div>
+                                    </div>
+                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                      <div className="flex items-center">
+                                        {task.assignedStaff}
+                                      </div>
+                                    </div>
+
+                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                      <div className="flex items-center">
+                                        {formatDate(task.dueDate)}
+                                      </div>
+                                    </div>
+                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                      <div className="flex items-center">
+                                        {/* <Button
+                                          className="whitespace-nowrap mt-5 mb-5"
+                                          style={{
+                                            border: "1px solid",
+                                            backgroundColor: "#0000",
+                                            color: "black",
+                                            borderColor: "rgba(203,213,225)",
+                                          }}
+                                          variant="contained"
+                                          color="warning"
+                                          onClick={handleOpen}
+                                        >
+                                          Audits
+                                        </Button> */}
+                                      </div>
                                     </div>
                                   </div>
                                 </AccordionSummary>
@@ -3172,7 +3207,7 @@ function Course() {
                                         {impComments.map((msg) => (
                                           <div
                                             key={msg.id}
-                                            className="flex flex-row flex-wrap mb-2"
+                                            className="flex flex-row flex-wrap mb-10"
                                             style={{
                                               width: "auto",
                                               display: "block",
@@ -3222,23 +3257,26 @@ function Course() {
                                                     </small>
                                                   </div>
                                                 </div>
-                                                <button
-                                                  className="icon-button"
-                                                  onClick={() =>
-                                                    handleOpen(msg.id)
+                                                <StyledBadge
+                                                  badgeContent={
+                                                    documentCounts[msg.id]
                                                   }
-                                                  style={{
-                                                    top: "-15px",
-                                                    right: "-20px",
-                                                  }}
                                                 >
-                                                  <FuseSvgIcon size={20}>
-                                                    heroicons-solid:document
-                                                  </FuseSvgIcon>
-                                                  <span className="count">
-                                                    {documentCounts[msg.id]}
-                                                  </span>
-                                                </button>
+                                                  <button
+                                                    className="icon-button"
+                                                    onClick={() =>
+                                                      handleOpen(msg.id)
+                                                    }
+                                                    style={{
+                                                      top: "-0px",
+                                                      right: "-6px",
+                                                    }}
+                                                  >
+                                                    <FuseSvgIcon size={20}>
+                                                      heroicons-solid:document
+                                                    </FuseSvgIcon>
+                                                  </button>
+                                                </StyledBadge>
                                               </div>
                                             )}
                                             {msg.comments && (
@@ -3269,7 +3307,7 @@ function Course() {
                                                     }}
                                                   ></div>
                                                   <div
-                                                    className="min-w-4 leading-5"
+                                                    className="min-w-4 leading-5 m=10"
                                                     style={{
                                                       fontSize: "xx-small",
                                                     }}
@@ -3689,20 +3727,21 @@ function Course() {
                                       <Autocomplete
                                         options={particularSub}
                                         getOptionLabel={(option) => option.text}
-                                        onChange={handleChangeAddTask}
-                                        value={
-                                          particularSub.find(
-                                            (option) =>
-                                              option.value ===
-                                              taskAdd.particularSubCategory
-                                          ) || null
+                                        onChange={(event, newValue) =>
+                                          handleSubCategoryChange(newValue)
                                         }
+                                        value={particularSub.find(
+                                          (option) =>
+                                            option.value ===
+                                            taskAdd.particularSubCategory
+                                        )}
                                         renderInput={(params) => (
                                           <TextField
                                             {...params}
                                             variant="outlined"
                                           />
                                         )}
+                                        name="particularSubCategory"
                                       />
                                       {!!errorsAddTask.particularSubCategory && (
                                         <FormHelperText>
@@ -4412,7 +4451,7 @@ function Course() {
                                                 className="custom-update-button"
                                                 style={{ float: "right" }}
                                                 onClick={() =>
-                                                  handelCommentImp(imptsk.id)
+                                                  handelCommentImp(imptsk.id, 1)
                                                 }
                                               >
                                                 Save
@@ -4529,7 +4568,8 @@ function Course() {
                                                       style={{ float: "right" }}
                                                       onClick={() =>
                                                         handelCommentImp(
-                                                          imptsk.id
+                                                          imptsk.id,
+                                                          2
                                                         )
                                                       }
                                                     >

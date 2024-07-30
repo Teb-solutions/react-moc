@@ -123,6 +123,8 @@ function OrgActivity() {
   const [formValid, setFormValid] = useState(true);
 
   const handleSubmit = (event) => {
+    setIsLoading(true);
+
     event.preventDefault();
     const date = new Date(documentState.programCompletionDate);
     let formattedDate = null;
@@ -142,8 +144,12 @@ function OrgActivity() {
       .post("/OrgMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
         if (response.data.statusCode == 400) {
+          setIsLoading(false);
+
           toast?.error(response.data.message);
         } else {
+          setIsLoading(false);
+
           toast?.success("Successfully Created");
           setTimeout(() => {
             navigate("/dashboards/project");
@@ -210,6 +216,7 @@ function OrgActivity() {
       });
     }
   }, [docContent]);
+
   if (isLoading) {
     return <FuseLoading />;
   }
