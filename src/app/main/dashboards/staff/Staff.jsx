@@ -16,6 +16,7 @@ import { useParams } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { decryptFeature } from "../../sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
+import MocHeader from "../moc/MocHeader";
 
 const Task = () => {
   const storedFeature = decryptFeature();
@@ -394,6 +395,7 @@ const Task = () => {
 
   return (
     <>
+      <MocHeader master={"Staff"} />
       <ToastContainer className="toast-container " />
       <div style={{ margin: "20px" }}>
         <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">

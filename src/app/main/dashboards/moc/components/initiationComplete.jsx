@@ -922,7 +922,15 @@ const InitiationComplete = ({
                     />
                   </LocalizationProvider>
                 ) : (
-                  <span>{currentSummeryById?.changeTerminationDate}</span>
+                  <span>
+                    {new Date(
+                      currentSummeryById?.changeTerminationDate
+                    ).toLocaleString("en-US", {
+                      month: "short",
+                      day: "2-digit",
+                      year: "numeric",
+                    })}
+                  </span>
                 )}
               </FormControl>
             </Grid>
