@@ -17,6 +17,7 @@ import NotificationPopup from "./NotificationPopup";
 import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
 import TicketModal from "src/app/main/dashboards/moc/modals/TicketModal";
+import BookmarkPopup from "./BookmarkPopup";
 
 /**
  * The user menu.
@@ -38,6 +39,7 @@ function UserMenu() {
   }
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [bookmarkAnchorEl, setBookmarkAnchorEl] = useState(null);
 
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -52,6 +54,7 @@ function UserMenu() {
   };
 
   const open = Boolean(anchorEl);
+  const openBookmarkPopover = Boolean(bookmarkAnchorEl);
   const id = open ? "simple-popover" : undefined;
   const [notification, setNotification] = useState(null);
 
@@ -61,6 +64,10 @@ function UserMenu() {
     });
   }
 
+  const handleBookmarkClick = (event) =>
+    setBookmarkAnchorEl(event.currentTarget);
+  const handleBookmarkClose = () => setBookmarkAnchorEl(null);
+
   useEffect(() => {
     getRecords();
   }, []);
@@ -68,6 +75,20 @@ function UserMenu() {
   return (
     <>
       <Badge badgeContent={notification?.length} color="success">
+        <Button
+          className="min-h-40 min-w-40 p-0  md:py-6"
+          onClick={handleBookmarkClick}
+          color="inherit"
+        >
+          <div className="mx-4  flex-col items-end md:flex">
+            <Typography
+              className="text-11 font-medium capitalize"
+              color="text.secondary"
+            >
+              <FuseSvgIcon>heroicons-outline:bookmark</FuseSvgIcon>
+            </Typography>
+          </div>
+        </Button>
         <Button
           className="min-h-40 min-w-40 p-0  md:py-6"
           onClick={handleModalOpen}
@@ -122,6 +143,17 @@ function UserMenu() {
             setNotification={setNotification}
           />
         )}
+      </Popover>
+      <Popover
+        id="bookmark-popover"
+        open={openBookmarkPopover}
+        anchorEl={bookmarkAnchorEl}
+        onClose={handleBookmarkClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        PaperProps={{ style: { width: "400px" } }}
+      >
+        <BookmarkPopup />
       </Popover>
       <Button
         className="min-h-40 min-w-40 p-0  md:py-6"
