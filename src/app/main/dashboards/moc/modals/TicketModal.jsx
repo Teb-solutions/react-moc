@@ -53,6 +53,7 @@ const TicketModal = ({ open, handleClose }) => {
             </Typography>
           </div>
           <Box component="form" className="p-30 pt-24 pb-24">
+            <p className="text-blue text-lg mb-24">Ticket Info</p>
             <Box>
               <TextField fullWidth label="Subject" name="subject" />
             </Box>
@@ -65,34 +66,37 @@ const TicketModal = ({ open, handleClose }) => {
                 rows={4}
               />
             </Box>
-            <Box
+            <Box className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-24 "
               sx={{
                 marginTop: 2,
-                display: "flex",
+                // display: "flex",
+                
                 justifyContent: "space-between",
               }}
             >
-              <FormControl sx={{ width: "48%" }}>
+              <FormControl >
                 <InputLabel>Ticket Category</InputLabel>
                 <Select name="category">
                   <MenuItem>options</MenuItem>
                 </Select>
               </FormControl>
-            </Box>
-            <Box
-              sx={{
-                marginTop: 2,
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <FormControl sx={{ width: "48%" }}>
+              <FormControl >
                 <InputLabel>Ticket Priority</InputLabel>
                 <Select name="priority">
                   <MenuItem>options</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl sx={{ width: "48%" }}>
+
+            </Box>
+            <Box  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-24 "
+              sx={{
+                marginTop: 2,
+                // display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              
+              <FormControl >
                 <InputLabel>Ticket Status</InputLabel>
                 <Select name="status">
                   <MenuItem>options</MenuItem>
@@ -118,8 +122,8 @@ const TicketModal = ({ open, handleClose }) => {
               sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
             >
               <Button
-                variant="contained"
-                color="primary"
+                variant="contained"                  
+            color="secondary"
                 // onClick={handleSubmit}
               >
                 Submit
