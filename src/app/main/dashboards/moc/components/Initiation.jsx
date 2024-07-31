@@ -45,8 +45,8 @@ function Initiation(props) {
     props;
   const StyledBadge = withStyles((theme) => ({
     badge: {
-      right: 0,
-      top: 5,
+      right: -3,
+      top: 13,
       border: `2px solid ${theme.palette.background.paper}`,
       padding: "0 4px",
       backgroundColor: "#2c3e50", // Adjust background color to match the image

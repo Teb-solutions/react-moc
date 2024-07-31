@@ -994,6 +994,7 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
   padding-bottom: 12px !important;
   border-radius: 4px 4px 0 0;
 }
+
 /* .text-xl{font-size: 18px !important;} */
 .border_accordian {
   border: 1px solid rgba(226, 232, 240, 1);
@@ -1010,7 +1011,8 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
   background: rgba(51, 65, 85, 0.1) !important;
   border-radius: 30px;
 }
-.muiltr-mri9va-MuiBadge-badge {
+.muiltr-mri9va-MuiBadge-badge,
+.muiltr-lmwaj4 {
   background: #2c3e50;
   color: #fff;
   top: 19px;
