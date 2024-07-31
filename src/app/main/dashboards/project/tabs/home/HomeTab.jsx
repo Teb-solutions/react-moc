@@ -489,7 +489,6 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
                     sx={{
                       backgroundColor: "#fff !important",
                       color: "#1e293b",
-
                       border: "1px solid #c6c6c6",
                       marginLeft: "10px",
                       "&:hover": {

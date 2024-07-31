@@ -930,7 +930,7 @@ const Task = () => {
               key={list.changeRequestId}
               className="p-30 pt-24 pb-0  task_box"
             >
-              <div className="flex flex-wrap flex-col p-24 rounded-16 shadow overflow-hidden">
+              <div className="flex flex-wrap flex-col p-24 rounded-16 white_bg shadow overflow-hidden">
                 <div className="flex flex-wrap">
                   <div className="flex flex-wrap flex-col flex-auto">
                     <div className="flex flex-wrap items-center justify-between">
