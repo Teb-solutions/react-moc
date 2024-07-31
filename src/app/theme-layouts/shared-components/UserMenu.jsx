@@ -16,6 +16,7 @@ import { Badge, Tooltip } from "@mui/material";
 import NotificationPopup from "./NotificationPopup";
 import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
+import TicketModal from "src/app/main/dashboards/moc/modals/TicketModal";
 
 /**
  * The user menu.
@@ -24,6 +25,7 @@ function UserMenu() {
   const user = useAppSelector(selectUser);
   const { signOut } = useAuth();
   const [userMenu, setUserMenu] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const userMenuClick = (event) => {
     setUserMenu(event.currentTarget);
   };
@@ -39,6 +41,14 @@ function UserMenu() {
 
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const handleModalOpen = () => {
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
   };
 
   const open = Boolean(anchorEl);
@@ -58,6 +68,20 @@ function UserMenu() {
   return (
     <>
       <Badge badgeContent={notification?.length} color="success">
+        <Button
+          className="min-h-40 min-w-40 p-0  md:py-6"
+          onClick={handleModalOpen}
+          color="inherit"
+        >
+          <div className="mx-4  flex-col items-end md:flex">
+            <Typography
+              className="text-11 font-medium capitalize"
+              color="text.secondary"
+            >
+              <FuseSvgIcon>heroicons-outline:ticket</FuseSvgIcon>
+            </Typography>
+          </div>
+        </Button>
         <Button
           className="min-h-40 min-w-40 p-0  md:py-6"
           onClick={handleClick}
@@ -89,7 +113,6 @@ function UserMenu() {
         PaperProps={{
           style: {
             width: "400px", // Set the width of the popover
-            
           },
         }}
       >
@@ -235,6 +258,7 @@ function UserMenu() {
           </>
         )}
       </Popover>
+      <TicketModal open={modalOpen} handleClose={handleModalClose} />
     </>
   );
 }
