@@ -960,7 +960,7 @@ const Task = () => {
                       <a
                         className="flex items-center min-w-0 h-full w-full  text-lg p-4 border rounded cursor-pointer text-blue-500"
                         href="#"
-                        style={{ textDecoration: "none", padding: "15px" }}
+                        style={{ textDecoration: "none", padding: "15px", whiteSpace:"nowrap" }}
                         onClick={(e) => handelViewMoc(e, list)}
                       >
                         View MOC details
