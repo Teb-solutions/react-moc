@@ -89,7 +89,11 @@ function ProjectDashboardAppHeader({ data }) {
                 className="mx-6 leading-6 truncate text-blue"
                 color="text.secondary"
               >
-                You have {data?.tasksDue} pending tasks
+                {data?.tasksDue ? (
+                  `You have ${data?.tasksDue} pending tasks`
+                ) : (
+                  <span className="text-black">You have no pending tasks</span>
+                )}
               </Link>
             </div>
           </div>

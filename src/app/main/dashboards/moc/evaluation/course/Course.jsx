@@ -279,12 +279,10 @@ function Course() {
   });
   const StyledBadge = withStyles((theme) => ({
     Badge: {
-      right: -3,
-      top: 6,
-      border: `2px solid ${theme.palette.background.paper}`,
-      padding: "0 4px",
-      backgroundColor: "#2c3e50", // Adjust background color to match the image
-      color: "white",
+      background: "#2c3e50",
+      color: "#fff",
+      top: "3px",
+      right: "8px",
     },
   }))(Badge);
 
@@ -305,14 +303,14 @@ function Course() {
 
   const [taskAdd, setTaskAdd] = useState({
     particular: 0,
-    particularSubCategory: 0,
+    particularSubCategory: "",
     impacHazards: "",
     taskassignedto: "",
     dueDate: new Date(),
     actionHow: "",
     actionWhat: "",
     audit: "",
-    assignedStaffId: 1,
+    assignedStaffId: "",
     otherDetail: "",
     changeImpactHazard: "",
 
@@ -326,6 +324,8 @@ function Course() {
 
   const [openImplemntationTask, setOpenImplemntationTask] = useState(false);
   const [comments, setComments] = useState("");
+  const [hazardImp, setHazardImp] = useState([]);
+
   const [reviewed, setReviewed] = useState({});
   const [errorss, setErrorStake] = useState("");
   const [handelApprover, setHandelApprover] = useState({
@@ -343,7 +343,7 @@ function Course() {
       setParticular(resp.data.data);
     });
     apiAuth.get(`/LookupData/Lov/11`).then((resp) => {
-      setParticularSub(resp.data.data);
+      // setParticularSub(resp.data.data);
     });
   };
 
@@ -359,28 +359,32 @@ function Course() {
 
   const handleChangeAddTask = (e) => {
     const { name, value } = e.target;
+
     setTaskAdd((prevState) => ({
       ...prevState,
       [name]: value,
     }));
-  };
-  const handleSubCategoryChange = (newValue) => {
-    debugger;
 
+    if (name === "particular") {
+      apiAuth.get(`/LookupData/Lov/17/${value}`).then((resp) => {
+        setParticularSub(resp.data.data);
+      });
+    }
+  };
+
+  const handleSubCategoryChange = (newValue, name) => {
     setTaskAdd((prevState) => ({
       ...prevState,
-      particularSubCategory: newValue ? newValue.value : "",
+      [name]: newValue ? newValue.value : "",
     }));
 
     if (!!errorsAddTask[name]) {
       setErrorsAddTask({ ...errorsAddTask, [name]: "" });
     }
 
-    if (e.target.name == "particular") {
-      apiAuth.get(`/LookupData/Lov/17/${e.target.value}`).then((resp) => {
-        setParticularSub(resp.data.data);
-      });
-    }
+    apiAuth.get(`/LookupData/Lov/18/${newValue.value}`).then((resp) => {
+      setHazardImp(resp.data.data);
+    });
   };
 
   const handleOpenMoc = () => {
@@ -392,15 +396,21 @@ function Course() {
 
     if (!taskAdd.particular)
       tempErrors.particular = "Particular Name is required";
+    if (taskAdd.particular == 78) {
+      if (!taskAdd.changeImpactHazard)
+        tempErrors.changeImpactHazard = "changeImpactHazard Name is required";
+    } else {
+      if (!taskAdd.impacHazards)
+        tempErrors.impacHazards = "impact Hazards  is required";
+    }
     if (!taskAdd.particularSubCategory)
       tempErrors.particularSubCategory = "particular SubCategory  is required";
-    if (!taskAdd.impacHazards)
-      tempErrors.impacHazards = "impact Hazards  is required";
+
     if (!taskAdd.actionHow) tempErrors.actionHow = "  Action How  is required";
     if (!taskAdd.actionWhat)
       tempErrors.actionWhat = "  Action What is required";
-    if (!taskAdd.taskassignedto)
-      tempErrors.taskassignedto = "Task Assigned Field is required";
+    if (!taskAdd.assignedStaffId)
+      tempErrors.assignedStaffId = "Task Assigned Field is required";
     if (!taskAdd.dueDate) tempErrors.dueDate = "Date Field is required";
     if (!taskAdd.audit) tempErrors.audit = "Audit Field is required";
 
@@ -416,10 +426,11 @@ function Course() {
       apiAuth
         .put(`ChangeImpact/Create/Task/${evaluationId}`, taskAdd)
         .then((resp) => {
-          setOpenImplemntationTask(false);
-          setIsLoading(false);
-
-          getRecords();
+          handleCloseImplemntationTask();
+          setTimeout(() => {
+            getRecords();
+            setIsLoading(false);
+          }, 2000);
 
           setTaskAdd({
             particular: "",
@@ -1027,36 +1038,45 @@ function Course() {
       });
   };
   const SubmitImpCreate = (e, uid) => {
-    if (handelApprover.approver == "") {
-      toast?.error("Please Select An Approved");
+    debugger;
+    let taskListApproved = taskLists?.filter((x) => x.isCompleted == true);
+    console.log(taskListApproved, "taskListApproved");
+    if (handelApprover.approver == "" || handelApprover.approver == null) {
+      toast?.error("Please Select An Approver.");
+
       return;
     } else {
-      setIsLoading(true);
-      apiAuth.get(`/ChangeImpact/ListTask?id=${evaluationId}`).then((resp) => {
-        if (handelApprover.approver == "") {
-          toast?.error("Select an approver");
-        } else {
-          apiAuth
-            .post(
-              `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver.value}`,
-              {
-                actionUID: uid,
-                activityUID: impActivity.uid,
-
-                formUID: impActivity.formUID,
-              }
-            )
-            .then((resp) => {
-              toast?.success("MOC has Created");
-
-              getRecords();
-              setIsLoading(false);
-            })
-            .catch((err) => {
-              setIsLoading(false);
-            });
-        }
-      });
+      if (taskLists?.length != taskListApproved?.length) {
+        toast?.error("There are some pending Tasks to be approved.");
+        return;
+      } else {
+        setIsLoading(true);
+        apiAuth
+          .get(`/ChangeImpact/ListTask?id=${evaluationId}`)
+          .then((resp) => {
+            if (handelApprover.approver == "") {
+              toast?.error("Select an approver");
+            } else {
+              apiAuth
+                .post(
+                  `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver.value}`,
+                  {
+                    actionUID: uid,
+                    activityUID: impActivity.uid,
+                    formUID: impActivity.formUID,
+                  }
+                )
+                .then((resp) => {
+                  toast?.success("MOC has Created");
+                  getRecords();
+                  setIsLoading(false);
+                })
+                .catch((err) => {
+                  setIsLoading(false);
+                });
+            }
+          });
+      }
     }
   };
 
@@ -2410,31 +2430,37 @@ function Course() {
                                 }}
                               >
                                 <FormControl fullWidth>
-                                  <InputLabel id="division-label">
-                                    Search Staff
-                                  </InputLabel>
-                                  <Select
-                                    labelId="division-label"
+                                  <Autocomplete
                                     id="consultedStaffId"
-                                    name="consultedStaffId"
-                                    value={form.data.consultedStaffId}
-                                    onChange={(event) =>
-                                      handleChangeStaff(form.id, event)
+                                    options={docStaff}
+                                    getOptionLabel={(option) =>
+                                      option.text || ""
                                     }
-                                    error={!!errors[index]?.consultedStaffId}
-                                  >
-                                    <MenuItem value="" disabled>
-                                      <em>None</em>
-                                    </MenuItem>
-                                    {docStaff.map((option) => (
-                                      <MenuItem
-                                        key={option.id}
-                                        value={option.value}
-                                      >
-                                        {option.text}
-                                      </MenuItem>
-                                    ))}
-                                  </Select>
+                                    value={
+                                      docStaff.find(
+                                        (staff) =>
+                                          staff.value ===
+                                          form.data.consultedStaffId
+                                      ) || null
+                                    }
+                                    onChange={(event, newValue) => {
+                                      handleChangeStaff(form.id, {
+                                        target: {
+                                          name: "consultedStaffId",
+                                          value: newValue ? newValue.value : "",
+                                        },
+                                      });
+                                    }}
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        label="Search Staff"
+                                        error={
+                                          !!errors[index]?.consultedStaffId
+                                        }
+                                      />
+                                    )}
+                                  />
                                   {errors[index]?.consultedStaffId && (
                                     <span style={{ color: "red" }}>
                                       {errors[index].consultedStaffId}
@@ -3727,7 +3753,7 @@ function Course() {
                                         SubmitImpCreate(e, btn.uid)
                                       }
                                     >
-                                      {btn.name}ss
+                                      {btn.name}
                                     </Button>
                                   ))}
                                 </div>
@@ -3968,7 +3994,10 @@ function Course() {
                                         options={particularSub}
                                         getOptionLabel={(option) => option.text}
                                         onChange={(event, newValue) =>
-                                          handleSubCategoryChange(newValue)
+                                          handleSubCategoryChange(
+                                            newValue,
+                                            "particularSubCategory"
+                                          )
                                         }
                                         value={particularSub.find(
                                           (option) =>
@@ -4000,22 +4029,70 @@ function Course() {
                                     }}
                                     className="flex flex-row "
                                   >
-                                    <Box
-                                      sx={{
-                                        width: 800,
-                                        maxWidth: "100%",
-                                      }}
-                                    >
-                                      <TextField
+                                    {taskAdd.particular != 78 ? (
+                                      <Box
+                                        sx={{
+                                          width: 800,
+                                          maxWidth: "100%",
+                                        }}
+                                      >
+                                        <TextField
+                                          fullWidth
+                                          label="Impact Hazard Details *"
+                                          name="impacHazards"
+                                          onChange={handleChangeAddTask}
+                                          value={taskAdd.impacHazards}
+                                          error={!!errorsAddTask.impacHazards}
+                                          helperText={
+                                            errorsAddTask.impacHazards
+                                          }
+                                        />
+                                      </Box>
+                                    ) : (
+                                      <FormControl
                                         fullWidth
-                                        label="Impact Hazard Details *"
-                                        name="impacHazards"
-                                        onChange={handleChangeAddTask}
-                                        value={taskAdd.impacHazards}
-                                        error={!!errorsAddTask.impacHazards}
-                                        helperText={errorsAddTask.impacHazards}
-                                      />
-                                    </Box>
+                                        error={
+                                          !!errorsAddTask.changeImpactHazard
+                                        }
+                                      >
+                                        <FormLabel
+                                          className="font-medium text-14"
+                                          component="legend"
+                                        >
+                                          Impact Hazard*
+                                        </FormLabel>
+                                        {console.log(hazardImp, "hazzzz")}
+                                        <Autocomplete
+                                          options={hazardImp}
+                                          getOptionLabel={(option) =>
+                                            option.text
+                                          }
+                                          onChange={(event, newValue) =>
+                                            handleSubCategoryChange(
+                                              newValue,
+                                              "changeImpactHazard"
+                                            )
+                                          }
+                                          value={hazardImp.find(
+                                            (option) =>
+                                              option.value ===
+                                              taskAdd.changeImpactHazard
+                                          )}
+                                          renderInput={(params) => (
+                                            <TextField
+                                              {...params}
+                                              variant="outlined"
+                                            />
+                                          )}
+                                          name="changeImpactHazard"
+                                        />
+                                        {!!errorsAddTask.changeImpactHazard && (
+                                          <FormHelperText>
+                                            {errorsAddTask.changeImpactHazard}
+                                          </FormHelperText>
+                                        )}
+                                      </FormControl>
+                                    )}
                                   </div>
                                 </div>
                                 <div className="flex flex-col-reverse">
@@ -4076,7 +4153,7 @@ function Course() {
                                         width: 380,
                                         maxWidth: "48%",
                                       }}
-                                      error={!!errorsAddTask.taskassignedto}
+                                      error={!!errorsAddTask.assignedStaffId}
                                     >
                                       <FormLabel
                                         className="font-medium text-14"
@@ -4087,8 +4164,8 @@ function Course() {
                                       <Select
                                         variant="outlined"
                                         onChange={handleChangeAddTask}
-                                        value={taskAdd.taskassignedto}
-                                        name="taskassignedto"
+                                        value={taskAdd.assignedStaffId}
+                                        name="assignedStaffId"
                                       >
                                         {docStaff.map((option) => (
                                           <MenuItem
@@ -4099,9 +4176,9 @@ function Course() {
                                           </MenuItem>
                                         ))}
                                       </Select>
-                                      {!!errorsAddTask.taskassignedto && (
+                                      {!!errorsAddTask.assignedStaffId && (
                                         <FormHelperText>
-                                          {errorsAddTask.taskassignedto}
+                                          {errorsAddTask.assignedStaffId}
                                         </FormHelperText>
                                       )}
                                     </FormControl>

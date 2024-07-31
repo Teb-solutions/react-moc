@@ -200,6 +200,8 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
               >
                 {data?.tasksDue}
               </Typography>
+            ) : data == null ? (
+              ""
             ) : (
               <Skeleton variant="text" width={100} height={60} />
             )}
@@ -217,6 +219,8 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
             <span className="truncate">Completed</span>:
             {data?.tasksCompleted !== undefined ? (
               <b className="px-8">{data?.tasksCompleted}</b>
+            ) : data == null ? (
+              ""
             ) : (
               <Skeleton variant="text" width={40} />
             )}
@@ -243,6 +247,8 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
               <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-red-500">
                 {data?.tasksOverDue}
               </Typography>
+            ) : data == null ? (
+              ""
             ) : (
               <Skeleton variant="text" width={100} height={60} />
             )}
@@ -257,6 +263,8 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
             <span className="truncate">From yesterday</span>:
             {data?.tasksOverDueYesterday !== undefined ? (
               <b className="px-8">{data?.tasksOverDueYesterday}</b>
+            ) : data == null ? (
+              ""
             ) : (
               <Skeleton variant="text" width={40} />
             )}
@@ -290,6 +298,8 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
               >
                 {data?.requestsOpen}
               </Typography>
+            ) : data == null ? (
+              ""
             ) : (
               <Skeleton variant="text" width={100} height={60} />
             )}
@@ -307,6 +317,8 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
             <span className="truncate">Closed today</span>:
             {data?.requestsClosedToday !== undefined ? (
               <b className="px-8">{data?.requestsClosedToday}</b>
+            ) : data == null ? (
+              ""
             ) : (
               <Skeleton variant="text" width={40} />
             )}
@@ -333,6 +345,8 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
               <Typography className="text-7xl sm:text-8xl font-bold tracking-tight leading-none text-green-500">
                 {data?.approvalsPending}
               </Typography>
+            ) : data == null ? (
+              ""
             ) : (
               <Skeleton variant="text" width={100} height={60} />
             )}
@@ -347,6 +361,8 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
             <span className="truncate">Due</span>:
             {data?.tasksDue !== undefined ? (
               <b className="px-8">{data?.tasksDue}</b>
+            ) : data == null ? (
+              ""
             ) : (
               <Skeleton variant="text" width={40} />
             )}
