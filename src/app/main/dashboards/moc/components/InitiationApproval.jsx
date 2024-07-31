@@ -102,12 +102,10 @@ function InitiationApproval(props) {
   });
   const StyledBadge = withStyles((theme) => ({
     Badge: {
-      right: 0,
-      top: 5,
-      border: `2px solid ${theme.palette.background.paper}`,
-      padding: "0 4px",
-      backgroundColor: "#2c3e50", // Adjust background color to match the image
-      color: "white",
+      background: "#2c3e50",
+      color: "#fff",
+      top: "3px",
+      right: "8px",
     },
   }))(Badge);
   const formatDate = (dateString) => {
