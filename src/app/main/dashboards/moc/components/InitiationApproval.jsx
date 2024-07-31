@@ -38,7 +38,8 @@ function InitiationApproval(props) {
     contentDetails,
     CountApprove,
   } = props;
-
+  const [deletes, setDeletes] = useState(false);
+  const [deletes1, setDeletes1] = useState(false);
   const [open1, setOpen1] = useState(false);
   const [openDrawer1, setOpenDrawer1] = useState(false);
   const [open, setOpen] = useState(false);
@@ -53,6 +54,8 @@ function InitiationApproval(props) {
   const [documenDowToken1, setDocumenDowToken1] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [fileName, setFileName] = useState("");
+  const [docId, setDocId] = useState("");
+  const [docToken, setDocToken] = useState("");
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     description: "",
@@ -77,6 +80,20 @@ function InitiationApproval(props) {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "1200px",
+    maxWidth: "80vw",
+    height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+    p: 4,
+  };
+  const style2 = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "615px",
     maxWidth: "80vw",
     height: "auto",
     borderRadius: "16px",
@@ -253,14 +270,259 @@ function InitiationApproval(props) {
           .then((response) => {
             setOpenDrawer1(false);
             setListDocument1(response?.data?.data);
+            setSelectedFile1("");
           });
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
       });
   };
+
+  const handleCloseDelete1 = () => {
+    setDeletes1(false);
+  };
+  const handleDelete1 = (e, id, token) => {
+    e.preventDefault();
+    setDocId(id);
+    setDocToken(token);
+    setDeletes1(true);
+  };
+
+  const handleSubmitDelete1 = () => {
+    apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
+      apiAuth
+        .get(
+          `/DocumentManager/DocList/${docId}/ChangeRequest?changeRequestToken=${selectedDocument?.changeRequestToken}`
+        )
+        .then((response) => {
+          setOpenDrawer(false);
+          setListDocument(response?.data?.data);
+          setDeletes(false);
+          setFileDetails(false);
+          setSelectedDocument("");
+        });
+    });
+  };
+
+  const handleCloseDelete = () => {
+    setDeletes(false);
+  };
+  const handleDelete = (e, id, token) => {
+    e.preventDefault();
+    setDocId(id);
+    setDocToken(token);
+    setDeletes(true);
+  };
+
+  const handleSubmitDelete = () => {
+    apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
+      apiAuth
+        .get(
+          `/DocumentManager/DocList/${docId}/ChangeRequest?changeRequestToken=${selectedDocument?.changeRequestToken}`
+        )
+        .then((response) => {
+          setOpenDrawer1(false);
+          setListDocument1(response?.data?.data);
+          setDeletes(false);
+          setFileDetails1(false);
+          setSelectedDocument1("");
+        });
+    });
+  };
+
   return (
     <div className="w-full h-full">
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={deletes}
+        onClose={handleCloseDelete}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={deletes}>
+          <Box sx={style2}>
+            <Box>
+              <div className="flex">
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "15px",
+                    marginRight: "5px",
+                    marginTop: "5px",
+
+                    color: "red",
+                  }}
+                >
+                  <img src="/assets/images/etc/icon.png" />
+                </Typography>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "2rem",
+                  }}
+                >
+                  Confirm action
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "800px !important",
+                      color: "grey",
+                    }}
+                  >
+                    Do you want to delete ?
+                  </Typography>
+                </Typography>
+              </div>
+            </Box>
+            <div
+              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+              style={{
+                marginTop: "15px",
+                justifyContent: "end",
+                backgroundColor: " rgba(248,250,252)",
+                padding: "10px",
+              }}
+            >
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="primary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "1px solid grey",
+                }}
+                onClick={handleCloseDelete}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="secondary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "red",
+                }}
+                type="submit"
+                onClick={handleSubmitDelete}
+              >
+                Confirm
+              </Button>
+            </div>
+          </Box>
+        </Fade>
+      </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={deletes1}
+        onClose={handleCloseDelete1}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={deletes1}>
+          <Box sx={style2}>
+            <Box>
+              <div className="flex">
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "15px",
+                    marginRight: "5px",
+                    marginTop: "5px",
+
+                    color: "red",
+                  }}
+                >
+                  <img src="/assets/images/etc/icon.png" />
+                </Typography>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "2rem",
+                  }}
+                >
+                  Confirm action
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "800px !important",
+                      color: "grey",
+                    }}
+                  >
+                    Do you want to delete ?
+                  </Typography>
+                </Typography>
+              </div>
+            </Box>
+            <div
+              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+              style={{
+                marginTop: "15px",
+                justifyContent: "end",
+                backgroundColor: " rgba(248,250,252)",
+                padding: "10px",
+              }}
+            >
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="primary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "1px solid grey",
+                }}
+                onClick={handleCloseDelete1}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="secondary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "red",
+                }}
+                type="submit"
+                onClick={handleSubmitDelete1}
+              >
+                Confirm
+              </Button>
+            </div>
+          </Box>
+        </Fade>
+      </Modal>
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -587,6 +849,25 @@ function InitiationApproval(props) {
                   >
                     Download
                   </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                    onClick={(e) =>
+                      handleDelete1(
+                        e,
+                        selectedDocument?.documentId,
+                        selectedDocument?.token
+                      )
+                    }
+                  >
+                    Delete
+                  </Button>
                 </div>
               </Box>
             )}
@@ -898,7 +1179,7 @@ function InitiationApproval(props) {
                       variant="standard"
                       disabled
                       value={
-                        selectedDocument1?.description == null
+                        selectedDocument1?.description === null
                           ? ""
                           : selectedDocument1?.descritpion
                       }
@@ -923,6 +1204,25 @@ function InitiationApproval(props) {
                     onClick={handleDownload}
                   >
                     Download
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                    onClick={(e) =>
+                      handleDelete(
+                        e,
+                        selectedDocument1?.documentId,
+                        selectedDocument1?.token
+                      )
+                    }
+                  >
+                    Delete
                   </Button>
                 </div>
               </Box>

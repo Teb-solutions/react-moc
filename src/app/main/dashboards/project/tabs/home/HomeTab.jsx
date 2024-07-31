@@ -43,7 +43,7 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
     {
       id: "activity",
       label: "Activity",
-      minWidth: 170,
+      minWidth: 350,
       align: "left",
       render: (item) => {
         return (
@@ -77,9 +77,9 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
         return <span>{formattedDate}</span>;
       },
     },
-    { id: "type", label: "MOC Type", minWidth: 170, align: "left" },
+    { id: "type", label: "MOC Type", minWidth: 120, align: "left" },
     { id: "number", label: "MOC Number", minWidth: 170, align: "left" },
-    { id: "initiated", label: "Initiated By", minWidth: 170, align: "left" },
+    { id: "initiated", label: "Initiated By", minWidth: 250, align: "left" },
     {
       id: "date",
       label: "Initiated Date",

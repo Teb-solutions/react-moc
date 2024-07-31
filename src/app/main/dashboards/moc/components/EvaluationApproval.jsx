@@ -59,6 +59,7 @@ const EvaluationApproval = ({
   contentDetailsini,
 }) => {
   const [reviewed, setReviewed] = useState({});
+  const [deletes, setDeletes] = useState(false);
   const [open1, setOpen1] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
   const [fileDetails, setFileDetails] = useState(false);
@@ -66,6 +67,8 @@ const EvaluationApproval = ({
   const [listDocument, setListDocument] = useState([]);
   const [listDocument1, setListDocument1] = useState([]);
   const [documenDowToken, setDocumenDowToken] = useState("");
+  const [docId, setDocId] = useState("");
+  const [docToken, setDocToken] = useState("");
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     description: "",
@@ -201,6 +204,20 @@ const EvaluationApproval = ({
 
     boxShadow: 24,
     maxWidth: "95%",
+  };
+  const style2 = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "615px",
+    maxWidth: "80vw",
+    height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+    p: 4,
   };
 
   const BoldLabel = styled("label")({
@@ -643,8 +660,129 @@ const EvaluationApproval = ({
     ListDoc1(assetEvaluationId);
   };
 
+  const handleCloseDelete = () => {
+    setDeletes(false);
+  };
+  const handleDelete = (e, id, token) => {
+    e.preventDefault();
+    setDocId(id);
+    setDocToken(token);
+    setDeletes(true);
+  };
+
+  const handleSubmitDelete = () => {
+    apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
+      apiAuth
+        .get(
+          `/DocumentManager/DocList/${docId}/ChangeRequest?changeRequestToken=${selectedDocument?.changeRequestToken}`
+        )
+        .then((response) => {
+          setOpenDrawer(false);
+          setListDocument(response?.data?.data);
+          setDeletes(false);
+          setFileDetails(false);
+          setSelectedDocument("");
+        });
+    });
+  };
+
   return (
     <div className="w-full h-full">
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={deletes}
+        onClose={handleCloseDelete}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={deletes}>
+          <Box sx={style2}>
+            <Box>
+              <div className="flex">
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "15px",
+                    marginRight: "5px",
+                    marginTop: "5px",
+
+                    color: "red",
+                  }}
+                >
+                  <img src="/assets/images/etc/icon.png" />
+                </Typography>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "2rem",
+                  }}
+                >
+                  Confirm action
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "800px !important",
+                      color: "grey",
+                    }}
+                  >
+                    Do you want to delete ?
+                  </Typography>
+                </Typography>
+              </div>
+            </Box>
+            <div
+              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+              style={{
+                marginTop: "15px",
+                justifyContent: "end",
+                backgroundColor: " rgba(248,250,252)",
+                padding: "10px",
+              }}
+            >
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="primary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "1px solid grey",
+                }}
+                onClick={handleCloseDelete}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="secondary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "red",
+                }}
+                type="submit"
+                onClick={handleSubmitDelete}
+              >
+                Confirm
+              </Button>
+            </div>
+          </Box>
+        </Fade>
+      </Modal>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -976,6 +1114,25 @@ const EvaluationApproval = ({
                     onClick={handleDownload}
                   >
                     Download
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                    onClick={(e) =>
+                      handleDelete(
+                        e,
+                        selectedDocument?.documentId,
+                        selectedDocument?.token
+                      )
+                    }
+                  >
+                    Delete
                   </Button>
                 </div>
               </Box>
@@ -3430,6 +3587,25 @@ const EvaluationApproval = ({
                     onClick={handleDownload}
                   >
                     Download
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                    onClick={(e) =>
+                      handleDelete(
+                        e,
+                        selectedDocument?.documentId,
+                        selectedDocument?.token
+                      )
+                    }
+                  >
+                    Delete
                   </Button>
                 </div>
               </Box>
