@@ -1021,36 +1021,45 @@ function Course() {
       });
   };
   const SubmitImpCreate = (e, uid) => {
-    if (handelApprover.approver == "") {
-      toast?.error("Please Select An Approved");
+    debugger;
+    let taskListApproved = taskLists?.filter((x) => x.isCompleted == true);
+    console.log(taskListApproved, "taskListApproved");
+    if (handelApprover.approver == "" || handelApprover.approver == null) {
+      toast?.error("Please Select An Approver.");
+
       return;
     } else {
-      setIsLoading(true);
-      apiAuth.get(`/ChangeImpact/ListTask?id=${evaluationId}`).then((resp) => {
-        if (handelApprover.approver == "") {
-          toast?.error("Select an approver");
-        } else {
-          apiAuth
-            .post(
-              `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver.value}`,
-              {
-                actionUID: uid,
-                activityUID: impActivity.uid,
-
-                formUID: impActivity.formUID,
-              }
-            )
-            .then((resp) => {
-              toast?.success("MOC has Created");
-
-              getRecords();
-              setIsLoading(false);
-            })
-            .catch((err) => {
-              setIsLoading(false);
-            });
-        }
-      });
+      if (taskLists?.length != taskListApproved?.length) {
+        toast?.error("There are some pending Tasks to be approved.");
+        return;
+      } else {
+        setIsLoading(true);
+        apiAuth
+          .get(`/ChangeImpact/ListTask?id=${evaluationId}`)
+          .then((resp) => {
+            if (handelApprover.approver == "") {
+              toast?.error("Select an approver");
+            } else {
+              apiAuth
+                .post(
+                  `/DocMoc/ImplementationSubmit/${evaluationId}/${handelApprover.approver.value}`,
+                  {
+                    actionUID: uid,
+                    activityUID: impActivity.uid,
+                    formUID: impActivity.formUID,
+                  }
+                )
+                .then((resp) => {
+                  toast?.success("MOC has Created");
+                  getRecords();
+                  setIsLoading(false);
+                })
+                .catch((err) => {
+                  setIsLoading(false);
+                });
+            }
+          });
+      }
     }
   };
 
@@ -3580,7 +3589,7 @@ function Course() {
                                         SubmitImpCreate(e, btn.uid)
                                       }
                                     >
-                                      {btn.name}ss
+                                      {btn.name}
                                     </Button>
                                   ))}
                                 </div>
