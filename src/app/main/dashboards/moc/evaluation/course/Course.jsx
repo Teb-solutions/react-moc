@@ -3052,11 +3052,11 @@ function Course() {
                             <Tab label="Checklist" {...a11yProps(1)} />
                           </Tabs>
                         </Box>
-                        <CustomTabPanel value={value} index={0}>
-                          <div class="flex flex-col p-30 w-full border rounded">
+                        <CustomTabPanel value={value} index={0} className="task_accordians">
+                          <div class="flex flex-col w-full border rounded ">
                             <div
                               _ngcontent-fyk-c288=""
-                              class="flex items-center w-full  border-b justify-between"
+                              class="flex items-center w-full p-10 border-b justify-between" style={{ paddingRight: "15px", paddingLeft: "15px" }}
                             >
                               <div className="flex items-center">
                                 <h2
@@ -3104,7 +3104,7 @@ function Course() {
                                 fullWidth
                                 placeholder="Search"
                                 style={{
-                                  marginBottom: "15px",
+                                  // marginBottom: "15px",
                                   backgroundColor: "white",
                                 }}
                                 value={searchTerm}
@@ -3136,8 +3136,8 @@ function Course() {
                                   style={{ minHeight: "60px" }}
                                   onClick={(e) => handelComments(e, task.id)}
                                 >
-                                  <div className="d-flex flex-wrap justify-between w-100 pr-10">
-                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                  <div className="d-flex flex-wrap justify-between w-100">
+                                    <div className="inventory-grid grid items-center gap-4 m-0">
                                       <div className="flex items-center">
                                         Task #{task.id}
                                       </div>
@@ -3505,14 +3505,14 @@ function Course() {
                           impActivity.status === "Pending" &&
                           value == 0 && (
                             <div
-                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                              className="inventory-grid grid items-center gap-4 p-0"
                               style={{ width: "100%" }}
                             >
                               {currentActivityForm.canEdit && (
                                 <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                                   <FormControl
                                     fullWidth
-                                    sx={{ m: 1, maxWidth: "100%" }}
+                                    sx={{ m: 0, maxWidth: "100%" }}
                                   >
                                     <span className="font-semibold leading-none">
                                       Select Approver*
@@ -3524,7 +3524,7 @@ function Course() {
                                         marginTop: "10px",
                                       }}
                                     >
-                                      <FormControl fullWidth sx={{ m: 1 }}>
+                                      <FormControl fullWidth sx={{ m: 0 }}>
                                         <Autocomplete
                                           id="approverId"
                                           options={docStaff}
@@ -3546,7 +3546,7 @@ function Course() {
                               <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                 <div
                                   _ngcontent-fyk-c288=""
-                                  class="flex items-center w-full  border-b justify-between"
+                                  class="flex items-center w-full mt-10 border-b justify-between"
                                 ></div>
                               </div>
                               {currentActivityForm.canExecute && (
@@ -3629,7 +3629,7 @@ function Course() {
                             impActivity.status === "Pending" &&
                             value == 1 && (
                               <div
-                                className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                className="inventory-grid grid items-center gap-4 mt-24"
                                 style={{ width: "100%" }}
                               >
                                 <Box
@@ -3641,7 +3641,7 @@ function Course() {
                                   <FormControl
                                     fullWidth
                                     sx={{
-                                      m: 1,
+                                      m: 0,
                                       maxWidth: "100%",
                                     }}
                                   >
@@ -3655,7 +3655,7 @@ function Course() {
                                         marginTop: "10px",
                                       }}
                                     >
-                                      <FormControl fullWidth sx={{ m: 1 }}>
+                                      <FormControl fullWidth sx={{ m: 0 }}>
                                         <Select
                                           labelId="functionName-label"
                                           id="docControllerId"
@@ -3681,7 +3681,7 @@ function Course() {
                                 <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                   <div
                                     _ngcontent-fyk-c288=""
-                                    class="flex items-center w-full  border-b justify-between"
+                                    class="flex items-center w-full mt-10 border-b justify-between"
                                   ></div>
                                 </div>
                                 <div className="flex justify-end ">
