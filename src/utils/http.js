@@ -11,6 +11,7 @@ const handleError = async (error) => {
   if (error.response) {
     if (error.response.status === 401) {
       // Show toast error message
+      localStorage.setItem("lastVisitedURL", window.location.pathname);
       toast?.error("Session expired. Please log in again.");
 
       // Clear local storage and redirect to login page

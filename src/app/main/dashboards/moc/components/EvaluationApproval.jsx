@@ -229,7 +229,7 @@ const EvaluationApproval = ({
       top: 13,
       border: `2px solid ${theme.palette.background.paper}`,
       padding: "0 4px",
-      backgroundColor: "#000", // Adjust background color to match the image
+      backgroundColor: "#2c3e50", // Adjust background color to match the image
       color: "white",
     },
   }))(Badge);

@@ -292,13 +292,39 @@ export default function StickyHeadTable() {
               }}
             >
               <div className="flex justify-between text-white">
-                <span className="text-popup font-medium">{!edit ? "Add" : "Edit"}</span>
-                <span onClick={handleClose}><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" fit="" height="24" width="24" preserveAspectRatio="xMidYMid meet" focusable="false">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg></span>
+                <span className="text-popup font-medium">
+                  {!edit ? "Add" : "Edit"}
+                </span>
+                <span onClick={handleClose}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    fit=""
+                    height="24"
+                    width="24"
+                    preserveAspectRatio="xMidYMid meet"
+                    focusable="false"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    ></path>
+                  </svg>
+                </span>
               </div>
             </Box>
-            <div style={{ textAlign: "center", padding: "30px", marginTop: "0", paddingBottom: "0" }}>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "30px",
+                marginTop: "0",
+                paddingBottom: "0",
+              }}
+            >
               <Box
                 component="form"
                 sx={{
@@ -330,7 +356,7 @@ export default function StickyHeadTable() {
                 justifyContent: "end",
                 // backgroundColor: " rgba(248,250,252)",
                 padding: "30px",
-                paddingBottom: "30px"
+                paddingBottom: "30px",
               }}
             >
               <Button
@@ -465,7 +491,7 @@ export default function StickyHeadTable() {
           <InputLabel
             id="category-select-label"
             className="text-2xl mt-0"
-            style={{color: "black" }}
+            style={{ color: "black" }}
           >
             <b>Role</b>
           </InputLabel>

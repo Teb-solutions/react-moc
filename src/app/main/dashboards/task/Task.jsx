@@ -523,7 +523,7 @@ const Task = () => {
         <Fade in={openDocModal}>
           <Box sx={style1}>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between p-30 pt-24 pb-24" >
+              <Box className="flex justify-between p-30 pt-24 pb-24">
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
@@ -853,7 +853,7 @@ const Task = () => {
             variant="outlined"
             style={{ backgroundColor: "white" }}
           >
-            <InputLabel id="category-select-label">Site</InputLabel>
+            <InputLabel id="category-select-label">Status</InputLabel>
             <Select
               labelId="category-select-label"
               id="category-select"
@@ -1442,10 +1442,8 @@ const Task = () => {
                 </button>
               </div>
             </div>
-            
 
             <hr className="mb-24 mt-24" />
-            
 
             <div className="w-full">
               <div className="relative flex flex-auto flex-col w-full">

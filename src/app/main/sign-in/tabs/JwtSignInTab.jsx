@@ -72,6 +72,16 @@ const JwtSignInTab = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const lastVisitedURL = localStorage.getItem("lastVisitedURL");
+    if (lastVisitedURL) {
+      // Redirect to the last visited page
+      window.location.href = lastVisitedURL;
+      // Clear the stored URL
+      localStorage.removeItem("lastVisitedURL");
+    }
+  }, []);
+
   // useEffect(() => {
   //   console.log("reAuth state has changed: ", reAuth);
   // }, [reAuth]);
@@ -207,7 +217,6 @@ const JwtSignInTab = () => {
             )}
           />
         )}
-        {reAuth && <h1>hello</h1>}
 
         <div className="flex flex-col items-center mt-4 justify-center sm:flex-row sm:justify-between">
           <Controller
