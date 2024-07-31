@@ -1086,7 +1086,8 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
   margin-top: 16px;
 }
 .file-label .material-icons {
-  font-size: 22px; margin-right: 10px;
+  font-size: 22px;
+  margin-right: 10px;
 }
 
 .file-list {

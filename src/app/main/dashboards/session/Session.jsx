@@ -113,9 +113,10 @@ const SessionList = () => {
                     <div className="text-gray-500" style={{ fontSize: "15px" }}>
                       {`${list.requestName} | ${list.requestType}  | ${formatDate(list.startedAt)}`}
                     </div>
-                    {list.comments != null && (
-                      <div>
-                        Comment: <b>{list.comments}</b>
+                    {list.comments != null && list?.comments && (
+                      <div className="text-gray-700">
+                        Comment:{" "}
+                        <b className="text-gray-500"> {list.comments}</b>
                       </div>
                     )}
                     {list.approvalStatus == 2 && (

@@ -151,9 +151,9 @@ function UserMenu() {
         onClose={handleBookmarkClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
-        PaperProps={{ style: { width: "400px" } }}
+        PaperProps={{ style: { width: "350px", borderRadius: "18px" } }}
       >
-        <BookmarkPopup />
+        <BookmarkPopup onClose={handleBookmarkClose} />
       </Popover>
       <Button
         className="min-h-40 min-w-40 p-0  md:py-6"
