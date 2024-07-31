@@ -9,9 +9,16 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
+import { withStyles } from "@mui/styles";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import { Select, MenuItem, ListItemText, FormHelperText } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  ListItemText,
+  FormHelperText,
+  Badge,
+} from "@mui/material";
 import MocHeader from "../MocHeader";
 import { Button } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -60,7 +67,16 @@ function AssetRequest() {
     boxShadow: 24,
     p: 4,
   };
-
+  const StyledBadge = withStyles((theme) => ({
+    Badge: {
+      right: 0,
+      top: 5,
+      border: `2px solid ${theme.palette.background.paper}`,
+      padding: "0 4px",
+      backgroundColor: "#000", // Adjust background color to match the image
+      color: "white",
+    },
+  }))(Badge);
   const BoldLabel = styled("label")({
     fontWeight: "bold",
     color: "black",
@@ -942,25 +958,32 @@ function AssetRequest() {
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                     style={{ marginTop: "15px" }}
                   >
-                    <Button
-                      className="whitespace-nowrap mt-5"
-                      style={{
-                        border: "1px solid",
-                        backgroundColor: "#0000",
-                        color: "black",
-                        borderColor: "rgba(203,213,225)",
-                      }}
-                      variant="contained"
-                      color="warning"
-                      startIcon={
-                        <FuseSvgIcon size={20}>
-                          heroicons-solid:upload
-                        </FuseSvgIcon>
+                    <StyledBadge
+                      badgeContent={
+                        listDocument.length
+                        // ? listDocument.length : CountApprove
                       }
-                      onClick={handleOpenDocModal}
                     >
-                      Document
-                    </Button>
+                      <Button
+                        className="whitespace-nowrap mt-5"
+                        style={{
+                          border: "1px solid",
+                          backgroundColor: "#0000",
+                          color: "black",
+                          borderColor: "rgba(203,213,225)",
+                        }}
+                        variant="contained"
+                        color="warning"
+                        startIcon={
+                          <FuseSvgIcon size={20}>
+                            heroicons-solid:upload
+                          </FuseSvgIcon>
+                        }
+                        onClick={handleOpenDocModal}
+                      >
+                        Document
+                      </Button>
+                    </StyledBadge>
                   </div>
                   <div
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
@@ -1000,13 +1023,12 @@ function AssetRequest() {
                                   }}
                                 >
                                   File Manager
-                                  {/* <Typography
-                                  id="transition-modal-title"
-                                  variant="h6"
-                                  component="h2"
-                                >
-                                  0 Files
-                                </Typography> */}
+                                  <Typography
+                                    id="transition-modal-subtitle"
+                                    component="h2"
+                                  >
+                                    {listDocument.length} Files
+                                  </Typography>
                                 </Typography>
                                 <Box>
                                   <Button
@@ -1222,6 +1244,7 @@ function AssetRequest() {
                                       >
                                         <img src="/assets/images/etc/icon_N.png" />
                                       </div>
+                                      <h6>{selectedDocument.name}</h6>
                                     </div>
                                   </label>
                                   <Box
@@ -1301,9 +1324,9 @@ function AssetRequest() {
                                       variant="standard"
                                       disabled
                                       value={
-                                        selectedDocument.description == null
+                                        selectedDocument?.description === null
                                           ? ""
-                                          : selectedDocument.descritpion
+                                          : selectedDocument?.descritpion
                                       }
                                     />
                                   </Box>

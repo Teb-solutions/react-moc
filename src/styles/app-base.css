@@ -1056,6 +1056,15 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
 .ml-10 {
   margin-left: 1rem !important;
 }
+.white_bg {
+  background-color: #fff;
+}
+.staffClose {
+  position: absolute;
+  right: 0px;
+  color: #fff;
+  top: 10px;
+}
 @media (min-width: 1200px) {
   .desktop_hide {
     display: none;

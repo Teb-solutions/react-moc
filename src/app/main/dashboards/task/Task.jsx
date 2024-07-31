@@ -930,8 +930,8 @@ const Task = () => {
               key={list.changeRequestId}
               className="p-30 pt-24 pb-0  task_box"
             >
-              <div className="flex flex-wrap flex-col p-24 rounded-16 shadow overflow-hidden">
-                <div className="flex flex-wrap">
+              <div className="flex flex-wrap flex-col p-24 rounded-16 white_bg shadow overflow-hidden">
+                <div className="flex flex-wrap lg:flex-nowrap">
                   <div className="flex flex-wrap flex-col flex-auto">
                     <div className="flex flex-wrap items-center justify-between">
                       <div
@@ -941,7 +941,7 @@ const Task = () => {
                         {`${list.requestTypeName} / ${list.requestNo} / ${list.statusName}`}
                       </div>
                     </div>
-                    <div className="flex flex-wrap leading-5 text-md text-secondary space-y-2 mt-5">
+                    <div className="flex flex-wrap leading-5 text-md text-secondary space-y-2 my-10 lg:my-0 lg:mt-5">
                       <div className="mr-30">
                         Initiated by <b>{list.initiatorName}</b> on{" "}
                         <b>{formatDates(list.requestDate)}</b>
@@ -955,12 +955,12 @@ const Task = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="pl-4 btn_margin">
+                  <div className="lg:pl-4 mt-0 btn_margin">
                     <div>
                       <a
                         className="flex items-center min-w-0 h-full w-full  text-lg p-4 border rounded cursor-pointer text-blue-500"
                         href="#"
-                        style={{ textDecoration: "none", padding: "15px" }}
+                        style={{ textDecoration: "none", padding: "15px", whiteSpace:"nowrap" }}
                         onClick={(e) => handelViewMoc(e, list)}
                       >
                         View MOC details

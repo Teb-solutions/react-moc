@@ -398,17 +398,17 @@ const Task = () => {
   }
 
   return (
-    <>
+    <div className="white_bg">
       <MocHeader master={"Staff"} />
       <ToastContainer className="toast-container " />
       <div style={{ margin: "20px" }}>
         <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
-          <InputLabel id="category-select-label" className="text-2xl">
+          <InputLabel id="category-select-label" className="text-4xl">
             <b>Staff</b>
           </InputLabel>
         </div>
 
-        <b className="text-md">113 staffs</b>
+        <b className="text-lg">113 staffs</b>
 
         <Box className="flex-grow-2 mt-10">
           <TextField
@@ -1259,7 +1259,7 @@ const Task = () => {
           </form>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
