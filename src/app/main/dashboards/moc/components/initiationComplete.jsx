@@ -54,6 +54,7 @@ const InitiationComplete = ({
       right: "8px",
     },
   }))(Badge);
+  console.log(currentActivityForm, "8888", currentSummeryById);
   const [deletes, setDeletes] = useState(false);
   const [class1, setClass1] = useState([]);
   const [selectedClass, setSelectedClass] = useState(1);
@@ -186,6 +187,7 @@ const InitiationComplete = ({
       documentId: AppActivity.uid,
       documentStatus: AppActivity.form,
       activityUID: AppActivity.uid,
+      token: assetEvaluationId,
       executeActivity: {
         actionUID: AppActions[0].uid,
         activityUID: AppActivity.uid,
@@ -1143,7 +1145,13 @@ const InitiationComplete = ({
                 startIcon={
                   <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
                 }
-                onClick={() => handleOpen1(currentActivityForm.uid)}
+                onClick={() =>
+                  handleOpen1(
+                    currentActivityForm.canEdit
+                      ? currentActivityForm.uid
+                      : currentSummeryById.id
+                  )
+                }
               >
                 Document
               </Button>
