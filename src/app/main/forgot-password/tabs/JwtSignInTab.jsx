@@ -137,7 +137,6 @@ function JwtSignInTab() {
 
   return (
     <div className="w-full">
-      <ToastContainer className="toast-container " />
       <form
         name="loginForm"
         noValidate

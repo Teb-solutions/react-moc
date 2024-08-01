@@ -346,7 +346,6 @@ export default function StickyHeadTable() {
 
   return (
     <div style={{ backgroundColor: "white" }}>
-      <ToastContainer className="toast-container " />
       <MocHeader master={"Master"} type={"Particular Sub Category"} />
 
       <Modal

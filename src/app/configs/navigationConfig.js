@@ -50,6 +50,13 @@ const navigationConfig1 = [
         feature: "TASK",
       },
       {
+        id: "ticketlist.request",
+        title: " Ticket List",
+        type: "item",
+        icon: "heroicons-outline:ticket",
+        url: "/ticketlist",
+      },
+      {
         id: "session.request",
         title: " Session List",
         type: "item",
@@ -71,6 +78,7 @@ const navigationConfig1 = [
         url: "/staff",
         feature: "STA",
       },
+
       {
         id: "masters.request",
         title: "Masters",
@@ -250,6 +258,7 @@ const shouldIncludeItem = (item) => {
     "dashboards.project",
     "session.request",
     "notifications.request",
+    "ticketlist.request",
   ];
 
   if (defaultItems.includes(item.id)) {

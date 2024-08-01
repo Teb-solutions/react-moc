@@ -427,7 +427,6 @@ const InitiationComplete = ({
 
   return (
     <div className="w-full">
-      <ToastContainer className="toast-container " />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

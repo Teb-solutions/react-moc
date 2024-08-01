@@ -9,7 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import { useEffect, useState } from "react";
 import Fade from "@mui/material/Fade";
 import Backdrop from "@mui/material/Backdrop";
-import { Box } from "@mui/material";
+import { Box, TextareaAutosize } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {
   Button,
@@ -27,8 +27,8 @@ import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
-import MocHeader from "../../moc/MocHeader";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
+import MocHeader from "../moc/MocHeader";
 function createData(
   index,
   code,
@@ -42,71 +42,97 @@ function createData(
   return { index, code, description, status, action, isActive, id, lookupType };
 }
 
-export default function StickyHeadTable() {
+export default function Ticket() {
   const storedFeature = decryptFeature();
   const feature = storedFeature ? storedFeature : [];
   const columns = [
     // { id: "index", label: "#", minWidth: 50 },
     // { id: "code", label: "Code", minWidth: 100 },
     { id: "index", label: "#" },
-    { id: "code", label: "Code" },
+    { id: "code", label: "Subject" },
+
     {
       id: "description",
       label: "Description",
-      //minWidth: 170,
+      // minWidth: 170,
       align: "left",
       format: (value) => value.toLocaleString("en-US"),
     },
     {
-      id: "status",
-      label: "Status",
-      //minWidth: 170,
+      id: "Category",
+      label: "Ticket Category",
+      // minWidth: 170,
       align: "left",
       format: (value) => value.toFixed(2),
     },
     {
-      id: "action",
-      label: "Action",
-      //minWidth: 170,
+      id: "Priority",
+      label: "Ticket Priority",
+      // minWidth: 170,
       align: "left",
       format: (value) => value.toFixed(2),
+    },
+    {
+      id: "Priority",
+      label: "Ticket Status",
+      // minWidth: 170,
+      align: "left",
+      format: (value) => value.toFixed(2),
+    },
+    {
+      id: "comment",
+      label: "Comment",
+      align: "left",
+      minWidth: 140,
       render: (row) => (
-        <div className="action_button">
-          {feature.includes("MUPT") && (
-            <Button
-              onClick={() => handleEdit(row)}
-              endIcon={
-                <FuseSvgIcon size={20}>heroicons-solid:pencil</FuseSvgIcon>
-              }
-            ></Button>
-          )}
-          {feature.includes("MDEL") && (
-            <Button
-              onClick={() => handleDelete(row)}
-              endIcon={
-                <FuseSvgIcon size={20}>heroicons-solid:trash</FuseSvgIcon>
-              }
-            ></Button>
-          )}
-        </div>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          <TextareaAutosize
+            minRows={2}
+            maxRows={4}
+            placeholder="Enter your comment"
+            style={{
+              width: "100%",
+              padding: "8px",
+              borderRadius: "4px",
+              border: "1px solid black",
+              fontSize: "1rem",
+            }}
+            onChange={(e) => handleCommentChange(e, row)}
+          />
+          <Button
+            variant="contained"
+            color="secondary"
+            sx={{ minWidth: "40px", minHeight: "40px" }}
+          >
+            <FuseSvgIcon size={20}>heroicons-solid:plus</FuseSvgIcon>
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => handleEdit(row)}
+            sx={{ minWidth: "40px", minHeight: "40px" }}
+          >
+            <FuseSvgIcon size={20}>heroicons-solid:eye</FuseSvgIcon>
+          </Button>
+        </Box>
       ),
     },
   ];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10); // Set a high number to display all rows
-  const [siteList, setSiteList] = useState([]);
+  const [riskTimeList, setRiskTimeList] = useState([]);
   const [dense, setDense] = useState(false);
   const [deletes, setDelete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
   const [errors, setErrors] = useState({});
+
   const [Id, setId] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredDepartmentList = siteList.filter(
+  const filteredDepartmentList = riskTimeList.filter(
     (row) =>
       row.index.toString().includes(searchQuery) ||
       row.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -114,7 +140,7 @@ export default function StickyHeadTable() {
   );
 
   const [lookupAdd, setLookUpAdd] = useState({
-    LookupType: "site",
+    LookupType: "risktime",
     code: "",
     crudMode: "INSERT",
     description: "",
@@ -123,6 +149,8 @@ export default function StickyHeadTable() {
     parentId: 0,
   });
   const [open, setOpen] = useState(false);
+  const [isViewMode, setViewMode] = useState(false);
+
   const style1 = {
     position: "absolute",
     top: "50%",
@@ -153,7 +181,7 @@ export default function StickyHeadTable() {
     padding: "0px",
   };
   function getRecords() {
-    apiAuth.get(`/LookupData/List/site`).then((resp) => {
+    apiAuth.get(`/LookupData/List/risktime`).then((resp) => {
       setIsLoading(false);
       const transformedData = resp.data.data.map((item, index) =>
         createData(
@@ -167,7 +195,7 @@ export default function StickyHeadTable() {
           item.lookupType
         )
       );
-      setSiteList(transformedData);
+      setRiskTimeList(transformedData);
     });
   }
 
@@ -232,7 +260,6 @@ export default function StickyHeadTable() {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
   const validate = () => {
     let tempErrors = {};
 
@@ -246,6 +273,7 @@ export default function StickyHeadTable() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    //toast.success("oombi.");
     if (validate()) {
       if (lookupAdd.crudMode == "UPDATE") {
         apiAuth.put(`/LookupData/Update/${Id}`, lookupAdd).then((resp) => {
@@ -271,13 +299,14 @@ export default function StickyHeadTable() {
   };
 
   const handleEdit = (row) => {
+    setViewMode(true);
     setLookUpAdd({
       ...row,
       crudMode: "UPDATE",
       id: row.id,
       lookupType: row.lookupType,
       parentType: "",
-      LookupType: "site",
+      LookupType: "risktime",
     });
     setId(row.id);
     handleOpen();
@@ -290,12 +319,12 @@ export default function StickyHeadTable() {
   };
 
   const handleChangeDense = (event, index) => {
-    const updatedDepartmentList = [...siteList];
+    const updatedDepartmentList = [...riskTimeList];
     const updatedRow = updatedDepartmentList[index];
     updatedRow.isActive = event.target.checked;
 
     // Update the state immediately to reflect the change in the UI
-    setSiteList(updatedDepartmentList);
+    setRiskTimeList(updatedDepartmentList);
 
     // Call the update API
     apiAuth
@@ -315,7 +344,7 @@ export default function StickyHeadTable() {
   }
   return (
     <div style={{ backgroundColor: "white" }}>
-      <MocHeader master={"Master"} type={"Site"} />
+      <MocHeader nothing={"nothing"} type={"Ticket List"} />
 
       <Modal
         aria-labelledby="transition-modal-title"
@@ -338,135 +367,66 @@ export default function StickyHeadTable() {
                 backgroundColor: "#4f46e5",
                 borderTopLeftRadius: "16px",
                 borderTopRightRadius: "16px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                color: "white",
               }}
             >
-              <div className="flex justify-between text-white">
-                <span className="text-popup font-medium">
-                  {lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}
-                </span>
-                <span
-                  onClick={handleClose}
-                  style={{ cursor: "pointer" }}
-                  className="cursor-pointer"
+              <span className="text-popup font-medium">Comment</span>
+              <span onClick={handleClose} style={{ cursor: "pointer" }}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  height="24"
+                  width="24"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    fit=""
-                    height="24"
-                    width="24"
-                    preserveAspectRatio="xMidYMid meet"
-                    focusable="false"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    ></path>
-                  </svg>
-                </span>
-              </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </span>
             </Box>
-            <div
+            <Box
               style={{
+                padding: "30px",
                 textAlign: "center",
-                padding: "30px",
-                marginTop: "0",
-                paddingBottom: "0",
               }}
             >
-              <Box
-                component="form"
-                sx={{
-                  "& > :not(style)": { m: 1 },
+              <TextField
+                fullWidth
+                multiline
+                rows={4}
+                label="Comment"
+                variant="outlined"
+                value={"hello i have added a comment"}
+                disabled={isViewMode}
+                onChange={(e) => {
+                  /* handle comment change if needed */
                 }}
-                noValidate
-                autoComplete="off"
-                sty
-              >
-                <TextField
-                  id="outlined-basic"
-                  label="Code *"
-                  inputProps={{
-                    maxLength: 5, // Limit to 30 characters, which approximates 5 words
-                  }}
-                  className="flex-grow-1 "
-                  name="code"
-                  value={lookupAdd.code}
-                  variant="outlined"
-                  onChange={handleAdd}
-                  error={!!errors.code}
-                  helperText={errors.code}
-                />
-              </Box>
-              <Box
-                component="form"
-                sx={{
-                  "& > :not(style)": { m: 1, marginTop: "30px" },
+                InputProps={{
+                  style: {
+                    color: isViewMode ? "gray" : "black",
+                    backgroundColor: isViewMode ? "#f0f0f0" : "white",
+                  },
                 }}
-                noValidate
-                autoComplete="off"
-              >
-                <TextField
-                  id="outlined-basic"
-                  className="flex-grow-1 "
-                  label="Description *"
-                  name="description"
-                  value={lookupAdd.description}
-                  variant="outlined"
-                  onChange={handleAdd}
-                  error={!!errors.description}
-                  helperText={errors.description}
-                />
-              </Box>
-            </div>
-
-            <div
-              className="flex items-center space-x-12"
-              style={{
-                marginTop: "0",
-                marginBottom: "0",
-                justifyContent: "end",
-                // backgroundColor: " rgba(248,250,252)",
-                padding: "30px",
-                paddingBottom: "30px",
-              }}
-            >
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="primary"
-                style={{
-                  padding: "15px",
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid grey",
-                  paddingLeft: "25px",
-                  paddingRight: "25px",
-                }}
-                onClick={handleClose}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="secondary"
-                style={{
-                  padding: "15px",
-                  backgroundColor: "#4f46e5",
-                  paddingLeft: "25px",
-                  paddingRight: "25px",
-                }}
-                type="submit"
-                onClick={handleSubmit}
-              >
-                {lookupAdd.crudMode === "UPDATE" ? "Update" : "Add"}
-              </Button>
-            </div>
+              />
+              {!isViewMode && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{ marginTop: "20px" }}
+                  // onClick={/* handle save/update action */}
+                >
+                  Save Changes"
+                </Button>
+              )}
+            </Box>
           </Box>
         </Fade>
       </Modal>
@@ -563,13 +523,13 @@ export default function StickyHeadTable() {
         </Fade>
       </Modal>
       <div>
-        <div className="flex d-flex flex-col p-30 pt-24 pb-24 justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
+        <div className="flex d-flex p-30 pt-24 pb-24 flex-col justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
             id="category-select-label"
             className="text-2xl mt-0"
             style={{ color: "black" }}
           >
-            <b>Site</b>
+            <b>Ticket List</b>
           </InputLabel>
           <div className="flex items-center d-sm-block justify-between mt-0">
             <div className="flex-auto"></div>
@@ -592,17 +552,6 @@ export default function StickyHeadTable() {
               }}
               sx={{ width: 250 }}
             />
-            {feature.includes("MCRT") && (
-              <Button
-                variant="contained"
-                className="my-4"
-                color="secondary"
-                onClick={handleOpen}
-              >
-                <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-                <span className="mx-4 sm:mx-8">Add</span>
-              </Button>
-            )}
           </div>
         </div>
       </div>
@@ -679,7 +628,7 @@ export default function StickyHeadTable() {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={siteList.length}
+          count={riskTimeList.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

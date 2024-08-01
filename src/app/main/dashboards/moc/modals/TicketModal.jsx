@@ -41,16 +41,19 @@ const TicketModal = ({ open, handleClose }) => {
       }}
     >
       <Fade in={open}>
-        <Box sx={styleImp}>
-          <Typography
-            id="transition-modal-title"
-            variant="h6"
-            component="h2"
-            style={{ fontSize: "2rem" }}
-          >
-            Create new ticket
-          </Typography>
-          <Box component="form">
+        <Box sx={styleImp} className="p-0">
+          <div className="p-30 pt-24 pb-24 border-b">
+            <Typography
+              id="transition-modal-title"
+              variant="h6"
+              component="h2"
+              style={{ fontSize: "2rem" }}
+            >
+              Create new ticket
+            </Typography>
+          </div>
+          <Box component="form" className="p-30 pt-24 pb-24">
+            <p className="text-blue text-lg mb-24">Ticket Info</p>
             <Box>
               <TextField fullWidth label="Subject" name="subject" />
             </Box>
@@ -63,34 +66,37 @@ const TicketModal = ({ open, handleClose }) => {
                 rows={4}
               />
             </Box>
-            <Box
+            <Box className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-24 "
               sx={{
                 marginTop: 2,
-                display: "flex",
+                // display: "flex",
+                
                 justifyContent: "space-between",
               }}
             >
-              <FormControl sx={{ width: "48%" }}>
+              <FormControl >
                 <InputLabel>Ticket Category</InputLabel>
                 <Select name="category">
                   <MenuItem>options</MenuItem>
                 </Select>
               </FormControl>
-            </Box>
-            <Box
-              sx={{
-                marginTop: 2,
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <FormControl sx={{ width: "48%" }}>
+              <FormControl >
                 <InputLabel>Ticket Priority</InputLabel>
                 <Select name="priority">
                   <MenuItem>options</MenuItem>
                 </Select>
               </FormControl>
-              <FormControl sx={{ width: "48%" }}>
+
+            </Box>
+            <Box  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-24 "
+              sx={{
+                marginTop: 2,
+                // display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              
+              <FormControl >
                 <InputLabel>Ticket Status</InputLabel>
                 <Select name="status">
                   <MenuItem>options</MenuItem>
@@ -98,18 +104,26 @@ const TicketModal = ({ open, handleClose }) => {
               </FormControl>
             </Box>
             <Box sx={{ marginTop: 2 }}>
-              <input
+              {/* <input
                 type="file"
                 name="fileUpload"
                 // onChange={handleFileUpload}
-              />
+              /> */}
+               <div class="file-upload-container">
+        <input type="file" id="file-upload" class="file-input" multiple/>
+        <label for="file-upload" class="file-label">
+            <span class="material-icons">cloud_upload</span>
+            <span>Drop Your File Here</span>
+        </label>
+        <div id="file-list" class="file-list"></div>
+    </div>
             </Box>
             <Box
               sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
             >
               <Button
-                variant="contained"
-                color="primary"
+                variant="contained"                  
+            color="secondary"
                 // onClick={handleSubmit}
               >
                 Submit

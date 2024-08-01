@@ -28,7 +28,7 @@ import Loader from "src/app/main/loader/Loader";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
 import MocHeader from "../../moc/MocHeader";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 function createData(
   index,
   code,
@@ -246,6 +246,7 @@ export default function StickyHeadTable() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    //toast.success("oombi.");
     if (validate()) {
       if (lookupAdd.crudMode == "UPDATE") {
         apiAuth.put(`/LookupData/Update/${Id}`, lookupAdd).then((resp) => {
@@ -315,7 +316,6 @@ export default function StickyHeadTable() {
   }
   return (
     <div style={{ backgroundColor: "white" }}>
-      <ToastContainer className="toast-container " />
       <MocHeader master={"Master"} type={"Risk Time"} />
 
       <Modal

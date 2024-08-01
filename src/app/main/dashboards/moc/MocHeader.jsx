@@ -11,7 +11,7 @@ import { useState } from "react";
  * The DemoHeader component.
  */
 function MocHeader(props) {
-  const { activity, reqno, risk, master, type } = props;
+  const { activity, reqno, risk, master, type, nothing } = props;
   const routeParams = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -75,20 +75,21 @@ function MocHeader(props) {
           >
             Home
           </Link>
-
-          <Link
-            className="font-medium text-blue"
-            key="3"
-            color="text.primary"
-            to={risk == "risk" ? "/risk" : master ? "" : "/moc"}
-            style={{ textDecoration: "none" }}
-          >
-            {risk == "risk"
-              ? "RISK Requests"
-              : master
-                ? master
-                : "MOC Requests"}
-          </Link>
+          {nothing != "nothing" && (
+            <Link
+              className="font-medium text-blue"
+              key="3"
+              color="text.primary"
+              to={risk == "risk" ? "/risk" : master ? "" : "/moc"}
+              style={{ textDecoration: "none" }}
+            >
+              {risk == "risk"
+                ? "RISK Requests"
+                : master
+                  ? master
+                  : "MOC Requests"}
+            </Link>
+          )}
           {type && (
             <Typography className="font-medium" key="3" color="text.primary">
               {type}
