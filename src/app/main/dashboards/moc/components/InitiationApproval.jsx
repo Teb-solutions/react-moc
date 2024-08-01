@@ -273,6 +273,21 @@ function InitiationApproval(props) {
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
+        if (error.response && error.response.data.errors) {
+          const errorMessages = Object.values(error.response.data.errors)
+            .flat()
+            .join(", ");
+          toast.error(`Error: ${errorMessages}`);
+        } else {
+          setOpenDrawer1(false);
+          setOpen1(true);
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            descritpion: "",
+          });
+          toast.error("There was an error uploading the document!");
+        }
       });
   };
 
@@ -833,7 +848,7 @@ function InitiationApproval(props) {
                   className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                   style={{
                     marginTop: "15px",
-                    justifyContent: "end",
+                    justifyContent: "center",
                     backgroundColor: " rgba(248,250,252)",
                     padding: "10px",
                   }}
@@ -847,7 +862,7 @@ function InitiationApproval(props) {
                   >
                     Download
                   </Button>
-                  <Button
+                  {/* <Button
                     className="whitespace-nowrap"
                     variant="contained"
                     color="primary"
@@ -865,7 +880,7 @@ function InitiationApproval(props) {
                     }
                   >
                     Delete
-                  </Button>
+                  </Button> */}
                 </div>
               </Box>
             )}

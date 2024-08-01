@@ -622,6 +622,21 @@ const EvaluationApproval = ({
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
+        if (error.response && error.response.data.errors) {
+          const errorMessages = Object.values(error.response.data.errors)
+            .flat()
+            .join(", ");
+          toast.error(`Error: ${errorMessages}`);
+        } else {
+          setOpenDrawer(false);
+          setOpen(true);
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            descritpion: "",
+          });
+          toast.error("There was an error uploading the document!");
+        }
       });
   };
 

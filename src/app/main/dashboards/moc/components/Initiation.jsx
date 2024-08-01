@@ -654,7 +654,7 @@ function Initiation(props) {
                   className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                   style={{
                     marginTop: "15px",
-                    justifyContent: "end",
+                    justifyContent: "center",
                     backgroundColor: " rgba(248,250,252)",
                     padding: "10px",
                   }}
@@ -668,7 +668,7 @@ function Initiation(props) {
                   >
                     Download
                   </Button>
-                  <Button
+                  {/* <Button
                     className="whitespace-nowrap"
                     variant="contained"
                     color="primary"
@@ -686,7 +686,7 @@ function Initiation(props) {
                     }
                   >
                     Delete
-                  </Button>
+                  </Button> */}
                 </div>
               </Box>
             )}

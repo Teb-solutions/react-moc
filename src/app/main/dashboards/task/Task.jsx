@@ -131,6 +131,8 @@ const Task = () => {
   const [viewDoc, setviewDoc] = useState(false);
   const [documentCounts, setDocumentCounts] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [msgId, setmsgId] = useState("");
+  const [taskToken, setTaskToken] = useState("");
 
   const [selectedFile, setSelectedFile] = useState({
     name: "",
@@ -442,6 +444,7 @@ const Task = () => {
         },
       })
       .then((response) => {
+        console.log(response.status);
         console.log(response.data);
         apiAuth
           .get(
@@ -450,10 +453,30 @@ const Task = () => {
           .then((response) => {
             setOpenDrawer(false);
             setListDocument(response?.data?.data);
+            setSelectedFile({
+              ...selectedFile,
+              name: "",
+              description: "",
+            });
           });
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
+        if (error.response && error.response.data.errors) {
+          const errorMessages = Object.values(error.response.data.errors)
+            .flat()
+            .join(", ");
+          toast.error(`Error: ${errorMessages}`);
+        } else {
+          setOpenDocModal(false);
+          setOpenDrawer(false);
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            description: "",
+          });
+          toast.error("There was an error uploading the document!");
+        }
       });
   };
 
@@ -461,6 +484,8 @@ const Task = () => {
     e.preventDefault();
     setviewDoc(true);
     setOpenDocModal(true);
+    setmsgId(id);
+    setTaskToken(task.changeRequestToken);
     apiAuth
       .get(
         `DocumentManager/DocList/${id}/Task?changeRequestToken=${task.changeRequestToken}`
@@ -526,7 +551,7 @@ const Task = () => {
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(
-          `/DocumentManager/DocList/${docId}/ChangeRequest?changeRequestToken=${selectedDocument?.changeRequestToken}`
+          `/DocumentManager/DocList/${selectedFile.documentId}/Task?changeRequestToken=${selectedFile?.changeRequestToken}`
         )
         .then((response) => {
           setOpenDrawer(false);
@@ -534,6 +559,11 @@ const Task = () => {
           setDeletes(false);
           setFileDetails(false);
           setSelectedDocument("");
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            description: "",
+          });
         });
     });
   };
@@ -702,7 +732,7 @@ const Task = () => {
                     backgroundColor: "#e3eeff80",
                   }}
                 >
-                  {listDocument.map((doc, index) => (
+                  {listDocument?.map((doc, index) => (
                     <div className="content " key={index}>
                       <div
                         onClick={() => handelDetailDoc(doc)}
@@ -905,7 +935,7 @@ const Task = () => {
                       label="Created By"
                       variant="standard"
                       disabled
-                      value={selectedDocument.staffName}
+                      value={selectedDocument?.staffName}
                     />
                   </Box>
                   <Box

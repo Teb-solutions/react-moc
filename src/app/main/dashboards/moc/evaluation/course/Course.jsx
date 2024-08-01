@@ -212,6 +212,21 @@ function Course() {
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
+        if (error.response && error.response.data.errors) {
+          const errorMessages = Object.values(error.response.data.errors)
+            .flat()
+            .join(", ");
+          toast.error(`Error: ${errorMessages}`);
+        } else {
+          setOpenDrawer(false);
+          setOpen(true);
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            descritpion: "",
+          });
+          toast.error("There was an error uploading the document!");
+        }
       });
   };
 
@@ -2998,16 +3013,21 @@ function Course() {
                             Training Attendence Sheet
                           </Button>
                         </StyledBadge>
+
                         <Modal
                           aria-labelledby="transition-modal-title"
                           aria-describedby="transition-modal-description"
                           open={open}
                           onClose={handleClose}
                           closeAfterTransition
-                          slots={{ backdrop: Backdrop }}
-                          slotProps={{
-                            backdrop: {
-                              timeout: 500,
+                          // Customize backdrop appearance
+                          BackdropComponent={Backdrop}
+                          // Props for backdrop customization
+                          BackdropProps={{
+                            timeout: 500, // Adjust as needed
+                            style: {
+                              // Add backdrop styles here
+                              backgroundColor: "rgba(0, 0, 0, 0.5)",
                             },
                           }}
                         >
@@ -3204,7 +3224,7 @@ function Course() {
                                     >
                                       Download
                                     </Button>
-                                    <Button
+                                    {/* <Button
                                       className="whitespace-nowrap"
                                       variant="contained"
                                       color="primary"
@@ -3222,7 +3242,7 @@ function Course() {
                                       }
                                     >
                                       Delete
-                                    </Button>
+                                    </Button> */}
                                   </div>
                                 </Box>
                               )}

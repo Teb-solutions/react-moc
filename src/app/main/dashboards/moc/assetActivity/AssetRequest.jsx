@@ -158,10 +158,10 @@ function AssetRequest() {
   const handleOpenDocModal = () => {
     setOpenDocModal(true);
     const newGuid = uuidv4();
-    setSelectedFile((prevState) => ({
-      ...prevState,
+    setSelectedFile({
+      ...selectedFile,
       documentId: newGuid,
-    }));
+    });
   };
 
   const [documentState, setDocumentState] = useState({
@@ -222,10 +222,10 @@ function AssetRequest() {
 
   const handelFileDiscriptionChange = (event) => {
     const { name, value } = event.target;
-    setSelectedFile((prevState) => ({
-      ...prevState,
+    setSelectedFile({
+      ...selectedFile,
       [name]: value,
-    }));
+    });
   };
 
   const handleChange = (event) => {
@@ -247,13 +247,15 @@ function AssetRequest() {
       setFileUrl(url);
       setFileName(file.name);
     }
+    const newGuid = uuidv4();
     setSelectedFile({
+      ...selectedFile,
       name: e.target.files[0].name,
-      description: "",
+
       type: e.target.files[0].type,
       document: e.target.files[0],
       documentType: "ChangeRequest",
-      documentId: selectedFile.documentId,
+      documentId: selectedFile?.documentId,
       changeRequestToken: null,
     });
   };
@@ -330,11 +332,30 @@ function AssetRequest() {
           .then((response) => {
             setOpenDrawer(false);
             setListDocument(response?.data?.data);
-            setSelectedFile("");
+            setSelectedFile({
+              ...selectedFile,
+              name: "",
+              descritpion: "",
+            });
           });
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
+        if (error.response && error.response.data.errors) {
+          const errorMessages = Object.values(error.response.data.errors)
+            .flat()
+            .join(", ");
+          toast.error(`Error: ${errorMessages}`);
+        } else {
+          setOpenDocModal(false);
+          setOpenDrawer(false);
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            description: "",
+          });
+          toast.error("There was an error uploading the document!");
+        }
       });
   };
 
@@ -1002,7 +1023,7 @@ function AssetRequest() {
                   >
                     <StyledBadge
                       badgeContent={
-                        listDocument.length
+                        listDocument?.length
                         // ? listDocument.length : CountApprove
                       }
                     >
@@ -1069,7 +1090,7 @@ function AssetRequest() {
                                   id="transition-modal-subtitle"
                                   component="h2"
                                 >
-                                  {listDocument.length} Files
+                                  {listDocument?.length} Files
                                 </Typography>
                               </Typography>
                               <Box>
@@ -1098,7 +1119,7 @@ function AssetRequest() {
                                   backgroundColor: "#e3eeff80",
                                 }}
                               >
-                                {listDocument.map((doc, index) => (
+                                {listDocument?.map((doc, index) => (
                                   <div className="content " key={index}>
                                     <div
                                       onClick={() => handelDetailDoc(doc)}
@@ -1195,7 +1216,7 @@ function AssetRequest() {
                                     label="Selecte File"
                                     variant="standard"
                                     disabled
-                                    value={selectedFile.name}
+                                    value={selectedFile?.name}
                                   />
                                 </Box>
                                 <Box
@@ -1215,7 +1236,7 @@ function AssetRequest() {
                                     name="description"
                                     variant="standard"
                                     onChange={handelFileDiscriptionChange}
-                                    value={selectedFile.description}
+                                    value={selectedFile?.description}
                                   />
                                 </Box>
                               </div>
@@ -1286,7 +1307,7 @@ function AssetRequest() {
                                     >
                                       <img src="/assets/images/etc/icon_N.png" />
                                     </div>
-                                    <h6>{selectedDocument.name}</h6>
+                                    <h6>{selectedDocument?.name}</h6>
                                   </div>
                                 </label>
                                 <Box
@@ -1323,7 +1344,7 @@ function AssetRequest() {
                                     label="Created By"
                                     variant="standard"
                                     disabled
-                                    value={selectedDocument.staffName}
+                                    value={selectedDocument?.staffName}
                                   />
                                 </Box>
                                 <Box
@@ -1344,7 +1365,7 @@ function AssetRequest() {
                                     variant="standard"
                                     disabled
                                     value={formatDate(
-                                      selectedDocument.createdAt
+                                      selectedDocument?.createdAt
                                     )}
                                   />
                                 </Box>
@@ -1362,7 +1383,7 @@ function AssetRequest() {
                                   <TextField
                                     id="standard-basic"
                                     label={<BoldLabel>Description</BoldLabel>}
-                                    name="Description"
+                                    name="description"
                                     variant="standard"
                                     disabled
                                     value={
