@@ -813,6 +813,12 @@ const AssetCourse = () => {
 
             break;
           case "InitiationComplete":
+            apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
+              setIsLoading(false);
+
+              setAppActions(resp.data.data.actions);
+              setAppActivity(resp.data.data.activity);
+            });
             apiAuth
               .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
               .then((resp) => {
@@ -832,12 +838,6 @@ const AssetCourse = () => {
                   .then((resp) => {
                     setCountApprove(resp.data.data);
                   });
-                apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
-                  setIsLoading(false);
-
-                  setAppActions(resp.data.data.actions);
-                  setAppActivity(resp.data.data.activity);
-                });
               });
 
             break;

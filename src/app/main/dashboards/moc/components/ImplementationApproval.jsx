@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   Backdrop,
+  Badge,
   Box,
   Button,
   Fade,
@@ -42,6 +43,7 @@ import TableContainer from "@mui/material/TableContainer";
 import { styled } from "@mui/material/styles";
 import Initiation from "./Initiation";
 import FuseLoading from "@fuse/core/FuseLoading";
+import { withStyles } from "@mui/styles";
 // Adjust the path based on your project structure
 
 function createData(
@@ -163,6 +165,14 @@ function ImplementationApproval({
       year: "numeric",
     });
   };
+  const StyledBadge = withStyles((theme) => ({
+    Badge: {
+      background: "#2c3e50",
+      color: "#fff",
+      top: "3px",
+      right: "8px",
+    },
+  }))(Badge);
 
   const [activeStep, setActiveStep] = useState(0);
   const [ImpDetails, setImpDetails] = useState([]);
@@ -455,6 +465,7 @@ function ImplementationApproval({
       apiAuth
         .put(`/Task/AddNewTask/${assetEvaluationId}`, updatedTaskAdd)
         .then((resp) => {
+          setOpenImplemntationTask(false);
           getRecords();
         });
     }
@@ -1401,7 +1412,7 @@ function ImplementationApproval({
                               class="text-lg font-semibold"
                               style={{ marginRight: "15px" }}
                             >
-                              {ImpDetails.length} Tasks
+                              {tasksForStep.length} Tasks
                             </h2>
                             {!lastActCode.isComplete &&
                               lastActCode.status === "Pending" && (
@@ -1557,22 +1568,26 @@ function ImplementationApproval({
                                       // style={{ width: "17%" }}
                                     >
                                       <div className="flex items-center">
-                                        <Button
-                                          className="whitespace-nowrap"
-                                          style={{
-                                            border: "1px solid",
-                                            backgroundColor: "#0000",
-                                            color: "black",
-                                            borderColor: "rgba(203,213,225)",
-                                          }}
-                                          variant="contained"
-                                          color="warning"
-                                          onClick={() =>
-                                            handelOpenAudit(detail.audits, "")
-                                          }
+                                        <StyledBadge
+                                          badgeContent={detail?.audits?.length}
                                         >
-                                          Audits
-                                        </Button>
+                                          <Button
+                                            className="whitespace-nowrap"
+                                            style={{
+                                              border: "1px solid",
+                                              backgroundColor: "#0000",
+                                              color: "black",
+                                              borderColor: "rgba(203,213,225)",
+                                            }}
+                                            variant="contained"
+                                            color="warning"
+                                            onClick={() =>
+                                              handelOpenAudit(detail.audits, "")
+                                            }
+                                          >
+                                            Audits
+                                          </Button>
+                                        </StyledBadge>
                                         {lastActCode?.canExecute && (
                                           <Button
                                             className="whitespace-nowrap ms-5"

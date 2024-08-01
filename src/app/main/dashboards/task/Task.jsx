@@ -502,7 +502,6 @@ const Task = () => {
 
   return (
     <>
-      <ToastContainer className="toast-container " />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -589,8 +588,7 @@ const Task = () => {
                     style={{ backgroundColor: "white" }}
                     onClick={() => setOpenDrawer(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -715,8 +713,7 @@ const Task = () => {
                     style={{ backgroundColor: "white" }}
                     onClick={() => setFileDetails(false)}
                   >
-                    <FuseSvgIcon size={20}>heroicons-outline:close</FuseSvgIcon>
-                    x
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
                 </div>
                 <div>&nbsp;</div>
@@ -960,7 +957,11 @@ const Task = () => {
                       <a
                         className="flex items-center min-w-0 h-full w-full  text-lg p-4 border rounded cursor-pointer text-blue-500"
                         href="#"
-                        style={{ textDecoration: "none", padding: "15px", whiteSpace:"nowrap" }}
+                        style={{
+                          textDecoration: "none",
+                          padding: "15px",
+                          whiteSpace: "nowrap",
+                        }}
                         onClick={(e) => handelViewMoc(e, list)}
                       >
                         View MOC details

@@ -31,6 +31,8 @@ import AccessConfig from "./security/access/AccessConfig";
 import OrgActivityConfig from "./moc/orgActivity/OrgActivityConfig";
 import RiskAppConfig from "./riskRegister/riskRegisterConfig";
 import TransportActivityConfig from "./riskRegister/TransportActivity/TransportConfig";
+import TicketConfig from "./ticketlist/TicketConfig";
+
 /**
  * Dashboards
  */
@@ -40,6 +42,7 @@ const dashboardsConfigs = [
   RiskAppConfig,
   taskConfig,
   sessionListConfig,
+  TicketConfig,
   notificationConfig,
   StaffConfig,
   mastersConfig,

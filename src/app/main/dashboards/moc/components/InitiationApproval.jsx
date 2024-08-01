@@ -1046,8 +1046,8 @@ function InitiationApproval(props) {
                 className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
                 style={{ width: "40%" }}
               >
-                <span className="font-semibold leading-none">
-                  Approver Comment: {ApprovalManager?.remark}
+                <span className=" leading-none">
+                  <b>Approver Comment:</b> {ApprovalManager?.remark}
                 </span>
               </div>
               <div className="flex items-center justify-between w-full mt-8 p-30 pt-24 pb-24 border-t">
