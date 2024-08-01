@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { useTheme } from "@mui/material/styles";
@@ -28,6 +28,13 @@ import {
   Badge,
   StepContent,
   StepLabel,
+  Grid,
+  TableRow,
+  TableCell,
+  Table,
+  TableContainer,
+  TableHead,
+  TableBody,
 } from "@mui/material";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 
@@ -222,6 +229,7 @@ function Course() {
   const [searchTerm, setSearchTerm] = useState("");
   const [ChangeEvaluationDetail, setChangeEvaluationDetail] = useState([]);
   const [taskLists, setTaskLists] = useState([]);
+  const [riskLists, setRiskLists] = useState([]);
   const [CheckLists, setCheckLists] = useState([]);
   const [evalActions, setEvalActions] = useState([]);
   const [evalActivity, setEvalActivity] = useState({});
@@ -280,7 +288,7 @@ function Course() {
       background: "#2c3e50",
       color: "#fff",
       top: "3px",
-      right: "8px",
+      right: "4px",
     },
   }))(Badge);
 
@@ -564,6 +572,7 @@ function Course() {
   const [currentPhase, setCurrentPhase] = useState("");
   const [currentPhaseName, setCurrentPhaseName] = useState("");
   const [lastActCode, setlastActCode] = useState("");
+  const [CreateNewRisk, setCreateNewRisk] = useState(false);
 
   useEffect(() => {
     let lastIndex = -1;
@@ -647,6 +656,16 @@ function Course() {
     p: 4,
     padding: "0px",
   };
+  const [viewrisk, setViewRisk] = useState(false);
+
+  const taskFormControlStyles = viewrisk
+    ? {
+        borderColor: "white",
+        m: 1,
+        maxWidth: "100%",
+        border: "1px solid white",
+      }
+    : { m: 1, maxWidth: "100%" };
 
   const styleImp = {
     position: "absolute",
@@ -867,6 +886,8 @@ function Course() {
                     .get(`DocMoc/GetImplementation/${evaluationId}`)
                     .then((resp) => {
                       setTaskLists(resp.data.data.taskList);
+                      setRiskLists(resp.data.data.riskAnalysisList);
+
                       setCheckLists(resp.data.data.checkList);
                       apiAuth
                         .get(
@@ -1110,7 +1131,7 @@ function Course() {
     setIsLoading(true);
     const updatedTask = {
       ...task,
-      notes: comments,
+      comments: comments,
       submissionList: [impComments],
       ChangeEvaluationId: 0,
       ParentId: 0,
@@ -1257,9 +1278,684 @@ function Course() {
         }, 3000);
       });
   };
+
   useEffect(() => {
     handleStepChange();
   }, []);
+  const [TaskhazardRiskViewName, setSubTaskhazardRiskViewName] = useState("");
+  const [hazardTypeValue, sethazardTypeValue] = useState("");
+  const handelRisk = (id, type) => {
+    setCreateNewRisk(true);
+    setEditRiskAnalysDetail([]);
+    setHazaId(0);
+    setSubTaskhazardRiskView(false);
+
+    setSubTaskhazardRiskViewName("");
+    sethazardTypeValue(type);
+    setCreateNewRisk(true);
+    setFormValues({
+      ...formValues,
+      hazardType: "",
+      hazardousSituation: "",
+      consequence: "",
+      time: "",
+      frequencyDetails: "",
+      frequencyScoring: "",
+      likelihoodScoring: "",
+      severityScoring: "",
+      potentialRisk: "",
+      humanControlMeasure: "",
+      technicalControlMeasure: "",
+      organisationalControlMeasure: "",
+      modifiedTime: "",
+      modifiedFrequencyDetails: "",
+      residualFrequencyScoring: "",
+      residualLikelihoodScoring: "",
+      residualSeverityScoring: "",
+      residualRisk: "",
+      residualRiskClassification: "",
+    });
+    setHazaId("");
+
+    apiAuth.get(`/RiskAnalysis/SubTaskDetail?id=${id}`).then((resp) => {
+      setSubTaskDetail(resp.data.data);
+    });
+    apiAuth.get(`/LookupData/Lov/28`).then((resp) => {
+      setSubTaskhazardDetail(resp.data.data);
+    });
+    apiAuth.get(`/LookupData/Lov/29`).then((resp) => {
+      setPotentialTimeDetails(resp.data.data);
+    });
+  };
+  const [errorsSub, setErrorsSub] = useState({});
+  const [subTaskhazardDetail, setSubTaskhazardDetail] = useState([]);
+  const [generalGuidePdf, setGeneralGuidePdf] = useState(null);
+  const [subTaskDetail, setSubTaskDetail] = useState([]);
+  const [potentialTimeDetails, setPotentialTimeDetails] = useState([]);
+  const [potentialFrequencyDetails, setPotentialFrequencyDetails] = useState(
+    []
+  );
+  const [editRiskAnalysDetail, setEditRiskAnalysDetail] = useState([]);
+  const [Classifications, setClassification] = useState("");
+  const [TaskhazardRiskView, setSubTaskhazardRiskView] = useState(false);
+
+  const [TaskhazardRiskApi, setSubTaskhazardRiskApi] = useState([]);
+  const likelihoodValues = Array.from({ length: 15 }, (_, i) => i + 1);
+  const calculateFrequencyScoring = (text) => {
+    if (["t < 2.4min", "t < 0.2h", "t < 0.8h", "t < 8.5h"].includes(text)) {
+      return 0.5;
+    } else if (
+      [
+        "2.4 <= t < 24min",
+        "0.2 <= t < 2h",
+        "0.8 <= t < 8h",
+        "8.5 <= t < 85h",
+      ].includes(text)
+    ) {
+      return 1;
+    } else if (
+      [
+        "24min <= t < 1.6h",
+        "2 <= t < 8h",
+        "8 <= t < 32h",
+        "85 <= t < 340h",
+      ].includes(text)
+    ) {
+      return 2;
+    } else if (
+      [
+        "1.6 <= t < 4h",
+        "8 <= t < 20h",
+        "32 <= t < 80h",
+        "340 <= t < 850h",
+      ].includes(text)
+    ) {
+      return 3;
+    } else if (
+      [
+        "4 <= t < 6h",
+        "20 <= t < 30h",
+        "80 <= t < 120h",
+        "850 <= t < 1275h",
+      ].includes(text)
+    ) {
+      return 6;
+    } else {
+      return 10;
+    }
+  };
+  const calculatePotentialRisk = (
+    frequencyScoring,
+    likelihoodScoring,
+    severityScoring
+  ) => {
+    if (
+      frequencyScoring &&
+      likelihoodScoring &&
+      severityScoring &&
+      likelihoodScoring <= 15 &&
+      likelihoodScoring > 0 &&
+      severityScoring <= 15 &&
+      severityScoring > 0
+    ) {
+      return frequencyScoring * likelihoodScoring * severityScoring;
+    } else {
+      return "";
+    }
+  };
+
+  const calculateRiskClassification = (residualRisk) => {
+    let classification = "";
+    let classificationValue = "";
+
+    if (residualRisk > 400) {
+      classification = "HighRisk";
+      classificationValue = "1";
+    } else if (residualRisk > 200 && residualRisk <= 400) {
+      classification = "SignificantRisk";
+      classificationValue = "2";
+    } else if (residualRisk > 70 && residualRisk <= 200) {
+      classification = "AverageRisk";
+      classificationValue = "3";
+    } else if (residualRisk > 20 && residualRisk <= 70) {
+      classification = "LowRisk";
+      classificationValue = "4";
+    } else if (residualRisk <= 20) {
+      classification = "VeryLowRisk";
+      classificationValue = "5";
+    }
+
+    return { classification, classificationValue };
+  };
+  const [formValues, setFormValues] = useState({
+    task: "",
+    subTask: "",
+    hazardousSituation: "",
+    consequence: "",
+    time: "",
+    frequencyDetails: "",
+    frequencyScoring: "",
+    likelihoodScoring: "",
+    severityScoring: "",
+    potentialRisk: "",
+    humanControlMeasure: "",
+    technicalControlMeasure: "",
+    organisationalControlMeasure: "",
+    modifiedTime: "",
+    modifiedFrequencyDetails: "",
+    residualFrequencyScoring: "",
+    residualLikelihoodScoring: "",
+    residualSeverityScoring: "",
+    residualRisk: "",
+    residualRiskClassification: "",
+  });
+  const handleGeneralGuideClick = () => {
+    apiAuth
+      .get(`/RiskAnalysis/downloadGeneral`, {
+        responseType: "blob",
+      })
+      .then((resp) => {
+        setGeneralGuidePdf(resp.data);
+      });
+  };
+  const handelViewDetails = (id, subid) => {
+    setPotentialFrequencyDetails([]);
+    setFormValues({
+      ...formValues,
+      hazardType: "",
+      hazardousSituation: "",
+      consequence: "",
+      time: "",
+      frequencyDetails: "",
+      frequencyScoring: "",
+      likelihoodScoring: "",
+      severityScoring: "",
+      potentialRisk: "",
+      humanControlMeasure: "",
+      technicalControlMeasure: "",
+      organisationalControlMeasure: "",
+      modifiedTime: "",
+      modifiedFrequencyDetails: "",
+      residualFrequencyScoring: "",
+      residualLikelihoodScoring: "",
+      residualSeverityScoring: "",
+      residualRisk: "",
+    });
+    setCreateNewRisk(true);
+    setViewRisk(true);
+    apiAuth.get(`/RiskAnalysis/SubTaskDetail?id=${subid}`).then((resp) => {
+      setSubTaskDetail(resp.data.data);
+    });
+    apiAuth.get(`/LookupData/Lov/28`).then((resp) => {
+      setSubTaskhazardDetail(resp.data.data);
+    });
+    apiAuth.get(`/LookupData/Lov/29`).then((resp) => {
+      setPotentialTimeDetails(resp.data.data);
+    });
+    apiAuth.get(`/LookupData/Lov/30/0`).then((resp) => {
+      setPotentialFrequencyDetails(resp.data.data);
+    });
+    apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
+      const data = resp.data.data.riskAnalysisHazardSituation[0];
+      setFormValues({
+        ...formValues,
+        hazardType: {
+          value: resp?.data?.data?.hazardType,
+        },
+        // hazardType: resp?.data?.data?.hazardType,
+        hazardousSituation: data?.hazardousSituation,
+        consequence: data?.consequence,
+        time: data?.time,
+        frequencyDetails: data?.frequencyDetails,
+        frequencyScoring: data?.frequencyScoring,
+        likelihoodScoring: data?.likelihoodScoring,
+        severityScoring: data?.severityScoring,
+        potentialRisk: data?.potentialRisk,
+        humanControlMeasure: data?.humanControlMeasure,
+        technicalControlMeasure: data?.technicalControlMeasure,
+        organisationalControlMeasure: data?.organisationalControlMeasure,
+        modifiedTime: data?.modifiedTime,
+        modifiedFrequencyDetails: data?.modifiedFrequencyDetails,
+        residualFrequencyScoring: data?.residualFrequencyScoring,
+        residualLikelihoodScoring: data?.residualLikelihoodScoring,
+        residualSeverityScoring: data?.residualSeverityScoring,
+        residualRisk: data?.residualRisk,
+        residualRiskClassification: data?.residualRiskClassification,
+      });
+
+      const { classification, classificationValue } =
+        calculateRiskClassification(data?.residualRisk);
+
+      setClassification(classification);
+
+      // if (data.time) {
+      //   apiAuth.get(`/LookupData/Lov/30/${data.time}`).then((resp) => {
+      //     setPotentialFrequencyDetails(resp.data.data);
+      //   });
+      // }
+      // if (data.frequencyDetails) {
+      //   apiAuth
+      //     .get(`/LookupData/Lov/30/${data.frequencyDetails}`)
+      //     .then((resp) => {
+      //       setPotentialFrequencyDetails(resp.data.data);
+      //     });
+      // }
+    });
+  };
+
+  const validateRisk = () => {
+    const newErrors = {};
+
+    // List of required fields
+    const requiredFields = [
+      "hazardousSituation",
+      "consequence",
+      "time",
+      "frequencyDetails",
+      "likelihoodScoring",
+      "severityScoring",
+      "humanControlMeasure",
+      "technicalControlMeasure",
+      "organisationalControlMeasure",
+      "modifiedTime",
+      "modifiedFrequencyDetails",
+      "residualLikelihoodScoring",
+      "residualSeverityScoring",
+      "hazardType",
+    ];
+
+    // Check each field and set error if empty
+    requiredFields.forEach((field) => {
+      if (!formValues[field]) {
+        newErrors[field] = "This field is required";
+      }
+    });
+
+    setErrorsSub(newErrors);
+
+    // If there are any errors, return false; otherwise, return true
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handelRiskSubmit = (value) => {
+    if (validateRisk()) {
+      setIsLoading(true);
+      if (value == "Submit") {
+        setFormValues((prevValues) => ({
+          ...prevValues,
+          id: 0,
+        }));
+      }
+      const payload = {
+        riskAnalysisSubTaskId: subTaskDetail.id,
+        hazardType: formValues.hazardType.value,
+        riskAnalysisHazardSituation: [formValues],
+      };
+      console.log(payload, "payyy");
+      let apiPath = "/RiskAnalysis/CreateAnalysis";
+
+      if (value === "Update") {
+        apiPath = "/RiskAnalysis/UpdateAnalysis";
+      }
+      apiAuth
+        .post(apiPath, payload)
+        .then((resp) => {
+          setIsLoading(false);
+
+          setCreateNewRisk(false);
+          getRecords();
+        })
+        .catch((err) => {
+          setIsLoading(true);
+        });
+      setFormValues({
+        hazardType: "",
+        hazardousSituation: "",
+        consequence: "",
+        time: "",
+        frequencyDetails: "",
+        frequencyScoring: "",
+        likelihoodScoring: "",
+        severityScoring: "",
+        potentialRisk: "",
+        humanControlMeasure: "",
+        technicalControlMeasure: "",
+        organisationalControlMeasure: "",
+        modifiedTime: "",
+        modifiedFrequencyDetails: "",
+        residualFrequencyScoring: "",
+        residualLikelihoodScoring: "",
+        residualSeverityScoring: "",
+        residualRisk: "",
+        id: 0,
+      });
+    }
+  };
+  const handelRemoveDetails = (id, subId) => {
+    setIsLoading(true);
+    if (id) {
+      apiAuth
+        .delete(`/RiskAnalysis/${id}`)
+        .then((resp) => {
+          console.log(resp.message, "hhh");
+          toast?.success("Deleted");
+          setIsLoading(false);
+
+          getRecords();
+        })
+        .catch((err) => setIsLoading(false));
+    }
+  };
+
+  const handelRiskInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+
+    // Clear error for the field being changed
+    setErrorsSub((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+
+    if (name === "time") {
+      apiAuth.get(`/LookupData/Lov/30/${value}`).then((resp) => {
+        setPotentialFrequencyDetails(resp.data.data);
+      });
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        frequencyScoring: "",
+        frequencyDetails: "",
+        likelihoodScoring: "",
+        severityScoring: "",
+        potentialRisk: "",
+      }));
+    }
+
+    if (name === "frequencyDetails") {
+      const selectedOption = potentialFrequencyDetails.find(
+        (option) => option.value === value
+      );
+      const frequencyScoring = selectedOption
+        ? calculateFrequencyScoring(selectedOption.text)
+        : "";
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        frequencyScoring: frequencyScoring,
+        likelihoodScoring: "",
+        severityScoring: "",
+        potentialRisk: "",
+      }));
+    }
+
+    if (
+      name === "frequencyDetails" ||
+      name === "likelihoodScoring" ||
+      name === "severityScoring"
+    ) {
+      const likelihoodScoring =
+        name === "likelihoodScoring" ? value : formValues.likelihoodScoring;
+      const severityScoring =
+        name === "severityScoring" ? value : formValues.severityScoring;
+      const potentialRisk = calculatePotentialRisk(
+        formValues.frequencyScoring,
+        likelihoodScoring,
+        severityScoring
+      );
+
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        potentialRisk: potentialRisk,
+      }));
+    }
+  };
+  const goBack = () => {
+    setCreateNewRisk(false);
+    setViewRisk(false);
+    setPotentialFrequencyDetails([]);
+    setFormValues({
+      ...formValues,
+      hazardType: "",
+      hazardousSituation: "",
+      consequence: "",
+      time: "",
+      frequencyDetails: "",
+      frequencyScoring: "",
+      likelihoodScoring: "",
+      severityScoring: "",
+      potentialRisk: "",
+      humanControlMeasure: "",
+      technicalControlMeasure: "",
+      organisationalControlMeasure: "",
+      modifiedTime: "",
+      modifiedFrequencyDetails: "",
+      residualFrequencyScoring: "",
+      residualLikelihoodScoring: "",
+      residualSeverityScoring: "",
+      residualRisk: "",
+    });
+  };
+  const [hazaid, setHazaId] = useState(0);
+  const handelEditRiskDetails = useCallback(
+    (id, subid) => {
+      setPotentialFrequencyDetails([]);
+      setFormValues({
+        ...formValues,
+        hazardType: "",
+        hazardousSituation: "",
+        consequence: "",
+        time: "",
+        frequencyDetails: "",
+        frequencyScoring: "",
+        likelihoodScoring: "",
+        severityScoring: "",
+        potentialRisk: "",
+        humanControlMeasure: "",
+        technicalControlMeasure: "",
+        organisationalControlMeasure: "",
+        modifiedTime: "",
+        modifiedFrequencyDetails: "",
+        residualFrequencyScoring: "",
+        residualLikelihoodScoring: "",
+        residualSeverityScoring: "",
+        residualRisk: "",
+      });
+      setCreateNewRisk(true);
+      apiAuth.get(`/RiskAnalysis/SubTaskDetail?id=${subid}`).then((resp) => {
+        setSubTaskDetail(resp.data.data);
+      });
+
+      apiAuth.get(`/LookupData/Lov/29`).then((resp) => {
+        setPotentialTimeDetails(resp.data.data);
+      });
+      apiAuth.get(`/LookupData/Lov/30/0`).then((resp) => {
+        setPotentialFrequencyDetails(resp.data.data);
+      });
+      apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
+        setEditRiskAnalysDetail(resp.data.data.riskAnalysisHazardSituation);
+        const data = resp.data.data.riskAnalysisHazardSituation[0];
+
+        setHazaId(resp?.data?.data?.hazardType);
+        setFormValues({
+          ...formValues,
+          hazardType: resp?.data?.data?.hazardType,
+          hazardousSituation: data?.hazardousSituation,
+          consequence: data?.consequence,
+          time: data?.time,
+          frequencyDetails: data?.frequencyDetails,
+          frequencyScoring: data?.frequencyScoring,
+          likelihoodScoring: data?.likelihoodScoring,
+          severityScoring: data?.severityScoring,
+          potentialRisk: data?.potentialRisk,
+          humanControlMeasure: data?.humanControlMeasure,
+          technicalControlMeasure: data?.technicalControlMeasure,
+          organisationalControlMeasure: data?.organisationalControlMeasure,
+          modifiedTime: data?.modifiedTime,
+          modifiedFrequencyDetails: data?.modifiedFrequencyDetails,
+          residualFrequencyScoring: data?.residualFrequencyScoring,
+          residualLikelihoodScoring: data?.residualLikelihoodScoring,
+          residualSeverityScoring: data?.residualSeverityScoring,
+          residualRisk: data?.residualRisk,
+          residualRiskClassification: data?.residualRiskClassification,
+          id: data?.id,
+        });
+        apiAuth.get(`/LookupData/Lov/28`).then((resp0) => {
+          setSubTaskhazardRiskView(true);
+          setSubTaskhazardDetail(resp0.data.data);
+          const result = resp0.data.data.find(
+            (item) => item.value === resp?.data?.data?.hazardType
+          );
+
+          setSubTaskhazardRiskViewName(result.text);
+        });
+        const { classification, classificationValue } =
+          calculateRiskClassification(data?.residualRisk);
+
+        setClassification(classification);
+        // if (data.time) {
+        //   apiAuth.get(`/LookupData/Lov/30/${data.time}`).then((resp) => {
+        //     setPotentialFrequencyDetails(resp.data.data);
+        //   });
+        // }
+        // if (data.frequencyDetails) {
+        //   apiAuth
+        //     .get(`/LookupData/Lov/30/${data.frequencyDetails}`)
+        //     .then((resp) => {
+        //       setPotentialFrequencyDetails(resp.data.data);
+        //     });
+        // }
+      });
+    },
+    [TaskhazardRiskViewName]
+  );
+
+  const handleChangeImpact = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "particular") {
+      apiAuth.get(`/LookupData/Lov/17/${value}`).then((resp) => {
+        setParticularSubList(resp?.data.data);
+      });
+    }
+    if (name === "particularSubCategory") {
+      apiAuth.get(`/LookupData/Lov/18/${e.target.value}`).then((resp) => {
+        setHazardList(resp?.data.data);
+      });
+    }
+    setImpactForm((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+  const handleInputChangeHazard = (event, option) => {
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      hazardType: {
+        text: option.text,
+        value: option.value,
+        isReadOnly: option.isReadOnly,
+      },
+      task: subTaskDetail.taskName,
+      subTask: subTaskDetail.subTaskName,
+    }));
+
+    setErrorsSub((prevErrors) => ({
+      ...prevErrors,
+      [event.target.name]: "",
+    }));
+
+    apiAuth
+      .get(`/RiskAnalysis/download/${option.text}`, {
+        responseType: "blob",
+      })
+      .then((resp) => {
+        setSubTaskhazardRiskApi(resp.data);
+        console.log(resp.data, "daaaa");
+        setSubTaskhazardRiskView(true);
+        setSubTaskhazardRiskViewName(option.text);
+      })
+      .catch((error) => {
+        console.error("Error downloading the file:", error);
+      });
+  };
+
+  const handelResidualRiskInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      [name]: value,
+    }));
+    // Clear error for the field being changed
+    setErrorsSub((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+
+    if (name === "modifiedTime") {
+      apiAuth.get(`/LookupData/Lov/30/${value}`).then((resp) => {
+        setPotentialFrequencyDetails(resp.data.data);
+      });
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        residualFrequencyScoring: "",
+        modifiedFrequencyDetails: "",
+        residualSeverityScoring: "",
+        residualLikelihoodScoring: "",
+        residualRisk: "",
+      }));
+    }
+
+    if (name === "modifiedFrequencyDetails") {
+      const selectedOption = potentialFrequencyDetails.find(
+        (option) => option.value === value
+      );
+      const frequencyScoring = selectedOption
+        ? calculateFrequencyScoring(selectedOption.text)
+        : "";
+      const residualFrequencyScoring =
+        name === "modifiedFrequencyDetails" ? frequencyScoring : "";
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        residualFrequencyScoring: residualFrequencyScoring,
+        residualLikelihoodScoring: "",
+        residualSeverityScoring: "",
+        residualRisk: "",
+      }));
+    }
+
+    if (
+      name === "modifiedFrequencyDetails" ||
+      name === "residualFrequencyScoring" ||
+      name === "residualSeverityScoring"
+    ) {
+      const likelihoodScoring =
+        name === "residualLikelihoodScoring"
+          ? value
+          : formValues.residualLikelihoodScoring;
+      const severityScoring =
+        name === "residualSeverityScoring"
+          ? value
+          : formValues.residualSeverityScoring;
+      const residualRisk = calculatePotentialRisk(
+        formValues.residualFrequencyScoring,
+        likelihoodScoring,
+        severityScoring
+      );
+      const { classification, classificationValue } =
+        calculateRiskClassification(residualRisk);
+
+      setClassification(classification);
+      setFormValues((prevValues) => ({
+        ...prevValues,
+        residualRisk: residualRisk,
+        residualRiskClassification: classificationValue,
+      }));
+    }
+  };
 
   if (isLoading) {
     return <FuseLoading />;
@@ -2818,298 +3514,2098 @@ function Course() {
 
                 {currentPhase === "Implementation" && (
                   <>
-                    <Paper
-                      className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden"
-                      style={{ marginRight: "0", width: "100%" }}
-                    >
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
-                      >
-                        <h2
-                          _ngcontent-fyk-c288=""
-                          class="text-2xl font-semibold"
-                        >
-                          Implementation
-                        </h2>
-                        <StyledBadge badgeContent={listDocument.length}>
-                          <Button
-                            className="whitespace-nowrap "
-                            style={{
-                              border: "1px solid",
-                              backgroundColor: "#0000",
-                              color: "black",
-                              borderColor: "rgba(203,213,225)",
+                    {CreateNewRisk ? (
+                      <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
+                        <div>
+                          <div className="flex items-center w-full p-30 pt-24 pb-24 border-b pb-5 justify-between">
+                            <h2 className="text-2xl font-semibold">
+                              New Risk Analysis
+                            </h2>
+                          </div>
+                          <div className="font-semibold p-30 pt-24 pb-0 ">
+                            <Link
+                              rel="noopener noreferrer"
+                              onClick={goBack}
+                              className="text-blue"
+                            >
+                              {viewrisk ? "Back to Impact List" : "Go Back"}
+                            </Link>
+                          </div>
+                        </div>
+                        <div className="p-30 pt-24 pb-24">
+                          <Box
+                            sx={{
+                              // display: "flex",
+                              // flexWrap: "wrap",
+                              marginTop: "15px",
                             }}
-                            variant="contained"
-                            color="warning"
-                            startIcon={
-                              <FuseSvgIcon size={20}>
-                                heroicons-solid:upload
-                              </FuseSvgIcon>
-                            }
-                            onClick={HandleTraining}
                           >
-                            Training Attendence Sheet
-                          </Button>
-                        </StyledBadge>
-                        <Modal
-                          aria-labelledby="transition-modal-title"
-                          aria-describedby="transition-modal-description"
-                          open={open}
-                          onClose={handleClose}
-                          closeAfterTransition
-                          slots={{ backdrop: Backdrop }}
-                          slotProps={{
-                            backdrop: {
-                              timeout: 500,
-                            },
-                          }}
-                        >
-                          <Fade in={open}>
-                            <Box sx={style1}>
-                              <Box sx={{ flex: 1 }}>
-                                <Box
-                                  className="flex justify-between"
-                                  style={{ margin: "30px" }}
-                                >
-                                  <Typography
-                                    id="transition-modal-title"
-                                    variant="h6"
-                                    component="h2"
-                                    style={{
-                                      fontSize: "3rem",
-                                    }}
-                                  >
-                                    File Manager
-                                    <Typography
-                                      id="transition-modal-subtitle"
-                                      component="h2"
-                                    >
-                                      {listDocument.length} Files
-                                    </Typography>
-                                  </Typography>
-                                </Box>
+                            <FormControl
+                              fullWidth
+                              sx={taskFormControlStyles}
+                              className="m-0"
+                            >
+                              <FormLabel
+                                htmlFor="hazardDetail"
+                                className="font-semibold leading-none"
+                              >
+                                Task
+                              </FormLabel>
+                              {viewrisk ? (
+                                <>
+                                  <span>{subTaskDetail.taskName}</span>
+                                </>
+                              ) : (
+                                <OutlinedInput
+                                  id="hazardDetail"
+                                  name="hazardDetail"
+                                  value={subTaskDetail.taskName}
+                                  onChange={handleChangeImpact}
+                                  label="Reason For Change*"
+                                  className="mt-5"
+                                  disabled
+                                />
+                              )}
+                            </FormControl>
+                            <FormControl
+                              fullWidth
+                              sx={{ margin: "15px 0 0 0", maxWidth: "100%" }}
+                            >
+                              <FormLabel
+                                htmlFor="hazardDetail"
+                                className="font-semibold leading-none"
+                              >
+                                Sub Task
+                              </FormLabel>
+                              {viewrisk ? (
+                                <>
+                                  <span>{subTaskDetail.subTaskName}</span>
+                                </>
+                              ) : (
+                                <OutlinedInput
+                                  id="hazardDetail"
+                                  name="hazardDetail"
+                                  value={subTaskDetail.subTaskName}
+                                  onChange={handleChangeImpact}
+                                  label="Reason For Change*"
+                                  className="mt-5"
+                                  disabled
+                                />
+                              )}
+                            </FormControl>
 
-                                <Box>
-                                  <Typography
-                                    id="transition-modal-title"
-                                    variant="h6"
-                                    className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
-                                    component="div"
-                                    style={{
-                                      backgroundColor: "#e3eeff80",
+                            {viewrisk ? (
+                              <Box
+                                className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 w-full"
+                                sx={{
+                                  width: TaskhazardRiskView ? 818 : 600,
+                                  maxWidth: "100%",
+                                }}
+                              >
+                                <FormControl
+                                  fullWidth
+                                  sx={{ margin: "20px 0 0 0" }}
+                                >
+                                  <FormLabel
+                                    htmlFor="Time"
+                                    className="font-semibold leading-none"
+                                  >
+                                    Hazard Type
+                                  </FormLabel>
+
+                                  <Select
+                                    labelId="time-select-label"
+                                    id="time-select"
+                                    label="hazardType *"
+                                    name="hazardType"
+                                    value={
+                                      formValues.hazardType.value
+                                        ? formValues.hazardType.value
+                                        : hazaid
+                                    }
+                                    onChange={(e) => {
+                                      const selectedOption =
+                                        subTaskhazardDetail.find(
+                                          (option) =>
+                                            option.value === e.target.value
+                                        );
+                                      handleInputChangeHazard(
+                                        e,
+                                        selectedOption
+                                      );
+                                    }}
+                                    error={!!errorsSub.hazardType}
+                                    disabled
+                                    sx={{
+                                      "& .MuiOutlinedInput-notchedOutline": {
+                                        border: "none",
+                                      },
+                                      "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                        {
+                                          border: "none",
+                                        },
+                                      "&:hover .MuiOutlinedInput-notchedOutline":
+                                        {
+                                          border: "none",
+                                        },
+                                      "& .MuiSelect-icon": {
+                                        display: "none",
+                                      },
+                                      "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                        {
+                                          padding: "0px",
+                                        },
                                     }}
                                   >
-                                    {listDocument.map((doc, index) => (
-                                      <div className="content " key={index}>
-                                        <div
-                                          onClick={() => handelDetailDoc(doc)}
-                                          style={{
-                                            textAlign: "-webkit-center",
-                                          }}
-                                        >
-                                          <img
-                                            src="/assets/images/etc/icon_N.png"
-                                            style={{}}
-                                          />
-                                          <h6>{doc?.name}</h6>
-                                          <h6>by {doc?.staffName}</h6>
-                                        </div>
-                                      </div>
+                                    <MenuItem value="" disabled>
+                                      <em>None</em>
+                                    </MenuItem>
+                                    {subTaskhazardDetail.map((option) => (
+                                      <MenuItem
+                                        key={option.value}
+                                        value={option.value}
+                                      >
+                                        {option.text}
+                                      </MenuItem>
                                     ))}
-                                  </Typography>
+                                  </Select>
+                                  {!!errorsSub.hazardType && (
+                                    <FormHelperText error>
+                                      {errorsSub.hazardType}
+                                    </FormHelperText>
+                                  )}
+                                </FormControl>
+                              </Box>
+                            ) : (
+                              <Box
+                                sx={{
+                                  width: TaskhazardRiskView ? 818 : 600,
+                                }}
+                                className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-24 w-full"
+                              >
+                                <FormControl
+                                  fullWidth
+                                  sx={{ flexGrow: 1, margin: "20px 0 0 0" }}
+                                >
+                                  <InputLabel id="division-label">
+                                    Hazard Type *
+                                  </InputLabel>
+                                  <Select
+                                    labelId="division-label"
+                                    name="hazardType"
+                                    value={
+                                      formValues?.hazardType?.value
+                                        ? formValues?.hazardType?.value
+                                        : hazaid
+                                    }
+                                    onChange={(e) => {
+                                      const selectedOption =
+                                        subTaskhazardDetail.find(
+                                          (option) =>
+                                            option.value === e.target.value
+                                        );
+                                      handleInputChangeHazard(
+                                        e,
+                                        selectedOption
+                                      );
+                                    }}
+                                    error={!!errorsSub.hazardType}
+                                  >
+                                    <MenuItem value="" disabled>
+                                      <em>None</em>
+                                    </MenuItem>
+                                    {subTaskhazardDetail.map((option) => (
+                                      <MenuItem
+                                        key={option.value}
+                                        value={option.value}
+                                      >
+                                        {option.text}
+                                      </MenuItem>
+                                    ))}
+                                  </Select>
+
+                                  {!!errorsSub.hazardType && (
+                                    <FormHelperText error>
+                                      {errorsSub.hazardType}
+                                    </FormHelperText>
+                                  )}
+                                </FormControl>
+
+                                <Box
+                                  sx={{
+                                    margin: "15px 0 0 0",
+                                    padding: "12px 0 0 0",
+                                  }}
+                                >
+                                  {TaskhazardRiskView && (
+                                    <>
+                                      <a
+                                        href={URL.createObjectURL(
+                                          new Blob([TaskhazardRiskApi], {
+                                            type: "application/pdf",
+                                          })
+                                        )}
+                                        target="_blank"
+                                        className="text-blue"
+                                        rel="noopener noreferrer"
+                                        style={{
+                                          backgroundColor: "white",
+                                          marginRight: "15px",
+                                        }}
+                                      >
+                                        {TaskhazardRiskViewName}.pdf
+                                      </a>
+                                    </>
+                                  )}
+
+                                  <a
+                                    href={URL.createObjectURL(
+                                      new Blob([generalGuidePdf], {
+                                        type: "application/pdf",
+                                      })
+                                    )}
+                                    target="_blank"
+                                    className="text-blue"
+                                    rel="noopener noreferrer"
+                                    style={{
+                                      backgroundColor: "white",
+                                      color: "blue",
+                                    }}
+                                    onClick={handleGeneralGuideClick}
+                                  >
+                                    General Guide
+                                  </a>
                                 </Box>
                               </Box>
-                              {fileDetails && (
-                                <Box sx={drawerStyle(fileDetails)}>
-                                  <div className="flex justify-end">
-                                    <Button
-                                      className=""
-                                      variant="contained"
-                                      style={{ backgroundColor: "white" }}
-                                      onClick={() => setFileDetails(false)}
-                                    >
-                                      <FuseSvgIcon size={20}>
-                                        heroicons-outline:x
-                                      </FuseSvgIcon>
-                                    </Button>
-                                  </div>
-
-                                  <div className="text-center">
-                                    <label htmlFor="fileInput">
-                                      <div className=" ">
-                                        <div
-                                          // onClick={handelDetailDoc}
-                                          style={{
-                                            textAlign: "-webkit-center",
-                                          }}
-                                        >
-                                          <img
-                                            src="/assets/images/etc/icon_N.png"
-                                            alt=""
-                                          />
-                                        </div>
-                                        {selectedDocument?.name}
-                                      </div>
-                                    </label>
-                                    <Box
-                                      component="form"
-                                      sx={{
-                                        "& > :not(style)": {
-                                          m: 1,
-                                          width: "25ch",
-                                        },
-                                      }}
-                                      noValidate
-                                      autoComplete="off"
-                                    >
-                                      <TextField
-                                        id="standard-basic"
-                                        label={
-                                          <BoldLabel>Information</BoldLabel>
-                                        }
-                                        variant="standard"
-                                        disabled
-                                      />
-                                    </Box>
-                                    <Box
-                                      component="form"
-                                      sx={{
-                                        "& > :not(style)": {
-                                          m: 1,
-                                          width: "25ch",
-                                        },
-                                      }}
-                                      noValidate
-                                      autoComplete="off"
-                                    >
-                                      <TextField
-                                        id="selectedFileName"
-                                        label="Created By"
-                                        variant="standard"
-                                        disabled
-                                        value={selectedDocument.staffName}
-                                      />
-                                    </Box>
-                                    <Box
-                                      component="form"
-                                      sx={{
-                                        "& > :not(style)": {
-                                          m: 1,
-                                          width: "25ch",
-                                        },
-                                      }}
-                                      noValidate
-                                      autoComplete="off"
-                                    >
-                                      <TextField
-                                        id="standard-basic"
-                                        label=" Created At"
-                                        name="description"
-                                        variant="standard"
-                                        disabled
-                                        value={formatDate(
-                                          selectedDocument.createdAt
-                                        )}
-                                      />
-                                    </Box>
-                                    <Box
-                                      component="form"
-                                      sx={{
-                                        "& > :not(style)": {
-                                          m: 1,
-                                          width: "25ch",
-                                        },
-                                      }}
-                                      noValidate
-                                      autoComplete="off"
-                                    >
-                                      <TextField
-                                        id="standard-basic"
-                                        label={
-                                          <BoldLabel>Description</BoldLabel>
-                                        }
-                                        name="description"
-                                        variant="standard"
-                                        disabled
-                                        value={
-                                          selectedDocument?.description === null
-                                            ? ""
-                                            : selectedDocument?.descritpion
-                                        }
-                                      />
-                                    </Box>
-                                  </div>
-
-                                  <div
-                                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                                    style={{
-                                      marginTop: "15px",
-                                      justifyContent: "center",
-                                      backgroundColor: " rgba(248,250,252)",
+                            )}
+                          </Box>
+                          <Box
+                            sx={
+                              {
+                                // marginTop: "15px",
+                              }
+                            }
+                          >
+                            <div className="flex-auto">
+                              <div className="flex flex-col-reverse">
+                                <div
+                                  style={{
+                                    // marginTop: "30px",
+                                    justifyContent: "space-between",
+                                    // margin: "10px",
+                                  }}
+                                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-24 w-full"
+                                >
+                                  <Box
+                                    sx={{
+                                      width: 600,
+                                      maxWidth: "100%",
+                                      margin: "15px 0 0 0",
                                     }}
                                   >
-                                    <Button
-                                      className="whitespace-nowrap"
-                                      variant="contained"
-                                      color="secondary"
-                                      type="submit"
-                                      onClick={handleDownload}
-                                    >
-                                      Download
-                                    </Button>
-                                  </div>
-                                </Box>
-                              )}
-                            </Box>
-                          </Fade>
-                        </Modal>
-                      </div>
+                                    {viewrisk ? (
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          flexDirection: "column", // Stack items vertically
+                                        }}
+                                      >
+                                        <FormLabel
+                                          htmlFor="hazardDetail"
+                                          className="font-semibold leading-none"
+                                        >
+                                          Hazardous Situation
+                                        </FormLabel>
 
-                      <Box sx={{ width: "100%" }} className="p-30 pt-24 pb-24">
-                        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                          <Tabs
-                            value={value}
-                            onChange={handleChange}
-                            aria-label="basic tabs example"
-                          >
-                            <Tab label="Task" {...a11yProps(0)} />
-                            <Tab label="Checklist" {...a11yProps(1)} />
-                          </Tabs>
-                        </Box>
-                        <CustomTabPanel value={value} index={0} className="task_accordians">
-                          <div class="flex flex-col w-full border rounded ">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="flex items-center w-full p-10 border-b justify-between" style={{ paddingRight: "15px", paddingLeft: "15px" }}
-                            >
-                              <div className="flex items-center">
-                                <h2
-                                  _ngcontent-fyk-c288=""
-                                  class="text-2xl font-semibold"
-                                  style={{ marginRight: "15px" }}
+                                        <span className="pt-5">
+                                          {formValues.hazardousSituation}
+                                        </span>
+                                      </Box>
+                                    ) : (
+                                      <TextField
+                                        fullWidth
+                                        label="Hazardous Situation *"
+                                        name="hazardousSituation"
+                                        value={formValues.hazardousSituation}
+                                        onChange={handelRiskInputChange}
+                                        error={!!errorsSub.hazardousSituation}
+                                        helperText={
+                                          errorsSub.hazardousSituation
+                                        }
+                                      />
+                                    )}
+                                  </Box>
+                                  <Box
+                                    sx={{
+                                      width: 600,
+                                      maxWidth: "100%",
+                                      margin: "15px 0 0 0",
+                                    }}
+                                  >
+                                    {viewrisk ? (
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          flexDirection: "column", // Stack items vertically
+                                        }}
+                                      >
+                                        <FormLabel
+                                          htmlFor="hazardDetail"
+                                          className="font-semibold leading-none"
+                                        >
+                                          Consequence
+                                        </FormLabel>
+                                        <span className="pt-5">
+                                          {formValues.consequence}
+                                        </span>
+                                      </Box>
+                                    ) : (
+                                      <TextField
+                                        fullWidth
+                                        label="Consequence *"
+                                        name="consequence"
+                                        value={formValues.consequence}
+                                        onChange={handelRiskInputChange}
+                                        error={!!errorsSub.consequence}
+                                        helperText={errorsSub.consequence}
+                                      />
+                                    )}
+                                  </Box>
+                                </div>
+                              </div>
+                              <h3
+                                style={{
+                                  padding: "10px 0",
+                                  margin: "15px 0 0 0",
+                                }}
+                              >
+                                <b>Potential Risk</b>
+                              </h3>
+                              <div className="flex flex-col-reverse">
+                                <div
+                                  style={{
+                                    // marginTop: "30px",
+                                    justifyContent: "space-between",
+                                    // margin: "15px 0 0 0",
+                                  }}
+                                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full"
                                 >
-                                  {taskLists.length} Tasks
-                                </h2>
-                                {!impActivity.isComplete &&
-                                  impActivity.status === "Pending" && (
-                                    <Button
-                                      className="whitespace-nowrap mt-5 mb-5"
-                                      style={{
-                                        border: "1px solid",
-                                        backgroundColor: "#0000",
-                                        color: "black",
-                                        borderColor: "rgba(203,213,225)",
+                                  {viewrisk ? (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 280,
+                                          maxWidth: "100%",
+                                          display: "flex",
+                                          flexDirection: "column",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormControl fullWidth>
+                                          <FormLabel
+                                            htmlFor="Time"
+                                            className="font-semibold leading-none"
+                                          >
+                                            Time
+                                          </FormLabel>
+
+                                          <Select
+                                            labelId="time-select-label"
+                                            id="time-select"
+                                            label="Time *"
+                                            name="time"
+                                            value={formValues.time}
+                                            onChange={handelRiskInputChange}
+                                            error={!!errorsSub.time}
+                                            disabled
+                                            sx={{
+                                              "& .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&:hover .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "& .MuiSelect-icon": {
+                                                display: "none",
+                                              },
+                                              "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                                {
+                                                  padding: "0px",
+                                                },
+                                            }}
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {potentialTimeDetails.map(
+                                              (option) => (
+                                                <MenuItem
+                                                  key={option.value}
+                                                  value={option.value}
+                                                >
+                                                  {option.text}
+                                                </MenuItem>
+                                              )
+                                            )}
+                                          </Select>
+                                          {!!errorsSub.time && (
+                                            <FormHelperText error>
+                                              {errorsSub.time}
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <Box
+                                      sx={{
+                                        width: 380,
+                                        maxWidth: "100%",
+                                        margin: "15px 0 0 0",
                                       }}
-                                      variant="contained"
-                                      color="warning"
-                                      onClick={handleOpenImplemntationTask}
                                     >
-                                      Add New Task
-                                    </Button>
+                                      <FormControl fullWidth>
+                                        <InputLabel id="time-select-label">
+                                          Time *
+                                        </InputLabel>
+                                        <Select
+                                          labelId="time-select-label"
+                                          id="time-select"
+                                          label="Time *"
+                                          name="time"
+                                          value={formValues.time}
+                                          onChange={handelRiskInputChange}
+                                          error={!!errorsSub.time}
+                                        >
+                                          <MenuItem value="" disabled>
+                                            <em>None</em>
+                                          </MenuItem>
+                                          {potentialTimeDetails.map(
+                                            (option) => (
+                                              <MenuItem
+                                                key={option.value}
+                                                value={option.value}
+                                              >
+                                                {option.text}
+                                              </MenuItem>
+                                            )
+                                          )}
+                                        </Select>
+                                        {!!errorsSub.time && (
+                                          <FormHelperText error>
+                                            {errorsSub.time}
+                                          </FormHelperText>
+                                        )}
+                                      </FormControl>
+                                    </Box>
                                   )}
-                                {/* <Button
+
+                                  {viewrisk ? (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 280,
+                                          maxWidth: "100%",
+                                          display: "flex",
+                                          flexDirection: "column",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormControl fullWidth>
+                                          <FormLabel
+                                            htmlFor="Frequency"
+                                            className="font-semibold leading-none"
+                                          >
+                                            Frequency
+                                          </FormLabel>
+                                          <Select
+                                            labelId="time-select-label"
+                                            id="time-select"
+                                            label="Frequency *"
+                                            name="frequencyDetails"
+                                            value={formValues.frequencyDetails}
+                                            onChange={handelRiskInputChange}
+                                            error={!!errorsSub.frequencyDetails}
+                                            disabled
+                                            sx={{
+                                              "& .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&:hover .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "& .MuiSelect-icon": {
+                                                display: "none",
+                                              },
+                                              "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                                {
+                                                  padding: "0px",
+                                                },
+                                            }}
+                                          >
+                                            {potentialFrequencyDetails.map(
+                                              (option) => (
+                                                <MenuItem
+                                                  key={option.value}
+                                                  value={option.value}
+                                                >
+                                                  {option.text}
+                                                </MenuItem>
+                                              )
+                                            )}
+                                          </Select>
+                                          {!!errorsSub.frequencyDetails && (
+                                            <FormHelperText error>
+                                              {errorsSub.frequencyDetails}
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <Box
+                                      sx={{
+                                        width: 380,
+                                        maxWidth: "100%",
+                                        margin: "15px 0 0 0",
+                                      }}
+                                    >
+                                      <FormControl fullWidth>
+                                        <InputLabel id="time-select-label">
+                                          Frequency *
+                                        </InputLabel>
+                                        <Select
+                                          labelId="time-select-label"
+                                          id="time-select"
+                                          label="Frequency *"
+                                          name="frequencyDetails"
+                                          value={formValues.frequencyDetails}
+                                          onChange={handelRiskInputChange}
+                                          error={!!errorsSub.frequencyDetails}
+                                        >
+                                          {potentialFrequencyDetails.map(
+                                            (option) => (
+                                              <MenuItem
+                                                key={option.value}
+                                                value={option.value}
+                                              >
+                                                {option.text}
+                                              </MenuItem>
+                                            )
+                                          )}
+                                        </Select>
+                                        {!!errorsSub.frequencyDetails && (
+                                          <FormHelperText error>
+                                            {errorsSub.frequencyDetails}
+                                          </FormHelperText>
+                                        )}
+                                      </FormControl>
+                                    </Box>
+                                  )}
+
+                                  <Box
+                                    sx={{
+                                      width: 380,
+                                      maxWidth: "100%",
+                                      margin: "15px 0 0 0",
+                                    }}
+                                  >
+                                    {viewrisk ? (
+                                      <>
+                                        <Box
+                                          sx={{
+                                            display: "flex",
+                                            flexDirection: "column", // Stack items vertically
+                                          }}
+                                        >
+                                          <FormLabel
+                                            htmlFor="hazardDetail"
+                                            className="font-semibold leading-none"
+                                          >
+                                            Frequency Scoring
+                                          </FormLabel>
+                                          &nbsp;&nbsp; &nbsp;&nbsp;
+                                          <span style={{ color: "#a3a9b4" }}>
+                                            {formValues.frequencyScoring}
+                                          </span>
+                                        </Box>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <TextField
+                                          fullWidth
+                                          label="Frequency Scoring"
+                                          name="frequencyScoring"
+                                          value={formValues.frequencyScoring}
+                                          disabled
+                                        />
+                                      </>
+                                    )}
+                                  </Box>
+                                </div>
+                              </div>{" "}
+                              <div className="flex flex-col-reverse">
+                                <div
+                                  style={{
+                                    // marginTop: "30px",
+                                    justifyContent: "space-between",
+                                    // margin: "15px 0 0 0",
+                                  }}
+                                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full "
+                                >
+                                  <Box
+                                    sx={{
+                                      width: 380,
+                                      maxWidth: "100%",
+                                      margin: "15px 0 0 0",
+                                    }}
+                                  >
+                                    {viewrisk ? (
+                                      <>
+                                        <FormControl fullWidth>
+                                          <FormLabel
+                                            htmlFor=" Likelihood Scoring"
+                                            className="font-semibold leading-none"
+                                          >
+                                            Likelihood Scoring
+                                          </FormLabel>
+                                          <Select
+                                            labelId="likelihood-select-label"
+                                            id="likelihood-select"
+                                            label="Likelihood Scoring"
+                                            name="likelihoodScoring"
+                                            onChange={handelRiskInputChange}
+                                            value={formValues.likelihoodScoring}
+                                            error={
+                                              !!errorsSub.likelihoodScoring
+                                            }
+                                            disabled
+                                            sx={{
+                                              "& .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&:hover .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "& .MuiSelect-icon": {
+                                                display: "none",
+                                              },
+                                              "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                                {
+                                                  padding: "0px",
+                                                },
+                                            }}
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {likelihoodValues.map((value) => (
+                                              <MenuItem
+                                                key={value}
+                                                value={value}
+                                              >
+                                                {value}
+                                              </MenuItem>
+                                            ))}
+                                          </Select>
+                                          {errorsSub.likelihoodScoring && (
+                                            <FormHelperText error>
+                                              {errorsSub.likelihoodScoring}
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <FormControl fullWidth>
+                                          <InputLabel id="likelihood-select-label">
+                                            Likelihood Scoring
+                                          </InputLabel>
+                                          <Select
+                                            labelId="likelihood-select-label"
+                                            id="likelihood-select"
+                                            label="Likelihood Scoring"
+                                            name="likelihoodScoring"
+                                            onChange={handelRiskInputChange}
+                                            value={formValues.likelihoodScoring}
+                                            error={
+                                              !!errorsSub.likelihoodScoring
+                                            }
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {likelihoodValues.map((value) => (
+                                              <MenuItem
+                                                key={value}
+                                                value={value}
+                                              >
+                                                {value}
+                                              </MenuItem>
+                                            ))}
+                                          </Select>
+                                          {errorsSub.likelihoodScoring && (
+                                            <FormHelperText error>
+                                              {errorsSub.likelihoodScoring}
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </>
+                                    )}
+                                  </Box>
+                                  <Box
+                                    sx={{
+                                      width: 380,
+                                      maxWidth: "100%",
+                                      margin: "15px 0 0 0",
+                                    }}
+                                  >
+                                    {viewrisk ? (
+                                      <>
+                                        <FormLabel
+                                          htmlFor="Frequency"
+                                          className="font-semibold leading-none"
+                                        >
+                                          Frequency
+                                        </FormLabel>
+                                        <FormControl fullWidth>
+                                          <Select
+                                            labelId="severity-select-label"
+                                            id="severity-select"
+                                            label="Severity Scoring"
+                                            name="severityScoring"
+                                            value={formValues.severityScoring}
+                                            onChange={handelRiskInputChange}
+                                            error={!!errorsSub.severityScoring}
+                                            disabled
+                                            sx={{
+                                              "& .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&:hover .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "& .MuiSelect-icon": {
+                                                display: "none",
+                                              },
+                                              "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                                {
+                                                  padding: "0px",
+                                                },
+                                            }}
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {likelihoodValues.map((value) => (
+                                              <MenuItem
+                                                key={value}
+                                                value={value}
+                                              >
+                                                {value}
+                                              </MenuItem>
+                                            ))}
+                                          </Select>
+                                          {errorsSub.severityScoring && (
+                                            <FormHelperText error>
+                                              {errorsSub.severityScoring}
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <FormControl fullWidth>
+                                          <InputLabel id="severity-select-label">
+                                            Severity Scoring
+                                          </InputLabel>
+                                          <Select
+                                            labelId="severity-select-label"
+                                            id="severity-select"
+                                            label="Severity Scoring"
+                                            name="severityScoring"
+                                            value={formValues.severityScoring}
+                                            onChange={handelRiskInputChange}
+                                            error={!!errorsSub.severityScoring}
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {likelihoodValues.map((value) => (
+                                              <MenuItem
+                                                key={value}
+                                                value={value}
+                                              >
+                                                {value}
+                                              </MenuItem>
+                                            ))}
+                                          </Select>
+                                          {errorsSub.severityScoring && (
+                                            <FormHelperText error>
+                                              {errorsSub.severityScoring}
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </>
+                                    )}
+                                  </Box>
+                                  <Box
+                                    sx={{
+                                      width: 380,
+                                      maxWidth: "100%",
+                                      margin: "15px 0 0 0",
+                                    }}
+                                  >
+                                    {viewrisk ? (
+                                      <>
+                                        <Box
+                                          sx={{
+                                            display: "flex",
+                                            flexDirection: "column", // Stack items vertically
+                                          }}
+                                        >
+                                          <FormLabel
+                                            htmlFor="hazardDetail"
+                                            className="font-semibold leading-none"
+                                          >
+                                            Potential Risk
+                                          </FormLabel>
+                                          &nbsp;&nbsp; &nbsp;&nbsp;
+                                          <span style={{ color: "#a3a9b4" }}>
+                                            {formValues.potentialRisk}
+                                          </span>
+                                        </Box>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <TextField
+                                          fullWidth
+                                          label="Potential Risk"
+                                          name="potentialRisk"
+                                          value={formValues.potentialRisk}
+                                          disabled
+                                        />
+                                      </>
+                                    )}
+                                  </Box>
+                                </div>
+                              </div>{" "}
+                              <h3
+                                style={{
+                                  padding: "10px 0",
+                                  margin: "15px 0 0 0",
+                                }}
+                              >
+                                <b>Control Measures</b>
+                              </h3>
+                              <div className="flex flex-col-reverse">
+                                <div
+                                  style={{
+                                    // marginTop: "30px",
+                                    justifyContent: "space-between",
+                                    // margin: "15px 0 0 0",
+                                  }}
+                                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full"
+                                >
+                                  {viewrisk ? (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 280,
+                                          maxWidth: "100%",
+                                          display: "flex",
+                                          flexDirection: "column", // Stack items vertically
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormLabel
+                                          htmlFor="hazardDetail"
+                                          className="font-semibold leading-none"
+                                        >
+                                          Human
+                                        </FormLabel>
+                                        &nbsp;&nbsp; &nbsp;&nbsp;
+                                        <span>
+                                          {formValues.humanControlMeasure}
+                                        </span>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        margin: "15px 0 0 0",
+                                      }}
+                                    >
+                                      <TextField
+                                        fullWidth
+                                        label="Human * "
+                                        name="humanControlMeasure"
+                                        onChange={handelRiskInputChange}
+                                        value={formValues.humanControlMeasure}
+                                        error={errorsSub.humanControlMeasure}
+                                        helperText={
+                                          errorsSub.humanControlMeasure
+                                        }
+                                      />
+                                    </Box>
+                                  )}
+                                  {viewrisk ? (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 280,
+                                          maxWidth: "100%",
+                                          display: "flex",
+                                          flexDirection: "column", // Stack items vertically
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormLabel
+                                          htmlFor="hazardDetail"
+                                          className="font-semibold leading-none"
+                                        >
+                                          Technical
+                                        </FormLabel>
+                                        &nbsp;&nbsp; &nbsp;&nbsp;
+                                        <span>
+                                          {formValues.technicalControlMeasure}
+                                        </span>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <Box
+                                      sx={{
+                                        width: 480,
+                                        maxWidth: "100%",
+                                        margin: "15px 0 0 0",
+                                      }}
+                                    >
+                                      <TextField
+                                        fullWidth
+                                        label="Technical *"
+                                        name="technicalControlMeasure"
+                                        onChange={handelRiskInputChange}
+                                        value={
+                                          formValues.technicalControlMeasure
+                                        }
+                                        error={
+                                          errorsSub.technicalControlMeasure
+                                        }
+                                        helperText={
+                                          errorsSub.technicalControlMeasure
+                                        }
+                                      />
+                                    </Box>
+                                  )}
+
+                                  {viewrisk ? (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 280,
+                                          maxWidth: "100%",
+                                          display: "flex",
+                                          margin: "15px 0 0 0",
+                                          flexDirection: "column", // Stack items vertically
+                                        }}
+                                      >
+                                        <FormLabel
+                                          htmlFor="hazardDetail"
+                                          className="font-semibold leading-none"
+                                        >
+                                          Organisational
+                                        </FormLabel>
+                                        &nbsp;&nbsp; &nbsp;&nbsp;
+                                        <span>
+                                          {
+                                            formValues.organisationalControlMeasure
+                                          }
+                                        </span>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <Box
+                                      sx={{
+                                        width: 380,
+                                        maxWidth: "100%",
+                                        margin: "15px 0 0 0",
+                                      }}
+                                    >
+                                      <TextField
+                                        fullWidth
+                                        label="Organisational *"
+                                        name="organisationalControlMeasure"
+                                        onChange={handelRiskInputChange}
+                                        value={
+                                          formValues.organisationalControlMeasure
+                                        }
+                                        error={
+                                          errorsSub.organisationalControlMeasure
+                                        }
+                                        helperText={
+                                          errorsSub.organisationalControlMeasure
+                                        }
+                                      />
+                                    </Box>
+                                  )}
+                                </div>
+                              </div>{" "}
+                              <h3
+                                style={{
+                                  padding: "10px 0",
+                                  margin: "15px 0 0 0",
+                                }}
+                              >
+                                <b>Residual Risk</b>
+                              </h3>
+                              <div className="flex flex-col-reverse">
+                                <div
+                                  style={{
+                                    // marginTop: "30px",
+                                    justifyContent: "space-between",
+                                    // margin: "10px",
+                                  }}
+                                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full"
+                                >
+                                  {viewrisk ? (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 280,
+                                          maxWidth: "100%",
+                                          display: "flex",
+                                          margin: "15px 0 0 0",
+                                          flexDirection: "column",
+                                        }}
+                                      >
+                                        <FormControl fullWidth>
+                                          <FormLabel
+                                            id="time-select-label"
+                                            className="font-semibold leading-none"
+                                          >
+                                            Time
+                                          </FormLabel>
+                                          <Select
+                                            labelId="time-select-label"
+                                            id="time-select"
+                                            label="Time * "
+                                            name="modifiedTime"
+                                            value={formValues.modifiedTime}
+                                            onChange={(e) =>
+                                              handelResidualRiskInputChange(e)
+                                            }
+                                            error={!!errorsSub.modifiedTime}
+                                            disabled
+                                            sx={{
+                                              "& .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&:hover .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "& .MuiSelect-icon": {
+                                                display: "none",
+                                              },
+                                              "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                                {
+                                                  padding: "0px",
+                                                },
+                                            }}
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {potentialTimeDetails.map(
+                                              (option) => (
+                                                <MenuItem
+                                                  key={option.value}
+                                                  value={option.value}
+                                                >
+                                                  {option.text}
+                                                </MenuItem>
+                                              )
+                                            )}
+                                          </Select>
+                                          {errorsSub.modifiedTime && (
+                                            <FormHelperText error>
+                                              {errorsSub.modifiedTime}
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 380,
+                                          maxWidth: "100%",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormControl fullWidth>
+                                          <InputLabel id="time-select-label">
+                                            Time *
+                                          </InputLabel>
+                                          <Select
+                                            labelId="time-select-label"
+                                            id="time-select"
+                                            label="Time * "
+                                            name="modifiedTime"
+                                            value={formValues.modifiedTime}
+                                            onChange={(e) =>
+                                              handelResidualRiskInputChange(e)
+                                            }
+                                            error={!!errorsSub.modifiedTime}
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {potentialTimeDetails.map(
+                                              (option) => (
+                                                <MenuItem
+                                                  key={option.value}
+                                                  value={option.value}
+                                                >
+                                                  {option.text}
+                                                </MenuItem>
+                                              )
+                                            )}
+                                          </Select>
+                                          {errorsSub.modifiedTime && (
+                                            <FormHelperText error>
+                                              {errorsSub.modifiedTime}
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </Box>
+                                    </>
+                                  )}
+
+                                  {viewrisk ? (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 280,
+                                          maxWidth: "100%",
+                                          display: "flex",
+                                          flexDirection: "column",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormControl fullWidth>
+                                          <FormLabel
+                                            id="time-select-label"
+                                            className="font-semibold leading-none"
+                                          >
+                                            Frequency
+                                          </FormLabel>
+                                          <Select
+                                            labelId="time-select-label"
+                                            id="time-select"
+                                            label="Frequency *"
+                                            name="modifiedFrequencyDetails"
+                                            value={
+                                              formValues.modifiedFrequencyDetails
+                                            }
+                                            onChange={(e) =>
+                                              handelResidualRiskInputChange(e)
+                                            }
+                                            error={
+                                              !!errorsSub.modifiedFrequencyDetails
+                                            }
+                                            disabled
+                                            sx={{
+                                              "& .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&:hover .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "& .MuiSelect-icon": {
+                                                display: "none",
+                                              },
+                                              "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                                {
+                                                  padding: "0px",
+                                                },
+                                            }}
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {potentialFrequencyDetails.map(
+                                              (option) => (
+                                                <MenuItem
+                                                  key={option.value}
+                                                  value={option.value}
+                                                >
+                                                  {option.text}
+                                                </MenuItem>
+                                              )
+                                            )}
+                                          </Select>
+                                          {errorsSub.modifiedFrequencyDetails && (
+                                            <FormHelperText error>
+                                              {
+                                                errorsSub.modifiedFrequencyDetails
+                                              }
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 380,
+                                          maxWidth: "100%",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormControl fullWidth>
+                                          <InputLabel id="time-select-label">
+                                            Frequency *
+                                          </InputLabel>
+                                          <Select
+                                            labelId="time-select-label"
+                                            id="time-select"
+                                            label="Frequency *"
+                                            name="modifiedFrequencyDetails"
+                                            value={
+                                              formValues.modifiedFrequencyDetails
+                                            }
+                                            onChange={(e) =>
+                                              handelResidualRiskInputChange(e)
+                                            }
+                                            error={
+                                              !!errorsSub.modifiedFrequencyDetails
+                                            }
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {potentialFrequencyDetails.map(
+                                              (option) => (
+                                                <MenuItem
+                                                  key={option.value}
+                                                  value={option.value}
+                                                >
+                                                  {option.text}
+                                                </MenuItem>
+                                              )
+                                            )}
+                                          </Select>
+                                          {errorsSub.modifiedFrequencyDetails && (
+                                            <FormHelperText error>
+                                              {
+                                                errorsSub.modifiedFrequencyDetails
+                                              }
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </Box>
+                                    </>
+                                  )}
+                                  {viewrisk ? (
+                                    <>
+                                      {" "}
+                                      <Box
+                                        sx={{
+                                          width: 280,
+                                          maxWidth: "100%",
+                                          display: "flex",
+                                          flexDirection: "column",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormLabel
+                                          htmlFor="hazardDetail"
+                                          className="font-semibold leading-none"
+                                        >
+                                          Frequency Scoring
+                                        </FormLabel>
+                                        &nbsp;&nbsp; &nbsp;&nbsp;
+                                        <span style={{ color: "#a3a9b4" }}>
+                                          {formValues.residualFrequencyScoring}
+                                        </span>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <>
+                                      {" "}
+                                      <Box
+                                        sx={{
+                                          width: 380,
+                                          maxWidth: "100%",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <TextField
+                                          fullWidth
+                                          label="Frequency Scoring *"
+                                          name="handelResidualRiskInputChange"
+                                          value={
+                                            formValues.residualFrequencyScoring
+                                          }
+                                          disabled
+                                        />
+                                      </Box>
+                                    </>
+                                  )}
+                                </div>
+                              </div>{" "}
+                              <div className="flex flex-col-reverse">
+                                <div
+                                  style={{
+                                    // marginTop: "30px",
+                                    justifyContent: "space-between",
+                                  }}
+                                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full"
+                                >
+                                  {viewrisk ? (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 280,
+                                          maxWidth: "100%",
+                                          display: "flex",
+                                          flexDirection: "column",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormControl fullWidth>
+                                          <FormLabel
+                                            id="time-select-label"
+                                            className="font-semibold leading-none"
+                                          >
+                                            Likelihood Scoring
+                                          </FormLabel>
+                                          <Select
+                                            labelId="likelihood-select-label"
+                                            id="likelihood-select"
+                                            label="Likelihood Scoring"
+                                            name="residualLikelihoodScoring"
+                                            value={
+                                              formValues.residualLikelihoodScoring
+                                            }
+                                            onChange={(e) =>
+                                              handelResidualRiskInputChange(e)
+                                            }
+                                            error={
+                                              !!errorsSub.residualLikelihoodScoring
+                                            }
+                                            disabled
+                                            sx={{
+                                              "& .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&:hover .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "& .MuiSelect-icon": {
+                                                display: "none",
+                                              },
+                                              "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                                {
+                                                  padding: "0px",
+                                                },
+                                            }}
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {likelihoodValues.map((value) => (
+                                              <MenuItem
+                                                key={value}
+                                                value={value}
+                                              >
+                                                {value}
+                                              </MenuItem>
+                                            ))}
+                                          </Select>
+                                          {errorsSub.residualLikelihoodScoring && (
+                                            <FormHelperText error>
+                                              {
+                                                errorsSub.residualLikelihoodScoring
+                                              }
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 380,
+                                          maxWidth: "100%",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormControl fullWidth>
+                                          <InputLabel id="likelihood-select-label">
+                                            Likelihood Scoring
+                                          </InputLabel>
+                                          <Select
+                                            labelId="likelihood-select-label"
+                                            id="likelihood-select"
+                                            label="Likelihood Scoring"
+                                            name="residualLikelihoodScoring"
+                                            value={
+                                              formValues.residualLikelihoodScoring
+                                            }
+                                            onChange={(e) =>
+                                              handelResidualRiskInputChange(e)
+                                            }
+                                            error={
+                                              !!errorsSub.residualLikelihoodScoring
+                                            }
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {likelihoodValues.map((value) => (
+                                              <MenuItem
+                                                key={value}
+                                                value={value}
+                                              >
+                                                {value}
+                                              </MenuItem>
+                                            ))}
+                                          </Select>
+                                          {errorsSub.residualLikelihoodScoring && (
+                                            <FormHelperText error>
+                                              {
+                                                errorsSub.residualLikelihoodScoring
+                                              }
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </Box>
+                                    </>
+                                  )}
+
+                                  {viewrisk ? (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 280,
+                                          maxWidth: "100%",
+                                          display: "flex",
+                                          flexDirection: "column",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormControl fullWidth>
+                                          <FormLabel
+                                            id="time-select-label"
+                                            className="font-semibold leading-none"
+                                          >
+                                            Severity Scoring
+                                          </FormLabel>
+                                          <Select
+                                            labelId="severity-select-label"
+                                            id="severity-select"
+                                            label="Residual Severity Scoring"
+                                            name="residualSeverityScoring"
+                                            value={
+                                              formValues.residualSeverityScoring
+                                            }
+                                            onChange={(e) =>
+                                              handelResidualRiskInputChange(e)
+                                            }
+                                            error={
+                                              !!errorsSub.residualSeverityScoring
+                                            }
+                                            disabled
+                                            sx={{
+                                              "& .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&.Mui-focused .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "&:hover .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                  border: "none",
+                                                },
+                                              "& .MuiSelect-icon": {
+                                                display: "none",
+                                              },
+                                              "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+                                                {
+                                                  padding: "0px",
+                                                },
+                                            }}
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {likelihoodValues.map((value) => (
+                                              <MenuItem
+                                                key={value}
+                                                value={value}
+                                              >
+                                                {value}
+                                              </MenuItem>
+                                            ))}
+                                          </Select>
+                                          {errorsSub.residualSeverityScoring && (
+                                            <FormHelperText error>
+                                              {
+                                                errorsSub.residualSeverityScoring
+                                              }
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 380,
+                                          maxWidth: "100%",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormControl fullWidth>
+                                          <InputLabel id="severity-select-label">
+                                            Severity Scoring
+                                          </InputLabel>
+                                          <Select
+                                            labelId="severity-select-label"
+                                            id="severity-select"
+                                            label="Residual Severity Scoring"
+                                            name="residualSeverityScoring"
+                                            value={
+                                              formValues.residualSeverityScoring
+                                            }
+                                            onChange={(e) =>
+                                              handelResidualRiskInputChange(e)
+                                            }
+                                            error={
+                                              !!errorsSub.residualSeverityScoring
+                                            }
+                                          >
+                                            <MenuItem value="" disabled>
+                                              <em>None</em>
+                                            </MenuItem>
+                                            {likelihoodValues.map((value) => (
+                                              <MenuItem
+                                                key={value}
+                                                value={value}
+                                              >
+                                                {value}
+                                              </MenuItem>
+                                            ))}
+                                          </Select>
+                                          {errorsSub.residualSeverityScoring && (
+                                            <FormHelperText error>
+                                              {
+                                                errorsSub.residualSeverityScoring
+                                              }
+                                            </FormHelperText>
+                                          )}
+                                        </FormControl>
+                                      </Box>
+                                    </>
+                                  )}
+
+                                  {viewrisk ? (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 280,
+                                          maxWidth: "100%",
+                                          display: "flex",
+                                          flexDirection: "column",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <FormLabel
+                                          htmlFor="Residual Risk"
+                                          className="font-semibold leading-none"
+                                        >
+                                          Residual Risk
+                                        </FormLabel>
+                                        &nbsp;&nbsp; &nbsp;&nbsp;
+                                        <span style={{ color: "#a3a9b4" }}>
+                                          {formValues.residualRisk}
+                                        </span>
+                                      </Box>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Box
+                                        sx={{
+                                          width: 380,
+                                          maxWidth: "100%",
+                                          margin: "15px 0 0 0",
+                                        }}
+                                      >
+                                        <TextField
+                                          fullWidth
+                                          label="Residual Risk"
+                                          name="residualRisk"
+                                          value={formValues.residualRisk}
+                                          disabled
+                                        />
+                                      </Box>
+                                    </>
+                                  )}
+                                </div>
+                              </div>{" "}
+                            </div>
+                          </Box>
+                          <div
+                            className="flex justify-end"
+                            style={{
+                              paddingLeft: "10px",
+                              paddingBottom: "5px",
+                              margin: "15px 0 0 0",
+                            }}
+                          >
+                            <Button
+                              variant="contained"
+                              disabled
+                              style={{
+                                backgroundColor:
+                                  formValues.residualRiskClassification == 1
+                                    ? "red"
+                                    : formValues.residualRiskClassification == 2
+                                      ? "purple"
+                                      : formValues.residualRiskClassification ==
+                                          3
+                                        ? "orange"
+                                        : formValues.residualRiskClassification ==
+                                            4
+                                          ? "yellow"
+                                          : formValues.residualRiskClassification ==
+                                              5
+                                            ? "green"
+                                            : "",
+                                borderRadius: "5px",
+                                padding: "10px 20px",
+                                fontSize: "14px",
+                                color:
+                                  formValues.residualRiskClassification == 4
+                                    ? "#000"
+                                    : "white",
+                                cursor: "pointer",
+                              }}
+                            >
+                              {Classifications}
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="flex items-center w-full border-b pb-5 justify-between"></div>
+                        <div className="flex justify-end p-30 pt-24 pb-24">
+                          {!viewrisk && (
+                            <>
+                              <Button
+                                className="whitespace-nowrap"
+                                style={{
+                                  border: "1px solid",
+                                  backgroundColor: "#0000",
+                                  color: "black",
+                                  borderColor: "rgba(203,213,225)",
+                                  marginLeft: "10px",
+                                }}
+                                variant="contained"
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                className="whitespace-nowrap ms-5 "
+                                variant="contained"
+                                color="secondary"
+                                onClick={() =>
+                                  handelRiskSubmit(
+                                    editRiskAnalysDetail.length
+                                      ? "Update"
+                                      : "Submit"
+                                  )
+                                }
+                              >
+                                {editRiskAnalysDetail.length
+                                  ? "Update"
+                                  : "Submit"}
+                              </Button>
+                            </>
+                          )}
+                          {viewrisk && (
+                            <Button
+                              className="whitespace-nowrap mt-5"
+                              style={{
+                                border: "1px solid",
+                                backgroundColor: "#0000",
+                                color: "black",
+                                borderColor: "rgba(203,213,225)",
+                                marginLeft: "10px",
+                                // marginTop: "10px",
+                              }}
+                              variant="contained"
+                              onClick={goBack}
+                            >
+                              Close
+                            </Button>
+                          )}
+                        </div>
+                      </Paper>
+                    ) : (
+                      <Paper
+                        className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden"
+                        style={{ marginRight: "0", width: "100%" }}
+                      >
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
+                        >
+                          <h2
+                            _ngcontent-fyk-c288=""
+                            class="text-2xl font-semibold"
+                          >
+                            Implementation
+                          </h2>
+                          <StyledBadge badgeContent={listDocument.length}>
+                            <Button
+                              className="whitespace-nowrap "
+                              style={{
+                                border: "1px solid",
+                                backgroundColor: "#0000",
+                                color: "black",
+                                borderColor: "rgba(203,213,225)",
+                              }}
+                              variant="contained"
+                              color="warning"
+                              startIcon={
+                                <FuseSvgIcon size={20}>
+                                  heroicons-solid:upload
+                                </FuseSvgIcon>
+                              }
+                              onClick={HandleTraining}
+                            >
+                              Training Attendence Sheet
+                            </Button>
+                          </StyledBadge>
+                          <Modal
+                            aria-labelledby="transition-modal-title"
+                            aria-describedby="transition-modal-description"
+                            open={open}
+                            onClose={handleClose}
+                            closeAfterTransition
+                            slots={{ backdrop: Backdrop }}
+                            slotProps={{
+                              backdrop: {
+                                timeout: 500,
+                              },
+                            }}
+                          >
+                            <Fade in={open}>
+                              <Box sx={style1}>
+                                <Box sx={{ flex: 1 }}>
+                                  <Box
+                                    className="flex justify-between"
+                                    style={{ margin: "30px" }}
+                                  >
+                                    <Typography
+                                      id="transition-modal-title"
+                                      variant="h6"
+                                      component="h2"
+                                      style={{
+                                        fontSize: "3rem",
+                                      }}
+                                    >
+                                      File Manager
+                                      <Typography
+                                        id="transition-modal-subtitle"
+                                        component="h2"
+                                      >
+                                        {listDocument.length} Files
+                                      </Typography>
+                                    </Typography>
+                                  </Box>
+
+                                  <Box>
+                                    <Typography
+                                      id="transition-modal-title"
+                                      variant="h6"
+                                      className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                                      component="div"
+                                      style={{
+                                        backgroundColor: "#e3eeff80",
+                                      }}
+                                    >
+                                      {listDocument.map((doc, index) => (
+                                        <div className="content " key={index}>
+                                          <div
+                                            onClick={() => handelDetailDoc(doc)}
+                                            style={{
+                                              textAlign: "-webkit-center",
+                                            }}
+                                          >
+                                            <img
+                                              src="/assets/images/etc/icon_N.png"
+                                              style={{}}
+                                            />
+                                            <h6>{doc?.name}</h6>
+                                            <h6>by {doc?.staffName}</h6>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </Typography>
+                                  </Box>
+                                </Box>
+                                {fileDetails && (
+                                  <Box sx={drawerStyle(fileDetails)}>
+                                    <div className="flex justify-end">
+                                      <Button
+                                        className=""
+                                        variant="contained"
+                                        style={{ backgroundColor: "white" }}
+                                        onClick={() => setFileDetails(false)}
+                                      >
+                                        <FuseSvgIcon size={20}>
+                                          heroicons-outline:x
+                                        </FuseSvgIcon>
+                                      </Button>
+                                    </div>
+
+                                    <div className="text-center">
+                                      <label htmlFor="fileInput">
+                                        <div className=" ">
+                                          <div
+                                            // onClick={handelDetailDoc}
+                                            style={{
+                                              textAlign: "-webkit-center",
+                                            }}
+                                          >
+                                            <img
+                                              src="/assets/images/etc/icon_N.png"
+                                              alt=""
+                                            />
+                                          </div>
+                                          {selectedDocument?.name}
+                                        </div>
+                                      </label>
+                                      <Box
+                                        component="form"
+                                        sx={{
+                                          "& > :not(style)": {
+                                            m: 1,
+                                            width: "25ch",
+                                          },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                      >
+                                        <TextField
+                                          id="standard-basic"
+                                          label={
+                                            <BoldLabel>Information</BoldLabel>
+                                          }
+                                          variant="standard"
+                                          disabled
+                                        />
+                                      </Box>
+                                      <Box
+                                        component="form"
+                                        sx={{
+                                          "& > :not(style)": {
+                                            m: 1,
+                                            width: "25ch",
+                                          },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                      >
+                                        <TextField
+                                          id="selectedFileName"
+                                          label="Created By"
+                                          variant="standard"
+                                          disabled
+                                          value={selectedDocument.staffName}
+                                        />
+                                      </Box>
+                                      <Box
+                                        component="form"
+                                        sx={{
+                                          "& > :not(style)": {
+                                            m: 1,
+                                            width: "25ch",
+                                          },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                      >
+                                        <TextField
+                                          id="standard-basic"
+                                          label=" Created At"
+                                          name="description"
+                                          variant="standard"
+                                          disabled
+                                          value={formatDate(
+                                            selectedDocument.createdAt
+                                          )}
+                                        />
+                                      </Box>
+                                      <Box
+                                        component="form"
+                                        sx={{
+                                          "& > :not(style)": {
+                                            m: 1,
+                                            width: "25ch",
+                                          },
+                                        }}
+                                        noValidate
+                                        autoComplete="off"
+                                      >
+                                        <TextField
+                                          id="standard-basic"
+                                          label={
+                                            <BoldLabel>Description</BoldLabel>
+                                          }
+                                          name="description"
+                                          variant="standard"
+                                          disabled
+                                          value={
+                                            selectedDocument?.description ===
+                                            null
+                                              ? ""
+                                              : selectedDocument?.descritpion
+                                          }
+                                        />
+                                      </Box>
+                                    </div>
+
+                                    <div
+                                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                                      style={{
+                                        marginTop: "15px",
+                                        justifyContent: "center",
+                                        backgroundColor: " rgba(248,250,252)",
+                                      }}
+                                    >
+                                      <Button
+                                        className="whitespace-nowrap"
+                                        variant="contained"
+                                        color="secondary"
+                                        type="submit"
+                                        onClick={handleDownload}
+                                      >
+                                        Download
+                                      </Button>
+                                    </div>
+                                  </Box>
+                                )}
+                              </Box>
+                            </Fade>
+                          </Modal>
+                        </div>
+
+                        <Box
+                          sx={{ width: "100%" }}
+                          className="p-30 pt-24 pb-24"
+                        >
+                          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                            <Tabs
+                              value={value}
+                              onChange={handleChange}
+                              aria-label="basic tabs example"
+                            >
+                              <Tab label="Task" {...a11yProps(0)} />
+                              <Tab label="Checklist" {...a11yProps(1)} />
+                            </Tabs>
+                          </Box>
+                          <CustomTabPanel
+                            value={value}
+                            index={0}
+                            className="task_accordians"
+                          >
+                            <div class="flex flex-col w-full border rounded ">
+                              <div
+                                _ngcontent-fyk-c288=""
+                                class="flex items-center w-full p-10 border-b justify-between"
+                                style={{
+                                  paddingRight: "15px",
+                                  paddingLeft: "15px",
+                                }}
+                              >
+                                <div className="flex items-center">
+                                  <h2
+                                    _ngcontent-fyk-c288=""
+                                    class="text-2xl font-semibold"
+                                    style={{ marginRight: "15px" }}
+                                  >
+                                    {taskLists.length} Tasks
+                                  </h2>
+                                  {!impActivity.isComplete &&
+                                    impActivity.status === "Pending" && (
+                                      <Button
+                                        className="whitespace-nowrap mt-5 mb-5"
+                                        style={{
+                                          border: "1px solid",
+                                          backgroundColor: "#0000",
+                                          color: "black",
+                                          borderColor: "rgba(203,213,225)",
+                                        }}
+                                        variant="contained"
+                                        color="warning"
+                                        onClick={handleOpenImplemntationTask}
+                                      >
+                                        Add New Task
+                                      </Button>
+                                    )}
+                                  {/* <Button
                                   className="whitespace-nowrap mt-5 mb-5 ms-5"
                                   style={{
                                     border: "1px solid",
@@ -3123,586 +5619,862 @@ function Course() {
                                 >
                                   Audits Lists
                                 </Button> */}
-                              </div>
+                                </div>
 
-                              <TextField
-                                variant="filled"
-                                fullWidth
-                                placeholder="Search"
-                                style={{
-                                  // marginBottom: "15px",
-                                  backgroundColor: "white",
-                                }}
-                                value={searchTerm}
-                                InputProps={{
-                                  startAdornment: (
-                                    <InputAdornment
-                                      position="start"
-                                      style={{
-                                        marginTop: "0px",
-                                        paddingTop: "0px",
-                                      }}
-                                    >
-                                      <SearchIcon />
-                                    </InputAdornment>
-                                  ),
-                                }}
-                                sx={{ width: 320 }}
-                              />
-                            </div>
-                            {taskLists.map((task) => (
-                              <Accordion
-                                key={task.id}
-                                style={{ margin: "0px" }}
-                              >
-                                <AccordionSummary
-                                  expandIcon={<ExpandMoreIcon />}
-                                  aria-controls={`panel${task.id}-content`}
-                                  id={`panel${task.id}-header`}
-                                  style={{ minHeight: "60px" }}
-                                  onClick={(e) => handelComments(e, task.id)}
-                                >
-                                  <div className="d-flex flex-wrap justify-between w-100">
-                                    <div className="inventory-grid grid items-center gap-4 m-0">
-                                      <div className="flex items-center">
-                                        Task #{task.id}
-                                      </div>
-                                    </div>
-
-                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
-                                      <div
-                                        className="flex items-center"
-                                        style={{}}
+                                <TextField
+                                  variant="filled"
+                                  fullWidth
+                                  placeholder="Search"
+                                  style={{
+                                    // marginBottom: "15px",
+                                    backgroundColor: "white",
+                                  }}
+                                  value={searchTerm}
+                                  InputProps={{
+                                    startAdornment: (
+                                      <InputAdornment
+                                        position="start"
+                                        style={{
+                                          marginTop: "0px",
+                                          paddingTop: "0px",
+                                        }}
                                       >
-                                        {task.isCompleted &&
-                                        task.taskStatus === 3 ? (
-                                          <span className="text-green">
-                                            Approved
-                                          </span>
-                                        ) : task.isCompleted &&
-                                          task.taskStatus !== 3 ? (
-                                          <span className="text-red">
-                                            Awaiting Approval
-                                          </span>
-                                        ) : (
-                                          <span className="text-black">
-                                            Not Completed
-                                          </span>
-                                        )}
-                                      </div>
-                                    </div>
-                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
-                                      <div className="flex items-center">
-                                        No Risks
-                                      </div>
-                                    </div>
-                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
-                                      <div className="flex items-center">
-                                        {task.assignedStaff}
-                                      </div>
-                                    </div>
+                                        <SearchIcon />
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                  sx={{ width: 320 }}
+                                />
+                              </div>
+                              {taskLists.map((task) => {
+                                // Find matching risk analysis items
+                                const matchingRisks = riskLists.filter(
+                                  (risk) =>
+                                    risk.changeImapactId ===
+                                    task.changeImapactId
+                                );
 
-                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
-                                      <div className="flex items-center">
-                                        {formatDate(task.dueDate)}
-                                      </div>
-                                    </div>
-                                    <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
-                                      <div className="flex items-center">
-                                        {/* <Button
-                                          className="whitespace-nowrap mt-5 mb-5"
-                                          style={{
-                                            border: "1px solid",
-                                            backgroundColor: "#0000",
-                                            color: "black",
-                                            borderColor: "rgba(203,213,225)",
-                                          }}
-                                          variant="contained"
-                                          color="warning"
-                                          onClick={handleOpen}
-                                        >
-                                          Audits
-                                        </Button> */}
-                                      </div>
-                                    </div>
-                                  </div>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                  <Stepper orientation="vertical">
-                                    <Step>
-                                      <div style={{ alignItems: "flex-start" }}>
-                                        <div className="flex flex-col items-start mt-5">
-                                          <div
-                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                            style={{
-                                              padding: "20px",
-                                              backgroundColor: "#EBF8FF",
-                                            }}
-                                          >
-                                            <b>{task?.assignedByStaff}</b>
-                                            <p>
-                                              What is the task :{" "}
-                                              {task?.actionWhat}
-                                            </p>
-                                          </div>
-                                        </div>
-                                        <div className="flex flex-col items-start mt-5">
-                                          <div
-                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                            style={{
-                                              padding: "20px",
-                                              backgroundColor: "#EBF8FF",
-                                            }}
-                                          >
-                                            <p>
-                                              How is Task done :{" "}
-                                              {task?.actionHow}
-                                            </p>
-                                          </div>
-                                        </div>
-                                        {task?.particularName &&
-                                          task?.particularSubName && (
-                                            <div className="flex flex-col items-start mt-5">
-                                              <div
-                                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                                style={{
-                                                  padding: "20px",
-                                                  backgroundColor: "#EBF8FF",
-                                                }}
-                                              >
-                                                <p>
-                                                  Impact :{" "}
-                                                  {`${task?.particularName} > ${task?.particularSubName}`}
-                                                </p>
-                                              </div>
-                                            </div>
-                                          )}
-                                        <div className="flex flex-col items-start mt-5">
-                                          <div
-                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                            style={{
-                                              padding: "20px",
-                                              backgroundColor: "#EBF8FF",
-                                            }}
-                                          >
-                                            <p>
-                                              Due Date :{" "}
-                                              {formatDate(task.dueDate)}
-                                            </p>
+                                return (
+                                  <Accordion
+                                    key={task.id}
+                                    style={{ margin: "0px" }}
+                                  >
+                                    <AccordionSummary
+                                      expandIcon={<ExpandMoreIcon />}
+                                      aria-controls={`panel${task.id}-content`}
+                                      id={`panel${task.id}-header`}
+                                      style={{ minHeight: "60px" }}
+                                      onClick={(e) =>
+                                        handelComments(e, task.id)
+                                      }
+                                    >
+                                      <div className="d-flex flex-wrap justify-between w-100">
+                                        <div className="inventory-grid grid items-center gap-4 m-0">
+                                          <div className="flex items-center">
+                                            Task #{task.id}
                                           </div>
                                         </div>
 
-                                        <div className="flex items-center justify-center my-3">
-                                          <div className="flex-auto border-b"></div>
-                                          <div
-                                            className="flex-0 "
-                                            style={{ fontSize: "xx-small" }}
-                                          >
-                                            <b>{task?.assignedByStaff}</b> has
-                                            assigned task to{" "}
-                                            <b>{task?.assignedStaff}</b> on{" "}
-                                            {formatDate(task.assignedAt)}
-                                          </div>
-                                          <div className="flex-auto border-b"></div>
-                                        </div>
-
-                                        {impComments.map((msg) => (
-                                          <div
-                                            key={msg.id}
-                                            className="flex flex-row flex-wrap mb-10"
-                                            style={{
-                                              width: "auto",
-                                              display: "block",
-                                              clear: "both",
-                                            }}
-                                          >
-                                            {msg?.remark && (
-                                              <div
-                                                className="flex flex-row items-start mt-5"
-                                                style={{ position: "relative" }}
-                                              >
-                                                <div
-                                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
-                                                  style={{ padding: "10px" }}
-                                                >
-                                                  <div
-                                                    className="font-semibold"
-                                                    style={{
-                                                      fontSize: "smaller",
-                                                    }}
-                                                  >
-                                                    {" "}
-                                                    {task.assignedStaff}{" "}
-                                                  </div>
-                                                  <div
-                                                    dangerouslySetInnerHTML={{
-                                                      __html: msg?.remark,
-                                                    }}
-                                                  ></div>
-                                                  <div className="my-0.5 text-xs font-medium text-secondary">
-                                                    <small>
-                                                      {msg.startedDate &&
-                                                      !msg.workInProgressDate &&
-                                                      !msg.completedDate &&
-                                                      !msg.dueDate
-                                                        ? `Started on ${formatDates(msg.startedDate)}`
-                                                        : msg.workInProgressDate &&
-                                                            !msg.completedDate &&
-                                                            !msg.dueDate
-                                                          ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
-                                                          : msg.dueDate &&
-                                                              !msg.completedDate
-                                                            ? `Due on ${formatDates(msg.dueDate)}`
-                                                            : msg.completedDate
-                                                              ? `Completed on ${formatDates(msg.completedDate)}`
-                                                              : "Unknown"}
-                                                    </small>
-                                                  </div>
-                                                </div>
-                                                <StyledBadge
-                                                  badgeContent={
-                                                    documentCounts[msg.id]
-                                                  }
-                                                >
-                                                  <button
-                                                    className="icon-button"
-                                                    onClick={() =>
-                                                      handleOpen(msg.id)
-                                                    }
-                                                    style={{
-                                                      top: "-0px",
-                                                      right: "-6px",
-                                                    }}
-                                                  >
-                                                    <FuseSvgIcon size={20}>
-                                                      heroicons-solid:document
-                                                    </FuseSvgIcon>
-                                                  </button>
-                                                </StyledBadge>
-                                              </div>
+                                        <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                          <div className="flex items-center">
+                                            {task.isCompleted &&
+                                            task.taskStatus === 3 ? (
+                                              <span className="text-green">
+                                                Approved
+                                              </span>
+                                            ) : task.isCompleted &&
+                                              task.taskStatus !== 3 ? (
+                                              <span className="text-red">
+                                                Awaiting Approval
+                                              </span>
+                                            ) : (
+                                              <span className="text-black">
+                                                Not Completed
+                                              </span>
                                             )}
-                                            {msg.comments && (
+                                          </div>
+                                        </div>
+
+                                        {/* Risk Count or No Risks */}
+                                        <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                          <div className="flex items-center">
+                                            <div
+                                              className="rounded-full"
+                                              style={{
+                                                color:
+                                                  matchingRisks.length > 0
+                                                    ? "brown"
+                                                    : "",
+                                                paddingLeft: "10px",
+                                                paddingRight: "10px",
+                                              }}
+                                            >
+                                              {matchingRisks.length > 0
+                                                ? `${matchingRisks.length} Risks`
+                                                : "No Risks"}
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                          <div className="flex items-center">
+                                            {task.assignedStaff}
+                                          </div>
+                                        </div>
+
+                                        <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
+                                          <div className="flex items-center">
+                                            {formatDate(task.dueDate)}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                      <AccordionDetails>
+                                        <Stepper orientation="vertical">
+                                          <Step>
+                                            <div
+                                              style={{
+                                                alignItems: "flex-start",
+                                              }}
+                                            >
                                               <div className="flex flex-col items-start mt-5">
                                                 <div
                                                   className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                                   style={{
-                                                    padding: "10px",
+                                                    padding: "20px",
                                                     backgroundColor: "#EBF8FF",
                                                   }}
                                                 >
-                                                  <div
-                                                    className="font-semibold"
-                                                    style={{
-                                                      fontSize: "smaller",
-                                                    }}
-                                                  >
-                                                    {" "}
-                                                    {task.assignedByStaff}{" "}
-                                                  </div>
-                                                  <div
-                                                    className="min-w-4 leading-5 "
-                                                    dangerouslySetInnerHTML={{
-                                                      __html: msg.comments,
-                                                    }}
-                                                    style={{
-                                                      fontSize: "smaller",
-                                                    }}
-                                                  ></div>
-                                                  <div
-                                                    className="min-w-4 leading-5"
-                                                    style={{
-                                                      fontSize: "xx-small",
-                                                    }}
-                                                  >
-                                                    {" "}
-                                                    {msg.approvalStatusDate && (
-                                                      <>
-                                                        {msg.approverId
-                                                          ? "Approved on"
-                                                          : "Rejected on"}{" "}
-                                                        {new Date(
-                                                          msg.approvalStatusDate
-                                                        ).toLocaleString(
-                                                          "en-US",
-                                                          {
-                                                            month: "short",
-                                                            day: "2-digit",
-                                                            hour: "numeric",
-                                                            minute: "numeric",
-                                                            hour12: true,
-                                                          }
-                                                        )}
-                                                      </>
-                                                    )}
-                                                  </div>
+                                                  <b>{task?.assignedByStaff}</b>
+                                                  <p>
+                                                    What is the task :{" "}
+                                                    {task?.actionWhat}
+                                                  </p>
                                                 </div>
                                               </div>
-                                            )}
-                                          </div>
-                                        ))}
-                                        {task.isCompleted &&
-                                          task.taskStatus !== 3 && (
-                                            <>
-                                              <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                              <div className="flex flex-col items-start mt-5">
                                                 <div
-                                                  _ngcontent-fyk-c288=""
-                                                  class="flex items-center w-full  border-b justify-between"
-                                                ></div>
-                                              </div>
-                                              {currentActivityForm.canEdit && (
-                                                <div
-                                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                                  style={{ width: "100%" }}
+                                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                                  style={{
+                                                    padding: "20px",
+                                                    backgroundColor: "#EBF8FF",
+                                                  }}
                                                 >
-                                                  <Box
-                                                    sx={{
-                                                      display: "flex",
-                                                      flexWrap: "wrap",
-                                                    }}
-                                                  >
-                                                    <FormControl
-                                                      fullWidth
-                                                      sx={{
-                                                        m: 1,
-                                                        maxWidth: "100%",
+                                                  <p>
+                                                    How is Task done :{" "}
+                                                    {task?.actionHow}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                              {task?.particularName &&
+                                                task?.particularSubName && (
+                                                  <div className="flex flex-col items-start mt-5">
+                                                    <div
+                                                      className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                                      style={{
+                                                        padding: "20px",
+                                                        backgroundColor:
+                                                          "#EBF8FF",
                                                       }}
                                                     >
-                                                      <span className="font-semibold leading-none">
-                                                        Comments*
-                                                      </span>
-                                                      <OutlinedInput
-                                                        id="reasonForNewDocument"
-                                                        name="reasonForNewDocument"
-                                                        onChange={(e) =>
-                                                          setComments(
-                                                            e.target.value
-                                                          )
+                                                      <p>
+                                                        Impact :{" "}
+                                                        {`${task?.particularName} > ${task?.particularSubName}`}
+                                                      </p>
+                                                    </div>
+                                                  </div>
+                                                )}
+                                              <div className="flex flex-col items-start mt-5">
+                                                <div
+                                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                                  style={{
+                                                    padding: "20px",
+                                                    backgroundColor: "#EBF8FF",
+                                                  }}
+                                                >
+                                                  <p>
+                                                    Due Date :{" "}
+                                                    {formatDate(task.dueDate)}
+                                                  </p>
+                                                </div>
+                                              </div>
+
+                                              <div className="flex items-center justify-center my-3">
+                                                <div className="flex-auto border-b"></div>
+                                                <div
+                                                  className="flex-0 "
+                                                  style={{
+                                                    fontSize: "xx-small",
+                                                  }}
+                                                >
+                                                  <b>{task?.assignedByStaff}</b>{" "}
+                                                  has assigned task to{" "}
+                                                  <b>{task?.assignedStaff}</b>{" "}
+                                                  on{" "}
+                                                  {formatDate(task.assignedAt)}
+                                                </div>
+                                                <div className="flex-auto border-b"></div>
+                                              </div>
+
+                                              {impComments.map((msg) => (
+                                                <div
+                                                  key={msg.id}
+                                                  className="flex flex-row flex-wrap mb-10"
+                                                  style={{
+                                                    width: "auto",
+                                                    display: "block",
+                                                    clear: "both",
+                                                  }}
+                                                >
+                                                  {msg?.remark && (
+                                                    <div
+                                                      className="flex flex-row items-start mt-5"
+                                                      style={{
+                                                        position: "relative",
+                                                      }}
+                                                    >
+                                                      <div
+                                                        className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
+                                                        style={{
+                                                          padding: "10px",
+                                                        }}
+                                                      >
+                                                        <div
+                                                          className="font-semibold"
+                                                          style={{
+                                                            fontSize: "smaller",
+                                                          }}
+                                                        >
+                                                          {" "}
+                                                          {
+                                                            task.assignedStaff
+                                                          }{" "}
+                                                        </div>
+                                                        <div
+                                                          dangerouslySetInnerHTML={{
+                                                            __html: msg?.remark,
+                                                          }}
+                                                        ></div>
+                                                        <div className="my-0.5 text-xs font-medium text-secondary">
+                                                          <small>
+                                                            {msg.startedDate &&
+                                                            !msg.workInProgressDate &&
+                                                            !msg.completedDate &&
+                                                            !msg.dueDate
+                                                              ? `Started on ${formatDates(msg.startedDate)}`
+                                                              : msg.workInProgressDate &&
+                                                                  !msg.completedDate &&
+                                                                  !msg.dueDate
+                                                                ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
+                                                                : msg.dueDate &&
+                                                                    !msg.completedDate
+                                                                  ? `Due on ${formatDates(msg.dueDate)}`
+                                                                  : msg.completedDate
+                                                                    ? `Completed on ${formatDates(msg.completedDate)}`
+                                                                    : "Unknown"}
+                                                          </small>
+                                                        </div>
+                                                      </div>
+                                                      <StyledBadge
+                                                        badgeContent={
+                                                          documentCounts[msg.id]
                                                         }
-                                                        label="Reason For Change*"
-                                                        className="mt-5"
-                                                      />
-                                                    </FormControl>
-                                                  </Box>
+                                                      >
+                                                        <button
+                                                          className="icon-button"
+                                                          onClick={() =>
+                                                            handleOpen(msg.id)
+                                                          }
+                                                          style={{
+                                                            top: "-0px",
+                                                            right: "-6px",
+                                                          }}
+                                                        >
+                                                          <FuseSvgIcon
+                                                            size={20}
+                                                          >
+                                                            heroicons-solid:document
+                                                          </FuseSvgIcon>
+                                                        </button>
+                                                      </StyledBadge>
+                                                    </div>
+                                                  )}
+                                                  {msg.comments && (
+                                                    <div className="flex flex-col items-start mt-5">
+                                                      <div
+                                                        className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                                        style={{
+                                                          padding: "10px",
+                                                          backgroundColor:
+                                                            "#EBF8FF",
+                                                        }}
+                                                      >
+                                                        <div
+                                                          className="font-semibold"
+                                                          style={{
+                                                            fontSize: "smaller",
+                                                          }}
+                                                        >
+                                                          {" "}
+                                                          {
+                                                            task.assignedByStaff
+                                                          }{" "}
+                                                        </div>
+                                                        <div
+                                                          className="min-w-4 leading-5 "
+                                                          dangerouslySetInnerHTML={{
+                                                            __html:
+                                                              msg.comments,
+                                                          }}
+                                                          style={{
+                                                            fontSize: "smaller",
+                                                          }}
+                                                        ></div>
+                                                        <div
+                                                          className="min-w-4 leading-5"
+                                                          style={{
+                                                            fontSize:
+                                                              "xx-small",
+                                                          }}
+                                                        >
+                                                          {" "}
+                                                          {msg.approvalStatusDate && (
+                                                            <>
+                                                              {msg.approverId
+                                                                ? "Approved on"
+                                                                : "Rejected on"}{" "}
+                                                              {new Date(
+                                                                msg.approvalStatusDate
+                                                              ).toLocaleString(
+                                                                "en-US",
+                                                                {
+                                                                  month:
+                                                                    "short",
+                                                                  day: "2-digit",
+                                                                  hour: "numeric",
+                                                                  minute:
+                                                                    "numeric",
+                                                                  hour12: true,
+                                                                }
+                                                              )}
+                                                            </>
+                                                          )}
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  )}
                                                 </div>
-                                              )}
-                                              {currentActivityForm.canEdit && (
-                                                <div className="flex justify-start ">
-                                                  <Button
-                                                    className="whitespace-nowrap ms-5 "
-                                                    variant="contained"
-                                                    color="secondary"
-                                                    style={{
-                                                      marginTop: "10px",
-                                                      backgroundColor: "white",
-                                                      color: "black",
-                                                    }}
-                                                    onClick={(e) =>
-                                                      handelRejectImpl(e, task)
-                                                    }
-                                                  >
-                                                    Reject
-                                                  </Button>
-                                                  <Button
-                                                    className="whitespace-nowrap ms-5 "
-                                                    variant="contained"
-                                                    color="secondary"
-                                                    style={{
-                                                      marginTop: "10px",
-                                                    }}
-                                                    onClick={(e) =>
-                                                      handelApproveImpl(e, task)
-                                                    }
-                                                  >
-                                                    Approve
-                                                  </Button>
-                                                </div>
-                                              )}
-                                            </>
-                                          )}
-                                      </div>
-                                    </Step>
-                                  </Stepper>
-                                </AccordionDetails>
-                              </Accordion>
-                            ))}
-                          </div>
-                        </CustomTabPanel>
-                        {!impActivity.isComplete &&
-                          impActivity.status === "Pending" &&
-                          value == 0 && (
-                            <div
-                              className="inventory-grid grid items-center gap-4 p-0"
-                              style={{ width: "100%" }}
-                            >
-                              {currentActivityForm.canEdit && (
-                                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                                  <FormControl
-                                    fullWidth
-                                    sx={{ m: 0, maxWidth: "100%" }}
-                                  >
-                                    <span className="font-semibold leading-none">
-                                      Select Approver*
-                                    </span>
-                                    <Box
-                                      sx={{
-                                        display: "flex",
-                                        flexWrap: "wrap",
-                                        marginTop: "10px",
-                                      }}
-                                    >
-                                      <FormControl fullWidth sx={{ m: 0 }}>
-                                        <Autocomplete
-                                          id="approverId"
-                                          options={docStaff}
-                                          getOptionLabel={(option) =>
-                                            option.text
-                                          }
-                                          value={handelApprover.approver}
-                                          onChange={handleChangeApprover}
-                                          renderInput={(params) => (
-                                            <TextField {...params} />
-                                          )}
-                                        />
-                                      </FormControl>
-                                    </Box>
-                                  </FormControl>
-                                </Box>
-                              )}
+                                              ))}
+                                              {task.isCompleted &&
+                                                task.taskStatus !== 3 && (
+                                                  <div className="mb-10">
+                                                    <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                                      <div
+                                                        _ngcontent-fyk-c288=""
+                                                        class="flex items-center w-full  border-b justify-between"
+                                                      ></div>
+                                                    </div>
+                                                    {currentActivityForm.canEdit && (
+                                                      <div
+                                                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                                        style={{
+                                                          width: "100%",
+                                                        }}
+                                                      >
+                                                        <Box
+                                                          sx={{
+                                                            display: "flex",
+                                                            flexWrap: "wrap",
+                                                          }}
+                                                        >
+                                                          <FormControl
+                                                            fullWidth
+                                                            sx={{
+                                                              m: 1,
+                                                              maxWidth: "100%",
+                                                            }}
+                                                          >
+                                                            <span className="font-semibold leading-none">
+                                                              Comments*
+                                                            </span>
+                                                            <OutlinedInput
+                                                              id="reasonForNewDocument"
+                                                              name="reasonForNewDocument"
+                                                              onChange={(e) =>
+                                                                setComments(
+                                                                  e.target.value
+                                                                )
+                                                              }
+                                                              label="Reason For Change*"
+                                                              className="mt-5"
+                                                            />
+                                                          </FormControl>
+                                                        </Box>
+                                                      </div>
+                                                    )}
+                                                    {currentActivityForm.canEdit && (
+                                                      <div className="flex justify-start  ">
+                                                        <Button
+                                                          className="whitespace-nowrap ms-5 "
+                                                          variant="contained"
+                                                          color="secondary"
+                                                          style={{
+                                                            marginTop: "10px",
+                                                            backgroundColor:
+                                                              "white",
+                                                            color: "black",
+                                                          }}
+                                                          onClick={(e) =>
+                                                            handelRejectImpl(
+                                                              e,
+                                                              task
+                                                            )
+                                                          }
+                                                        >
+                                                          Reject
+                                                        </Button>
+                                                        <Button
+                                                          className="whitespace-nowrap ms-5 "
+                                                          variant="contained"
+                                                          color="secondary"
+                                                          style={{
+                                                            marginTop: "10px",
+                                                          }}
+                                                          onClick={(e) =>
+                                                            handelApproveImpl(
+                                                              e,
+                                                              task
+                                                            )
+                                                          }
+                                                        >
+                                                          Approve
+                                                        </Button>
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                )}
+                                              {matchingRisks.length != 0 && (
+                                                <TableContainer
+                                                  component={Paper}
+                                                  style={{
+                                                    margin: "0 0 10px 0",
+                                                  }}
+                                                >
+                                                  <Table>
+                                                    <TableHead>
+                                                      <TableRow
+                                                        style={{
+                                                          backgroundColor:
+                                                            "rgb(241 248 255)",
+                                                        }}
+                                                      >
+                                                        <TableCell
+                                                        // style={{ padding: "15px" }}
+                                                        >
+                                                          Risk Details
+                                                        </TableCell>
+                                                        <TableCell
+                                                        // style={{ padding: "10px" }}
+                                                        >
+                                                          Human Measures
+                                                        </TableCell>
+                                                        <TableCell
+                                                        // style={{ padding: "10px" }}
+                                                        >
+                                                          Technical Measures
+                                                        </TableCell>
+                                                        <TableCell
+                                                        // style={{ padding: "10px" }}
+                                                        >
+                                                          Organisational
+                                                          Measures
+                                                        </TableCell>
+                                                      </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                      {matchingRisks?.map(
+                                                        (sub, index) =>
+                                                          sub.riskAnalysisSubTasks.map(
+                                                            (subItm) => (
+                                                              <React.Fragment
+                                                                key={index}
+                                                              >
+                                                                {subItm
+                                                                  .riskAnalysisHazardTypes
+                                                                  .length ===
+                                                                0 ? (
+                                                                  <TableRow>
+                                                                    <TableCell>
+                                                                      <Grid
+                                                                        container
+                                                                        className="inventory-grid"
+                                                                      >
+                                                                        <Grid
+                                                                          item
+                                                                          xs={
+                                                                            12
+                                                                          }
+                                                                          md={4}
+                                                                        >
+                                                                          <Typography
+                                                                            variant="h6"
+                                                                            style={{
+                                                                              paddingBottom:
+                                                                                "5px",
+                                                                            }}
+                                                                            className="text-sm"
+                                                                          >
+                                                                            {
+                                                                              subItm.subTaskName
+                                                                            }
+                                                                          </Typography>
+                                                                        </Grid>
+                                                                        <Grid
+                                                                          item
+                                                                          xs={
+                                                                            12
+                                                                          }
+                                                                        >
+                                                                          {currentActivityForm.canEdit && (
+                                                                            <span
+                                                                              className="text-white d-inline-block"
+                                                                              style={{
+                                                                                backgroundColor:
+                                                                                  "#2563eb",
+                                                                                borderRadius:
+                                                                                  "5px",
+                                                                                padding:
+                                                                                  "3px",
+                                                                                fontSize:
+                                                                                  "10px",
+                                                                                cursor:
+                                                                                  "pointer",
+                                                                              }}
+                                                                              onClick={() =>
+                                                                                handelRisk(
+                                                                                  subItm.id
+                                                                                )
+                                                                              }
+                                                                            >
+                                                                              Create
+                                                                              New
+                                                                              Risk
+                                                                              Analysis
+                                                                            </span>
+                                                                          )}
+                                                                        </Grid>
+                                                                      </Grid>
+                                                                    </TableCell>
+                                                                  </TableRow>
+                                                                ) : (
+                                                                  subItm.riskAnalysisHazardTypes?.map(
+                                                                    (
+                                                                      hazardType
+                                                                    ) => (
+                                                                      <React.Fragment
+                                                                        key={
+                                                                          hazardType.id
+                                                                        }
+                                                                      >
+                                                                        {hazardType.riskAnalysisHazardSituation?.map(
+                                                                          (
+                                                                            situation
+                                                                          ) => (
+                                                                            <React.Fragment
+                                                                              key={
+                                                                                situation.id
+                                                                              }
+                                                                            >
+                                                                              <TableRow>
+                                                                                <TableCell
+                                                                                  style={{
+                                                                                    padding:
+                                                                                      "2px 16px",
+                                                                                  }}
+                                                                                >
+                                                                                  <Typography
+                                                                                    variant="body2"
+                                                                                    style={{
+                                                                                      backgroundColor:
+                                                                                        situation.residualRiskClassificationDisplay ===
+                                                                                        "HighRisk"
+                                                                                          ? "red"
+                                                                                          : situation.residualRiskClassificationDisplay ===
+                                                                                              "LowRisk"
+                                                                                            ? "yellow"
+                                                                                            : situation.residualRiskClassificationDisplay ===
+                                                                                                "AverageRisk"
+                                                                                              ? "orange"
+                                                                                              : situation.residualRiskClassificationDisplay ===
+                                                                                                  "SignificantRisk"
+                                                                                                ? "purple"
+                                                                                                : "green",
+                                                                                      width:
+                                                                                        "auto",
+                                                                                      padding:
+                                                                                        "3px",
+                                                                                      color:
+                                                                                        situation.residualRiskClassificationDisplay ===
+                                                                                        "LowRisk"
+                                                                                          ? "#000"
+                                                                                          : "white",
+                                                                                      borderRadius:
+                                                                                        "5px",
+                                                                                      display:
+                                                                                        "inline-block",
+                                                                                      textAlign:
+                                                                                        "center",
+                                                                                      fontSize:
+                                                                                        "12px",
+                                                                                      fontWeight:
+                                                                                        situation.residualRiskClassificationDisplay ===
+                                                                                        "LowRisk"
+                                                                                          ? ""
+                                                                                          : "bold",
+                                                                                    }}
+                                                                                  >
+                                                                                    {
+                                                                                      situation.residualRiskClassificationDisplay
+                                                                                    }
+                                                                                  </Typography>
+                                                                                </TableCell>
+                                                                                <TableCell>
+                                                                                  <Typography
+                                                                                    variant="body2"
+                                                                                    style={{
+                                                                                      fontSize:
+                                                                                        "12px",
+                                                                                    }}
+                                                                                  >
+                                                                                    {
+                                                                                      situation.humanControlMeasure
+                                                                                    }
+                                                                                  </Typography>
+                                                                                </TableCell>
+                                                                                <TableCell>
+                                                                                  <Typography
+                                                                                    variant="body2"
+                                                                                    style={{
+                                                                                      fontSize:
+                                                                                        "12px",
+                                                                                    }}
+                                                                                  >
+                                                                                    {
+                                                                                      situation.technicalControlMeasure
+                                                                                    }
+                                                                                  </Typography>
+                                                                                </TableCell>
+                                                                                <TableCell>
+                                                                                  <Typography
+                                                                                    variant="body2"
+                                                                                    style={{
+                                                                                      fontSize:
+                                                                                        "12px",
+                                                                                    }}
+                                                                                  >
+                                                                                    {
+                                                                                      situation.organisationalControlMeasure
+                                                                                    }
+                                                                                  </Typography>
+                                                                                </TableCell>
+                                                                              </TableRow>
+                                                                              <TableRow>
+                                                                                <TableCell
+                                                                                  style={{
+                                                                                    padding:
+                                                                                      "2px 16px",
+                                                                                  }}
+                                                                                >
+                                                                                  <div className=" pt-0 pb-24">
+                                                                                    <h6>
+                                                                                      {
+                                                                                        subItm.subTaskName
+                                                                                      }
+                                                                                    </h6>
+                                                                                    <h6>
+                                                                                      -{" "}
+                                                                                      {
+                                                                                        hazardType.hazardTypeDisplay
+                                                                                      }
+                                                                                    </h6>
+                                                                                    <h6>
+                                                                                      -{" "}
+                                                                                      {
+                                                                                        situation.hazardousSituation
+                                                                                      }
+                                                                                    </h6>
+                                                                                    {currentActivityForm.canEdit && (
+                                                                                      <div className="my-5">
+                                                                                        <a
+                                                                                          title="View Details"
+                                                                                          className="inline-flex items-center leading-6 text-primary cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                                          onClick={() =>
+                                                                                            handelViewDetails(
+                                                                                              situation.id,
+                                                                                              subItm.id
+                                                                                            )
+                                                                                          }
+                                                                                        >
+                                                                                          <span className="inline-flex items-center">
+                                                                                            <span
+                                                                                              className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                              style={{
+                                                                                                fontSize:
+                                                                                                  "12px",
+                                                                                              }}
+                                                                                            >
+                                                                                              View
+                                                                                            </span>
+                                                                                          </span>
+                                                                                        </a>
 
-                              <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
-                                <div
-                                  _ngcontent-fyk-c288=""
-                                  class="flex items-center w-full mt-10 border-b justify-between"
-                                ></div>
-                              </div>
-                              {currentActivityForm.canExecute && (
-                                <div className="flex justify-end ">
-                                  {impActions.map((btn) => (
-                                    <Button
-                                      className="whitespace-nowrap ms-5 "
-                                      variant="contained"
-                                      color="secondary"
-                                      style={{
-                                        marginTop: "10px",
-                                      }}
-                                      onClick={(e) =>
-                                        SubmitImpCreate(e, btn.uid)
-                                      }
-                                    >
-                                      {btn.name}
-                                    </Button>
-                                  ))}
-                                </div>
-                              )}
+                                                                                        <a
+                                                                                          title="Edit"
+                                                                                          className="inline-flex items-center leading-6 text-primary mx-5 cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                                          onClick={() =>
+                                                                                            handelEditRiskDetails(
+                                                                                              situation.id,
+                                                                                              subItm.id
+                                                                                            )
+                                                                                          }
+                                                                                        >
+                                                                                          <span className="inline-flex items-center">
+                                                                                            <span
+                                                                                              className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                              style={{
+                                                                                                fontSize:
+                                                                                                  "12px",
+                                                                                              }}
+                                                                                            >
+                                                                                              Edit
+                                                                                            </span>
+                                                                                          </span>
+                                                                                        </a>
+
+                                                                                        <a
+                                                                                          title="Remove"
+                                                                                          className="inline-flex items-center leading-6 text-primary ml-2 cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                                          onClick={() =>
+                                                                                            handelRemoveDetails(
+                                                                                              situation.id,
+                                                                                              subItm.id
+                                                                                            )
+                                                                                          }
+                                                                                        >
+                                                                                          <span className="inline-flex items-center">
+                                                                                            <span
+                                                                                              className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                              style={{
+                                                                                                fontSize:
+                                                                                                  "12px",
+                                                                                              }}
+                                                                                            >
+                                                                                              Remove
+                                                                                            </span>
+                                                                                          </span>
+                                                                                        </a>
+                                                                                      </div>
+                                                                                    )}
+                                                                                    {currentActivityForm.canEdit && (
+                                                                                      <span
+                                                                                        className="text-white d-inline-block"
+                                                                                        style={{
+                                                                                          backgroundColor:
+                                                                                            "#2563eb",
+                                                                                          borderRadius:
+                                                                                            "5px",
+                                                                                          padding:
+                                                                                            "3px",
+                                                                                          fontSize:
+                                                                                            "10px",
+                                                                                          cursor:
+                                                                                            "pointer",
+                                                                                        }}
+                                                                                        onClick={() =>
+                                                                                          handelRisk(
+                                                                                            subItm.id,
+                                                                                            hazardType.hazardType
+                                                                                          )
+                                                                                        }
+                                                                                      >
+                                                                                        Create
+                                                                                        New
+                                                                                        Risk
+                                                                                        Analysis
+                                                                                      </span>
+                                                                                    )}
+                                                                                  </div>
+                                                                                </TableCell>
+                                                                              </TableRow>
+                                                                            </React.Fragment>
+                                                                          )
+                                                                        )}
+                                                                      </React.Fragment>
+                                                                    )
+                                                                  )
+                                                                )}
+                                                              </React.Fragment>
+                                                            )
+                                                          )
+                                                      )}
+                                                    </TableBody>
+                                                  </Table>
+                                                </TableContainer>
+                                              )}
+                                            </div>
+                                          </Step>
+                                        </Stepper>
+                                      </AccordionDetails>
+                                    </AccordionDetails>
+                                  </Accordion>
+                                );
+                              })}
                             </div>
-                          )}
-                        <CustomTabPanel value={value} index={1}>
-                          <div className="flex flex-col px-4 py-3 w-full border rounded">
-                            <ul>
-                              {CheckLists.map((item) => (
-                                <li key={item.id} className="pb-5">
-                                  <label>
-                                    <input
-                                      type="checkbox"
-                                      checked={item.isChecked}
-                                      style={{
-                                        margin: "5px",
-                                        color:
-                                          currentActivityForm.canEdit == false
-                                            ? "grey"
-                                            : "black",
-                                      }}
-                                      disabled={!currentActivityForm.canEdit}
-                                      onChange={() => {
-                                        handleCheckboxChange(item.id);
-                                      }}
-                                    />
-                                    <span
-                                      style={{
-                                        margin: "5px",
-                                        color:
-                                          currentActivityForm.canEdit == false
-                                            ? "grey"
-                                            : "black",
-                                      }}
-                                    >
-                                      {item.item}
-                                    </span>{" "}
-                                  </label>
-                                </li>
-                              ))}
-                              {!impActivity.isComplete &&
-                                impActivity.status === "Pending" &&
-                                value == 1 && (
-                                  <Button
-                                    className="whitespace-nowrap ms-5 "
-                                    variant="contained"
-                                    color="secondary"
-                                    style={{
-                                      marginTop: "10px",
-                                      width: "150px",
-                                      marginBottom: "5px",
-                                    }}
-                                    onClick={saveChanges}
-                                  >
-                                    Save
-                                  </Button>
-                                )}
-                            </ul>
-                          </div>
-
+                          </CustomTabPanel>
                           {!impActivity.isComplete &&
                             impActivity.status === "Pending" &&
-                            value == 1 && (
+                            value == 0 && (
                               <div
-                                className="inventory-grid grid items-center gap-4 mt-24"
+                                className="inventory-grid grid items-center gap-4 p-0"
                                 style={{ width: "100%" }}
                               >
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    flexWrap: "wrap",
-                                  }}
-                                >
-                                  <FormControl
-                                    fullWidth
-                                    sx={{
-                                      m: 0,
-                                      maxWidth: "100%",
-                                    }}
+                                {currentActivityForm.canEdit && (
+                                  <Box
+                                    sx={{ display: "flex", flexWrap: "wrap" }}
                                   >
-                                    <span className="font-semibold leading-none">
-                                      Select Approver
-                                    </span>
-                                    <Box
-                                      sx={{
-                                        display: "flex",
-                                        flexWrap: "wrap",
-                                        marginTop: "10px",
-                                      }}
+                                    <FormControl
+                                      fullWidth
+                                      sx={{ m: 0, maxWidth: "100%" }}
                                     >
-                                      <FormControl fullWidth sx={{ m: 0 }}>
-                                        <Select
-                                          labelId="functionName-label"
-                                          id="docControllerId"
-                                          name="approver"
-                                          value={handelApprover.approver}
-                                          onChange={handleChangeApprover}
-                                          label="Document Controller *"
-                                        >
-                                          {docStaff.map((option) => (
-                                            <MenuItem
-                                              key={option.id}
-                                              value={option.value}
-                                            >
-                                              {option.text}
-                                            </MenuItem>
-                                          ))}
-                                        </Select>
-                                      </FormControl>
-                                    </Box>
-                                  </FormControl>
-                                </Box>
+                                      <span className="font-semibold leading-none">
+                                        Select Approver*
+                                      </span>
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          flexWrap: "wrap",
+                                          marginTop: "10px",
+                                        }}
+                                      >
+                                        <FormControl fullWidth sx={{ m: 0 }}>
+                                          <Autocomplete
+                                            id="approverId"
+                                            options={docStaff}
+                                            getOptionLabel={(option) =>
+                                              option.text
+                                            }
+                                            value={handelApprover.approver}
+                                            onChange={handleChangeApprover}
+                                            renderInput={(params) => (
+                                              <TextField {...params} />
+                                            )}
+                                          />
+                                        </FormControl>
+                                      </Box>
+                                    </FormControl>
+                                  </Box>
+                                )}
 
                                 <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                   <div
@@ -3710,28 +6482,164 @@ function Course() {
                                     class="flex items-center w-full mt-10 border-b justify-between"
                                   ></div>
                                 </div>
-                                <div className="flex justify-end ">
-                                  {impActions.map((btn) => (
+                                {currentActivityForm.canExecute && (
+                                  <div className="flex justify-end ">
+                                    {impActions.map((btn) => (
+                                      <Button
+                                        className="whitespace-nowrap ms-5 "
+                                        variant="contained"
+                                        color="secondary"
+                                        style={{
+                                          marginTop: "10px",
+                                        }}
+                                        onClick={(e) =>
+                                          SubmitImpCreate(e, btn.uid)
+                                        }
+                                      >
+                                        {btn.name}
+                                      </Button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          <CustomTabPanel value={value} index={1}>
+                            <div className="flex flex-col px-4 py-3 w-full border rounded">
+                              <ul>
+                                {CheckLists.map((item) => (
+                                  <li key={item.id} className="pb-5">
+                                    <label>
+                                      <input
+                                        type="checkbox"
+                                        checked={item.isChecked}
+                                        style={{
+                                          margin: "5px",
+                                          color:
+                                            currentActivityForm.canEdit == false
+                                              ? "grey"
+                                              : "black",
+                                        }}
+                                        disabled={!currentActivityForm.canEdit}
+                                        onChange={() => {
+                                          handleCheckboxChange(item.id);
+                                        }}
+                                      />
+                                      <span
+                                        style={{
+                                          margin: "5px",
+                                          color:
+                                            currentActivityForm.canEdit == false
+                                              ? "grey"
+                                              : "black",
+                                        }}
+                                      >
+                                        {item.item}
+                                      </span>{" "}
+                                    </label>
+                                  </li>
+                                ))}
+                                {!impActivity.isComplete &&
+                                  impActivity.status === "Pending" &&
+                                  value == 1 && (
                                     <Button
                                       className="whitespace-nowrap ms-5 "
                                       variant="contained"
                                       color="secondary"
                                       style={{
                                         marginTop: "10px",
+                                        width: "150px",
+                                        marginBottom: "5px",
                                       }}
-                                      onClick={(e) =>
-                                        SubmitImpCreate(e, btn.uid)
-                                      }
+                                      onClick={saveChanges}
                                     >
-                                      {btn.name}
+                                      Save
                                     </Button>
-                                  ))}
+                                  )}
+                              </ul>
+                            </div>
+
+                            {!impActivity.isComplete &&
+                              impActivity.status === "Pending" &&
+                              value == 1 && (
+                                <div
+                                  className="inventory-grid grid items-center gap-4 mt-24"
+                                  style={{ width: "100%" }}
+                                >
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      flexWrap: "wrap",
+                                    }}
+                                  >
+                                    <FormControl
+                                      fullWidth
+                                      sx={{
+                                        m: 0,
+                                        maxWidth: "100%",
+                                      }}
+                                    >
+                                      <span className="font-semibold leading-none">
+                                        Select Approver
+                                      </span>
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          flexWrap: "wrap",
+                                          marginTop: "10px",
+                                        }}
+                                      >
+                                        <FormControl fullWidth sx={{ m: 0 }}>
+                                          <Select
+                                            labelId="functionName-label"
+                                            id="docControllerId"
+                                            name="approver"
+                                            value={handelApprover.approver}
+                                            onChange={handleChangeApprover}
+                                            label="Document Controller *"
+                                          >
+                                            {docStaff.map((option) => (
+                                              <MenuItem
+                                                key={option.id}
+                                                value={option.value}
+                                              >
+                                                {option.text}
+                                              </MenuItem>
+                                            ))}
+                                          </Select>
+                                        </FormControl>
+                                      </Box>
+                                    </FormControl>
+                                  </Box>
+
+                                  <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                    <div
+                                      _ngcontent-fyk-c288=""
+                                      class="flex items-center w-full mt-10 border-b justify-between"
+                                    ></div>
+                                  </div>
+                                  <div className="flex justify-end ">
+                                    {impActions.map((btn) => (
+                                      <Button
+                                        className="whitespace-nowrap ms-5 "
+                                        variant="contained"
+                                        color="secondary"
+                                        style={{
+                                          marginTop: "10px",
+                                        }}
+                                        onClick={(e) =>
+                                          SubmitImpCreate(e, btn.uid)
+                                        }
+                                      >
+                                        {btn.name}
+                                      </Button>
+                                    ))}
+                                  </div>
                                 </div>
-                              </div>
-                            )}
-                        </CustomTabPanel>
-                      </Box>
-                    </Paper>
+                              )}
+                          </CustomTabPanel>
+                        </Box>
+                      </Paper>
+                    )}
                     <Modal
                       aria-labelledby="transition-modal-title"
                       aria-describedby="transition-modal-description"
