@@ -29,6 +29,7 @@ const handleError = async (error) => {
       }, 2000); // Delay to allow toast to show
       return;
     } else if (error.response.status === 500) {
+      toast.error("Internal server error.");
       err = {
         status: error.response.status,
         message: "error_message",
@@ -75,14 +76,14 @@ export const apiAuth = axios.create({
 });
 
 export const apiTicketClient = axios.create({
-  baseURL: "http://tebsdemoserver.westindia.cloudapp.azure.com:128/api/v1",
+  baseURL: "https://pmpprofilestag.tebs.co.in/api/v1",
   headers: {
     Accept: "application/json",
   },
 });
 
 export const apiTicketAuth = axios.create({
-  baseURL: "http://tebsdemoserver.westindia.cloudapp.azure.com:184/api/v1/",
+  baseURL: "https://pmpprofilestag.tebs.co.in/api/v1/",
   headers: {
     Accept: "application/json",
   },

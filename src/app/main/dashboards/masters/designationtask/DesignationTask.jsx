@@ -40,7 +40,8 @@ function createData(
   action,
   isActive,
   id,
-  lookupType
+  lookupType,
+  designationId
 ) {
   return {
     index,
@@ -52,6 +53,7 @@ function createData(
     isActive,
     id,
     lookupType,
+    designationId,
   };
 }
 
@@ -190,7 +192,8 @@ export default function StickyHeadTable() {
           "Action",
           item.isActive,
           item.id,
-          item.lookupType
+          item.lookupType,
+          item.designationId
         )
       );
       SetHazardList(transformedData);
@@ -315,7 +318,8 @@ export default function StickyHeadTable() {
     handleOpenDelete();
   };
 
-  const handleChangeDense = (event, index) => {
+  const handleChangeDense = (event, index, row) => {
+    console.log(row, "rowwwwwww");
     const updatedDepartmentList = [...hazardList];
     const updatedRow = updatedDepartmentList[index];
     updatedRow.isActive = event.target.checked;
@@ -325,11 +329,12 @@ export default function StickyHeadTable() {
 
     // Call the update API
     apiAuth
-      .put(`/LookupData/Update/${updatedRow.id}`, {
+      .put(`/DesignationTask/${updatedRow.id}`, {
         ...updatedRow,
         isActive: updatedRow.isActive,
       })
       .then((resp) => {
+        toast.success("Updated.");
         getRecords(); // Fetch the updated records
       })
       .catch((error) => {
@@ -702,7 +707,8 @@ export default function StickyHeadTable() {
                                     onChange={(event) =>
                                       handleChangeDense(
                                         event,
-                                        page * rowsPerPage + row.index - 1
+                                        page * rowsPerPage + row.index - 1,
+                                        row
                                       )
                                     } // Passes the index of the department
                                   />

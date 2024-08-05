@@ -91,7 +91,7 @@ const TicketModal = ({ open, handleClose }) => {
     console.log(ticketData, "ticketData");
     try {
       const response = await axios.post(
-        "http://tebsdemoserver.westindia.cloudapp.azure.com:128/api/v1/tickets",
+        "https://pmpcrmstag.tebs.co.in/api/v1/tickets",
         ticketData,
         {
           headers: {

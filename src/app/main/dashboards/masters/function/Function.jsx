@@ -304,6 +304,8 @@ export default function StickyHeadTable() {
         isActive: updatedRow.isActive,
       })
       .then((resp) => {
+        toast.success("Updated.");
+        s;
         getRecords(); // Fetch the updated records
       })
       .catch((error) => {

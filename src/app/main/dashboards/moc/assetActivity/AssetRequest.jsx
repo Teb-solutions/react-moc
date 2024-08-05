@@ -435,7 +435,10 @@ function AssetRequest() {
         functionId: docContent.functionId,
         siteId: docContent.siteId,
         siteInchargeId: docContent.siteInchargeId,
-
+        type: 1,
+        expenseNature: 2,
+        expenseType: 3,
+        purchaseCategory: 2,
         documentId: selectedFile.documentId,
         documentStatus: 2,
         documentType: "Activity",
@@ -443,6 +446,8 @@ function AssetRequest() {
       });
     }
   }, [docContent]);
+
+  console.log(documentState, "documentState");
 
   if (isLoading) {
     return <FuseLoading />;
@@ -818,6 +823,7 @@ function AssetRequest() {
                     <Select
                       variant="outlined"
                       name="type"
+                      value={documentState.type}
                       onChange={handleChange}
                     >
                       {mockType.map((option) => (
@@ -874,6 +880,7 @@ function AssetRequest() {
                       variant="outlined"
                       name="expenseNature"
                       onChange={handleChange}
+                      value={documentState.expenseNature}
                     >
                       {expenseNature.map((option) => (
                         <MenuItem key={option.id} value={option.value}>
@@ -908,6 +915,7 @@ function AssetRequest() {
                       variant="outlined"
                       name="expenseType"
                       onChange={handleChange}
+                      value={documentState.expenseType}
                     >
                       {expenseType.map((option) => (
                         <MenuItem key={option.id} value={option.value}>
@@ -936,6 +944,7 @@ function AssetRequest() {
                     <Select
                       variant="outlined"
                       name="purchaseCategory"
+                      value={documentState.purchaseCategory}
                       onChange={handleChange}
                     >
                       {purchaseCat.map((option) => (

@@ -195,7 +195,7 @@ export default function Ticket() {
   async function getRecords() {
     const tokenTicket = localStorage.getItem("jwt_access_ticket_token");
     const response = await axios.get(
-      "http://tebsdemoserver.westindia.cloudapp.azure.com:128/api/v1/project/tickets/list?projectId=5EC94E1B-E058-4008-EC12-08DC9C361D1D",
+      "https://pmpcrmstag.tebs.co.in/api/v1/project/tickets/list?projectId=5EC94E1B-E058-4008-EC12-08DC9C361D1D",
       {
         headers: {
           Authorization: `Bearer ${tokenTicket}`,

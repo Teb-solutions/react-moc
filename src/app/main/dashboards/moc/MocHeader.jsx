@@ -11,7 +11,7 @@ import { useState } from "react";
  * The DemoHeader component.
  */
 function MocHeader(props) {
-  const { activity, reqno, risk, master, type, nothing } = props;
+  const { activity, reqno, risk, master, type, nothing, verName } = props;
   const routeParams = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -103,9 +103,10 @@ function MocHeader(props) {
 
           {activity && (
             <Typography className="font-medium" key="3" color="text.primary">
-              {activity}
+              {activity} (v{verName})
             </Typography>
           )}
+
           {risk == "risk" ? (
             <Menu
               anchorEl={anchorEl}
