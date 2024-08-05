@@ -9,7 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import { useEffect, useState } from "react";
 import Fade from "@mui/material/Fade";
 import Backdrop from "@mui/material/Backdrop";
-import { Box, TextareaAutosize } from "@mui/material";
+import { Box, Grid, TextareaAutosize } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {
   Button,
@@ -20,7 +20,9 @@ import {
   Switch,
   TablePagination,
   Modal,
+  IconButton,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import SearchIcon from "@mui/icons-material/Search";
 import { apiAuth } from "src/utils/http";
@@ -29,83 +31,83 @@ import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { toast } from "react-toastify";
 import MocHeader from "../moc/MocHeader";
+import axios from "axios";
+import {
+  TicketCategoryEnum,
+  TicketPriorityEnum,
+  TicketSourceEnum,
+  TicketStatusEnum,
+} from "../EnumTicket/ticketEnums";
+const mapEnumValueToName = (value, enumObject) => {
+  return (
+    Object.keys(enumObject).find((key) => enumObject[key] === value) || "-"
+  );
+};
 function createData(
   index,
-  code,
-  description,
-  status,
+  subject,
+  message,
+  ticketstatus,
+  priority,
+  category,
+  source,
   action,
-  isActive,
-  id,
-  lookupType
+
+  id
 ) {
-  return { index, code, description, status, action, isActive, id, lookupType };
+  return {
+    index,
+    subject,
+    message,
+    ticketstatus: mapEnumValueToName(ticketstatus, TicketStatusEnum),
+    priority: mapEnumValueToName(priority, TicketPriorityEnum),
+    category: mapEnumValueToName(category, TicketCategoryEnum),
+    source: mapEnumValueToName(source, TicketSourceEnum),
+    action,
+
+    id,
+  };
 }
 
 export default function Ticket() {
   const storedFeature = decryptFeature();
   const feature = storedFeature ? storedFeature : [];
   const columns = [
-    // { id: "index", label: "#", minWidth: 50 },
-    // { id: "code", label: "Code", minWidth: 100 },
     { id: "index", label: "#" },
-    { id: "code", label: "Subject" },
-
+    { id: "subject", label: "Subject" },
     {
-      id: "description",
+      id: "message",
       label: "Description",
-      // minWidth: 170,
       align: "left",
       format: (value) => value.toLocaleString("en-US"),
     },
     {
-      id: "Category",
+      id: "category",
       label: "Ticket Category",
-      // minWidth: 170,
       align: "left",
-      format: (value) => value.toFixed(2),
     },
     {
-      id: "Priority",
+      id: "priority",
       label: "Ticket Priority",
-      // minWidth: 170,
       align: "left",
-      format: (value) => value.toFixed(2),
     },
     {
-      id: "Priority",
-      label: "Ticket Status",
-      // minWidth: 170,
+      id: "source",
+      label: "Ticket Source",
       align: "left",
-      format: (value) => value.toFixed(2),
+    },
+    {
+      id: "ticketstatus",
+      label: "Ticket Status",
+      align: "left",
     },
     {
       id: "comment",
-      label: "Comment",
+      label: "Action",
       align: "left",
       minWidth: 140,
       render: (row) => (
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <TextareaAutosize
-            minRows={2}
-            maxRows={4}
-            placeholder="Enter your comment"
-            style={{
-              width: "100%",
-              padding: "8px",
-              borderRadius: "4px",
-              border: "1px solid black",
-              fontSize: "1rem",
-            }}
-            onChange={(e) => handleCommentChange(e, row)}
-          />
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={{ minWidth: "40px", minHeight: "40px" }}
-          >
-            <FuseSvgIcon size={20}>heroicons-solid:plus</FuseSvgIcon>
-          </Button>
           <Button
             variant="contained"
             color="primary"
@@ -149,6 +151,8 @@ export default function Ticket() {
     parentId: 0,
   });
   const [open, setOpen] = useState(false);
+  const [openView, setOpenView] = useState({});
+
   const [isViewMode, setViewMode] = useState(false);
 
   const style1 = {
@@ -170,33 +174,55 @@ export default function Ticket() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "400px",
-    maxWidth: "80vw",
-    height: "auto",
-    borderRadius: "16px",
     bgcolor: "background.paper",
-
     boxShadow: 24,
-    p: 4,
-    padding: "0px",
+    borderRadius: 2,
+    p: 2,
+    maxWidth: 600,
+    width: "100%",
   };
-  function getRecords() {
-    apiAuth.get(`/LookupData/List/risktime`).then((resp) => {
+
+  const headerStyle = {
+    p: 2,
+    bgcolor: "secondary.main",
+    color: "primary.contrastText",
+    borderTopLeftRadius: 2,
+    borderTopRightRadius: 2,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  };
+  async function getRecords() {
+    const tokenTicket = localStorage.getItem("jwt_access_ticket_token");
+    const response = await axios.get(
+      "http://tebsdemoserver.westindia.cloudapp.azure.com:128/api/v1/project/tickets/list?projectId=5EC94E1B-E058-4008-EC12-08DC9C361D1D",
+      {
+        headers: {
+          Authorization: `Bearer ${tokenTicket}`,
+          Tenant: "root",
+          Accept: "application/json",
+        },
+      }
+    );
+    if (response.data) {
       setIsLoading(false);
-      const transformedData = resp.data.data.map((item, index) =>
+
+      const transformedData = response.data.map((item, index) =>
         createData(
           index + 1,
-          item.code,
-          item.description,
-          dense,
+          item.subject,
+          item.message,
+          item.ticketStatus,
+          item.ticketPriority,
+          item.ticketCategory,
+          item.ticketSource,
           "Action",
-          item.isActive,
-          item.id,
-          item.lookupType
+
+          item.id
         )
       );
       setRiskTimeList(transformedData);
-    });
+    }
   }
 
   useEffect(() => {
@@ -233,10 +259,6 @@ export default function Ticket() {
     setOpen(false);
   };
 
-  const handleOpenDelete = () => {
-    setDelete(true);
-  };
-
   const handleCloseDelete = () => setDelete(false);
 
   const handleSubmitDelete = () => {
@@ -271,51 +293,12 @@ export default function Ticket() {
     return Object.keys(tempErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    //toast.success("oombi.");
-    if (validate()) {
-      if (lookupAdd.crudMode == "UPDATE") {
-        apiAuth.put(`/LookupData/Update/${Id}`, lookupAdd).then((resp) => {
-          setOpen(false);
-          toast.success("Updated.");
-          getRecords();
-        });
-      } else {
-        if (lookupAdd.code.length < 2) {
-          setOpen(false);
-
-          toast.error("Code Maximum length is 2 charcters");
-        } else {
-          apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
-            setOpen(false);
-            toast.success("Created.");
-
-            getRecords();
-          });
-        }
-      }
-    }
-  };
-
   const handleEdit = (row) => {
     setViewMode(true);
-    setLookUpAdd({
-      ...row,
-      crudMode: "UPDATE",
-      id: row.id,
-      lookupType: row.lookupType,
-      parentType: "",
-      LookupType: "risktime",
-    });
-    setId(row.id);
-    handleOpen();
-  };
+    setOpenView(row);
+    console.log(row, "rowwwww");
 
-  const handleDelete = (row) => {
-    console.log(row, "roww");
-    setId(row.id);
-    handleOpenDelete();
+    handleOpen();
   };
 
   const handleChangeDense = (event, index) => {
@@ -352,84 +335,81 @@ export default function Ticket() {
         open={open}
         onClose={handleClose}
         closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
+        BackdropComponent={Backdrop}
+        BackdropProps={{ timeout: 500 }}
       >
         <Fade in={open}>
           <Box sx={style}>
-            <Box
-              style={{
-                padding: "30px",
-                backgroundColor: "#4f46e5",
-                borderTopLeftRadius: "16px",
-                borderTopRightRadius: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                color: "white",
-              }}
-            >
-              <span className="text-popup font-medium">Comment</span>
-              <span onClick={handleClose} style={{ cursor: "pointer" }}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  height="24"
-                  width="24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </span>
+            <Box sx={headerStyle}>
+              <Typography variant="h6" component="h2">
+                Ticket Details
+              </Typography>
+              <IconButton onClick={handleClose} sx={{ color: "inherit" }}>
+                <CloseIcon />
+              </IconButton>
             </Box>
-            <Box
-              style={{
-                padding: "30px",
-                textAlign: "center",
-              }}
-            >
-              <TextField
-                fullWidth
-                multiline
-                rows={4}
-                label="Comment"
-                variant="outlined"
-                value={"hello i have added a comment"}
-                disabled={isViewMode}
-                onChange={(e) => {
-                  /* handle comment change if needed */
-                }}
-                InputProps={{
-                  style: {
-                    color: isViewMode ? "gray" : "black",
-                    backgroundColor: isViewMode ? "#f0f0f0" : "white",
-                  },
-                }}
-              />
-              {!isViewMode && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{ marginTop: "20px" }}
-                  // onClick={/* handle save/update action */}
-                >
-                  Save Changes"
-                </Button>
-              )}
+            <Box sx={{ p: 2 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Subject"
+                    value={openView.subject}
+                    fullWidth
+                    disabled
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Description"
+                    value={openView.message}
+                    fullWidth
+                    disabled
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Status"
+                    value={openView.ticketstatus}
+                    fullWidth
+                    disabled
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Priority"
+                    value={openView.priority}
+                    fullWidth
+                    disabled
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Category"
+                    value={openView.category}
+                    fullWidth
+                    disabled
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Source"
+                    value={openView.source}
+                    fullWidth
+                    disabled
+                    variant="outlined"
+                  />
+                </Grid>
+              </Grid>
             </Box>
           </Box>
         </Fade>
       </Modal>
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

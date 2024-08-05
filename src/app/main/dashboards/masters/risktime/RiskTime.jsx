@@ -28,7 +28,7 @@ import Loader from "src/app/main/loader/Loader";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
 import MocHeader from "../../moc/MocHeader";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 function createData(
   index,
   code,
@@ -214,6 +214,7 @@ export default function StickyHeadTable() {
 
   const handleSubmitDelete = () => {
     apiAuth.delete(`/LookupData/Delete/${Id}`).then((resp) => {
+      debugger;
       if (resp.data.statusCode == "424") {
         toast.error(resp.data.message);
         setDelete(false);
@@ -317,7 +318,7 @@ export default function StickyHeadTable() {
   return (
     <div style={{ backgroundColor: "white" }}>
       <MocHeader master={"Master"} type={"Risk Time"} />
-
+      <ToastContainer className="toast-container" />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

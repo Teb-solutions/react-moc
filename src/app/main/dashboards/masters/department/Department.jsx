@@ -317,6 +317,8 @@ export default function StickyHeadTable() {
   return (
     <div style={{ backgroundColor: "white" }}>
       <MocHeader master={"Master"} type={"Department"} />
+      <ToastContainer className="toast-container" />
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

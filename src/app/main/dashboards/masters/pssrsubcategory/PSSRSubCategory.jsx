@@ -323,6 +323,7 @@ export default function StickyHeadTable() {
   return (
     <div style={{ backgroundColor: "white" }}>
       <MocHeader master={"Master"} type={"PSSR Sub Category"} />
+      <ToastContainer className="toast-container" />
 
       <Modal
         aria-labelledby="transition-modal-title"

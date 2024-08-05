@@ -74,11 +74,33 @@ export const apiAuth = axios.create({
   },
 });
 
+export const apiTicketClient = axios.create({
+  baseURL: "http://tebsdemoserver.westindia.cloudapp.azure.com:128/api/v1",
+  headers: {
+    Accept: "application/json",
+  },
+});
+
+export const apiTicketAuth = axios.create({
+  baseURL: "http://tebsdemoserver.westindia.cloudapp.azure.com:184/api/v1/",
+  headers: {
+    Accept: "application/json",
+  },
+});
+
 const getToken = () => localStorage.getItem("jwt_access_token");
 apiAuth.interceptors.request.use((config) => {
   const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+const getTokenTicket = () => localStorage.getItem("jwt_access_ticket_token");
+apiTicketAuth.interceptors.request.use((config) => {
+  const tokenTicket = getTokenTicket();
+  if (tokenTicket) {
+    config.headers.Authorization = `Bearer ${tokenTicket}`;
   }
   return config;
 });
@@ -113,3 +135,4 @@ const handleResponseError = (error) => {
 
 apiClient.interceptors.response.use((res) => res, handleResponseError);
 apiAuth.interceptors.response.use((res) => res, handleResponseError);
+apiTicketAuth.interceptors.response.use((res) => res, handleResponseError);

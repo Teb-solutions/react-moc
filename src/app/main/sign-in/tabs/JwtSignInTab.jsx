@@ -13,8 +13,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import ReCAPTCHA from "react-google-recaptcha";
 import Cookies from "js-cookie";
 import { encryptFeature } from "./featureEncryption";
-import { apiAuth } from "src/utils/http";
+import { apiAuth, apiTicketAuth } from "src/utils/http";
 import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
 
 /**
  * Form Validation Schema
@@ -90,7 +91,7 @@ const JwtSignInTab = () => {
       mFAOtp: mFAOtp,
     };
     try {
-      apiAuth.post("/Account/Login", params).then((resp) => {
+      apiAuth.post("/Account/Login", params).then(async (resp) => {
         if (resp.data.statusCode === 202) {
           console.log("Setting showMFA to true", resp);
           toast?.success("Otp Required");
@@ -100,15 +101,27 @@ const JwtSignInTab = () => {
         }
         if (resp.data.statusCode === 200) {
           Cookies.remove("MOC_Features");
+          const ticketResp = await apiTicketAuth.post("/Account/access-token", {
+            userName: "MOC_CLIENT",
+            password: "M@c_3#21c_ukl",
+            deviceId: "string",
+          });
+
+          console.log("Ticket access token response:", ticketResp);
+          localStorage.setItem(
+            "jwt_access_ticket_token",
+            ticketResp.data.accessToken
+          );
+
           localStorage.setItem("jwt_access_token", resp.data.data.jwt);
           localStorage.setItem("username", resp.data.data.name);
-
-          name;
 
           try {
             const enData = encryptFeature(resp.data.data.features);
 
             if (enData) {
+              // Store the access token in local storage
+
               toast?.success("Successfully Logined");
               navigate("/dashboards/project");
               location.reload();
