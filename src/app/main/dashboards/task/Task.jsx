@@ -333,7 +333,18 @@ const Task = () => {
           RequestDate: formattedReqDate,
         }
       )
-      .then((response) => {});
+      .then((response) => {
+        if (response.data.data == null || response.data.statusCode == 500) {
+          setDateExtendOpen(false);
+          toast.error(response.data.message);
+        } else {
+          setDateExtendOpen(false);
+          setComments("");
+          setReqDate(null);
+          toast.success("Successfull");
+        }
+      })
+      .catch((err) => {});
   };
 
   const handleSubmit = () => {
@@ -1378,10 +1389,18 @@ const Task = () => {
                 backgroundColor: "#4f46e5",
                 borderTopLeftRadius: "16px",
                 borderTopRightRadius: "16px",
+                display: "flex",
+                justifyContent: "end",
+                color: "white",
               }}
-            ></Box>
+              className="cursor-pointer"
+              onClick={handlehandledateExtendClose}
+            >
+              {" "}
+              <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
+            </Box>
 
-            <Box sx={{ overflow: "auto", padding: "5px 30px 0 30px" }}>
+            <Box sx={{ overflow: "auto", padding: "5px 30px 30px 30px" }}>
               <Grid container spacing={2} className="mt-5">
                 <Grid item xs={12}>
                   <Table
@@ -1487,15 +1506,21 @@ const Task = () => {
                     <Typography variant="body1" className="font-semibold pt-4">
                       Request Date
                     </Typography>
-                    <Typography variant="body1" className="mt-2 cursor-pointer">
+                    <Typography
+                      variant="body1"
+                      className="mt-2 cursor-pointer text-grey"
+                    >
                       {formatDates(task?.taskDateUpdates?.[0].requestDate)}
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="body1" className="font-semibold pt-4">
+                    <Typography variant="body1" className="font-semibold pt-4 ">
                       Request Comments
                     </Typography>
-                    <Typography variant="body1" className="mt-2 cursor-pointer">
+                    <Typography
+                      variant="body1"
+                      className="mt-2 cursor-pointer text-grey"
+                    >
                       {task.taskDateUpdates?.[0].requestComments}
                     </Typography>
                   </Grid>

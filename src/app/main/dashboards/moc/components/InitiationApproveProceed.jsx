@@ -250,7 +250,7 @@ function InitiationApprovalProceed({
         assetEvaluationId={assetEvaluationId}
       />
       <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
+        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
             <h2 className="text-2xl font-semibold">Team Assignment</h2>
           </div>
@@ -411,14 +411,14 @@ function InitiationApprovalProceed({
               </div>
             </>
           )}
-          <div className="p-30 pt-24 pb-24">
+          <div className="evaluation-team-container grid p-30 pt-24 pb-24 grid-cols-1 md:grid-cols-3 gap-4">
             {!currentActivityForm.canEdit &&
               TeamAssignmentList.filter(
                 (list) => list.roleName !== "Change Leader"
-              ).map((list) => (
+              ).map((list, index) => (
                 <div
-                  className="inventory-grid grid items-center gap-4 py-6"
-                  style={{ width: "40%" }}
+                  className="inventory-grid grid items-center gap-4 py-3 px-2"
+                  key={index}
                 >
                   <div className="flex items-center" style={{ marginTop: "0" }}>
                     <img

@@ -126,6 +126,8 @@ const AssetCourse = () => {
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(-1);
   const [expandedAccordionIndex, setExpandedAccordionIndex] = useState(-1);
   const [actName, setActName] = useState("");
+  const [verName, setVerName] = useState("");
+
   const [reqNo, setReqNo] = useState("");
   const [canEdits, setCanEdits] = useState();
   const [ChangeEvaluationDetail, setChangeEvaluationDetail] = useState([]);
@@ -696,6 +698,8 @@ const AssetCourse = () => {
       return;
     }
     setActName(activityname);
+    setVerName(version);
+
     setCanEdits(canedit);
 
     const matchingPhase = content.find((phase) =>
@@ -1539,7 +1543,7 @@ const AssetCourse = () => {
 
   return (
     <FusePageSimple
-      header={<MocHeader activity={actName} reqno={reqNo} />}
+      header={<MocHeader activity={actName} reqno={reqNo} verName={verName} />}
       content={
         <div className="w-full">
           <ToastContainer className="toast-container" />

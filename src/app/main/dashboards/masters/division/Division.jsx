@@ -305,6 +305,7 @@ export default function StickyHeadTable() {
         isActive: updatedRow.isActive,
       })
       .then((resp) => {
+        toast.success("Updated.");
         getRecords(); // Fetch the updated records
       })
       .catch((error) => {
@@ -317,6 +318,7 @@ export default function StickyHeadTable() {
   return (
     <div style={{ backgroundColor: "white" }}>
       <MocHeader master={"Master"} type={"Division"} />
+      <ToastContainer className="toast-container" />
 
       <Modal
         aria-labelledby="transition-modal-title"

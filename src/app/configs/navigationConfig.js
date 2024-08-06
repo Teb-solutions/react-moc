@@ -50,6 +50,14 @@ const navigationConfig1 = [
         feature: "TASK",
       },
       {
+        id: "tasklist.request",
+        title: " Tasks List",
+        type: "item",
+        icon: "heroicons-outline:clipboard-list",
+        url: "/tasklist",
+        feature: "TASK",
+      },
+      {
         id: "ticketlist.request",
         title: " Ticket List",
         type: "item",

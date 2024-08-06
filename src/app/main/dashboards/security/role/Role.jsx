@@ -191,6 +191,7 @@ export default function StickyHeadTable() {
   const handleSubmitDelete = () => {
     apiAuth.delete(`/Role/${Id}`).then((resp) => {
       setDelete(false);
+      toast.success("Deleted");
 
       getRecords();
     });
@@ -220,6 +221,8 @@ export default function StickyHeadTable() {
           setLookUpAdd({
             name: "",
           });
+          toast.success("Updated.");
+
           setOpen(false);
 
           getRecords();
@@ -229,6 +232,7 @@ export default function StickyHeadTable() {
           setLookUpAdd({
             name: "",
           });
+          toast.success("Created.");
           setOpen(false);
           getRecords();
         });

@@ -29,6 +29,7 @@ const handleError = async (error) => {
       }, 2000); // Delay to allow toast to show
       return;
     } else if (error.response.status === 500) {
+      toast.error("Internal server error.");
       err = {
         status: error.response.status,
         message: "error_message",
@@ -74,11 +75,33 @@ export const apiAuth = axios.create({
   },
 });
 
+export const apiTicketClient = axios.create({
+  baseURL: "https://pmpprofilestag.tebs.co.in/api/v1",
+  headers: {
+    Accept: "application/json",
+  },
+});
+
+export const apiTicketAuth = axios.create({
+  baseURL: "https://pmpprofilestag.tebs.co.in/api/v1/",
+  headers: {
+    Accept: "application/json",
+  },
+});
+
 const getToken = () => localStorage.getItem("jwt_access_token");
 apiAuth.interceptors.request.use((config) => {
   const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+const getTokenTicket = () => localStorage.getItem("jwt_access_ticket_token");
+apiTicketAuth.interceptors.request.use((config) => {
+  const tokenTicket = getTokenTicket();
+  if (tokenTicket) {
+    config.headers.Authorization = `Bearer ${tokenTicket}`;
   }
   return config;
 });
@@ -113,3 +136,4 @@ const handleResponseError = (error) => {
 
 apiClient.interceptors.response.use((res) => res, handleResponseError);
 apiAuth.interceptors.response.use((res) => res, handleResponseError);
+apiTicketAuth.interceptors.response.use((res) => res, handleResponseError);
