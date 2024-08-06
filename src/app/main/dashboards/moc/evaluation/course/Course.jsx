@@ -228,7 +228,7 @@ function Course() {
             });
         } else {
           toast.error(response.data.message);
-          setOpenDocModal(false);
+          setOpenMoc(false);
           setOpenDrawer(false);
           setSelectedFile({
             ...selectedFile,
