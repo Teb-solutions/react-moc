@@ -261,19 +261,30 @@ function InitiationApproval(props) {
       })
       .then((response) => {
         console.log(response.data);
-        apiAuth
-          .get(
-            `/DocumentManager/DocList/${Activity.uid}/Approval?changeRequestToken=${assetEvaluationId}`
-          )
-          .then((response) => {
-            setOpenDrawer1(false);
-            setListDocument1(response?.data?.data);
-            setSelectedFile1({
-              ...selectedFile1,
-              name: "",
-              descritpion: "",
+        if (response.data.statusCode === 200) {
+          apiAuth
+            .get(
+              `/DocumentManager/DocList/${Activity.uid}/Approval?changeRequestToken=${assetEvaluationId}`
+            )
+            .then((response) => {
+              setOpenDrawer1(false);
+              setListDocument1(response?.data?.data);
+              setSelectedFile1({
+                ...selectedFile1,
+                name: "",
+                descritpion: "",
+              });
             });
+        } else {
+          toast.error(response.data.message);
+          setOpenDocModal(false);
+          setOpenDrawer(false);
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            description: "",
           });
+        }
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);

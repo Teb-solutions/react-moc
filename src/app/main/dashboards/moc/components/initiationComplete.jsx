@@ -343,20 +343,30 @@ const InitiationComplete = ({
         },
       })
       .then((response) => {
-        console.log(response.data);
-        apiAuth
-          .get(
-            `/DocumentManager/DocList/${currentActivityForm.uid}/ChangeSummary?changeRequestToken=${assetEvaluationId}`
-          )
-          .then((response) => {
-            setOpenDrawer(false);
-            setListDocument(response?.data?.data);
-            setSelectedFile({
-              ...selectedFile,
-              name: "",
-              descritpion: "",
+        if (response.data.statusCode === 200) {
+          apiAuth
+            .get(
+              `/DocumentManager/DocList/${currentActivityForm.uid}/ChangeSummary?changeRequestToken=${assetEvaluationId}`
+            )
+            .then((response) => {
+              setOpenDrawer(false);
+              setListDocument(response?.data?.data);
+              setSelectedFile({
+                ...selectedFile,
+                name: "",
+                descritpion: "",
+              });
             });
+        } else {
+          toast.error(response.data.message);
+          setOpenDocModal(false);
+          setOpenDrawer(false);
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            description: "",
           });
+        }
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);

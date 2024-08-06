@@ -274,19 +274,30 @@ function DocRequest() {
       })
       .then((response) => {
         console.log(response.data);
-        apiAuth
-          .get(
-            `/DocumentManager/DocList/${selectedFile.documentId}/ChangeRequest?changeRequestToken=${selectedFile.changeRequestToken}`
-          )
-          .then((response) => {
-            setOpenDrawer(false);
-            setListDocument(response?.data?.data);
-            setSelectedFile({
-              ...selectedFile,
-              name: "",
-              description: "",
+        if (response.data.statusCode === 200) {
+          apiAuth
+            .get(
+              `/DocumentManager/DocList/${selectedFile.documentId}/ChangeRequest?changeRequestToken=${selectedFile.changeRequestToken}`
+            )
+            .then((response) => {
+              setOpenDrawer(false);
+              setListDocument(response?.data?.data);
+              setSelectedFile({
+                ...selectedFile,
+                name: "",
+                description: "",
+              });
             });
+        } else {
+          toast.error(response.data.message);
+          setOpenDocModal(false);
+          setOpenDrawer(false);
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            description: "",
           });
+        }
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);

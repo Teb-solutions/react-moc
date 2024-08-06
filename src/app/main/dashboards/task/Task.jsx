@@ -441,9 +441,10 @@ const Task = () => {
 
   const handleSubmitDocument = () => {
     console.log(selectedFile.documentId, "seleee");
+
     const formData = new FormData();
     formData.append("name", selectedFile.name);
-    formData.append("description", selectedFile.description); // fixed typo here
+    formData.append("descritpion", selectedFile.description);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
     formData.append("documentType", selectedFile.documentType);
@@ -457,21 +458,30 @@ const Task = () => {
         },
       })
       .then((response) => {
-        console.log(response.status);
-        console.log(response.data);
-        apiAuth
-          .get(
-            `/DocumentManager/DocList/${selectedFile.documentId}/Task?changeRequestToken=${selectedFile.changeRequestToken}`
-          )
-          .then((response) => {
-            setOpenDrawer(false);
-            setListDocument(response?.data?.data);
-            setSelectedFile({
-              ...selectedFile,
-              name: "",
-              description: "",
+        if (response.data.statusCode === 200) {
+          apiAuth
+            .get(
+              `/DocumentManager/DocList/${selectedFile.documentId}/Task?changeRequestToken=${selectedFile.changeRequestToken}`
+            )
+            .then((response) => {
+              setOpenDrawer(false);
+              setListDocument(response?.data?.data);
+              setSelectedFile({
+                ...selectedFile,
+                name: "",
+                description: "",
+              });
             });
+        } else {
+          toast.error(response.data.message);
+          setOpenDocModal(false);
+          setOpenDrawer(false);
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            description: "",
           });
+        }
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
@@ -969,7 +979,13 @@ const Task = () => {
                       name="description"
                       variant="standard"
                       disabled
-                      value={formatDate(selectedDocument.createdAt)}
+                      value={new Date(
+                        selectedDocument.createdAt
+                      ).toLocaleString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "2-digit",
+                      })}
                     />
                   </Box>
                   <Box

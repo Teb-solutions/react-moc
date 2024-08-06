@@ -303,14 +303,30 @@ const ImplementationApprovalSite = ({
         },
       })
       .then((response) => {
-        apiAuth
-          .get(
-            `/DocumentManager/DocList/${AppActivity.uid}/Approval?changeRequestToken=${assetEvaluationId}`
-          )
-          .then((response) => {
-            setOpenDrawer(false);
-            setListDocument(response?.data?.data);
+        if (response.data.statusCode === 200) {
+          apiAuth
+            .get(
+              `/DocumentManager/DocList/${AppActivity.uid}/Approval?changeRequestToken=${assetEvaluationId}`
+            )
+            .then((response) => {
+              setOpenDrawer(false);
+              setListDocument(response?.data?.data);
+              setSelectedFile({
+                ...selectedFile,
+                name: "",
+                description: "",
+              });
+            });
+        } else {
+          toast.error(response.data.message);
+          setOpenDocModal(false);
+          setOpenDrawer(false);
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            description: "",
           });
+        }
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
