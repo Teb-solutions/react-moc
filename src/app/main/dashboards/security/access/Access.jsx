@@ -168,7 +168,9 @@ const Access = () => {
 
   const handelRole = (role) => {
     setActiveRole(role.name);
-    setLeftSidebarOpen(false);
+    if (window.innerWidth <= 768) {
+      setLeftSidebarOpen(false);
+    }
     apiAuth.get(`/RoleFeature/List?roleId=${role.roleId}`).then((resp) => {
       setRoleIdList(resp.data.data);
     });
@@ -332,7 +334,7 @@ const Access = () => {
                                 <FormControlLabel
                                   control={
                                     <Switch
-                          className="switch_check"
+                                      className="switch_check"
                                       checked={detailItem.isActive} // Control the Switch with state
                                       onChange={() =>
                                         handleSwitchChange(

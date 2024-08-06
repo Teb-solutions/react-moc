@@ -166,6 +166,10 @@ function Course() {
     setOpenDrawer(open);
   };
   const HandleTraining = () => {
+    setSelectedFile({
+      ...selectedFile,
+      descritpion: "",
+    });
     apiAuth
       .get(
         `/DocumentManager/DocList/${evaluationId}/DocImplTrSheet?changeRequestToken=${evaluationId}`
@@ -250,7 +254,8 @@ function Course() {
         } else {
           toast.error("There was an error uploading the document!");
         }
-        setOpenDocModal(false);
+        setOpenMoc(false);
+
         setOpenDrawer(false);
         setSelectedFile({
           ...selectedFile,

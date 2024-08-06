@@ -580,7 +580,10 @@ const EvaluationApproval = ({
   };
   const handleOpen1 = () => {
     setOpen1(true);
-
+    setSelectedFile({
+      name: "",
+      descritpion: "",
+    });
     ListDoc(assetEvaluationId, AppActivity.uid);
   };
 
@@ -627,7 +630,9 @@ const EvaluationApproval = ({
             });
         } else {
           toast.error(response.data.message);
-          setOpenDocModal(false);
+          setOpen(false);
+          setOpen1(false);
+
           setOpenDrawer(false);
           setSelectedFile({
             ...selectedFile,
@@ -637,6 +642,8 @@ const EvaluationApproval = ({
         }
       })
       .catch((error) => {
+        setOpen(false);
+        setOpen1(false);
         console.error("There was an error uploading the document!", error);
         if (error.response) {
           const { statusCode, message } = error.response.data;
@@ -2481,7 +2488,7 @@ const EvaluationApproval = ({
 
                           {imptsk.changeImpactTaskReviews?.length > 0 ||
                           showReview ? (
-                            <div>
+                            <div className="mt-12">
                               <Accordion
                                 expanded={expanded == imptsk.id}
                                 onChange={handleExpansionChange(imptsk.id)}

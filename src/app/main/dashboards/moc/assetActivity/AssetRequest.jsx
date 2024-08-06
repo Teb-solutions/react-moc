@@ -156,6 +156,11 @@ function AssetRequest() {
     });
   };
   const handleOpenDocModal = () => {
+    setSelectedFile({
+      ...selectedFile,
+      name: "",
+      descritpion: "",
+    });
     setOpenDocModal(true);
     if (selectedFile.documentId === "") {
       const newGuid = uuidv4();

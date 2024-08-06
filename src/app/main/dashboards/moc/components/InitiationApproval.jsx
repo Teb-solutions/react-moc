@@ -189,11 +189,15 @@ function InitiationApproval(props) {
 
   const handleOpen = () => {
     setOpen(true);
+
     ListDoc(assetEvaluationId);
   };
   const handleOpen1 = () => {
     setOpen1(true);
-
+    setSelectedFile1({
+      name: "",
+      descritpion: "",
+    });
     ListDoc1(assetEvaluationId);
   };
   const handelFileDiscriptionChange = (event) => {
@@ -269,6 +273,7 @@ function InitiationApproval(props) {
             .then((response) => {
               setOpenDrawer1(false);
               setListDocument1(response?.data?.data);
+
               setSelectedFile1({
                 ...selectedFile1,
                 name: "",

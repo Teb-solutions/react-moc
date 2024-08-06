@@ -359,7 +359,7 @@ const InitiationComplete = ({
             });
         } else {
           toast.error(response.data.message);
-          setOpenDocModal(false);
+          setOpen1(false);
           setOpenDrawer(false);
           setSelectedFile({
             ...selectedFile,
@@ -369,6 +369,8 @@ const InitiationComplete = ({
         }
       })
       .catch((error) => {
+        setOpen1(false);
+
         console.error("There was an error uploading the document!", error);
         if (error.response) {
           const { statusCode, message } = error.response.data;
