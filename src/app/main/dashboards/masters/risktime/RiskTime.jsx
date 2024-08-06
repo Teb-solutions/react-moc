@@ -214,7 +214,6 @@ export default function StickyHeadTable() {
 
   const handleSubmitDelete = () => {
     apiAuth.delete(`/LookupData/Delete/${Id}`).then((resp) => {
-      debugger;
       if (resp.data.statusCode == "424") {
         toast.error(resp.data.message);
         setDelete(false);
