@@ -443,12 +443,13 @@ const Task = () => {
     console.log(selectedFile.documentId, "seleee");
     const formData = new FormData();
     formData.append("name", selectedFile.name);
-    formData.append("descritpion", selectedFile.description);
+    formData.append("description", selectedFile.description); // fixed typo here
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
     formData.append("documentType", selectedFile.documentType);
     formData.append("documentId", selectedFile.documentId);
     formData.append("changeRequestToken", selectedFile.changeRequestToken);
+
     apiAuth
       .post("DocumentManager/Create", formData, {
         headers: {
@@ -474,21 +475,28 @@ const Task = () => {
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
-        if (error.response && error.response.data.errors) {
-          const errorMessages = Object.values(error.response.data.errors)
-            .flat()
-            .join(", ");
-          toast.error(`Error: ${errorMessages}`);
+        if (error.response) {
+          const { statusCode, message } = error.response.data;
+          if (statusCode && message) {
+            toast.error(`Error ${statusCode}: ${message}`);
+          } else if (error.response.data.errors) {
+            const errorMessages = Object.values(error.response.data.errors)
+              .flat()
+              .join(", ");
+            toast.error(`Error: ${errorMessages}`);
+          } else {
+            toast.error("There was an error uploading the document!");
+          }
         } else {
           toast.error("There was an error uploading the document!");
-          setOpenDocModal(false);
-          setOpenDrawer(false);
-          setSelectedFile({
-            ...selectedFile,
-            name: "",
-            description: "",
-          });
         }
+        setOpenDocModal(false);
+        setOpenDrawer(false);
+        setSelectedFile({
+          ...selectedFile,
+          name: "",
+          description: "",
+        });
       });
   };
 
