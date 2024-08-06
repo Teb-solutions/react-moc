@@ -105,7 +105,7 @@ function Course() {
   });
   const [expanded2, setExpanded2] = useState(false);
   const [listDocument, setListDocument] = useState([]);
-
+  const [listDocument1, setListDocument1] = useState([]);
   const handleResize = useCallback(() => {
     if (window.innerWidth <= 768) {
       // Adjust this width as needed
@@ -175,7 +175,7 @@ function Course() {
         `/DocumentManager/DocList/${evaluationId}/DocImplTrSheet?changeRequestToken=${evaluationId}`
       )
       .then((response) => {
-        setListDocument(response?.data?.data);
+        setListDocument1(response?.data?.data);
       });
     setOpenMoc(true);
   };
@@ -239,23 +239,16 @@ function Course() {
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
-        if (error.response) {
-          const { statusCode, message } = error.response.data;
-          if (statusCode && message) {
-            toast.error(`Error ${statusCode}: ${message}`);
-          } else if (error.response.data.errors) {
-            const errorMessages = Object.values(error.response.data.errors)
-              .flat()
-              .join(", ");
-            toast.error(`Error: ${errorMessages}`);
+        if (error.errorsData) {
+          if (error.errorsData.Name && error.errorsData.Name.length) {
+            toast.error(error.errorsData.Name[0]);
           } else {
             toast.error("There was an error uploading the document!");
           }
         } else {
           toast.error("There was an error uploading the document!");
         }
-        setOpenMoc(false);
-
+        setOpenDocModal(false);
         setOpenDrawer(false);
         setSelectedFile({
           ...selectedFile,
@@ -2034,7 +2027,7 @@ function Course() {
         )
         .then((response) => {
           setOpenDrawer(false);
-          setListDocument(response?.data?.data);
+          setListDocument1(response?.data?.data);
           setDeletes(false);
           setFileDetails(false);
           setSelectedDocument("");
@@ -2465,7 +2458,7 @@ function Course() {
                                         id="transition-modal-subtitle"
                                         component="h2"
                                       >
-                                        {listDocument.length} Files
+                                        {listDocument1.length} Files
                                       </Typography>
                                     </Typography>
                                     {currentActivityForm.canExecute && (
@@ -2496,7 +2489,7 @@ function Course() {
                                         backgroundColor: "#e3eeff80",
                                       }}
                                     >
-                                      {listDocument.map((doc, index) => (
+                                      {listDocument1.map((doc, index) => (
                                         <div className="content " key={index}>
                                           <div
                                             onClick={() => handelDetailDoc(doc)}
@@ -5508,7 +5501,7 @@ function Course() {
                           >
                             Implementation
                           </h2>
-                          <StyledBadge badgeContent={listDocument.length}>
+                          <StyledBadge badgeContent={listDocument1.length}>
                             <Button
                               className="whitespace-nowrap "
                               style={{

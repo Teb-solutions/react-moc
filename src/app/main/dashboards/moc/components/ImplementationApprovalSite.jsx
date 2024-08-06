@@ -319,7 +319,7 @@ const ImplementationApprovalSite = ({
             });
         } else {
           toast.error(response.data.message);
-          setOpenDocModal(false);
+          setOpen(false);
           setOpenDrawer(false);
           setSelectedFile({
             ...selectedFile,
@@ -330,22 +330,16 @@ const ImplementationApprovalSite = ({
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
-        if (error.response) {
-          const { statusCode, message } = error.response.data;
-          if (statusCode && message) {
-            toast.error(`Error ${statusCode}: ${message}`);
-          } else if (error.response.data.errors) {
-            const errorMessages = Object.values(error.response.data.errors)
-              .flat()
-              .join(", ");
-            toast.error(`Error: ${errorMessages}`);
+        if (error.errorsData) {
+          if (error.errorsData.Name && error.errorsData.Name.length) {
+            toast.error(error.errorsData.Name[0]);
           } else {
             toast.error("There was an error uploading the document!");
           }
         } else {
           toast.error("There was an error uploading the document!");
         }
-        setOpenDocModal(false);
+        setOpen(false);
         setOpenDrawer(false);
         setSelectedFile({
           ...selectedFile,
