@@ -103,6 +103,7 @@ function Course() {
   const [handelUrlChange, setHandelUrlChange] = useState({
     urlRemarks: "",
   });
+  const [expanded2, setExpanded2] = useState(false);
   const [listDocument, setListDocument] = useState([]);
 
   const handleResize = useCallback(() => {
@@ -142,7 +143,7 @@ function Course() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
-    description: "",
+    descritpion: "",
     type: "",
     document: "binary",
     documentType: "DocImplTrSheet",
@@ -193,7 +194,7 @@ function Course() {
   const handleSubmitAsset = (e) => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
-    formData.append("descritpion", selectedFile.description);
+    formData.append("descritpion", selectedFile.descritpion);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
     formData.append("documentType", selectedFile.documentType);
@@ -215,6 +216,11 @@ function Course() {
           .then((response) => {
             setOpenDrawer(false);
             setListDocument(response?.data?.data);
+            setSelectedFile({
+              ...selectedFile,
+              name: "",
+              descritpion: "",
+            });
           });
       })
       .catch((error) => {
@@ -226,7 +232,7 @@ function Course() {
           toast.error(`Error: ${errorMessages}`);
         } else {
           setOpenDrawer(false);
-          setOpen(true);
+          setOpenMoc(false);
           setSelectedFile({
             ...selectedFile,
             name: "",
@@ -1074,7 +1080,6 @@ function Course() {
       });
   };
   const SubmitImpCreate = (e, uid) => {
-    debugger;
     let taskListApproved = taskLists?.filter((x) => x.isCompleted == true);
     console.log(taskListApproved, "taskListApproved");
     if (handelApprover.approver == "" || handelApprover.approver == null) {
@@ -2019,6 +2024,11 @@ function Course() {
     return <FuseLoading />;
   }
 
+  const handleAccordionChange2 = (panel) => (event, isExpanded) => {
+    event.preventDefault();
+    setExpanded2(isExpanded ? panel : false);
+  };
+
   return (
     <FusePageSimple
       header={<MocHeader activity={actName} reqno={reqNo} />}
@@ -2586,10 +2596,10 @@ function Course() {
                                           label={
                                             <BoldLabel>Description</BoldLabel>
                                           }
-                                          name="description"
+                                          name="descritpion"
                                           variant="standard"
                                           onChange={handelFileDiscriptionChange}
-                                          value={selectedFile.description}
+                                          value={selectedFile.descritpion}
                                         />
                                       </Box>
                                     </div>
@@ -5806,7 +5816,7 @@ function Course() {
                                   sx={{ width: 320 }}
                                 />
                               </div>
-                              {taskLists.map((task) => {
+                              {taskLists.map((task, index) => {
                                 // Find matching risk analysis items
                                 const matchingRisks = riskLists.filter(
                                   (risk) =>
@@ -5817,6 +5827,8 @@ function Course() {
                                 return (
                                   <Accordion
                                     key={task.id}
+                                    expanded={expanded2 === task.id}
+                                    onChange={handleAccordionChange2(task.id)}
                                     style={{ margin: "0px" }}
                                   >
                                     <AccordionSummary
@@ -5890,702 +5902,689 @@ function Course() {
                                       </div>
                                     </AccordionSummary>
                                     <AccordionDetails>
-                                      <AccordionDetails>
-                                        <Stepper orientation="vertical">
-                                          <Step>
-                                            <div
-                                              style={{
-                                                alignItems: "flex-start",
-                                              }}
-                                            >
-                                              <div className="flex flex-col items-start mt-5">
-                                                <div
-                                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                                  style={{
-                                                    padding: "20px",
-                                                    backgroundColor: "#EBF8FF",
-                                                  }}
-                                                >
-                                                  <b>{task?.assignedByStaff}</b>
-                                                  <p>
-                                                    What is the task :{" "}
-                                                    {task?.actionWhat}
-                                                  </p>
-                                                </div>
+                                      <Stepper orientation="vertical">
+                                        <Step>
+                                          <div
+                                            style={{
+                                              alignItems: "flex-start",
+                                            }}
+                                          >
+                                            <div className="flex flex-col items-start mt-5">
+                                              <div
+                                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                                style={{
+                                                  padding: "20px",
+                                                  backgroundColor: "#EBF8FF",
+                                                }}
+                                              >
+                                                <b>{task?.assignedByStaff}</b>
+                                                <p>
+                                                  What is the task :{" "}
+                                                  {task?.actionWhat}
+                                                </p>
                                               </div>
-                                              <div className="flex flex-col items-start mt-5">
-                                                <div
-                                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                                  style={{
-                                                    padding: "20px",
-                                                    backgroundColor: "#EBF8FF",
-                                                  }}
-                                                >
-                                                  <p>
-                                                    How is Task done :{" "}
-                                                    {task?.actionHow}
-                                                  </p>
-                                                </div>
+                                            </div>
+                                            <div className="flex flex-col items-start mt-5">
+                                              <div
+                                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                                style={{
+                                                  padding: "20px",
+                                                  backgroundColor: "#EBF8FF",
+                                                }}
+                                              >
+                                                <p>
+                                                  How is Task done :{" "}
+                                                  {task?.actionHow}
+                                                </p>
                                               </div>
-                                              {task?.particularName &&
-                                                task?.particularSubName && (
+                                            </div>
+                                            {task?.particularName &&
+                                              task?.particularSubName && (
+                                                <div className="flex flex-col items-start mt-5">
+                                                  <div
+                                                    className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                                    style={{
+                                                      padding: "20px",
+                                                      backgroundColor:
+                                                        "#EBF8FF",
+                                                    }}
+                                                  >
+                                                    <p>
+                                                      Impact :{" "}
+                                                      {`${task?.particularName} > ${task?.particularSubName}`}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              )}
+                                            <div className="flex flex-col items-start mt-5">
+                                              <div
+                                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                                style={{
+                                                  padding: "20px",
+                                                  backgroundColor: "#EBF8FF",
+                                                }}
+                                              >
+                                                <p>
+                                                  Due Date :{" "}
+                                                  {formatDate(task.dueDate)}
+                                                </p>
+                                              </div>
+                                            </div>
+
+                                            <div className="flex items-center justify-center my-3">
+                                              <div className="flex-auto border-b"></div>
+                                              <div
+                                                className="flex-0 "
+                                                style={{
+                                                  fontSize: "xx-small",
+                                                }}
+                                              >
+                                                <b>{task?.assignedByStaff}</b>{" "}
+                                                has assigned task to{" "}
+                                                <b>{task?.assignedStaff}</b> on{" "}
+                                                {formatDate(task.assignedAt)}
+                                              </div>
+                                              <div className="flex-auto border-b"></div>
+                                            </div>
+
+                                            {impComments.map((msg) => (
+                                              <div
+                                                key={msg.id}
+                                                className="flex flex-row flex-wrap mb-10"
+                                                style={{
+                                                  width: "auto",
+                                                  display: "block",
+                                                  clear: "both",
+                                                }}
+                                              >
+                                                {msg?.remark && (
+                                                  <div
+                                                    className="flex flex-row items-start mt-5"
+                                                    style={{
+                                                      position: "relative",
+                                                    }}
+                                                  >
+                                                    <div
+                                                      className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
+                                                      style={{
+                                                        padding: "10px",
+                                                      }}
+                                                    >
+                                                      <div
+                                                        className="font-semibold"
+                                                        style={{
+                                                          fontSize: "smaller",
+                                                        }}
+                                                      >
+                                                        {" "}
+                                                        {
+                                                          task.assignedStaff
+                                                        }{" "}
+                                                      </div>
+                                                      <div
+                                                        dangerouslySetInnerHTML={{
+                                                          __html: msg?.remark,
+                                                        }}
+                                                      ></div>
+                                                      <div className="my-0.5 text-xs font-medium text-secondary">
+                                                        <small>
+                                                          {msg.startedDate &&
+                                                          !msg.workInProgressDate &&
+                                                          !msg.completedDate &&
+                                                          !msg.dueDate
+                                                            ? `Started on ${formatDates(msg.startedDate)}`
+                                                            : msg.workInProgressDate &&
+                                                                !msg.completedDate &&
+                                                                !msg.dueDate
+                                                              ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
+                                                              : msg.dueDate &&
+                                                                  !msg.completedDate
+                                                                ? `Due on ${formatDates(msg.dueDate)}`
+                                                                : msg.completedDate
+                                                                  ? `Completed on ${formatDates(msg.completedDate)}`
+                                                                  : "Unknown"}
+                                                        </small>
+                                                      </div>
+                                                    </div>
+                                                    <StyledBadge
+                                                      badgeContent={
+                                                        documentCounts[msg.id]
+                                                      }
+                                                    >
+                                                      <button
+                                                        className="icon-button"
+                                                        onClick={() =>
+                                                          handleOpen(msg.id)
+                                                        }
+                                                        style={{
+                                                          top: "-0px",
+                                                          right: "-6px",
+                                                        }}
+                                                      >
+                                                        <FuseSvgIcon size={20}>
+                                                          heroicons-solid:document
+                                                        </FuseSvgIcon>
+                                                      </button>
+                                                    </StyledBadge>
+                                                  </div>
+                                                )}
+                                                {msg.comments && (
                                                   <div className="flex flex-col items-start mt-5">
                                                     <div
                                                       className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                                       style={{
-                                                        padding: "20px",
+                                                        padding: "10px",
                                                         backgroundColor:
                                                           "#EBF8FF",
                                                       }}
                                                     >
-                                                      <p>
-                                                        Impact :{" "}
-                                                        {`${task?.particularName} > ${task?.particularSubName}`}
-                                                      </p>
+                                                      <div
+                                                        className="font-semibold"
+                                                        style={{
+                                                          fontSize: "smaller",
+                                                        }}
+                                                      >
+                                                        {" "}
+                                                        {
+                                                          task.assignedByStaff
+                                                        }{" "}
+                                                      </div>
+                                                      <div
+                                                        className="min-w-4 leading-5 "
+                                                        dangerouslySetInnerHTML={{
+                                                          __html: msg.comments,
+                                                        }}
+                                                        style={{
+                                                          fontSize: "smaller",
+                                                        }}
+                                                      ></div>
+                                                      <div
+                                                        className="min-w-4 leading-5"
+                                                        style={{
+                                                          fontSize: "xx-small",
+                                                        }}
+                                                      >
+                                                        {" "}
+                                                        {msg.approvalStatusDate && (
+                                                          <>
+                                                            {msg.approverId
+                                                              ? "Approved on"
+                                                              : "Rejected on"}{" "}
+                                                            {new Date(
+                                                              msg.approvalStatusDate
+                                                            ).toLocaleString(
+                                                              "en-US",
+                                                              {
+                                                                month: "short",
+                                                                day: "2-digit",
+                                                                hour: "numeric",
+                                                                minute:
+                                                                  "numeric",
+                                                                hour12: true,
+                                                              }
+                                                            )}
+                                                          </>
+                                                        )}
+                                                      </div>
                                                     </div>
                                                   </div>
                                                 )}
-                                              <div className="flex flex-col items-start mt-5">
-                                                <div
-                                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                                  style={{
-                                                    padding: "20px",
-                                                    backgroundColor: "#EBF8FF",
-                                                  }}
-                                                >
-                                                  <p>
-                                                    Due Date :{" "}
-                                                    {formatDate(task.dueDate)}
-                                                  </p>
-                                                </div>
                                               </div>
-
-                                              <div className="flex items-center justify-center my-3">
-                                                <div className="flex-auto border-b"></div>
-                                                <div
-                                                  className="flex-0 "
-                                                  style={{
-                                                    fontSize: "xx-small",
-                                                  }}
-                                                >
-                                                  <b>{task?.assignedByStaff}</b>{" "}
-                                                  has assigned task to{" "}
-                                                  <b>{task?.assignedStaff}</b>{" "}
-                                                  on{" "}
-                                                  {formatDate(task.assignedAt)}
-                                                </div>
-                                                <div className="flex-auto border-b"></div>
-                                              </div>
-
-                                              {impComments.map((msg) => (
-                                                <div
-                                                  key={msg.id}
-                                                  className="flex flex-row flex-wrap mb-10"
-                                                  style={{
-                                                    width: "auto",
-                                                    display: "block",
-                                                    clear: "both",
-                                                  }}
-                                                >
-                                                  {msg?.remark && (
+                                            ))}
+                                            {task.isCompleted &&
+                                              task.taskStatus !== 3 && (
+                                                <div className="mb-10">
+                                                  <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                                     <div
-                                                      className="flex flex-row items-start mt-5"
+                                                      _ngcontent-fyk-c288=""
+                                                      class="flex items-center w-full  border-b justify-between"
+                                                    ></div>
+                                                  </div>
+                                                  {currentActivityForm.canEdit && (
+                                                    <div
+                                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
                                                       style={{
-                                                        position: "relative",
+                                                        width: "100%",
                                                       }}
                                                     >
-                                                      <div
-                                                        className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
-                                                        style={{
-                                                          padding: "10px",
+                                                      <Box
+                                                        sx={{
+                                                          display: "flex",
+                                                          flexWrap: "wrap",
                                                         }}
                                                       >
-                                                        <div
-                                                          className="font-semibold"
-                                                          style={{
-                                                            fontSize: "smaller",
+                                                        <FormControl
+                                                          fullWidth
+                                                          sx={{
+                                                            m: 1,
+                                                            maxWidth: "100%",
                                                           }}
                                                         >
-                                                          {" "}
-                                                          {
-                                                            task.assignedStaff
-                                                          }{" "}
-                                                        </div>
-                                                        <div
-                                                          dangerouslySetInnerHTML={{
-                                                            __html: msg?.remark,
-                                                          }}
-                                                        ></div>
-                                                        <div className="my-0.5 text-xs font-medium text-secondary">
-                                                          <small>
-                                                            {msg.startedDate &&
-                                                            !msg.workInProgressDate &&
-                                                            !msg.completedDate &&
-                                                            !msg.dueDate
-                                                              ? `Started on ${formatDates(msg.startedDate)}`
-                                                              : msg.workInProgressDate &&
-                                                                  !msg.completedDate &&
-                                                                  !msg.dueDate
-                                                                ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
-                                                                : msg.dueDate &&
-                                                                    !msg.completedDate
-                                                                  ? `Due on ${formatDates(msg.dueDate)}`
-                                                                  : msg.completedDate
-                                                                    ? `Completed on ${formatDates(msg.completedDate)}`
-                                                                    : "Unknown"}
-                                                          </small>
-                                                        </div>
-                                                      </div>
-                                                      <StyledBadge
-                                                        badgeContent={
-                                                          documentCounts[msg.id]
-                                                        }
-                                                      >
-                                                        <button
-                                                          className="icon-button"
-                                                          onClick={() =>
-                                                            handleOpen(msg.id)
-                                                          }
-                                                          style={{
-                                                            top: "-0px",
-                                                            right: "-6px",
-                                                          }}
-                                                        >
-                                                          <FuseSvgIcon
-                                                            size={20}
-                                                          >
-                                                            heroicons-solid:document
-                                                          </FuseSvgIcon>
-                                                        </button>
-                                                      </StyledBadge>
+                                                          <span className="font-semibold leading-none">
+                                                            Comments*
+                                                          </span>
+                                                          <OutlinedInput
+                                                            id="reasonForNewDocument"
+                                                            name="reasonForNewDocument"
+                                                            onChange={(e) =>
+                                                              setComments(
+                                                                e.target.value
+                                                              )
+                                                            }
+                                                            label="Reason For Change*"
+                                                            className="mt-5"
+                                                          />
+                                                        </FormControl>
+                                                      </Box>
                                                     </div>
                                                   )}
-                                                  {msg.comments && (
-                                                    <div className="flex flex-col items-start mt-5">
-                                                      <div
-                                                        className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                                  {currentActivityForm.canEdit && (
+                                                    <div className="flex justify-start  ">
+                                                      <Button
+                                                        className="whitespace-nowrap ms-5 "
+                                                        variant="contained"
+                                                        color="secondary"
                                                         style={{
-                                                          padding: "10px",
+                                                          marginTop: "10px",
                                                           backgroundColor:
-                                                            "#EBF8FF",
+                                                            "white",
+                                                          color: "black",
                                                         }}
+                                                        onClick={(e) =>
+                                                          handelRejectImpl(
+                                                            e,
+                                                            task
+                                                          )
+                                                        }
                                                       >
-                                                        <div
-                                                          className="font-semibold"
-                                                          style={{
-                                                            fontSize: "smaller",
-                                                          }}
-                                                        >
-                                                          {" "}
-                                                          {
-                                                            task.assignedByStaff
-                                                          }{" "}
-                                                        </div>
-                                                        <div
-                                                          className="min-w-4 leading-5 "
-                                                          dangerouslySetInnerHTML={{
-                                                            __html:
-                                                              msg.comments,
-                                                          }}
-                                                          style={{
-                                                            fontSize: "smaller",
-                                                          }}
-                                                        ></div>
-                                                        <div
-                                                          className="min-w-4 leading-5"
-                                                          style={{
-                                                            fontSize:
-                                                              "xx-small",
-                                                          }}
-                                                        >
-                                                          {" "}
-                                                          {msg.approvalStatusDate && (
-                                                            <>
-                                                              {msg.approverId
-                                                                ? "Approved on"
-                                                                : "Rejected on"}{" "}
-                                                              {new Date(
-                                                                msg.approvalStatusDate
-                                                              ).toLocaleString(
-                                                                "en-US",
-                                                                {
-                                                                  month:
-                                                                    "short",
-                                                                  day: "2-digit",
-                                                                  hour: "numeric",
-                                                                  minute:
-                                                                    "numeric",
-                                                                  hour12: true,
-                                                                }
-                                                              )}
-                                                            </>
-                                                          )}
-                                                        </div>
-                                                      </div>
+                                                        Reject
+                                                      </Button>
+                                                      <Button
+                                                        className="whitespace-nowrap ms-5 "
+                                                        variant="contained"
+                                                        color="secondary"
+                                                        style={{
+                                                          marginTop: "10px",
+                                                        }}
+                                                        onClick={(e) =>
+                                                          handelApproveImpl(
+                                                            e,
+                                                            task
+                                                          )
+                                                        }
+                                                      >
+                                                        Approve
+                                                      </Button>
                                                     </div>
                                                   )}
                                                 </div>
-                                              ))}
-                                              {task.isCompleted &&
-                                                task.taskStatus !== 3 && (
-                                                  <div className="mb-10">
-                                                    <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
-                                                      <div
-                                                        _ngcontent-fyk-c288=""
-                                                        class="flex items-center w-full  border-b justify-between"
-                                                      ></div>
-                                                    </div>
-                                                    {currentActivityForm.canEdit && (
-                                                      <div
-                                                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                                        style={{
-                                                          width: "100%",
-                                                        }}
+                                              )}
+                                            {matchingRisks.length != 0 && (
+                                              <TableContainer
+                                                component={Paper}
+                                                style={{
+                                                  margin: "0 0 10px 0",
+                                                }}
+                                              >
+                                                <Table>
+                                                  <TableHead>
+                                                    <TableRow
+                                                      style={{
+                                                        backgroundColor:
+                                                          "rgb(241 248 255)",
+                                                      }}
+                                                    >
+                                                      <TableCell
+                                                      // style={{ padding: "15px" }}
                                                       >
-                                                        <Box
-                                                          sx={{
-                                                            display: "flex",
-                                                            flexWrap: "wrap",
-                                                          }}
-                                                        >
-                                                          <FormControl
-                                                            fullWidth
-                                                            sx={{
-                                                              m: 1,
-                                                              maxWidth: "100%",
-                                                            }}
-                                                          >
-                                                            <span className="font-semibold leading-none">
-                                                              Comments*
-                                                            </span>
-                                                            <OutlinedInput
-                                                              id="reasonForNewDocument"
-                                                              name="reasonForNewDocument"
-                                                              onChange={(e) =>
-                                                                setComments(
-                                                                  e.target.value
-                                                                )
-                                                              }
-                                                              label="Reason For Change*"
-                                                              className="mt-5"
-                                                            />
-                                                          </FormControl>
-                                                        </Box>
-                                                      </div>
-                                                    )}
-                                                    {currentActivityForm.canEdit && (
-                                                      <div className="flex justify-start  ">
-                                                        <Button
-                                                          className="whitespace-nowrap ms-5 "
-                                                          variant="contained"
-                                                          color="secondary"
-                                                          style={{
-                                                            marginTop: "10px",
-                                                            backgroundColor:
-                                                              "white",
-                                                            color: "black",
-                                                          }}
-                                                          onClick={(e) =>
-                                                            handelRejectImpl(
-                                                              e,
-                                                              task
-                                                            )
-                                                          }
-                                                        >
-                                                          Reject
-                                                        </Button>
-                                                        <Button
-                                                          className="whitespace-nowrap ms-5 "
-                                                          variant="contained"
-                                                          color="secondary"
-                                                          style={{
-                                                            marginTop: "10px",
-                                                          }}
-                                                          onClick={(e) =>
-                                                            handelApproveImpl(
-                                                              e,
-                                                              task
-                                                            )
-                                                          }
-                                                        >
-                                                          Approve
-                                                        </Button>
-                                                      </div>
-                                                    )}
-                                                  </div>
-                                                )}
-                                              {matchingRisks.length != 0 && (
-                                                <TableContainer
-                                                  component={Paper}
-                                                  style={{
-                                                    margin: "0 0 10px 0",
-                                                  }}
-                                                >
-                                                  <Table>
-                                                    <TableHead>
-                                                      <TableRow
-                                                        style={{
-                                                          backgroundColor:
-                                                            "rgb(241 248 255)",
-                                                        }}
+                                                        Risk Details
+                                                      </TableCell>
+                                                      <TableCell
+                                                      // style={{ padding: "10px" }}
                                                       >
-                                                        <TableCell
-                                                        // style={{ padding: "15px" }}
-                                                        >
-                                                          Risk Details
-                                                        </TableCell>
-                                                        <TableCell
-                                                        // style={{ padding: "10px" }}
-                                                        >
-                                                          Human Measures
-                                                        </TableCell>
-                                                        <TableCell
-                                                        // style={{ padding: "10px" }}
-                                                        >
-                                                          Technical Measures
-                                                        </TableCell>
-                                                        <TableCell
-                                                        // style={{ padding: "10px" }}
-                                                        >
-                                                          Organisational
-                                                          Measures
-                                                        </TableCell>
-                                                      </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                      {matchingRisks?.map(
-                                                        (sub, index) =>
-                                                          sub.riskAnalysisSubTasks.map(
-                                                            (subItm) => (
-                                                              <React.Fragment
-                                                                key={index}
-                                                              >
-                                                                {subItm
-                                                                  .riskAnalysisHazardTypes
-                                                                  .length ===
-                                                                0 ? (
-                                                                  <TableRow>
-                                                                    <TableCell>
+                                                        Human Measures
+                                                      </TableCell>
+                                                      <TableCell
+                                                      // style={{ padding: "10px" }}
+                                                      >
+                                                        Technical Measures
+                                                      </TableCell>
+                                                      <TableCell
+                                                      // style={{ padding: "10px" }}
+                                                      >
+                                                        Organisational Measures
+                                                      </TableCell>
+                                                    </TableRow>
+                                                  </TableHead>
+                                                  <TableBody>
+                                                    {matchingRisks?.map(
+                                                      (sub, index) =>
+                                                        sub.riskAnalysisSubTasks.map(
+                                                          (subItm) => (
+                                                            <React.Fragment
+                                                              key={index}
+                                                            >
+                                                              {subItm
+                                                                .riskAnalysisHazardTypes
+                                                                .length ===
+                                                              0 ? (
+                                                                <TableRow>
+                                                                  <TableCell>
+                                                                    <Grid
+                                                                      container
+                                                                      className="inventory-grid"
+                                                                    >
                                                                       <Grid
-                                                                        container
-                                                                        className="inventory-grid"
+                                                                        item
+                                                                        xs={12}
+                                                                        md={4}
                                                                       >
-                                                                        <Grid
-                                                                          item
-                                                                          xs={
-                                                                            12
-                                                                          }
-                                                                          md={4}
+                                                                        <Typography
+                                                                          variant="h6"
+                                                                          style={{
+                                                                            paddingBottom:
+                                                                              "5px",
+                                                                          }}
+                                                                          className="text-sm"
                                                                         >
-                                                                          <Typography
-                                                                            variant="h6"
-                                                                            style={{
-                                                                              paddingBottom:
-                                                                                "5px",
-                                                                            }}
-                                                                            className="text-sm"
-                                                                          >
-                                                                            {
-                                                                              subItm.subTaskName
-                                                                            }
-                                                                          </Typography>
-                                                                        </Grid>
-                                                                        <Grid
-                                                                          item
-                                                                          xs={
-                                                                            12
+                                                                          {
+                                                                            subItm.subTaskName
                                                                           }
-                                                                        >
-                                                                          {currentActivityForm.canEdit && (
-                                                                            <span
-                                                                              className="text-white d-inline-block"
-                                                                              style={{
-                                                                                backgroundColor:
-                                                                                  "#2563eb",
-                                                                                borderRadius:
-                                                                                  "5px",
-                                                                                padding:
-                                                                                  "3px",
-                                                                                fontSize:
-                                                                                  "10px",
-                                                                                cursor:
-                                                                                  "pointer",
-                                                                              }}
-                                                                              onClick={() =>
-                                                                                handelRisk(
-                                                                                  subItm.id
-                                                                                )
-                                                                              }
-                                                                            >
-                                                                              Create
-                                                                              New
-                                                                              Risk
-                                                                              Analysis
-                                                                            </span>
-                                                                          )}
-                                                                        </Grid>
+                                                                        </Typography>
                                                                       </Grid>
-                                                                    </TableCell>
-                                                                  </TableRow>
-                                                                ) : (
-                                                                  subItm.riskAnalysisHazardTypes?.map(
-                                                                    (
-                                                                      hazardType
-                                                                    ) => (
-                                                                      <React.Fragment
-                                                                        key={
-                                                                          hazardType.id
-                                                                        }
+                                                                      <Grid
+                                                                        item
+                                                                        xs={12}
                                                                       >
-                                                                        {hazardType.riskAnalysisHazardSituation?.map(
-                                                                          (
-                                                                            situation
-                                                                          ) => (
-                                                                            <React.Fragment
-                                                                              key={
-                                                                                situation.id
-                                                                              }
-                                                                            >
-                                                                              <TableRow>
-                                                                                <TableCell
+                                                                        {currentActivityForm.canEdit && (
+                                                                          <span
+                                                                            className="text-white d-inline-block"
+                                                                            style={{
+                                                                              backgroundColor:
+                                                                                "#2563eb",
+                                                                              borderRadius:
+                                                                                "5px",
+                                                                              padding:
+                                                                                "3px",
+                                                                              fontSize:
+                                                                                "10px",
+                                                                              cursor:
+                                                                                "pointer",
+                                                                            }}
+                                                                            onClick={() =>
+                                                                              handelRisk(
+                                                                                subItm.id
+                                                                              )
+                                                                            }
+                                                                          >
+                                                                            Create
+                                                                            New
+                                                                            Risk
+                                                                            Analysis
+                                                                          </span>
+                                                                        )}
+                                                                      </Grid>
+                                                                    </Grid>
+                                                                  </TableCell>
+                                                                </TableRow>
+                                                              ) : (
+                                                                subItm.riskAnalysisHazardTypes?.map(
+                                                                  (
+                                                                    hazardType
+                                                                  ) => (
+                                                                    <React.Fragment
+                                                                      key={
+                                                                        hazardType.id
+                                                                      }
+                                                                    >
+                                                                      {hazardType.riskAnalysisHazardSituation?.map(
+                                                                        (
+                                                                          situation
+                                                                        ) => (
+                                                                          <React.Fragment
+                                                                            key={
+                                                                              situation.id
+                                                                            }
+                                                                          >
+                                                                            <TableRow>
+                                                                              <TableCell
+                                                                                style={{
+                                                                                  padding:
+                                                                                    "2px 16px",
+                                                                                }}
+                                                                              >
+                                                                                <Typography
+                                                                                  variant="body2"
                                                                                   style={{
-                                                                                    padding:
-                                                                                      "2px 16px",
-                                                                                  }}
-                                                                                >
-                                                                                  <Typography
-                                                                                    variant="body2"
-                                                                                    style={{
-                                                                                      backgroundColor:
-                                                                                        situation.residualRiskClassificationDisplay ===
-                                                                                        "HighRisk"
-                                                                                          ? "red"
+                                                                                    backgroundColor:
+                                                                                      situation.residualRiskClassificationDisplay ===
+                                                                                      "HighRisk"
+                                                                                        ? "red"
+                                                                                        : situation.residualRiskClassificationDisplay ===
+                                                                                            "LowRisk"
+                                                                                          ? "yellow"
                                                                                           : situation.residualRiskClassificationDisplay ===
-                                                                                              "LowRisk"
-                                                                                            ? "yellow"
+                                                                                              "AverageRisk"
+                                                                                            ? "orange"
                                                                                             : situation.residualRiskClassificationDisplay ===
-                                                                                                "AverageRisk"
-                                                                                              ? "orange"
-                                                                                              : situation.residualRiskClassificationDisplay ===
-                                                                                                  "SignificantRisk"
-                                                                                                ? "purple"
-                                                                                                : "green",
-                                                                                      width:
-                                                                                        "auto",
-                                                                                      padding:
-                                                                                        "3px",
-                                                                                      color:
-                                                                                        situation.residualRiskClassificationDisplay ===
-                                                                                        "LowRisk"
-                                                                                          ? "#000"
-                                                                                          : "white",
-                                                                                      borderRadius:
-                                                                                        "5px",
-                                                                                      display:
-                                                                                        "inline-block",
-                                                                                      textAlign:
-                                                                                        "center",
-                                                                                      fontSize:
-                                                                                        "12px",
-                                                                                      fontWeight:
-                                                                                        situation.residualRiskClassificationDisplay ===
-                                                                                        "LowRisk"
-                                                                                          ? ""
-                                                                                          : "bold",
-                                                                                    }}
-                                                                                  >
-                                                                                    {
-                                                                                      situation.residualRiskClassificationDisplay
-                                                                                    }
-                                                                                  </Typography>
-                                                                                </TableCell>
-                                                                                <TableCell>
-                                                                                  <Typography
-                                                                                    variant="body2"
-                                                                                    style={{
-                                                                                      fontSize:
-                                                                                        "12px",
-                                                                                    }}
-                                                                                  >
-                                                                                    {
-                                                                                      situation.humanControlMeasure
-                                                                                    }
-                                                                                  </Typography>
-                                                                                </TableCell>
-                                                                                <TableCell>
-                                                                                  <Typography
-                                                                                    variant="body2"
-                                                                                    style={{
-                                                                                      fontSize:
-                                                                                        "12px",
-                                                                                    }}
-                                                                                  >
-                                                                                    {
-                                                                                      situation.technicalControlMeasure
-                                                                                    }
-                                                                                  </Typography>
-                                                                                </TableCell>
-                                                                                <TableCell>
-                                                                                  <Typography
-                                                                                    variant="body2"
-                                                                                    style={{
-                                                                                      fontSize:
-                                                                                        "12px",
-                                                                                    }}
-                                                                                  >
-                                                                                    {
-                                                                                      situation.organisationalControlMeasure
-                                                                                    }
-                                                                                  </Typography>
-                                                                                </TableCell>
-                                                                              </TableRow>
-                                                                              <TableRow>
-                                                                                <TableCell
-                                                                                  style={{
+                                                                                                "SignificantRisk"
+                                                                                              ? "purple"
+                                                                                              : "green",
+                                                                                    width:
+                                                                                      "auto",
                                                                                     padding:
-                                                                                      "2px 16px",
+                                                                                      "3px",
+                                                                                    color:
+                                                                                      situation.residualRiskClassificationDisplay ===
+                                                                                      "LowRisk"
+                                                                                        ? "#000"
+                                                                                        : "white",
+                                                                                    borderRadius:
+                                                                                      "5px",
+                                                                                    display:
+                                                                                      "inline-block",
+                                                                                    textAlign:
+                                                                                      "center",
+                                                                                    fontSize:
+                                                                                      "12px",
+                                                                                    fontWeight:
+                                                                                      situation.residualRiskClassificationDisplay ===
+                                                                                      "LowRisk"
+                                                                                        ? ""
+                                                                                        : "bold",
                                                                                   }}
                                                                                 >
-                                                                                  <div className=" pt-0 pb-24">
-                                                                                    <h6>
-                                                                                      {
-                                                                                        subItm.subTaskName
-                                                                                      }
-                                                                                    </h6>
-                                                                                    <h6>
-                                                                                      -{" "}
-                                                                                      {
-                                                                                        hazardType.hazardTypeDisplay
-                                                                                      }
-                                                                                    </h6>
-                                                                                    <h6>
-                                                                                      -{" "}
-                                                                                      {
-                                                                                        situation.hazardousSituation
-                                                                                      }
-                                                                                    </h6>
-                                                                                    {currentActivityForm.canEdit && (
-                                                                                      <div className="my-5">
-                                                                                        <a
-                                                                                          title="View Details"
-                                                                                          className="inline-flex items-center leading-6 text-primary cursor-pointer hover:underline dark:hover:bg-hover"
-                                                                                          onClick={() =>
-                                                                                            handelViewDetails(
-                                                                                              situation.id,
-                                                                                              subItm.id
-                                                                                            )
-                                                                                          }
-                                                                                        >
-                                                                                          <span className="inline-flex items-center">
-                                                                                            <span
-                                                                                              className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
-                                                                                              style={{
-                                                                                                fontSize:
-                                                                                                  "12px",
-                                                                                              }}
-                                                                                            >
-                                                                                              View
-                                                                                            </span>
-                                                                                          </span>
-                                                                                        </a>
-
-                                                                                        <a
-                                                                                          title="Edit"
-                                                                                          className="inline-flex items-center leading-6 text-primary mx-5 cursor-pointer hover:underline dark:hover:bg-hover"
-                                                                                          onClick={() =>
-                                                                                            handelEditRiskDetails(
-                                                                                              situation.id,
-                                                                                              subItm.id
-                                                                                            )
-                                                                                          }
-                                                                                        >
-                                                                                          <span className="inline-flex items-center">
-                                                                                            <span
-                                                                                              className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
-                                                                                              style={{
-                                                                                                fontSize:
-                                                                                                  "12px",
-                                                                                              }}
-                                                                                            >
-                                                                                              Edit
-                                                                                            </span>
-                                                                                          </span>
-                                                                                        </a>
-
-                                                                                        <a
-                                                                                          title="Remove"
-                                                                                          className="inline-flex items-center leading-6 text-primary ml-2 cursor-pointer hover:underline dark:hover:bg-hover"
-                                                                                          onClick={() =>
-                                                                                            handelRemoveDetails(
-                                                                                              situation.id,
-                                                                                              subItm.id
-                                                                                            )
-                                                                                          }
-                                                                                        >
-                                                                                          <span className="inline-flex items-center">
-                                                                                            <span
-                                                                                              className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
-                                                                                              style={{
-                                                                                                fontSize:
-                                                                                                  "12px",
-                                                                                              }}
-                                                                                            >
-                                                                                              Remove
-                                                                                            </span>
-                                                                                          </span>
-                                                                                        </a>
-                                                                                      </div>
-                                                                                    )}
-                                                                                    {currentActivityForm.canEdit && (
-                                                                                      <span
-                                                                                        className="text-white d-inline-block"
-                                                                                        style={{
-                                                                                          backgroundColor:
-                                                                                            "#2563eb",
-                                                                                          borderRadius:
-                                                                                            "5px",
-                                                                                          padding:
-                                                                                            "3px",
-                                                                                          fontSize:
-                                                                                            "10px",
-                                                                                          cursor:
-                                                                                            "pointer",
-                                                                                        }}
+                                                                                  {
+                                                                                    situation.residualRiskClassificationDisplay
+                                                                                  }
+                                                                                </Typography>
+                                                                              </TableCell>
+                                                                              <TableCell>
+                                                                                <Typography
+                                                                                  variant="body2"
+                                                                                  style={{
+                                                                                    fontSize:
+                                                                                      "12px",
+                                                                                  }}
+                                                                                >
+                                                                                  {
+                                                                                    situation.humanControlMeasure
+                                                                                  }
+                                                                                </Typography>
+                                                                              </TableCell>
+                                                                              <TableCell>
+                                                                                <Typography
+                                                                                  variant="body2"
+                                                                                  style={{
+                                                                                    fontSize:
+                                                                                      "12px",
+                                                                                  }}
+                                                                                >
+                                                                                  {
+                                                                                    situation.technicalControlMeasure
+                                                                                  }
+                                                                                </Typography>
+                                                                              </TableCell>
+                                                                              <TableCell>
+                                                                                <Typography
+                                                                                  variant="body2"
+                                                                                  style={{
+                                                                                    fontSize:
+                                                                                      "12px",
+                                                                                  }}
+                                                                                >
+                                                                                  {
+                                                                                    situation.organisationalControlMeasure
+                                                                                  }
+                                                                                </Typography>
+                                                                              </TableCell>
+                                                                            </TableRow>
+                                                                            <TableRow>
+                                                                              <TableCell
+                                                                                style={{
+                                                                                  padding:
+                                                                                    "2px 16px",
+                                                                                }}
+                                                                              >
+                                                                                <div className=" pt-0 pb-24">
+                                                                                  <h6>
+                                                                                    {
+                                                                                      subItm.subTaskName
+                                                                                    }
+                                                                                  </h6>
+                                                                                  <h6>
+                                                                                    -{" "}
+                                                                                    {
+                                                                                      hazardType.hazardTypeDisplay
+                                                                                    }
+                                                                                  </h6>
+                                                                                  <h6>
+                                                                                    -{" "}
+                                                                                    {
+                                                                                      situation.hazardousSituation
+                                                                                    }
+                                                                                  </h6>
+                                                                                  {currentActivityForm.canEdit && (
+                                                                                    <div className="my-5">
+                                                                                      <a
+                                                                                        title="View Details"
+                                                                                        className="inline-flex items-center leading-6 text-primary cursor-pointer hover:underline dark:hover:bg-hover"
                                                                                         onClick={() =>
-                                                                                          handelRisk(
-                                                                                            subItm.id,
-                                                                                            hazardType.hazardType
+                                                                                          handelViewDetails(
+                                                                                            situation.id,
+                                                                                            subItm.id
                                                                                           )
                                                                                         }
                                                                                       >
-                                                                                        Create
-                                                                                        New
-                                                                                        Risk
-                                                                                        Analysis
-                                                                                      </span>
-                                                                                    )}
-                                                                                  </div>
-                                                                                </TableCell>
-                                                                              </TableRow>
-                                                                            </React.Fragment>
-                                                                          )
-                                                                        )}
-                                                                      </React.Fragment>
-                                                                    )
+                                                                                        <span className="inline-flex items-center">
+                                                                                          <span
+                                                                                            className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                            style={{
+                                                                                              fontSize:
+                                                                                                "12px",
+                                                                                            }}
+                                                                                          >
+                                                                                            View
+                                                                                          </span>
+                                                                                        </span>
+                                                                                      </a>
+
+                                                                                      <a
+                                                                                        title="Edit"
+                                                                                        className="inline-flex items-center leading-6 text-primary mx-5 cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                                        onClick={() =>
+                                                                                          handelEditRiskDetails(
+                                                                                            situation.id,
+                                                                                            subItm.id
+                                                                                          )
+                                                                                        }
+                                                                                      >
+                                                                                        <span className="inline-flex items-center">
+                                                                                          <span
+                                                                                            className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                            style={{
+                                                                                              fontSize:
+                                                                                                "12px",
+                                                                                            }}
+                                                                                          >
+                                                                                            Edit
+                                                                                          </span>
+                                                                                        </span>
+                                                                                      </a>
+
+                                                                                      <a
+                                                                                        title="Remove"
+                                                                                        className="inline-flex items-center leading-6 text-primary ml-2 cursor-pointer hover:underline dark:hover:bg-hover"
+                                                                                        onClick={() =>
+                                                                                          handelRemoveDetails(
+                                                                                            situation.id,
+                                                                                            subItm.id
+                                                                                          )
+                                                                                        }
+                                                                                      >
+                                                                                        <span className="inline-flex items-center">
+                                                                                          <span
+                                                                                            className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-2 bg-gray-200 text-black rounded"
+                                                                                            style={{
+                                                                                              fontSize:
+                                                                                                "12px",
+                                                                                            }}
+                                                                                          >
+                                                                                            Remove
+                                                                                          </span>
+                                                                                        </span>
+                                                                                      </a>
+                                                                                    </div>
+                                                                                  )}
+                                                                                  {currentActivityForm.canEdit && (
+                                                                                    <span
+                                                                                      className="text-white d-inline-block"
+                                                                                      style={{
+                                                                                        backgroundColor:
+                                                                                          "#2563eb",
+                                                                                        borderRadius:
+                                                                                          "5px",
+                                                                                        padding:
+                                                                                          "3px",
+                                                                                        fontSize:
+                                                                                          "10px",
+                                                                                        cursor:
+                                                                                          "pointer",
+                                                                                      }}
+                                                                                      onClick={() =>
+                                                                                        handelRisk(
+                                                                                          subItm.id,
+                                                                                          hazardType.hazardType
+                                                                                        )
+                                                                                      }
+                                                                                    >
+                                                                                      Create
+                                                                                      New
+                                                                                      Risk
+                                                                                      Analysis
+                                                                                    </span>
+                                                                                  )}
+                                                                                </div>
+                                                                              </TableCell>
+                                                                            </TableRow>
+                                                                          </React.Fragment>
+                                                                        )
+                                                                      )}
+                                                                    </React.Fragment>
                                                                   )
-                                                                )}
-                                                              </React.Fragment>
-                                                            )
+                                                                )
+                                                              )}
+                                                            </React.Fragment>
                                                           )
-                                                      )}
-                                                    </TableBody>
-                                                  </Table>
-                                                </TableContainer>
-                                              )}
-                                            </div>
-                                          </Step>
-                                        </Stepper>
-                                      </AccordionDetails>
+                                                        )
+                                                    )}
+                                                  </TableBody>
+                                                </Table>
+                                              </TableContainer>
+                                            )}
+                                          </div>
+                                        </Step>
+                                      </Stepper>
                                     </AccordionDetails>
                                   </Accordion>
                                 );

@@ -1919,10 +1919,20 @@ function ImplementationApproval({
                                                   <FuseSvgIcon size={20}>
                                                     heroicons-solid:document
                                                   </FuseSvgIcon>
-                                                  <span className="count">
-                                                    {listDocument.length}
-                                                    {/* {documentCounts[msg.id]} */}
-                                                  </span>
+                                                  {listDocument.length > 0 && (
+                                                    <span
+                                                      className="count"
+                                                      style={{
+                                                        backgroundColor:
+                                                          "black",
+                                                      }}
+                                                    >
+                                                      {listDocument.length > 0
+                                                        ? listDocument.length
+                                                        : ""}
+                                                      {/* {documentCounts[msg.id]} */}
+                                                    </span>
+                                                  )}
                                                 </button>
                                               </div>
                                             )}

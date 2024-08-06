@@ -219,7 +219,7 @@ const InitiationComplete = ({
   const [listDocument, setListDocument] = useState([]);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
-    description: "",
+    descritpion: "",
     type: "",
     document: "binary",
     documentType: "ChangeRequest",
@@ -330,7 +330,7 @@ const InitiationComplete = ({
   const handleSubmitAsset = (e) => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
-    formData.append("descritpion", selectedFile.description);
+    formData.append("descritpion", selectedFile.descritpion);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
     formData.append("documentType", selectedFile.documentType);
@@ -351,6 +351,11 @@ const InitiationComplete = ({
           .then((response) => {
             setOpenDrawer(false);
             setListDocument(response?.data?.data);
+            setSelectedFile({
+              ...selectedFile,
+              name: "",
+              descritpion: "",
+            });
           });
       })
       .catch((error) => {
@@ -419,8 +424,8 @@ const InitiationComplete = ({
           setOpenDrawer(false);
           setListDocument(response?.data?.data);
           setDeletes(false);
-          setFileDetails1(false);
-          setSelectedDocument1("");
+          setFileDetails(false);
+          setSelectedDocument("");
         });
     });
   };
@@ -759,10 +764,10 @@ const InitiationComplete = ({
                     <TextField
                       id="standard-basic"
                       label={<BoldLabel>Description</BoldLabel>}
-                      name="description"
+                      name="descritpion"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
-                      value={selectedFile.description}
+                      value={selectedFile.descritpion}
                     />
                   </Box>
                 </div>
@@ -914,7 +919,9 @@ const InitiationComplete = ({
                   className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                   style={{
                     marginTop: "15px",
-                    justifyContent: "end",
+                    justifyContent: currentActivityForm.canExecute
+                      ? "center"
+                      : "end",
                     backgroundColor: " rgba(248,250,252)",
                     padding: "10px",
                   }}
@@ -928,25 +935,27 @@ const InitiationComplete = ({
                   >
                     Download
                   </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                    onClick={(e) =>
-                      handleDelete(
-                        e,
-                        selectedDocument?.documentId,
-                        selectedDocument?.token
-                      )
-                    }
-                  >
-                    Delete
-                  </Button>
+                  {currentActivityForm.canExecute && (
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        border: "1px solid grey",
+                      }}
+                      onClick={(e) =>
+                        handleDelete(
+                          e,
+                          selectedDocument?.documentId,
+                          selectedDocument?.token
+                        )
+                      }
+                    >
+                      Delete
+                    </Button>
+                  )}
                 </div>
               </Box>
             )}

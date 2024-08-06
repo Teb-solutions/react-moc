@@ -58,7 +58,7 @@ function InitiationApproval(props) {
   const [docToken, setDocToken] = useState("");
   const [selectedFile, setSelectedFile] = useState({
     name: "",
-    description: "",
+    descritpion: "",
     type: "",
     document: "binary",
     documentType: "ChangeRequest",
@@ -67,7 +67,7 @@ function InitiationApproval(props) {
   });
   const [selectedFile1, setSelectedFile1] = useState({
     name: "",
-    description: "",
+    descritpion: "",
     type: "",
     document: "binary",
     documentType: "ChangeRequest",
@@ -151,7 +151,7 @@ function InitiationApproval(props) {
     }
     setSelectedFile1({
       name: e.target.files[0].name,
-      description: "",
+      descritpion: "",
       type: e.target.files[0].type,
       document: e.target.files[0],
       documentType: "ChangeRequest",
@@ -268,7 +268,11 @@ function InitiationApproval(props) {
           .then((response) => {
             setOpenDrawer1(false);
             setListDocument1(response?.data?.data);
-            setSelectedFile1("");
+            setSelectedFile1({
+              ...selectedFile1,
+              name: "",
+              descritpion: "",
+            });
           });
       })
       .catch((error) => {
@@ -338,7 +342,11 @@ function InitiationApproval(props) {
           setListDocument1(response?.data?.data);
           setDeletes(false);
           setFileDetails1(false);
-          setSelectedDocument1("");
+          setSelectedDocument1({
+            ...selectedFile1,
+            name: "",
+            descritpion: "",
+          });
         });
     });
   };
@@ -696,10 +704,10 @@ function InitiationApproval(props) {
                     <TextField
                       id="standard-basic"
                       label={<BoldLabel>Description</BoldLabel>}
-                      name="description"
+                      name="descritpion"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
-                      value={selectedFile.description}
+                      value={selectedFile.descritpion}
                     />
                   </Box>
                 </div>
@@ -1218,25 +1226,27 @@ function InitiationApproval(props) {
                   >
                     Download
                   </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                    onClick={(e) =>
-                      handleDelete(
-                        e,
-                        selectedDocument1?.documentId,
-                        selectedDocument1?.token
-                      )
-                    }
-                  >
-                    Delete
-                  </Button>
+                  {currentActivityForm.canExecute && (
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        border: "1px solid grey",
+                      }}
+                      onClick={(e) =>
+                        handleDelete(
+                          e,
+                          selectedDocument1?.documentId,
+                          selectedDocument1?.token
+                        )
+                      }
+                    >
+                      Delete
+                    </Button>
+                  )}
                 </div>
               </Box>
             )}

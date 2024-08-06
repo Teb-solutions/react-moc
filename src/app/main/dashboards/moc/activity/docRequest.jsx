@@ -260,7 +260,7 @@ function DocRequest() {
   const handleSubmitDocument = () => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
-    formData.append("descritpion", selectedFile.description);
+    formData.append("description", selectedFile.description);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
     formData.append("documentType", selectedFile.documentType);
@@ -281,10 +281,30 @@ function DocRequest() {
           .then((response) => {
             setOpenDrawer(false);
             setListDocument(response?.data?.data);
+            setSelectedFile({
+              ...selectedFile,
+              name: "",
+              description: "",
+            });
           });
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
+        if (error.response && error.response.data.errors) {
+          const errorMessages = Object.values(error.response.data.errors)
+            .flat()
+            .join(", ");
+          toast.error(`Error: ${errorMessages}`);
+        } else {
+          setOpenDocModal(false);
+          setOpenDrawer(false);
+          setSelectedFile({
+            ...selectedFile,
+            name: "",
+            description: "",
+          });
+          toast.error("There was an error uploading the document!");
+        }
       });
   };
 
@@ -1143,7 +1163,7 @@ function DocRequest() {
                                     <TextField
                                       id="standard-basic"
                                       label={<BoldLabel>Description</BoldLabel>}
-                                      name="Description"
+                                      name="description"
                                       variant="standard"
                                       disabled
                                       value={

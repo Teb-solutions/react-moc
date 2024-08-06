@@ -547,7 +547,7 @@ function EvaluationChange({
         })),
         documentStatus: "Pending",
         isShowDetail: true,
-        changeImpactTasks: impactForm.changeImpactTasks.map((task) => ({
+        changeImpactTasks: impactForm?.changeImpactTasks?.map((task) => ({
           id: task.id,
           changeRequestId: task.changeRequestId,
           changeEvaluationId: task.changeEvaluationId,

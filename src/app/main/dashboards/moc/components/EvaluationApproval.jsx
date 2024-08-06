@@ -71,7 +71,7 @@ const EvaluationApproval = ({
   const [docToken, setDocToken] = useState("");
   const [selectedFile, setSelectedFile] = useState({
     name: "",
-    description: "",
+    descritpion: "",
     type: "",
     document: "binary",
     documentType: "ChangeRequest",
@@ -310,8 +310,8 @@ const EvaluationApproval = ({
             .get(
               `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
             )
-            .then((resp) => {
-              setContentDetails(resp.data.data);
+            .then((resps) => {
+              setContentDetails(resps.data.data);
             });
         } else {
           toast?.success("Review successfully Updated");
@@ -319,8 +319,8 @@ const EvaluationApproval = ({
             .get(
               `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
             )
-            .then((resp) => {
-              setContentDetails(resp.data.data);
+            .then((respso) => {
+              setContentDetails(respso.data.data);
             });
         }
         setHandelCommentRemark("");
@@ -568,8 +568,8 @@ const EvaluationApproval = ({
     // }
     setSelectedFile({
       name: e.target.files[0].name,
-      description: e.target.files[0].description
-        ? e.target.files[0].description
+      descritpion: e.target.files[0].descritpion
+        ? e.target.files[0].descritpion
         : "",
       type: e.target.files[0].type,
       document: e.target.files[0],
@@ -597,7 +597,7 @@ const EvaluationApproval = ({
   const handleSubmitAsset = (e) => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
-    formData.append("descritpion", selectedFile.description);
+    formData.append("descritpion", selectedFile.descritpion);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
     formData.append("documentType", "Approval");
@@ -618,6 +618,11 @@ const EvaluationApproval = ({
           .then((response) => {
             setOpenDrawer(false);
             setListDocument(response?.data?.data);
+            setSelectedFile({
+              ...selectedFile,
+              name: "",
+              descritpion: "",
+            });
           });
       })
       .catch((error) => {
@@ -629,7 +634,7 @@ const EvaluationApproval = ({
           toast.error(`Error: ${errorMessages}`);
         } else {
           setOpenDrawer(false);
-          setOpen(true);
+          setOpen1(false);
           setSelectedFile({
             ...selectedFile,
             name: "",
@@ -687,7 +692,7 @@ const EvaluationApproval = ({
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(
-          `/DocumentManager/DocList/${docId}/ChangeRequest?changeRequestToken=${selectedDocument?.changeRequestToken}`
+          `/DocumentManager/DocList/${docId}/Approval?changeRequestToken=${selectedDocument?.changeRequestToken}`
         )
         .then((response) => {
           setOpenDrawer(false);
@@ -3221,7 +3226,7 @@ const EvaluationApproval = ({
             <div className="flex justify-start">
               <StyledBadge
                 badgeContent={
-                  listDocument.length ? listDocument.length : CountApprove
+                  listDocument.length > 0 ? listDocument.length : CountApprove
                 }
               >
                 <Button
@@ -3429,10 +3434,10 @@ const EvaluationApproval = ({
                     <TextField
                       id="standard-basic"
                       label={<BoldLabel>Description</BoldLabel>}
-                      name="description"
+                      name="descritpion"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
-                      value={selectedFile.description}
+                      value={selectedFile.descritpion}
                     />
                   </Box>
                 </div>

@@ -157,11 +157,13 @@ function AssetRequest() {
   };
   const handleOpenDocModal = () => {
     setOpenDocModal(true);
-    const newGuid = uuidv4();
-    setSelectedFile({
-      ...selectedFile,
-      documentId: newGuid,
-    });
+    if (selectedFile.documentId === "") {
+      const newGuid = uuidv4();
+      setSelectedFile({
+        ...selectedFile,
+        documentId: newGuid,
+      });
+    }
   };
 
   const [documentState, setDocumentState] = useState({
@@ -179,7 +181,7 @@ function AssetRequest() {
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
-    description: "",
+    descritpion: "",
     type: "",
     document: "binary",
     documentType: "ChangeRequest",
@@ -311,7 +313,7 @@ function AssetRequest() {
   const handleSubmitDocument = () => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
-    formData.append("descritpion", selectedFile.description);
+    formData.append("descritpion", selectedFile.descritpion);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
     formData.append("documentType", selectedFile.documentType);
@@ -352,7 +354,7 @@ function AssetRequest() {
           setSelectedFile({
             ...selectedFile,
             name: "",
-            description: "",
+            descritpion: "",
           });
           toast.error("There was an error uploading the document!");
         }
@@ -1233,10 +1235,10 @@ function AssetRequest() {
                                   <TextField
                                     id="standard-basic"
                                     label={<BoldLabel>Description</BoldLabel>}
-                                    name="description"
+                                    name="descritpion"
                                     variant="standard"
                                     onChange={handelFileDiscriptionChange}
-                                    value={selectedFile?.description}
+                                    value={selectedFile?.descritpion}
                                   />
                                 </Box>
                               </div>

@@ -371,6 +371,7 @@ const Task = () => {
   };
 
   const handleOpenDocModal = (e, task) => {
+    setviewDoc(false);
     setFileDetails(false);
     setSelectedFile({
       name: "",
@@ -468,6 +469,7 @@ const Task = () => {
             .join(", ");
           toast.error(`Error: ${errorMessages}`);
         } else {
+          toast.error("There was an error uploading the document!");
           setOpenDocModal(false);
           setOpenDrawer(false);
           setSelectedFile({
@@ -475,7 +477,6 @@ const Task = () => {
             name: "",
             description: "",
           });
-          toast.error("There was an error uploading the document!");
         }
       });
   };
@@ -1843,9 +1844,14 @@ const Task = () => {
                                     <FuseSvgIcon size={20}>
                                       heroicons-solid:document
                                     </FuseSvgIcon>
-                                    <span className="count">
-                                      {documentCounts[msg.id]}
-                                    </span>
+                                    {documentCounts[msg.id]?.length > 0 && (
+                                      <span
+                                        className="count"
+                                        style={{ backgroundColor: "black" }}
+                                      >
+                                        {documentCounts[msg.id]}
+                                      </span>
+                                    )}
                                   </button>
                                 </div>
                               )}
