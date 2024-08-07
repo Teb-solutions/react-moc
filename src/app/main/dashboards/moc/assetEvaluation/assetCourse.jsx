@@ -198,6 +198,8 @@ const AssetCourse = () => {
   });
   const [CountApprove, setCountApprove] = useState();
   const [CountApprove2, setCountApprove2] = useState();
+  const [CountApprove3, setCountApprove3] = useState();
+  const [CountApprove4, setCountApprove4] = useState();
   const [openImplemntationTask, setOpenImplemntationTask] = useState(false);
   const [comments, setComments] = useState("");
   const [reviewed, setReviewed] = useState({});
@@ -1032,6 +1034,13 @@ const AssetCourse = () => {
                   setIsLoading(false);
 
                   setRemarkRequest(resp.data.data);
+                  apiAuth
+                    .get(
+                      `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
+                    )
+                    .then((resp) => {
+                      setCountApprove3(resp.data.data);
+                    });
                 });
             });
             break;
@@ -1064,6 +1073,14 @@ const AssetCourse = () => {
 
                     setTasks(updatedTasks);
                     loadRiskAnalysisChart(updatedTasks);
+                    // https://mocapi.tebs.co.in/api/DocumentManager/DocumentCount?id=d09760aa3bf9487eb26f90bb53569bd0&documentType=Approval
+                    apiAuth
+                      .get(
+                        `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
+                      )
+                      .then((resp) => {
+                        setCountApprove4(resp.data.data);
+                      });
                   }
                 }
               });
@@ -1656,6 +1673,7 @@ const AssetCourse = () => {
                   handleStepChange={handleStepChange()}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
+                  CountApprove={CountApprove3}
                 />
               )}
               {currentPhase === "EvaluationApprovalVpHse" && (
@@ -1672,6 +1690,7 @@ const AssetCourse = () => {
                   setRemarkRequest={setRemarkRequest}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
+                  CountApprove={CountApprove4}
                 />
               )}
               {currentPhase === "ImplementationApproval" && (

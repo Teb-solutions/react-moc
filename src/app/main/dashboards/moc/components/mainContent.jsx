@@ -344,7 +344,7 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                         ) : (
                           <img src="/assets/images/etc/icon_N.png" style={{}} />
                         )}
-                        <h6>{doc?.name}</h6>
+                        <h6 className="truncate-text">{doc?.name}</h6>
                         <h6>by {doc?.staffName}</h6>
                       </div>
                     </div>

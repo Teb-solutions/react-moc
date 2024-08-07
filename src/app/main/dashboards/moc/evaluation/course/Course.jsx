@@ -154,6 +154,7 @@ function Course() {
   const handleModalClose = () => {
     setOpenMoc(false);
     setOpenDrawer(false);
+    setFileDetails(false);
   };
   const handelFileDiscriptionChange = (event) => {
     const { name, value } = event.target;
@@ -258,7 +259,10 @@ function Course() {
       });
   };
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setFileDetails(false);
+  };
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(-1);
   const [expandedAccordionIndex, setExpandedAccordionIndex] = useState(-1);
   const [actName, setActName] = useState("");
@@ -2501,7 +2505,9 @@ function Course() {
                                               src="/assets/images/etc/icon_N.png"
                                               style={{}}
                                             />
-                                            <h6>{doc?.name}</h6>
+                                            <h6 className="truncate-text">
+                                              {doc?.name}
+                                            </h6>
                                             <h6>by {doc?.staffName}</h6>
                                           </div>
                                         </div>
@@ -2798,25 +2804,27 @@ function Course() {
                                       >
                                         Download
                                       </Button>
-                                      <Button
-                                        className="whitespace-nowrap"
-                                        variant="contained"
-                                        color="primary"
-                                        style={{
-                                          backgroundColor: "white",
-                                          color: "black",
-                                          border: "1px solid grey",
-                                        }}
-                                        onClick={(e) =>
-                                          handleDelete(
-                                            e,
-                                            selectedDocument?.documentId,
-                                            selectedDocument?.token
-                                          )
-                                        }
-                                      >
-                                        Delete
-                                      </Button>
+                                      {currentActivityForm.canExecute && (
+                                        <Button
+                                          className="whitespace-nowrap"
+                                          variant="contained"
+                                          color="primary"
+                                          style={{
+                                            backgroundColor: "white",
+                                            color: "black",
+                                            border: "1px solid grey",
+                                          }}
+                                          onClick={(e) =>
+                                            handleDelete(
+                                              e,
+                                              selectedDocument?.documentId,
+                                              selectedDocument?.token
+                                            )
+                                          }
+                                        >
+                                          Delete
+                                        </Button>
+                                      )}
                                     </div>
                                   </Box>
                                 )}
@@ -2871,7 +2879,7 @@ function Course() {
                         style={{ textAlign: "-webkit-center" }}
                       >
                         <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        <h6>{doc?.name}</h6>
+                        <h6 className="truncate-text">{doc?.name}</h6>
                         <h6>by {doc?.staffName}</h6>
                       </div>
                     </div>
@@ -5582,7 +5590,9 @@ function Course() {
                                               src="/assets/images/etc/icon_N.png"
                                               style={{}}
                                             />
-                                            <h6>{doc?.name}</h6>
+                                            <h6 className="truncate-text">
+                                              {doc?.name}
+                                            </h6>
                                             <h6>by {doc?.staffName}</h6>
                                           </div>
                                         </div>

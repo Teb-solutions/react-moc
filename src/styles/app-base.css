@@ -786,6 +786,15 @@ body.sidebar1-open .maincntainer {
   }
 }
 
+/* -------------------------------------------------------------- */
+.truncate-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100px; /* Adjust the width as needed */
+}
+/* -------------------------------------------------------------------- */
+
 .custom-update-button {
   position: absolute;
   right: 10px;
