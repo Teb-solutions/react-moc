@@ -197,6 +197,7 @@ const AssetCourse = () => {
     parentId: "0",
   });
   const [CountApprove, setCountApprove] = useState();
+  const [CountApprove2, setCountApprove2] = useState();
   const [openImplemntationTask, setOpenImplemntationTask] = useState(false);
   const [comments, setComments] = useState("");
   const [reviewed, setReviewed] = useState({});
@@ -840,7 +841,7 @@ const AssetCourse = () => {
                     `/DocumentManager/DocumentCount?id=${resps.data.data.id}&documentType=ChangeSummary`
                   )
                   .then((resp) => {
-                    setCountApprove(resp.data.data);
+                    setCountApprove2(resp.data.data);
                   });
               });
 
@@ -1580,7 +1581,7 @@ const AssetCourse = () => {
                   currentActivityForm={currentActivityForm}
                   currentSummeryById={currentSummeryById}
                   setContent={setContent}
-                  CountApprove={CountApprove}
+                  CountApprove={CountApprove2}
                   contentDetails={contentDetailsIni}
                 />
               )}
