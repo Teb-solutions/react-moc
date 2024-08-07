@@ -219,7 +219,7 @@ const InitiationComplete = ({
   const [listDocument, setListDocument] = useState([]);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
-    descritpion: "",
+    description: "",
     type: "",
     document: "binary",
     documentType: "ChangeRequest",
@@ -330,7 +330,7 @@ const InitiationComplete = ({
   const handleSubmitAsset = (e) => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
-    formData.append("descritpion", selectedFile.descritpion);
+    formData.append("description", selectedFile.description);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
     formData.append("documentType", selectedFile.documentType);
@@ -354,7 +354,7 @@ const InitiationComplete = ({
               setSelectedFile({
                 ...selectedFile,
                 name: "",
-                descritpion: "",
+                description: "",
               });
             });
         } else {
@@ -373,6 +373,12 @@ const InitiationComplete = ({
         if (error.errorsData) {
           if (error.errorsData.Name && error.errorsData.Name.length) {
             toast.error(error.errorsData.Name[0]);
+            cli;
+            setSelectedFile({
+              ...selectedFile,
+              name: "",
+              description: "",
+            });
           } else {
             toast.error("There was an error uploading the document!");
           }
@@ -776,10 +782,10 @@ const InitiationComplete = ({
                     <TextField
                       id="standard-basic"
                       label={<BoldLabel>Description</BoldLabel>}
-                      name="descritpion"
+                      name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
-                      value={selectedFile.descritpion}
+                      value={selectedFile.description}
                     />
                   </Box>
                 </div>
