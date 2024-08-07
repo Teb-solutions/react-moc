@@ -23,6 +23,7 @@ import { apiAuth } from "src/utils/http";
 import { parseISO, format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 import Initiation from "./Initiation";
+import { ToastContainer, toast } from "react-toastify";
 
 function InitiationApproval(props) {
   const {
@@ -302,7 +303,7 @@ function InitiationApproval(props) {
         } else {
           toast.error("There was an error uploading the document!");
         }
-        setOpen(false);
+        setOpen1(false);
         setOpenDrawer(false);
         setSelectedFile({
           ...selectedFile,
