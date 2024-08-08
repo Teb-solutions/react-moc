@@ -5938,9 +5938,19 @@ function EvaluationChange({
                 borderTopLeftRadius: "16px",
                 borderTopRightRadius: "16px",
                 color: "white",
+                display: "flex",
+                justifyContent: "space-between",
               }}
             >
-              Evaluation Session
+              <span> Evaluation Session</span>
+              <Button
+                className=""
+                variant="contained"
+                style={{ backgroundColor: "#4f46e5", color: "white" }}
+                onClick={handleCloseSession}
+              >
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+              </Button>
             </Box>
 
             <Box sx={{ overflow: "auto", padding: "5px 30px 0 30px" }}>
@@ -5971,13 +5981,13 @@ function EvaluationChange({
                           className="text-left pb-3"
                           sx={{ border: "1px solid black" }}
                         >
-                          Session
+                          <b> Session</b>
                         </TableCell>
                         <TableCell
                           className="text-left pb-3"
                           sx={{ border: "1px solid black" }}
                         >
-                          Teams
+                          <b> Team</b>
                         </TableCell>
                       </TableRow>
                     </TableHead>
@@ -6024,7 +6034,7 @@ function EvaluationChange({
                               </>
                             )}
                             <div>
-                              Session started by {session.startedByStaffName}at
+                              Session started by {session.startedByStaffName} at{" "}
                               {formatDate(session.startedAt)}
                             </div>
                             {session?.isSessionEnded && (
@@ -6033,6 +6043,7 @@ function EvaluationChange({
                                 {session.endedAt && formatDate(session.endedAt)}
                               </div>
                             )}
+                            {session.comments && <div>{session.comments}</div>}
                           </TableCell>
                           <TableCell
                             className="text-left pb-3"

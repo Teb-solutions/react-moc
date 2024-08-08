@@ -229,9 +229,7 @@ export default function Ticket() {
           item?.attachmentUrl
         );
       });
-      console.log("====================================");
-      console.log(transformedData);
-      console.log("====================================");
+
       setRiskTimeList(transformedData);
     }
   }
