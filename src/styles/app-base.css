@@ -1130,7 +1130,10 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
   height: 4.2rem !important;
   padding: 10px;
 }
-
+.custom_margin{margin-top: 1rem;}
+.custom_margin2{margin-top: 31px;}
+.custom_margin2 >div > div>div> input{height: 20px;}
+.custom_margin >div > div>div>div{min-height: 53px;}
 @media (min-width: 1200px) {
   .desktop_hide {
     display: none;
@@ -1212,6 +1215,9 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
   .text-2xl {
     font-size: 1.8rem !important;
   }
+  .custom_margin2{margin-top: 1rem;}
+  .custom_margin2 >div > div>div> input{height: inherit;}
+.custom_margin >div > div>div>div{min-height: inherit;}
 }
 @media (max-width: 479px) {
   body.sidebar1-open .maincntainer {
