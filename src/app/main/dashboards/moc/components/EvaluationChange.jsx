@@ -1720,85 +1720,117 @@ function EvaluationChange({
                         id="panel1-header"
                         style={{ minHeight: "60px" }}
                       >
-                        <div
-                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                          // style={{ width: "40%" }}
-                        >
-                          <div className="flex items-center">
-                            <img
-                              src="/assets/images/etc/userpic.png"
-                              alt="Card cover image"
-                              className="rounded-full mr-4"
-                              style={{ width: "4rem", height: "4rem" }}
-                            />
-                            <div className="flex flex-col">
-                              <span className="font-semibold leading-none">
-                                {itms.staff}
-                              </span>
-                              <span className="text-sm text-secondary leading-none pt-5">
-                                Consulted on {formatDate(itms.consultedDate)}
-                              </span>
+                        <div className="flex flex-wrap w-full">
+                          {/* User Info Section */}
+                          <div
+                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                            style={{ marginRight: "auto", width: "40%" }}
+                          >
+                            <div className="flex items-center">
+                              <img
+                                src="/assets/images/etc/userpic.png"
+                                alt="Card cover image"
+                                className="rounded-full mr-4"
+                                style={{ width: "4rem", height: "4rem" }}
+                              />
+                              <div className="flex flex-col">
+                                <span
+                                  className="font-semibold leading-none"
+                                  style={{
+                                    fontSize: "12px",
+                                    whiteSpace: "nowrap",
+                                  }}
+                                >
+                                  {itms.staff}
+                                </span>
+                                <span className="text-sm text-secondary leading-none pt-5">
+                                  Consulted on {formatDate(itms.consultedDate)}
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
-                          <div className="flex items-center">
-                            <div
-                              className="py-0.5 px-3 rounded-full text-sm"
-                              style={{
-                                backgroundColor:
-                                  itms.comments == "" || itms.comments == null
-                                    ? "rgba(252,165,165)"
-                                    : "rgba(134,239,172)",
-                                padding: "5px",
-                              }}
-                            >
-                              {itms.comments === ""
-                                ? "No Comments Added"
-                                : "Comments Added"}
-                            </div>{" "}
-                            <div
-                              className="py-0.5 px-3 rounded-full text-sm"
-                              style={{
-                                backgroundColor:
-                                  itms.tasks.length == 0
-                                    ? "rgba(252,165,165)"
-                                    : "rgba(134,239,172)",
-                                padding: "5px",
-                                marginLeft: "15px",
-                              }}
-                            >
-                              {itms.tasks.length == 0
-                                ? "No Task Added"
-                                : `${itms?.tasks?.length} Task Added`}
-                            </div>
-                            {itms?.reviews?.length != 0 ? (
+                          {/* Comments Section */}
+                          <div
+                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                            style={{ width: "15%" }}
+                          >
+                            <div className="flex items-center">
                               <div
                                 className="py-0.5 px-3 rounded-full text-sm"
                                 style={{
-                                  backgroundColor: "rgba(252,165,165)",
+                                  backgroundColor:
+                                    itms.comments === "" ||
+                                    itms.comments == null
+                                      ? "rgba(252,165,165)"
+                                      : "rgba(134,239,172)",
+                                  padding: "5px",
+                                }}
+                              >
+                                {itms.comments === ""
+                                  ? "No Comments Added"
+                                  : "Comments Added"}
+                              </div>
+                            </div>
+                          </div>
 
+                          {/* Tasks Section */}
+                          <div
+                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                            style={{ width: "15%" }}
+                          >
+                            <div className="flex items-center">
+                              <div
+                                className="py-0.5 px-3 rounded-full text-sm"
+                                style={{
+                                  backgroundColor:
+                                    itms.tasks.length === 0
+                                      ? "rgba(252,165,165)"
+                                      : "rgba(134,239,172)",
                                   padding: "5px",
                                   marginLeft: "15px",
                                 }}
                               >
-                                {`${itms?.reviews?.length} review Added`}
+                                {itms.tasks.length === 0
+                                  ? "No Task Added"
+                                  : `${itms.tasks.length} Task Added`}
                               </div>
-                            ) : (
-                              <div
-                                className="py-0.5 px-3 rounded-full text-sm"
-                                style={{
-                                  padding: "5px",
-                                  marginLeft: "28px",
-                                }}
-                              >
-                                No reviews
-                              </div>
-                            )}
+                            </div>
+                          </div>
+
+                          {/* Reviews Section */}
+                          <div
+                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                            style={{ width: "15%" }}
+                          >
+                            <div className="flex items-center">
+                              {itms.reviews.length !== 0 ? (
+                                <div
+                                  className="py-0.5 px-3 rounded-full text-sm"
+                                  style={{
+                                    backgroundColor: "rgba(252,165,165)",
+                                    padding: "5px",
+                                    marginLeft: "15px",
+                                  }}
+                                >
+                                  {`${itms.reviews.length} Reviews Added`}
+                                </div>
+                              ) : (
+                                <div
+                                  className="py-0.5 px-3 rounded-full text-sm"
+                                  style={{
+                                    padding: "5px",
+                                    marginLeft: "28px",
+                                  }}
+                                >
+                                  No Reviews
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </AccordionSummary>
+
                       <AccordionDetails>
                         <Stepper orientation="vertical">
                           <Step>
@@ -2320,9 +2352,10 @@ function EvaluationChange({
                             id="panel1-header"
                             style={{ minHeight: "60px" }}
                           >
-                            <div className="flex flex-wrap justify-between">
+                            <div className="flex flex-wrap w-100">
                               <div
-                                className="inventory-grid grid grid_inventory_box items-center gap-4 py-3 px-2 md:px-2" // style={{ width: "40%" }}
+                                className="inventory-grid grid grid_inventory_box items-center gap-4 py-3 px-2 md:px-2"
+                                style={{ marginRight: "auto" }}
                               >
                                 <div className="flex items-center">
                                   <img
@@ -2333,8 +2366,11 @@ function EvaluationChange({
                                   />
                                   <div className="flex flex-col">
                                     <span
-                                      className="font-semibold leading-none "
-                                      style={{ fontSize: "12px" }}
+                                      className="font-semibold leading-none"
+                                      style={{
+                                        fontSize: "12px",
+                                        whiteSpace: "nowrap",
+                                      }}
                                     >
                                       {itms.particularName}
                                     </span>
@@ -2347,7 +2383,7 @@ function EvaluationChange({
 
                               <div
                                 className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                // style={{ width: "20%" }}
+                                style={{ width: "15%" }}
                               >
                                 <div className="flex items-center">
                                   <div
@@ -2369,7 +2405,7 @@ function EvaluationChange({
                               </div>
                               <div
                                 className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                // style={{ width: "20%" }}
+                                style={{ width: "10%" }}
                               >
                                 <div className="flex items-center">
                                   <div className="py-0.5 px-3 rounded-full text-sm">
@@ -2380,7 +2416,7 @@ function EvaluationChange({
                               </div>
                               <div
                                 className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                // style={{ width: "20%" }}
+                                style={{ width: "10%" }}
                               >
                                 <div className="flex items-center">
                                   <div
@@ -4011,7 +4047,7 @@ function EvaluationChange({
                     }
                     onClick={handleAddConsultation}
                   >
-                    Add Stake
+                    Add Stakeholder
                   </Button>
 
                   <div className="flex items-center space-x-12">
@@ -5780,7 +5816,7 @@ function EvaluationChange({
                                   : "Acceptance Pending"}
                               </span>
                               {itm.comments && (
-                                <div>Comments: {itm.comments}</div>
+                                <div>Commented as: {itm.comments}</div>
                               )}
                             </div>
                           ))
@@ -5946,13 +5982,13 @@ function EvaluationChange({
                       </TableRow>
                     </TableHead>
                     <TableBody sx={{ border: "1px solid black" }}>
-                      {SessionList.map((session) => (
+                      {SessionList.map((session, index) => (
                         <TableRow key={session.id}>
                           <TableCell
                             className="text-left pb-3"
                             sx={{ border: "1px solid silver" }}
                           >
-                            {session.length}
+                            {index + 1}
                           </TableCell>
                           <TableCell
                             className="text-left pb-3"
@@ -6021,6 +6057,12 @@ function EvaluationChange({
                                     {team.updatedAt &&
                                       formatDate(team.updatedAt)}
                                   </span>
+                                )}
+                                {team.comments && (
+                                  <div>
+                                    <b>Commented as: </b>
+                                    {team.comments}
+                                  </div>
                                 )}
                               </div>
                             ))}

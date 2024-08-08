@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import { encryptFeature } from "./featureEncryption";
 import { apiAuth, apiTicketAuth } from "src/utils/http";
 import { ToastContainer, toast } from "react-toastify";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 
 /**
@@ -43,7 +44,7 @@ const JwtSignInTab = () => {
   const [logindata, setLoginData] = useState();
   const [reAuth, setReAuth] = useState(false);
   const navigate = useNavigate();
-
+  const [loading, setLoading] = useState(false);
   const handleResolved = (token) => {
     // Handle the resolved reCAPTCHA token here
     console.log("ReCAPTCHA token:", token);
@@ -90,12 +91,14 @@ const JwtSignInTab = () => {
       recaptchaToken: localStorage.getItem("recap"),
       mFAOtp: mFAOtp,
     };
+    setLoading(true);
     try {
       apiAuth.post("/Account/Login", params).then(async (resp) => {
         if (resp.data.statusCode === 202) {
           console.log("Setting showMFA to true", resp);
           toast?.success("Otp Required");
           setShowMFA(true);
+          setLoading(false);
           return;
         } else {
         }
@@ -123,6 +126,7 @@ const JwtSignInTab = () => {
               // Store the access token in local storage
 
               toast?.success("Successfully Logined");
+              setLoading(false);
               navigate("/dashboards/project");
               location.reload();
             }
@@ -255,8 +259,9 @@ const JwtSignInTab = () => {
           // disabled={_.isEmpty(dirtyFields) || !isValid}
           type="submit"
           size="large"
+          disabled={loading}
         >
-          Sign in
+          {loading ? <CircularProgress size={24} color="inherit" /> : "Sign in"}
         </Button>
       </form>
     </div>

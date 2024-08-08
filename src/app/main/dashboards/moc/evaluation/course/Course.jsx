@@ -1099,7 +1099,7 @@ function Course() {
       });
   };
   const SubmitImpCreate = (e, uid) => {
-    let taskListApproved = taskLists?.filter((x) => x.isCompleted == true);
+    let taskListApproved = taskLists?.filter((x) => x.taskStatus == 3);
     console.log(taskListApproved, "taskListApproved");
     if (handelApprover.approver == "" || handelApprover.approver == null) {
       toast?.error("Please Select An Approver.");
@@ -6027,6 +6027,7 @@ function Course() {
                                                     className="flex flex-row items-start mt-5"
                                                     style={{
                                                       position: "relative",
+                                                      justifyContent: "end",
                                                     }}
                                                   >
                                                     <div
@@ -6068,6 +6069,7 @@ function Course() {
                                                                 : msg.completedDate
                                                                   ? `Completed on ${formatDates(msg.completedDate)}`
                                                                   : "Unknown"}
+                                                          sss
                                                         </small>
                                                       </div>
                                                     </div>
@@ -8070,32 +8072,81 @@ function Course() {
                         />
                       </StepContent>
 
-                      <>
-                        <StepContent
-                          style={{ fontSize: "10px" }}
-                          className="pt-4"
-                        >
-                          By{" "}
-                          <b>
-                            {step.targetUsers && step.targetUsers.length > 0
-                              ? step.targetUsers[0]
-                              : ""}
-                          </b>
-                        </StepContent>
-                        <StepContent style={{ fontSize: "10px" }}>
-                          Started at <b>{formatDate(step.actualStartDate)}</b>
-                        </StepContent>
-                        <StepContent style={{ fontSize: "10px" }}>
-                          {step.actualEndDate === null ? (
-                            ""
-                          ) : (
-                            <>
-                              {step.status} at{" "}
-                              <b>{formatDate(step.actualEndDate)}</b>
-                            </>
-                          )}
-                        </StepContent>
-                      </>
+                      {step.code == "MOC_COMPLETED" ? (
+                        <>
+                          <StepContent style={{ fontSize: "10px" }}>
+                            Ended at{" "}
+                            <b>
+                              {new Date(step.actualEndDate).toLocaleString(
+                                "en-US",
+                                {
+                                  month: "long",
+                                  day: "numeric",
+                                  year: "numeric",
+                                  hour: "numeric",
+                                  minute: "numeric",
+                                  second: "numeric",
+                                  hour12: true,
+                                }
+                              )}
+                            </b>
+                          </StepContent>
+                        </>
+                      ) : (
+                        <>
+                          <StepContent
+                            style={{ fontSize: "10px" }}
+                            className="pt-4"
+                          >
+                            By{" "}
+                            <b>
+                              {step.targetUsers && step.targetUsers.length > 0
+                                ? step.targetUsers[0]
+                                : ""}
+                            </b>
+                          </StepContent>
+                          <StepContent style={{ fontSize: "10px" }}>
+                            Started at{" "}
+                            <b>
+                              {new Date(step.actualStartDate).toLocaleString(
+                                "en-US",
+                                {
+                                  month: "long",
+                                  day: "numeric",
+                                  year: "numeric",
+                                  hour: "numeric",
+                                  minute: "numeric",
+                                  second: "numeric",
+                                  hour12: true,
+                                }
+                              )}
+                            </b>
+                          </StepContent>
+                          <StepContent style={{ fontSize: "10px" }}>
+                            {step.actualEndDate === null ? (
+                              ""
+                            ) : (
+                              <>
+                                {step.status} at{" "}
+                                <b>
+                                  {new Date(step.actualEndDate).toLocaleString(
+                                    "en-US",
+                                    {
+                                      month: "long",
+                                      day: "numeric",
+                                      year: "numeric",
+                                      hour: "numeric",
+                                      minute: "numeric",
+                                      second: "numeric",
+                                      hour12: true,
+                                    }
+                                  )}
+                                </b>
+                              </>
+                            )}
+                          </StepContent>
+                        </>
+                      )}
                     </Step>
                   ))}
                 </Stepper>

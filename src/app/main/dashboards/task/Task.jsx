@@ -1196,7 +1196,7 @@ const Task = () => {
                           className="flex items-center mr-4"
                           style={{ color: !task.completed ? "black" : "grey" }}
                         >
-                          # {task.sourceTaskId}
+                          #{task.sourceTaskId}
                         </div>
                         <div
                           className="mr-4 truncate"

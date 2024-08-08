@@ -1236,3 +1236,6 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
     margin-bottom: 2.2rem;
   }
 }
+.muiltr-1j5g7zi-MuiFormHelperText-root {
+  margin-left: 0px;
+}
