@@ -44,28 +44,32 @@ const mapEnumValueToName = (value, enumObject) => {
   );
 };
 function createData(
-  index,
+  code,
   subject,
   message,
-  ticketstatus,
-  priority,
   category,
-  source,
+  // priority,
+  ticketstatus,
+  customername,
   action,
 
-  id
+  id,
+  lastComment,
+  url
 ) {
   return {
-    index,
+    code,
     subject,
     message,
-    ticketstatus: mapEnumValueToName(ticketstatus, TicketStatusEnum),
-    priority: mapEnumValueToName(priority, TicketPriorityEnum),
     category: mapEnumValueToName(category, TicketCategoryEnum),
-    source: mapEnumValueToName(source, TicketSourceEnum),
+    // priority: mapEnumValueToName(priority, TicketPriorityEnum),
+    ticketstatus: mapEnumValueToName(ticketstatus, TicketStatusEnum),
+    customername,
     action,
 
     id,
+    lastComment,
+    url,
   };
 }
 
@@ -73,27 +77,27 @@ export default function Ticket() {
   const storedFeature = decryptFeature();
   const feature = storedFeature ? storedFeature : [];
   const columns = [
-    { id: "index", label: "#" },
+    { id: "code", label: "Code" },
     { id: "subject", label: "Subject" },
-    {
-      id: "message",
-      label: "Description",
-      align: "left",
-      format: (value) => value.toLocaleString("en-US"),
-    },
+    // {
+    //   id: "message",
+    //   label: "Description",
+    //   align: "left",
+    //   format: (value) => value.toLocaleString("en-US"),
+    // },
     {
       id: "category",
       label: "Ticket Category",
       align: "left",
     },
+    // {
+    //   id: "priority",
+    //   label: "Ticket Priority",
+    //   align: "left",
+    // },
     {
-      id: "priority",
-      label: "Ticket Priority",
-      align: "left",
-    },
-    {
-      id: "source",
-      label: "Ticket Source",
+      id: "customername",
+      label: "Created By",
       align: "left",
     },
     {
@@ -107,14 +111,14 @@ export default function Ticket() {
       align: "left",
       minWidth: 140,
       render: (row) => (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           <Button
             variant="contained"
             color="primary"
             onClick={() => handleEdit(row)}
-            sx={{ minWidth: "40px", minHeight: "40px" }}
+            sx={{ minWidth: "20px", minHeight: "20px" }}
           >
-            <FuseSvgIcon size={20}>heroicons-solid:eye</FuseSvgIcon>
+            <FuseSvgIcon size={15}>heroicons-solid:eye</FuseSvgIcon>
           </Button>
         </Box>
       ),
@@ -136,11 +140,10 @@ export default function Ticket() {
 
   const filteredDepartmentList = riskTimeList.filter(
     (row) =>
-      row.index.toString().includes(searchQuery) ||
       row.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.description.toLowerCase().includes(searchQuery.toLowerCase())
+      row.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.customername.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   const [lookupAdd, setLookUpAdd] = useState({
     LookupType: "risktime",
     code: "",
@@ -207,20 +210,28 @@ export default function Ticket() {
     if (response.data) {
       setIsLoading(false);
 
-      const transformedData = response.data.map((item, index) =>
-        createData(
-          index + 1,
+      const transformedData = response.data.map((item, index) => {
+        const lastComment =
+          item.ticketComments.length > 0
+            ? item.ticketComments[item.ticketComments.length - 1].comment
+            : "No comments";
+        return createData(
+          item.code,
           item.subject,
           item.message,
-          item.ticketStatus,
-          item.ticketPriority,
           item.ticketCategory,
-          item.ticketSource,
+          // item.ticketPriority,
+          item.ticketStatus,
+          item.customerName,
           "Action",
-
-          item.id
-        )
-      );
+          item.id,
+          lastComment,
+          item?.attachmentUrl
+        );
+      });
+      console.log("====================================");
+      console.log(transformedData);
+      console.log("====================================");
       setRiskTimeList(transformedData);
     }
   }
@@ -348,9 +359,9 @@ export default function Ticket() {
                 <CloseIcon />
               </IconButton>
             </Box>
-            <Box sx={{ p: 2 }}>
+            {/* <Box sx={{ p: 2 }}>
               <Grid container spacing={2}>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <TextField
                     label="Subject"
                     value={openView.subject}
@@ -359,7 +370,16 @@ export default function Ticket() {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Customer Name"
+                    value={openView.customername ? openView.customername : "-"}
+                    fullWidth
+                    disabled
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid item xs={12}>
                   <TextField
                     label="Description"
                     value={openView.message}
@@ -397,15 +417,127 @@ export default function Ticket() {
                 </Grid>
                 <Grid item xs={6}>
                   <TextField
-                    label="Source"
-                    value={openView.source}
+                    label="Comments"
+                    value={openView.lastComment}
                     fullWidth
                     disabled
                     variant="outlined"
                   />
                 </Grid>
+                {openView.url && (
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <div
+                        className="file-upload-container"
+                        style={{ border: "none" }}
+                      >
+                        <a
+                          href={openView.url}
+                          download
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="file-label"
+                          style={{ backgroundColor: "white" }}
+                        >
+                          <span className="material-icons">cloud_download</span>
+                          <span>Download Your File Here</span>
+                        </a>
+                        <div id="file-list" className="file-list"></div>
+                      </div>
+                    </Grid>
+                  </Grid>
+                )}
               </Grid>
-            </Box>
+            </Box> */}
+            <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
+              <div className="p-30 pt-24 pb-24">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 lg:gap-16 w-full gap-6">
+                  <div className="my-6">
+                    <div className="mt-3 leading-6 text-secondary">Subject</div>
+                    <div className="text-lg leading-6 font-medium">
+                      {openView.subject}
+                    </div>
+                  </div>
+                  <div className="my-6">
+                    <div className="mt-3 leading-6 text-secondary">
+                      Created By
+                    </div>
+                    <div className="text-lg leading-6 font-medium">
+                      {openView.customername ? openView.customername : "-"}
+                    </div>
+                  </div>
+                  <div className="my-6">
+                    <div className="mt-3 leading-6 text-secondary">Status</div>
+                    <div className="text-lg leading-6 font-medium">
+                      {openView.ticketstatus}
+                    </div>
+                  </div>
+                  <div className="my-6">
+                    <div className="mt-3 leading-6 text-secondary">
+                      Priority
+                    </div>
+                    <div className="text-lg leading-6 font-medium">
+                      {openView.priority ? openView.priority : "-"}
+                    </div>
+                  </div>
+                  <div className="my-6">
+                    <div className="mt-3 leading-6 text-secondary">
+                      Category
+                    </div>
+                    <div className="text-lg leading-6 font-medium">
+                      {openView.category}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-y-6 w-full">
+                  <div className="my-6">
+                    <div className="mt-3 leading-6 text-secondary">
+                      Comments
+                    </div>
+                    <div className="text-lg leading-6 font-medium">
+                      {openView.lastComment}
+                    </div>
+                  </div>
+                  <div className="my-6">
+                    <div className="mt-3 leading-6 text-secondary">
+                      Description
+                    </div>
+                    <div className="text-lg leading-6 font-medium">
+                      {openView.message}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="my-6">
+                  {openView.url && (
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <div
+                          className="file-upload-container"
+                          style={{ border: "none" }}
+                        >
+                          <a
+                            href={openView.url}
+                            download
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="file-label"
+                            style={{ backgroundColor: "white" }}
+                          >
+                            <span className="material-icons">
+                              cloud_download
+                            </span>
+                            <span>Download Your File Here</span>
+                          </a>
+                          <div id="file-list" className="file-list"></div>
+                        </div>
+                      </Grid>
+                    </Grid>
+                  )}
+                </div>
+              </div>
+            </Paper>
           </Box>
         </Fade>
       </Modal>

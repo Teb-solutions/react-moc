@@ -989,12 +989,12 @@ function AssetRequest() {
                 ></div>
                 <div
                   style={{ marginTop: "0" }}
-                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full custom_margin"
+                  className="grid grid-cols-1 gap-24 w-full custom_margin"
                 >
                   <Box
                     sx={{
                       display: "flex",
-                      flexWrap: "wrap",
+                      flexDirection: "column",
                       marginTop: "25px",
                     }}
                   >
@@ -1011,7 +1011,7 @@ function AssetRequest() {
                         name="projectName"
                         value={documentState.projectName}
                         onChange={handleChange}
-                        label="Document Name *"
+                        label="Project Name *"
                       />
                       {!!errors.projectName && (
                         <FormHelperText>{errors.projectName}</FormHelperText>
@@ -1021,14 +1021,14 @@ function AssetRequest() {
                   <Box
                     sx={{
                       display: "flex",
-                      flexWrap: "wrap",
-                      marginTop: "25px",
+                      flexDirection: "column",
+                      // marginTop: "25px",
                     }}
                   >
                     <FormControl
                       fullWidth
                       sx={{ m: 1 }}
-                      error={!!errors.projectName}
+                      error={!!errors.projectDescription}
                     >
                       <InputLabel htmlFor="projectDescription">
                         Project Description *
@@ -1038,14 +1038,19 @@ function AssetRequest() {
                         name="projectDescription"
                         value={documentState.projectDescription}
                         onChange={handleChange}
-                        label="Document Description *"
+                        label="Project Description *"
+                        multiline
+                        rows={4}
                       />
-                      {!!errors.projectName && (
-                        <FormHelperText>{errors.projectName}</FormHelperText>
+                      {!!errors.projectDescription && (
+                        <FormHelperText>
+                          {errors.projectDescription}
+                        </FormHelperText>
                       )}
                     </FormControl>
                   </Box>
                 </div>
+
                 <div
                   className="mt-25px"
                   style={{ borderTopWidth: "2px", marginBottom: "20px" }}

@@ -296,22 +296,28 @@ const OrgImplementation = ({
   };
 
   const handleCloseAuditMoc = (uid) => {
-    apiAuth
-      .post(`/OrgMoc/ImplementationSubmit/${orgEvaluationId}`, {
-        activityUID: appActivity.uid,
-        actionUID: uid,
-        formUID: appActivity.formUID,
-      })
-      .then((response) => {
-        toast?.success("MOC successfully closed");
-        setTimeout(() => {
-          location.reload();
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error(error);
-        toast?.success("Some Error Occured");
-      });
+    let taskListApproved = impDetails?.filter((x) => x.taskStatus == 3);
+    if (impDetails?.length != taskListApproved?.length) {
+      toast?.error("There are some pending Tasks to be approved.");
+      return;
+    } else {
+      apiAuth
+        .post(`/OrgMoc/ImplementationSubmit/${orgEvaluationId}`, {
+          activityUID: appActivity.uid,
+          actionUID: uid,
+          formUID: appActivity.formUID,
+        })
+        .then((response) => {
+          toast?.success("MOC successfully closed");
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        })
+        .catch((error) => {
+          console.error(error);
+          toast?.success("Some Error Occured");
+        });
+    }
   };
 
   const handelOpenAudit = async (audits, value) => {
@@ -1160,7 +1166,10 @@ const OrgImplementation = ({
                               {msg?.remark && (
                                 <div
                                   className="flex flex-row items-start mt-5"
-                                  style={{ position: "relative" }}
+                                  style={{
+                                    position: "relative",
+                                    justifyContent: "end",
+                                  }}
                                 >
                                   <div
                                     className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"

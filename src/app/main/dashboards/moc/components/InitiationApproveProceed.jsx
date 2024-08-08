@@ -90,14 +90,15 @@ function InitiationApprovalProceed({
   });
 
   const handleTeamTypeChange = (event) => {
+    console.log(event.target.value, "pppppppp");
     const { value } = event.target;
     setSelectedTeamType(value);
+
     const selectedStaff = staffList.find((staff) => staff.value === value);
+
     if (selectedStaff) {
-      setTeamAssignments((prevState) => [
-        ...prevState,
-        { staffId: selectedStaff.value, teamType: "Hseq" },
-      ]);
+      // Clear the existing team assignments and add the new one
+      setTeamAssignments([{ staffId: selectedStaff.value, teamType: "Hseq" }]);
     }
   };
 
@@ -125,6 +126,7 @@ function InitiationApprovalProceed({
           actionUID: AppActions[0].uid, // Assuming AppActions is an array, use the correct index or structure to access uid
         },
       };
+      console.log(payload, "payyyyyy");
       apiAuth
         .put(`/TeamAssignment/Create?id=${assetEvaluationId}`, payload)
         .then((resp) => {
@@ -353,13 +355,13 @@ function InitiationApprovalProceed({
                           <ListItemText primary={option.text} />
                         </li>
                       )}
-                      renderTags={(value, getTagProps) =>
-                        value.map((option, index) => (
-                          <span key={index} {...getTagProps({ index })}>
-                            {option.text}
-                          </span>
-                        ))
-                      }
+                      renderTags={(value) => {
+                        // Create a comma-separated string of selected values
+                        const selectedNames = value
+                          .map((option) => option.text)
+                          .join(" , ");
+                        return <span>{selectedNames}</span>;
+                      }}
                     />
                   </FormControl>
                 </Box>
@@ -412,32 +414,29 @@ function InitiationApprovalProceed({
             </>
           )}
           <div className="evaluation-team-container grid p-30 pt-24 pb-24 grid-cols-1 md:grid-cols-3 gap-4">
-            {!currentActivityForm.canEdit &&
-              TeamAssignmentList.filter(
-                (list) => list.roleName !== "Change Leader"
-              ).map((list, index) => (
-                <div
-                  className="inventory-grid grid items-center gap-4 py-3 px-2"
-                  key={index}
-                >
-                  <div className="flex items-center" style={{ marginTop: "0" }}>
-                    <img
-                      src="/assets/images/etc/userpic.png"
-                      alt="Card cover image"
-                      className="rounded-full mr-24"
-                      style={{ width: "4rem", height: "4rem" }}
-                    />
-                    <div className="flex flex-col">
-                      <span className="font-semibold leading-none">
-                        {list.staffName}
-                      </span>
-                      <span className="text-sm text-secondary leading-none pt-5">
-                        {list?.roleName}
-                      </span>
-                    </div>
+            {TeamAssignmentList.map((list, index) => (
+              <div
+                className="inventory-grid grid items-center gap-4 py-3 px-2"
+                key={index}
+              >
+                <div className="flex items-center" style={{ marginTop: "0" }}>
+                  <img
+                    src="/assets/images/etc/userpic.png"
+                    alt="Card cover image"
+                    className="rounded-full mr-24"
+                    style={{ width: "4rem", height: "4rem" }}
+                  />
+                  <div className="flex flex-col">
+                    <span className="font-semibold leading-none">
+                      {list.staffName}
+                    </span>
+                    <span className="text-sm text-secondary leading-none pt-5">
+                      {list?.roleName}
+                    </span>
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         </Paper>
       </SwipeableViews>

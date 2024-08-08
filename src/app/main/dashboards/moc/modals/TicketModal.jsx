@@ -33,10 +33,11 @@ const TicketModal = ({ open, handleClose }) => {
     boxShadow: 24,
     p: 4,
   };
+
   const [fileName, setFileName] = useState(null);
   const [ticketData, setTicketData] = useState({
     projectId: "5EC94E1B-E058-4008-EC12-08DC9C361D1D",
-    customerName: "string",
+    customerName: "",
     customerMobile: "string",
     customerLocation: "string",
     subject: "",
@@ -44,10 +45,12 @@ const TicketModal = ({ open, handleClose }) => {
     ticketCategory: "",
     ticketPriority: "",
     referenceOrder: "string",
-    remarks: "creadted ticket11",
-    ticketSource: "",
+    remarks: "created ticket11",
+    ticketSource: 5,
     dueDate: "2024-08-02T06:50:53.617Z",
+    status: 1,
   });
+  const [errors, setErrors] = useState({});
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -55,6 +58,13 @@ const TicketModal = ({ open, handleClose }) => {
       ...prevData,
       [name]: value,
     }));
+
+    if (value) {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "",
+      }));
+    }
   };
 
   const handleFileChange = (event) => {
@@ -74,21 +84,36 @@ const TicketModal = ({ open, handleClose }) => {
           ...prevData,
           attachment: {
             name: file.name,
-            extension: file.name.split(".").pop(),
+            extension: `.${file.name.split(".").pop()}`,
             data: base64String, // Store the Base64 string
           },
         }));
       };
       reader.readAsArrayBuffer(file);
-      setFileName(file.name); // Set the file name
+      setFileName(file.name);
     }
   };
 
-  console.log(ticketData, "ticketData");
+  const validateForm = () => {
+    let tempErrors = {};
+    if (!ticketData.subject) tempErrors.subject = "Subject is required.";
+    if (!ticketData.customerName)
+      tempErrors.customerName = "CustomerName is required.";
+    if (!ticketData.message) tempErrors.message = "Description is required.";
+    if (!ticketData.ticketCategory)
+      tempErrors.ticketCategory = "Ticket Category is required.";
+    if (!ticketData.ticketPriority)
+      tempErrors.ticketPriority = "Ticket Priority is required.";
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
 
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+    console.log(ticketData, "tickettt");
     const tokenTicket = localStorage.getItem("jwt_access_ticket_token");
-    console.log(ticketData, "ticketData");
     try {
       const response = await axios.post(
         "https://pmpcrmstag.tebs.co.in/api/v1/tickets",
@@ -96,17 +121,15 @@ const TicketModal = ({ open, handleClose }) => {
         {
           headers: {
             Authorization: `Bearer ${tokenTicket}`,
-            Tenant: "root", // Pass the token in the Authorization header
-            Accept: "application/json", // You can add other headers if needed
+            Tenant: "root",
+            Accept: "application/json",
           },
         }
       );
       console.log("Response:", response.data);
       handleClose();
       toast.success("Successfully created");
-      // Add your submit logic here
     } catch (error) {
-      // Handle the error
       console.error(
         "Error:",
         error.response ? error.response.data : error.message
@@ -145,6 +168,7 @@ const TicketModal = ({ open, handleClose }) => {
       </MenuItem>
     )
   );
+
   return (
     <Modal
       aria-labelledby="transition-modal-title"
@@ -180,6 +204,19 @@ const TicketModal = ({ open, handleClose }) => {
                 name="subject"
                 value={ticketData.subject}
                 onChange={handleInputChange}
+                error={!!errors.subject}
+                helperText={errors.subject}
+              />
+            </Box>
+            <Box sx={{ marginTop: 2 }}>
+              <TextField
+                fullWidth
+                label="Customer Name"
+                name="customerName"
+                value={ticketData.customerName}
+                onChange={handleInputChange}
+                error={!!errors.customerName}
+                helperText={errors.customerName}
               />
             </Box>
             <Box sx={{ marginTop: 2 }}>
@@ -191,6 +228,8 @@ const TicketModal = ({ open, handleClose }) => {
                 rows={4}
                 value={ticketData.message}
                 onChange={handleInputChange}
+                error={!!errors.message}
+                helperText={errors.message}
               />
             </Box>
             <Box
@@ -200,7 +239,7 @@ const TicketModal = ({ open, handleClose }) => {
                 justifyContent: "space-between",
               }}
             >
-              <FormControl fullWidth>
+              <FormControl fullWidth error={!!errors.ticketCategory}>
                 <InputLabel>Ticket Category</InputLabel>
                 <Select
                   name="ticketCategory"
@@ -209,8 +248,13 @@ const TicketModal = ({ open, handleClose }) => {
                 >
                   {ticketCategoryOptions}
                 </Select>
+                {errors.ticketCategory && (
+                  <Typography variant="caption" color="error">
+                    {errors.ticketCategory}
+                  </Typography>
+                )}
               </FormControl>
-              <FormControl fullWidth>
+              <FormControl fullWidth error={!!errors.ticketPriority}>
                 <InputLabel>Ticket Priority</InputLabel>
                 <Select
                   name="ticketPriority"
@@ -219,37 +263,13 @@ const TicketModal = ({ open, handleClose }) => {
                 >
                   {ticketPriorityOptions}
                 </Select>
+                {errors.ticketPriority && (
+                  <Typography variant="caption" color="error">
+                    {errors.ticketPriority}
+                  </Typography>
+                )}
               </FormControl>
             </Box>
-            <Box
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-24 "
-              sx={{
-                marginTop: 2,
-                justifyContent: "space-between",
-              }}
-            >
-              <FormControl fullWidth>
-                <InputLabel>Ticket Status</InputLabel>
-                <Select
-                  name="status"
-                  value={ticketData.status}
-                  onChange={handleInputChange}
-                >
-                  {ticketStatusOptions}
-                </Select>
-              </FormControl>
-              <FormControl fullWidth>
-                <InputLabel>Ticket Source</InputLabel>
-                <Select
-                  name="ticketSource"
-                  value={ticketData.ticketSource}
-                  onChange={handleInputChange}
-                >
-                  {TicketSourceOptions}
-                </Select>
-              </FormControl>
-            </Box>
-
             <Box sx={{ marginTop: 2 }}>
               <div className="file-upload-container">
                 {fileName ? (
