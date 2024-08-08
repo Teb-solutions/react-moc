@@ -98,7 +98,7 @@ export default function StickyHeadTable() {
       align: "left",
       format: (value) => value.toFixed(2),
       render: (row) => (
-        <div className="action_button">
+        <div className="action_button whitespace_">
           <Button
             onClick={() => handleView(row)}
             endIcon={<FuseSvgIcon size={20}>heroicons-solid:eye</FuseSvgIcon>}
@@ -172,14 +172,13 @@ export default function StickyHeadTable() {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "400px",
+    width: "600px",
     maxWidth: "80vw",
     height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
-
     boxShadow: 24,
-    p: 4,
+    // p: 4,
     padding: "0px",
   };
   function getRecords() {
@@ -670,9 +669,9 @@ export default function StickyHeadTable() {
             </Box>
           ) : (
             <Box sx={style}>
-              <Box
+              <Box className="p-30 pt-24 pb-24"
                 style={{
-                  padding: "30px",
+                  // padding: "30px",
                   backgroundColor: "#4f46e5",
                   borderTopLeftRadius: "16px",
                   borderTopRightRadius: "16px",
@@ -706,10 +705,10 @@ export default function StickyHeadTable() {
                   </span>
                 </div>
               </Box>
-              <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
+              <Paper className="w-full mx-auto  rounded-16 shadow overflow-hidden">
                 <div className="p-30 pt-24 pb-24">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 lg:gap-16 w-full gap-6">
-                    <div className="my-6">
+                    <div className="">
                       <div className="mt-3 leading-6 text-secondary">
                         How is the task
                       </div>
@@ -718,7 +717,7 @@ export default function StickyHeadTable() {
                       </div>
                     </div>
 
-                    <div className="my-6">
+                    <div className="">
                       <div className="mt-3 leading-6 text-secondary">
                         What is the task done
                       </div>
@@ -726,7 +725,7 @@ export default function StickyHeadTable() {
                         {openView.how}
                       </div>
                     </div>
-                    <div className="my-6">
+                    <div className="">
                       <div className="mt-3 leading-6 text-secondary">
                         Assigned staff
                       </div>
@@ -734,7 +733,7 @@ export default function StickyHeadTable() {
                         {openView.assignedToStaff}
                       </div>
                     </div>
-                    <div className="my-6">
+                    <div className="">
                       <div className="mt-3 leading-6 text-secondary">
                         Due Date
                       </div>
@@ -818,6 +817,7 @@ export default function StickyHeadTable() {
                   <TableCell
                     key={column.id}
                     align={column.align}
+                    className="whitespace_"
                     style={{
                       minWidth: column.minWidth,
                     }}

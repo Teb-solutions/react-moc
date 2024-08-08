@@ -729,11 +729,11 @@ const ImplementationApprovalSite = ({
                                         ) : (
                                           <div>
                                             <div className="mat-form-field-infix mt-12">
-                                              <span className="">
+                                              <span className="mr-3">
                                                 {rwx?.createdByStaffName}
                                               </span>
-                                              -{" "}
-                                              <span className="text-grey">
+                                              
+                                              <span className="text-grey ml-3">
                                                 {rwx?.remark}
                                               </span>
                                             </div>

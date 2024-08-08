@@ -38,6 +38,7 @@ import {
   TicketSourceEnum,
   TicketStatusEnum,
 } from "../EnumTicket/ticketEnums";
+import { padding } from "@mui/system";
 const mapEnumValueToName = (value, enumObject) => {
   return (
     Object.keys(enumObject).find((key) => enumObject[key] === value) || "-"
@@ -179,18 +180,17 @@ export default function Ticket() {
     transform: "translate(-50%, -50%)",
     bgcolor: "background.paper",
     boxShadow: 24,
-    borderRadius: 2,
-    p: 2,
     maxWidth: 600,
+    height: "auto",
+    borderRadius: "16px",
     width: "100%",
   };
 
   const headerStyle = {
-    p: 2,
     bgcolor: "secondary.main",
     color: "primary.contrastText",
-    borderTopLeftRadius: 2,
-    borderTopRightRadius: 2,
+    borderTopLeftRadius: "16px",
+    borderTopRightRadius: "16px",
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
@@ -349,8 +349,8 @@ export default function Ticket() {
       >
         <Fade in={open}>
           <Box sx={style}>
-            <Box sx={headerStyle}>
-              <Typography variant="h6" component="h2">
+            <Box sx={headerStyle} className="p-30 pt-24 pb-24">
+              <Typography variant="span" component="span">
                 Ticket Details
               </Typography>
               <IconButton onClick={handleClose} sx={{ color: "inherit" }}>
@@ -447,16 +447,16 @@ export default function Ticket() {
                 )}
               </Grid>
             </Box> */}
-            <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
+            <Paper className="w-full mx-auto overflow-hidden">
               <div className="p-30 pt-24 pb-24">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 lg:gap-16 w-full gap-6">
-                  <div className="my-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full gap-6">
+                  <div>
                     <div className="mt-3 leading-6 text-secondary">Subject</div>
                     <div className="text-lg leading-6 font-medium">
                       {openView.subject}
                     </div>
                   </div>
-                  <div className="my-6">
+                  <div>
                     <div className="mt-3 leading-6 text-secondary">
                       Created By
                     </div>
@@ -464,13 +464,13 @@ export default function Ticket() {
                       {openView.customername ? openView.customername : "-"}
                     </div>
                   </div>
-                  <div className="my-6">
+                  <div>
                     <div className="mt-3 leading-6 text-secondary">Status</div>
                     <div className="text-lg leading-6 font-medium">
                       {openView.ticketstatus}
                     </div>
                   </div>
-                  <div className="my-6">
+                  <div>
                     <div className="mt-3 leading-6 text-secondary">
                       Priority
                     </div>
@@ -478,7 +478,7 @@ export default function Ticket() {
                       {openView.priority ? openView.priority : "-"}
                     </div>
                   </div>
-                  <div className="my-6">
+                  <div>
                     <div className="mt-3 leading-6 text-secondary">
                       Category
                     </div>
@@ -486,19 +486,20 @@ export default function Ticket() {
                       {openView.category}
                     </div>
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 gap-y-6 w-full">
-                  <div className="my-6">
-                    <div className="mt-3 leading-6 text-secondary">
+                  <div>
+                    <div className="mt-5 leading-6 text-secondary">
                       Comments
                     </div>
                     <div className="text-lg leading-6 font-medium">
                       {openView.lastComment}
                     </div>
                   </div>
-                  <div className="my-6">
-                    <div className="mt-3 leading-6 text-secondary">
+                </div>
+
+                <div className="grid grid-cols-1 gap-y-6 w-full">
+                  
+                  <div>
+                    <div className="mt-5 leading-6 text-secondary">
                       Description
                     </div>
                     <div className="text-lg leading-6 font-medium">
@@ -507,7 +508,7 @@ export default function Ticket() {
                   </div>
                 </div>
 
-                <div className="my-6">
+                <div >
                   {openView.url && (
                     <Grid container spacing={2}>
                       <Grid item xs={12}>

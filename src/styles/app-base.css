@@ -1134,6 +1134,14 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
 .custom_margin2{margin-top: 31px;}
 .custom_margin2 >div > div>div> input{height: 20px;}
 .custom_margin >div > div>div>div{min-height: 53px;}
+.mb-08{margin-bottom: 0.8rem;}
+.table_custome thead{border-bottom: none;}
+.table_custome thead tr th{white-space: nowrap;border: 1px solid #ddd;border-bottom: 1px solid #ddd;padding: 12px 15px;background: #dddddd;}
+.table_custome tbody tr td{border: 1px solid #ddd;border-bottom: 1px solid #ddd;}
+.p-0{padding: 0 !important;}
+.d-block{display: block;}
+.minw-auto{min-width: auto;}
+.whitespace_{white-space: nowrap;}
 @media (min-width: 1200px) {
   .desktop_hide {
     display: none;
@@ -1218,6 +1226,7 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
   .custom_margin2{margin-top: 1rem;}
   .custom_margin2 >div > div>div> input{height: inherit;}
 .custom_margin >div > div>div>div{min-height: inherit;}
+
 }
 @media (max-width: 479px) {
   body.sidebar1-open .maincntainer {
