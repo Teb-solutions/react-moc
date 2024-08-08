@@ -5619,6 +5619,7 @@ function Course() {
                                       <label htmlFor="fileInput">
                                         <div className=" ">
                                           <div
+                                            disabled
                                             // onClick={handelDetailDoc}
                                             style={{
                                               textAlign: "-webkit-center",

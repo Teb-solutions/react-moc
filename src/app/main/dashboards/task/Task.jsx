@@ -199,10 +199,12 @@ const Task = () => {
           setTaskClick(comments);
           comments.forEach((comment) => {
             const id = comment.id;
+
+            // Fetch document count for each comment
             apiAuth
               .get(`/DocumentManager/DocumentCount?id=${id}&documentType=Task`)
               .then((documentResp) => {
-                const count = documentResp.data.data; // Assuming this is the count value
+                const count = documentResp.data.data;
                 setDocumentCounts((prevCounts) => ({
                   ...prevCounts,
                   [id]: count,
@@ -912,14 +914,15 @@ const Task = () => {
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
+                    // onChange={(e) => {
+                    //   handelFileChange(e);
+                    // }}
+                    disabled
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
                       <div
-                        onClick={handelDetailDoc}
+                        // onClick={handelDetailDoc}
                         style={{ textAlign: "-webkit-center" }}
                       >
                         <img src="/assets/images/etc/icon_N.png" />
@@ -1196,7 +1199,7 @@ const Task = () => {
                           className="flex items-center mr-4"
                           style={{ color: !task.completed ? "black" : "grey" }}
                         >
-                          #{task.sourceTaskId}
+                          # {task.sourceTaskId}
                         </div>
                         <div
                           className="mr-4 truncate"
@@ -1873,28 +1876,36 @@ const Task = () => {
                                       </small>
                                     </div>
                                   </div>
-                                  <button
-                                    className="icon-button"
-                                    onClick={(e) =>
-                                      handelViewDocument(e, msg.id, task)
-                                    }
-                                    style={{
-                                      top: "-94px",
-                                      right: "-2px",
-                                    }}
-                                  >
-                                    <FuseSvgIcon size={20}>
-                                      heroicons-solid:document
-                                    </FuseSvgIcon>
-                                    {documentCounts[msg.id]?.length > 0 && (
-                                      <span
-                                        className="count"
-                                        style={{ backgroundColor: "black" }}
+                                  {documentCounts[msg.id] ? (
+                                    documentCounts[msg.id] != 0 && (
+                                      <button
+                                        className="icon-button"
+                                        onClick={(e) =>
+                                          handelViewDocument(e, msg.id, task)
+                                        }
+                                        style={{
+                                          top: "-94px",
+                                          right: "-2px",
+                                        }}
                                       >
-                                        {documentCounts[msg.id]}
-                                      </span>
-                                    )}
-                                  </button>
+                                        <FuseSvgIcon size={20}>
+                                          heroicons-solid:document
+                                        </FuseSvgIcon>
+                                        {documentCounts[msg.id] != 0 && (
+                                          <span
+                                            className="count"
+                                            style={{
+                                              backgroundColor: "black",
+                                            }}
+                                          >
+                                            {documentCounts[msg.id]}
+                                          </span>
+                                        )}
+                                      </button>
+                                    )
+                                  ) : (
+                                    <></>
+                                  )}
                                 </div>
                               )}
 

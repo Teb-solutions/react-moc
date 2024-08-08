@@ -783,7 +783,8 @@ const OrgImplementation = ({
                   <label htmlFor="fileInput">
                     <div className=" ">
                       <div
-                        onClick={handelDetailDoc}
+                        disabled
+                        // onClick={handelDetailDoc}
                         style={{
                           textAlign: "-webkit-center",
                         }}

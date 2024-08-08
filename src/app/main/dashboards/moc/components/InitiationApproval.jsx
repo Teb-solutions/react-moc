@@ -782,9 +782,10 @@ function InitiationApproval(props) {
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
+                    // onChange={(e) => {
+                    //   handelFileChange(e);
+                    // }}
+                    disabled
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
@@ -1138,9 +1139,10 @@ function InitiationApproval(props) {
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange1(e);
-                    }}
+                    // onChange={(e) => {
+                    //   handelFileChange1(e);
+                    // }}
+                    disabled
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">

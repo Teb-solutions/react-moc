@@ -62,7 +62,18 @@ function App() {
                   "bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99",
               }}
             >
-              <ToastContainer />
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+              />
               <FuseLayout layouts={themeLayouts} />
             </SnackbarProvider>
           </AuthRouteProvider>
