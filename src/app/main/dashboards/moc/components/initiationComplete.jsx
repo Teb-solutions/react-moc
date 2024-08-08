@@ -999,158 +999,177 @@ const InitiationComplete = ({
             </h2>
           </Typography>
           <Grid className="p-30 pt-24 pb-24 border-b" container spacing={2}>
-            <Grid item xs={12}>
-              <FormControl component="fieldset" fullWidth>
-                <FormLabel component="legend">
-                  Class Category
-                  <Link
-                    href="#"
-                    className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer"
-                  >
-                    (View Class Category Details)
-                  </Link>
-                </FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <RadioGroup
-                    row
-                    aria-labelledby="classCategory"
-                    name="classCategory"
-                    value={selectedClass}
-                    onChange={handleClassChange}
-                  >
-                    <FormControlLabel
-                      value="1"
-                      control={<Radio />}
-                      label="Class I"
+            {currentActivityForm.canEdit ? (
+              <>
+                <Grid item xs={12}>
+                  <FormControl component="fieldset" fullWidth>
+                    <FormLabel component="legend">
+                      Class Category
+                      <Link className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer text-blue">
+                        (View Class Category Details)
+                      </Link>
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="classCategory"
+                      name="classCategory"
+                      value={selectedClass}
+                      onChange={handleClassChange}
+                    >
+                      <FormControlLabel
+                        value="1"
+                        control={<Radio />}
+                        label="Class I"
+                      />
+                      <FormControlLabel
+                        value="2"
+                        control={<Radio />}
+                        label="Class II"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <FormLabel>Change Leader</FormLabel>
+                    <Select
+                      name="changeLeaderId"
+                      value={IniComp?.changeLeaderId}
+                      onChange={handleChange}
+                    >
+                      {class1.map((option) => (
+                        <MenuItem key={option.id} value={option.value}>
+                          {option.text}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <FormLabel>
+                      Change Location (you can add multiple locations)
+                    </FormLabel>
+                    <OutlinedInput
+                      name="changeLocation"
+                      value={IniComp?.changeLocation}
+                      onChange={handleChange}
                     />
-                    <FormControlLabel
-                      value="2"
-                      control={<Radio />}
-                      label="Class II"
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <FormLabel>Change Type</FormLabel>
+                    <RadioGroup
+                      row
+                      name="changeType"
+                      value={IniComp?.changeType}
+                      onChange={handleChange}
+                    >
+                      <FormControlLabel
+                        value="1"
+                        control={<Radio />}
+                        label="Permanent"
+                      />
+                      <FormControlLabel
+                        value="2"
+                        control={<Radio />}
+                        label="Temporary"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <FormLabel>Expected Change Completion Date</FormLabel>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
+                        value={IniComp?.TerminationDate}
+                        onChange={handleChanges}
+                        renderInput={(params) => (
+                          <TextField fullWidth {...params} />
+                        )}
+                      />
+                    </LocalizationProvider>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <FormLabel>Brief Description</FormLabel>
+                    <OutlinedInput
+                      name="briefDescription"
+                      value={IniComp?.briefDescription}
+                      onChange={handleChange}
                     />
-                  </RadioGroup>
-                ) : (
-                  <span>{currentSummeryById?.classCategoryString}</span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <FormLabel>Change Leader</FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <Select
-                    name="changeLeaderId"
-                    value={IniComp?.changeLeaderId}
-                    onChange={handleChange}
-                  >
-                    {class1.map((option) => (
-                      <MenuItem key={option.id} value={option.value}>
-                        {option.text}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                ) : (
-                  <span>{currentSummeryById?.changeLeader}</span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <FormLabel>
-                  Change Location (you can add multiple locations)
-                </FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <OutlinedInput
-                    name="changeLocation"
-                    value={IniComp?.changeLocation}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <span>{currentSummeryById?.changeLocation}</span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <FormLabel>Change Type</FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <RadioGroup
-                    row
-                    name="changeType"
-                    value={IniComp?.changeType}
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel
-                      value="1"
-                      control={<Radio />}
-                      label="Permanent"
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <FormLabel>Change Benefits</FormLabel>
+                    <OutlinedInput
+                      name="changeBenefits"
+                      value={IniComp?.changeBenefits}
+                      onChange={handleChange}
                     />
-                    <FormControlLabel
-                      value="2"
-                      control={<Radio />}
-                      label="Temporary"
-                    />
-                  </RadioGroup>
-                ) : (
-                  <span>{currentSummeryById?.changeTypeString}</span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <FormLabel>Expected Change Completion Date</FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DatePicker
-                      value={IniComp?.TerminationDate}
-                      onChange={handleChanges}
-                      renderInput={(params) => (
-                        <TextField fullWidth {...params} />
-                      )}
-                    />
-                  </LocalizationProvider>
-                ) : (
-                  <span>
-                    {new Date(
-                      currentSummeryById?.changeTerminationDate
-                    ).toLocaleString("en-US", {
-                      month: "short",
-                      day: "2-digit",
-                      year: "numeric",
-                    })}
-                  </span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <FormLabel>Brief Description</FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <OutlinedInput
-                    name="briefDescription"
-                    value={IniComp?.briefDescription}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <span>{currentSummeryById?.briefDescription}</span>
-                )}
-              </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <FormControl fullWidth>
-                <FormLabel>Change Benefits</FormLabel>
-                {currentActivityForm.canEdit ? (
-                  <OutlinedInput
-                    name="changeBenefits"
-                    value={IniComp?.changeBenefits}
-                    onChange={handleChange}
-                  />
-                ) : (
-                  <span>{currentSummeryById?.changeBenefits}</span>
-                )}
-              </FormControl>
-            </Grid>
+                  </FormControl>
+                </Grid>
+              </>
+            ) : (
+              <>
+                <Grid item xs={4}>
+                  <FormControl fullWidth>
+                    <FormLabel>Class Category</FormLabel>
+                    <span>{currentSummeryById?.classCategoryString}</span>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={4}>
+                  <FormControl fullWidth>
+                    <FormLabel>Change Leader</FormLabel>
+                    <span>{currentSummeryById?.changeLeader}</span>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={4}>
+                  <FormControl fullWidth>
+                    <FormLabel>Change Location</FormLabel>
+                    <span>{currentSummeryById?.changeLocation}</span>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={4}>
+                  <FormControl fullWidth>
+                    <FormLabel>Change Type</FormLabel>
+                    <span>{currentSummeryById?.changeTypeString}</span>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={4}>
+                  <FormControl fullWidth>
+                    <FormLabel>Expected Change Completion Date</FormLabel>
+                    <span>
+                      {new Date(
+                        currentSummeryById?.changeTerminationDate
+                      ).toLocaleString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })}
+                    </span>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={4}>
+                  <FormControl fullWidth>
+                    <FormLabel>Brief Description</FormLabel>
+                    <span>{currentSummeryById?.briefDescription}</span>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <FormLabel>Change Benefits</FormLabel>
+                    <span>{currentSummeryById?.changeBenefits}</span>
+                  </FormControl>
+                </Grid>
+              </>
+            )}
           </Grid>
+
           <Box
             mt={2}
             display="flex"

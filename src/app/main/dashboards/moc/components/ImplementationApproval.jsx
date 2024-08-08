@@ -44,6 +44,7 @@ import { styled } from "@mui/material/styles";
 import Initiation from "./Initiation";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { withStyles } from "@mui/styles";
+import { ToastContainer, toast } from "react-toastify";
 // Adjust the path based on your project structure
 
 function createData(
@@ -531,21 +532,27 @@ function ImplementationApproval({
   };
 
   const SubmitApprovelCreate = (e, btnid) => {
-    setIsLoading(true);
-    apiAuth
-      .post(`/ChangeImplementation/ExecuteActivity/${assetEvaluationId}`, {
-        activityUID: lastActCode.uid,
-        actionUID: btnid,
-        formUID: lastActCode?.formUID,
-      })
-      .then((resp) => {
-        apiAuth
-          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
-          .then((resp) => {
-            setContent(resp.data.data.phases);
-            setIsLoading(false);
-          });
-      });
+    let taskListApproved = ImpDetails?.filter((x) => x.taskStatus == 3);
+    if (ImpDetails?.length != taskListApproved?.length) {
+      toast?.error("There are some pending Tasks to be approved.");
+      return;
+    } else {
+      setIsLoading(true);
+      apiAuth
+        .post(`/ChangeImplementation/ExecuteActivity/${assetEvaluationId}`, {
+          activityUID: lastActCode.uid,
+          actionUID: btnid,
+          formUID: lastActCode?.formUID,
+        })
+        .then((resp) => {
+          apiAuth
+            .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+            .then((resp) => {
+              setContent(resp.data.data.phases);
+              setIsLoading(false);
+            });
+        });
+    }
   };
 
   const ListDoc = (docu_id, id) => {
@@ -630,6 +637,7 @@ function ImplementationApproval({
   }
   return (
     <div className="w-full">
+      <ToastContainer className="toast-container" />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -1883,7 +1891,10 @@ function ImplementationApproval({
                                             {msg?.remark && (
                                               <div
                                                 className="flex flex-row items-start mt-5"
-                                                style={{ position: "relative" }}
+                                                style={{
+                                                  position: "relative",
+                                                  justifyContent: "end",
+                                                }}
                                               >
                                                 <div
                                                   className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
