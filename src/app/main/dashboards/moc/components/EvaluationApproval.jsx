@@ -2077,9 +2077,8 @@ const EvaluationApproval = ({
                 />
               </div>
             )}
-            {contentDetails?.tasklist?.map((imptsk) => (
-              <>
-                <table className="task-table mat-table">
+            
+                <table className="task-table mat-table task_table">
                   <thead
                     className="task-table-header"
                     style={{ display: "none" }}
@@ -2087,6 +2086,8 @@ const EvaluationApproval = ({
                     {/* Empty header */}
                   </thead>
                   <tbody className="task-table-body">
+                  {contentDetails?.tasklist?.map((imptsk) => (
+              <>
                     <tr className="task-table-row mat-row">
                       <td className="task-table-cell mat-cell">
                         <div className="task-header p-0 flex items-center">
@@ -2769,6 +2770,8 @@ const EvaluationApproval = ({
                         </div>
                       </td>
                     </tr>
+                    </>
+            ))}
                   </tbody>
                   <tfoot
                     className="task-table-footer"
@@ -2785,8 +2788,7 @@ const EvaluationApproval = ({
                 _ngcontent-fyk-c288=""
                 class="flex items-center w-full  border-b justify-between"
               ></div> */}
-              </>
-            ))}
+             
           </div>
         </Paper>
       </SwipeableViews>
