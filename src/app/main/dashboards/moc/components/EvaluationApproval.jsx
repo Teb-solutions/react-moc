@@ -52,8 +52,8 @@ const EvaluationApproval = ({
   lastActCode,
   AppActivity,
   AppActions,
-  remarkRequest,
-  setRemarkRequest,
+  // remarkRequest,
+  // setRemarkRequest,
   setContent,
   setContentDetails,
   CountApprove,
@@ -70,6 +70,7 @@ const EvaluationApproval = ({
   const [documenDowToken, setDocumenDowToken] = useState("");
   const [docId, setDocId] = useState("");
   const [docToken, setDocToken] = useState("");
+  const [remarkRequest, setRemarkRequest] = useState([]);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     descritpion: "",
@@ -107,24 +108,20 @@ const EvaluationApproval = ({
     updatedRemarks[index].remark = event.target.value;
     setRemarkRequest(updatedRemarks);
   };
-  const getRecords = async () => {
+  function getRecords() {
     try {
-      const resp = await apiAuth.get(
-        `/ApprovalManager/RemarksbyRequest/${AppActivity.uid}`
-      );
-      setRemarkRequest(resp.data.data);
       apiAuth
-        .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+        .get(`/ApprovalManager/RemarksbyRequest/${AppActivity.uid}`)
         .then((resp) => {
-          setContent(resp.data.data.phases);
+          setRemarkRequest(resp.data.data);
         });
     } catch (error) {
       console.error("Error fetching records:", error);
     }
-  };
+  }
   useEffect(() => {
     getRecords();
-  }, []);
+  }, [AppActivity.uid]);
   const handleSaveClick = (type) => {
     const remark = type === "Consultaion" ? newRemark : newImpactTaskRemark;
     const payload = {
@@ -134,18 +131,25 @@ const EvaluationApproval = ({
       evaluationType: type,
       version: lastActCode.version,
     };
-    apiAuth
-      .post(`/ApprovalManager/CreateComment/${assetEvaluationId}/0`, payload)
-      .then((resp) => {
-        if (type == "Consultaion") {
+    if (remark === newRemark) {
+      apiAuth
+        .post(`/ApprovalManager/CreateComment/${assetEvaluationId}/0`, payload)
+        .then((resp) => {
           toast?.success("Consultation comment added.");
-        } else {
+          setNewRemark("");
+          setNewImpactTaskRemark("");
+          getRecords();
+        });
+    } else {
+      apiAuth
+        .post(`/ApprovalManager/CreateComment/${assetEvaluationId}/0`, payload)
+        .then((resp) => {
           toast?.success("Task comment added.");
-        }
-        setNewRemark("");
-        setNewImpactTaskRemark("");
-        getRecords();
-      });
+          setNewRemark("");
+          setNewImpactTaskRemark("");
+          getRecords();
+        });
+    }
 
     console.log(payload, "payyy");
   };

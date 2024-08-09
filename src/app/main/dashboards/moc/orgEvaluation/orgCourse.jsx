@@ -254,19 +254,7 @@ const orgCourse = () => {
       header={<MocHeader activity={actName} reqno={reqNo} />}
       content={
         <div className="w-full">
-          <ToastContainer
-            className="toast-container"
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
+          {/* <ToastContainer className="toast-container" /> */}
 
           <div className="flex justify-center p-16 pb-64 sm:p-24 ">
             {currentPhase === "InitiationRequest" && (

@@ -201,11 +201,16 @@ const InitiationComplete = ({
 
         toast?.success("Successfully Created");
         setOpen(false);
-        apiAuth
-          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
-          .then((resp) => {
-            setContent(resp.data.data.phases);
-          });
+
+        setTimeout(
+          () =>
+            apiAuth
+              .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+              .then((resp) => {
+                setContent(resp.data.data.phases);
+              }),
+          1000
+        );
       })
       .catch((error) => {
         setIsLoading(false);
