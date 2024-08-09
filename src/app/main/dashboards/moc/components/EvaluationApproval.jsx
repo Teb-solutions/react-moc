@@ -1774,7 +1774,9 @@ const EvaluationApproval = ({
                 <span className="task-detail-value">{itm.tasks[0]}</span>
               </div>
               <div>&nbsp;</div>
-
+              {!AppActivity.canEdit && itm.reviews?.length == 0 && (
+                <span className="task-detail-value">No Reviews added</span>
+              )}
               {itm.reviews?.length > 0 || showReview ? (
                 <div>
                   <Accordion
@@ -1983,56 +1985,61 @@ const EvaluationApproval = ({
                   </Accordion>
                 </div>
               ) : (
-                <div className="mat-form-field-wrapper">
-                  <div className="mat-form-field-flex">
-                    <img
-                      src="/assets/images/etc/userpic.png"
-                      alt="Card cover image"
-                      className="rounded-full mr-4"
-                      style={{
-                        width: "5rem",
-                        height: "5rem",
-                      }}
-                    />
-                    <div
-                      className="mat-form-field-infix"
-                      style={{ position: "relative", width: "100%" }}
-                    >
-                      <textarea
-                        rows="2"
-                        className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                        placeholder="Write a comment..."
-                        id="ImpTaskReview265"
-                        data-placeholder="Write a comment..."
-                        aria-invalid="false"
-                        aria-required="false"
+                AppActivity.canEdit &&
+                !hasAddedComment(itm.reviews) && (
+                  <div className="mat-form-field-wrapper">
+                    <div className="mat-form-field-flex">
+                      <img
+                        src="/assets/images/etc/userpic.png"
+                        alt="Card cover image"
+                        className="rounded-full mr-4"
                         style={{
-                          height: "36px",
-                          width: "100%",
-                          paddingRight: "100px",
+                          width: "5rem",
+                          height: "5rem",
                         }}
-                        onChange={(e) => setHandelCommentRemark(e.target.value)}
-                      ></textarea>
-                      <button
-                        className="custom-update-button"
-                        onClick={() => handelCommentImp(itm.id, 1, 1)}
+                      />
+                      <div
+                        className="mat-form-field-infix"
+                        style={{ position: "relative", width: "100%" }}
                       >
-                        Save
-                      </button>
-                      <span className="mat-form-field-label-wrapper"></span>
+                        <textarea
+                          rows="2"
+                          className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                          placeholder="Write a comment..."
+                          id="ImpTaskReview265"
+                          data-placeholder="Write a comment..."
+                          aria-invalid="false"
+                          aria-required="false"
+                          style={{
+                            height: "36px",
+                            width: "100%",
+                            paddingRight: "100px",
+                          }}
+                          onChange={(e) =>
+                            setHandelCommentRemark(e.target.value)
+                          }
+                        ></textarea>
+                        <button
+                          className="custom-update-button"
+                          onClick={() => handelCommentImp(itm.id, 1, 1)}
+                        >
+                          Save
+                        </button>
+                        <span className="mat-form-field-label-wrapper"></span>
+                      </div>
+                    </div>
+
+                    <div className="mat-form-field-subscript-wrapper">
+                      <div
+                        className="mat-form-field-hint-wrapper"
+                        style={{
+                          opacity: 1,
+                          transform: "translateY(0%)",
+                        }}
+                      ></div>
                     </div>
                   </div>
-
-                  <div className="mat-form-field-subscript-wrapper">
-                    <div
-                      className="mat-form-field-hint-wrapper"
-                      style={{
-                        opacity: 1,
-                        transform: "translateY(0%)",
-                      }}
-                    ></div>
-                  </div>
-                </div>
+                )
               )}
             </div>
           ))}

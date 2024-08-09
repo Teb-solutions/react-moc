@@ -101,6 +101,33 @@ function MocHeader(props) {
               {activity} (v{verName})
             </Typography>
           )}
+          {risk == "risk" ? (
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              // onClose={handleOpenNewDoc}
+            >
+              <MenuItem onClick={() => handleNavigate("Transport")}>
+                Transport
+              </MenuItem>
+              <MenuItem onClick={() => handleNavigate("Routine")}>
+                Routine
+              </MenuItem>
+              <MenuItem onClick={() => handleNavigate("NonRoutine")}>
+                Non Routine
+              </MenuItem>
+            </Menu>
+          ) : (
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              // onClose={handleOpenNewDoc}
+            >
+              <MenuItem onClick={handleOpenNewAsset}>Technical </MenuItem>
+              <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
+              <MenuItem onClick={handleOpenNewOrg}>Organisation</MenuItem>
+            </Menu>
+          )}
         </Breadcrumbs>
 
         {/* Title section */}
