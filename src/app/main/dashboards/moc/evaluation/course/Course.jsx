@@ -54,6 +54,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import DocPhasesEnum from "./docPhaseEnum";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
 import CustomStepIcon from "../../CustomStepIcon";
 import { withStyles } from "@mui/styles";

@@ -26,6 +26,7 @@ import { apiAuth } from "src/utils/http.js";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon/FuseSvgIcon.jsx";
 import { styled } from "@mui/material/styles";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Initiation from "./Initiation.jsx";
 import { withStyles } from "@mui/styles";
 
@@ -448,7 +449,7 @@ const ImplementationApprovalSite = ({
                               className="task-id-text font-semibold text-xl leading-none"
                               style={{ fontSize: "20px" }}
                             >
-                              Task #{imptsk?.id}
+                              Task #{imptsk?.sourceTaskId}
                             </span>
                           </div>
                           {currentActivityForm.canEdit && (

@@ -29,7 +29,6 @@ import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
-import { toast } from "react-toastify";
 import MocHeader from "../moc/MocHeader";
 import axios from "axios";
 import {
@@ -38,7 +37,9 @@ import {
   TicketSourceEnum,
   TicketStatusEnum,
 } from "../EnumTicket/ticketEnums";
-import { padding } from "@mui/system";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const mapEnumValueToName = (value, enumObject) => {
   return (
     Object.keys(enumObject).find((key) => enumObject[key] === value) || "-"
@@ -336,6 +337,7 @@ export default function Ticket() {
   }
   return (
     <div style={{ backgroundColor: "white" }}>
+      <ToastContainer className="toast-container" />
       <MocHeader nothing={"nothing"} type={"Ticket List"} />
 
       <Modal
@@ -497,7 +499,6 @@ export default function Ticket() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-y-6 w-full">
-                  
                   <div>
                     <div className="mt-5 leading-6 text-secondary">
                       Description
@@ -508,7 +509,7 @@ export default function Ticket() {
                   </div>
                 </div>
 
-                <div >
+                <div>
                   {openView.url && (
                     <Grid container spacing={2}>
                       <Grid item xs={12}>

@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import { encryptFeature } from "./featureEncryption";
 import { apiAuth, apiTicketAuth } from "src/utils/http";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
 
@@ -126,9 +127,9 @@ const JwtSignInTab = () => {
               // Store the access token in local storage
 
               toast?.success("Successfully Logined");
-              setLoading(false);
               navigate("/dashboards/project");
               location.reload();
+              setLoading(false);
             }
           } catch (error) {
             console.error("Encryption/Decryption error:", error);

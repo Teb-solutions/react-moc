@@ -42,6 +42,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import CourseProgress from "../CourseProgress";
 import MocHeader from "../MocHeader";
 import { apiAuth } from "src/utils/http";

@@ -399,7 +399,7 @@ const Task = () => {
 
   return (
     <div className="white_bg">
-      <MocHeader master={"Staff"} />
+      <MocHeader nothing={"nothing"} type={"Staff"} />
       <div style={{ margin: "20px" }}>
         <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel id="category-select-label" className="text-4xl">

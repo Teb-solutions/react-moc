@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import axios from "axios";
 import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const handleError = async (error) => {
   let err = {

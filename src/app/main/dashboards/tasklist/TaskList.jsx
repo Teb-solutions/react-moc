@@ -35,6 +35,7 @@ import Loader from "src/app/main/loader/Loader";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import MocHeader from "../moc/MocHeader";
 function createData(
   index,
@@ -140,7 +141,8 @@ export default function StickyHeadTable() {
   const filteredDepartmentList = siteList.filter(
     (row) =>
       row.changeRequestNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.what.toLowerCase().includes(searchQuery.toLowerCase())
+      row.what.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      row.index.toString().includes(searchQuery)
   );
 
   const [lookupAdd, setLookUpAdd] = useState({

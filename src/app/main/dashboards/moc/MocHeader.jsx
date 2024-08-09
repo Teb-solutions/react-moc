@@ -7,9 +7,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
 
-/**
- * The DemoHeader component.
- */
 function MocHeader(props) {
   const { activity, reqno, risk, master, type, nothing, verName } = props;
   const routeParams = useParams();
@@ -17,7 +14,6 @@ function MocHeader(props) {
   const location = useLocation();
   const path = location.pathname;
 
-  // Check if the path is exactly "/moc" or "/risk"
   const urlContainsMocOrRisk = path === "/moc" || path === "/risk";
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -75,15 +71,15 @@ function MocHeader(props) {
           >
             Home
           </Link>
-          {nothing != "nothing" && (
+          {nothing !== "nothing" && (
             <Link
               className="font-medium text-blue"
-              key="3"
+              key="2"
               color="text.primary"
-              to={risk == "risk" ? "/risk" : master ? "" : "/moc"}
+              to={risk === "risk" ? "/risk" : master ? "" : "/moc"}
               style={{ textDecoration: "none" }}
             >
-              {risk == "risk"
+              {risk === "risk"
                 ? "RISK Requests"
                 : master
                   ? master
@@ -96,17 +92,15 @@ function MocHeader(props) {
             </Typography>
           )}
           {reqno && (
-            <Typography className="font-medium" key="3" color="text.primary">
+            <Typography className="font-medium" key="4" color="text.primary">
               {reqno}
             </Typography>
           )}
-
           {activity && (
-            <Typography className="font-medium" key="3" color="text.primary">
+            <Typography className="font-medium" key="5" color="text.primary">
               {activity} (v{verName})
             </Typography>
           )}
-
           {risk == "risk" ? (
             <Menu
               anchorEl={anchorEl}
@@ -139,7 +133,6 @@ function MocHeader(props) {
         <div className="flex sm:hidden" />
       </div>
       <div className="mt-10 md:mt-0" style={{ justifyContent: "end" }}>
-        {" "}
         {urlContainsMocOrRisk && Object.keys(routeParams).length === 0 && (
           <Button
             className=""
@@ -149,8 +142,7 @@ function MocHeader(props) {
           >
             <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
             <span className="mx-4 sm:mx-8">
-              {" "}
-              {risk == "risk"
+              {risk === "risk"
                 ? "Initiate New Risk Register"
                 : "Initiate New MOC Request"}
             </span>

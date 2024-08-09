@@ -32,6 +32,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { styled } from "@mui/material/styles";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { useLocation } from "react-router-dom";
 import { display, minHeight } from "@mui/system";
@@ -599,6 +600,7 @@ const Task = () => {
 
   return (
     <>
+      <ToastContainer className="toast-container" />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

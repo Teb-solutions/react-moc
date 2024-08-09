@@ -11,12 +11,12 @@ class ErrorBoundary extends Component {
     return { hasError: true, error, errorInfo: null };
   }
 
-  // componentDidCatch(error, errorInfo) {
-  //   // You can also log the error to an error reporting service
-  //   // this?.setState({ error, errorInfo });
-  //   // eslint-disable-next-line
-  //   // console?.error("Uncaught error:", error, errorInfo);
-  // }
+  componentDidCatch(error, errorInfo) {
+    // You can also log the error to an error reporting service
+    // this?.setState({ error, errorInfo });
+    // eslint-disable-next-line
+    // console?.error("Uncaught error:", error, errorInfo);
+  }
 
   render() {
     const { children } = this.props;

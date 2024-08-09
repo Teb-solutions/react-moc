@@ -33,7 +33,7 @@ import {
 } from "@mui/material";
 import SwipeableViews from "react-swipeable-views";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { apiAuth } from "src/utils/http";
@@ -1593,6 +1593,7 @@ function EvaluationChange({
 
   return (
     <div className="w-full">
+      <ToastContainer className="toast-container" />
       <Initiation
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
