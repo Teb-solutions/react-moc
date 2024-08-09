@@ -389,12 +389,13 @@ function OrgActivity() {
                     </FormControl>
                   </Box>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full custom_margin">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-24 w-full">
                   <Box
+                    className="custom_margin"
                     sx={{
                       display: "flex",
                       flexWrap: "wrap",
-                      marginTop: "25px",
+                      // marginTop: "25px",
                     }}
                   >
                     <FormControl
@@ -437,10 +438,11 @@ function OrgActivity() {
                     </FormControl>
                   </Box>
                   <Box
+                    className="custom_margin"
                     sx={{
                       display: "flex",
                       flexWrap: "wrap",
-                      marginTop: "25px",
+                      // marginTop: "25px",
                     }}
                   >
                     <FormControl
@@ -487,9 +489,10 @@ function OrgActivity() {
 
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <FormControl
+                      className="custom_margin2"
                       sx={{
-                        m: 1,
-                        width: 480,
+                        // m: 1,
+                        width: "100%",
                         maxWidth: "100%",
                       }}
                     >
@@ -497,7 +500,7 @@ function OrgActivity() {
                         sx={{
                           display: "flex",
                           flexWrap: "wrap",
-                          marginTop: "36px",
+                          // marginTop: "36px",
                         }}
                       >
                         <DatePicker

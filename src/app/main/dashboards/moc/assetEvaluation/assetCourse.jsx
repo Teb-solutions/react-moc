@@ -198,6 +198,9 @@ const AssetCourse = () => {
     parentId: "0",
   });
   const [CountApprove, setCountApprove] = useState();
+  const [CountApprove2, setCountApprove2] = useState();
+  const [CountApprove3, setCountApprove3] = useState();
+  const [CountApprove4, setCountApprove4] = useState();
   const [openImplemntationTask, setOpenImplemntationTask] = useState(false);
   const [comments, setComments] = useState("");
   const [reviewed, setReviewed] = useState({});
@@ -841,7 +844,7 @@ const AssetCourse = () => {
                     `/DocumentManager/DocumentCount?id=${resps.data.data.id}&documentType=ChangeSummary`
                   )
                   .then((resp) => {
-                    setCountApprove(resp.data.data);
+                    setCountApprove2(resp.data.data);
                   });
               });
 
@@ -1000,6 +1003,13 @@ const AssetCourse = () => {
 
                     setTasks(updatedTasks);
                     loadRiskAnalysisChart(updatedTasks);
+                    apiAuth
+                      .get(
+                        `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
+                      )
+                      .then((resp) => {
+                        setCountApprove3(resp.data.data);
+                      });
                   }
                 }
               });
@@ -1037,6 +1047,14 @@ const AssetCourse = () => {
 
                     setTasks(updatedTasks);
                     loadRiskAnalysisChart(updatedTasks);
+                    // https://mocapi.tebs.co.in/api/DocumentManager/DocumentCount?id=d09760aa3bf9487eb26f90bb53569bd0&documentType=Approval
+                    apiAuth
+                      .get(
+                        `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
+                      )
+                      .then((resp) => {
+                        setCountApprove4(resp.data.data);
+                      });
                   }
                 }
               });
@@ -1544,7 +1562,7 @@ const AssetCourse = () => {
                   currentActivityForm={currentActivityForm}
                   currentSummeryById={currentSummeryById}
                   setContent={setContent}
-                  CountApprove={CountApprove}
+                  CountApprove={CountApprove2}
                   contentDetails={contentDetailsIni}
                 />
               )}
@@ -1619,7 +1637,7 @@ const AssetCourse = () => {
                   // setRemarkRequest={setRemarkRequest}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
-                  CountApprove={CountApprove}
+                  CountApprove={CountApprove3}
                 />
               )}
               {currentPhase === "EvaluationApprovalVpHse" && (
@@ -1636,7 +1654,7 @@ const AssetCourse = () => {
                   // setRemarkRequest={setRemarkRequest}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
-                  CountApprove={CountApprove}
+                  CountApprove={CountApprove4}
                 />
               )}
               {currentPhase === "ImplementationApproval" && (

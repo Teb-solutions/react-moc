@@ -88,12 +88,12 @@ const style2 = {
   transform: "translate(-50%, -50%)",
   width: "800px",
   maxWidth: "80vw",
-  height: "50vh",
-  maxHeight: "80vh",
+  // height: "50vh",
+  // maxHeight: "80vh",
   borderRadius: "16px",
   backgroundColor: "#ffffff",
   boxShadow: "24px",
-  padding: "0px",
+  // padding: "0px",
 };
 
 function EvaluationChange({
@@ -5932,7 +5932,7 @@ function EvaluationChange({
       >
         <Fade in={openSession}>
           <Box sx={style2}>
-            <Box
+            <Box className=" align-items-center"
               style={{
                 padding: "30px",
                 backgroundColor: "#4f46e5",
@@ -5945,7 +5945,7 @@ function EvaluationChange({
             >
               <span> Evaluation Session</span>
               <Button
-                className=""
+                className="p-0 d-block minw-auto"
                 variant="contained"
                 style={{ backgroundColor: "#4f46e5", color: "white" }}
                 onClick={handleCloseSession}
@@ -5954,16 +5954,16 @@ function EvaluationChange({
               </Button>
             </Box>
 
-            <Box sx={{ overflow: "auto", padding: "5px 30px 0 30px" }}>
+            <Box sx={{ overflow: "auto", }} className="p-30 pt-24 pb-24">
               <Grid
                 container
                 spacing={2}
-                className="mt-5"
+                className="m-0 p-0 w-100"
                 style={{ overflow: "scroll", height: "35vh" }}
               >
-                <Grid item xs={12}>
+                <Grid item xs={12} className="p-0 w-100">
                   <Table
-                    className="mat-elevatio demo-table col-span-12 mt-0 w-full"
+                    className="mat-elevatio demo-table table_custome col-span-12 mt-0 w-full"
                     sx={{ width: "100%" }}
                   >
                     <TableHead

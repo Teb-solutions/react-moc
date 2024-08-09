@@ -106,7 +106,7 @@ function Course() {
   });
   const [expanded2, setExpanded2] = useState(false);
   const [listDocument, setListDocument] = useState([]);
-
+  const [listDocument1, setListDocument1] = useState([]);
   const handleResize = useCallback(() => {
     if (window.innerWidth <= 768) {
       // Adjust this width as needed
@@ -155,6 +155,7 @@ function Course() {
   const handleModalClose = () => {
     setOpenMoc(false);
     setOpenDrawer(false);
+    setFileDetails(false);
   };
   const handelFileDiscriptionChange = (event) => {
     const { name, value } = event.target;
@@ -176,7 +177,7 @@ function Course() {
         `/DocumentManager/DocList/${evaluationId}/DocImplTrSheet?changeRequestToken=${evaluationId}`
       )
       .then((response) => {
-        setListDocument(response?.data?.data);
+        setListDocument1(response?.data?.data);
       });
     setOpenMoc(true);
   };
@@ -229,7 +230,7 @@ function Course() {
             });
         } else {
           toast.error(response.data.message);
-          setOpenDocModal(false);
+          setOpenMoc(false);
           setOpenDrawer(false);
           setSelectedFile({
             ...selectedFile,
@@ -240,23 +241,16 @@ function Course() {
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
-        if (error.response) {
-          const { statusCode, message } = error.response.data;
-          if (statusCode && message) {
-            toast.error(`Error ${statusCode}: ${message}`);
-          } else if (error.response.data.errors) {
-            const errorMessages = Object.values(error.response.data.errors)
-              .flat()
-              .join(", ");
-            toast.error(`Error: ${errorMessages}`);
+        if (error.errorsData) {
+          if (error.errorsData.Name && error.errorsData.Name.length) {
+            toast.error(error.errorsData.Name[0]);
           } else {
             toast.error("There was an error uploading the document!");
           }
         } else {
           toast.error("There was an error uploading the document!");
         }
-        setOpenMoc(false);
-
+        setOpenDocModal(false);
         setOpenDrawer(false);
         setSelectedFile({
           ...selectedFile,
@@ -266,7 +260,10 @@ function Course() {
       });
   };
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setFileDetails(false);
+  };
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(-1);
   const [expandedAccordionIndex, setExpandedAccordionIndex] = useState(-1);
   const [actName, setActName] = useState("");
@@ -2035,7 +2032,7 @@ function Course() {
         )
         .then((response) => {
           setOpenDrawer(false);
-          setListDocument(response?.data?.data);
+          setListDocument1(response?.data?.data);
           setDeletes(false);
           setFileDetails(false);
           setSelectedDocument("");
@@ -2466,7 +2463,7 @@ function Course() {
                                         id="transition-modal-subtitle"
                                         component="h2"
                                       >
-                                        {listDocument.length} Files
+                                        {listDocument1.length} Files
                                       </Typography>
                                     </Typography>
                                     {currentActivityForm.canExecute && (
@@ -2497,7 +2494,7 @@ function Course() {
                                         backgroundColor: "#e3eeff80",
                                       }}
                                     >
-                                      {listDocument.map((doc, index) => (
+                                      {listDocument1.map((doc, index) => (
                                         <div className="content " key={index}>
                                           <div
                                             onClick={() => handelDetailDoc(doc)}
@@ -2509,7 +2506,9 @@ function Course() {
                                               src="/assets/images/etc/icon_N.png"
                                               style={{}}
                                             />
-                                            <h6>{doc?.name}</h6>
+                                            <h6 className="truncate-text">
+                                              {doc?.name}
+                                            </h6>
                                             <h6>by {doc?.staffName}</h6>
                                           </div>
                                         </div>
@@ -2806,25 +2805,27 @@ function Course() {
                                       >
                                         Download
                                       </Button>
-                                      <Button
-                                        className="whitespace-nowrap"
-                                        variant="contained"
-                                        color="primary"
-                                        style={{
-                                          backgroundColor: "white",
-                                          color: "black",
-                                          border: "1px solid grey",
-                                        }}
-                                        onClick={(e) =>
-                                          handleDelete(
-                                            e,
-                                            selectedDocument?.documentId,
-                                            selectedDocument?.token
-                                          )
-                                        }
-                                      >
-                                        Delete
-                                      </Button>
+                                      {currentActivityForm.canExecute && (
+                                        <Button
+                                          className="whitespace-nowrap"
+                                          variant="contained"
+                                          color="primary"
+                                          style={{
+                                            backgroundColor: "white",
+                                            color: "black",
+                                            border: "1px solid grey",
+                                          }}
+                                          onClick={(e) =>
+                                            handleDelete(
+                                              e,
+                                              selectedDocument?.documentId,
+                                              selectedDocument?.token
+                                            )
+                                          }
+                                        >
+                                          Delete
+                                        </Button>
+                                      )}
                                     </div>
                                   </Box>
                                 )}
@@ -2879,7 +2880,7 @@ function Course() {
                         style={{ textAlign: "-webkit-center" }}
                       >
                         <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        <h6>{doc?.name}</h6>
+                        <h6 className="truncate-text">{doc?.name}</h6>
                         <h6>by {doc?.staffName}</h6>
                       </div>
                     </div>
@@ -5509,7 +5510,7 @@ function Course() {
                           >
                             Implementation
                           </h2>
-                          <StyledBadge badgeContent={listDocument.length}>
+                          <StyledBadge badgeContent={listDocument1.length}>
                             <Button
                               className="whitespace-nowrap "
                               style={{
@@ -5590,7 +5591,9 @@ function Course() {
                                               src="/assets/images/etc/icon_N.png"
                                               style={{}}
                                             />
-                                            <h6>{doc?.name}</h6>
+                                            <h6 className="truncate-text">
+                                              {doc?.name}
+                                            </h6>
                                             <h6>by {doc?.staffName}</h6>
                                           </div>
                                         </div>

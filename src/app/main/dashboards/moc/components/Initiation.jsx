@@ -410,7 +410,7 @@ function Initiation(props) {
                         ) : (
                           <img src="/assets/images/etc/icon_N.png" style={{}} />
                         )}
-                        <h6>{doc?.name}</h6>
+                        <h6 className="truncate-text">{doc?.name}</h6>
                         <h6>by {doc?.staffName}</h6>
                       </div>
                     </div>
@@ -842,6 +842,8 @@ function Initiation(props) {
                     }
                   </div>
                 </div>
+              </div>
+              <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full">  
                 <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
                     Project Description

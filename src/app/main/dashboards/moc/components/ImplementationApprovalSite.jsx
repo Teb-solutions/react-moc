@@ -320,7 +320,7 @@ const ImplementationApprovalSite = ({
             });
         } else {
           toast.error(response.data.message);
-          setOpenDocModal(false);
+          setOpen(false);
           setOpenDrawer(false);
           setSelectedFile({
             ...selectedFile,
@@ -331,22 +331,16 @@ const ImplementationApprovalSite = ({
       })
       .catch((error) => {
         console.error("There was an error uploading the document!", error);
-        if (error.response) {
-          const { statusCode, message } = error.response.data;
-          if (statusCode && message) {
-            toast.error(`Error ${statusCode}: ${message}`);
-          } else if (error.response.data.errors) {
-            const errorMessages = Object.values(error.response.data.errors)
-              .flat()
-              .join(", ");
-            toast.error(`Error: ${errorMessages}`);
+        if (error.errorsData) {
+          if (error.errorsData.Name && error.errorsData.Name.length) {
+            toast.error(error.errorsData.Name[0]);
           } else {
             toast.error("There was an error uploading the document!");
           }
         } else {
           toast.error("There was an error uploading the document!");
         }
-        setOpenDocModal(false);
+        setOpen(false);
         setOpenDrawer(false);
         setSelectedFile({
           ...selectedFile,
@@ -736,11 +730,11 @@ const ImplementationApprovalSite = ({
                                         ) : (
                                           <div>
                                             <div className="mat-form-field-infix mt-12">
-                                              <span className="">
+                                              <span className="mr-3">
                                                 {rwx?.createdByStaffName}
                                               </span>
-                                              -{" "}
-                                              <span className="text-grey">
+                                              
+                                              <span className="text-grey ml-3">
                                                 {rwx?.remark}
                                               </span>
                                             </div>
@@ -1053,7 +1047,7 @@ const ImplementationApprovalSite = ({
                         style={{ textAlign: "-webkit-center" }}
                       >
                         <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        <h6>{doc?.name}</h6>
+                        <h6 className="truncate-text">{doc?.name}</h6>
                         <h6>by {doc?.staffName}</h6>
                       </div>
                     </div>

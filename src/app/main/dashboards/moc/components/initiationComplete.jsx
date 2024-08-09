@@ -225,7 +225,7 @@ const InitiationComplete = ({
   const [listDocument, setListDocument] = useState([]);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
-    descritpion: "",
+    description: "",
     type: "",
     document: "binary",
     documentType: "ChangeRequest",
@@ -336,7 +336,7 @@ const InitiationComplete = ({
   const handleSubmitAsset = (e) => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
-    formData.append("descritpion", selectedFile.descritpion);
+    formData.append("description", selectedFile.description);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
     formData.append("documentType", selectedFile.documentType);
@@ -360,7 +360,7 @@ const InitiationComplete = ({
               setSelectedFile({
                 ...selectedFile,
                 name: "",
-                descritpion: "",
+                description: "",
               });
             });
         } else {
@@ -375,24 +375,23 @@ const InitiationComplete = ({
         }
       })
       .catch((error) => {
-        setOpen1(false);
-
         console.error("There was an error uploading the document!", error);
-        if (error.response) {
-          const { statusCode, message } = error.response.data;
-          if (statusCode && message) {
-            toast.error(`Error ${statusCode}: ${message}`);
-          } else if (error.response.data.errors) {
-            const errorMessages = Object.values(error.response.data.errors)
-              .flat()
-              .join(", ");
-            toast.error(`Error: ${errorMessages}`);
+        if (error.errorsData) {
+          if (error.errorsData.Name && error.errorsData.Name.length) {
+            toast.error(error.errorsData.Name[0]);
+            cli;
+            setSelectedFile({
+              ...selectedFile,
+              name: "",
+              description: "",
+            });
           } else {
             toast.error("There was an error uploading the document!");
           }
         } else {
           toast.error("There was an error uploading the document!");
         }
+        setOpen1(false);
         setOpenDocModal(false);
         setOpenDrawer(false);
         setSelectedFile({
@@ -698,7 +697,7 @@ const InitiationComplete = ({
                         style={{ textAlign: "-webkit-center" }}
                       >
                         <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        <h6>{doc?.name}</h6>
+                        <h6 className="truncate-text">{doc?.name}</h6>
                         <h6>by {doc?.staffName}</h6>
                       </div>
                     </div>
@@ -790,10 +789,10 @@ const InitiationComplete = ({
                     <TextField
                       id="standard-basic"
                       label={<BoldLabel>Description</BoldLabel>}
-                      name="descritpion"
+                      name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
-                      value={selectedFile.descritpion}
+                      value={selectedFile.description}
                     />
                   </Box>
                 </div>

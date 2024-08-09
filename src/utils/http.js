@@ -47,6 +47,7 @@ const handleError = async (error) => {
       return;
     } else if (error.response.status === 400) {
       err = {
+        errorsData: error.response.data.errors || {},
         message: error.response.data.message || err.message,
         status: error.response.status,
         errors: error.response.data.messages || {},

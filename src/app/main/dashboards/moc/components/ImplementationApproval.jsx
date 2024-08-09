@@ -182,7 +182,7 @@ function ImplementationApproval({
   const [openImplemntationTask, setOpenImplemntationTask] = useState(false);
   const [openAudit, setOpenAudit] = useState(false);
   const [openAuditComment, setOpenAuditComment] = useState(false);
-
+  const [countApprove, setCountApprove] = useState(0);
   const handleCloseImplemntationTask = () => setOpenImplemntationTask(false);
   const handleCloseAudit = () => setOpenAudit(false);
   const handleCloseAuditComment = () => setOpenAuditComment(false);
@@ -383,7 +383,18 @@ function ImplementationApproval({
       .get(`ChangeImpact/ListTaskCommentst?id=${taskid}`)
       .then((resp) => {
         const comments = resp.data.data;
+
         setImpComments(comments);
+
+        if (comments.length) {
+          apiAuth
+            .get(
+              `/DocumentManager/DocumentCount?id=${comments[0].id}&documentType=Task`
+            )
+            .then((Resp) => {
+              setCountApprove(Resp.data.data);
+            });
+        }
       })
       .catch((error) => {
         console.error("Error fetching task comments:", error);
@@ -792,7 +803,7 @@ function ImplementationApproval({
                         ) : (
                           <img src="/assets/images/etc/icon_N.png" style={{}} />
                         )}
-                        <h6>{doc?.name}</h6>
+                        <h6 className="truncate-text">{doc?.name}</h6>
                         <h6>by {doc?.staffName}</h6>
                       </div>
                     </div>
@@ -1795,11 +1806,11 @@ function ImplementationApproval({
                                   <Stepper orientation="vertical">
                                     <Step>
                                       <div style={{ alignItems: "flex-start" }}>
-                                        <div className="flex flex-col items-start mt-5">
+                                        <div className="flex flex-col items-start mb-08">
                                           <div
                                             className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                             style={{
-                                              padding: "20px",
+                                              padding: "10px",
                                               backgroundColor: "#dbeafe",
                                             }}
                                           >
@@ -1810,11 +1821,11 @@ function ImplementationApproval({
                                             </p>
                                           </div>
                                         </div>
-                                        <div className="flex flex-col items-start mt-5">
+                                        <div className="flex flex-col items-start mb-08">
                                           <div
                                             className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                             style={{
-                                              padding: "20px",
+                                              padding: "10px",
                                               backgroundColor: "#dbeafe",
                                             }}
                                           >
@@ -1826,11 +1837,11 @@ function ImplementationApproval({
                                         </div>
                                         {detail?.particularName &&
                                           detail?.particularSubName && (
-                                            <div className="flex flex-col items-start mt-5">
+                                            <div className="flex flex-col items-start mb-08">
                                               <div
                                                 className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                                 style={{
-                                                  padding: "20px",
+                                                  padding: "10px",
                                                   backgroundColor: "#dbeafe",
                                                 }}
                                               >
@@ -1841,11 +1852,11 @@ function ImplementationApproval({
                                               </div>
                                             </div>
                                           )}
-                                        <div className="flex flex-col items-start mt-5">
+                                        <div className="flex flex-col items-start mb-08">
                                           <div
                                             className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                             style={{
-                                              padding: "20px",
+                                              padding: "10px",
                                               backgroundColor: "#dbeafe",
                                             }}
                                           >
@@ -1939,7 +1950,7 @@ function ImplementationApproval({
                                                   <FuseSvgIcon size={20}>
                                                     heroicons-solid:document
                                                   </FuseSvgIcon>
-                                                  {listDocument.length > 0 && (
+                                                  {countApprove != 0 && (
                                                     <span
                                                       className="count"
                                                       style={{
@@ -1947,10 +1958,9 @@ function ImplementationApproval({
                                                           "black",
                                                       }}
                                                     >
-                                                      {listDocument.length > 0
-                                                        ? listDocument.length
-                                                        : ""}
-                                                      {/* {documentCounts[msg.id]} */}
+                                                      {countApprove
+                                                        ? countApprove
+                                                        : listDocument.length}
                                                     </span>
                                                   )}
                                                 </button>
