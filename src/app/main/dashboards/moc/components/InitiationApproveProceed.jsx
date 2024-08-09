@@ -27,6 +27,7 @@ import { apiAuth } from "src/utils/http";
 import FuseLoading from "@fuse/core/FuseLoading";
 import Initiation from "./Initiation";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function InitiationApprovalProceed({
   assetEvaluationId,
@@ -414,29 +415,30 @@ function InitiationApprovalProceed({
             </>
           )}
           <div className="evaluation-team-container grid p-30 pt-24 pb-24 grid-cols-1 md:grid-cols-3 gap-4">
-            {TeamAssignmentList.map((list, index) => (
-              <div
-                className="inventory-grid grid items-center gap-4 py-3 px-2"
-                key={index}
-              >
-                <div className="flex items-center" style={{ marginTop: "0" }}>
-                  <img
-                    src="/assets/images/etc/userpic.png"
-                    alt="Card cover image"
-                    className="rounded-full mr-24"
-                    style={{ width: "4rem", height: "4rem" }}
-                  />
-                  <div className="flex flex-col">
-                    <span className="font-semibold leading-none">
-                      {list.staffName}
-                    </span>
-                    <span className="text-sm text-secondary leading-none pt-5">
-                      {list?.roleName}
-                    </span>
+            {!currentActivityForm.canEdit &&
+              TeamAssignmentList.map((list, index) => (
+                <div
+                  className="inventory-grid grid items-center gap-4 py-3 px-2"
+                  key={index}
+                >
+                  <div className="flex items-center" style={{ marginTop: "0" }}>
+                    <img
+                      src="/assets/images/etc/userpic.png"
+                      alt="Card cover image"
+                      className="rounded-full mr-24"
+                      style={{ width: "4rem", height: "4rem" }}
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-semibold leading-none">
+                        {list.staffName}
+                      </span>
+                      <span className="text-sm text-secondary leading-none pt-5">
+                        {list?.roleName}
+                      </span>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </Paper>
       </SwipeableViews>

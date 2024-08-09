@@ -32,6 +32,7 @@ import { apiAuth } from "src/utils/http";
 import { makeStyles } from "@mui/styles";
 import { withStyles } from "@mui/styles";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
 import Initiation from "./Initiation";
 
@@ -451,6 +452,7 @@ const InitiationComplete = ({
 
   return (
     <div className="w-full">
+      <ToastContainer className="toast-container" />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

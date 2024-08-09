@@ -45,6 +45,7 @@ import Initiation from "./Initiation";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { withStyles } from "@mui/styles";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // Adjust the path based on your project structure
 
 function createData(
@@ -310,7 +311,6 @@ function ImplementationApproval({
       tempErrors.assignedStaffId = "Assigned Staff  is required";
 
     if (!taskAdd.dueDate) tempErrors.dueDate = "Date Field is required";
-    if (!taskAdd.audit) tempErrors.audit = "Audit Field is required";
 
     // Add other validations here
     setErrorsAddTask(tempErrors);
@@ -391,6 +391,15 @@ function ImplementationApproval({
   };
 
   const handleOpenImplemntationTask = () => {
+    setTaskAdd({
+      ...taskAdd,
+      showPreviousTasks: false,
+      actionWhat: "",
+      actionHow: "",
+      assignedStaffId: "",
+      dueDate: new Date(),
+      audit: "",
+    });
     setOpenImplemntationTask(true);
     apiAuth.get(`Staff/LOV`).then((resp) => {
       setDocStaff(resp.data.data);
@@ -1364,8 +1373,8 @@ function ImplementationApproval({
                           name="audit"
                           onChange={handleChangeAddTask}
                           value={taskAdd.audit}
-                          error={!!errorsAddTask.audit}
-                          helperText={errorsAddTask.audit}
+                          // error={!!errorsAddTask.audit}
+                          // helperText={errorsAddTask.audit}
                         />
                         <h6 className="text-grey">
                           If this task is based on Audit comments, please select
@@ -1547,6 +1556,7 @@ function ImplementationApproval({
                   return (
                     <Step key={step?.label}>
                       <StepLabel
+                        onClick={() => setActiveStep(index)}
                         StepIconProps={{
                           sx: {
                             "&.MuiStepIcon-root": { color: "blue" },
@@ -1560,6 +1570,7 @@ function ImplementationApproval({
                           padding: "15px",
                           borderRadius: "10px",
                           marginTop: "0",
+                          cursor: "pointer",
                         }}
                       >
                         {step?.label}

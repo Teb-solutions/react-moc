@@ -47,8 +47,8 @@ const SessionList = () => {
         }
       )
       .then((resp) => {
+        setTimeout(() => setIsLoading(false), 1000);
         getRecords();
-        setIsLoading(false);
       })
       .catch((err) => {
         setIsLoading(false);
@@ -61,8 +61,8 @@ const SessionList = () => {
         comments: Comment,
       })
       .then((resp) => {
+        setTimeout(() => setIsLoading(false), 1000);
         getRecords();
-        setIsLoading(false);
       })
       .catch((err) => {
         setIsLoading(false);

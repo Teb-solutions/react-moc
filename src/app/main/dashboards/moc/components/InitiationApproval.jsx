@@ -23,7 +23,8 @@ import { apiAuth } from "src/utils/http";
 import { parseISO, format } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 import Initiation from "./Initiation";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function InitiationApproval(props) {
   const {
     ApprovalDetails,
@@ -376,6 +377,7 @@ function InitiationApproval(props) {
 
   return (
     <div className="w-full h-full">
+      <ToastContainer className="toast-container" />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

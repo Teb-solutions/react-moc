@@ -33,6 +33,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import SearchIcon from "@mui/icons-material/Search";
 import { apiAuth } from "src/utils/http";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { styled } from "@mui/material/styles";
 import { withStyles } from "@mui/styles";
 function createData(

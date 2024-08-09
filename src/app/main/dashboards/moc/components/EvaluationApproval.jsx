@@ -41,6 +41,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SaveIcon from "@mui/icons-material/Save";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
 import Initiation from "./Initiation";
 const EvaluationApproval = ({

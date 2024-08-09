@@ -26,6 +26,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
 
@@ -272,6 +273,7 @@ export default function StickyHeadTable() {
 
   return (
     <div style={{ backgroundColor: "white" }}>
+      <ToastContainer className="toast-container" />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

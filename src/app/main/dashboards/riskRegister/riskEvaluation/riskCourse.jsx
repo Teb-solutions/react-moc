@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { apiAuth } from "src/utils/http";
 
 import FuseLoading from "@fuse/core/FuseLoading";
@@ -462,90 +463,88 @@ const riskCourse = () => {
                 </SwipeableViews>
                 <SwipeableViews>
                   <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
-                    
-                      <div className="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
-                        <h2 className="text-2xl font-semibold">
-                          Team Assignment
-                        </h2>
-                      </div>
-                      <div className="p-30 pt-24 pb-24">                      
+                    <div className="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between">
+                      <h2 className="text-2xl font-semibold">
+                        Team Assignment
+                      </h2>
+                    </div>
+                    <div className="p-30 pt-24 pb-24">
+                      <div
+                        // Assuming there's a unique id for each list item
+                        className="inventory-grid grid items-center gap-4 "
+                        // style={{ width: "40%" }}
+                      >
                         <div
-                          // Assuming there's a unique id for each list item
-                          className="inventory-grid grid items-center gap-4 "
-                          // style={{ width: "40%" }}
+                          className="flex items-center"
+                          style={{ marginTop: "15px" }}
                         >
-                          <div
-                            className="flex items-center"
-                            style={{ marginTop: "15px" }}
-                          >
-                            <img
-                              src="/assets/images/etc/userpic.png"
-                              alt="Card cover image"
-                              className="rounded-full mr-4"
-                              style={{ width: "4rem", height: "4rem" }}
-                            />
-                            <div className="flex flex-col">
-                              <span className="font-semibold leading-none">
-                                Sreeninivas Sathyamurthy
-                              </span>
-                              <span className="text-sm text-secondary leading-none pt-5">
-                                Maintenance in chage
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          // Assuming there's a unique id for each list item
-                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                          // style={{ width: "40%" }}
-                        >
-                          <div
-                            className="flex items-center"
-                            style={{ marginTop: "15px" }}
-                          >
-                            <img
-                              src="/assets/images/etc/userpic.png"
-                              alt="Card cover image"
-                              className="rounded-full mr-4"
-                              style={{ width: "4rem", height: "4rem" }}
-                            />
-                            <div className="flex flex-col">
-                              <span className="font-semibold leading-none">
-                                Giresh
-                              </span>
-                              <span className="text-sm text-secondary leading-none pt-5">
-                                Operations In Charge
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          // Assuming there's a unique id for each list item
-                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                          // style={{ width: "40%" }}
-                        >
-                          <div
-                            className="flex items-center"
-                            style={{ marginTop: "15px" }}
-                          >
-                            <img
-                              src="/assets/images/etc/userpic.png"
-                              alt="Card cover image"
-                              className="rounded-full mr-4"
-                              style={{ width: "4rem", height: "4rem" }}
-                            />
-                            <div className="flex flex-col">
-                              <span className="font-semibold leading-none">
-                                Tebs Dev Team
-                              </span>
-                              <span className="text-sm text-secondary leading-none pt-5">
-                                Task Reoresentative
-                              </span>
-                            </div>
+                          <img
+                            src="/assets/images/etc/userpic.png"
+                            alt="Card cover image"
+                            className="rounded-full mr-4"
+                            style={{ width: "4rem", height: "4rem" }}
+                          />
+                          <div className="flex flex-col">
+                            <span className="font-semibold leading-none">
+                              Sreeninivas Sathyamurthy
+                            </span>
+                            <span className="text-sm text-secondary leading-none pt-5">
+                              Maintenance in chage
+                            </span>
                           </div>
                         </div>
                       </div>
-
+                      <div
+                        // Assuming there's a unique id for each list item
+                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                        // style={{ width: "40%" }}
+                      >
+                        <div
+                          className="flex items-center"
+                          style={{ marginTop: "15px" }}
+                        >
+                          <img
+                            src="/assets/images/etc/userpic.png"
+                            alt="Card cover image"
+                            className="rounded-full mr-4"
+                            style={{ width: "4rem", height: "4rem" }}
+                          />
+                          <div className="flex flex-col">
+                            <span className="font-semibold leading-none">
+                              Giresh
+                            </span>
+                            <span className="text-sm text-secondary leading-none pt-5">
+                              Operations In Charge
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        // Assuming there's a unique id for each list item
+                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                        // style={{ width: "40%" }}
+                      >
+                        <div
+                          className="flex items-center"
+                          style={{ marginTop: "15px" }}
+                        >
+                          <img
+                            src="/assets/images/etc/userpic.png"
+                            alt="Card cover image"
+                            className="rounded-full mr-4"
+                            style={{ width: "4rem", height: "4rem" }}
+                          />
+                          <div className="flex flex-col">
+                            <span className="font-semibold leading-none">
+                              Tebs Dev Team
+                            </span>
+                            <span className="text-sm text-secondary leading-none pt-5">
+                              Task Reoresentative
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </Paper>
                 </SwipeableViews>
               </div>
@@ -554,31 +553,10 @@ const riskCourse = () => {
               <div className="w-full">
                 <SwipeableViews>
                   <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
-                   
-                      <div className="flex items-center w-full border-b p-30 pt-24 pb-24 justify-between">
-                        <h2 className="text-2xl font-semibold">Evaluation</h2>
-                        <div>
-                          {currentActivityForm.canEdit && (
-                            <Button
-                              className="whitespace-nowrap mt-5"
-                              style={{
-                                border: "1px solid",
-                                backgroundColor: "transparent",
-                                color: "black",
-                                borderColor: "rgba(203,213,225)",
-                                marginRight: "5px",
-                              }}
-                              variant="contained"
-                              color="warning"
-                              startIcon={
-                                <FuseSvgIcon size={20}>
-                                  heroicons-outline:user-add
-                                </FuseSvgIcon>
-                              }
-                            >
-                              <span>Create Session</span>
-                            </Button>
-                          )}
+                    <div className="flex items-center w-full border-b p-30 pt-24 pb-24 justify-between">
+                      <h2 className="text-2xl font-semibold">Evaluation</h2>
+                      <div>
+                        {currentActivityForm.canEdit && (
                           <Button
                             className="whitespace-nowrap mt-5"
                             style={{
@@ -586,6 +564,7 @@ const riskCourse = () => {
                               backgroundColor: "transparent",
                               color: "black",
                               borderColor: "rgba(203,213,225)",
+                              marginRight: "5px",
                             }}
                             variant="contained"
                             color="warning"
@@ -595,42 +574,61 @@ const riskCourse = () => {
                               </FuseSvgIcon>
                             }
                           >
-                            Session List
+                            <span>Create Session</span>
                           </Button>
-                        </div>
-                      </div>
-                      <div className=" p-30 pt-24 pb-24">                 
-                        {currentActivityForm.canEdit && (
-                          <div className="ng-star-inserted mt-5">
-                            <div className="ng-star-inserted">
-                              <div
-                                className="mt-4 py-2 px-5 rounded-lg bg-red-100 dark:bg-red-700"
-                                style={{
-                                  backgroundColor: "rgb(255 196 202)",
-                                  padding: "5px",
-                                }}
-                              >
-                                Please start session to make any changes.
-                              </div>
-                            </div>
-                          </div>
                         )}
-                        {/* )} */}
-                        <Box sx={{ width: "100%", mt: 2 }} className="hello">
-                          <Box sx={{ display: "flex" }}>
-                            <Button
-                              onClick={() => handleChange(0)}
-                              variant={value === 0 ? "contained" : "outlined"}
-                              sx={{
-                                backgroundColor:
-                                  value === 0 ? "#e6e6e6" : "transparent",
-                                color: value === 0 ? "black" : "black",
-                                borderColor: "white",
+                        <Button
+                          className="whitespace-nowrap mt-5"
+                          style={{
+                            border: "1px solid",
+                            backgroundColor: "transparent",
+                            color: "black",
+                            borderColor: "rgba(203,213,225)",
+                          }}
+                          variant="contained"
+                          color="warning"
+                          startIcon={
+                            <FuseSvgIcon size={20}>
+                              heroicons-outline:user-add
+                            </FuseSvgIcon>
+                          }
+                        >
+                          Session List
+                        </Button>
+                      </div>
+                    </div>
+                    <div className=" p-30 pt-24 pb-24">
+                      {currentActivityForm.canEdit && (
+                        <div className="ng-star-inserted mt-5">
+                          <div className="ng-star-inserted">
+                            <div
+                              className="mt-4 py-2 px-5 rounded-lg bg-red-100 dark:bg-red-700"
+                              style={{
+                                backgroundColor: "rgb(255 196 202)",
+                                padding: "5px",
                               }}
                             >
-                              Add Tasks
-                            </Button>
-                            {/* <Button
+                              Please start session to make any changes.
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      {/* )} */}
+                      <Box sx={{ width: "100%", mt: 2 }} className="hello">
+                        <Box sx={{ display: "flex" }}>
+                          <Button
+                            onClick={() => handleChange(0)}
+                            variant={value === 0 ? "contained" : "outlined"}
+                            sx={{
+                              backgroundColor:
+                                value === 0 ? "#e6e6e6" : "transparent",
+                              color: value === 0 ? "black" : "black",
+                              borderColor: "white",
+                            }}
+                          >
+                            Add Tasks
+                          </Button>
+                          {/* <Button
                               onClick={() => handleChange(1)}
                               className="ms-5"
                               variant={value === 1 ? "contained" : "outlined"}
@@ -643,134 +641,134 @@ const riskCourse = () => {
                             >
                               Change Evaluation Impacts
                             </Button> */}
-                          </Box>
+                        </Box>
 
-                          <CustomTabPanel value={value} index={0}>
+                        <CustomTabPanel value={value} index={0}>
+                          <div className="flex justify-start">
+                            <div
+                              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                              style={{ marginTop: "15px" }}
+                            >
+                              {currentActivityForm.canEdit && (
+                                <Button
+                                  className="whitespace-nowrap"
+                                  variant="contained"
+                                  color="secondary"
+                                  style={{ padding: "15px" }}
+                                  onClick={handleAddConsultation}
+                                  startIcon={
+                                    <FuseSvgIcon size={20}>
+                                      heroicons-outline:plus
+                                    </FuseSvgIcon>
+                                  }
+                                >
+                                  Add New Task
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </CustomTabPanel>
+
+                        <CustomTabPanel value={value} index={1}>
+                          <Paper>
+                            {AddImpact && (
+                              <>
+                                <div
+                                  className="font-semibold ps-5"
+                                  style={{ padding: "15px" }}
+                                >
+                                  <a
+                                    rel="noopener noreferrer"
+                                    onClick={handlebackImpactList}
+                                  >
+                                    Back to Impact View
+                                  </a>
+                                </div>
+                                <div
+                                  className="my-10"
+                                  style={{ borderTopWidth: "2px" }}
+                                ></div>
+
+                                <Button
+                                  className="whitespace-nowrap mt-5"
+                                  style={{
+                                    border: "1px solid",
+                                    backgroundColor: "#0000",
+                                    color: "black",
+                                    borderColor: "rgba(203,213,225)",
+                                    marginLeft: "30px",
+                                  }}
+                                  variant="contained"
+                                  startIcon={
+                                    <FuseSvgIcon size={20}>
+                                      heroicons-outline:plus
+                                    </FuseSvgIcon>
+                                  }
+                                  onClick={handleAddNewTask}
+                                >
+                                  Add New Task
+                                </Button>
+                                <div
+                                  className="my-10"
+                                  style={{ borderTopWidth: "2px" }}
+                                ></div>
+                                <div className="flex justify-end">
+                                  <div
+                                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                                    style={{ marginTop: "15px" }}
+                                  >
+                                    <Button
+                                      className="whitespace-nowrap"
+                                      variant="contained"
+                                      color="secondary"
+                                      style={{ margin: "15px" }}
+                                      //   onClick={() => handleOpen(btn)}
+                                      startIcon={
+                                        <FuseSvgIcon size={20}>
+                                          heroicons-outline:plus
+                                        </FuseSvgIcon>
+                                      }
+                                    >
+                                      Submit
+                                    </Button>
+                                  </div>
+                                </div>
+                              </>
+                            )}
+                          </Paper>
+                          {currentActivityForm.canEdit && !AddImpact && (
                             <div className="flex justify-start">
                               <div
                                 className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                                 style={{ marginTop: "15px" }}
                               >
-                                {currentActivityForm.canEdit && (
-                                  <Button
-                                    className="whitespace-nowrap"
-                                    variant="contained"
-                                    color="secondary"
-                                    style={{ padding: "15px" }}
-                                    onClick={handleAddConsultation}
-                                    startIcon={
-                                      <FuseSvgIcon size={20}>
-                                        heroicons-outline:plus
-                                      </FuseSvgIcon>
-                                    }
-                                  >
-                                    Add New Task
-                                  </Button>
-                                )}
+                                <Button
+                                  className="whitespace-nowrap"
+                                  variant="contained"
+                                  color="secondary"
+                                  style={{ padding: "15px" }}
+                                  startIcon={
+                                    <FuseSvgIcon size={20}>
+                                      heroicons-outline:plus
+                                    </FuseSvgIcon>
+                                  }
+                                  // onClick={handleAddImpact}
+                                >
+                                  Add New Impact
+                                </Button>
                               </div>
                             </div>
-                          </CustomTabPanel>
-
-                          <CustomTabPanel value={value} index={1}>
-                            <Paper>
-                              {AddImpact && (
-                                <>
-                                  <div
-                                    className="font-semibold ps-5"
-                                    style={{ padding: "15px" }}
-                                  >
-                                    <a
-                                      rel="noopener noreferrer"
-                                      onClick={handlebackImpactList}
-                                    >
-                                      Back to Impact View
-                                    </a>
-                                  </div>
-                                  <div
-                                    className="my-10"
-                                    style={{ borderTopWidth: "2px" }}
-                                  ></div>
-
-                                  <Button
-                                    className="whitespace-nowrap mt-5"
-                                    style={{
-                                      border: "1px solid",
-                                      backgroundColor: "#0000",
-                                      color: "black",
-                                      borderColor: "rgba(203,213,225)",
-                                      marginLeft: "30px",
-                                    }}
-                                    variant="contained"
-                                    startIcon={
-                                      <FuseSvgIcon size={20}>
-                                        heroicons-outline:plus
-                                      </FuseSvgIcon>
-                                    }
-                                    onClick={handleAddNewTask}
-                                  >
-                                    Add New Task
-                                  </Button>
-                                  <div
-                                    className="my-10"
-                                    style={{ borderTopWidth: "2px" }}
-                                  ></div>
-                                  <div className="flex justify-end">
-                                    <div
-                                      className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                                      style={{ marginTop: "15px" }}
-                                    >
-                                      <Button
-                                        className="whitespace-nowrap"
-                                        variant="contained"
-                                        color="secondary"
-                                        style={{ margin: "15px" }}
-                                        //   onClick={() => handleOpen(btn)}
-                                        startIcon={
-                                          <FuseSvgIcon size={20}>
-                                            heroicons-outline:plus
-                                          </FuseSvgIcon>
-                                        }
-                                      >
-                                        Submit
-                                      </Button>
-                                    </div>
-                                  </div>
-                                </>
-                              )}
-                            </Paper>
-                            {currentActivityForm.canEdit && !AddImpact && (
-                              <div className="flex justify-start">
-                                <div
-                                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                                  style={{ marginTop: "15px" }}
-                                >
-                                  <Button
-                                    className="whitespace-nowrap"
-                                    variant="contained"
-                                    color="secondary"
-                                    style={{ padding: "15px" }}
-                                    startIcon={
-                                      <FuseSvgIcon size={20}>
-                                        heroicons-outline:plus
-                                      </FuseSvgIcon>
-                                    }
-                                    // onClick={handleAddImpact}
-                                  >
-                                    Add New Impact
-                                  </Button>
-                                </div>
-                              </div>
-                            )}
-                          </CustomTabPanel>
-                        </Box>
-                        {AddCunsultation && !editConsultation && (
-                          <>
-                            {/* <div
+                          )}
+                        </CustomTabPanel>
+                      </Box>
+                      {AddCunsultation && !editConsultation && (
+                        <>
+                          {/* <div
                               className="my-10"
                               style={{ borderTopWidth: "2px", marginTop: "40px" }}
                             ></div> */}
 
-                            {/* <div
+                          {/* <div
                               className="flex justify-between items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                               style={{ marginTop: "15px" }}
                             >
@@ -817,35 +815,35 @@ const riskCourse = () => {
                                 </Button>
                               </div>
                             </div> */}
-                          </>
-                        )}
-                      </div>
+                        </>
+                      )}
+                    </div>
                     <>
                       <div
                         className="my-10"
-                        style={{ borderTopWidth: "2px"}}
+                        style={{ borderTopWidth: "2px" }}
                       ></div>
 
                       {/* <div className="flex justify-end"> */}
-                        {/* <div
+                      {/* <div
                           className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                           style={{ marginTop: "15px" }}
                         ></div> */}
-                        <div
-                          className="flex items-center justify-end p-30 pt-24 pb-24"
-                          // style={{ marginTop: "15px" }}
+                      <div
+                        className="flex items-center justify-end p-30 pt-24 pb-24"
+                        // style={{ marginTop: "15px" }}
+                      >
+                        <Button
+                          className="whitespace-nowrap"
+                          variant="contained"
+                          color="secondary"
+                          style={{ padding: "15px" }}
+                          //   key={btn.name}
+                          // onClick={() => handleOpen(btn)}
                         >
-                          <Button
-                            className="whitespace-nowrap"
-                            variant="contained"
-                            color="secondary"
-                            style={{ padding: "15px" }}
-                            //   key={btn.name}
-                            // onClick={() => handleOpen(btn)}
-                          >
-                            submit for approval
-                          </Button>
-                        </div>
+                          submit for approval
+                        </Button>
+                      </div>
                       {/* </div> */}
                     </>
                   </Paper>

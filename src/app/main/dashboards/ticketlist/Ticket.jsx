@@ -29,7 +29,6 @@ import { apiAuth } from "src/utils/http";
 import Loader from "src/app/main/loader/Loader";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
-import { toast } from "react-toastify";
 import MocHeader from "../moc/MocHeader";
 import axios from "axios";
 import {
@@ -38,6 +37,9 @@ import {
   TicketSourceEnum,
   TicketStatusEnum,
 } from "../EnumTicket/ticketEnums";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const mapEnumValueToName = (value, enumObject) => {
   return (
     Object.keys(enumObject).find((key) => enumObject[key] === value) || "-"
@@ -336,6 +338,7 @@ export default function Ticket() {
   }
   return (
     <div style={{ backgroundColor: "white" }}>
+      <ToastContainer className="toast-container" />
       <MocHeader nothing={"nothing"} type={"Ticket List"} />
 
       <Modal

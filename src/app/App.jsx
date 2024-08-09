@@ -12,8 +12,7 @@ import { useAppSelector } from "app/store/hooks";
 import { useSelector } from "react-redux";
 import withAppProviders from "./withAppProviders";
 import { AuthRouteProvider } from "./auth/AuthRouteProvider";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 // import axios from 'axios';
 /**
  * Axios HTTP Request defaults
@@ -62,7 +61,6 @@ function App() {
                   "bottom-0 right-0 mb-52 md:mb-68 mr-8 lg:mr-80 z-99",
               }}
             >
-              <ToastContainer />
               <FuseLayout layouts={themeLayouts} />
             </SnackbarProvider>
           </AuthRouteProvider>
