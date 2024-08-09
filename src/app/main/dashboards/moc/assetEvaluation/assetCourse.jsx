@@ -932,15 +932,6 @@ const AssetCourse = () => {
             apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
-              apiAuth
-                .get(
-                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
-                )
-                .then((resp) => {
-                  setIsLoading(false);
-
-                  setRemarkRequest(resp.data.data);
-                });
             });
             break;
           case "EvaluationApprovalCooprate":
@@ -978,15 +969,6 @@ const AssetCourse = () => {
             apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
-              apiAuth
-                .get(
-                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
-                )
-                .then((resp) => {
-                  setIsLoading(false);
-
-                  setRemarkRequest(resp.data.data);
-                });
             });
             break;
           case "EvaluationApprovalVp":
@@ -1024,15 +1006,6 @@ const AssetCourse = () => {
             apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
-              apiAuth
-                .get(
-                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
-                )
-                .then((resp) => {
-                  setIsLoading(false);
-
-                  setRemarkRequest(resp.data.data);
-                });
             });
             break;
           case "EvaluationApprovalVpHse":
@@ -1070,15 +1043,6 @@ const AssetCourse = () => {
             apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
-              apiAuth
-                .get(
-                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
-                )
-                .then((resp) => {
-                  setIsLoading(false);
-
-                  setRemarkRequest(resp.data.data);
-                });
             });
             break;
           case "ImplementationApproval":
@@ -1530,9 +1494,9 @@ const AssetCourse = () => {
         }, 3000);
       });
   };
-  useEffect(() => {
-    handleStepChange();
-  }, []);
+  // useEffect(() => {
+  //   handleStepChange();
+  // }, []);
 
   const handelOpenSide = () => {
     setLeftSidebarOpen(true);
@@ -1547,7 +1511,6 @@ const AssetCourse = () => {
       header={<MocHeader activity={actName} reqno={reqNo} verName={verName} />}
       content={
         <div className="w-full">
-          <ToastContainer className="toast-container" />
           <>
             <div className=" p-16 pb-64 sm:p-24 ">
               {currentPhase === "InitiationRequest" && (
@@ -1619,7 +1582,7 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
-                  setRemarkRequest={setRemarkRequest}
+                  // setRemarkRequest={setRemarkRequest}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
                   CountApprove={CountApprove}
@@ -1636,9 +1599,10 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
-                  setRemarkRequest={setRemarkRequest}
+                  // setRemarkRequest={setRemarkRequest}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
+                  CountApprove={CountApprove}
                 />
               )}
               {currentPhase === "EvaluationApprovalVp" && (
@@ -1652,10 +1616,10 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
-                  setRemarkRequest={setRemarkRequest}
-                  handleStepChange={handleStepChange()}
+                  // setRemarkRequest={setRemarkRequest}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
+                  CountApprove={CountApprove}
                 />
               )}
               {currentPhase === "EvaluationApprovalVpHse" && (
@@ -1669,9 +1633,10 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
-                  setRemarkRequest={setRemarkRequest}
+                  // setRemarkRequest={setRemarkRequest}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
+                  CountApprove={CountApprove}
                 />
               )}
               {currentPhase === "ImplementationApproval" && (
