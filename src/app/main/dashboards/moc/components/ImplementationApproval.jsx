@@ -1805,11 +1805,11 @@ function ImplementationApproval({
                                   <Stepper orientation="vertical">
                                     <Step>
                                       <div style={{ alignItems: "flex-start" }}>
-                                        <div className="flex flex-col items-start mt-5">
+                                        <div className="flex flex-col items-start mb-08">
                                           <div
                                             className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                             style={{
-                                              padding: "20px",
+                                              padding: "10px",
                                               backgroundColor: "#dbeafe",
                                             }}
                                           >
@@ -1820,11 +1820,11 @@ function ImplementationApproval({
                                             </p>
                                           </div>
                                         </div>
-                                        <div className="flex flex-col items-start mt-5">
+                                        <div className="flex flex-col items-start mb-08">
                                           <div
                                             className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                             style={{
-                                              padding: "20px",
+                                              padding: "10px",
                                               backgroundColor: "#dbeafe",
                                             }}
                                           >
@@ -1836,11 +1836,11 @@ function ImplementationApproval({
                                         </div>
                                         {detail?.particularName &&
                                           detail?.particularSubName && (
-                                            <div className="flex flex-col items-start mt-5">
+                                            <div className="flex flex-col items-start mb-08">
                                               <div
                                                 className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                                 style={{
-                                                  padding: "20px",
+                                                  padding: "10px",
                                                   backgroundColor: "#dbeafe",
                                                 }}
                                               >
@@ -1851,11 +1851,11 @@ function ImplementationApproval({
                                               </div>
                                             </div>
                                           )}
-                                        <div className="flex flex-col items-start mt-5">
+                                        <div className="flex flex-col items-start mb-08">
                                           <div
                                             className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                             style={{
-                                              padding: "20px",
+                                              padding: "10px",
                                               backgroundColor: "#dbeafe",
                                             }}
                                           >

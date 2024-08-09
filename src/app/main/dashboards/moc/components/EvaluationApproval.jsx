@@ -1241,7 +1241,7 @@ const EvaluationApproval = ({
               <Grid container spacing={2} className="mt-5">
                 <Grid item xs={12}>
                   <Table
-                    className="mat-elevatio demo-table col-span-12 mt-0 w-full"
+                    className="mat-elevatio demo-table col-span-12 mt-0 w-full table_custome"
                     sx={{ width: "100%" }}
                   >
                     <TableHead
@@ -1251,20 +1251,20 @@ const EvaluationApproval = ({
                       }}
                     >
                       <TableRow>
-                        <TableCell className="text-left pb-3">Impact</TableCell>
-                        <TableCell className="text-left pb-3">
+                        <TableCell className="text-left">Impact</TableCell>
+                        <TableCell className="text-left">
                           What is the task
                         </TableCell>
-                        <TableCell className="text-left pb-3">
+                        <TableCell className="text-left">
                           How is the task done
                         </TableCell>
-                        <TableCell className="text-left pb-3">
+                        <TableCell className="text-left">
                           Task Deadline
                         </TableCell>
-                        <TableCell className="text-left pb-3">
+                        <TableCell className="text-left">
                           Task Assigned To
                         </TableCell>
-                        <TableCell className="text-left pb-3">
+                        <TableCell className="text-left">
                           Due Date
                         </TableCell>
                       </TableRow>
@@ -1273,38 +1273,38 @@ const EvaluationApproval = ({
                       {selectedTasks?.map((update) => (
                         <TableRow key={update.id}>
                           <TableCell
-                            className="text-left pb-3"
-                            sx={{ border: "1px solid silver" }}
+                            className="text-left"
+                            // sx={{ border: "1px solid silver" }}
                           >
                             {update.impact}
                           </TableCell>
                           <TableCell
-                            className="text-left pb-3"
-                            sx={{ border: "1px solid silver" }}
+                            className="text-left"
+                            // sx={{ border: "1px solid silver" }}
                           >
                             {update.task}
                           </TableCell>
                           <TableCell
-                            className="text-left pb-3"
-                            sx={{ border: "1px solid silver" }}
+                            className="text-left"
+                            // sx={{ border: "1px solid silver" }}
                           >
                             {update.how}
                           </TableCell>
                           <TableCell
-                            className="text-left pb-3"
-                            sx={{ border: "1px solid silver" }}
+                            className="text-left"
+                            // sx={{ border: "1px solid silver" }}
                           >
                             {update.deadline}
                           </TableCell>
                           <TableCell
-                            className="text-left pb-3"
-                            sx={{ border: "1px solid silver" }}
+                            className="text-left"
+                            // sx={{ border: "1px solid silver" }}
                           >
                             {update.assignedTo}
                           </TableCell>
                           <TableCell
-                            className="text-left pb-3"
-                            sx={{ border: "1px solid silver" }}
+                            className="text-left"
+                            // sx={{ border: "1px solid silver" }}
                           >
                             {formatDates(update.dueDate)}
                           </TableCell>
@@ -2078,9 +2078,8 @@ const EvaluationApproval = ({
                 />
               </div>
             )}
-            {contentDetails?.tasklist?.map((imptsk) => (
-              <>
-                <table className="task-table mat-table">
+            
+                <table className="task-table mat-table task_table">
                   <thead
                     className="task-table-header"
                     style={{ display: "none" }}
@@ -2088,6 +2087,8 @@ const EvaluationApproval = ({
                     {/* Empty header */}
                   </thead>
                   <tbody className="task-table-body">
+                  {contentDetails?.tasklist?.map((imptsk) => (
+              <>
                     <tr className="task-table-row mat-row">
                       <td className="task-table-cell mat-cell">
                         <div className="task-header p-0 flex items-center">
@@ -2770,6 +2771,8 @@ const EvaluationApproval = ({
                         </div>
                       </td>
                     </tr>
+                    </>
+            ))}
                   </tbody>
                   <tfoot
                     className="task-table-footer"
@@ -2786,8 +2789,7 @@ const EvaluationApproval = ({
                 _ngcontent-fyk-c288=""
                 class="flex items-center w-full  border-b justify-between"
               ></div> */}
-              </>
-            ))}
+             
           </div>
         </Paper>
       </SwipeableViews>

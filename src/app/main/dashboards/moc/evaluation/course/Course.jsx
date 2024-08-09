@@ -8146,6 +8146,11 @@ function Course() {
                               </>
                             )}
                           </StepContent>
+                          {!step?.isComplete && (
+                            <StepContent style={{ fontSize: "10px" }}>
+                              <b> Pending</b>
+                            </StepContent>
+                          )}
                         </>
                       )}
                     </Step>
