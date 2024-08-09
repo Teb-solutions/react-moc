@@ -1593,7 +1593,19 @@ function EvaluationChange({
 
   return (
     <div className="w-full">
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Initiation
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
@@ -5932,7 +5944,8 @@ function EvaluationChange({
       >
         <Fade in={openSession}>
           <Box sx={style2}>
-            <Box className=" align-items-center"
+            <Box
+              className=" align-items-center"
               style={{
                 padding: "30px",
                 backgroundColor: "#4f46e5",
@@ -5954,7 +5967,7 @@ function EvaluationChange({
               </Button>
             </Box>
 
-            <Box sx={{ overflow: "auto", }} className="p-30 pt-24 pb-24">
+            <Box sx={{ overflow: "auto" }} className="p-30 pt-24 pb-24">
               <Grid
                 container
                 spacing={2}

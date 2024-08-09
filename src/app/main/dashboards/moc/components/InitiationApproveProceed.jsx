@@ -247,7 +247,19 @@ function InitiationApprovalProceed({
           </Box>
         </Fade>
       </Modal>
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Initiation
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}

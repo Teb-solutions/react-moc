@@ -317,10 +317,20 @@ const InitiationComplete = ({
   const handelFileChange = (e) => {
     const file = e.target.files[0];
 
+    const fileType = e.target.files[0].type.startsWith("image/")
+      ? e.target.files[0].type?.split("/")[1]
+      : e.target.files[0].type;
+
+    const fileNameWithoutExtension = e.target.files[0].name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
+
     setSelectedFile({
-      name: e.target.files[0].name,
-      description: "",
-      type: e.target.files[0].type,
+      ...selectedFile,
+      name: fileNameWithoutExtension,
+
+      type: fileType,
       document: e.target.files[0],
       documentType: "ChangeSummary",
       documentId: currentActivityForm.uid,
@@ -451,7 +461,19 @@ const InitiationComplete = ({
 
   return (
     <div className="w-full">
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

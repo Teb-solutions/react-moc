@@ -256,11 +256,19 @@ function AssetRequest() {
       setFileName(file.name);
     }
     const newGuid = uuidv4();
+    const fileNameWithoutExtension = e.target.files[0].name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
+    const fileType = e.target.files[0].type.startsWith("image/")
+      ? e.target.files[0].type?.split("/")[1]
+      : e.target.files[0].type.type;
+
     setSelectedFile({
       ...selectedFile,
-      name: e.target.files[0].name,
+      name: fileNameWithoutExtension,
 
-      type: e.target.files[0].type,
+      type: fileType,
       document: e.target.files[0],
       documentType: "ChangeRequest",
       documentId: selectedFile?.documentId,
@@ -477,7 +485,19 @@ function AssetRequest() {
       header={<MocHeader />}
       content={
         <>
-          <ToastContainer className="toast-container" />
+          <ToastContainer
+            className="toast-container"
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
 
           <form onSubmit={handleSubmit}>
             <div className="p-24">

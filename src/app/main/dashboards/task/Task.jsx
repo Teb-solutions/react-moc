@@ -430,9 +430,13 @@ const Task = () => {
     const fileType = file.type.startsWith("image/")
       ? file.type?.split("/")[1]
       : file.type;
-
+    const fileNameWithoutExtension = e.target.files[0].name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
     setSelectedFile({
-      name: file.name,
+      ...selectedFile,
+      name: fileNameWithoutExtension,
       description: "",
       type: fileType,
       document: file,
@@ -600,7 +604,19 @@ const Task = () => {
 
   return (
     <>
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

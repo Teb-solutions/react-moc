@@ -199,10 +199,19 @@ function DocRequest() {
       setFileUrl(url);
       setFileName(file.name);
     }
+    const fileNameWithoutExtension = e.target.files[0].name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
+
+    const fileType = e.target.files[0].type.startsWith("image/")
+      ? e.target.files[0].type?.split("/")[1]
+      : e.target.files[0].type;
     setSelectedFile({
-      name: e.target.files[0].name,
+      ...selectedFile,
+      name: fileNameWithoutExtension,
       description: e.target.file[0].description,
-      type: e.target.files[0].type,
+      type: fileType,
       document: e.target.files[0],
       documentType: "ChangeRequest",
       documentId: selectedFile.documentId,

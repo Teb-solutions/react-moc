@@ -560,19 +560,24 @@ const EvaluationApproval = ({
     }));
   };
   const handelFileChange = (e) => {
-    // debugger;
     const file = e.target.files[0];
     // if (file) {
     //   const url = URL.createObjectURL(file);
     //   setFileUrl(url);
     //   setFileName(file.name);
     // }
+    const fileNameWithoutExtension = e.target.files[0].name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
+    const fileType = e.target.files[0].type.startsWith("image/")
+      ? e.target.files[0].type?.split("/")[1]
+      : e.target.files[0].type;
     setSelectedFile({
-      name: e.target.files[0].name,
-      descritpion: e.target.files[0].descritpion
-        ? e.target.files[0].descritpion
-        : "",
-      type: e.target.files[0].type,
+      ...selectedFile,
+      name: fileNameWithoutExtension,
+
+      type: fileType,
       document: e.target.files[0],
       documentType: "Approval",
       documentId: AppActivity.uid,
@@ -985,7 +990,7 @@ const EvaluationApproval = ({
                       name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
-                      value={selectedFile.description}
+                      value={selectedFile.descritpion}
                     />
                   </Box>
                 </div>
@@ -1180,7 +1185,20 @@ const EvaluationApproval = ({
           </Box>
         </Fade>
       </Modal>
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        closeButton={true}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Initiation
         contentDetailsini={contentDetailsini}
         assetEvaluationId={assetEvaluationId}
@@ -1265,9 +1283,7 @@ const EvaluationApproval = ({
                         <TableCell className="text-left">
                           Task Assigned To
                         </TableCell>
-                        <TableCell className="text-left">
-                          Due Date
-                        </TableCell>
+                        <TableCell className="text-left">Due Date</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -2079,17 +2095,14 @@ const EvaluationApproval = ({
                 />
               </div>
             )}
-            
-                <table className="task-table mat-table task_table">
-                  <thead
-                    className="task-table-header"
-                    style={{ display: "none" }}
-                  >
-                    {/* Empty header */}
-                  </thead>
-                  <tbody className="task-table-body">
-                  {contentDetails?.tasklist?.map((imptsk) => (
-              <>
+
+            <table className="task-table mat-table task_table">
+              <thead className="task-table-header" style={{ display: "none" }}>
+                {/* Empty header */}
+              </thead>
+              <tbody className="task-table-body">
+                {contentDetails?.tasklist?.map((imptsk) => (
+                  <>
                     <tr className="task-table-row mat-row">
                       <td className="task-table-cell mat-cell">
                         <div className="task-header p-0 flex items-center">
@@ -2772,25 +2785,24 @@ const EvaluationApproval = ({
                         </div>
                       </td>
                     </tr>
-                    </>
-            ))}
-                  </tbody>
-                  <tfoot
-                    className="task-table-footer"
-                    style={{
-                      display: "none",
-                      bottom: 0,
-                      zIndex: 10,
-                    }}
-                  >
-                    {/* Empty footer */}
-                  </tfoot>
-                </table>
-                {/* <div
+                  </>
+                ))}
+              </tbody>
+              <tfoot
+                className="task-table-footer"
+                style={{
+                  display: "none",
+                  bottom: 0,
+                  zIndex: 10,
+                }}
+              >
+                {/* Empty footer */}
+              </tfoot>
+            </table>
+            {/* <div
                 _ngcontent-fyk-c288=""
                 class="flex items-center w-full  border-b justify-between"
               ></div> */}
-             
           </div>
         </Paper>
       </SwipeableViews>

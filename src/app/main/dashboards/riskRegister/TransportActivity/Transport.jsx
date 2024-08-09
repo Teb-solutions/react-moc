@@ -481,7 +481,19 @@ function TransportApp() {
       header={<MocHeader risk={"risk"} />}
       content={
         <>
-          <ToastContainer className="toast-container" />
+          <ToastContainer
+            className="toast-container"
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
           <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"

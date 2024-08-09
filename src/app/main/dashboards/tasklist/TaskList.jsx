@@ -359,7 +359,19 @@ export default function StickyHeadTable() {
   return (
     <div style={{ backgroundColor: "white" }}>
       <MocHeader nothing={"nothing"} type={"Task List"} />
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
 
       <Modal
         aria-labelledby="transition-modal-title"
@@ -671,7 +683,8 @@ export default function StickyHeadTable() {
             </Box>
           ) : (
             <Box sx={style}>
-              <Box className="p-30 pt-24 pb-24"
+              <Box
+                className="p-30 pt-24 pb-24"
                 style={{
                   // padding: "30px",
                   backgroundColor: "#4f46e5",

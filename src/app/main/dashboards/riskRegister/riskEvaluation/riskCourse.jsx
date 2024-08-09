@@ -342,7 +342,19 @@ const riskCourse = () => {
       header={<MocHeader risk={"risk"} activity={actName} reqno={reqNo} />}
       content={
         <div className="w-full">
-          <ToastContainer className="toast-container" />
+          <ToastContainer
+            className="toast-container"
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
 
           <div className="flex justify-center p-16 pb-64 sm:p-24 ">
             {currentActivityForm.code == "START" && (

@@ -150,10 +150,19 @@ function InitiationApproval(props) {
       setFileUrl(url);
       setFileName(file.name);
     }
-    setSelectedFile1({
-      name: e.target.files[0].name,
-      descritpion: "",
-      type: e.target.files[0].type,
+    const fileNameWithoutExtension = e.target.files[0].name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
+
+    const fileType = e.target.files[0].type.startsWith("image/")
+      ? e.target.files[0].type?.split("/")[1]
+      : e.target.files[0].type;
+    setSelectedFile({
+      ...selectedFile,
+      name: fileNameWithoutExtension,
+
+      type: fileType,
       document: e.target.files[0],
       documentType: "ChangeRequest",
       documentId: selectedFile1.documentId,
@@ -371,7 +380,19 @@ function InitiationApproval(props) {
 
   return (
     <div className="w-full h-full">
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
