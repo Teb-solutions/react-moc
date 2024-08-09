@@ -58,6 +58,7 @@ const EvaluationApproval = ({
   setContentDetails,
   CountApprove,
   contentDetailsini,
+  contentDetailsT,
 }) => {
   const [reviewed, setReviewed] = useState({});
   const [deletes, setDeletes] = useState(false);
@@ -459,6 +460,7 @@ const EvaluationApproval = ({
           )
           .then((resp) => {
             setIsLoading(false);
+            location.reload();
             setDateExtendOpen(false);
 
             setShowSendPopup(false);
@@ -1187,6 +1189,7 @@ const EvaluationApproval = ({
       <Initiation
         contentDetailsini={contentDetailsini}
         assetEvaluationId={assetEvaluationId}
+        contentDetailsT={contentDetails}
       />
       <div
         style={{
@@ -1268,9 +1271,7 @@ const EvaluationApproval = ({
                         <TableCell className="text-left">
                           Task Assigned To
                         </TableCell>
-                        <TableCell className="text-left">
-                          Due Date
-                        </TableCell>
+                        <TableCell className="text-left">Due Date</TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -1417,7 +1418,7 @@ const EvaluationApproval = ({
         </Fade>
       </Modal>
 
-      <SwipeableViews style={{ overflow: "hidden" }}>
+      {/* <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
@@ -1661,7 +1662,7 @@ const EvaluationApproval = ({
             </div>
           </div>
         </Paper>
-      </SwipeableViews>
+      </SwipeableViews> */}
       <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
@@ -1940,10 +1941,7 @@ const EvaluationApproval = ({
                                   {rwv?.createdByStaffName + "55"}
                                 </span>
                                 &nbsp;&nbsp;
-                                <span
-                                  className="text-gray"
-                                  style={{ fontSize: "10px" }}
-                                >
+                                <span className=" pl-1 text-gray">
                                   {rwv?.remark}
                                 </span>
                               </div>
@@ -2082,17 +2080,14 @@ const EvaluationApproval = ({
                 />
               </div>
             )}
-            
-                <table className="task-table mat-table task_table">
-                  <thead
-                    className="task-table-header"
-                    style={{ display: "none" }}
-                  >
-                    {/* Empty header */}
-                  </thead>
-                  <tbody className="task-table-body">
-                  {contentDetails?.tasklist?.map((imptsk) => (
-              <>
+
+            <table className="task-table mat-table task_table">
+              <thead className="task-table-header" style={{ display: "none" }}>
+                {/* Empty header */}
+              </thead>
+              <tbody className="task-table-body">
+                {contentDetails?.tasklist?.map((imptsk) => (
+                  <>
                     <tr className="task-table-row mat-row">
                       <td className="task-table-cell mat-cell">
                         <div className="task-header p-0 flex items-center">
@@ -2670,7 +2665,8 @@ const EvaluationApproval = ({
                                               <span className="">
                                                 {rwx?.createdByStaffName}
                                               </span>{" "}
-                                              <span className="">
+                                              <span className="pl-8 text-grey">
+                                                {" "}
                                                 {rwx?.remark}
                                               </span>
                                             </div>
@@ -2775,25 +2771,24 @@ const EvaluationApproval = ({
                         </div>
                       </td>
                     </tr>
-                    </>
-            ))}
-                  </tbody>
-                  <tfoot
-                    className="task-table-footer"
-                    style={{
-                      display: "none",
-                      bottom: 0,
-                      zIndex: 10,
-                    }}
-                  >
-                    {/* Empty footer */}
-                  </tfoot>
-                </table>
-                {/* <div
+                  </>
+                ))}
+              </tbody>
+              <tfoot
+                className="task-table-footer"
+                style={{
+                  display: "none",
+                  bottom: 0,
+                  zIndex: 10,
+                }}
+              >
+                {/* Empty footer */}
+              </tfoot>
+            </table>
+            {/* <div
                 _ngcontent-fyk-c288=""
                 class="flex items-center w-full  border-b justify-between"
               ></div> */}
-             
           </div>
         </Paper>
       </SwipeableViews>
@@ -2905,7 +2900,7 @@ const EvaluationApproval = ({
                 </table>
                 <div
                   _ngcontent-fyk-c288=""
-                  class="flex items-center w-full border-b mt-24 justify-between"
+                  class="flex items-center w-full border-b m-7 justify-between"
                 ></div>
               </>
             ))}

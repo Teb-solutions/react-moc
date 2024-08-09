@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
 
 function MocHeader(props) {
-  const { activity, reqno, risk, master, type, nothing, verName } = props;
+  const { activity, reqno, risk, master, type, nothing, verName, name } = props;
   const routeParams = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -101,34 +101,14 @@ function MocHeader(props) {
               {activity} (v{verName})
             </Typography>
           )}
-          {risk == "risk" ? (
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleOpenNewDoc}
-            >
-              <MenuItem onClick={() => handleNavigate("Transport")}>
-                Transport
-              </MenuItem>
-              <MenuItem onClick={() => handleNavigate("Routine")}>
-                Routine
-              </MenuItem>
-              <MenuItem onClick={() => handleNavigate("NonRoutine")}>
-                Non Routine
-              </MenuItem>
-            </Menu>
-          ) : (
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleOpenNewDoc}
-            >
-              <MenuItem onClick={handleOpenNewAsset}>Technical </MenuItem>
-              <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
-              <MenuItem onClick={handleOpenNewOrg}>Organisation</MenuItem>
-            </Menu>
-          )}
         </Breadcrumbs>
+
+        {/* Title section */}
+        {name && (
+          <Typography variant="h6" className="mt-4 font-bold">
+            {name}
+          </Typography>
+        )}
 
         <div className="flex sm:hidden" />
       </div>

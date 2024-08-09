@@ -403,12 +403,13 @@ const ImplementationApprovalSite = ({
       <ToastContainer className="toast-container" />
       <Initiation
         contentDetailsini={contentDetailsini}
+        contentDetailsT={contentDetails}
         assetEvaluationId={assetEvaluationId}
       />
-      <MainComponent
+      {/* <MainComponent
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
-      />
+      /> */}
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div
@@ -733,7 +734,7 @@ const ImplementationApprovalSite = ({
                                               <span className="mr-3">
                                                 {rwx?.createdByStaffName}
                                               </span>
-                                              
+
                                               <span className="text-grey ml-3">
                                                 {rwx?.remark}
                                               </span>

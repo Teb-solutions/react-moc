@@ -1277,7 +1277,7 @@ function InitiationApproval(props) {
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
       />
-      <SwipeableViews style={{ overflow: "hidden" }}>
+      {/* <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
@@ -1378,7 +1378,7 @@ function InitiationApproval(props) {
             </div>
           </div>
         </Paper>
-      </SwipeableViews>
+      </SwipeableViews> */}
       <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div className="flex items-center w-full border-b p-30 pt-24 pb-24 justify-between">

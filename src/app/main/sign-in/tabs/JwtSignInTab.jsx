@@ -135,6 +135,7 @@ const JwtSignInTab = () => {
             console.error("Encryption/Decryption error:", error);
           }
         } else {
+          setLoading(false);
           toast?.error("Some Error Occured");
         }
       });

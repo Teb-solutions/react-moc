@@ -104,6 +104,7 @@ function EvaluationChange({
   setContent,
   currentActivityForm,
   contentDetails,
+  contentDetailsT,
 }) {
   const [open, setOpen] = useState(false);
   const [openSession, setOpenSession] = useState(false);
@@ -1597,6 +1598,7 @@ function EvaluationChange({
       <Initiation
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
+        contentDetailsT={contentDetailsT}
       />
       <SwipeableViews>
         {!risk ? (
@@ -5932,7 +5934,8 @@ function EvaluationChange({
       >
         <Fade in={openSession}>
           <Box sx={style2}>
-            <Box className=" align-items-center"
+            <Box
+              className=" align-items-center"
               style={{
                 padding: "30px",
                 backgroundColor: "#4f46e5",
@@ -5954,7 +5957,7 @@ function EvaluationChange({
               </Button>
             </Box>
 
-            <Box sx={{ overflow: "auto", }} className="p-30 pt-24 pb-24">
+            <Box sx={{ overflow: "auto" }} className="p-30 pt-24 pb-24">
               <Grid
                 container
                 spacing={2}

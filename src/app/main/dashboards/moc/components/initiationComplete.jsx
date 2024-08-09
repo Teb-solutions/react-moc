@@ -46,6 +46,7 @@ const InitiationComplete = ({
   setContent,
   contentDetails,
   CountApprove,
+  contentDetailsT,
 }) => {
   const StyledBadge = withStyles((theme) => ({
     badge: {
@@ -991,6 +992,7 @@ const InitiationComplete = ({
       <Initiation
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
+        contentDetailsT={contentDetailsT}
       />
 
       <SwipeableViews>

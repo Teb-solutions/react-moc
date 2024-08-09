@@ -847,6 +847,14 @@ const AssetCourse = () => {
                     setCountApprove2(resp.data.data);
                   });
               });
+            apiAuth
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp?.data?.data);
+              });
 
             break;
           case "InitiationApprovalProceed":
@@ -870,6 +878,14 @@ const AssetCourse = () => {
                   setAppActivity(resp.data.data.activity);
                 });
               });
+            apiAuth
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp?.data?.data);
+              });
             break;
           case "EvaluationChange":
             apiAuth
@@ -891,6 +907,14 @@ const AssetCourse = () => {
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
                 });
+              });
+            apiAuth
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp?.data?.data);
               });
             break;
           case "EvaluationApproval":
@@ -1526,7 +1550,14 @@ const AssetCourse = () => {
 
   return (
     <FusePageSimple
-      header={<MocHeader activity={actName} reqno={reqNo} verName={verName} />}
+      header={
+        <MocHeader
+          activity={actName}
+          reqno={reqNo}
+          verName={verName}
+          name={contentDetails?.projectName}
+        />
+      }
       content={
         <div className="w-full">
           <>
@@ -1564,6 +1595,7 @@ const AssetCourse = () => {
                   setContent={setContent}
                   CountApprove={CountApprove2}
                   contentDetails={contentDetailsIni}
+                  contentDetailsT={contentDetails}
                 />
               )}
               {currentPhase === "InitiationApprovalProceed" && (
@@ -1575,6 +1607,7 @@ const AssetCourse = () => {
                   assetEvaluationId={assetEvaluationId}
                   setContent={setContent}
                   contentDetails={contentDetailsIni}
+                  contentDetailsT={contentDetails}
                 />
               )}
               {currentPhase === "EvaluationChange" && (
@@ -1586,6 +1619,7 @@ const AssetCourse = () => {
                   setContent={setContent}
                   currentActivityForm={currentActivityForm}
                   contentDetails={contentDetailsIni}
+                  contentDetailsT={contentDetails}
                 />
               )}
               {currentPhase === "EvaluationApproval" && (
@@ -1604,6 +1638,7 @@ const AssetCourse = () => {
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
                   CountApprove={CountApprove}
+                  contentDetailsT={contentDetails}
                 />
               )}
               {currentPhase === "EvaluationApprovalCooprate" && (
@@ -1666,6 +1701,7 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
+                  contentDetails={contentDetails}
                 />
               )}
               {currentPhase === "ImplementationApprovalSite" && (

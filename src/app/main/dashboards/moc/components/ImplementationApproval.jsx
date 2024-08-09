@@ -67,6 +67,7 @@ function ImplementationApproval({
   AppActivity,
   setContent,
   contentDetailsini,
+  contentDetails,
 }) {
   const columns = [
     { id: "index", label: "#", minWidth: 50 },
@@ -1547,6 +1548,7 @@ function ImplementationApproval({
       </Modal>
 
       <Initiation
+        contentDetailsT={contentDetails}
         contentDetailsini={contentDetailsini}
         assetEvaluationId={assetEvaluationId}
       />
