@@ -198,6 +198,7 @@ const AssetCourse = () => {
     parentId: "0",
   });
   const [CountApprove, setCountApprove] = useState();
+  const [CountApprove1, setCountApprove1] = useState();
   const [CountApprove2, setCountApprove2] = useState();
   const [CountApprove3, setCountApprove3] = useState();
   const [CountApprove4, setCountApprove4] = useState();
@@ -975,6 +976,15 @@ const AssetCourse = () => {
 
                     setTasks(updatedTasks);
                     loadRiskAnalysisChart(updatedTasks);
+
+                    // https://mocapi.tebs.co.in/api/DocumentManager/DocumentCount?id=99ea4bdc97ee449183b3fd50a0aee88a&documentType=Approval
+                    apiAuth
+                      .get(
+                        `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
+                      )
+                      .then((resp) => {
+                        setCountApprove1(resp.data.data);
+                      });
                   }
                 }
               });
@@ -1565,7 +1575,7 @@ const AssetCourse = () => {
       header={<MocHeader activity={actName} reqno={reqNo} verName={verName} />}
       content={
         <div className="w-full">
-          <ToastContainer className="toast-container" />
+          {/* <ToastContainer className="toast-container" /> */}
           <>
             <div className=" p-16 pb-64 sm:p-24 ">
               {currentPhase === "InitiationRequest" && (
@@ -1657,6 +1667,7 @@ const AssetCourse = () => {
                   setRemarkRequest={setRemarkRequest}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
+                  CountApprove={CountApprove1}
                 />
               )}
               {currentPhase === "EvaluationApprovalVp" && (

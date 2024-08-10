@@ -158,8 +158,8 @@ function InitiationApproval(props) {
     const fileType = e.target.files[0].type.startsWith("image/")
       ? e.target.files[0].type?.split("/")[1]
       : e.target.files[0].type;
-    setSelectedFile({
-      ...selectedFile,
+    setSelectedFile1({
+      ...selectedFile1,
       name: fileNameWithoutExtension,
 
       type: fileType,
@@ -259,6 +259,7 @@ function InitiationApproval(props) {
   };
 
   const handleSubmitAsset = (e) => {
+    debugger;
     const formData = new FormData();
     formData.append("name", selectedFile1.name);
     formData.append("descritpion", selectedFile1.description);
@@ -359,10 +360,11 @@ function InitiationApproval(props) {
   };
 
   const handleSubmitDelete = () => {
+    debugger;
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(
-          `/DocumentManager/DocList/${docId}/ChangeRequest?changeRequestToken=${selectedDocument?.changeRequestToken}`
+          `/DocumentManager/DocList/${Activity.uid}/Approval?changeRequestToken=${assetEvaluationId}`
         )
         .then((response) => {
           setOpenDrawer1(false);
@@ -1101,10 +1103,10 @@ function InitiationApproval(props) {
                     <TextField
                       id="standard-basic"
                       label={<BoldLabel>Description</BoldLabel>}
-                      name="description"
+                      name="descritpion"
                       variant="standard"
                       onChange={handelFileDiscriptionChange1}
-                      value={selectedFile1.description}
+                      value={selectedFile1.descritpion}
                     />
                   </Box>
                 </div>
@@ -1176,7 +1178,7 @@ function InitiationApproval(props) {
                       >
                         <img src="/assets/images/etc/icon_N.png" />
                       </div>
-                      {selectedDocument?.name}
+                      {selectedDocument1?.name}
                     </div>
                   </label>
                   <Box

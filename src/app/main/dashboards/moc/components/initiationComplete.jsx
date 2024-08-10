@@ -314,10 +314,10 @@ const InitiationComplete = ({
 
   const handelFileDiscriptionChange = (event) => {
     const { name, value } = event.target;
-    setSelectedFile((prevState) => ({
-      ...prevState,
+    setSelectedFile({
+      ...selectedFile,
       [name]: value,
-    }));
+    });
   };
   const handelFileChange = (e) => {
     const file = e.target.files[0];
@@ -346,7 +346,7 @@ const InitiationComplete = ({
   const handleSubmitAsset = (e) => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
-    formData.append("description", selectedFile.description);
+    formData.append("descritpion", selectedFile.description);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
     formData.append("documentType", selectedFile.documentType);
@@ -452,7 +452,7 @@ const InitiationComplete = ({
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(
-          `/DocumentManager/DocList/${docId}/ChangeRequest?changeRequestToken=${selectedDocument?.changeRequestToken}`
+          `/DocumentManager/DocList/${currentActivityForm.uid}/ChangeSummary?changeRequestToken=${assetEvaluationId}`
         )
         .then((response) => {
           setOpenDrawer(false);
@@ -883,6 +883,7 @@ const InitiationComplete = ({
                       >
                         <img src="/assets/images/etc/icon_N.png" />
                       </div>
+                      {selectedDocument?.name}
                     </div>
                   </label>
                   <Box
@@ -950,7 +951,7 @@ const InitiationComplete = ({
                     <TextField
                       id="standard-basic"
                       label={<BoldLabel>Description</BoldLabel>}
-                      name="Description"
+                      name="descritpion"
                       variant="standard"
                       disabled
                       value={
