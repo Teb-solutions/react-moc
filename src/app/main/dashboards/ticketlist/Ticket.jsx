@@ -113,12 +113,17 @@ export default function Ticket() {
       align: "left",
       minWidth: 140,
       render: (row) => (
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ display: "flex", alignItems: "center" }} className="pl-8">
           <Button
             variant="contained"
             color="primary"
             onClick={() => handleEdit(row)}
-            sx={{ minWidth: "20px", minHeight: "20px" }}
+            sx={{
+              minWidth: "5px",
+              minHeight: "0px",
+              height: "20px",
+              padding: "10px",
+            }}
           >
             <FuseSvgIcon size={15}>heroicons-solid:eye</FuseSvgIcon>
           </Button>
@@ -501,9 +506,7 @@ export default function Ticket() {
                     </div>
                   </div>
                   <div>
-                    <div className="mt-5 leading-6 text-secondary">
-                      Comments
-                    </div>
+                    <div className=" leading-6 text-secondary">Comments</div>
                     <div className="text-lg leading-6 font-medium">
                       {openView.lastComment}
                     </div>

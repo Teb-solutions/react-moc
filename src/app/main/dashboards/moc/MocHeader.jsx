@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
 
 function MocHeader(props) {
-  const { activity, reqno, risk, master, type, nothing, verName } = props;
+  const { activity, reqno, risk, master, type, nothing, verName, name } = props;
   const routeParams = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -105,7 +105,7 @@ function MocHeader(props) {
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
-              onClose={handleOpenNewDoc}
+              // onClose={handleOpenNewDoc}
             >
               <MenuItem onClick={() => handleNavigate("Transport")}>
                 Transport
@@ -121,7 +121,7 @@ function MocHeader(props) {
             <Menu
               anchorEl={anchorEl}
               open={Boolean(anchorEl)}
-              onClose={handleOpenNewDoc}
+              // onClose={handleOpenNewDoc}
             >
               <MenuItem onClick={handleOpenNewAsset}>Technical </MenuItem>
               <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
@@ -129,6 +129,13 @@ function MocHeader(props) {
             </Menu>
           )}
         </Breadcrumbs>
+
+        {/* Title section */}
+        {name && (
+          <Typography variant="h6" className="mt-4 font-bold">
+            {name}
+          </Typography>
+        )}
 
         <div className="flex sm:hidden" />
       </div>

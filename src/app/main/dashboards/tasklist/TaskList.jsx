@@ -37,6 +37,7 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MocHeader from "../moc/MocHeader";
+import { Link } from "react-router-dom";
 function createData(
   index,
   what,
@@ -47,7 +48,10 @@ function createData(
 
   deadline,
   dueDate,
-  assignedToStaffId
+  assignedToStaffId,
+  siteId,
+  changeRequestToken,
+  changeRequestTypeName
 ) {
   return {
     index,
@@ -60,6 +64,9 @@ function createData(
     deadline,
     dueDate,
     assignedToStaffId,
+    siteId,
+    changeRequestToken,
+    changeRequestTypeName,
   };
 }
 
@@ -69,6 +76,26 @@ export default function StickyHeadTable() {
   const columns = [
     // { id: "index", label: "#", minWidth: 50 },
     // { id: "code", label: "Code", minWidth: 100 },
+    {
+      id: "changeRequestNo",
+      label: "Request No",
+      render: (item) => {
+        return (
+          <Link
+            className="text-blue"
+            to={
+              item.changeRequestTypeName === "Asset"
+                ? `/moc/assetEvaluation/${item.changeRequestToken}`
+                : item.changeRequestTypeName === "Document"
+                  ? `/moc/evaluation/${item.changeRequestToken}`
+                  : `/moc/orgEvaluation/${item.changeRequestToken}`
+            }
+          >
+            {item.changeRequestNo}
+          </Link>
+        );
+      },
+    },
     { id: "index", label: "Task Id" },
     { id: "what", label: "What is the task" },
     {
@@ -78,7 +105,7 @@ export default function StickyHeadTable() {
       align: "left",
       format: (value) => value.toLocaleString("en-US"),
     },
-    { id: "changeRequestNo", label: "Request No" },
+
     { id: "assignedToStaff", label: "Assigned to" },
     {
       id: "isCompleted",
@@ -125,32 +152,43 @@ export default function StickyHeadTable() {
   const [deletes, setDelete] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [taskview, setTaskview] = useState(false);
-
+  const [deadline, setDeadLine] = useState([]);
+  const [site, setSite] = useState([]);
   const [errors, setErrors] = useState({});
   const [Idsss, setId] = useState("");
   const [staff, setStaff] = useState([]);
   const [openView, setOpenView] = useState({});
-
+  const [selectedSite, setSelectedSite] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [reasons, setReason] = useState("");
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
+    setPage(0); // Reset to first page on search change
   };
 
-  const filteredDepartmentList = siteList.filter(
-    (row) =>
+  const handleSiteChange = (event) => {
+    setSelectedSite(event.target.value);
+    setPage(0); // Reset to first page on site change
+  };
+
+  const filteredDepartmentList = siteList.filter((row) => {
+    const matchesSearchQuery =
       row.changeRequestNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
       row.what.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      row.index.toString().includes(searchQuery)
-  );
+      row.index.toString().includes(searchQuery);
+
+    const matchesSite = selectedSite === "all" || row.siteId === selectedSite;
+
+    return matchesSearchQuery && matchesSite;
+  });
 
   const [lookupAdd, setLookUpAdd] = useState({
     id: 0,
     assignedStaffId: 0,
     actionWhat: "string",
     actionHow: "string",
-    deadline: 1,
+    deadline: "",
     dueDate: "2024-08-08T06:22:26.920Z",
   });
 
@@ -187,6 +225,13 @@ export default function StickyHeadTable() {
     apiAuth.get(`/Staff/LOV`).then((resp) => {
       setStaff(resp.data.data);
     });
+    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {
+      setDeadLine(resp.data.data);
+    });
+    apiAuth.get("/LookupData/Lov/23").then((resp) => {
+      setSite(resp.data.data);
+    });
+
     apiAuth.get(`/Task/GetAllActiveTasks`).then((resp) => {
       setIsLoading(false);
       const transformedData = resp.data.data.map((item, index) =>
@@ -200,7 +245,10 @@ export default function StickyHeadTable() {
           item.isCompleted,
           item.deadline,
           item.dueDate,
-          item.assignedToStaffId
+          item.assignedToStaffId,
+          item.siteId,
+          item.changeRequestToken,
+          item.changeRequestTypeName
         )
       );
       setSiteList(transformedData);
@@ -227,6 +275,12 @@ export default function StickyHeadTable() {
     setLookUpAdd({
       ...lookupAdd,
       assignedStaffId: newValue?.value || 0,
+    });
+  };
+  const handleAutocompleteChangeDead = (event, newValue) => {
+    setLookUpAdd({
+      ...lookupAdd,
+      deadline: newValue?.value || 0,
     });
   };
 
@@ -289,7 +343,7 @@ export default function StickyHeadTable() {
     if (!lookupAdd.actionHow) tempErrors.actionHow = "This field is required";
     if (!lookupAdd.assignedStaffId)
       tempErrors.assignedStaffId = "Staff is required";
-
+    if (!lookupAdd.deadline) tempErrors.deadline = "Deadline is required";
     if (!lookupAdd.dueDate) tempErrors.dueDate = "Date is required";
 
     setErrors(tempErrors);
@@ -443,15 +497,14 @@ export default function StickyHeadTable() {
                 <TextField
                   id="outlined-basic"
                   label="What is the task *"
-                  inputProps={{
-                    maxLength: 100, // Limit to 100 characters
-                  }}
                   name="actionWhat"
                   value={lookupAdd.actionWhat}
                   variant="outlined"
                   onChange={handleAdd}
                   error={!!errors.actionWhat}
                   helperText={errors.actionWhat}
+                  multiline
+                  rows={3} // Adjust the number of rows as needed
                 />
               </Box>
               <Box
@@ -471,8 +524,11 @@ export default function StickyHeadTable() {
                   onChange={handleAdd}
                   error={!!errors.actionHow}
                   helperText={errors.actionHow}
+                  multiline
+                  rows={3} // Adjust the number of rows as needed
                 />
               </Box>
+
               <Box
                 component="form"
                 sx={{
@@ -506,6 +562,40 @@ export default function StickyHeadTable() {
                     <span style={{ color: "red" }}>
                       {errors.assignedStaffId}
                     </span>
+                  )}
+                </FormControl>
+              </Box>
+              <Box
+                component="form"
+                sx={{
+                  "& > :not(style)": { m: 1, marginTop: "30px" },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <FormControl fullWidth>
+                  <Autocomplete
+                    id="assignedStaffId"
+                    name="assignedStaffId"
+                    options={deadline}
+                    getOptionLabel={(option) => option.text || ""}
+                    value={
+                      deadline.find(
+                        (deadlines) => deadlines.value === lookupAdd.deadline
+                      ) || null
+                    }
+                    onChange={handleAutocompleteChangeDead}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Deadline"
+                        error={!!errors.deadline}
+                      />
+                    )}
+                  />
+
+                  {errors.deadline && (
+                    <span style={{ color: "red" }}>{errors.deadline}</span>
                   )}
                 </FormControl>
               </Box>
@@ -725,16 +815,15 @@ export default function StickyHeadTable() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 lg:gap-16 w-full gap-6">
                     <div className="">
                       <div className="mt-3 leading-6 text-secondary">
-                        How is the task
+                        <b> How is the task</b>
                       </div>
                       <div className="text-lg leading-6 font-medium">
                         {openView.what}
                       </div>
                     </div>
-
                     <div className="">
                       <div className="mt-3 leading-6 text-secondary">
-                        What is the task done
+                        <b> What is the task done</b>{" "}
                       </div>
                       <div className="text-lg leading-6 font-medium">
                         {openView.how}
@@ -742,7 +831,7 @@ export default function StickyHeadTable() {
                     </div>
                     <div className="">
                       <div className="mt-3 leading-6 text-secondary">
-                        Assigned staff
+                        <b>Assigned staff</b>
                       </div>
                       <div className="text-lg leading-6 font-medium">
                         {openView.assignedToStaff}
@@ -750,10 +839,26 @@ export default function StickyHeadTable() {
                     </div>
                     <div className="">
                       <div className="mt-3 leading-6 text-secondary">
-                        Due Date
+                        <b> Due Date</b>
                       </div>
                       <div className="text-lg leading-6 font-medium">
                         {openView.dueDate.slice(0, 10)}
+                      </div>
+                    </div>
+                    <div className="">
+                      <div className="mt-3 leading-6 text-secondary">
+                        <b> Deadline</b>
+                      </div>
+                      <div className="text-lg leading-6 font-medium">
+                        {openView.deadline == 1
+                          ? "RFQ"
+                          : openView.deadline == 2
+                            ? "VenFin"
+                            : openView.deadline == 3
+                              ? "Mobilization"
+                              : openView.deadline == 4
+                                ? "Closeout"
+                                : "Handover"}
                       </div>
                     </div>
                   </div>
@@ -791,13 +896,62 @@ export default function StickyHeadTable() {
           </InputLabel>
           <div className="flex items-center d-sm-block justify-between mt-0">
             <div className="flex-auto"></div>
-            <TextField
-              variant="filled"
-              fullWidth
-              className="my-4"
-              placeholder="Search "
+            <FormControl
+              className="flex w-full sm:w-136 "
+              variant="outlined"
               style={{ marginRight: "15px", backgroundColor: "white" }}
+            >
+              <InputLabel id="category-select-label">Site</InputLabel>
+              <Select
+                labelId="category-select-label"
+                id="category-select"
+                label="Site"
+                value={selectedSite}
+                onChange={handleSiteChange}
+              >
+                <MenuItem value="all">
+                  <em>All</em>
+                </MenuItem>
+                {site?.map((category) => (
+                  <MenuItem value={category.value} key={category.value}>
+                    {category.text}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl
+              className="flex w-full sm:w-136 "
+              variant="outlined"
+              style={{ marginRight: "15px", backgroundColor: "white" }}
+            >
+              <InputLabel id="category-select-label">Division</InputLabel>
+              <Select
+                labelId="category-select-label"
+                id="category-select"
+                label="Division"
+                // value={selectedCategory}
+                // onChange={(event) => handleSelectedCategory(event)}
+              >
+                <MenuItem value="all">
+                  <em>All</em>
+                </MenuItem>
+                {site?.map((category) => (
+                  <MenuItem value={category.value} key={category.value}>
+                    {category.text}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label="Search"
+              placeholder="Request No"
+              className="flex w-full sm:w-256 "
+              style={{ marginRight: "15px", backgroundColor: "white" }}
+              inputProps={{
+                "aria-label": "Search",
+              }}
               onChange={handleSearch}
+              variant="outlined"
               InputProps={{
                 startAdornment: (
                   <InputAdornment
@@ -808,8 +962,8 @@ export default function StickyHeadTable() {
                   </InputAdornment>
                 ),
               }}
-              sx={{ width: 250 }}
             />
+
             {/* <Button
                 variant="contained"
                 className="my-4"
@@ -896,7 +1050,7 @@ export default function StickyHeadTable() {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component="div"
-          count={siteList.length}
+          count={filteredDepartmentList.length} // Update count to filtered list length
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

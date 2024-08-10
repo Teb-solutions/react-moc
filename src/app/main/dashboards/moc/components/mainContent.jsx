@@ -851,7 +851,7 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                   </div>
                 </div>
               </div>
-              
+
               <div
                 _ngcontent-fyk-c288=""
                 class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
@@ -898,7 +898,7 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                 _ngcontent-fyk-c288=""
                 class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
               >
-              <div _ngcontent-fyk-c288="" className="my-6">
+                <div _ngcontent-fyk-c288="" className="my-6">
                   <div
                     _ngcontent-fyk-c288=""
                     class="mt-3 leading-6 text-secondary"
@@ -917,7 +917,7 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                       : contentDetails?.projectDescription}
                   </div>
                 </div>
-                </div>
+              </div>
             </div>
           </div>
         </Paper>

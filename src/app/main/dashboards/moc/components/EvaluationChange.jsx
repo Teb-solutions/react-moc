@@ -104,6 +104,7 @@ function EvaluationChange({
   setContent,
   currentActivityForm,
   contentDetails,
+  contentDetailsT,
 }) {
   const [open, setOpen] = useState(false);
   const [openSession, setOpenSession] = useState(false);
@@ -1609,6 +1610,7 @@ function EvaluationChange({
       <Initiation
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
+        contentDetailsT={contentDetailsT}
       />
       <SwipeableViews>
         {!risk ? (

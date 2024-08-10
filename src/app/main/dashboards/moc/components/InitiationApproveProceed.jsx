@@ -37,6 +37,7 @@ function InitiationApprovalProceed({
   TeamAssignmentList,
   setContent,
   contentDetails,
+  contentDetailsT,
 }) {
   const [staffList, setStaffList] = useState([]);
   const [open, setOpen] = useState(false);
@@ -263,6 +264,7 @@ function InitiationApprovalProceed({
       <Initiation
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
+        contentDetailsT={contentDetailsT}
       />
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">

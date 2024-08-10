@@ -58,6 +58,7 @@ const EvaluationApproval = ({
   setContentDetails,
   CountApprove,
   contentDetailsini,
+  contentDetailsT,
 }) => {
   const [reviewed, setReviewed] = useState({});
   const [deletes, setDeletes] = useState(false);
@@ -480,6 +481,7 @@ const EvaluationApproval = ({
           )
           .then((resp) => {
             setIsLoading(false);
+            location.reload();
             setDateExtendOpen(false);
 
             setShowSendPopup(false);
@@ -1811,6 +1813,7 @@ const EvaluationApproval = ({
       <Initiation
         contentDetailsini={contentDetailsini}
         assetEvaluationId={assetEvaluationId}
+        contentDetailsT={contentDetails}
       />
       <div
         style={{
@@ -2038,7 +2041,7 @@ const EvaluationApproval = ({
           </Box>
         </Fade>
       </Modal>
-      <SwipeableViews style={{ overflow: "hidden" }}>
+      {/* <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
@@ -2282,7 +2285,7 @@ const EvaluationApproval = ({
             </div>
           </div>
         </Paper>
-      </SwipeableViews>
+      </SwipeableViews> */}
       <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
@@ -2394,7 +2397,9 @@ const EvaluationApproval = ({
                 <span className="task-detail-value">{itm.tasks[0]}</span>
               </div>
               <div>&nbsp;</div>
-
+              {!AppActivity.canEdit && itm.reviews?.length == 0 && (
+                <span className="task-detail-value">No Reviews added</span>
+              )}
               {itm.reviews?.length > 0 || showReview ? (
                 <div>
                   <Accordion
@@ -2561,10 +2566,7 @@ const EvaluationApproval = ({
                                   {rwv?.createdByStaffName + "55"}
                                 </span>
                                 &nbsp;&nbsp;
-                                <span
-                                  className="text-gray"
-                                  style={{ fontSize: "10px" }}
-                                >
+                                <span className=" pl-1 text-gray">
                                   {rwv?.remark}
                                 </span>
                               </div>
@@ -2606,56 +2608,61 @@ const EvaluationApproval = ({
                   </Accordion>
                 </div>
               ) : (
-                <div className="mat-form-field-wrapper">
-                  <div className="mat-form-field-flex">
-                    <img
-                      src="/assets/images/etc/userpic.png"
-                      alt="Card cover image"
-                      className="rounded-full mr-4"
-                      style={{
-                        width: "5rem",
-                        height: "5rem",
-                      }}
-                    />
-                    <div
-                      className="mat-form-field-infix"
-                      style={{ position: "relative", width: "100%" }}
-                    >
-                      <textarea
-                        rows="2"
-                        className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                        placeholder="Write a comment..."
-                        id="ImpTaskReview265"
-                        data-placeholder="Write a comment..."
-                        aria-invalid="false"
-                        aria-required="false"
+                AppActivity.canEdit &&
+                !hasAddedComment(itm.reviews) && (
+                  <div className="mat-form-field-wrapper">
+                    <div className="mat-form-field-flex">
+                      <img
+                        src="/assets/images/etc/userpic.png"
+                        alt="Card cover image"
+                        className="rounded-full mr-4"
                         style={{
-                          height: "36px",
-                          width: "100%",
-                          paddingRight: "100px",
+                          width: "5rem",
+                          height: "5rem",
                         }}
-                        onChange={(e) => setHandelCommentRemark(e.target.value)}
-                      ></textarea>
-                      <button
-                        className="custom-update-button"
-                        onClick={() => handelCommentImp(itm.id, 1, 1)}
+                      />
+                      <div
+                        className="mat-form-field-infix"
+                        style={{ position: "relative", width: "100%" }}
                       >
-                        Save
-                      </button>
-                      <span className="mat-form-field-label-wrapper"></span>
+                        <textarea
+                          rows="2"
+                          className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                          placeholder="Write a comment..."
+                          id="ImpTaskReview265"
+                          data-placeholder="Write a comment..."
+                          aria-invalid="false"
+                          aria-required="false"
+                          style={{
+                            height: "36px",
+                            width: "100%",
+                            paddingRight: "100px",
+                          }}
+                          onChange={(e) =>
+                            setHandelCommentRemark(e.target.value)
+                          }
+                        ></textarea>
+                        <button
+                          className="custom-update-button"
+                          onClick={() => handelCommentImp(itm.id, 1, 1)}
+                        >
+                          Save
+                        </button>
+                        <span className="mat-form-field-label-wrapper"></span>
+                      </div>
+                    </div>
+
+                    <div className="mat-form-field-subscript-wrapper">
+                      <div
+                        className="mat-form-field-hint-wrapper"
+                        style={{
+                          opacity: 1,
+                          transform: "translateY(0%)",
+                        }}
+                      ></div>
                     </div>
                   </div>
-
-                  <div className="mat-form-field-subscript-wrapper">
-                    <div
-                      className="mat-form-field-hint-wrapper"
-                      style={{
-                        opacity: 1,
-                        transform: "translateY(0%)",
-                      }}
-                    ></div>
-                  </div>
-                </div>
+                )
               )}
             </div>
           ))}
@@ -3288,7 +3295,8 @@ const EvaluationApproval = ({
                                               <span className="">
                                                 {rwx?.createdByStaffName}
                                               </span>{" "}
-                                              <span className="">
+                                              <span className="pl-8 text-grey">
+                                                {" "}
                                                 {rwx?.remark}
                                               </span>
                                             </div>
@@ -3525,7 +3533,7 @@ const EvaluationApproval = ({
                 </table>
                 <div
                   _ngcontent-fyk-c288=""
-                  class="flex items-center w-full border-b mt-24 justify-between"
+                  class="flex items-center w-full border-b m-7 justify-between"
                 ></div>
               </>
             ))}

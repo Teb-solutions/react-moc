@@ -41,8 +41,13 @@ const useStyles = makeStyles({
 
 function Initiation(props) {
   const classes = useStyles();
-  const { contentDetails, assetEvaluationId, contentDetailsini, appActivity } =
-    props;
+  const {
+    contentDetails,
+    assetEvaluationId,
+    contentDetailsini,
+    appActivity,
+    contentDetailsT,
+  } = props;
   const StyledBadge = withStyles((theme) => ({
     badge: {
       background: "#2c3e50",
@@ -119,6 +124,13 @@ function Initiation(props) {
       console.error("Error parsing date:", error);
       return "Invalid date";
     }
+  };
+  const formatDates = (date) => {
+    return new Date(date).toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    });
   };
   const BoldLabel = styled("label")({
     fontWeight: "bold",
@@ -723,6 +735,17 @@ function Initiation(props) {
                   </div>
                 </div>
                 <div className="my-3">
+                  <div className="mt-3 leading-6 text-secondary">Initiator</div>
+                  <div className="text-lg leading-6 font-medium">
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.initiatorName
+                    }
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+                <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
                     Site In Charge
                   </div>
@@ -733,8 +756,6 @@ function Initiation(props) {
                     }
                   </div>
                 </div>
-              </div>
-              <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
                 <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">Site</div>
                   <div className="text-lg leading-6 font-medium">
@@ -753,15 +774,6 @@ function Initiation(props) {
                     }
                   </div>
                 </div>
-                <div className="my-3">
-                  <div className="mt-3 leading-6 text-secondary">Function</div>
-                  <div className="text-lg leading-6 font-medium">
-                    {
-                      (contentDetails ? contentDetails : contentDetailsini)
-                        ?.functionName
-                    }
-                  </div>
-                </div>
               </div>
               <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
                 <div className="my-3">
@@ -770,6 +782,15 @@ function Initiation(props) {
                     {
                       (contentDetails ? contentDetails : contentDetailsini)
                         ?.typeString
+                    }
+                  </div>
+                </div>
+                <div className="my-3">
+                  <div className="mt-3 leading-6 text-secondary">Function</div>
+                  <div className="text-lg leading-6 font-medium">
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.functionName
                     }
                   </div>
                 </div>
@@ -784,19 +805,7 @@ function Initiation(props) {
                     }
                   </div>
                 </div>
-                <div className="my-3">
-                  <div className="mt-3 leading-6 text-secondary">
-                    Expense Nature
-                  </div>
-                  <div className="text-lg leading-6 font-medium">
-                    {
-                      (contentDetails ? contentDetails : contentDetailsini)
-                        ?.expenseNatureString
-                    }
-                  </div>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
+
                 <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
                     Expense Type
@@ -805,6 +814,17 @@ function Initiation(props) {
                     {
                       (contentDetails ? contentDetails : contentDetailsini)
                         ?.expenseTypeString
+                    }
+                  </div>
+                </div>
+                <div className="my-3">
+                  <div className="mt-3 leading-6 text-secondary">
+                    Expense Nature
+                  </div>
+                  <div className="text-lg leading-6 font-medium">
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.expenseNatureString
                     }
                   </div>
                 </div>
@@ -819,6 +839,8 @@ function Initiation(props) {
                     }
                   </div>
                 </div>
+              </div>
+              <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
                 <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
                     {/* Doc Controller */}
@@ -843,6 +865,34 @@ function Initiation(props) {
                     }
                   </div>
                 </div>
+                {contentDetailsT && (
+                  <>
+                    <div className="my-3">
+                      <div className="mt-3 leading-6 text-secondary">
+                        Location of change
+                      </div>
+                      <div className="text-lg leading-6 font-medium">
+                        {contentDetailsT?.changeLocationString}
+                      </div>
+                    </div>
+                    <div className="my-3">
+                      <div className="mt-3 leading-6 text-secondary">
+                        Change Benefits
+                      </div>
+                      <div className="text-lg leading-6 font-medium">
+                        {contentDetailsT?.changeBenefits}
+                      </div>
+                    </div>
+                    <div className="my-3">
+                      <div className="mt-3 leading-6 text-secondary">
+                        Date of termination of change
+                      </div>
+                      <div className="text-lg leading-6 font-medium">
+                        {formatDates(contentDetailsT?.changeTerminationDate)}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
               <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full">
                 <div className="my-3">
