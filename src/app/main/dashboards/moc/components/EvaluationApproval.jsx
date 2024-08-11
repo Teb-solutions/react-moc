@@ -323,6 +323,13 @@ const EvaluationApproval = ({
           setHandelCommentRemark("");
         });
     }
+    apiAuth
+      .get(
+        `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+      )
+      .then((resp) => {
+        setContentDetails(resp.data.data);
+      });
   };
 
   const handelImpactCommentImp = (id, value) => {
@@ -352,6 +359,13 @@ const EvaluationApproval = ({
             });
         }
         setHandelCommentRemark("");
+      });
+    apiAuth
+      .get(
+        `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+      )
+      .then((resp) => {
+        setContentDetails(resp.data.data);
       });
   };
 
