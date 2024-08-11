@@ -259,7 +259,6 @@ function InitiationApproval(props) {
   };
 
   const handleSubmitAsset = (e) => {
-    debugger;
     const formData = new FormData();
     formData.append("name", selectedFile1.name);
     formData.append("descritpion", selectedFile1.description);
@@ -360,7 +359,6 @@ function InitiationApproval(props) {
   };
 
   const handleSubmitDelete = () => {
-    debugger;
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(

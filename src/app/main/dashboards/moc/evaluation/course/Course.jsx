@@ -1043,7 +1043,7 @@ function Course() {
       )
       .then((resp) => {
         const data = resp.data.data; // Assuming resp contains your data array
-        // debugger;
+
         // Check if any object in data has an empty tasks array
         const hasEmptyComment = data.some((item) => item.comments === "");
         if (resp.data.data.length === 0) {
