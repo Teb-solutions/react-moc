@@ -131,6 +131,20 @@ function ImplementationApproval({
     maxWidth: "90%",
     boxShadow: 24,
   };
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "615px",
+    maxWidth: "80vw",
+    height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+    p: 4,
+  };
   const style1 = {
     position: "absolute",
     top: "50%",
@@ -203,6 +217,9 @@ function ImplementationApproval({
   const [isLoading, setIsLoading] = useState(false);
   const [docId, setDocId] = useState("");
   const [docToken, setDocToken] = useState("");
+  const [openSubmit, setOpenSubmit] = useState(false);
+
+  const handleCloseSubmit = () => setOpenSubmit(false);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     description: "",
@@ -533,7 +550,13 @@ function ImplementationApproval({
       });
   };
 
-  const SubmitApprovelCreate = (e, btnid) => {
+  const [selectedBtn, setSelectedBtn] = useState(null);
+  const handlesumbitmodal = (btn) => {
+    setSelectedBtn(btn);
+    setOpenSubmit(true);
+  };
+
+  const SubmitApprovelCreate = () => {
     let taskListApproved = ImpDetails?.filter((x) => x.taskStatus == 3);
     if (ImpDetails?.length != taskListApproved?.length) {
       toast?.error("There are some pending Tasks to be approved.");
@@ -543,10 +566,12 @@ function ImplementationApproval({
       apiAuth
         .post(`/ChangeImplementation/ExecuteActivity/${assetEvaluationId}`, {
           activityUID: lastActCode.uid,
-          actionUID: btnid,
+          actionUID: selectedBtn,
           formUID: lastActCode?.formUID,
         })
         .then((resp) => {
+          setOpenSubmit(false);
+
           apiAuth
             .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
             .then((resp) => {
@@ -1559,6 +1584,102 @@ function ImplementationApproval({
           </Box>
         </Fade>
       </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openSubmit}
+        onClose={handleCloseSubmit}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={openSubmit}>
+          <Box sx={style}>
+            <Box>
+              <div className="flex">
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "15px",
+                    marginRight: "5px",
+                    marginTop: "5px",
+
+                    color: "red",
+                  }}
+                >
+                  <img src="/assets/images/etc/icon.png" />
+                </Typography>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "2rem",
+                  }}
+                >
+                  Submit request
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "800px !important",
+                      color: "grey",
+                    }}
+                  >
+                    Once submited you will not be able to revert ! Are you sure
+                    you want to continue ?
+                  </Typography>
+                </Typography>
+              </div>
+            </Box>
+            <div
+              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+              style={{
+                marginTop: "15px",
+                justifyContent: "end",
+                backgroundColor: " rgba(248,250,252)",
+                padding: "10px",
+              }}
+            >
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="primary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "1px solid grey",
+                }}
+                onClick={handleCloseSubmit}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="secondary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "red",
+                }}
+                type="submit"
+                onClick={SubmitApprovelCreate}
+              >
+                Submit
+              </Button>
+            </div>
+          </Box>
+        </Fade>
+      </Modal>
 
       <Initiation
         contentDetailsT={contentDetails}
@@ -1958,8 +2079,8 @@ function ImplementationApproval({
                                                     handleOpen(msg.id)
                                                   }
                                                   style={{
-                                                    top: "-15px",
-                                                    right: "-20px",
+                                                    top: "-19px",
+                                                    right: "10px",
                                                   }}
                                                 >
                                                   <FuseSvgIcon size={20}>
@@ -2045,7 +2166,7 @@ function ImplementationApproval({
                                         {detail.isCompleted &&
                                           detail.taskStatus !== 3 && (
                                             <>
-                                              <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                              <div className="flex flex-col shrink-0 mt-5 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                                 <div
                                                   _ngcontent-fyk-c288=""
                                                   class="flex items-center w-full  border-b justify-between"
@@ -2236,7 +2357,8 @@ function ImplementationApproval({
                     variant="contained"
                     color="secondary"
                     // style={{ marginTop: "10px" }}
-                    onClick={(e) => SubmitApprovelCreate(e, btn.uid)}
+                    onClick={() => handlesumbitmodal(btn.uid)}
+                    // onClick={(e) => SubmitApprovelCreate(e, btn.uid)}
                   >
                     {btn.name}
                   </Button>

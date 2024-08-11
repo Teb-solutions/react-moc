@@ -917,7 +917,6 @@ const EvaluationApproval = ({
 
   return (
     <div className="w-full h-full">
-      //response modal start
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -1342,7 +1341,6 @@ const EvaluationApproval = ({
           </Box>
         </Fade>
       </Modal>
-      //response modal end
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -3484,7 +3482,7 @@ const EvaluationApproval = ({
                               <span className="mat-button-wrapper">
                                 {imptsk?.documents == 0
                                   ? "No Responses"
-                                  : `${imptsk?.documents}Responses`}
+                                  : `${imptsk?.documents} Responses`}
                               </span>
                             </button>
                           </div>
