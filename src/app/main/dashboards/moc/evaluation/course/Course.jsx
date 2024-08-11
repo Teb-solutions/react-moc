@@ -185,11 +185,18 @@ function Course() {
   const handelFileChange = (e) => {
     const file = e.target.files[0];
 
+    const fileNameWithoutExtension = e.target.files[0].name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
+    const fileType = e.target.files[0].type.startsWith("image/")
+      ? e.target.files[0].type?.split("/")[1]
+      : e.target.files[0].type;
     setSelectedFile({
       ...selectedFile,
-      name: e.target.files[0].name,
+      name: fileNameWithoutExtension,
 
-      type: e.target.files[0].type,
+      type: fileType,
       document: e.target.files[0],
       documentType: "DocImplTrSheet",
       documentId: evaluationId,
@@ -5620,6 +5627,7 @@ function Course() {
                                       <label htmlFor="fileInput">
                                         <div className=" ">
                                           <div
+                                            disabled
                                             // onClick={handelDetailDoc}
                                             style={{
                                               textAlign: "-webkit-center",

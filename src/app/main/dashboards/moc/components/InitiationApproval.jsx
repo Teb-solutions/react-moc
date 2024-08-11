@@ -25,7 +25,6 @@ import { v4 as uuidv4 } from "uuid";
 import Initiation from "./Initiation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 function InitiationApproval(props) {
   const {
     ApprovalDetails,
@@ -151,10 +150,19 @@ function InitiationApproval(props) {
       setFileUrl(url);
       setFileName(file.name);
     }
+    const fileNameWithoutExtension = e.target.files[0].name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
+
+    const fileType = e.target.files[0].type.startsWith("image/")
+      ? e.target.files[0].type?.split("/")[1]
+      : e.target.files[0].type;
     setSelectedFile1({
-      name: e.target.files[0].name,
-      descritpion: "",
-      type: e.target.files[0].type,
+      ...selectedFile1,
+      name: fileNameWithoutExtension,
+
+      type: fileType,
       document: e.target.files[0],
       documentType: "ChangeRequest",
       documentId: selectedFile1.documentId,
@@ -251,6 +259,7 @@ function InitiationApproval(props) {
   };
 
   const handleSubmitAsset = (e) => {
+    debugger;
     const formData = new FormData();
     formData.append("name", selectedFile1.name);
     formData.append("descritpion", selectedFile1.description);
@@ -351,10 +360,11 @@ function InitiationApproval(props) {
   };
 
   const handleSubmitDelete = () => {
+    debugger;
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(
-          `/DocumentManager/DocList/${docId}/ChangeRequest?changeRequestToken=${selectedDocument?.changeRequestToken}`
+          `/DocumentManager/DocList/${Activity.uid}/Approval?changeRequestToken=${assetEvaluationId}`
         )
         .then((response) => {
           setOpenDrawer1(false);
@@ -372,7 +382,19 @@ function InitiationApproval(props) {
 
   return (
     <div className="w-full h-full">
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -784,9 +806,10 @@ function InitiationApproval(props) {
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
+                    // onChange={(e) => {
+                    //   handelFileChange(e);
+                    // }}
+                    disabled
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
@@ -1080,10 +1103,10 @@ function InitiationApproval(props) {
                     <TextField
                       id="standard-basic"
                       label={<BoldLabel>Description</BoldLabel>}
-                      name="description"
+                      name="descritpion"
                       variant="standard"
                       onChange={handelFileDiscriptionChange1}
-                      value={selectedFile1.description}
+                      value={selectedFile1.descritpion}
                     />
                   </Box>
                 </div>
@@ -1140,9 +1163,10 @@ function InitiationApproval(props) {
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange1(e);
-                    }}
+                    // onChange={(e) => {
+                    //   handelFileChange1(e);
+                    // }}
+                    disabled
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
@@ -1154,7 +1178,7 @@ function InitiationApproval(props) {
                       >
                         <img src="/assets/images/etc/icon_N.png" />
                       </div>
-                      {selectedDocument?.name}
+                      {selectedDocument1?.name}
                     </div>
                   </label>
                   <Box

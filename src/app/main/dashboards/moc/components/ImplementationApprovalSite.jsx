@@ -271,11 +271,19 @@ const ImplementationApprovalSite = ({
   const handelFileChange = (e) => {
     const file = e.target.files[0];
 
+    const fileNameWithoutExtension = e.target.files[0].name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
+    const fileType = e.target.files[0].type.startsWith("image/")
+      ? e.target.files[0].type?.split("/")[1]
+      : e.target.files[0].type;
+
     setSelectedFile({
       ...selectedFile,
-      name: e.target.files[0].name,
+      name: fileNameWithoutExtension,
 
-      type: e.target.files[0].type,
+      type: fileType,
       document: e.target.files[0],
       documentType: " Approval",
       documentId: AppActivity.uid,
@@ -400,7 +408,19 @@ const ImplementationApprovalSite = ({
 
   return (
     <div className="w-full">
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Initiation
         contentDetailsini={contentDetailsini}
         contentDetailsT={contentDetails}
@@ -1200,9 +1220,6 @@ const ImplementationApprovalSite = ({
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">

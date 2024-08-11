@@ -342,7 +342,19 @@ export default function Ticket() {
   }
   return (
     <div style={{ backgroundColor: "white" }}>
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <MocHeader nothing={"nothing"} type={"Ticket List"} />
 
       <Modal

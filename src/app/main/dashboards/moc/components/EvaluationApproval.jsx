@@ -81,6 +81,27 @@ const EvaluationApproval = ({
     documentId: "",
     changeRequestToken: null,
   });
+
+  //ResponseTask start
+  const [Resdeletes, setResDeletes] = useState(false);
+  const [taskRespOpen, setTaskRespOpen] = useState(false);
+  const [fileDetailsRes, setFileDetailsRes] = useState(false);
+  const [openDrawerRes, setOpenDrawerRes] = useState(false);
+  const [taskRespListDocument, setTaskRespListDocument] = useState([]);
+
+  const [selectedResDocument, setSelectedResDocument] = useState(null);
+  const [selectedRespFile, setSelectedRespFile] = useState({
+    name: "",
+    description: "",
+    type: "",
+    document: "binary",
+    documentType: "ChangeRequest",
+    documentId: "",
+    changeRequestToken: null,
+  });
+
+  //ResponseTask end
+  const [documenResDowToken, setDocumenResDowToken] = useState("");
   const [handelCommentRemark, setHandelCommentRemark] = useState("");
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [showSendPopup, setShowSendPopup] = useState(false);
@@ -566,19 +587,24 @@ const EvaluationApproval = ({
     }));
   };
   const handelFileChange = (e) => {
-    // debugger;
     const file = e.target.files[0];
     // if (file) {
     //   const url = URL.createObjectURL(file);
     //   setFileUrl(url);
     //   setFileName(file.name);
     // }
+    const fileNameWithoutExtension = e.target.files[0].name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
+    const fileType = e.target.files[0].type.startsWith("image/")
+      ? e.target.files[0].type?.split("/")[1]
+      : e.target.files[0].type;
     setSelectedFile({
-      name: e.target.files[0].name,
-      descritpion: e.target.files[0].descritpion
-        ? e.target.files[0].descritpion
-        : "",
-      type: e.target.files[0].type,
+      ...selectedFile,
+      name: fileNameWithoutExtension,
+
+      type: fileType,
       document: e.target.files[0],
       documentType: "Approval",
       documentId: AppActivity.uid,
@@ -602,6 +628,59 @@ const EvaluationApproval = ({
   const handleModalClose1 = () => {
     setOpen(false);
     setOpenDrawer(false);
+  };
+
+  const handleSubmitResponse = (e) => {
+    const formData = new FormData();
+    formData.append("name", selectedRespFile.name);
+    formData.append("descritpion", selectedRespFile.description);
+    formData.append("type", selectedRespFile.type);
+    formData.append("document", selectedRespFile.document);
+    formData.append("documentType", "ExternalCnsltn");
+    formData.append("documentId", selectedRespFile.documentId);
+    formData.append("changeRequestToken", assetEvaluationId);
+    apiAuth
+      .post("DocumentManager/Create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        apiAuth
+          .get(
+            `/DocumentManager/DocList/${selectedRespFile.documentId}/ExternalCnsltn?changeRequestToken=${assetEvaluationId}`
+          )
+          .then((Resp) => {
+            setOpenDrawerRes(false);
+            setTaskRespListDocument(Resp?.data?.data);
+            setSelectedRespFile({
+              ...selectedRespFile,
+              name: "",
+              description: "",
+            });
+          });
+      })
+      .catch((error) => {
+        setOpen(false);
+        setOpen1(false);
+        console.error("There was an error uploading the document!", error);
+        if (error.errorsData) {
+          if (error.errorsData.Name && error.errorsData.Name.length) {
+            toast.error(error.errorsData.Name[0]);
+          } else {
+            toast.error("There was an error uploading the document!");
+          }
+        } else {
+          toast.error("There was an error uploading the document!");
+        }
+        setTaskRespOpen(false);
+        setOpenDrawerRes(false);
+        setSelectedRespFile({
+          ...selectedRespFile,
+          name: "",
+          description: "",
+        });
+      });
   };
 
   const handleSubmitAsset = (e) => {
@@ -731,8 +810,539 @@ const EvaluationApproval = ({
     });
   };
 
+  //Response Modal
+  const handelRespDetailDoc = (doc) => {
+    setSelectedResDocument(doc);
+    setFileDetailsRes(true);
+    setDocumenResDowToken(doc.token);
+  };
+  const handleRespModalClose = () => {
+    setTaskRespOpen(false);
+  };
+  const TaskDocuHandle = (id) => {
+    apiAuth
+      .get(
+        `/DocumentManager/DocList/${id}/ExternalCnsltn?changeRequestToken=${assetEvaluationId}`
+      )
+      .then((Resp) => {
+        setTaskRespListDocument(Resp?.data?.data);
+      });
+    setTaskRespOpen(true);
+    setSelectedRespFile({
+      ...selectedRespFile,
+      documentId: id,
+    });
+  };
+  const toggleDrawerRes = (open) => () => {
+    setOpenDrawerRes(open);
+  };
+  const handelFileResDiscriptionChange = (event) => {
+    const { name, value } = event.target;
+    setSelectedRespFile((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handelRespFileChange = (e) => {
+    const file = e.target.files[0];
+    // if (file) {
+    //   const url = URL.createObjectURL(file);
+    //   setFileUrl(url);
+    //   setFileName(file.name);
+    // }
+    const fileNameWithoutExtension = e.target.files[0].name
+      .split(".")
+      .slice(0, -1)
+      .join(".");
+    const fileType = e.target.files[0].type.startsWith("image/")
+      ? e.target.files[0].type?.split("/")[1]
+      : e.target.files[0].type;
+    setSelectedRespFile({
+      ...selectedRespFile,
+      name: fileNameWithoutExtension,
+
+      type: fileType,
+      document: e.target.files[0],
+    });
+  };
+  const handleResCloseDelete = () => {
+    setResDeletes(false);
+  };
+
+  const handleResDelete = (e, id, token) => {
+    e.preventDefault();
+    setDocId(id);
+    setDocToken(token);
+    setResDeletes(true);
+  };
+
+  const handleResSubmitDelete = () => {
+    apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
+      apiAuth
+        .get(
+          `/DocumentManager/DocList/${docId}/ExternalCnsltn?changeRequestToken=${assetEvaluationId}`
+        )
+        .then((response) => {
+          setOpenDrawerRes(false);
+          setTaskRespListDocument(response?.data?.data);
+          setResDeletes(false);
+          setFileDetailsRes(false);
+          setSelectedResDocument("");
+        });
+    });
+  };
+
+  const handleResDownload = () => {
+    apiAuth
+      .get(`/DocumentManager/download/${documenResDowToken}`, {
+        responseType: "blob",
+      })
+      .then((response) => {
+        setOpenDrawer(false);
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.setAttribute("download", selectedResDocument.name); // or any other extension
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed", error);
+      });
+  };
+
   return (
     <div className="w-full h-full">
+      //response modal start
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={taskRespOpen}
+        onClose={handleRespModalClose}
+        closeAfterTransition
+        // Customize backdrop appearance
+        BackdropComponent={Backdrop}
+        // Props for backdrop customization
+        BackdropProps={{
+          timeout: 500, // Adjust as needed
+          style: {
+            // Add backdrop styles here
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+        }}
+      >
+        <Fade in={taskRespOpen}>
+          <Box sx={style1}>
+            <Box sx={{ flex: 1 }}>
+              <Box className="flex justify-between" style={{ margin: "30px" }}>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{ fontSize: "3rem" }}
+                >
+                  File Manager
+                  <Typography id="transition-modal-subtitle" component="h2">
+                    {taskRespListDocument.length} Files
+                  </Typography>
+                </Typography>
+                {AppActivity?.canExecute && (
+                  <Box>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={toggleDrawerRes(true)}
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+              <Box>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                  component="div"
+                  style={{
+                    backgroundColor: "#e3eeff80",
+                  }}
+                >
+                  {taskRespListDocument.map((doc, index) => (
+                    <div className="content" key={index}>
+                      <div
+                        onClick={() => handelRespDetailDoc(doc)}
+                        style={{ textAlign: "-webkit-center" }}
+                      >
+                        <img src="/assets/images/etc/icon_N.png" />
+                        <h6 className="truncate-text">{doc?.name}</h6>
+                        <h6>by {doc?.staffName}</h6>
+                      </div>
+                    </div>
+                  ))}
+                </Typography>
+              </Box>
+            </Box>
+
+            {openDrawerRes && !fileDetailsRes && (
+              <Box sx={drawerStyle(openDrawerRes)}>
+                <div className="flex justify-end">
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setOpenDrawerRes(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      handelRespFileChange(e);
+                    }}
+                  />
+                  <label htmlFor="fileInput">
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      style={{
+                        backgroundColor: "#24a0ed",
+                        borderRadius: "5px",
+                        paddingLeft: "50px",
+                        paddingRight: "50px",
+                      }}
+                      component="span"
+                    >
+                      <FuseSvgIcon size={20}>
+                        heroicons-outline:plus
+                      </FuseSvgIcon>
+                      <span className="mx-4 sm:mx-8">Upload File</span>
+                    </Button>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Selected File"
+                      variant="standard"
+                      disabled
+                      value={selectedRespFile.name}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="description"
+                      variant="standard"
+                      onChange={handelFileResDiscriptionChange}
+                      value={selectedRespFile.description}
+                    />
+                  </Box>
+                </div>
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: "rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleSubmitResponse}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              </Box>
+            )}
+
+            {fileDetailsRes && (
+              <Box sx={drawerStyle(fileDetailsRes)}>
+                <div className="flex justify-end">
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={() => setFileDetailsRes(false)}
+                  >
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+                  </Button>
+                </div>
+                <div>&nbsp;</div>
+                <div className="text-center">
+                  <input
+                    type="file"
+                    id="fileInput"
+                    style={{ display: "none" }}
+                    disabled
+                  />
+                  <label htmlFor="fileInput">
+                    <div className="">
+                      <div style={{ textAlign: "-webkit-center" }}>
+                        <img src="/assets/images/etc/icon_N.png" />
+                      </div>
+                      {selectedResDocument?.name}
+                    </div>
+                  </label>
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Information</BoldLabel>}
+                      variant="standard"
+                      disabled
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="selectedFileName"
+                      label="Created By"
+                      variant="standard"
+                      disabled
+                      value={selectedResDocument?.staffName}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label="Created At"
+                      name="description"
+                      variant="standard"
+                      disabled
+                      value={new Date(
+                        selectedResDocument?.createdAt
+                      ).toLocaleString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "2-digit",
+                      })}
+                    />
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <TextField
+                      id="standard-basic"
+                      label={<BoldLabel>Description</BoldLabel>}
+                      name="descritpion"
+                      variant="standard"
+                      disabled
+                      value={
+                        selectedResDocument?.descritpion === "null"
+                          ? ""
+                          : selectedResDocument?.descritpion
+                      }
+                    />
+                  </Box>
+                </div>
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    backgroundColor: "rgba(248,250,252)",
+                    padding: "10px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    type="submit"
+                    onClick={handleResDownload}
+                  >
+                    Download
+                  </Button>
+                  {AppActivity?.canExecute && (
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        border: "1px solid grey",
+                      }}
+                      onClick={(e) =>
+                        handleResDelete(
+                          e,
+                          selectedResDocument?.documentId,
+                          selectedResDocument?.token
+                        )
+                      }
+                    >
+                      Delete
+                    </Button>
+                  )}
+                </div>
+              </Box>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={Resdeletes}
+        onClose={handleCloseDelete}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={Resdeletes}>
+          <Box sx={style2}>
+            <Box>
+              <div className="flex">
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "15px",
+                    marginRight: "5px",
+                    marginTop: "5px",
+
+                    color: "red",
+                  }}
+                >
+                  <img src="/assets/images/etc/icon.png" />
+                </Typography>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "2rem",
+                  }}
+                >
+                  Confirm action
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "800px !important",
+                      color: "grey",
+                    }}
+                  >
+                    Do you want to delete ?
+                  </Typography>
+                </Typography>
+              </div>
+            </Box>
+            <div
+              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+              style={{
+                marginTop: "15px",
+                justifyContent: "end",
+                backgroundColor: " rgba(248,250,252)",
+                padding: "10px",
+              }}
+            >
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="primary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "1px solid grey",
+                }}
+                onClick={handleResCloseDelete}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="secondary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "red",
+                }}
+                type="submit"
+                onClick={handleResSubmitDelete}
+              >
+                Confirm
+              </Button>
+            </div>
+          </Box>
+        </Fade>
+      </Modal>
+      //response modal end
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -991,7 +1601,7 @@ const EvaluationApproval = ({
                       name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
-                      value={selectedFile.description}
+                      value={selectedFile.descritpion}
                     />
                   </Box>
                 </div>
@@ -1048,9 +1658,10 @@ const EvaluationApproval = ({
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
+                    // onChange={(e) => {
+                    //   handelFileChange(e);
+                    // }}
+                    disabled
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
@@ -1185,7 +1796,20 @@ const EvaluationApproval = ({
           </Box>
         </Fade>
       </Modal>
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        closeButton={true}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Initiation
         contentDetailsini={contentDetailsini}
         assetEvaluationId={assetEvaluationId}
@@ -1417,7 +2041,6 @@ const EvaluationApproval = ({
           </Box>
         </Fade>
       </Modal>
-
       {/* <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>
@@ -2854,7 +3477,10 @@ const EvaluationApproval = ({
                             </span>
                           </div>
                           <div className="task-button ml-auto">
-                            <button className="task-mark-reviewed-button mat-stroked-button">
+                            <button
+                              className="task-mark-reviewed-button mat-stroked-button"
+                              onClick={(e) => TaskDocuHandle(imptsk.id)}
+                            >
                               <span className="mat-button-wrapper">
                                 {imptsk?.documents == 0
                                   ? "No Responses"
@@ -3255,7 +3881,7 @@ const EvaluationApproval = ({
             <div className="flex justify-start">
               <StyledBadge
                 badgeContent={
-                  listDocument.length > 0 ? listDocument.length : CountApprove
+                  listDocument.length != 0 ? listDocument.length : CountApprove
                 }
               >
                 <Button
@@ -3523,14 +4149,15 @@ const EvaluationApproval = ({
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
+                    disabled
+                    // onChange={(e) => {
+                    //   handelFileChange(e);
+                    // }}
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
                       <div
-                        onClick={handelDetailDoc}
+                        // onClick={handelDetailDoc}
                         style={{
                           textAlign: "-webkit-center",
                         }}

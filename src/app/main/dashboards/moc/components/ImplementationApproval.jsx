@@ -639,7 +639,19 @@ function ImplementationApproval({
   }
   return (
     <div className="w-full">
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -955,9 +967,10 @@ function ImplementationApproval({
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
+                    disabled
+                    // onChange={(e) => {
+                    //   handelFileChange(e);
+                    // }}
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">

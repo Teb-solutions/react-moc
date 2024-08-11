@@ -198,6 +198,7 @@ const AssetCourse = () => {
     parentId: "0",
   });
   const [CountApprove, setCountApprove] = useState();
+  const [CountApprove1, setCountApprove1] = useState();
   const [CountApprove2, setCountApprove2] = useState();
   const [CountApprove3, setCountApprove3] = useState();
   const [CountApprove4, setCountApprove4] = useState();
@@ -959,6 +960,15 @@ const AssetCourse = () => {
             apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(
+                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
+                )
+                .then((resp) => {
+                  setIsLoading(false);
+
+                  setRemarkRequest(resp.data.data);
+                });
             });
             break;
           case "EvaluationApprovalCooprate":
@@ -990,12 +1000,30 @@ const AssetCourse = () => {
 
                     setTasks(updatedTasks);
                     loadRiskAnalysisChart(updatedTasks);
+
+                    // https://mocapi.tebs.co.in/api/DocumentManager/DocumentCount?id=99ea4bdc97ee449183b3fd50a0aee88a&documentType=Approval
+                    apiAuth
+                      .get(
+                        `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
+                      )
+                      .then((resp) => {
+                        setCountApprove1(resp.data.data);
+                      });
                   }
                 }
               });
             apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(
+                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
+                )
+                .then((resp) => {
+                  setIsLoading(false);
+
+                  setRemarkRequest(resp.data.data);
+                });
             });
             break;
           case "EvaluationApprovalVp":
@@ -1040,6 +1068,22 @@ const AssetCourse = () => {
             apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(
+                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
+                )
+                .then((resp) => {
+                  setIsLoading(false);
+
+                  setRemarkRequest(resp.data.data);
+                  apiAuth
+                    .get(
+                      `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
+                    )
+                    .then((resp) => {
+                      setCountApprove3(resp.data.data);
+                    });
+                });
             });
             break;
           case "EvaluationApprovalVpHse":
@@ -1085,6 +1129,15 @@ const AssetCourse = () => {
             apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
+              apiAuth
+                .get(
+                  `/ApprovalManager/RemarksbyRequest/${resp.data.data.activity.uid}`
+                )
+                .then((resp) => {
+                  setIsLoading(false);
+
+                  setRemarkRequest(resp.data.data);
+                });
             });
             break;
           case "ImplementationApproval":
@@ -1536,9 +1589,9 @@ const AssetCourse = () => {
         }, 3000);
       });
   };
-  // useEffect(() => {
-  //   handleStepChange();
-  // }, []);
+  useEffect(() => {
+    handleStepChange();
+  }, []);
 
   const handelOpenSide = () => {
     setLeftSidebarOpen(true);
@@ -1560,6 +1613,7 @@ const AssetCourse = () => {
       }
       content={
         <div className="w-full">
+          {/* <ToastContainer className="toast-container" /> */}
           <>
             <div className=" p-16 pb-64 sm:p-24 ">
               {currentPhase === "InitiationRequest" && (
@@ -1634,7 +1688,7 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
-                  // setRemarkRequest={setRemarkRequest}
+                  setRemarkRequest={setRemarkRequest}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
                   CountApprove={CountApprove}
@@ -1652,10 +1706,10 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
-                  // setRemarkRequest={setRemarkRequest}
+                  setRemarkRequest={setRemarkRequest}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
-                  CountApprove={CountApprove}
+                  CountApprove={CountApprove1}
                 />
               )}
               {currentPhase === "EvaluationApprovalVp" && (
@@ -1669,7 +1723,8 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
-                  // setRemarkRequest={setRemarkRequest}
+                  setRemarkRequest={setRemarkRequest}
+                  handleStepChange={handleStepChange()}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
                   CountApprove={CountApprove3}
@@ -1686,7 +1741,7 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
-                  // setRemarkRequest={setRemarkRequest}
+                  setRemarkRequest={setRemarkRequest}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
                   CountApprove={CountApprove4}

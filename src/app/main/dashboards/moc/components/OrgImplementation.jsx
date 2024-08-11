@@ -410,7 +410,19 @@ const OrgImplementation = ({
 
   return (
     <div className="w-full">
-      <ToastContainer className="toast-container" />
+      <ToastContainer
+        className="toast-container"
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
 
       <Modal
         aria-labelledby="transition-modal-title"
@@ -784,7 +796,8 @@ const OrgImplementation = ({
                   <label htmlFor="fileInput">
                     <div className=" ">
                       <div
-                        onClick={handelDetailDoc}
+                        disabled
+                        // onClick={handelDetailDoc}
                         style={{
                           textAlign: "-webkit-center",
                         }}

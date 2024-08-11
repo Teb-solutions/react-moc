@@ -495,9 +495,10 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
+                    // onChange={(e) => {
+                    //   handelFileChange(e);
+                    // }}
+                    disabled
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">

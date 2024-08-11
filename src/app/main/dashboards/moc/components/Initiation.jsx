@@ -573,9 +573,10 @@ function Initiation(props) {
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
+                    disabled
+                    // onChange={(e) => {
+                    //   handelFileChange(e);
+                    // }}
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
