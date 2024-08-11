@@ -354,7 +354,7 @@ function DocRequest() {
         toast?.success("Successfully Created");
 
         setTimeout(() => {
-          navigate("/dashboards/project");
+          navigate("/moc");
         }, 1000);
         setOpen(false);
       })

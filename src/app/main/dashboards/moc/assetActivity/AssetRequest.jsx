@@ -403,7 +403,7 @@ function AssetRequest() {
         toast?.success("Successfully Created");
         setIsLoading(false);
         setTimeout(() => {
-          navigate("/dashboards/project");
+          navigate("/moc");
         }, 1000);
         setOpen(false);
       })

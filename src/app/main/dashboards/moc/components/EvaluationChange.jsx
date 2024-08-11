@@ -66,6 +66,20 @@ function CustomTabPanel(props) {
     </div>
   );
 }
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "615px",
+  maxWidth: "80vw",
+  height: "auto",
+  borderRadius: "16px",
+  bgcolor: "background.paper",
+
+  boxShadow: 24,
+  p: 4,
+};
 
 const style1 = {
   position: "absolute",
@@ -623,6 +637,9 @@ function EvaluationChange({
   const [AddTaskforms, setAddTakForms] = useState([]);
   const [EditImpact, setEditCImpact] = useState(false);
   const [EditSubTask, setEditSubTask] = useState([]);
+  const [openSubmit, setOpenSubmit] = useState(false);
+
+  const handleCloseSubmit = () => setOpenSubmit(false);
 
   const handelEditImpactTask = (
     hazard,
@@ -1497,16 +1514,22 @@ function EvaluationChange({
       }
     : { m: 1, maxWidth: "100%" };
 
-  const handelSubmitApproval = (btn) => {
+  const [selectedBtn, setSelectedBtn] = useState(null);
+  const handlesumbitmodal = (btn) => {
+    setSelectedBtn(btn);
+    setOpenSubmit(true);
+  };
+  const handelSubmitApproval = () => {
     setIsLoading(true);
 
     apiAuth
       .post(`/ChangeEvaluation/ExecuteActivity/${Session.id}`, {
         activityUID: AppActivity.uid,
-        actionUID: btn.uid,
+        actionUID: selectedBtn.uid,
         formUID: `${Session.id}`,
       })
       .then((resp) => {
+        setOpenSubmit(false);
         setIsLoading(false);
 
         toast?.success("Evaluation Submitted Successfully");
@@ -2042,7 +2065,7 @@ function EvaluationChange({
                   </div>
                 </div>
                 {AddCunsultation && (
-                  <div className="font-semibold ps-5">
+                  <div className="font-semibold ps-5 text-blue">
                     <a rel="noopener noreferrer" onClick={handlebackList}>
                       Back to List
                     </a>
@@ -3222,7 +3245,7 @@ function EvaluationChange({
                   {AddImpact && (
                     <>
                       <div
-                        className="font-semibold ps-5"
+                        className="font-semibold ps-5 text-blue"
                         style={{ padding: "15px" }}
                       >
                         <a
@@ -4112,7 +4135,7 @@ function EvaluationChange({
                           style={{ padding: "15px" }}
                           key={btn.name}
                           // onClick={() => handleOpen(btn)}
-                          onClick={() => handelSubmitApproval(btn)}
+                          onClick={() => handlesumbitmodal(btn)}
                         >
                           {btn.name}
                         </Button>
@@ -6102,6 +6125,102 @@ function EvaluationChange({
                 </Grid>
               </Grid>
             </Box>
+          </Box>
+        </Fade>
+      </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openSubmit}
+        onClose={handleCloseSubmit}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={openSubmit}>
+          <Box sx={style}>
+            <Box>
+              <div className="flex">
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "15px",
+                    marginRight: "5px",
+                    marginTop: "5px",
+
+                    color: "red",
+                  }}
+                >
+                  <img src="/assets/images/etc/icon.png" />
+                </Typography>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "2rem",
+                  }}
+                >
+                  Submit request
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "800px !important",
+                      color: "grey",
+                    }}
+                  >
+                    Once submited you will not be able to revert ! Are you sure
+                    you want to continue ?
+                  </Typography>
+                </Typography>
+              </div>
+            </Box>
+            <div
+              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+              style={{
+                marginTop: "15px",
+                justifyContent: "end",
+                backgroundColor: " rgba(248,250,252)",
+                padding: "10px",
+              }}
+            >
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="primary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "1px solid grey",
+                }}
+                onClick={handleCloseSubmit}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="secondary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "red",
+                }}
+                type="submit"
+                onClick={handelSubmitApproval}
+              >
+                Submit
+              </Button>
+            </div>
           </Box>
         </Fade>
       </Modal>

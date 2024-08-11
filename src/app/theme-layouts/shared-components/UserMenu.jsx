@@ -89,34 +89,62 @@ function UserMenu() {
             </Typography>
           </div>
         </Button>
-        <Button
-          className="min-h-40 min-w-40 p-0  md:py-6"
-          onClick={handleModalOpen}
-          color="inherit"
+        <Tooltip
+          title="Ticket"
+          arrow
+          componentsProps={{
+            tooltip: {
+              sx: {
+                backgroundColor: "black",
+                color: "white",
+                fontSize: 12,
+              },
+            },
+          }}
         >
-          <div className="mx-4  flex-col items-end md:flex">
-            <Typography
-              className="text-11 font-medium capitalize"
-              color="text.secondary"
-            >
-              <FuseSvgIcon>heroicons-outline:ticket</FuseSvgIcon>
-            </Typography>
-          </div>
-        </Button>
-        <Button
-          className="min-h-40 min-w-40 p-0  md:py-6"
-          onClick={handleClick}
-          color="inherit"
+          <Button
+            className="min-h-40 min-w-40 p-0  md:py-6"
+            onClick={handleModalOpen}
+            color="inherit"
+          >
+            <div className="mx-4  flex-col items-end md:flex">
+              <Typography
+                className="text-11 font-medium capitalize"
+                color="text.secondary"
+              >
+                <FuseSvgIcon>heroicons-outline:ticket</FuseSvgIcon>
+              </Typography>
+            </div>
+          </Button>
+        </Tooltip>
+        <Tooltip
+          title="Notification"
+          arrow
+          componentsProps={{
+            tooltip: {
+              sx: {
+                backgroundColor: "black",
+                color: "white",
+                fontSize: 12,
+              },
+            },
+          }}
         >
-          <div className="mx-4  flex-col items-end md:flex">
-            <Typography
-              className="text-11 font-medium capitalize"
-              color="text.secondary"
-            >
-              <FuseSvgIcon>heroicons-outline:bell</FuseSvgIcon>
-            </Typography>
-          </div>
-        </Button>
+          <Button
+            className="min-h-40 min-w-40 p-0  md:py-6"
+            onClick={handleClick}
+            color="inherit"
+          >
+            <div className="mx-4  flex-col items-end md:flex">
+              <Typography
+                className="text-11 font-medium capitalize"
+                color="text.secondary"
+              >
+                <FuseSvgIcon>heroicons-outline:bell</FuseSvgIcon>
+              </Typography>
+            </div>
+          </Button>
+        </Tooltip>
       </Badge>
       <Popover
         id={id}
