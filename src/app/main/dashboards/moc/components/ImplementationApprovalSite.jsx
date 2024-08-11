@@ -425,6 +425,7 @@ const ImplementationApprovalSite = ({
         contentDetailsini={contentDetailsini}
         contentDetailsT={contentDetails}
         assetEvaluationId={assetEvaluationId}
+        contentDetailsDocu={contentDetails}
       />
       {/* <MainComponent
         contentDetails={contentDetails}

@@ -1300,6 +1300,7 @@ function InitiationApproval(props) {
       <Initiation
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
+        contentDetailsDocu={ApprovalDetails}
       />
       {/* <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">

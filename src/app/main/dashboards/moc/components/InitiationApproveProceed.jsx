@@ -265,6 +265,7 @@ function InitiationApprovalProceed({
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
         contentDetailsT={contentDetailsT}
+        contentDetailsDocu={contentDetails}
       />
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">

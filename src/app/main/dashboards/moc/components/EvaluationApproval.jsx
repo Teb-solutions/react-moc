@@ -44,6 +44,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
 import Initiation from "./Initiation";
+import { animateVisualElement } from "framer-motion";
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -646,19 +647,37 @@ const EvaluationApproval = ({
         },
       })
       .then((response) => {
-        apiAuth
-          .get(
-            `/DocumentManager/DocList/${selectedRespFile.documentId}/ExternalCnsltn?changeRequestToken=${assetEvaluationId}`
-          )
-          .then((Resp) => {
-            setOpenDrawerRes(false);
-            setTaskRespListDocument(Resp?.data?.data);
-            setSelectedRespFile({
-              ...selectedRespFile,
-              name: "",
-              description: "",
+        if (response.data.statusCode === 200) {
+          apiAuth
+            .get(
+              `/DocumentManager/DocList/${selectedRespFile.documentId}/ExternalCnsltn?changeRequestToken=${assetEvaluationId}`
+            )
+            .then((Resp) => {
+              setOpenDrawerRes(false);
+              setTaskRespListDocument(Resp?.data?.data);
+              setSelectedRespFile({
+                ...selectedRespFile,
+                name: "",
+                description: "",
+              });
             });
+          apiAuth
+            .get(
+              `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+            )
+            .then((resp) => {
+              setContentDetails(resp.data.data);
+            });
+        } else {
+          toast.error(response.data.message);
+          setTaskRespOpen(false);
+          setOpenDrawerRes(false);
+          setSelectedRespFile({
+            ...selectedRespFile,
+            name: "",
+            description: "",
           });
+        }
       })
       .catch((error) => {
         setOpen(false);
@@ -889,6 +908,13 @@ const EvaluationApproval = ({
           setResDeletes(false);
           setFileDetailsRes(false);
           setSelectedResDocument("");
+        });
+      apiAuth
+        .get(
+          `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+        )
+        .then((resp) => {
+          setContentDetails(resp.data.data);
         });
     });
   };
@@ -1814,6 +1840,7 @@ const EvaluationApproval = ({
         contentDetailsini={contentDetailsini}
         assetEvaluationId={assetEvaluationId}
         contentDetailsT={contentDetails}
+        contentDetailsDocu={contentDetails}
       />
       <div
         style={{

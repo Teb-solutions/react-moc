@@ -1016,6 +1016,7 @@ const InitiationComplete = ({
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}
         contentDetailsT={contentDetailsT}
+        contentDetailsDocu={contentDetails}
       />
 
       <SwipeableViews>

@@ -99,6 +99,7 @@ const AssetCourse = () => {
   const { assetEvaluationId } = routeParams;
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
+  const [contentDetailsDocu, setContentDetailsDocu] = useState({});
   const [contentDetailsIni, setContentDetailsIni] = useState({});
 
   const [isLoading, setIsLoading] = useState(true);
@@ -774,6 +775,13 @@ const AssetCourse = () => {
 
                 setReqNo(resp.data.data.requestNo);
                 setContentDetailsIni(resp.data?.data);
+                // apiAuth
+                //   .get(
+                //     `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+                //   )
+                //   .then((resp) => {
+                //     setContentDetailsDocu(resp.data?.data);
+                //   });
               });
             apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
               setAppActions(resp.data.data.actions);
@@ -828,6 +836,13 @@ const AssetCourse = () => {
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
             });
+            apiAuth
+              .get(
+                `/DocumentManager/DocumentCount?id=${uid}&documentType=ChangeSummary`
+              )
+              .then((resp) => {
+                setCountApprove2(resp.data.data);
+              });
             apiAuth
               .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
               .then((resp) => {
@@ -1621,6 +1636,7 @@ const AssetCourse = () => {
                   contentDetails={contentDetailsIni}
                   assetEvaluationId={assetEvaluationId}
                   appActivity={appActivity}
+                  contentDetailsDocu={contentDetailsIni}
                 />
               )}
               {currentPhase === "InitiationApproval" && (
