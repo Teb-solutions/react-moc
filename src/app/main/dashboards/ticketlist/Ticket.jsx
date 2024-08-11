@@ -122,7 +122,7 @@ export default function Ticket() {
               minWidth: "5px",
               minHeight: "0px",
               height: "20px",
-              padding: "10px",
+              padding: "15px",
             }}
           >
             <FuseSvgIcon size={15}>heroicons-solid:eye</FuseSvgIcon>
@@ -458,44 +458,48 @@ export default function Ticket() {
               <div className="p-30 pt-24 pb-24">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full gap-6">
                   <div>
-                    <div className="mt-3 leading-6 text-secondary">Subject</div>
-                    <div className="text-lg leading-6 font-medium">
-                      {openView.subject}
+                    <div className="mt-3 leading-6 text-secondary">
+                      <b>Subject</b>
                     </div>
+                    <div className="text-lg leading-6 ">{openView.subject}</div>
                   </div>
                   <div>
                     <div className="mt-3 leading-6 text-secondary">
-                      Created By
+                      <b>Created By</b>
                     </div>
-                    <div className="text-lg leading-6 font-medium">
+                    <div className="text-lg leading-6 ">
                       {openView.customername ? openView.customername : "-"}
                     </div>
                   </div>
                   <div>
-                    <div className="mt-3 leading-6 text-secondary">Status</div>
-                    <div className="text-lg leading-6 font-medium">
+                    <div className="mt-3 leading-6 text-secondary">
+                      <b>Status</b>
+                    </div>
+                    <div className="text-lg leading-6 ">
                       {openView.ticketstatus}
                     </div>
                   </div>
                   <div>
                     <div className="mt-3 leading-6 text-secondary">
-                      Priority
+                      <b>Priority</b>
                     </div>
-                    <div className="text-lg leading-6 font-medium">
+                    <div className="text-lg leading-6">
                       {openView.priority ? openView.priority : "-"}
                     </div>
                   </div>
                   <div>
                     <div className="mt-3 leading-6 text-secondary">
-                      Category
+                      <b>Category</b>
                     </div>
-                    <div className="text-lg leading-6 font-medium">
+                    <div className="text-lg leading-6 ">
                       {openView.category}
                     </div>
                   </div>
                   <div>
-                    <div className=" leading-6 text-secondary">Comments</div>
-                    <div className="text-lg leading-6 font-medium">
+                    <div className=" leading-6 text-secondary">
+                      <b>Comments</b>
+                    </div>
+                    <div className="text-lg leading-6 ">
                       {openView.lastComment}
                     </div>
                   </div>
@@ -504,11 +508,9 @@ export default function Ticket() {
                 <div className="grid grid-cols-1 gap-y-6 w-full">
                   <div>
                     <div className="mt-5 leading-6 text-secondary">
-                      Description
+                      <b>Description</b>
                     </div>
-                    <div className="text-lg leading-6 font-medium">
-                      {openView.message}
-                    </div>
+                    <div className="text-lg leading-6 ">{openView.message}</div>
                   </div>
                 </div>
 
