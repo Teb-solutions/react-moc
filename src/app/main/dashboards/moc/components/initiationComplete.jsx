@@ -872,14 +872,12 @@ const InitiationComplete = ({
                     type="file"
                     id="fileInput"
                     style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
+                    disabled
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
                       <div
-                        onClick={handelDetailDoc}
+                        // onClick={handelDetailDoc}
                         style={{ textAlign: "-webkit-center" }}
                       >
                         <img src="/assets/images/etc/icon_N.png" />

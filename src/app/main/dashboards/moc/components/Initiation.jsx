@@ -518,7 +518,7 @@ function Initiation(props) {
                     className=""
                     variant="contained"
                     style={{ backgroundColor: "white" }}
-                    onClick={() => setFileDetails(false)}
+                    onClick={() => setFileDetails1(false)}
                   >
                     <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                   </Button>
