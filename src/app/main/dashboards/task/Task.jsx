@@ -15,6 +15,7 @@ import {
   Container,
   FormControlLabel,
   Grid,
+  Badge,
   Radio,
   RadioGroup,
   Table,
@@ -31,6 +32,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { styled } from "@mui/material/styles";
+import { withStyles } from "@mui/styles";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
@@ -57,16 +59,23 @@ const Task = () => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: "1100px",
+    width: "1200px",
     maxWidth: "80vw",
     height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
+
     boxShadow: 24,
     p: 4,
-    padding: "0px",
   };
-
+  const StyledBadge = withStyles((theme) => ({
+    badge: {
+      background: "#2c3e50",
+      color: "#fff",
+      top: "-61px",
+      right: "19px",
+    },
+  }))(Badge);
   const BoldLabel = styled("label")({
     fontWeight: "bold",
     color: "black",
@@ -740,13 +749,9 @@ const Task = () => {
                   className="text-2xl"
                 >
                   File Manager
-                  {/* <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                              >
-                                0 Files
-                              </Typography> */}
+                  <Typography id="transition-modal-subtitle" component="h2">
+                    {listDocument.length} Files
+                  </Typography>
                 </Typography>
                 {!viewDoc && (
                   <Box>
@@ -2044,23 +2049,25 @@ const Task = () => {
                       value={comments}
                     ></textarea>
                     {task.taskType == 2 && (
-                      <button
-                        style={{
-                          position: "absolute",
-                          right: "10px",
-                          bottom: "32px",
-                          padding: "5px 10px",
-                          color: "black",
-                          border: "none",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                        }}
-                        onClick={(e) => handleOpenDocModal(e, task)}
-                      >
-                        <FuseSvgIcon size={20}>
-                          heroicons-outline:document
-                        </FuseSvgIcon>
-                      </button>
+                      <StyledBadge badgeContent={listDocument.length}>
+                        <button
+                          style={{
+                            position: "absolute",
+                            right: "10px",
+                            bottom: "32px",
+                            padding: "5px 10px",
+                            color: "black",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                          }}
+                          onClick={(e) => handleOpenDocModal(e, task)}
+                        >
+                          <FuseSvgIcon size={20}>
+                            heroicons-outline:document
+                          </FuseSvgIcon>
+                        </button>
+                      </StyledBadge>
                     )}
                   </div>
                   {task.taskType == 2 && (
