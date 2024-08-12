@@ -50,6 +50,7 @@ function createData(
   dueDate,
   assignedToStaffId,
   siteId,
+  divisionId,
   changeRequestToken,
   changeRequestTypeName
 ) {
@@ -65,6 +66,7 @@ function createData(
     dueDate,
     assignedToStaffId,
     siteId,
+    divisionId,
     changeRequestToken,
     changeRequestTypeName,
   };
@@ -154,11 +156,15 @@ export default function StickyHeadTable() {
   const [taskview, setTaskview] = useState(false);
   const [deadline, setDeadLine] = useState([]);
   const [site, setSite] = useState([]);
+  const [divisionId, setDivisionId] = useState([]);
+
   const [errors, setErrors] = useState({});
   const [Idsss, setId] = useState("");
   const [staff, setStaff] = useState([]);
   const [openView, setOpenView] = useState({});
   const [selectedSite, setSelectedSite] = useState("all");
+  const [selectedDivision, setSelectedDivision] = useState("all");
+
   const [searchQuery, setSearchQuery] = useState("");
   const [reasons, setReason] = useState("");
 
@@ -171,6 +177,10 @@ export default function StickyHeadTable() {
     setSelectedSite(event.target.value);
     setPage(0); // Reset to first page on site change
   };
+  const handleDivisionChange = (event) => {
+    setSelectedDivision(event.target.value);
+    setPage(0); // Reset to first page on site change
+  };
 
   const filteredDepartmentList = siteList.filter((row) => {
     const matchesSearchQuery =
@@ -179,8 +189,10 @@ export default function StickyHeadTable() {
       row.index.toString().includes(searchQuery);
 
     const matchesSite = selectedSite === "all" || row.siteId === selectedSite;
+    const matchesDivision =
+      selectedDivision === "all" || row.divisionId === selectedDivision;
 
-    return matchesSearchQuery && matchesSite;
+    return matchesSearchQuery && matchesSite && matchesDivision;
   });
 
   const [lookupAdd, setLookUpAdd] = useState({
@@ -231,6 +243,9 @@ export default function StickyHeadTable() {
     apiAuth.get("/LookupData/Lov/23").then((resp) => {
       setSite(resp.data.data);
     });
+    apiAuth.get("/LookupData/List/division").then((resp) => {
+      setDivisionId(resp.data.data);
+    });
 
     apiAuth.get(`/Task/GetAllActiveTasks`).then((resp) => {
       setIsLoading(false);
@@ -247,6 +262,7 @@ export default function StickyHeadTable() {
           item.dueDate,
           item.assignedToStaffId,
           item.siteId,
+          item.divisionId,
           item.changeRequestToken,
           item.changeRequestTypeName
         )
@@ -413,19 +429,7 @@ export default function StickyHeadTable() {
   return (
     <div style={{ backgroundColor: "white" }}>
       <MocHeader nothing={"nothing"} type={"Task List"} />
-      <ToastContainer
-        className="toast-container"
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+      <ToastContainer className="toast-container" />
 
       <Modal
         aria-labelledby="transition-modal-title"
@@ -817,7 +821,7 @@ export default function StickyHeadTable() {
                       <div className="mt-3 leading-6 text-secondary">
                         <b> How is the task</b>
                       </div>
-                      <div className="text-lg leading-6 font-medium">
+                      <div className="text-lg leading-6 font-medium text-grey">
                         {openView.what}
                       </div>
                     </div>
@@ -825,7 +829,7 @@ export default function StickyHeadTable() {
                       <div className="mt-3 leading-6 text-secondary">
                         <b> What is the task done</b>{" "}
                       </div>
-                      <div className="text-lg leading-6 font-medium">
+                      <div className="text-lg leading-6 font-medium text-grey">
                         {openView.how}
                       </div>
                     </div>
@@ -833,7 +837,7 @@ export default function StickyHeadTable() {
                       <div className="mt-3 leading-6 text-secondary">
                         <b>Assigned staff</b>
                       </div>
-                      <div className="text-lg leading-6 font-medium">
+                      <div className="text-lg leading-6 font-medium text-grey">
                         {openView.assignedToStaff}
                       </div>
                     </div>
@@ -841,7 +845,7 @@ export default function StickyHeadTable() {
                       <div className="mt-3 leading-6 text-secondary">
                         <b> Due Date</b>
                       </div>
-                      <div className="text-lg leading-6 font-medium">
+                      <div className="text-lg leading-6 font-medium text-grey">
                         {openView.dueDate.slice(0, 10)}
                       </div>
                     </div>
@@ -849,7 +853,7 @@ export default function StickyHeadTable() {
                       <div className="mt-3 leading-6 text-secondary">
                         <b> Deadline</b>
                       </div>
-                      <div className="text-lg leading-6 font-medium">
+                      <div className="text-lg leading-6 font-medium text-grey">
                         {openView.deadline == 1
                           ? "RFQ"
                           : openView.deadline == 2
@@ -929,15 +933,15 @@ export default function StickyHeadTable() {
                 labelId="category-select-label"
                 id="category-select"
                 label="Division"
-                // value={selectedCategory}
-                // onChange={(event) => handleSelectedCategory(event)}
+                value={selectedDivision}
+                onChange={handleDivisionChange}
               >
                 <MenuItem value="all">
                   <em>All</em>
                 </MenuItem>
-                {site?.map((category) => (
-                  <MenuItem value={category.value} key={category.value}>
-                    {category.text}
+                {divisionId?.map((category) => (
+                  <MenuItem value={category.id} key={category.id}>
+                    {category.code}
                   </MenuItem>
                 ))}
               </Select>

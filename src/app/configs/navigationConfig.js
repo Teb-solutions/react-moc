@@ -43,7 +43,7 @@ const navigationConfig1 = [
       },
       {
         id: "task.request",
-        title: " Tasks",
+        title: "My Tasks",
         type: "item",
         icon: "heroicons-outline:clipboard-check",
         url: "/task",
@@ -55,7 +55,7 @@ const navigationConfig1 = [
         type: "item",
         icon: "heroicons-outline:clipboard-list",
         url: "/tasklist",
-        feature: "TASK",
+        feature: "MST",
       },
       {
         id: "ticketlist.request",

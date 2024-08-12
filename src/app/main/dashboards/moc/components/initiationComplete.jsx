@@ -77,6 +77,22 @@ const InitiationComplete = ({
     boxShadow: 24,
     p: 4,
   };
+  const styleClass = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "45%",
+    maxWidth: "90vw",
+    height: "30%",
+    maxHeight: "90vh",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    display: "flex",
+    flexDirection: "column",
+  };
+
   const style2 = {
     position: "absolute",
     top: "50%",
@@ -224,6 +240,17 @@ const InitiationComplete = ({
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [documenDowToken, setDocumenDowToken] = useState("");
   const [listDocument, setListDocument] = useState([]);
+  const [openClass, setOpenClass] = useState(false);
+  const [classType, setClassType] = useState("");
+
+  const handleOpenClass = (type) => {
+    setClassType(type);
+    setOpenClass(true);
+  };
+
+  const handleCloseClass = () => {
+    setOpenClass(false);
+  };
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     description: "",
@@ -480,6 +507,181 @@ const InitiationComplete = ({
         pauseOnHover
         theme="light"
       />
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openClass}
+        onClose={handleCloseClass}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={openClass}>
+          <Box sx={styleClass}>
+            <Box
+              style={{
+                padding: "20px",
+                backgroundColor: "#4f46e5",
+                borderTopLeftRadius: "16px",
+                borderTopRightRadius: "16px",
+              }}
+            >
+              <div className="flex justify-between text-white">
+                <span className="text-popup font-medium">Class Category</span>
+                <span onClick={handleCloseClass} style={{ cursor: "pointer" }}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    height="24"
+                    width="24"
+                    preserveAspectRatio="xMidYMid meet"
+                    focusable="false"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    ></path>
+                  </svg>
+                </span>
+              </div>
+            </Box>
+
+            {/* Conditionally render the table for classType 'class1' */}
+            {classType === "class1" && (
+              <div
+                className="flex flex-auto overflow-hidden"
+                style={{
+                  height: "100%",
+                  borderBottomLeftRadius: "16px",
+                  borderBottomRightRadius: "16px",
+                }}
+              >
+                <table style={{ width: "100%", height: "100%" }}>
+                  <thead>
+                    <tr
+                      style={{ backgroundColor: "#ffc800", fontWeight: "bold" }}
+                    >
+                      <td></td>
+                      <td></td>
+                      <td>LPG + LUBES</td>
+                      <td>HSE</td>
+                      <td>LPG</td>
+                      <td>LUBES</td>
+                      <td>Corp HSE</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ backgroundColor: "#ffebcb" }}>
+                      <td></td>
+                      <td></td>
+                      <td>Site</td>
+                      <td>Site</td>
+                      <td>DIV Project</td>
+                      <td>DIV Project</td>
+                      <td></td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#f8f0e4" }}>
+                      <td className="p-10">Class II</td>
+                      <td>Low Risk +</td>
+                      <td>X</td>
+                      <td>X</td>
+                      <td colSpan="2"></td>
+                      <td>X</td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#ffebcb" }}>
+                      <td rowSpan="2" className="p-10">
+                        Class I
+                      </td>
+                      <td>Medium Risk</td>
+                      <td></td>
+                      <td></td>
+                      <td>X</td>
+                      <td>X</td>
+                      <td>X</td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#f8f0e4" }}>
+                      <td>High Risk</td>
+                      <td></td>
+                      <td></td>
+                      <td>X</td>
+                      <td>X</td>
+                      <td>X</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {/* Conditionally render the table for classType 'class2' */}
+            {classType === "class2" && (
+              <div
+                className="flex flex-auto overflow-hidden"
+                style={{
+                  height: "100%",
+                  borderBottomLeftRadius: "16px",
+                  borderBottomRightRadius: "16px",
+                }}
+              >
+                <table style={{ width: "100%", height: "100%" }}>
+                  <thead>
+                    <tr
+                      style={{ backgroundColor: "#ffc800", fontWeight: "bold" }}
+                    >
+                      <td></td>
+                      <td colSpan="2">PROJECT I/C / Change</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr style={{ backgroundColor: "#ffebcb" }}>
+                      <td></td>
+                      <td>LPG DIV</td>
+                      <td>LUBES DIV</td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#f8f0e4" }}>
+                      <td rowSpan="4" className="p-10">
+                        Operations & LOG
+                      </td>
+                      <td>Sakthivel</td>
+                      <td>Reginald</td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#ffebcb" }}>
+                      <td>Venkat</td>
+                      <td>Nikhil</td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#f8f0e4" }}>
+                      <td>Rajesh C</td>
+                      <td></td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#ffebcb" }}>
+                      <td>Umashankar</td>
+                      <td></td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#f8f0e4" }}>
+                      <td rowSpan="2" className="p-10">
+                        S & M
+                      </td>
+                      <td>Manjunath</td>
+                      <td>Digant</td>
+                    </tr>
+                    <tr style={{ backgroundColor: "#ffebcb" }}>
+                      <td>Thiyagarajan</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Box>
+        </Fade>
+      </Modal>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -1038,7 +1240,10 @@ const InitiationComplete = ({
                   <FormControl component="fieldset" fullWidth>
                     <FormLabel component="legend">
                       Class Category
-                      <Link className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer text-blue">
+                      <Link
+                        className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer text-blue"
+                        onClick={() => handleOpenClass("class1")}
+                      >
                         (View Class Category Details)
                       </Link>
                     </FormLabel>
@@ -1062,6 +1267,15 @@ const InitiationComplete = ({
                     </RadioGroup>
                   </FormControl>
                 </Grid>
+                <Grid item xs={12}>
+                  <Link
+                    className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer text-blue"
+                    onClick={() => handleOpenClass("class2")}
+                  >
+                    View Class I Category Details
+                  </Link>
+                </Grid>
+
                 <Grid item xs={12}>
                   <FormControl fullWidth>
                     <FormLabel>Change Leader</FormLabel>
@@ -1151,13 +1365,29 @@ const InitiationComplete = ({
               <>
                 <Grid item xs={4}>
                   <FormControl fullWidth>
-                    <FormLabel>Class Category</FormLabel>
+                    <FormLabel>
+                      Class Category{" "}
+                      <Link
+                        className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer text-blue"
+                        onClick={() => handleOpenClass("class1")}
+                      >
+                        (View Class Category Details)
+                      </Link>
+                    </FormLabel>
                     <span>{currentSummeryById?.classCategoryString}</span>
                   </FormControl>
                 </Grid>
                 <Grid item xs={4}>
                   <FormControl fullWidth>
-                    <FormLabel>Change Leader</FormLabel>
+                    <FormLabel>
+                      Change Leader{" "}
+                      <Link
+                        className="inline-flex ml-3 leading-6 text-primary hover:underline cursor-pointer text-blue"
+                        onClick={() => handleOpenClass("class2")}
+                      >
+                        View Class I Category Details
+                      </Link>
+                    </FormLabel>
                     <span>{currentSummeryById?.changeLeader}</span>
                   </FormControl>
                 </Grid>
