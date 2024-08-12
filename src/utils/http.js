@@ -17,7 +17,7 @@ const handleError = async (error) => {
       // Clear local storage and redirect to login page
       localStorage.clear();
       setTimeout(() => {
-        window.location = `${process.env.REACT_APP_PUBLIC_URL}/sign-in`;
+        window.location = `${import.meta.env.VITE_APP_API_BASE_URL}/sign-in`;
       }, 2000); // Delay to allow toast to show
       return;
     }
@@ -26,7 +26,7 @@ const handleError = async (error) => {
       toast.error("Access denied. Please log in.");
       localStorage.clear();
       setTimeout(() => {
-        window.location = `${process.env.REACT_APP_PUBLIC_URL}/sign-in`;
+        window.location = `${import.meta.env.VITE_APP_API_BASE_URL}/sign-in`;
       }, 2000); // Delay to allow toast to show
       return;
     } else if (error.response.status === 500) {
@@ -42,7 +42,7 @@ const handleError = async (error) => {
       };
       toast.error("App is under maintenance");
       setTimeout(() => {
-        window.location = `${process.env.REACT_APP_PUBLIC_URL}/under-maintenance`;
+        window.location = `${import.meta.env.VITE_APP_API_BASE_URL}/under-maintenance`;
       }, 2000); // Delay to allow toast to show
       return;
     } else if (error.response.status === 400) {
@@ -64,14 +64,14 @@ const handleError = async (error) => {
 };
 
 export const apiClient = axios.create({
-  baseURL: "https://mocapi.tebs.co.in/api",
+  baseURL: import.meta.env.VITE_APP_API_BASE_URL,
   headers: {
     Accept: "application/json",
   },
 });
 
 export const apiAuth = axios.create({
-  baseURL: "https://mocapi.tebs.co.in/api",
+  baseURL: import.meta.env.VITE_APP_API_BASE_URL,
   headers: {
     Accept: "application/json",
   },
@@ -111,7 +111,7 @@ apiTicketAuth.interceptors.request.use((config) => {
 apiClient.interceptors.request.use((config) => {
   if (
     config.url !==
-    `${process.env.REACT_APP_API_BASE_URL}/auth/admin/refresh-token`
+    `${import.meta.env.VITE_APP_API_BASE_URL}/auth/admin/refresh-token`
   ) {
     const token = getToken();
     if (token) {

@@ -21,7 +21,7 @@ const AuthContext = createContext({
 });
 
 const axiosInstance = axios.create({
-  baseURL: "https://mocapi.tebs.co.in/api",
+  baseURL: import.meta.env.VITE_APP_API_BASE_URL,
 });
 
 function AuthRouteProvider(props) {
