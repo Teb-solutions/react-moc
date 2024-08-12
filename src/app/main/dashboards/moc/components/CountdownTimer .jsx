@@ -5,10 +5,15 @@ import React, {
   forwardRef,
 } from "react";
 
-const CountdownTimer = forwardRef(({ Session }, ref) => {
+const CountdownTimer = forwardRef(({ Session, show }, ref) => {
   const [currentSeconds, setCurrentSeconds] = useState(() => {
     const storedTime = localStorage.getItem("currentSeconds");
     return storedTime ? parseInt(storedTime, 10) : 0;
+  });
+
+  const [lastUpdate, setLastUpdate] = useState(() => {
+    const storedUpdate = localStorage.getItem("lastUpdate");
+    return storedUpdate ? new Date(parseInt(storedUpdate, 10)) : new Date();
   });
 
   useEffect(() => {
@@ -16,27 +21,35 @@ const CountdownTimer = forwardRef(({ Session }, ref) => {
     if (Session?.activeSession?.status === 2) {
       timer = setInterval(() => {
         setCurrentSeconds((prevSeconds) => {
-          const newTime = prevSeconds + 1;
+          const now = new Date();
+          const elapsedTime = Math.floor((now - lastUpdate) / 1000);
+          const newTime = prevSeconds + elapsedTime;
           localStorage.setItem("currentSeconds", newTime.toString());
+          setLastUpdate(now);
+          localStorage.setItem("lastUpdate", now.getTime().toString());
           return newTime;
         });
       }, 1000);
     }
 
     return () => clearInterval(timer);
-  }, [Session]);
+  }, [Session, lastUpdate]);
 
   useImperativeHandle(ref, () => ({
     startTimer: () => {
       setCurrentSeconds(0);
       localStorage.setItem("currentSeconds", "0");
+      const now = new Date();
+      setLastUpdate(now);
+      localStorage.setItem("lastUpdate", now.getTime().toString());
     },
     resetTimer: () => {
       setCurrentSeconds(0);
       localStorage.removeItem("currentSeconds");
+      localStorage.removeItem("lastUpdate");
     },
     stopTimer: () => {
-      clearInterval(timer);
+      // This method doesn't do anything in the new code but can be used if needed
     },
   }));
 
@@ -48,7 +61,7 @@ const CountdownTimer = forwardRef(({ Session }, ref) => {
     <>
       {Session?.activeSession?.status === 2 && (
         <span>
-          Stop Session{" "}
+          {show && "Stop Session"}
           <b className="text-red">
             {hours} Hr {minutes} Min {seconds} Sec
           </b>

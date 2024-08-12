@@ -231,8 +231,9 @@ const EvaluationApproval = ({
     bgcolor: "background.paper",
 
     boxShadow: 24,
-    maxWidth: "95%",
+    p: 4,
   };
+
   const style2 = {
     position: "absolute",
     top: "50%",
@@ -3964,6 +3965,7 @@ const EvaluationApproval = ({
           </div>
         </Paper>
       </SwipeableViews>
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

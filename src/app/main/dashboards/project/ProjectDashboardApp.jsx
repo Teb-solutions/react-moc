@@ -64,6 +64,7 @@ function ProjectDashboardApp() {
               item.token
             )
         );
+        apiAuth.get(`/Staff/List`).then((resp) => {});
 
         setRiskMatrixList(transformedData);
         setIsLoading(false);

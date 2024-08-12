@@ -5773,7 +5773,7 @@ function EvaluationChange({
         <Fade in={open}>
           <Box sx={style1}>
             <div
-              className="flex items-center justify-between p-24 border-b"
+              className="flex items-center justify-between p-30 border-b"
               style={{
                 backgroundColor: "#4f46e5",
                 borderTopLeftRadius: "16px",
@@ -5820,7 +5820,11 @@ function EvaluationChange({
                       ></i>
                       {timer}
                     </span>
-                    <CountdownTimer ref={timerRef} Session={Session} />
+                    <CountdownTimer
+                      ref={timerRef}
+                      Session={Session}
+                      show={false}
+                    />
                   </div>
                   <div className="mt-5 row" style={{ marginTop: "20px" }}>
                     <div
@@ -6074,12 +6078,13 @@ function EvaluationChange({
                               </>
                             )}
                             <div>
-                              Session started by {session.startedByStaffName} at{" "}
+                              <b>Session started by</b>{" "}
+                              {session.startedByStaffName} at{" "}
                               {formatDate(session.startedAt)}
                             </div>
                             {session?.isSessionEnded && (
-                              <div class="mt-2">
-                                Session ended at{" "}
+                              <div class="mt-2 ">
+                                <b>Session ended at</b>{" "}
                                 {session.endedAt && formatDate(session.endedAt)}
                               </div>
                             )}

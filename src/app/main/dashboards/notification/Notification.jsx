@@ -50,7 +50,7 @@ const Notification = () => {
         _ngcontent-fyk-c288=""
         class="flex items-center w-full  border-b justify-between"
       ></div>
-      {notificationList.map((list) => (
+      {notificationList?.map((list) => (
         <>
           <Link
             className="p-20   shadow overflow-hidden"

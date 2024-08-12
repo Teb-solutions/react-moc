@@ -105,6 +105,8 @@ const JwtSignInTab = () => {
         }
         if (resp.data.statusCode === 200) {
           Cookies.remove("MOC_Features");
+          localStorage.setItem("jwt_access_token", resp.data.data.jwt);
+
           const ticketResp = await apiTicketAuth.post("/Account/access-token", {
             userName: "MOC_CLIENT",
             password: "M@c_3#21c_ukl",
@@ -117,7 +119,6 @@ const JwtSignInTab = () => {
             ticketResp.data.accessToken
           );
 
-          localStorage.setItem("jwt_access_token", resp.data.data.jwt);
           localStorage.setItem("username", resp.data.data.name);
 
           try {
@@ -129,7 +130,7 @@ const JwtSignInTab = () => {
               toast?.success("Successfully Logined");
               navigate("/dashboards/project");
               location.reload();
-              setLoading(false);
+              // setLoading(false);
             }
           } catch (error) {
             console.error("Encryption/Decryption error:", error);
