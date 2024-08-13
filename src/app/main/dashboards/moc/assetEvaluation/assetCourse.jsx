@@ -1716,6 +1716,7 @@ const AssetCourse = () => {
                   AppActions={appActions}
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
+                  setContentDetails={setContentDetails}
                   contentDetails={contentDetails}
                   showRiskAnalysisChart={showRiskAnalysisChart}
                   riskAnalysisChartOptions={riskAnalysisChartOptions}
@@ -1734,6 +1735,7 @@ const AssetCourse = () => {
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
                   contentDetails={contentDetails}
+                  setContentDetails={setContentDetails}
                   showRiskAnalysisChart={showRiskAnalysisChart}
                   riskAnalysisChartOptions={riskAnalysisChartOptions}
                   lastActCode={lastActCode}
@@ -1752,6 +1754,7 @@ const AssetCourse = () => {
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
                   contentDetails={contentDetails}
+                  setContentDetails={setContentDetails}
                   showRiskAnalysisChart={showRiskAnalysisChart}
                   riskAnalysisChartOptions={riskAnalysisChartOptions}
                   lastActCode={lastActCode}
