@@ -1803,6 +1803,7 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   showApexAndContent={showApexAndContent}
                   contentDetails={contentDetails}
+                  setContentDetails={setContentDetails}
                   ApprovalManager={ApprovalManager}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
@@ -1818,6 +1819,7 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   showApexAndContent={showApexAndContent}
                   contentDetails={contentDetails}
+                  setContentDetails={setContentDetails}
                   ApprovalManager={ApprovalManager}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
@@ -1834,6 +1836,7 @@ const AssetCourse = () => {
                   lastActCode={lastActCode}
                   showApexAndContent={showApexAndContent}
                   contentDetails={contentDetails}
+                  setContentDetails={setContentDetails}
                   ApprovalManager={ApprovalManager}
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
