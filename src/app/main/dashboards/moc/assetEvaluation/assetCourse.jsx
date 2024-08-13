@@ -584,6 +584,7 @@ const AssetCourse = () => {
     return new Date(date).toLocaleString("en-US", {
       month: "short",
       day: "2-digit",
+      year: "numeric",
       hour: "numeric",
       minute: "numeric",
       hour12: true,
@@ -1944,42 +1945,51 @@ const AssetCourse = () => {
                           course={step.isComplete === true ? 100 : 0}
                         />
                       </StepContent>
-                      <>
-                        <StepContent
-                          style={{ fontSize: "10px" }}
-                          className="pt-4"
-                        >
-                          By{" "}
-                          <b>
-                            {step.targetUsers && step.targetUsers.length > 0
-                              ? step.targetUsers[0]
-                              : ""}
-                          </b>
-                        </StepContent>
+                      {step.code == "MOC_COMPLETED" ? (
                         <StepContent style={{ fontSize: "10px" }}>
-                          Started at{" "}
-                          <b>
-                            {formatDate(step.actualStartDate, "yyyy-MM-dd")}
-                          </b>
+                          Ended at <b>{formatDates(step.actualEndDate)}</b>
                         </StepContent>
-                        <StepContent style={{ fontSize: "10px" }}>
-                          {step.actualEndDate === null ? (
-                            ""
-                          ) : (
-                            <>
-                              {step.status} at{" "}
-                              <b>
-                                {formatDate(step?.actualEndDate, "yyyy-MM-dd")}
-                              </b>
-                            </>
-                          )}
-                        </StepContent>
-                        {!step?.isComplete && (
-                          <StepContent style={{ fontSize: "10px" }}>
-                            <b> Pending</b>
+                      ) : (
+                        <>
+                          <StepContent
+                            style={{ fontSize: "10px" }}
+                            className="pt-4"
+                          >
+                            By{" "}
+                            <b>
+                              {step.targetUsers && step.targetUsers.length > 0
+                                ? step.targetUsers[0]
+                                : ""}
+                            </b>
                           </StepContent>
-                        )}
-                      </>
+                          <StepContent style={{ fontSize: "10px" }}>
+                            Started at{" "}
+                            <b>
+                              {formatDates(step.actualStartDate, "yyyy-MM-dd")}
+                            </b>
+                          </StepContent>
+                          <StepContent style={{ fontSize: "10px" }}>
+                            {step.actualEndDate === null ? (
+                              ""
+                            ) : (
+                              <>
+                                {step.status} at{" "}
+                                <b>
+                                  {formatDates(
+                                    step?.actualEndDate,
+                                    "yyyy-MM-dd"
+                                  )}
+                                </b>
+                              </>
+                            )}
+                          </StepContent>
+                          {!step?.isComplete && (
+                            <StepContent style={{ fontSize: "10px" }}>
+                              <b> Pending</b>
+                            </StepContent>
+                          )}
+                        </>
+                      )}
                     </Step>
                   ))}
                 </Stepper>

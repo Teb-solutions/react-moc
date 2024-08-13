@@ -560,6 +560,7 @@ function ImplementationApproval({
     let taskListApproved = ImpDetails?.filter((x) => x.taskStatus == 3);
     if (ImpDetails?.length != taskListApproved?.length) {
       toast?.error("There are some pending Tasks to be approved.");
+      setOpenSubmit(false);
       return;
     } else {
       setIsLoading(true);
