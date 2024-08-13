@@ -106,7 +106,7 @@ function MocHeader(props) {
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
-            // onClose={handleOpenNewDoc}
+            onClose={() => setAnchorEl(null)}
           >
             <MenuItem onClick={() => handleNavigate("Transport")}>
               Transport
@@ -122,7 +122,7 @@ function MocHeader(props) {
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
-            // onClose={handleOpenNewDoc}
+            onClose={() => setAnchorEl(null)}
           >
             <MenuItem onClick={handleOpenNewAsset}>Technical </MenuItem>
             <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>

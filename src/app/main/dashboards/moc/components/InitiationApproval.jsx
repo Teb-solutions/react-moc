@@ -1412,9 +1412,15 @@ function InitiationApproval(props) {
             <>
               <div
                 className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
-                style={{ width: "40%" }}
+                style={
+                  {
+                    // whiteSpace: "nowrap",
+                    // overflow: "hidden",
+                    // textOverflow: "ellipsis",
+                  }
+                }
               >
-                <span className=" leading-none">
+                <span className="leading-none">
                   <b>Approver Comment:</b> {ApprovalManager?.remark}
                 </span>
               </div>

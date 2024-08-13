@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 
 import {
   Button,
@@ -17,6 +18,7 @@ import { Menu as MenuIcon, Key as KeyIcon } from "@mui/icons-material";
 import { apiAuth } from "src/utils/http";
 import { useNavigate } from "react-router";
 import Loader from "../../loader/Loader";
+import { useCallback } from "react";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -174,6 +176,28 @@ function Course() {
       [name]: value,
     }));
   };
+  const [leftSidebarOpenSmall, setLeftSidebarOpenSmall] = useState(false);
+
+  const handleResize = useCallback(() => {
+    if (window.innerWidth <= 768) {
+      // Adjust this width as needed
+      setLeftSidebarOpen(false);
+    } else {
+      setLeftSidebarOpenSmall(false);
+      setLeftSidebarOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Set initial state
+    handleResize();
+
+    // Add resize event listener
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup event listener on unmount
+    return () => window.removeEventListener("resize", handleResize);
+  }, [handleResize]);
 
   const isSaveDisabled =
     passwords.currentPassword === "" ||
@@ -195,15 +219,12 @@ function Course() {
       content={
         <div className="w-full">
           <Container style={{ marginLeft: "0px" }}>
-            <Box display="flex" alignItems="center" mt={3}>
-              <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="menu"
-                sx={{ display: { lg: "none" } }}
-              >
-                <MenuIcon />
-              </IconButton>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              mt={3}
+            >
               <Typography
                 variant="h5"
                 fontWeight="bold"
@@ -212,6 +233,15 @@ function Course() {
               >
                 Security
               </Typography>
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                sx={{ display: { lg: "none" } }}
+                onClick={() => setLeftSidebarOpen(true)}
+              >
+                <MenuIcon />
+              </IconButton>
             </Box>
             <Box mt={3}>
               <Typography variant="h6" style={{ fontWeight: "0px" }}>
@@ -322,6 +352,19 @@ function Course() {
         <div>
           <div style={headerStyle}>
             <div style={titleStyle}>Profile</div>
+            <div className="desktop_hide text-end p-30 pt-24 pb-24">
+              {!leftSidebarOpenSmall && (
+                <FuseSvgIcon
+                  className="text-48 cursor-pointer "
+                  size={24}
+                  style={{ display: "inline-block;" }}
+                  color="action"
+                  onClick={() => setLeftSidebarOpen(false)}
+                >
+                  heroicons-outline:x
+                </FuseSvgIcon>
+              )}
+            </div>
             <div style={buttonWrapperStyle}>
               <button style={buttonStyle}>
                 <span>

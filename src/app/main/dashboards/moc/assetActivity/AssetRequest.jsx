@@ -885,7 +885,7 @@ function AssetRequest() {
                     error={!!errors.projectValue}
                   >
                     <FormLabel
-                      className="font-medium text-14"
+                      className={`font-medium text-14 ${!!errors.projectValue ? "text-red" : ""}`}
                       component="legend"
                     >
                       Project Value *
@@ -895,10 +895,17 @@ function AssetRequest() {
                       id="Division"
                       name="projectValue"
                       value={documentState.projectValue || ""}
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^\d*$/.test(value)) {
+                          handleChange(e); // Only call handleChange if the input is a valid number
+                        }
+                      }}
                     />
                     {!!errors.projectValue && (
-                      <FormHelperText>{errors.projectValue}</FormHelperText>
+                      <FormHelperText className="text-red">
+                        {errors.projectValue}
+                      </FormHelperText>
                     )}
                   </Box>
                   <FormControl

@@ -1722,7 +1722,7 @@ function EvaluationChange({
               </div>
             )}
             {/* )} */}
-            <Box sx={{ width: "100%" }} className="hello p-30 pt-24 pb-24">
+            <Box sx={{ width: "100%" }} className="hello p-30 pt-12 pb-12">
               <Box className="sm:d-flex flex-wrap">
                 <Button
                   onClick={() => handleChange(0)}

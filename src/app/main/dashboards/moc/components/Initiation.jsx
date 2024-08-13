@@ -1124,7 +1124,7 @@ function Initiation(props) {
       <SwipeableViews>
         <Paper className="w-full mx-auto my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
           <div>
-            <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
+            <div className="flex items-center w-full border-b justify-between p-30 pt-12 pb-12">
               <h2 className="text-2xl font-semibold">MOC Request</h2>
               <div>
                 <StyledBadge
@@ -1298,17 +1298,6 @@ function Initiation(props) {
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
-                <div className="my-3">
-                  <div className="mt-3 leading-6 text-secondary">
-                    Project Name
-                  </div>
-                  <div className="text-lg leading-6 font-medium">
-                    {
-                      (contentDetails ? contentDetails : contentDetailsini)
-                        ?.projectName
-                    }
-                  </div>
-                </div>
                 {contentDetailsT && (
                   <>
                     <div className="my-3">
@@ -1319,14 +1308,7 @@ function Initiation(props) {
                         {contentDetailsT?.changeLocationString}
                       </div>
                     </div>
-                    <div className="my-3">
-                      <div className="mt-3 leading-6 text-secondary">
-                        Change Benefits
-                      </div>
-                      <div className="text-lg leading-6 font-medium">
-                        {contentDetailsT?.changeBenefits}
-                      </div>
-                    </div>
+
                     <div className="my-3">
                       <div className="mt-3 leading-6 text-secondary">
                         Date of termination of change
@@ -1341,6 +1323,19 @@ function Initiation(props) {
               <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full">
                 <div className="my-3">
                   <div className="mt-3 leading-6 text-secondary">
+                    Project Name
+                  </div>
+                  <div className="text-lg leading-6 font-medium">
+                    {
+                      (contentDetails ? contentDetails : contentDetailsini)
+                        ?.projectName
+                    }
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full">
+                <div className="my-3">
+                  <div className="mt-3 leading-6 text-secondary">
                     Project Description
                   </div>
                   <div className="text-lg leading-6 font-medium">
@@ -1351,6 +1346,18 @@ function Initiation(props) {
                   </div>
                 </div>
               </div>
+              {contentDetailsT?.changeBenefits && (
+                <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full">
+                  <div className="my-3">
+                    <div className="mt-3 leading-6 text-secondary">
+                      Change Benefits
+                    </div>
+                    <div className="text-lg leading-6 font-medium">
+                      {contentDetailsT?.changeBenefits}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             {appActivity?.code == "START" && (
               <div className="flex items-center justify-between w-full p-30 pt-24 pb-24 border-t">

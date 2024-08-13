@@ -427,7 +427,7 @@ export default function StickyHeadTable() {
     return <FuseLoading />;
   }
   return (
-    <div style={{ backgroundColor: "white" }}>
+    <div>
       <MocHeader nothing={"nothing"} type={"Task List"} />
       <ToastContainer className="toast-container" />
 
@@ -455,7 +455,9 @@ export default function StickyHeadTable() {
               }}
             >
               <div className="flex justify-between text-white">
-                <span className="text-popup font-medium">Edit</span>
+                <span className="text-popup font-medium">
+                  Edit Task #{lookupAdd.id}
+                </span>
                 <span
                   onClick={handleClose}
                   style={{ cursor: "pointer" }}
@@ -787,7 +789,9 @@ export default function StickyHeadTable() {
                 }}
               >
                 <div className="flex justify-between text-white">
-                  <span className="text-popup font-medium">Task Details</span>
+                  <span className="text-popup font-medium">
+                    Task Details #{openView?.index}
+                  </span>
                   <span
                     onClick={handleClose}
                     style={{ cursor: "pointer" }}
@@ -981,11 +985,14 @@ export default function StickyHeadTable() {
         </div>
       </div>
       <div className="flex items-center w-full border-b justify-between"></div>
-      <Paper className="box_reset" sx={{ width: "100%", overflow: "hidden" }}>
+      <Paper
+        className="box_reset px-24"
+        sx={{ width: "100%", overflow: "hidden", backgroundColor: "none" }}
+      >
         <TableContainer>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
-              <TableRow>
+              <TableRow style={{ backgroundColor: "white" }}>
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}

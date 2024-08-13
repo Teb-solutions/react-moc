@@ -110,24 +110,23 @@ export default function Ticket() {
     {
       id: "comment",
       label: "Action",
+      //minWidth: 170,
       align: "left",
-      minWidth: 140,
+      format: (value) => value.toFixed(2),
       render: (row) => (
-        <Box sx={{ display: "flex", alignItems: "center" }} className="pl-8">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleEdit(row)}
-            sx={{
-              minWidth: "5px",
-              minHeight: "0px",
-              height: "20px",
-              padding: "15px",
-            }}
-          >
-            <FuseSvgIcon size={15}>heroicons-solid:eye</FuseSvgIcon>
-          </Button>
-        </Box>
+        <Button
+          // variant="contained"
+          // color="primary"
+          onClick={() => handleEdit(row)}
+          // sx={{
+          //   minWidth: "5px",
+          //   minHeight: "0px",
+          //   height: "15px",
+          //   padding: "10px",
+          // }}
+        >
+          <FuseSvgIcon size={25}>heroicons-solid:eye</FuseSvgIcon>
+        </Button>
       ),
     },
   ];
@@ -341,7 +340,7 @@ export default function Ticket() {
     return <FuseLoading />;
   }
   return (
-    <div style={{ backgroundColor: "white" }}>
+    <div>
       <ToastContainer
         className="toast-container"
         position="top-right"
@@ -466,7 +465,7 @@ export default function Ticket() {
                 )}
               </Grid>
             </Box> */}
-            <Paper className="w-full mx-auto overflow-hidden">
+            <Paper className="w-full mx-auto overflow-hidden ">
               <div className="p-30 pt-24 pb-24">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full gap-6">
                   <div>
@@ -685,7 +684,10 @@ export default function Ticket() {
         </div>
       </div>
       <div className="flex items-center w-full border-b justify-between"></div>
-      <Paper className="box_reset" sx={{ width: "100%", overflow: "hidden" }}>
+      <Paper
+        className="box_reset px-24"
+        sx={{ width: "100%", overflow: "hidden" }}
+      >
         <TableContainer>
           <Table stickyHeader aria-label="sticky table">
             <TableHead>

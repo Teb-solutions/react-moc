@@ -2328,7 +2328,7 @@ const EvaluationApproval = ({
       </SwipeableViews> */}
       <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
-          <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
+          <div className="flex items-center w-full border-b justify-between p-30 pt-14 pb-14">
             <h2 className="text-2xl font-semibold">Change Evaluation Team</h2>
           </div>
           <div className="evaluation-team-container grid p-30 pt-24 pb-24 grid-cols-1 md:grid-cols-3 gap-4">
@@ -2365,7 +2365,7 @@ const EvaluationApproval = ({
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div
             _ngcontent-fyk-c288=""
-            class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
+            class="flex items-center w-full p-30 pt-12 pb-12 border-b justify-between"
           >
             <h2 className="text-2xl font-semibold">Stake Holders</h2>
             <TextField
@@ -2712,7 +2712,7 @@ const EvaluationApproval = ({
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div
             _ngcontent-fyk-c288=""
-            class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
+            class="flex items-center w-full p-30 pt-12 pb-12 border-b justify-between"
           >
             <h2 className="text-2xl font-semibold">Evaluation Impacts</h2>
             <TextField
@@ -3466,7 +3466,7 @@ const EvaluationApproval = ({
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div
             _ngcontent-fyk-c288=""
-            class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
+            class="flex items-center w-full p-30 pt-12 pb-12 border-b justify-between"
           >
             <h2 className="text-2xl font-semibold">
               External Consultations for Tasks
@@ -3587,7 +3587,7 @@ const EvaluationApproval = ({
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
           <div
             _ngcontent-fyk-c288=""
-            class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
+            class="flex items-center w-full p-30 pt-14 pb-14 border-b justify-between"
           >
             <h2 className="text-2xl font-semibold">Approval</h2>
           </div>
@@ -3728,22 +3728,28 @@ const EvaluationApproval = ({
                                       alt="Card cover image"
                                       className="rounded-full mr-4"
                                       style={{
-                                        width: "5rem",
-                                        height: "5rem",
+                                        width: "4rem",
+                                        height: "4rem",
                                       }}
                                     />
-                                    <h6 className="ps-4 pt-2 text-black">
-                                      <b>{remark.createdBy}</b> {remark?.remark}
-                                    </h6>
-                                    {" -"}
-                                    <h6 className="ps-5 pt-2 text-grey">
-                                      {formatDates(remark.createdAt)}
-                                    </h6>
+                                    <div className="ps-4">
+                                      <h6 className="pt-2 text-black">
+                                        <b>{remark.createdBy}</b> -{" "}
+                                        {remark?.remark}
+                                      </h6>
+                                      <h6
+                                        className="pt-1 text-grey"
+                                        style={{ display: "block" }}
+                                      >
+                                        {formatDates(remark.createdAt)}
+                                      </h6>
+                                    </div>
                                   </div>
                                 </TableCell>
                               </TableRow>
                             )
                         )}
+
                         {remarkRequest?.length == 0 && (
                           <TableRow>
                             <TableCell>
@@ -3882,17 +3888,22 @@ const EvaluationApproval = ({
                                       alt="Card cover image"
                                       className="rounded-full mr-4"
                                       style={{
-                                        width: "5rem",
-                                        height: "5rem",
+                                        width: "4rem",
+                                        height: "4rem",
                                       }}
                                     />
-                                    <h6 className="ps-4 pt-2 text-black">
-                                      <b>{remark.createdBy}</b> {remark?.remark}
-                                    </h6>
-                                    {" -"}
-                                    <h6 className="ps-5 pt-2 text-grey">
-                                      {formatDates(remark.createdAt)}
-                                    </h6>
+                                    <div className="ps-4">
+                                      <h6 className="pt-2 text-black">
+                                        <b>{remark.createdBy}</b>{" "}
+                                        {remark?.remark}
+                                      </h6>
+                                      <h6
+                                        className="pt-1 text-grey"
+                                        style={{ display: "block" }}
+                                      >
+                                        {formatDates(remark.createdAt)}
+                                      </h6>
+                                    </div>
                                   </div>
                                 </TableCell>
                               </TableRow>

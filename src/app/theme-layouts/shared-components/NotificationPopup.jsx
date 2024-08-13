@@ -62,8 +62,7 @@ const NotificationPopup = ({ notification, setNotification }) => {
   };
   return (
     <>
-    <Box
-   
+      <Box
         style={{
           padding: "30px",
           backgroundColor: "#4f46e5",
@@ -90,7 +89,7 @@ const NotificationPopup = ({ notification, setNotification }) => {
             }}
           >
             <Typography
-              className="text-11 font-medium capitalize"
+              className="text-11 font-medium capitalize cursor-pointer"
               onClick={handelMarkAllRead}
             >
               <FuseSvgIcon
@@ -102,121 +101,127 @@ const NotificationPopup = ({ notification, setNotification }) => {
           </Tooltip>
         </div>
       </Box>
-      <div className="p-30 pt-24 pb-24 mb-24" style={{maxHeight: "480px",  overflowY: "auto",}}>
-    <List className="pt-0">
-      
-      {notification?.length === 0 ? (
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          justifyContent="center"
-          padding="16px"
-        >
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            width="56px"
-            height="56px"
-            borderRadius="50%"
-            backgroundColor="rgba(224,231,255)"
-          >
-            <FuseSvgIcon size={24}>heroicons-outline:bell</FuseSvgIcon>
-          </Box>
-          <Typography
-            variant="h6"
-            component="div"
-            style={{ marginTop: "16px", fontWeight: "bold" }}
-          >
-            No notifications
-          </Typography>
-          <Typography
-            variant="body2"
-            component="div"
-            style={{
-              marginTop: "8px",
-              textAlign: "center",
-              color: "#616161",
-            }}
-          >
-            When you have notifications, they will appear here.
-          </Typography>
-        </Box>
-      ) : (
-        notification.map((notification) => (
-         
-          <ListItem key={notification.id} divider sx={{position:"relative"}}>
+      <div
+        className="p-30 pt-24 pb-24 mb-24"
+        style={{ maxHeight: "480px", overflowY: "auto" }}
+      >
+        <List className="pt-0">
+          {notification?.length === 0 ? (
             <Box
               display="flex"
-              justifyContent="space-between"
-              alignItems="start"
-              width="100%"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              padding="16px"
             >
-              <Box>
-                <ListItemText className="m-0"
-                  primary={
-                    <Typography
-                      variant="subtitle1"
-                      style={{ fontWeight: "bold" }}
-                    >
-                      {notification.notificationSubject}
-                    </Typography>
-                  }
-                  secondary={
-                    <>
-                      <Typography
-                        component="div"
-                        variant="body2"
-                        color="textPrimary"
-                      >
-                        {notification.notificationContent}
-                      </Typography>
-                      <Typography
-                        component="div"
-                        variant="caption"
-                        color="textSecondary"
-                        style={{ marginTop: "8px" }}
-                      >
-                        {new Date(notification.createdAt).toLocaleString()}
-                      </Typography>
-                    </>
-                  }
-                />
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                width="56px"
+                height="56px"
+                borderRadius="50%"
+                backgroundColor="rgba(224,231,255)"
+              >
+                <FuseSvgIcon size={24}>heroicons-outline:bell</FuseSvgIcon>
               </Box>
-              <Tooltip
-                title="Mark as read"
-                arrow
-                componentsProps={{
-                  tooltip: {
-                    sx: {
-                      backgroundColor: "black",
-                      color: "white",
-                      fontSize: 12,
-                    },
-                  },
+              <Typography
+                variant="h6"
+                component="div"
+                style={{ marginTop: "16px", fontWeight: "bold" }}
+              >
+                No notifications
+              </Typography>
+              <Typography
+                variant="body2"
+                component="div"
+                style={{
+                  marginTop: "8px",
+                  textAlign: "center",
+                  color: "#616161",
                 }}
               >
-                <span
-                  style={{
-                    width: "10px",
-                    height: "10px",
-                    position:"absolute",
-                    top:"20px",
-                    right:0,
-                    backgroundColor: "blue",
-                    borderRadius: "50%",
-                  }}
-                  onClick={(e) => handelMarkAsRead(e, notification)}
-                ></span>
-              </Tooltip>
+                When you have notifications, they will appear here.
+              </Typography>
             </Box>
-          </ListItem>
-        
-        ))
-      )}
-    </List>
-    </div>
+          ) : (
+            notification.map((notification) => (
+              <ListItem
+                key={notification.id}
+                divider
+                sx={{ position: "relative" }}
+              >
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="start"
+                  width="100%"
+                >
+                  <Box>
+                    <ListItemText
+                      className="m-0"
+                      primary={
+                        <Typography
+                          variant="subtitle1"
+                          style={{ fontWeight: "bold" }}
+                        >
+                          {notification.notificationSubject}
+                        </Typography>
+                      }
+                      secondary={
+                        <>
+                          <Typography
+                            component="div"
+                            variant="body2"
+                            color="textPrimary"
+                          >
+                            {notification.notificationContent}
+                          </Typography>
+                          <Typography
+                            component="div"
+                            variant="caption"
+                            color="textSecondary"
+                            style={{ marginTop: "8px" }}
+                          >
+                            {new Date(notification.createdAt).toLocaleString()}
+                          </Typography>
+                        </>
+                      }
+                    />
+                  </Box>
+                  <Tooltip
+                    title="Mark as read"
+                    arrow
+                    componentsProps={{
+                      tooltip: {
+                        sx: {
+                          backgroundColor: "black",
+                          color: "white",
+                          fontSize: 12,
+                        },
+                      },
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: "10px",
+                        height: "10px",
+                        position: "absolute",
+                        top: "20px",
+                        right: 0,
+                        backgroundColor: "blue",
+                        borderRadius: "50%",
+                        cursor: "pointer",
+                      }}
+                      onClick={(e) => handelMarkAsRead(e, notification)}
+                    ></span>
+                  </Tooltip>
+                </Box>
+              </ListItem>
+            ))
+          )}
+        </List>
+      </div>
     </>
   );
 };
