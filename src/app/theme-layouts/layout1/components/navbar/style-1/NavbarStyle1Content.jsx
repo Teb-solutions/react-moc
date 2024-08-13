@@ -34,7 +34,7 @@ function NavbarStyle1Content(props) {
   return (
     <Root
       style={{
-        width: isMobile || isExpanded ? "350px" : "80px",
+        width: isMobile || isExpanded ? "280px" : "80px",
         transition: "width 0.3s ease",
         overflow: "hidden",
         display: "flex",

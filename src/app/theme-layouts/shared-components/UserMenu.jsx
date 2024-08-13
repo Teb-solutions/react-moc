@@ -90,7 +90,7 @@ function UserMenu() {
           </div>
         </Button>
         <Tooltip
-          title="Ticket"
+          title="Create Ticket"
           arrow
           componentsProps={{
             tooltip: {

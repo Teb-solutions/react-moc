@@ -75,11 +75,12 @@ const SessionList = () => {
 
   return (
     <>
-      <div className="" style={{ margin: "30px" }}>
-        <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
+      <div className="p-20">
+        <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
             id="category-select-label"
-            style={{ fontSize: "xx-large", color: "black" }}
+            style={{ color: "black" }}
+            className="text-2xl text-left"
           >
             <b>Session List</b>
           </InputLabel>

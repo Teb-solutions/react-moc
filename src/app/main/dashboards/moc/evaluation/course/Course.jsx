@@ -7459,7 +7459,7 @@ function Course() {
                       >
                         <div
                           _ngcontent-fyk-c288=""
-                          class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
+                          class="flex items-center w-full p-30 pt-12 pb-12 border-b justify-between"
                         >
                           <h2
                             _ngcontent-fyk-c288=""

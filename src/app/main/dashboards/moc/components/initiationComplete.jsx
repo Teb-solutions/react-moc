@@ -1415,7 +1415,7 @@ const InitiationComplete = ({
                     </span>
                   </FormControl>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={12}>
                   <FormControl fullWidth>
                     <FormLabel>Brief Description</FormLabel>
                     <span>{currentSummeryById?.briefDescription}</span>
