@@ -1598,7 +1598,7 @@ const AssetCourse = () => {
         formUID: closeActivity.formUID,
       })
       .then((resp) => {
-        toast?.success("MOC Successfully Closed");
+        toast?.success("MOC Successfully Closed.");
         setTimeout(() => {
           getRecords();
         }, 3000);
