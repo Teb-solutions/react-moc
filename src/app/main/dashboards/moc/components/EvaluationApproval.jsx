@@ -31,7 +31,7 @@ import {
 } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import SwipeableViews from "react-swipeable-views";
 import SearchIcon from "@mui/icons-material/Search";
 import Chart from "react-apexcharts";
@@ -282,10 +282,21 @@ const EvaluationApproval = ({
   const [clickedTasks, setClickedTasks] = useState({});
   const [showReview, setshowReview] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  async function testReview() {
+    const response = await apiAuth.get(
+      `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+    );
 
-  const handelCommentImp = (id, rwid, value) => {
+    setContentDetails(response.data.data);
+  }
+
+  useEffect(() => {
+    testReview();
+  }, []);
+
+  const handelCommentImp = async (id, rwid, value) => {
     if (value == 1) {
-      setshowReview(true);
+      // setshowReview(true);
       apiAuth
         .put(
           `/ChangeEvaluationConsultation/AddReview/${id}/${lastActCode.code}/0`,
@@ -293,16 +304,10 @@ const EvaluationApproval = ({
             remark: handelCommentRemark,
           }
         )
-        .then((resp) => {
+        .then(async (resp) => {
           toast?.success("Review successfully added");
           setHandelCommentRemark("");
-          apiAuth
-            .get(
-              `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-            )
-            .then((resp) => {
-              setContentDetails(resp.data.data);
-            });
+          testReview();
         });
     } else {
       apiAuth
@@ -312,25 +317,12 @@ const EvaluationApproval = ({
             remark: handelCommentRemark,
           }
         )
-        .then((resp) => {
+        .then(async (resp) => {
           toast?.success("Review successfully updated");
-          apiAuth
-            .get(
-              `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-            )
-            .then((resp) => {
-              setContentDetails(resp.data.data);
-            });
+          testReview();
           setHandelCommentRemark("");
         });
     }
-    apiAuth
-      .get(
-        `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-      )
-      .then((resp) => {
-        setContentDetails(resp.data.data);
-      });
   };
 
   const handelImpactCommentImp = (id, value) => {
@@ -339,34 +331,17 @@ const EvaluationApproval = ({
         remark: handelCommentRemark,
       })
       .then((resp) => {
-        if (value == 1) {
-          setshowReview(true);
+        console.log(resp.data, "8888");
+        console.log(resp.data.data, "888899");
+        if (value === 1) {
+          // setshowReview(true);
           toast?.success("Review successfully added");
-          apiAuth
-            .get(
-              `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-            )
-            .then((resps) => {
-              setContentDetails(resps.data.data);
-            });
+          testReview();
         } else {
           toast?.success("Review successfully Updated");
-          apiAuth
-            .get(
-              `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-            )
-            .then((respso) => {
-              setContentDetails(respso.data.data);
-            });
+          testReview();
         }
         setHandelCommentRemark("");
-      });
-    apiAuth
-      .get(
-        `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-      )
-      .then((resp) => {
-        setContentDetails(resp.data.data);
       });
   };
 
