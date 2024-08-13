@@ -173,7 +173,7 @@ const ImplementationApprovalSite = ({
           remark: handelCommentRemark,
         })
         .then((resp) => {
-          setshowReview(true);
+          // setshowReview(true);
           toast?.success("Review successfully added");
           getRecords();
 
@@ -185,7 +185,7 @@ const ImplementationApprovalSite = ({
           remark: handelCommentRemark,
         })
         .then((resp) => {
-          setshowReview(true);
+          // setshowReview(true);
           toast?.success("Review successfully Updated");
           getRecords();
 
