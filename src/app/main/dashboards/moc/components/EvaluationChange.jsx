@@ -1558,7 +1558,8 @@ function EvaluationChange({
       )
       .then((resp) => {
         setIsLoading(false);
-
+        localStorage.removeItem("currentSeconds");
+        localStorage.removeItem("lastUpdate");
         toast?.success("Evaluation session has been stopped.");
         setOpen(false);
         localStorage.setItem("isActiveSession", false);
