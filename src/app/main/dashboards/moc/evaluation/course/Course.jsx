@@ -1330,38 +1330,35 @@ function Course() {
       });
   };
 
-  const handelCommentImp = useCallback(
-    async (id, value) => {
-      await apiAuth
-        .put(`/Task/ImpAddReview/${id}/IMPL_APPROVAL_VP_DIV`, {
-          remark: handelCommentRemark,
-        })
-        .then(async (resp) => {
-          if (value == 1) {
-            toast?.success("Review successfully added");
-            await apiAuth
-              .get(
-                `/SummaryDetails/List?id=${evaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-              )
-              .then((resp) => {
-                setContentDetails(resp.data?.data);
-              });
-          } else {
-            toast?.success("Review successfully Updated");
-            await apiAuth
-              .get(
-                `/SummaryDetails/List?id=${evaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-              )
-              .then((resp) => {
-                setContentDetails(resp.data?.data);
-              });
-          }
-          setHandelCommentRemark("");
-          getRecords();
-        });
-    },
-    [contentDetails]
-  );
+  const handelCommentImp = async (id, value) => {
+    await apiAuth
+      .put(`/Task/ImpAddReview/${id}/IMPL_APPROVAL_VP_DIV`, {
+        remark: handelCommentRemark,
+      })
+      .then(async (resp) => {
+        if (value == 1) {
+          toast?.success("Review successfully added");
+          await apiAuth
+            .get(
+              `/SummaryDetails/List?id=${evaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+            )
+            .then((resp) => {
+              setContentDetails(resp.data?.data);
+            });
+        } else {
+          toast?.success("Review successfully Updated");
+          await apiAuth
+            .get(
+              `/SummaryDetails/List?id=${evaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+            )
+            .then((resp) => {
+              setContentDetails(resp.data?.data);
+            });
+        }
+        setHandelCommentRemark("");
+        getRecords();
+      });
+  };
 
   const handelCloseMoc = (uid) => {
     setIsLoading(true);
@@ -7852,14 +7849,14 @@ function Course() {
                                                       rows="2"
                                                       className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
                                                       placeholder="Write a comment..."
-                                                      id="ImpTaskReview265"
+                                                      id="ImpTaskReview"
                                                       data-placeholder="Write a comment..."
                                                       aria-invalid="false"
                                                       aria-required="false"
                                                       style={{ height: "36px" }}
                                                       defaultValue={
                                                         imptsk
-                                                          .implementationReviews[0]
+                                                          ?.implementationReviews[0]
                                                           ?.remark
                                                       }
                                                       onChange={(e) =>
