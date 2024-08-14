@@ -483,7 +483,7 @@ function Course() {
     if (!taskAdd.assignedStaffId)
       tempErrors.assignedStaffId = "Task Assigned Field is required";
     if (!taskAdd.dueDate) tempErrors.dueDate = "Date Field is required";
-    if (!taskAdd.audit) tempErrors.audit = "Audit Field is required";
+    // if (!taskAdd.audit) tempErrors.audit = "Audit Field is required";
 
     // Add other validations here
     setErrorsAddTask(tempErrors);
@@ -2349,7 +2349,7 @@ function Course() {
                             {contentDetailsIni?.projectName}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="" className="my-6">
+                        {/* <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -2363,13 +2363,7 @@ function Course() {
                             {" "}
                             {contentDetailsIni?.projectDescription}
                           </div>
-                        </div>
-                      </div>
-
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
+                        </div> */}
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
@@ -2387,21 +2381,12 @@ function Course() {
                               : "Existing"}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="" className="my-6">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Reason for New Document
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.reasonForNewDocument}
-                          </div>
-                        </div>
+                      </div>
+
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                      >
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
@@ -2418,10 +2403,50 @@ function Course() {
                           </div>
                         </div>
                       </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                      >
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Description
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetailsIni?.projectDescription}
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                      >
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Reason for New Document
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetailsIni?.reasonForNewDocument}
+                          </div>
+                        </div>
+                      </div>
 
                       <div
                         _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                        class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
                       >
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
@@ -3608,27 +3633,7 @@ function Course() {
                             {contentDetails?.projectName}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="" className="my-6">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Document Description
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetails?.projectDescription}
-                          </div>
-                        </div>
-                      </div>
 
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
@@ -3644,21 +3649,12 @@ function Course() {
                             {contentDetails?.documentType}New
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="" className="my-6">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Reason for New Document
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetails?.reasonForNewDocument}
-                          </div>
-                        </div>
+                      </div>
+
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                      >
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
@@ -3674,12 +3670,6 @@ function Course() {
                             {contentDetails?.docControllerName}
                           </div>
                         </div>
-                      </div>
-
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
@@ -3692,8 +3682,47 @@ function Course() {
                             class="text-lg leading-6 font-medium"
                           >
                             {" "}
-                            {formatDate(contentDetails?.docOldValidityDate)}
-                            New
+                            {formatDates(contentDetails?.docOldValidityDate)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                      ></div>
+
+                      <div _ngcontent-fyk-c288="" class="grid w-full">
+                        <div className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Description
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.projectDescription}
+                          </div>
+                        </div>
+                      </div>
+                      <div _ngcontent-fyk-c288="" class="grid w-full">
+                        <div className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Reason for New Document
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.reasonForNewDocument}
                           </div>
                         </div>
                       </div>
@@ -3722,7 +3751,6 @@ function Course() {
                           </div>
                         </div>
                       </div>
-
                       <div _ngcontent-fyk-c288="" class="grid  w-full">
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
@@ -7233,8 +7261,8 @@ function Course() {
                                         name="audit"
                                         onChange={handleChangeAddTask}
                                         value={taskAdd.audit}
-                                        error={!!errorsAddTask.audit}
-                                        helperText={errorsAddTask.audit}
+                                        // error={!!errorsAddTask.audit}
+                                        // helperText={errorsAddTask.audit}
                                       />
                                     </Box>
                                   </div>
