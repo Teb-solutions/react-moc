@@ -66,7 +66,7 @@ const Task = () => {
     bgcolor: "background.paper",
 
     boxShadow: 24,
-    p: 4,
+    // p: 4,
   };
   const StyledBadge = withStyles((theme) => ({
     badge: {

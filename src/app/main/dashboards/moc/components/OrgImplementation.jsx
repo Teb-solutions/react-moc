@@ -44,7 +44,7 @@ function createData(
   date,
   staff
 ) {
-  return { Task, Audit, date, staff };
+  return { index, Task, Audit, date, staff };
 }
 const OrgImplementation = ({
   impDetails,
@@ -184,6 +184,17 @@ const OrgImplementation = ({
       year: "numeric",
     });
   };
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  console.log(currentAudit, "ppppppp");
+
+  const filteredDepartmentList = currentAudit.filter((row) =>
+    row.Audit.toString().includes(searchQuery)
+  );
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
@@ -640,6 +651,7 @@ const OrgImplementation = ({
                   marginRight: "30px",
                 }}
                 //   value={searchTerm}
+                onChange={handleSearch}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment
@@ -675,7 +687,7 @@ const OrgImplementation = ({
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {currentAudit
+                    {filteredDepartmentList
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
@@ -1298,7 +1310,7 @@ const OrgImplementation = ({
                           ))}
                           {detail.isCompleted && detail.taskStatus !== 3 && (
                             <>
-                              <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                              <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0 mt-5">
                                 <div
                                   _ngcontent-fyk-c288=""
                                   class="flex items-center w-full  border-b justify-between"
