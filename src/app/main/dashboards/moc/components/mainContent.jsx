@@ -828,7 +828,11 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                     class="text-lg leading-6 font-medium"
                   >
                     {" "}
-                    {contentDetails?.projectValue}
+                    {contentChanges
+                      ? contentDetails.isNewStaff == true
+                        ? "New"
+                        : "Existing"
+                      : contentDetails?.changeType}
                   </div>
                 </div>
                 <div _ngcontent-fyk-c288="" className="my-6">
@@ -856,25 +860,22 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                 _ngcontent-fyk-c288=""
                 class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
               >
-                <div className="my-6">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    {contentChanges
-                      ? "Program Completion Date"
-                      : "Location of change"}
+                {!contentChanges && (
+                  <div className="my-6">
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="mt-3 leading-6 text-secondary"
+                    >
+                      Location of change
+                    </div>
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="text-lg leading-6 font-medium"
+                    >
+                      {contentDetails?.changeLocationString}
+                    </div>
                   </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {contentChanges
-                      ? formatDates(contentDetails?.programCompletionDate)
-                      : contentDetails?.changeLocationString}
-                  </div>
-                </div>
+                )}
 
                 {!contentChanges && (
                   <div _ngcontent-fyk-c288="" className="my-6">
@@ -918,6 +919,25 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                   </div>
                 </div>
               </div>
+              {contentChanges && (
+                <div className="my-6">
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="mt-3 leading-6 text-secondary"
+                  >
+                    Program Completion Date
+                  </div>
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="text-lg leading-6 font-medium"
+                  >
+                    {" "}
+                    {contentChanges
+                      ? formatDates(contentDetails?.programCompletionDate)
+                      : contentDetails?.changeLocationString}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </Paper>

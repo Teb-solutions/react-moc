@@ -7,16 +7,16 @@ import { toggleQuickPanel } from "./quickPanelSlice";
  * The quick panel toggle button.
  */
 function QuickPanelToggleButton(props) {
-  const { children = <FuseSvgIcon>heroicons-outline:bookmark</FuseSvgIcon> } =
+  const { children = <FuseSvgIcon>heroicons-outline:plus</FuseSvgIcon> } =
     props;
   const dispatch = useAppDispatch();
   return (
     // <IconButton
-    // 	className="h-40 w-40"
-    // 	onClick={() => dispatch(toggleQuickPanel())}
-    // 	size="large"
+    //   className="h-40 w-40"
+    //   onClick={() => dispatch(toggleQuickPanel())}
+    //   size="large"
     // >
-    // 	{children}
+    //   {children}
     // </IconButton>
     <></>
   );
