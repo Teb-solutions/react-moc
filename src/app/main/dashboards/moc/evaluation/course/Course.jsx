@@ -167,11 +167,8 @@ function Course() {
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
   };
-  const HandleTraining = () => {
-    setSelectedFile({
-      ...selectedFile,
-      descritpion: "",
-    });
+
+  const listDocu = () => {
     apiAuth
       .get(
         `/DocumentManager/DocList/${evaluationId}/DocImplTrSheet?changeRequestToken=${evaluationId}`
@@ -179,6 +176,24 @@ function Course() {
       .then((response) => {
         setListDocument1(response?.data?.data);
       });
+  };
+  useEffect(() => {
+    listDocu();
+  }, []);
+
+  const HandleTraining = () => {
+    setSelectedFile({
+      ...selectedFile,
+      descritpion: "",
+    });
+    listDocu();
+    // apiAuth
+    //   .get(
+    //     `/DocumentManager/DocList/${evaluationId}/DocImplTrSheet?changeRequestToken=${evaluationId}`
+    //   )
+    //   .then((response) => {
+    //     setListDocument1(response?.data?.data);
+    //   });
     setOpenMoc(true);
   };
 
@@ -228,7 +243,7 @@ function Course() {
             )
             .then((response) => {
               setOpenDrawer(false);
-              setListDocument(response?.data?.data);
+              setListDocument1(response?.data?.data);
               setSelectedFile({
                 ...selectedFile,
                 name: "",
@@ -489,7 +504,8 @@ function Course() {
           }, 2000);
 
           setTaskAdd({
-            particular: "",
+            ...taskAdd,
+            particular: 0,
             particularSubCategory: "",
             impacHazards: "",
             taskassignedto: "",
@@ -500,6 +516,13 @@ function Course() {
             assignedStaffId: "",
             otherDetail: "",
             changeImpactHazard: "",
+
+            ChangeImapactId: 0,
+            changeEvaluationId: 0,
+            deadline: 1,
+            hazardDetail: "",
+            isShowDetail: "",
+            parentId: "0",
           });
         })
         .catch((err) => {
@@ -719,7 +742,6 @@ function Course() {
 
     boxShadow: 24,
     p: 4,
-    padding: "0px",
   };
   const [viewrisk, setViewRisk] = useState(false);
 
@@ -1308,21 +1330,38 @@ function Course() {
       });
   };
 
-  const handelCommentImp = (id, value) => {
-    apiAuth
-      .put(`/Task/ImpAddReview/${id}/IMPL_APPROVAL_VP_DIV`, {
-        remark: handelCommentRemark,
-      })
-      .then((resp) => {
-        if (value == 1) {
-          toast?.success("Review successfully added");
-        } else {
-          toast?.success("Review successfully Updated");
-        }
-        setHandelCommentRemark("");
-        getRecords();
-      });
-  };
+  const handelCommentImp = useCallback(
+    async (id, value) => {
+      await apiAuth
+        .put(`/Task/ImpAddReview/${id}/IMPL_APPROVAL_VP_DIV`, {
+          remark: handelCommentRemark,
+        })
+        .then(async (resp) => {
+          if (value == 1) {
+            toast?.success("Review successfully added");
+            await apiAuth
+              .get(
+                `/SummaryDetails/List?id=${evaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+              )
+              .then((resp) => {
+                setContentDetails(resp.data?.data);
+              });
+          } else {
+            toast?.success("Review successfully Updated");
+            await apiAuth
+              .get(
+                `/SummaryDetails/List?id=${evaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+              )
+              .then((resp) => {
+                setContentDetails(resp.data?.data);
+              });
+          }
+          setHandelCommentRemark("");
+          getRecords();
+        });
+    },
+    [contentDetails]
+  );
 
   const handelCloseMoc = (uid) => {
     setIsLoading(true);
@@ -6082,26 +6121,37 @@ function Course() {
                                                         </small>
                                                       </div>
                                                     </div>
-                                                    <StyledBadge
-                                                      badgeContent={
-                                                        documentCounts[msg.id]
-                                                      }
-                                                    >
-                                                      <button
-                                                        className="icon-button"
-                                                        onClick={() =>
-                                                          handleOpen(msg.id)
-                                                        }
-                                                        style={{
-                                                          top: "-0px",
-                                                          right: "-6px",
-                                                        }}
-                                                      >
-                                                        <FuseSvgIcon size={20}>
-                                                          heroicons-solid:document
-                                                        </FuseSvgIcon>
-                                                      </button>
-                                                    </StyledBadge>
+                                                    {documentCounts[msg.id] ? (
+                                                      documentCounts[msg.id] !=
+                                                        0 && (
+                                                        <StyledBadge
+                                                          badgeContent={
+                                                            documentCounts[
+                                                              msg.id
+                                                            ]
+                                                          }
+                                                        >
+                                                          <button
+                                                            className="icon-button"
+                                                            onClick={() =>
+                                                              handleOpen(msg.id)
+                                                            }
+                                                            style={{
+                                                              top: "-0px",
+                                                              right: "-6px",
+                                                            }}
+                                                          >
+                                                            <FuseSvgIcon
+                                                              size={20}
+                                                            >
+                                                              heroicons-solid:document
+                                                            </FuseSvgIcon>
+                                                          </button>
+                                                        </StyledBadge>
+                                                      )
+                                                    ) : (
+                                                      <></>
+                                                    )}
                                                   </div>
                                                 )}
                                                 {msg.comments && (
@@ -7549,7 +7599,7 @@ function Course() {
                         </div>
                         <div className="p-30 pt-24 pb-24">
                           {contentDetails?.implementationTask?.map((imptsk) => (
-                            <table className="task-table mat-table">
+                            <table className="task-table mat-table mt-10">
                               <thead
                                 className="task-table-header"
                                 style={{ display: "none" }}

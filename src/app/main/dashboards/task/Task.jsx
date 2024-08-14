@@ -379,6 +379,7 @@ const Task = () => {
       .then((response) => {
         setOpen(false);
         toast?.success("Task Comment Added");
+        setListDocument([]);
 
         setIsLoading(false);
         getRecords();
