@@ -2759,12 +2759,45 @@ const EvaluationApproval = ({
                 {/* Empty header */}
               </thead>
               <tbody className="task-table-body">
-                {contentDetails?.tasklist
-                  ?.sort((a, b) => b.sourceTaskId - a.sourceTaskId) // Sort in descending order by sourceTaskId
-                  .map((imptsk) => (
-                    <>
-                      <tr className="task-table-row mat-row">
-                        <td className="task-table-cell mat-cell">
+  {contentDetails?.tasklist ? (
+    Object.entries(
+      contentDetails.tasklist.reduce((acc, task) => {
+        // Group tasks by particularName
+        if (!acc[task.particularName]) {
+          acc[task.particularName] = [];
+        }
+        acc[task.particularName].push(task);
+        return acc;
+      }, {})
+    ).map(([particularName, tasks]) => {
+      const reviewedCount = tasks.filter(task => task.changeImpactTaskReviews.length > 0).length;
+      const pendingCount = tasks.filter(task => task.changeImpactTaskReviews.length === 0).length;
+      return (
+      <Accordion className="mt-6" key={particularName}>
+       
+        <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
+          <Typography className="d-flex flex-wrap w-100" style={{alignItems:"center"}}>
+            <span>{particularName} </span>
+            <span style={{marginLeft:'auto'}}> Reviewed: {reviewedCount} | Pending: {pendingCount}
+              </span>
+              <Button
+                   
+                    className="whitespace-nowrap ms-5 ml-24"
+                    variant="contained"
+                    color="secondary"
+                    // style={{ marginTop: "10px" }}
+                 
+                  >
+                    Mark as reviewed
+                  </Button>
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {tasks.sort((a, b) => b.sourceTaskId - a.sourceTaskId).map((imptsk) => (
+            <div key={imptsk.id} className="mt-24 border-b pb-24">
+          
+                      <div className="task-table-row mat-row">
+                        <div className="task-table-cell mat-cell">
                           <div className="task-header p-0 flex items-center">
                             <div className="task-id flex flex-col">
                               <span
@@ -2812,7 +2845,7 @@ const EvaluationApproval = ({
                             (!imptsk.showPreviousTasks ||
                               imptsk.showPreviousTasks === null) && (
                               <span
-                                className="text-sm text-secondary text-blue-500 font-bold cursor-pointer leading-none mt-1 ms-12"
+                                className="text-sm text-secondary text-blue-500 font-bold cursor-pointer leading-none mt-1 ms-3"
                                 onClick={() => toggleDetails(imptsk.id)}
                               >
                                 {selectedTaskId !== imptsk.id
@@ -2869,7 +2902,7 @@ const EvaluationApproval = ({
                                       Due Date
                                     </span>
                                     <span className="task-detail-value d-inline-block mt-10">
-                                      {formatDate(itm.dueDate)}
+                                      {formatDates(itm.dueDate)}
                                     </span>
                                     <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-10 text-secondary font-semibold">
                                       Deadline
@@ -3595,7 +3628,7 @@ const EvaluationApproval = ({
                                 <span
                                   className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
                                   style={{
-                                    padding: "15px",
+                                    padding: "10px",
                                   }}
                                 >
                                   No Reviews Added
@@ -3603,11 +3636,20 @@ const EvaluationApproval = ({
                               </div>
                             )}
                           </div>
-                        </td>
-                      </tr>
-                    </>
-                  ))}
-              </tbody>
+                        </div>
+                      </div>
+                   
+            </div>
+          ))}
+        </AccordionDetails>
+      </Accordion>
+      )
+})
+  ) : (
+    <p>No tasks available</p>
+  )}
+</tbody>
+
               <tfoot
                 className="task-table-footer"
                 style={{
