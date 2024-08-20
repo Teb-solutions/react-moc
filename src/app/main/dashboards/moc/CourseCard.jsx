@@ -14,8 +14,6 @@ import CourseProgress from "./CourseProgress";
 function CourseCard(props) {
   const { course } = props;
 
-  console.log(course, ";;12");
-
   return (
     <Card className="flex flex-col shadow" style={{ height: "100%" }}>
       <CardContent className="flex flex-col flex-auto p-24">

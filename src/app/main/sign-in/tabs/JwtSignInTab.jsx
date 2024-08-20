@@ -107,18 +107,6 @@ const JwtSignInTab = () => {
           Cookies.remove("MOC_Features");
           localStorage.setItem("jwt_access_token", resp.data.data.jwt);
 
-          const ticketResp = await apiTicketAuth.post("/Account/access-token", {
-            userName: "MOC_CLIENT",
-            password: "M@c_3#21c_ukl",
-            deviceId: "string",
-          });
-
-          console.log("Ticket access token response:", ticketResp);
-          localStorage.setItem(
-            "jwt_access_ticket_token",
-            ticketResp.data.accessToken
-          );
-
           localStorage.setItem("username", resp.data.data.name);
 
           try {
