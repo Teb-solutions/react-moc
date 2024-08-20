@@ -219,6 +219,11 @@ function MocApp() {
               }
             />
           </div>
+          <div className="mt-10 p-4 ">
+            <Typography variant="body2" color="textSecondary">
+              <b>MOC Requests count:</b> {filteredData.length}
+            </Typography>
+          </div>
           {filteredData &&
             (filteredData.length > 0 ? (
               <motion.div

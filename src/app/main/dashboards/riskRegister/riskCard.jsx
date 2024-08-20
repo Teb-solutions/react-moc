@@ -13,8 +13,6 @@ import RiskInfo from "./riskInfo";
 function RiskCard(props) {
   const { course } = props;
 
-  console.log(course, ";;12");
-
   return (
     <Card className="flex flex-col  shadow">
       <CardContent className="flex flex-col flex-auto p-24">

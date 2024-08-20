@@ -11,7 +11,7 @@ import TeamTab from "./tabs/team/TeamTab";
 import BudgetTab from "./tabs/budget/BudgetTab";
 import { useCallback } from "react";
 import { useEffect } from "react";
-import { apiAuth } from "src/utils/http";
+import { apiAuth, apiTicketAuth } from "src/utils/http";
 
 function createData(
   activity,
@@ -49,7 +49,7 @@ function ProjectDashboardApp() {
 
   const fetchdataSetting = useCallback(async () => {
     try {
-      apiAuth.get(`/Dashboard/Get`).then((resp) => {
+      apiAuth.get(`/Dashboard/Get`).then(async (resp) => {
         setData(resp?.data?.data);
         const transformedData = resp?.data?.data?.approvalsPendingRequests?.map(
           (item, index) =>
@@ -68,6 +68,19 @@ function ProjectDashboardApp() {
 
         setRiskMatrixList(transformedData);
         setIsLoading(false);
+        if (!localStorage.getItem("jwt_access_ticket_token")) {
+          const ticketResp = await apiTicketAuth.post("/Account/access-token", {
+            userName: "MOC_CLIENT",
+            password: "M@c_3#21c_ukl",
+            deviceId: "string",
+          });
+
+          console.log("Ticket access token response:", ticketResp);
+          localStorage.setItem(
+            "jwt_access_ticket_token",
+            ticketResp.data.accessToken
+          );
+        }
       });
     } catch (err) {
       console.log(err);
