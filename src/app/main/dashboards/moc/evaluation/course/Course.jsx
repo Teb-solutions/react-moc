@@ -35,6 +35,7 @@ import {
   TableContainer,
   TableHead,
   TableBody,
+  TablePagination,
 } from "@mui/material";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 
@@ -58,6 +59,17 @@ import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
 import CustomStepIcon from "../../CustomStepIcon";
 import { withStyles } from "@mui/styles";
+
+function createData(
+  index,
+
+  Task,
+  Audit,
+  date,
+  staff
+) {
+  return { index, Task, Audit, date, staff };
+}
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -352,8 +364,8 @@ function Course() {
     Badge: {
       background: "#2c3e50",
       color: "#fff",
-      top: "3px",
-      right: "4px",
+      top: "6px",
+      right: "3px",
     },
   }))(Badge);
 
@@ -372,6 +384,20 @@ function Course() {
     p: 4,
   };
 
+  const styleAuditCom = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "800px",
+    maxWidth: "80vw",
+    height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+    padding: "0px",
+  };
   const [taskAdd, setTaskAdd] = useState({
     particular: 0,
     particularSubCategory: "",
@@ -393,10 +419,45 @@ function Course() {
     parentId: "0",
   });
 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const columns = [
+    { id: "index", label: "#", minWidth: 50 },
+    {
+      id: "Task",
+      label: "Task",
+      minWidth: 170,
+      align: "left",
+      format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+      id: "Audit",
+      label: "Audit Comments",
+      minWidth: 170,
+      align: "left",
+      format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+      id: "date",
+      label: "Done By Date",
+      minWidth: 170,
+      align: "left",
+      format: (value) => value.toLocaleString("en-US"),
+    },
+    {
+      id: "staff",
+      label: "Done BY staff",
+      minWidth: 170,
+      align: "left",
+      format: (value) => value.toLocaleString("en-US"),
+    },
+  ];
+
   const [openImplemntationTask, setOpenImplemntationTask] = useState(false);
   const [comments, setComments] = useState("");
   const [hazardImp, setHazardImp] = useState([]);
-
+  const [currentAudit, setCurrentAudit] = useState([]);
+  const [openAudit, setOpenAudit] = useState(false);
   const [reviewed, setReviewed] = useState({});
   const [errorss, setErrorStake] = useState("");
   const [handelApprover, setHandelApprover] = useState({
@@ -404,6 +465,73 @@ function Course() {
   });
 
   const [openMoc, setOpenMoc] = useState(false);
+  const [openAuditComment, setOpenAuditComment] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+  const handleCloseAudit = () => setOpenAudit(false);
+  const [auditData, setAuditData] = useState({
+    comments: "",
+    isActive: true,
+    auditsid: "",
+  });
+  const handleCloseAuditComment = () => setOpenAuditComment(false);
+  const handelOpenAuditComment = (auditsid) => {
+    setOpenAuditComment(true);
+    setAuditData((prevState) => ({
+      ...prevState,
+      auditsid: auditsid,
+    }));
+  };
+  const handleAddAuditComment = (e) => {
+    const { name, value } = e.target;
+    setAuditData((prevState) => ({
+      ...prevState,
+      comments: value,
+    }));
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handelAuditCommentSubmit = () => {
+    apiAuth
+      .put(
+        `/ChangeImplementation/Audit/?requestToken=${evaluationId}&&taskId=${auditData.auditsid}`,
+        {
+          comments: auditData.comments,
+          isActive: auditData.isActive,
+        }
+      )
+      .then((resp) => {
+        setOpenAuditComment(false);
+        getRecords();
+      });
+  };
+
+  const handelOpenAudit = async (audits, value) => {
+    debugger;
+    setOpenAudit(true);
+    const transformedData = audits.map((item, index) =>
+      createData(
+        index + 1,
+        item.task,
+        item.comments,
+        formatDate(item.donebydate),
+        item.auditDoneBy
+      )
+    );
+    setCurrentAudit(transformedData);
+  };
+  const filteredDepartmentList = currentAudit.filter((row) =>
+    row.Audit.toString().includes(searchQuery)
+  );
 
   const handleOpenImplemntationTask = () => {
     setOpenImplemntationTask(true);
@@ -483,7 +611,7 @@ function Course() {
     if (!taskAdd.assignedStaffId)
       tempErrors.assignedStaffId = "Task Assigned Field is required";
     if (!taskAdd.dueDate) tempErrors.dueDate = "Date Field is required";
-    if (!taskAdd.audit) tempErrors.audit = "Audit Field is required";
+    // if (!taskAdd.audit) tempErrors.audit = "Audit Field is required";
 
     // Add other validations here
     setErrorsAddTask(tempErrors);
@@ -498,9 +626,9 @@ function Course() {
         .put(`ChangeImpact/Create/Task/${evaluationId}`, taskAdd)
         .then((resp) => {
           handleCloseImplemntationTask();
+          setOpenImplemntationTask(false);
           setTimeout(() => {
             getRecords();
-            setIsLoading(false);
           }, 2000);
 
           setTaskAdd({
@@ -528,7 +656,7 @@ function Course() {
         .catch((err) => {
           setIsLoading(false);
         });
-      getRecords();
+      // getRecords();
     }
   };
 
@@ -741,7 +869,6 @@ function Course() {
     bgcolor: "background.paper",
 
     boxShadow: 24,
-    p: 4,
   };
   const [viewrisk, setViewRisk] = useState(false);
 
@@ -2193,6 +2320,211 @@ function Course() {
               </Box>
             </Fade>
           </Modal>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={openAudit}
+            onClose={handleCloseAudit}
+            closeAfterTransition
+            slots={{ backdrop: Backdrop }}
+            slotProps={{
+              backdrop: {
+                timeout: 500,
+              },
+            }}
+          >
+            <Fade in={openAudit}>
+              <Box sx={style1}>
+                <Box
+                  style={{
+                    padding: "30px",
+                    backgroundColor: "#4f46e5",
+                    borderTopLeftRadius: "16px",
+                    borderTopRightRadius: "16px",
+                    color: "white",
+                  }}
+                >
+                  Audit List
+                </Box>
+                <div
+                  _ngcontent-fyk-c288=""
+                  class="flex items-center w-full  border-b justify-end"
+                  style={{ marginTop: "10px" }}
+                >
+                  <TextField
+                    variant="filled"
+                    fullWidth
+                    placeholder="Search"
+                    style={{
+                      marginBottom: "15px",
+                      backgroundColor: "white",
+                      marginRight: "30px",
+                    }}
+                    //   value={searchTerm}
+                    onChange={handleSearch}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment
+                          position="start"
+                          style={{
+                            marginTop: "0px",
+                            paddingTop: "0px",
+                          }}
+                        >
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ width: 320 }}
+                  />
+                </div>
+                <Box sx={{ overflow: "auto", padding: "5px 30px 0 30px" }}>
+                  <TableContainer style={{ marginTop: "15px" }}>
+                    <Table stickyHeader aria-label="sticky table">
+                      <TableHead>
+                        <TableRow>
+                          {columns?.map((column) => (
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                              style={{
+                                minWidth: column.minWidth,
+                              }}
+                            >
+                              {column?.label}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {filteredDepartmentList
+                          .slice(
+                            page * rowsPerPage,
+                            page * rowsPerPage + rowsPerPage
+                          )
+                          .map((row) => {
+                            return (
+                              <TableRow
+                                hover
+                                role="checkbox"
+                                tabIndex={-1}
+                                key={row.code}
+                                sx={{ padding: "default" }}
+                              >
+                                {columns.map((column) => {
+                                  const value = row[column.id];
+                                  return (
+                                    <TableCell
+                                      key={column.id}
+                                      align={column.align}
+                                      style={{
+                                        borderBottom: "1px solid #dddddd",
+                                      }}
+                                    >
+                                      {column.render
+                                        ? column.render(row) // Render custom actions
+                                        : column.format &&
+                                            typeof value === "number"
+                                          ? column.format(value)
+                                          : value}
+                                    </TableCell>
+                                  );
+                                })}
+                              </TableRow>
+                            );
+                          })}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <TablePagination
+                    style={{ display: "flex", marginTop: "10px" }}
+                    rowsPerPageOptions={[10, 25, 100]}
+                    component="div"
+                    count={currentAudit.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                  />
+                </Box>
+              </Box>
+            </Fade>
+          </Modal>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={openAuditComment}
+            onClose={handleCloseAuditComment}
+            closeAfterTransition
+            slots={{ backdrop: Backdrop }}
+            slotProps={{
+              backdrop: {
+                timeout: 500,
+              },
+            }}
+          >
+            <Fade in={openAuditComment}>
+              <Box sx={styleAuditCom}>
+                <Box
+                  style={{
+                    padding: "30px",
+                    backgroundColor: "#4f46e5",
+                    borderTopLeftRadius: "16px",
+                    borderTopRightRadius: "16px",
+                    color: "white",
+                  }}
+                >
+                  <h4>Add Audit</h4>
+                </Box>
+                <Box>
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "4rem",
+                      fontWeight: "800px !important",
+                    }}
+                  >
+                    <div className="flex-auto p-30 pt-24 pb-12">
+                      <div className="flex flex-col-reverse">
+                        <div
+                          style={{
+                            justifyContent: "space-between",
+                          }}
+                          className="flex flex-row"
+                        >
+                          <Box sx={{ width: "100%" }}>
+                            <FormLabel
+                              className="font-medium text-14"
+                              component="legend"
+                            >
+                              Comments *
+                            </FormLabel>
+                            <TextField
+                              fullWidth
+                              name="comments"
+                              onChange={handleAddAuditComment}
+                            />
+                          </Box>
+                        </div>
+                      </div>{" "}
+                    </div>
+                    <div className="flex justify-end pb-10 p-30 pt-12">
+                      <Button
+                        className="whitespace-nowrap  "
+                        variant="contained"
+                        color="secondary"
+                        onClick={handelAuditCommentSubmit}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  </Typography>
+                </Box>
+              </Box>
+            </Fade>
+          </Modal>
           <SwipeableViews>
             <>
               <div className=" p-16 pb-64 sm:p-24 ">
@@ -2346,7 +2678,7 @@ function Course() {
                             {contentDetailsIni?.projectName}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="" className="my-6">
+                        {/* <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
                             class="mt-3 leading-6 text-secondary"
@@ -2360,13 +2692,7 @@ function Course() {
                             {" "}
                             {contentDetailsIni?.projectDescription}
                           </div>
-                        </div>
-                      </div>
-
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
+                        </div> */}
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
@@ -2384,21 +2710,12 @@ function Course() {
                               : "Existing"}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="" className="my-6">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Reason for New Document
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetailsIni?.reasonForNewDocument}
-                          </div>
-                        </div>
+                      </div>
+
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                      >
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
@@ -2415,10 +2732,50 @@ function Course() {
                           </div>
                         </div>
                       </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                      >
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Description
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetailsIni?.projectDescription}
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                      >
+                        <div _ngcontent-fyk-c288="" className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Reason for New Document
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetailsIni?.reasonForNewDocument}
+                          </div>
+                        </div>
+                      </div>
 
                       <div
                         _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                        class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
                       >
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
@@ -3605,27 +3962,7 @@ function Course() {
                             {contentDetails?.projectName}
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="" className="my-6">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Document Description
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetails?.projectDescription}
-                          </div>
-                        </div>
-                      </div>
 
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
@@ -3641,21 +3978,12 @@ function Course() {
                             {contentDetails?.documentType}New
                           </div>
                         </div>
-                        <div _ngcontent-fyk-c288="" className="my-6">
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="mt-3 leading-6 text-secondary"
-                          >
-                            Reason for New Document
-                          </div>
-                          <div
-                            _ngcontent-fyk-c288=""
-                            class="text-lg leading-6 font-medium"
-                          >
-                            {" "}
-                            {contentDetails?.reasonForNewDocument}
-                          </div>
-                        </div>
+                      </div>
+
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
+                      >
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
@@ -3671,12 +3999,6 @@ function Course() {
                             {contentDetails?.docControllerName}
                           </div>
                         </div>
-                      </div>
-
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                      >
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
                             _ngcontent-fyk-c288=""
@@ -3689,8 +4011,47 @@ function Course() {
                             class="text-lg leading-6 font-medium"
                           >
                             {" "}
-                            {formatDate(contentDetails?.docOldValidityDate)}
-                            New
+                            {formatDates(contentDetails?.docOldValidityDate)}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                      ></div>
+
+                      <div _ngcontent-fyk-c288="" class="grid w-full">
+                        <div className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Document Description
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.projectDescription}
+                          </div>
+                        </div>
+                      </div>
+                      <div _ngcontent-fyk-c288="" class="grid w-full">
+                        <div className="my-6">
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="mt-3 leading-6 text-secondary"
+                          >
+                            Reason for New Document
+                          </div>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="text-lg leading-6 font-medium"
+                          >
+                            {" "}
+                            {contentDetails?.reasonForNewDocument}
                           </div>
                         </div>
                       </div>
@@ -3719,7 +4080,6 @@ function Course() {
                           </div>
                         </div>
                       </div>
-
                       <div _ngcontent-fyk-c288="" class="grid  w-full">
                         <div _ngcontent-fyk-c288="" className="my-6">
                           <div
@@ -5846,19 +6206,19 @@ function Course() {
                                       </Button>
                                     )}
                                   {/* <Button
-                                  className="whitespace-nowrap mt-5 mb-5 ms-5"
-                                  style={{
-                                    border: "1px solid",
-                                    backgroundColor: "#0000",
-                                    color: "black",
-                                    borderColor: "rgba(203,213,225)",
-                                  }}
-                                  variant="contained"
-                                  color="warning"
-                                  onClick={handleOpen}
-                                >
-                                  Audits Lists
-                                </Button> */}
+                                    className="whitespace-nowrap mt-5 mb-5 ms-5"
+                                    style={{
+                                      border: "1px solid",
+                                      backgroundColor: "#0000",
+                                      color: "black",
+                                      borderColor: "rgba(203,213,225)",
+                                    }}
+                                    variant="contained"
+                                    color="warning"
+                                    onClick={handleOpen}
+                                  >
+                                    Audits Lists
+                                  </Button> */}
                                 </div>
 
                                 <TextField
@@ -5967,6 +6327,68 @@ function Course() {
                                         <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
                                           <div className="flex items-center">
                                             {formatDate(task.dueDate)}
+                                          </div>
+                                        </div>
+                                        <div
+                                          className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                          // style={{ width: "17%" }}
+                                        >
+                                          <div className="flex items-center">
+                                            <StyledBadge
+                                              badgeContent={
+                                                task?.audits?.length
+                                              }
+                                            >
+                                              <Button
+                                                className="whitespace-nowrap mt-5 mb-5"
+                                                style={{
+                                                  border: "1px solid",
+                                                  backgroundColor: "#0000",
+                                                  color: "black",
+                                                  borderColor:
+                                                    "rgba(203,213,225)",
+                                                }}
+                                                variant="contained"
+                                                color="warning"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  handelOpenAudit(
+                                                    task.audits,
+                                                    ""
+                                                  );
+                                                }}
+                                              >
+                                                Audits
+                                              </Button>
+                                            </StyledBadge>
+                                            {lastActCode?.canExecute && (
+                                              <Button
+                                                className="whitespace-nowrap ms-5 mt-5 mb-5"
+                                                style={{
+                                                  border: "1px solid",
+                                                  backgroundColor: "#0000",
+                                                  color: "black",
+                                                  borderColor:
+                                                    "rgba(203,213,225)",
+                                                }}
+                                                variant="contained"
+                                                color="warning"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  handelOpenAuditComment(
+                                                    task.id
+                                                  );
+                                                }}
+                                              >
+                                                <FuseSvgIcon
+                                                  className="text-48"
+                                                  size={24}
+                                                  color="action"
+                                                >
+                                                  heroicons-outline:document-text
+                                                </FuseSvgIcon>
+                                              </Button>
+                                            )}
                                           </div>
                                         </div>
                                       </div>
@@ -6114,7 +6536,6 @@ function Course() {
                                                                 : msg.completedDate
                                                                   ? `Completed on ${formatDates(msg.completedDate)}`
                                                                   : "Unknown"}
-                                                          sss
                                                         </small>
                                                       </div>
                                                     </div>
@@ -7230,8 +7651,8 @@ function Course() {
                                         name="audit"
                                         onChange={handleChangeAddTask}
                                         value={taskAdd.audit}
-                                        error={!!errorsAddTask.audit}
-                                        helperText={errorsAddTask.audit}
+                                        // error={!!errorsAddTask.audit}
+                                        // helperText={errorsAddTask.audit}
                                       />
                                     </Box>
                                   </div>
@@ -7377,27 +7798,6 @@ function Course() {
                               _ngcontent-fyk-c288=""
                               class="mt-3 leading-6 text-secondary"
                             >
-                              Document Description
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.projectDescription}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
                               Document Type
                             </div>
                             <div
@@ -7408,6 +7808,32 @@ function Course() {
                               {contentDetails?.documentType}New
                             </div>
                           </div>
+                        </div>
+
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                        >
+                          <div _ngcontent-fyk-c288="" className="my-6">
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="mt-3 leading-6 text-secondary"
+                            >
+                              Document Description
+                            </div>
+                            <div
+                              _ngcontent-fyk-c288=""
+                              class="text-lg leading-6 font-medium"
+                            >
+                              {" "}
+                              {contentDetailsIni?.projectDescription}
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                        >
                           <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
@@ -7420,12 +7846,15 @@ function Course() {
                               class="text-lg leading-6 font-medium"
                             >
                               {" "}
-                              {contentDetails?.reasonForNewDocument}
+                              {contentDetailsIni?.reasonForNewDocument}
                             </div>
                           </div>
                         </div>
 
-                        <div _ngcontent-fyk-c288="" class="grid w-full">
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                        >
                           <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
@@ -7442,12 +7871,18 @@ function Course() {
                                 _ngcontent-fyk-c288=""
                                 target="_blank"
                                 class="text-blue-500 hover:text-blue-800"
+                                style={{ background: "none", color: "blue" }}
                                 href={contentDetails?.documentUrl}
                               >
                                 {contentDetails?.documentUrl}
                               </a>
                             </div>
                           </div>
+                        </div>
+                        <div
+                          _ngcontent-fyk-c288=""
+                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
+                        >
                           <div _ngcontent-fyk-c288="" className="my-6">
                             <div
                               _ngcontent-fyk-c288=""
@@ -7464,7 +7899,8 @@ function Course() {
                                 _ngcontent-fyk-c288=""
                                 target="_blank"
                                 class="text-blue-500 hover:text-blue-800"
-                                href={contentDetails?.consolidatedDocumentUrl}
+                                style={{ background: "none", color: "blue" }}
+                                href={contentDetails?.documentUrl}
                               >
                                 {contentDetails?.consolidatedDocumentUrl}
                               </a>
