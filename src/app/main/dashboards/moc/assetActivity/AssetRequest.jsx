@@ -222,6 +222,7 @@ function AssetRequest() {
   const handleOpenDocModalClose = () => {
     setOpenDocModal(false);
     setOpenDrawer(false);
+    setFileDetails(false)
   };
 
   const toggleDrawer = (open) => () => {
@@ -1150,7 +1151,7 @@ function AssetRequest() {
                           <Box sx={{ flex: 1 }}>
                             <Box
                               className="flex justify-between"
-                              style={{ margin: "30px" }}
+                              style={{ margin: "0", paddingTop: "0" }}
                             >
                               <Typography
                                 id="transition-modal-title"

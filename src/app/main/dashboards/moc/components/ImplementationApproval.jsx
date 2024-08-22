@@ -599,6 +599,7 @@ function ImplementationApproval({
   const handleModalClose = () => {
     setOpen(false);
     setOpenDrawer(false);
+    setFileDetails(false)
   };
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);

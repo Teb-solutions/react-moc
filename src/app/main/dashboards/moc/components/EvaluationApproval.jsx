@@ -620,11 +620,13 @@ const EvaluationApproval = ({
   const handleModalClose = () => {
     setOpen1(false);
     setOpenDrawer(false);
+    fileDetails(false)
   };
 
   const handleModalClose1 = () => {
     setOpen(false);
     setOpenDrawer(false);
+    fileD
   };
 
   const handleSubmitResponse = (e) => {
@@ -833,6 +835,7 @@ const EvaluationApproval = ({
   };
   const handleRespModalClose = () => {
     setTaskRespOpen(false);
+    fileDetailsRes(false)
   };
   const TaskDocuHandle = (id) => {
     apiAuth

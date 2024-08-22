@@ -173,10 +173,12 @@ function InitiationApproval(props) {
   const handleModalClose = () => {
     setOpen(false);
     setOpenDrawer(false);
+    fileDetails(false)
   };
   const handleModalClose1 = () => {
     setOpen1(false);
     setOpenDrawer1(false);
+    fileDetails1(false)
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer1(open);

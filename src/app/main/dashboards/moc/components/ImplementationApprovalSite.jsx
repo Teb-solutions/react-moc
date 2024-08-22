@@ -243,6 +243,7 @@ const ImplementationApprovalSite = ({
   const handleModalClose = () => {
     setOpen(false);
     setOpenDrawer(false);
+    setFileDetails(false)
   };
   const ListDoc = (id, activeid) => {
     apiAuth

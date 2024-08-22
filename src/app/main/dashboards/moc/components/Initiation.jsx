@@ -191,6 +191,7 @@ function Initiation(props) {
   const handleModalClose = () => {
     setOpen(false);
     setOpenDrawer(false);
+    fileDetails(false)
   };
 
   const ListDoc = (id, changeRequestId) => {
@@ -276,6 +277,8 @@ function Initiation(props) {
   const handleModalClose1 = () => {
     setOpen1(false);
     setOpenDrawer1(false);
+    fileDetails(false)
+    fileDetails1(false)
   };
 
   const handleOpen1 = () => {
