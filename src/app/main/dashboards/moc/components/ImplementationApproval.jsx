@@ -1753,8 +1753,8 @@ function ImplementationApproval({
                             >
                               {tasksForStep.length} Tasks
                             </h2>
-                            {!lastActCode.isComplete &&
-                              lastActCode.status === "Pending" && (
+                            {!currentActivityForm.isComplete &&
+                              currentActivityForm.status === "Pending" && currentActivityForm.canEdit&& (
                                 <Button
                                   className="whitespace-nowrap "
                                   style={{
@@ -1767,7 +1767,7 @@ function ImplementationApproval({
                                   color="warning"
                                   onClick={handleOpenImplemntationTask}
                                 >
-                                  Add New Task
+                                  Add New Taskssss
                                 </Button>
                               )}
                             {/* <Button
@@ -1927,7 +1927,7 @@ function ImplementationApproval({
                                             Audits
                                           </Button>
                                         </StyledBadge>
-                                        {lastActCode?.canExecute && (
+                                        {currentActivityForm?.canEdit && (
                                           <Button
                                             className="whitespace-nowrap ms-5"
                                             style={{

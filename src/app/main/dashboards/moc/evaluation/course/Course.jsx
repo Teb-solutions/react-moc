@@ -1122,6 +1122,13 @@ function Course() {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetailsIni(resp.data?.data);
               });
+              apiAuth
+                    .get(`DocMoc/GetImplementation/${evaluationId}`)
+                    .then((resp) => {
+                      setTaskLists(resp.data.data.taskList);
+                      setRiskLists(resp.data.data.riskAnalysisList);
+
+                      setCheckLists(resp.data.data.checkList);})
             apiAuth
               .get(
                 `/SummaryDetails/List?id=${evaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
@@ -1134,6 +1141,8 @@ function Course() {
                   setCloseActivity(resp.data.data.activity);
                 });
               });
+              apiAuth.get(`/Staff/LOV`).then((resp) => {
+                setDocStaff(resp.data.data);})
             break;
           default:
             console.log("No matching phase found");
@@ -1399,7 +1408,7 @@ function Course() {
     console.log(id, "CheckLists");
     setCheckLists((prevCheckLists) =>
       prevCheckLists.map((item) =>
-        item.id === id ? { ...item, isChecked: !item.isChecked } : item
+        item.item === id ? { ...item, isChecked: !item.isChecked } : item
       )
     );
   };
@@ -1489,6 +1498,12 @@ function Course() {
   };
 
   const handelCloseMoc = (uid) => {
+    const allItemsChecked = CheckLists.every(item => item.isChecked);
+
+    if (!allItemsChecked) {
+      toast?.error("Please complete all checklist items before closing the MOC.");
+      return;
+    }
     setIsLoading(true);
     apiAuth
       .post(`/DocMoc/ImplementationSubmit/${evaluationId}/22`, {
@@ -2218,6 +2233,10 @@ function Course() {
   const handleAccordionChange2 = (panel) => (event, isExpanded) => {
     event.preventDefault();
     setExpanded2(isExpanded ? panel : false);
+  };
+
+  const handelOpenSide = () => {
+    setLeftSidebarOpen(true);
   };
 
   return (
@@ -3936,7 +3955,7 @@ function Course() {
                             class="text-lg leading-6 font-medium"
                           >
                             {" "}
-                            {contentDetails?.requestDate}
+                            {formatDate(contentDetails?.requestDate)}
                           </div>
                         </div>
                       </div>
@@ -4024,7 +4043,7 @@ function Course() {
                             class="text-lg leading-6 font-medium"
                           >
                             {" "}
-                            {formatDates(contentDetails?.docOldValidityDate)}
+                            {new Date(contentDetails?.docOldValidityDate).toLocaleDateString("en-GB")}
                           </div>
                         </div>
                       </div>
@@ -6176,7 +6195,7 @@ function Course() {
                               aria-label="basic tabs example"
                             >
                               <Tab label="Task" {...a11yProps(0)} />
-                              <Tab label="Checklist" {...a11yProps(1)} />
+                           
                             </Tabs>
                           </Box>
                           <CustomTabPanel
@@ -6339,7 +6358,11 @@ function Course() {
 
                                         <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
                                           <div className="flex items-center">
-                                            {formatDate(task.dueDate)}
+                                          {new Date(task.dueDate).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })}
                                           </div>
                                         </div>
                                         <div
@@ -6471,7 +6494,12 @@ function Course() {
                                               >
                                                 <p>
                                                   Due Date :{" "}
-                                                  {formatDate(task.dueDate)}
+                                                 
+                                                  {new Date(task.dueDate).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })}
                                                 </p>
                                               </div>
                                             </div>
@@ -7179,140 +7207,7 @@ function Course() {
                                 )}
                               </div>
                             )}
-                          <CustomTabPanel value={value} index={1}>
-                            <div className="flex flex-col px-4 py-3 w-full border rounded">
-                              <ul>
-                                {CheckLists.map((item) => (
-                                  <li key={item.id} className="pb-5">
-                                    <label>
-                                      <input
-                                        type="checkbox"
-                                        checked={item.isChecked}
-                                        style={{
-                                          margin: "5px",
-                                          color:
-                                            currentActivityForm.canEdit == false
-                                              ? "grey"
-                                              : "black",
-                                        }}
-                                        disabled={!currentActivityForm.canEdit}
-                                        onChange={() => {
-                                          handleCheckboxChange(item.id);
-                                        }}
-                                      />
-                                      <span
-                                        style={{
-                                          margin: "5px",
-                                          color:
-                                            currentActivityForm.canEdit == false
-                                              ? "grey"
-                                              : "black",
-                                        }}
-                                      >
-                                        {item.item}
-                                      </span>{" "}
-                                    </label>
-                                  </li>
-                                ))}
-                                {!impActivity.isComplete &&
-                                  impActivity.status === "Pending" &&
-                                  value == 1 && (
-                                    <Button
-                                      className="whitespace-nowrap ms-5 "
-                                      variant="contained"
-                                      color="secondary"
-                                      style={{
-                                        marginTop: "10px",
-                                        width: "150px",
-                                        marginBottom: "5px",
-                                      }}
-                                      onClick={saveChanges}
-                                    >
-                                      Save
-                                    </Button>
-                                  )}
-                              </ul>
-                            </div>
-
-                            {!impActivity.isComplete &&
-                              impActivity.status === "Pending" &&
-                              value == 1 && (
-                                <div
-                                  className="inventory-grid grid items-center gap-4 mt-24"
-                                  style={{ width: "100%" }}
-                                >
-                                  <Box
-                                    sx={{
-                                      display: "flex",
-                                      flexWrap: "wrap",
-                                    }}
-                                  >
-                                    <FormControl
-                                      fullWidth
-                                      sx={{
-                                        m: 0,
-                                        maxWidth: "100%",
-                                      }}
-                                    >
-                                      <span className="font-semibold leading-none">
-                                        Select Approver
-                                      </span>
-                                      <Box
-                                        sx={{
-                                          display: "flex",
-                                          flexWrap: "wrap",
-                                          marginTop: "10px",
-                                        }}
-                                      >
-                                        <FormControl fullWidth sx={{ m: 0 }}>
-                                          <Select
-                                            labelId="functionName-label"
-                                            id="docControllerId"
-                                            name="approver"
-                                            value={handelApprover.approver}
-                                            onChange={handleChangeApprover}
-                                            label="Document Controller *"
-                                          >
-                                            {docStaff.map((option) => (
-                                              <MenuItem
-                                                key={option.id}
-                                                value={option.value}
-                                              >
-                                                {option.text}
-                                              </MenuItem>
-                                            ))}
-                                          </Select>
-                                        </FormControl>
-                                      </Box>
-                                    </FormControl>
-                                  </Box>
-
-                                  <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
-                                    <div
-                                      _ngcontent-fyk-c288=""
-                                      class="flex items-center w-full mt-10 border-b justify-between"
-                                    ></div>
-                                  </div>
-                                  <div className="flex justify-end ">
-                                    {impActions.map((btn) => (
-                                      <Button
-                                        className="whitespace-nowrap ms-5 "
-                                        variant="contained"
-                                        color="secondary"
-                                        style={{
-                                          marginTop: "10px",
-                                        }}
-                                        onClick={(e) =>
-                                          SubmitImpCreate(e, btn.uid)
-                                        }
-                                      >
-                                        {btn.name}
-                                      </Button>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                          </CustomTabPanel>
+                          
                         </Box>
                       </Paper>
                     )}
@@ -7767,7 +7662,12 @@ function Course() {
                               class="text-lg leading-6 font-medium"
                             >
                               {" "}
-                              {contentDetails?.requestDate}
+                              {new Date(contentDetails?.requestDate).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })}
+                              
                             </div>
                           </div>
                         </div>
@@ -7923,6 +7823,62 @@ function Course() {
                       </div>
                     </Paper>
 
+                    <div className="flex flex-col px-4 py-3  border rounded m-24">
+                              <ul>
+                                {CheckLists.map((item) => (
+                                  <li key={item.id} className="pb-5">
+                                    <label>
+                                      <input
+                                        type="checkbox"
+                                        checked={item.isChecked}
+                                        style={{
+                                          margin: "5px",
+                                          color:
+                                            currentActivityForm.canEdit == false
+                                              ? "grey"
+                                              : "black",
+                                        }}
+                                        disabled={!currentActivityForm.canEdit}
+                                        onChange={() => {
+                                          handleCheckboxChange(item.item);
+                                        }}
+                                      />
+                                      <span
+                                        style={{
+                                          margin: "5px",
+                                          color:
+                                            currentActivityForm.canEdit == false
+                                              ? "grey"
+                                              : "black",
+                                        }}
+                                      >
+                                        {item.item}
+                                      </span>{" "}
+                                    </label>
+                                  </li>
+                                ))}
+                                {!currentActivityForm.isComplete &&
+                                  currentActivityForm.status === "Pending"&& (
+                                    <Button
+                                      className="whitespace-nowrap ms-5 "
+                                      variant="contained"
+                                      color="secondary"
+                                      style={{
+                                        marginTop: "10px",
+                                        width: "150px",
+                                        marginBottom: "5px",
+                                      }}
+                                      onClick={saveChanges}
+                                    >
+                                      Save
+                                    </Button>
+                                  )}
+                              </ul>
+                            </div>
+
+                       
+
+
                     {currentActivityForm.canEdit && (
                       <>
                         <div
@@ -7998,7 +7954,11 @@ function Course() {
                                   {itm.staff}
                                 </span>
                                 <span className="text-sm text-secondary leading-none pt-5">
-                                  Consulted on {formatDate(itm?.consultedDate)}
+                                  Consulted on {new Date(itm?.consultedDate).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })}
                                 </span>
                               </div>
                             </div>
@@ -8491,179 +8451,162 @@ function Course() {
       leftSidebarOpen={leftSidebarOpen}
       leftSidebarContent={
         <>
-          {content.map((resp, respIndex) => (
-            <Accordion
-              key={respIndex}
-              style={{ margin: "0px" }}
-              expanded={respIndex === expandedAccordionIndex}
-              onChange={() => handleAccordionChange(respIndex)}
+        <div className="desktop_hide text-end p-30 pt-24 pb-24">
+          <FuseSvgIcon
+            className="text-48 cursor-pointer "
+            size={24}
+            style={{ display: "inline-block;" }}
+            color="action"
+            onClick={handelOpenSide}
+          >
+            heroicons-outline:menu
+          </FuseSvgIcon>
+        </div>
+        {content.map((resp, respIndex) => (
+          <Accordion
+            key={respIndex}
+            style={{ margin: "0px" }}
+            expanded={respIndex === expandedAccordionIndex}
+            onChange={() => handleAccordionChange(respIndex)}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+              style={{ minHeight: "60px" }}
             >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1-content"
-                id="panel1-header"
-                style={{ minHeight: "60px" }}
-              >
-                {resp.name}
-              </AccordionSummary>
-              <AccordionDetails>
-                <Stepper orientation="vertical">
-                  {resp.activities.map((step, index) => (
-                    <Step
-                      key={index}
+              {resp.name}
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stepper orientation="vertical">
+                {resp.activities.map((step, index) => (
+                  <Step
+                    key={index}
+                    sx={{
+                      "& .MuiStepLabel-root, & .MuiStepContent-root": {
+                        cursor: step.canView ? "pointer!important" : "default!important",
+                      },
+                      "& .MuiStepContent-root": {
+                        color: "text.secondary",
+                        fontSize: 13,
+                      },
+                    }}
+                    
+                    onClick={(e) =>
+                      handleStepChange(
+                        e,
+                        resp.name,
+                        step.uid,
+                        step.code,
+                        step.version,
+                        step.refVersion,
+                        step.name,
+                        step.canEdit,
+                        step.canView
+                      )
+                    }
+                    expanded
+                    
+                   
+                  >
+                    <StepLabel
+                      className="font-medium"
+                      StepIconComponent={(props) => (
+                        <CustomStepIcon
+                          {...props}
+                          index={index}
+                          canView={step.canView}
+                          isComplete={step.isComplete}
+                          status={step.status}
+                        />
+                      )}
                       sx={{
-                        "& .MuiStepLabel-root, & .MuiStepContent-root": {
-                          cursor: "pointer!important",
-                        },
-                        "& .MuiStepContent-root": {
-                          color: "text.secondary",
-                          fontSize: 13,
-                        },
-                      }}
-                      onClick={(e) =>
-                        handleStepChange(
-                          e,
-                          resp.name,
-                          step.uid,
-                          step.code,
-                          step.version,
-                          step.refVersion,
-                          step.name,
-                          step.canEdit,
-                          step.canView
-                        )
-                      }
-                      expanded
-                    >
-                      <StepLabel
-                        className="font-medium"
-                        StepIconComponent={(props) => (
-                          <CustomStepIcon
-                            {...props}
-                            index={index}
-                            canView={step.canView}
-                            isComplete={step.isComplete}
-                            status={step.status}
-                          />
-                        )}
-                        sx={{
-                          "& .MuiSvgIcon-root": {
-                            color: "background.default",
-                            "& .MuiStepIcon-text": {
-                              fill: (_theme) => _theme.palette.text.secondary,
-                            },
-                            "&.Mui-completed": {
-                              color: "secondary.main",
-                              "& .MuiStepIcon-text ": {
-                                fill: (_theme) =>
-                                  _theme.palette.secondary.contrastText,
-                              },
-                            },
-                            "&.Mui-active": {
-                              color: "secondary.main",
-                              "& .MuiStepIcon-text ": {
-                                fill: (_theme) =>
-                                  _theme.palette.secondary.contrastText,
-                              },
+                        "& .MuiSvgIcon-root": {
+                          color: "background.default",
+                          "& .MuiStepIcon-text": {
+                            fill: (_theme) => _theme.palette.text.secondary,
+                          },
+                          "&.Mui-completed": {
+                            color: "secondary.main",
+                            "& .MuiStepIcon-text ": {
+                              fill: (_theme) =>
+                                _theme.palette.secondary.contrastText,
                             },
                           },
-                        }}
-                      >
-                        {step.name} v{step.version}
-                      </StepLabel>
-                      <StepContent>
-                        <CourseProgress
-                          course={step.isComplete === true ? 100 : 0}
-                        />
-                      </StepContent>
+                          "&.Mui-active": {
+                            color: "secondary.main",
+                            "& .MuiStepIcon-text ": {
+                              fill: (_theme) =>
+                                _theme.palette.secondary.contrastText,
+                            },
+                          },
+                        },
+                      }}
+                      
+                    >
+                      <span  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)" }:{}}>
 
-                      {step.code == "MOC_COMPLETED" ? (
-                        <>
-                          <StepContent style={{ fontSize: "10px" }}>
-                            Ended at{" "}
-                            <b>
-                              {new Date(step.actualEndDate).toLocaleString(
-                                "en-US",
-                                {
-                                  month: "long",
-                                  day: "numeric",
-                                  year: "numeric",
-                                  hour: "numeric",
-                                  minute: "numeric",
-                                  second: "numeric",
-                                  hour12: true,
-                                }
-                              )}
-                            </b>
-                          </StepContent>
-                        </>
-                      ) : (
-                        <>
-                          <StepContent
-                            style={{ fontSize: "10px" }}
-                            className="pt-4"
-                          >
-                            By{" "}
-                            <b>
-                              {step.targetUsers && step.targetUsers.length > 0
-                                ? step.targetUsers[0]
-                                : ""}
-                            </b>
-                          </StepContent>
-                          <StepContent style={{ fontSize: "10px" }}>
-                            Started at{" "}
-                            <b>
-                              {new Date(step.actualStartDate).toLocaleString(
-                                "en-US",
-                                {
-                                  month: "long",
-                                  day: "numeric",
-                                  year: "numeric",
-                                  hour: "numeric",
-                                  minute: "numeric",
-                                  second: "numeric",
-                                  hour12: true,
-                                }
-                              )}
-                            </b>
-                          </StepContent>
-                          <StepContent style={{ fontSize: "10px" }}>
-                            {step.actualEndDate === null ? (
-                              ""
-                            ) : (
-                              <>
-                                {step.status} at{" "}
-                                <b>
-                                  {new Date(step.actualEndDate).toLocaleString(
-                                    "en-US",
-                                    {
-                                      month: "long",
-                                      day: "numeric",
-                                      year: "numeric",
-                                      hour: "numeric",
-                                      minute: "numeric",
-                                      second: "numeric",
-                                      hour12: true,
-                                    }
-                                  )}
-                                </b>
-                              </>
-                            )}
-                          </StepContent>
-                          {!step?.isComplete && (
-                            <StepContent style={{ fontSize: "10px" }}>
-                              <b> Pending</b>
-                            </StepContent>
+
+                      {step.name} v{step.version}
+                      </span>
+                    </StepLabel>
+                    <StepContent>
+                      <CourseProgress
+                        course={step.isComplete === true ? 100 : 0}
+                      />
+                    </StepContent>
+                    {step.code == "MOC_COMPLETED" ? (
+                      <StepContent style={{ fontSize: "10px" }}>
+                        Ended at <b>{formatDates(step.actualEndDate)}</b>
+                      </StepContent>
+                    ) : (
+                      <>
+                        <StepContent
+                          style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}
+                          className="pt-4"
+                        >
+                          By{" "}
+                          <b>
+                            {step.targetUsers && step.targetUsers.length > 0
+                              ? step.targetUsers[0]
+                              : ""}
+                          </b>
+                        </StepContent>
+                        <StepContent  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}>
+                          Started at{" "}
+                          <b>
+                            {formatDates(step.actualStartDate, "yyyy-MM-dd")}
+                          </b>
+                        </StepContent>
+                        <StepContent  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}>
+                          {step.actualEndDate === null ? (
+                            ""
+                          ) : (
+                            <>
+                              {step.status} at{" "}
+                              <b>
+                                {formatDates(
+                                  step?.actualEndDate,
+                                  "yyyy-MM-dd"
+                                )}
+                              </b>
+                            </>
                           )}
-                        </>
-                      )}
-                    </Step>
-                  ))}
-                </Stepper>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </>
+                        </StepContent>
+                        {!step?.isComplete && (
+                          <StepContent  style={currentActivityForm.uid==step.uid?{color: "blue",fontSize: "10px" }:{fontSize: "10px" }}>
+                            <b> Pending</b>
+                          </StepContent>
+                        )}
+                      </>
+                    )}
+                  </Step>
+                ))}
+              </Stepper>
+            </AccordionDetails>
+          </Accordion>
+        ))}
+      </>
       }
       scroll="content"
       ref={pageLayout}

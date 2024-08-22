@@ -530,7 +530,11 @@ const ImplementationApprovalSite = ({
                                 Due Date
                               </span>
                               <span className="task-detail-value">
-                                {formatDatess(imptsk.dueDate)}
+                                {new Date(imptsk.dueDate).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })}
                               </span>
                               <span className="task-detail-label bg-default rounded d-inline-block ml-2 text-secondary font-semibold">
                                 Deadline
@@ -568,7 +572,12 @@ const ImplementationApprovalSite = ({
 
                                 <span className="text-sm text-secondary leading-none pt-5">
                                   Completed on{" "}
-                                  {formatDatess(imptsk?.completedAt)}
+                                 
+                                  {new Date(imptsk?.completedAt).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })}
                                 </span>
                               </div>
                             </div>

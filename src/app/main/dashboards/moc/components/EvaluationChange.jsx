@@ -1784,7 +1784,13 @@ function EvaluationChange({
                                   {itms.staff}
                                 </span>
                                 <span className="text-sm text-secondary leading-none pt-5">
-                                  Consulted on {formatDate(itms.consultedDate)}
+                                  Consulted on {new Date(
+                        itms.consultedDate
+                      ).toLocaleString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })} 
                                 </span>
                               </div>
                             </div>
@@ -1945,6 +1951,7 @@ function EvaluationChange({
                                   expanded={expanded === "panel1"}
                                   onChange={handleExpansionChange("panel1")}
                                   className="mt-6"
+                                  
                                 >
                                   <AccordionSummary
                                     expandIcon={<ExpandMoreIcon />}
@@ -2952,9 +2959,13 @@ function EvaluationChange({
                                                           Due Date
                                                         </span>
                                                         <span className="task-detail-value d-inline-block mt-10">
-                                                          {formatDate(
-                                                            itm.dueDate
-                                                          )}
+                                                        {new Date(
+                        itm.dueDate
+                      ).toLocaleString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })}
                                                         </span>
                                                         <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-10 text-secondary font-semibold">
                                                           Deadline
@@ -3059,30 +3070,37 @@ function EvaluationChange({
                                                   </span>
                                                 </div>
                                                 <div className="task-detail-item mt-0 p-0">
-                                                  <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
+                                                  <span className="task-detail-label bg-default rounded d-inline-block mt-5 text-secondary font-semibold">
                                                     How is Task done
                                                   </span>
-                                                  <span className="task-detail-value d-inline-block mt-10">
+                                                  <span className="task-detail-value d-inline-block mt-5">
                                                     {imptsk.actionHow}
                                                   </span>
                                                 </div>
                                                 <div className="task-detail-item mt-0 p-0">
-                                                  <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
+                                                  <span className="task-detail-label bg-default rounded d-inline-block mt-5 text-secondary font-semibold">
                                                     Assigned to
                                                   </span>
-                                                  <span className="task-detail-value d-inline-block mt-10 mr-3">
+                                                  <span className="task-detail-value d-inline-block mt-5 mr-3">
                                                     {imptsk.assignedStaff}
                                                   </span>
-                                                  <span className="task-detail-label bg-default mt-10 rounded d-inline-block ml-2 text-secondary font-semibold">
+                                                  <span className="task-detail-label bg-default mt-5 rounded d-inline-block ml-2 text-secondary font-semibold">
                                                     Due Date
                                                   </span>
-                                                  <span className="task-detail-value d-inline-block mt-10">
-                                                    {formatDate(imptsk.dueDate)}
+                                                  <span className="task-detail-value d-inline-block mt-5">
+                                                   
+                                                    {new Date(
+                        imptsk.dueDate
+                      ).toLocaleString("en-US", {
+                        month: "short",
+                        day: "2-digit",
+                        year: "numeric",
+                      })}
                                                   </span>
-                                                  <span className="task-detail-label bg-default rounded mt-10 d-inline-block ml-2 text-secondary font-semibold">
+                                                  <span className="task-detail-label bg-default rounded mt-5 d-inline-block ml-2 text-secondary font-semibold">
                                                     Deadline
                                                   </span>
-                                                  <span className="task-detail-value d-inline-block mt-10">
+                                                  <span className="task-detail-value d-inline-block mt-5">
                                                     {imptsk?.deadlineDisplay}
                                                   </span>
                                                 </div>
@@ -3096,7 +3114,7 @@ function EvaluationChange({
                                                 onChange={handleExpansionChange(
                                                   "panel3"
                                                 )}
-                                                className="mt-6"
+                                                className="mt-6 m-5"
                                               >
                                                 <AccordionSummary
                                                   expandIcon={

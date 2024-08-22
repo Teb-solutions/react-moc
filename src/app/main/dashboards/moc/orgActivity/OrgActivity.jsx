@@ -163,7 +163,9 @@ function OrgActivity() {
         setOpen(true);
       });
   };
-
+  const handelActClose=()=>{
+    navigate("/moc");
+  }
   const formatDate = (dateString) => {
     if (!dateString) {
       return "Invalid date";
@@ -637,6 +639,7 @@ function OrgActivity() {
                         color: "black",
                         border: "1px solid grey",
                       }}
+                      onClick={handelActClose}
                     >
                       Cancel
                     </Button>

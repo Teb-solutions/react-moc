@@ -424,7 +424,9 @@ body.sidebar1-open .maincntainer {
 
 .task-detail-item {
   margin-top: 0.5rem;
-  padding: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  
 }
 
 .task-detail-label {

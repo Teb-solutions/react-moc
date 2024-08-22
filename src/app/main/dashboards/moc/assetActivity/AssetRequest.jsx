@@ -325,6 +325,10 @@ function AssetRequest() {
       setOpen(true);
     }
   };
+
+  const handelActClose=()=>{
+    navigate("/moc");
+  }
   const handleSubmitDocument = () => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
@@ -1527,6 +1531,7 @@ function AssetRequest() {
                         color: "black",
                         border: "1px solid grey",
                       }}
+                      onClick={handelActClose}
                     >
                       Cancel
                     </Button>

@@ -620,13 +620,11 @@ const EvaluationApproval = ({
   const handleModalClose = () => {
     setOpen1(false);
     setOpenDrawer(false);
-    fileDetails(false)
   };
 
   const handleModalClose1 = () => {
     setOpen(false);
     setOpenDrawer(false);
-    fileD
   };
 
   const handleSubmitResponse = (e) => {
@@ -835,7 +833,6 @@ const EvaluationApproval = ({
   };
   const handleRespModalClose = () => {
     setTaskRespOpen(false);
-    fileDetailsRes(false)
   };
   const TaskDocuHandle = (id) => {
     apiAuth
@@ -1105,7 +1102,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<>Description</>}
+                      label={<BoldLabel>Description</BoldLabel>}
                       name="description"
                       variant="standard"
                       onChange={handelFileResDiscriptionChange}
@@ -1230,7 +1227,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<>Description</>}
+                      label={<BoldLabel>Description</BoldLabel>}
                       name="descritpion"
                       variant="standard"
                       disabled
@@ -1636,7 +1633,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<>Description</>}
+                      label={<BoldLabel>Description</BoldLabel>}
                       name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
@@ -1779,7 +1776,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<>Description</>}
+                      label={<BoldLabel>Description</BoldLabel>}
                       name="Description"
                       variant="standard"
                       disabled
@@ -2788,22 +2785,27 @@ const EvaluationApproval = ({
                         <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
                           <Typography className="d-flex flex-wrap w-100" style={{ alignItems: "center" }}>
                             <span>{particularName} </span>
-                            <span style={{ marginLeft: 'auto' }}> Reviewed: {reviewAddedCount} | Pending: {noReviewAddedCount}
-                            </span>
-                            <Button
 
-                              className="whitespace-nowrap ms-5 ml-24"
-                              variant="contained"
-                              color="secondary"
-                            // style={{ marginTop: "10px" }}
+                            {AppActivity.canEdit && (
+                              <>
+                                <span style={{ marginLeft: 'auto' }}> Reviewed: {reviewAddedCount} | Pending: {noReviewAddedCount}
+                                </span>
+                                <Button
 
-                            >
-                              Mark as reviewed
-                            </Button>
+                                  className="whitespace-nowrap ms-5 ml-24"
+                                  variant="contained"
+                                  color="secondary"
+                                // style={{ marginTop: "10px" }}
+
+                                >
+                                  Mark as reviewed
+                                </Button>
+                              </>
+                            )}
                           </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                          {tasks.sort((a, b) => b.sourceTaskId - a.sourceTaskId).map((imptsk) => (
+                          {tasks?.map((imptsk) => (
                             <div key={imptsk.id} className="mt-24 border-b pb-24">
 
                               <div className="task-table-row mat-row">
@@ -2868,10 +2870,10 @@ const EvaluationApproval = ({
                                     previousTasks[imptsk.id] &&
                                     previousTasks[imptsk.id].map((itm) => (
                                       <div
-                                        className="task-details px-0 mt-0 pt-0 border"
+                                        className="task-details px-0 mt-0 pt-0 border "
                                         key={itm.id}
                                       >
-                                        <div class="mt-3 ms-9 font-semibold">
+                                        <div class="mt-5 ms-9 font-semibold">
                                           V{itm.evaluationVersion}
                                         </div>
                                         <div className="task-detail prose prose-sm max-w-5xl mt-0 pt-0">
@@ -2879,55 +2881,55 @@ const EvaluationApproval = ({
                                             <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
                                               Impact
                                             </span>
-                                            <span className="task-detail-value d-inline-block mt-10">
+                                            <span className="task-detail-value d-inline-block mt-5">
                                               {itm.particularName +
                                                 ">" +
                                                 itm.particularSubName}
                                             </span>
                                           </div>
                                           <div className="task-detail-item mt-3">
-                                            <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
+                                            <span className="task-detail-label bg-default d-inline-block mt-5 rounded text-secondary font-semibold">
                                               What is Task
                                             </span>
-                                            <span className="task-detail-value d-inline-block mt-10">
+                                            <span className="task-detail-value d-inline-block mt-5">
                                               {itm.actionWhat}
                                             </span>
                                           </div>
                                           <div className="task-detail-item mt-5">
-                                            <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
+                                            <span className="task-detail-label bg-default d-inline-block mt-5 rounded text-secondary font-semibold">
                                               How is Task done
                                             </span>
-                                            <span className="task-detail-value d-inline-block mt-10">
+                                            <span className="task-detail-value d-inline-block mt-5">
                                               {itm.actionHow}
                                             </span>
                                           </div>
-                                          <div className="task-detail-item mt-5">
-                                            <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
+                                          <div className="task-detail-item ">
+                                            <span className="task-detail-label bg-default d-inline-block  rounded text-secondary font-semibold">
                                               Assigned to
                                             </span>
-                                            <span className="task-detail-value d-inline-block mt-10">
+                                            <span className="task-detail-value d-inline-block mt-5">
                                               {itm.assignedStaff}
                                             </span>
-                                            <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-10 text-secondary font-semibold">
+                                            <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-5 text-secondary font-semibold">
                                               Due Date
                                             </span>
-                                            <span className="task-detail-value d-inline-block mt-10">
+                                            <span className="task-detail-value d-inline-block mt-5">
                                               {formatDates(itm.dueDate)}
                                             </span>
-                                            <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-10 text-secondary font-semibold">
+                                            <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-5 text-secondary font-semibold">
                                               Deadline
                                             </span>
-                                            <span className="task-detail-value d-inline-block mt-10">
+                                            <span className="task-detail-value d-inline-block mt-5">
                                               {itm?.deadlineDisplay}
                                             </span>
                                           </div>
                                         </div>
-                                        <div>&nbsp;</div>
+
                                         {itm?.changeImpactTaskReviews?.length != 0 && (
                                           <Accordion
                                             expanded={expanded === "panel2"}
                                             onChange={handleExpansionChange("panel2")}
-                                            className="mt-6"
+                                            className="mt-6 m-10"
                                           >
                                             <AccordionSummary
                                               expandIcon={<ExpandMoreIcon />}
@@ -2943,7 +2945,7 @@ const EvaluationApproval = ({
                                             </AccordionSummary>
                                             {itm?.changeImpactTaskReviews?.map(
                                               (rivew) => (
-                                                <AccordionDetails>
+                                                <AccordionDetails >
                                                   <div className="mat-form-field-wrapper">
                                                     <div className="mat-form-field-flex">
                                                       <img
@@ -2956,7 +2958,7 @@ const EvaluationApproval = ({
                                                         }}
                                                       />
                                                       <div>
-                                                        <div className="mat-form-field-infix mt-12">
+                                                        <div className="mat-form-field-infix mt-5">
                                                           <span className="">
                                                             {rivew?.createdByStaffName}
                                                           </span>
@@ -2971,7 +2973,17 @@ const EvaluationApproval = ({
                                                             fontSize: "smaller",
                                                           }}
                                                         >
-                                                          {rivew?.updatedAt}
+                                                          {rivew?.updatedAt ? new Date(rivew.updatedAt).toLocaleString("en-US", {
+
+                                                            year: "numeric", // e.g., "2024"
+                                                            month: "long", // e.g., "August"
+                                                            day: "numeric", // e.g., "20"
+                                                            hour: "2-digit", // e.g., "12 PM"
+                                                            minute: "2-digit", // e.g., "46"
+                                                            second: "2-digit", // e.g., "23"
+                                                            hour12: true, // Use 12-hour clock
+                                                            timeZoneName: "short" // e.g., "GMT+5"
+                                                          }) : null}
                                                         </p>
                                                       </div>
                                                     </div>
@@ -3527,39 +3539,51 @@ const EvaluationApproval = ({
                                                         <span className="mat-form-field-label-wrapper"></span>
                                                       </div>
                                                     ) : (
-                                                      <div className="mat-form-field-infix">
-                                                        <span className="">
-                                                          {rwx?.createdByStaffName}
-                                                        </span>{" "}
-                                                        <span className="pl-8 text-grey">
-                                                          {" "}
-                                                          {rwx?.remark}
-                                                        </span>
+
+                                                      <div className="mat-form-field-wrapper">
+                                                        <div className="mat-form-field-flex">
+
+                                                          <div>
+                                                            <div className="mat-form-field-infix mt-5">
+                                                              <span className="">
+                                                                {rwx?.createdByStaffName}
+                                                              </span>
+                                                              -{" "}
+                                                              <span className="text-grey">
+                                                                {rwx?.remark}
+                                                              </span>
+                                                            </div>
+                                                            <p
+                                                              className="mat-form-field-infix text-grey"
+                                                              style={{
+                                                                fontSize: "smaller",
+                                                              }}
+                                                            >
+                                                              {imptsk.changeImpactTaskReviews[0]
+                                                                ?.updatedAt &&
+                                                                new Date(
+                                                                  imptsk.changeImpactTaskReviews[0]?.updatedAt
+                                                                ).toLocaleString("en-US", {
+                                                                  month: "long",
+                                                                  day: "numeric",
+                                                                  year: "numeric",
+                                                                  hour: "numeric",
+                                                                  minute: "numeric",
+                                                                  second: "numeric",
+                                                                  hour12: true,
+                                                                  timeZoneName: "short",
+                                                                })}
+                                                            </p>
+                                                          </div>
+                                                        </div>
                                                       </div>
+
+
+
+
                                                     )}
                                                   </div>
-                                                  <span
-                                                    style={{
-                                                      fontSize: "x-small",
-                                                      paddingLeft: "35px",
-                                                    }}
-                                                  >
-                                                    {" "}
-                                                    {imptsk.changeImpactTaskReviews[0]
-                                                      ?.updatedAt &&
-                                                      new Date(
-                                                        imptsk.changeImpactTaskReviews[0]?.updatedAt
-                                                      ).toLocaleString("en-US", {
-                                                        month: "long",
-                                                        day: "numeric",
-                                                        year: "numeric",
-                                                        hour: "numeric",
-                                                        minute: "numeric",
-                                                        second: "numeric",
-                                                        hour12: true,
-                                                        timeZoneName: "short",
-                                                      })}
-                                                  </span>
+
                                                   <div className="mat-form-field-subscript-wrapper">
                                                     <div
                                                       className="mat-form-field-hint-wrapper"
@@ -4213,20 +4237,8 @@ const EvaluationApproval = ({
       >
         <Fade in={open1}>
           <Box sx={style1}>
-            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
-              <Button
-                className=""
-                variant="contained"
-                style={{ backgroundColor: "white" }}
-                onClick={handleModalClose}
-              >
-                <FuseSvgIcon size={20}>
-                  heroicons-outline:x
-                </FuseSvgIcon>
-              </Button>
-            </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "0", paddingTop: "0" }}>
+              <Box className="flex justify-between" style={{ margin: "30px" }}>
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
@@ -4369,7 +4381,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<>Description</>}
+                      label={<BoldLabel>Description</BoldLabel>}
                       name="descritpion"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
@@ -4512,7 +4524,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<>Description</>}
+                      label={<BoldLabel>Description</BoldLabel>}
                       name="Description"
                       variant="standard"
                       disabled
