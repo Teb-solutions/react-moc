@@ -159,7 +159,6 @@ const AssetCourse = () => {
   const [handelCommentRemark, setHandelCommentRemark] = useState("");
   const [ApprovalManager, setApprovalManager] = useState({});
 
-
   const [forms, setForms] = useState([
     {
       id: Date.now(),
@@ -623,7 +622,6 @@ const AssetCourse = () => {
       });
     apiAuth.get(`/TeamAssignment/Create`).then((resp) => {
       setStaffList(resp.data?.data.staffData);
-      console.log(resp.data?.data.staffData, "staff")
     });
   }
 
@@ -1636,15 +1634,41 @@ const AssetCourse = () => {
   };
 
   const [openTeamAssignment, setOpenTeamAssignment] = useState(false);
-  const handleEdit = () => {
+  const [siteInCharge, setSiteInCharge] = useState(null);
+  const [changeLeader, setChangeLeader] = useState(null);
+  const [others, setSelectedOthersStaffs] = useState([]);
 
-    setOpenTeamAssignment(true)
+  const [hseq, setHseq] = useState(null);
+  const handleEdit = () => {
+    setOpenTeamAssignment(true);
     apiAuth
       .get(`/ChangeRequest/TeamList?id=${assetEvaluationId}`)
       .then((resp) => {
-        console.log(staffList, "staff")
-        console.log(resp.data.data, "/ChangeRequest/TeamList")
-        setTeamType(resp.data.data)
+        const team = resp.data.data;
+
+        team.forEach((member) => {
+          switch (member.teamType) {
+            case 1:
+              setChangeLeader(staffList.find(option => option.value === member.staffId) || null);
+              break;
+            case 2:
+              setHseq(staffList.find(option => option.value === member.staffId) || null);
+              break;
+            case 3:
+              const teams = resp.data.data;
+              setSelectedOthersStaffs(
+                teams
+                  .filter((t) => t.teamType === 3)
+                  .map((t) => staffList.find((staff) => staff.value === t.staffId))
+                  .filter(Boolean) // To remove any undefined values
+              );
+            case 4:
+              setSiteInCharge(staffList.find(option => option.value === member.staffId) || null);
+              break;
+            default:
+              break;
+          }
+        });
       });
   };
 
@@ -1675,6 +1699,56 @@ const AssetCourse = () => {
       }))
     );
   };
+
+
+  const handelUpdateTeam = () => {
+    const teamData = [];
+
+    // Collect data from Site In Charge (teamType 4)
+    if (siteInCharge) {
+      teamData.push({
+        teamType: 4,
+        staffId: siteInCharge.value,
+      });
+    }
+
+    // Collect data from Change Leader (teamType 1)
+    if (changeLeader) {
+      teamData.push({
+        teamType: 1,
+        staffId: changeLeader.value,
+      });
+    }
+    if (hseq) {
+      teamData.push({
+        teamType: 2,
+        staffId: hseq.value,
+      });
+    }
+
+    // Collect data from HSEQ (teamType 3, multiple selections)
+    others.forEach((staff) => {
+      teamData.push({
+        teamType: 3,
+        staffId: staff.value,
+      });
+    });
+
+    apiAuth
+      .put(`/ChangeRequest/EditTeam?id=${assetEvaluationId}`, teamData)
+      .then((resp) => {
+        setOpenTeamAssignment(false)
+        // Handle the response if needed
+        toast.success("Team updated successfully")
+        console.log("Team updated successfully:", resp.data);
+      })
+      .catch((error) => {
+        toast.success("Error updating team")
+        console.error("Error updating team:", error);
+      });
+  };
+
+
 
   if (isLoading) {
     return <FuseLoading />;
@@ -2078,18 +2152,39 @@ const AssetCourse = () => {
               style={{ minHeight: "60px" }}
               onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
             >
-              <div className="flex justify-between text-white">
-                <span className="text-popup font-medium">
-                  Edit Team  {""}
-                </span>
-                <span
-                  onClick={handleCloseTeam}
-                  style={{ cursor: "pointer" }}
-                  className="cursor-pointer"
+
+              <FuseSvgIcon size={20} onClick={() => handleEdit()}>heroicons-solid:pencil</FuseSvgIcon>
+
+
+            </AccordionSummary>
+
+          </Accordion>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={openTeamAssignment}
+            onClose={handleCloseTeam}
+            closeAfterTransition
+            slots={{ backdrop: Backdrop }}
+            slotProps={{
+              backdrop: {
+                timeout: 500,
+              },
+            }}
+          >
+            <Fade in={openTeamAssignment}>
+              <Box sx={style}>
+                <Box
+                  style={{
+                    padding: "30px",
+                    backgroundColor: "#4f46e5",
+                    borderTopLeftRadius: "16px",
+                    borderTopRightRadius: "16px",
+                  }}
                 >
                   <div className="flex justify-between text-white">
                     <span className="text-popup font-medium">
-                      Edit Team
+                      Edit Team  {""}
                     </span>
                     <span
                       onClick={handleCloseTeam}
@@ -2125,94 +2220,68 @@ const AssetCourse = () => {
                     paddingBottom: "0",
                   }}
                 >
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, marginTop: "30px" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    ></path>
-                  </svg>
-                </span>
-              </div>
-            </Box>
-            <div
-              style={{
-                textAlign: "center",
-                padding: "30px",
-                marginTop: "0",
-                paddingBottom: "0",
-              }}
-            >
-              <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
-      <FormControl fullWidth>
-        <Autocomplete
-          id="siteInCharge"
-          options={staffList}
-          getOptionLabel={(option) => option.text}
-          value={siteInCharge}
-          onChange={(event, newValue) => setSiteInCharge(newValue)}
-          renderInput={(params) => (
-            <TextField {...params} label="Site In Charge" helperText={null} />
-          )}
-          renderOption={(props, option) => (
-            <MenuItem {...props} key={option.value} value={option.value}>
-              <ListItemText primary={option.text} />
-            </MenuItem>
-          )}
-        />
-      </FormControl>
-    </Box>
-    <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
-      <FormControl fullWidth>
-        <Autocomplete
-          id="changeLeader"
-          options={staffList}
-          getOptionLabel={(option) => option.text}
-          value={changeLeader}
-          onChange={(event, newValue) => setChangeLeader(newValue)}
-          renderInput={(params) => (
-            <TextField {...params} label="Change Leader" helperText={null} />
-          )}
-          renderOption={(props, option) => (
-            <MenuItem {...props} key={option.value} value={option.value}>
-              <ListItemText primary={option.text} />
-            </MenuItem>
-          )}
-        />
-      </FormControl>
-    </Box>
+                  <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+                    <FormControl fullWidth>
+                      <Autocomplete
+                        id="siteInCharge"
+                        options={staffList}
+                        getOptionLabel={(option) => option.text}
+                        value={siteInCharge}
+                        onChange={(event, newValue) => setSiteInCharge(newValue)}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Site In Charge" helperText={null} />
+                        )}
+                        renderOption={(props, option) => (
+                          <MenuItem {...props} key={option.value} value={option.value}>
+                            <ListItemText primary={option.text} />
+                          </MenuItem>
+                        )}
+                      />
+                    </FormControl>
+                  </Box>
+                  <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+                    <FormControl fullWidth>
+                      <Autocomplete
+                        id="changeLeader"
+                        options={staffList}
+                        getOptionLabel={(option) => option.text}
+                        value={changeLeader}
+                        onChange={(event, newValue) => setChangeLeader(newValue)}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Change Leader" helperText={null} />
+                        )}
+                        renderOption={(props, option) => (
+                          <MenuItem {...props} key={option.value} value={option.value}>
+                            <ListItemText primary={option.text} />
+                          </MenuItem>
+                        )}
+                      />
+                    </FormControl>
+                  </Box>
 
 
-    <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
-      <FormControl fullWidth>
-        <Autocomplete
-          id="hseq"
-          options={staffList}
-          getOptionLabel={(option) => option.text}
-          value={hseq}
-          onChange={(event, newValue) => setHseq(newValue)}
-          renderInput={(params) => (
-            <TextField {...params} label="HSEQ" helperText={null} />
-          )}
-          renderOption={(props, option) => (
-            <MenuItem {...props} key={option.value} value={option.value}>
-              <ListItemText primary={option.text} />
-            </MenuItem>
-          )}
-        />
-      </FormControl>
-    </Box>
+                  <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+                    <FormControl fullWidth>
+                      <Autocomplete
+                        id="hseq"
+                        options={staffList}
+                        getOptionLabel={(option) => option.text}
+                        value={hseq}
+                        onChange={(event, newValue) => setHseq(newValue)}
+                        renderInput={(params) => (
+                          <TextField {...params} label="HSEQ" helperText={null} />
+                        )}
+                        renderOption={(props, option) => (
+                          <MenuItem {...props} key={option.value} value={option.value}>
+                            <ListItemText primary={option.text} />
+                          </MenuItem>
+                        )}
+                      />
+                    </FormControl>
+                  </Box>
 
 
-    {/* <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+                  {/* <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
     <FormControl fullWidth>
   <Autocomplete
     multiple
@@ -2242,156 +2311,6 @@ const AssetCourse = () => {
 </Box> */}
 
 
-             
-            </div>
-
-
-
-                    </FormControl>
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, marginTop: "30px" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <FormControl fullWidth>
-
-                      <Autocomplete
-                        id="teamType"
-
-                        options={staffList}
-                        getOptionLabel={(option) => option.text}
-                        value={
-                          staffList.find(
-                            (option) => option.value === selectedTeamType
-                          ) || null
-                        }
-                        onChange={(event, newValue) => {
-                          handleTeamTypeChange({
-                            target: {
-                              name: "teamType",
-                              value: newValue ? newValue.value : "",
-                            },
-                          });
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="changeLeader"
-                            helperText={null}
-                          />
-                        )}
-                        renderOption={(props, option) => (
-                          <MenuItem
-                            {...props}
-                            key={option.value}
-                            value={option.value}
-                          >
-                            <ListItemText primary={option.text} />
-                          </MenuItem>
-                        )}
-                      />
-
-
-
-                    </FormControl>
-                  </Box>
-
-
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, marginTop: "30px" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <FormControl fullWidth>
-
-                      <Autocomplete
-                        id="teamType"
-
-                        options={staffList}
-                        getOptionLabel={(option) => option.text}
-                        value={
-                          staffList.find(
-                            (option) => option.value === selectedTeamType
-                          ) || null
-                        }
-                        onChange={(event, newValue) => {
-                          handleTeamTypeChange({
-                            target: {
-                              name: "teamType",
-                              value: newValue ? newValue.value : "",
-                            },
-                          });
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Hseq"
-                            helperText={null}
-                          />
-                        )}
-                        renderOption={(props, option) => (
-                          <MenuItem
-                            {...props}
-                            key={option.value}
-                            value={option.value}
-                          >
-                            <ListItemText primary={option.text} />
-                          </MenuItem>
-                        )}
-                      />
-
-
-
-                    </FormControl>
-                  </Box>
-                  <Box component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, marginTop: "30px" },
-                    }}
-                    noValidate
-                    autoComplete="off">
-                    <FormControl fullWidth >
-
-                      <Autocomplete
-                        multiple
-                        id="staff-autocomplete"
-                        options={staffList}
-                        getOptionLabel={(option) => option.text}
-                        isOptionEqualToValue={(option, value) =>
-                          option.value === value.value
-                        }
-                        value={staffList.filter((staff) =>
-                          selectedStaffs.some(
-                            (selected) => selected.staffId === staff.value
-                          )
-                        )}
-                        onChange={handleStaffChange}
-                        renderInput={(params) => (
-                          <TextField {...params} variant="outlined" label="Others" fullWidth />
-                        )}
-                        renderOption={(props, option, { selected }) => (
-                          <li {...props} key={option.value}>
-                            <Checkbox checked={selected} />
-                            <ListItemText primary={option.text} />
-                          </li>
-                        )}
-                        renderTags={(value) => {
-                          // Create a comma-separated string of selected values
-                          const selectedNames = value
-                            .map((option) => option.text)
-                            .join(" , ");
-                          return <span>{selectedNames}</span>;
-                        }}
-                      />
-                    </FormControl>
-                  </Box>
 
                 </div>
 
@@ -2432,19 +2351,19 @@ const AssetCourse = () => {
                       paddingRight: "25px",
                     }}
                     type="submit"
-
+                    onClick={handelUpdateTeam}
                   >
                     Update
                   </Button>
                 </div>
-              </Box >
-            </Fade >
-          </Modal >
+              </Box>
+            </Fade>
+          </Modal>
         </>
       }
-scroll = "content"
-ref = { pageLayout }
-  />
+      scroll="content"
+      ref={pageLayout}
+    />
   );
 };
 
