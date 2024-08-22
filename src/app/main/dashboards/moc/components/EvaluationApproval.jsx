@@ -46,6 +46,7 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import Initiation from "./Initiation";
 import { animateVisualElement } from "framer-motion";
 import { map } from "lodash";
+import { maxHeight } from "@mui/system";
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -233,6 +234,23 @@ const EvaluationApproval = ({
     width: "1200px",
     maxWidth: "80vw",
     height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+  
+  };
+
+  const styleAi = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "1200px",
+    maxWidth: "80vw",
+    height: "auto",
+    maxHeight:"800px",
+    overflow:"auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -954,8 +972,1025 @@ const EvaluationApproval = ({
     }
   };
 
+  const[apiOpenModal,setAiOpenModal]=useState(false)
+  const handelCloseAiModal=()=>{
+    setAiOpenModal(false)
+  }
+
+  const handelOpenAiModal=()=>{
+    setAiOpenModal(true)
+  }
   return (
     <div className="w-full h-full">
+       <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={apiOpenModal}
+        onClose={handelCloseAiModal}
+        closeAfterTransition
+        // Customize backdrop appearance
+        BackdropComponent={Backdrop}
+        // Props for backdrop customization
+        BackdropProps={{
+          timeout: 500, // Adjust as needed
+          style: {
+            // Add backdrop styles here
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          },
+        }}
+      >
+        <Fade in={apiOpenModal}>
+          <Box sx={styleAi}>
+            <Box sx={{ flex: 1 }}>
+            <div className="flex justify-end mt-5">
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                   onClick={handelCloseAiModal}
+                  >
+                    <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
+                  </Button>
+                </div>
+              <Box className="flex justify-between" style={{ margin: "30px" }}>
+              
+                
+              
+              <table className="task-table mat-table task_table">
+                <thead className="task-table-header" style={{ display: "none" }}>
+                  {/* Empty header */}
+                </thead>
+                <tbody className="task-table-body">
+                {contentDetails?.tasklist ? (
+      Object.entries(
+        contentDetails.tasklist.reduce((acc, task) => {
+          // Group tasks by particularName
+          if (!acc[task.particularName]) {
+            acc[task.particularName] = { tasks: [], reviewAddedCount: 0, noReviewAddedCount: 0 };
+          }
+          acc[task.particularName].tasks.push(task);
+          
+          // Update counts based on task properties
+          if (task.reviewd) {
+            acc[task.particularName].reviewAddedCount += 1;
+          } else {
+            acc[task.particularName].noReviewAddedCount += 1;
+          }
+          
+          return acc;
+        }, {})
+      ).map(([particularName, { tasks, reviewAddedCount, noReviewAddedCount }]) => {
+        
+        return (
+        <Accordion className="mt-6" key={particularName}>
+         
+          <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
+            <Typography className="d-flex flex-wrap w-100" style={{alignItems:"center"}}>
+              <span>{particularName} </span>
+  
+              {AppActivity.canEdit&&(
+                <>
+              <span style={{marginLeft:'auto'}}> Reviewed: {reviewAddedCount} | Pending: {noReviewAddedCount}
+                </span>
+                <Button
+                     
+                      className="whitespace-nowrap ms-5 ml-24"
+                      variant="contained"
+                      color="secondary"
+                      // style={{ marginTop: "10px" }}
+                   
+                    >
+                      Mark as reviewed
+                    </Button>
+                </>
+              )}
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+          {tasks
+            // Sort tasks: not reviewed tasks first
+            .sort((a, b) => (a.reviewd === b.reviewd ? 0 : a.reviewd ? 1 : -1))
+            .map((imptsk) => (
+              <div key={imptsk.id} className="mt-24 border-b pb-24">
+            
+                        <div className="task-table-row mat-row">
+                          <div className="task-table-cell mat-cell">
+                            <div className="task-header p-0 flex items-center">
+                              <div className="task-id flex flex-col">
+                                <span
+                                  className="task-id-text font-semibold text-xl leading-none"
+                                  style={{ fontSize: "20px" }}
+                                >
+                                  Task #{imptsk?.sourceTaskId}
+                                </span>
+                              </div>
+  
+                              {imptsk.requestTypeName != "Document" &&
+                                AppActivity.canEdit && (
+                                  <div className="task-button ml-auto">
+                                    <button
+                                      className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
+                                      onClick={() =>
+                                        handelImpactreview(imptsk.id)
+                                      }
+                                      disabled={
+                                        imptsk?.reviewd || clickedTasks[imptsk.id]
+                                      }
+                                      style={{
+                                        backgroundColor:
+                                          imptsk?.reviewd ||
+                                          clickedTasks[imptsk.id]
+                                            ? "rgba(220,252,231)"
+                                            : "",
+                                      }}
+                                    >
+                                      {imptsk?.reviewd ||
+                                      clickedTasks[imptsk.id] ? (
+                                        <span className="mat-button-wrapper">
+                                          You have reviewed this just now
+                                        </span>
+                                      ) : (
+                                        <span className="mat-button-wrapper">
+                                          Click here to mark as reviewed
+                                        </span>
+                                      )}
+                                    </button>
+                                  </div>
+                                )}
+                            </div>
+                            {imptsk.sourceTaskId !== imptsk.id &&
+                              (!imptsk.showPreviousTasks ||
+                                imptsk.showPreviousTasks === null) && (
+                                <span
+                                  className="text-sm text-secondary text-blue-500 font-bold cursor-pointer leading-none mt-1 ms-3"
+                                  onClick={() => toggleDetails(imptsk.id)}
+                                >
+                                  {selectedTaskId !== imptsk.id
+                                    ? "Show previous versions"
+                                    : "Hide previous versions"}
+                                </span>
+                              )}
+  
+                            {selectedTaskId === imptsk.id &&
+                              previousTasks[imptsk.id] &&
+                              previousTasks[imptsk.id].map((itm) => (
+                                <div
+                                  className="task-details px-0 mt-0 pt-0 border "
+                                  key={itm.id}
+                                >
+                                  <div class="mt-5 ms-9 font-semibold">
+                                    V{itm.evaluationVersion}
+                                  </div>
+                                  <div className="task-detail prose prose-sm max-w-5xl mt-0 pt-0">
+                                    <div className="task-detail-item mt-0 pt-0">
+                                      <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
+                                        Impact
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-5">
+                                        {itm.particularName +
+                                          ">" +
+                                          itm.particularSubName}
+                                      </span>
+                                    </div>
+                                    <div className="task-detail-item ">
+                                      <span className="task-detail-label bg-default d-inline-block mt-2 rounded text-secondary font-semibold">
+                                        What is Task
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-2">
+                                        {itm.actionWhat}
+                                      </span>
+                                    </div>
+                                    <div className="task-detail-item ">
+                                      <span className="task-detail-label bg-default d-inline-block mt-2 rounded text-secondary font-semibold">
+                                        How is Task done
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-2">
+                                        {itm.actionHow}
+                                      </span>
+                                    </div>
+                                    <div className="task-detail-item ">
+                                      <span className="task-detail-label bg-default d-inline-block mt-2  rounded text-secondary font-semibold">
+                                        Assigned to
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-2">
+                                        {itm.assignedStaff}
+                                      </span>
+                                      <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-2 text-secondary font-semibold">
+                                        Due Date
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-2">
+                                        {formatDates(itm.dueDate)}
+                                      </span>
+                                      <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-2 text-secondary font-semibold">
+                                        Deadline
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-2">
+                                        {itm?.deadlineDisplay}
+                                      </span>
+                                    </div>
+                                  </div>
+                                  
+                                  {itm?.changeImpactTaskReviews?.length != 0 && (
+                                    <Accordion
+                                      expanded={expanded === "panel2"}
+                                      onChange={handleExpansionChange("panel2")}
+                                      className="mt-6 m-10"
+                                    >
+                                      <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                      >
+                                        <Typography>
+                                          <span className="text-brown">
+                                            {itm?.changeImpactTaskReviews?.length}{" "}
+                                            Reviews
+                                          </span>{" "}
+                                        </Typography>
+                                      </AccordionSummary>
+                                      {itm?.changeImpactTaskReviews?.map(
+                                        (rivew) => (
+                                          <AccordionDetails >
+                                            <div className="mat-form-field-wrapper">
+                                              <div className="mat-form-field-flex">
+                                                <img
+                                                  src="/assets/images/etc/userpic.png"
+                                                  alt="Card cover image"
+                                                  className="rounded-full mr-4"
+                                                  style={{
+                                                    width: "3rem",
+                                                    height: "3rem",
+                                                  }}
+                                                />
+                                                <div>
+                                                  <div className="mat-form-field-infix mt-5">
+                                                    <span className="">
+                                                      {rivew?.createdByStaffName}
+                                                    </span>
+                                                    -{" "}
+                                                    <span className="text-grey">
+                                                      {rivew?.remark}
+                                                    </span>
+                                                  </div>
+                                                  <p
+                                                    className="mat-form-field-infix text-grey"
+                                                    style={{
+                                                      fontSize: "smaller",
+                                                    }}
+                                                  >
+                                                      {rivew?.updatedAt ? new Date(rivew.updatedAt).toLocaleString("en-US", {
+    
+      year: "numeric", // e.g., "2024"
+      month: "long", // e.g., "August"
+      day: "numeric", // e.g., "20"
+      hour: "2-digit", // e.g., "12 PM"
+      minute: "2-digit", // e.g., "46"
+      second: "2-digit", // e.g., "23"
+      hour12: true, // Use 12-hour clock
+      timeZoneName: "short" // e.g., "GMT+5"
+    }) : null}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </AccordionDetails>
+                                        )
+                                      )}
+                                    </Accordion>
+                                  )}
+                                </div>
+                              ))}
+                            <div className="task-details p-0">
+                              <div className="task-detail prose prose-sm max-w-5xl">
+                                <div className="task-detail-item p-0 mt-0">
+                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
+                                    Impact
+                                  </span>
+                                  <span className="task-detail-value d-inline-block mt-10">
+                                    {imptsk.particularName +
+                                      ">" +
+                                      imptsk.particularSubName}
+                                  </span>
+                                </div>
+                                <div className="task-detail-item p-0 mt-0">
+                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
+                                    What is Task
+                                  </span>
+                                  <span className="task-detail-value d-inline-block mt-10">
+                                    {imptsk.actionWhat}
+                                  </span>
+                                </div>
+                                <div className="task-detail-item p-0 mt-0">
+                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
+                                    How is Task done
+                                  </span>
+                                  <span className="task-detail-value d-inline-block mt-10">
+                                    {imptsk.actionHow}
+                                  </span>
+                                </div>
+                                <div
+                                  className="task-detail-item p-0 mt-0 flex "
+                                  style={{ justifyContent: "space-between" }}
+                                >
+                                  <div>
+                                    <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
+                                      Assigned to
+                                    </span>
+                                    <span className="task-detail-value d-inline-block mt-10">
+                                      {imptsk.assignedStaff}
+                                    </span>
+                                    <span className="task-detail-label bg-default rounded  d-inline-block mt-10 ml-2 text-secondary font-semibold">
+                                      Due Date
+                                    </span>
+                                    <span className="task-detail-value d-inline-block mt-10">
+                                      {formatDates(imptsk.dueDate)}
+                                    </span>
+                                    <span className="task-detail-label bg-default rounded  d-inline-block mt-10 ml-2 text-secondary font-semibold">
+                                      Deadline
+                                    </span>
+                                    <span className="task-detail-value d-inline-block mt-10">
+                                      {imptsk?.deadlineDisplay}
+                                    </span>
+                                  </div>
+                                  <div>
+                                    {AppActivity.canEdit && (
+                                      <div style={{ float: "right" }}>
+                                        <FormGroup>
+                                          <FormControlLabel
+                                            control={
+                                              <Checkbox
+                                                onChange={(e) =>
+                                                  handleCheckboxChange(
+                                                    e.target.checked,
+                                                    {
+                                                      id: imptsk.id,
+                                                      impact:
+                                                        imptsk.particularName +
+                                                        ">" +
+                                                        imptsk.particularSubName,
+                                                      task: imptsk.actionWhat,
+                                                      how: imptsk.actionHow,
+                                                      assignedTo:
+                                                        imptsk.assignedStaff,
+                                                      dueDate: formatDates(
+                                                        imptsk.dueDate
+                                                      ),
+                                                      deadline:
+                                                        imptsk.deadlineDisplay,
+                                                      taskId: imptsk?.id,
+                                                    }
+                                                  )
+                                                }
+                                                id="check289-input"
+                                                inputProps={{
+                                                  "aria-label":
+                                                    "primary checkbox",
+                                                }}
+                                                color="primary"
+                                              />
+                                            }
+                                            label="Need External Consultation"
+                                          />
+                                        </FormGroup>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                              {imptsk?.riskAnalysisList?.length !== 0 && imptsk.particularid === 78 && (
+  <Paper style={{ margin: "10px 0 0 0" }}>
+    <div
+      className="flex items-center w-full justify-between"
+      style={{
+        borderRadius: "20px",
+        backgroundColor: "rgb(241 248 255)",
+      }}
+    >
+      <h6
+        className="text-small font-semibold"
+        style={{ padding: "15px" }}
+      >
+        Risk Details
+      </h6>
+      <h6
+        className="text-1xl font-semibold"
+        style={{ padding: "10px" }}
+      >
+        Human Measures
+      </h6>
+      <h6
+        className="text-1xl font-semibold"
+        style={{ padding: "10px" }}
+      >
+        Technical Measures
+      </h6>
+      <h6
+        className="text-1xl font-semibold"
+        style={{ padding: "10px" }}
+      >
+        Organisational Measures
+      </h6>
+    </div>
+    <div>
+      <table className="min-w-full divide-y divide-gray-200">
+        <tbody>
+          {imptsk?.riskAnalysisList?.map((subs, index) => (
+           
+            
+            subs?.riskAnalysisSubTasks?.map((sub, subIndex) => (
+              <div key={subIndex}>
+                 {console.log(subs.riskAnalysisSubTasks,"vvvvvvvvvvv")}
+                                            
+                                            {!sub.riskAnalysisHazardTypes
+                                              ?.length? (
+                                               
+                                              <>
+                                                <div
+                                                  _ngcontent-fyk-c288=""
+                                                  class="flex items-center w-full  border-b justify-between"
+                                                ></div>
+                                                <div>
+                                                  <Grid
+                                                    container
+                                                    className="inventory-grid"
+                                                    sx={{
+                                                      paddingY: 2,
+                                                      paddingX: {
+                                                        xs: 2,
+                                                        md: 1,
+                                                      },
+                                                    }}
+                                                  >
+                                                    <Grid item xs={12} md={4}>
+                                                      <h6
+                                                       
+                                                      >
+                                                        {sub.subTaskName}
+                                                      </h6>
+                                                    </Grid>
+                                                   
+                                                  </Grid>
+                                                  <Grid
+                                                    container
+                                                    className="inventory-grid"
+                                                    sx={{
+                                                      paddingY: 2,
+                                                      paddingX: {
+                                                        xs: 2,
+                                                        md: 1,
+                                                      },
+                                                    }}
+                                                  >
+                                                  <Grid item xs={12} md={4}>
+
+                                                  <h6
+                                                        style={{
+                                                          paddingBottom: "5px",
+                                                        }}
+                                                        className="text-brown"
+                                                      >
+                                                       <b>Risk Analysis not done</b>
+                                                      </h6>
+                                                  </Grid>
+                                                  </Grid>
+                                                </div>
+                                              </>
+                                            ) : (
+                                              sub?.riskAnalysisHazardTypes?.map(
+                                                (hazardType) => (
+                                                  <div key={hazardType.id}>
+                                                    {hazardType.riskAnalysisHazardSituation?.map(
+                                                      (situation) => (
+                                                        <div key={situation.id}>
+                                                          <Grid
+                                                            container
+                                                            spacing={2}
+                                                            className="inventory-grid"
+                                                            sx={{
+                                                              paddingY: 2,
+                                                              paddingX: {
+                                                                xs: 2,
+                                                                md: 3,
+                                                              },
+                                                            }}
+                                                          >
+                                                            <Grid
+                                                              item
+                                                              xs={12}
+                                                              md={3}
+                                                            >
+                                                              <Typography
+                                                                variant="body2"
+                                                                color="text.primary"
+                                                                fontWeight="fontWeightRegular"
+                                                                style={{
+                                                                  backgroundColor:
+                                                                    situation.residualRiskClassificationDisplay ===
+                                                                    "HighRisk"
+                                                                      ? "red"
+                                                                      : situation.residualRiskClassificationDisplay ===
+                                                                          "LowRisk"
+                                                                        ? "yellow"
+                                                                        : situation.residualRiskClassificationDisplay ===
+                                                                            "AverageRisk"
+                                                                          ? "orange"
+                                                                          : situation.residualRiskClassificationDisplay ===
+                                                                              "SignificantRisk"
+                                                                            ? "purple"
+                                                                            : "green",
+                                                                  width: "35%",
+                                                                  padding:
+                                                                    "3px",
+                                                                  color:
+                                                                    situation.residualRiskClassificationDisplay ===
+                                                                    "LowRisk"
+                                                                      ? "#000"
+                                                                      : "white",
+                                                                  borderRadius:
+                                                                    "5px",
+                                                                  textAlign:
+                                                                    "center",
+                                                                  fontSize:
+                                                                    "12px",
+                                                                  fontWeight:
+                                                                    situation.residualRiskClassificationDisplay ===
+                                                                    "LowRisk"
+                                                                      ? ""
+                                                                      : "bold",
+                                                                }}
+                                                              >
+                                                                {
+                                                                  situation.residualRiskClassificationDisplay
+                                                                }
+                                                              </Typography>
+                                                            </Grid>
+                                                            <Grid
+                                                              item
+                                                              xs={12}
+                                                              md={3}
+                                                            >
+                                                              <Typography
+                                                                variant="body2"
+                                                                color="text.primary"
+                                                                fontWeight="fontWeightRegular"
+                                                                style={{
+                                                                  marginLeft:
+                                                                    "10px",
+                                                                  fontSize:
+                                                                    "12px",
+                                                                }}
+                                                              >
+                                                                {
+                                                                  situation.humanControlMeasure
+                                                                }
+                                                              </Typography>
+                                                            </Grid>
+                                                            <Grid
+                                                              item
+                                                              xs={12}
+                                                              md={3}
+                                                            >
+                                                              <Typography
+                                                                variant="body2"
+                                                                color="text.primary"
+                                                                fontWeight="fontWeightRegular"
+                                                                style={{
+                                                                  marginLeft:
+                                                                    "42px",
+                                                                  fontSize:
+                                                                    "12px",
+                                                                }}
+                                                              >
+                                                                {
+                                                                  situation.technicalControlMeasure
+                                                                }
+                                                              </Typography>
+                                                            </Grid>
+                                                            <Grid
+                                                              item
+                                                              xs={12}
+                                                              md={3}
+                                                            >
+                                                              <Typography
+                                                                variant="body2"
+                                                                color="text.primary"
+                                                                fontWeight="fontWeightRegular"
+                                                                style={{
+                                                                  marginLeft:
+                                                                    "82px",
+                                                                  fontSize:
+                                                                    "12px",
+                                                                }}
+                                                              >
+                                                                {
+                                                                  situation.organisationalControlMeasure
+                                                                }
+                                                              </Typography>
+                                                            </Grid>
+                                                          </Grid>
+                                                          <h6
+                                                            style={{
+                                                              paddingLeft:
+                                                                "10px",
+                                                              paddingBottom:
+                                                                "5px",
+                                                            }}
+                                                          >
+                                                            {sub.subTaskName}
+                                                          </h6>
+                                                          <h6
+                                                            style={{
+                                                              paddingLeft:
+                                                                "10px",
+                                                              paddingBottom:
+                                                                "5px",
+                                                            }}
+                                                          >
+                                                            -{" "}
+                                                            {
+                                                              hazardType.hazardTypeDisplay
+                                                            }
+                                                          </h6>
+                                                          <h6
+                                                            style={{
+                                                              paddingLeft:
+                                                                "10px",
+                                                              paddingBottom:
+                                                                "5px",
+                                                            }}
+                                                          >
+                                                            -{" "}
+                                                            {
+                                                              situation.hazardousSituation
+                                                            }
+                                                          </h6>
+                                                        </div>
+                                                      )
+                                                    )}
+                                                  </div>
+                                                )
+                                              )
+                                            )}
+                                          </div>
+            ))
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </Paper>
+)}
+  
+                              {imptsk.changeImpactTaskReviews?.length > 0 ||
+                              showReview ? (
+                                <div className="mt-12">
+                                  <Accordion
+                                    expanded={expanded == imptsk.id}
+                                    onChange={handleExpansionChange(imptsk.id)}
+                                  >
+                                    <AccordionSummary
+                                      expandIcon={<ExpandMoreIcon />}
+                                      aria-controls="panel1a-content"
+                                      id="panel1a-header"
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: AppActivity.canEdit
+                                          ? "space-between"
+                                          : "flex-start",
+                                      }}
+                                    >
+                                      {AppActivity.canEdit && (
+                                        <button
+                                          className="custom-add-review-button"
+                                          style={{ marginRight: 16 }}
+                                        >
+                                          Add Review
+                                        </button>
+                                      )}
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          flexGrow: 1, // This makes the div take up remaining space
+                                          justifyContent: AppActivity.canEdit
+                                            ? "flex-end"
+                                            : "flex-start",
+                                        }}
+                                      >
+                                        <Typography>
+                                          <span className="text-brown">
+                                            {
+                                              imptsk?.changeImpactTaskReviews
+                                                ?.length
+                                            }{" "}
+                                            Reviews
+                                          </span>{" "}
+                                          {hasAddedComment(
+                                            imptsk.changeImpactTaskReviews
+                                          ) && (
+                                            <span className="text-green">
+                                              (You have added 1 review)
+                                            </span>
+                                          )}
+                                        </Typography>
+                                      </div>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                      {AppActivity.canEdit &&
+                                        !hasAddedComment(
+                                          imptsk.changeImpactTaskReviews
+                                        ) && (
+                                          <div className="mat-form-field-wrapper">
+                                            <div className="mat-form-field-flex">
+                                              <img
+                                                src="/assets/images/etc/userpic.png"
+                                                alt="Card cover image"
+                                                className="rounded-full mr-4"
+                                                style={{
+                                                  width: "5rem",
+                                                  height: "5rem",
+                                                }}
+                                              />
+                                              <div
+                                                className="mat-form-field-infix"
+                                                style={{
+                                                  position: "relative",
+                                                  width: "100%",
+                                                }}
+                                              >
+                                                <textarea
+                                                  rows="2"
+                                                  className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                                  placeholder="Write a comment..."
+                                                  id="ImpTaskReview265"
+                                                  data-placeholder="Write a comment..."
+                                                  aria-invalid="false"
+                                                  aria-required="false"
+                                                  style={{ height: "36px" }}
+                                                  onChange={(e) =>
+                                                    setHandelCommentRemark(
+                                                      e.target.value
+                                                    )
+                                                  }
+                                                ></textarea>
+                                                <button
+                                                  className="custom-update-button"
+                                                  onClick={() =>
+                                                    handelImpactCommentImp(
+                                                      imptsk.id,
+                                                      1
+                                                    )
+                                                  }
+                                                >
+                                                  <span className="mat-button-wrapper">
+                                                    Save
+                                                  </span>
+                                                  <span className="mat-ripple mat-button-ripple"></span>
+                                                  <span className="mat-button-focus-overlay"></span>
+                                                </button>
+                                                <span className="mat-form-field-label-wrapper"></span>
+                                              </div>
+                                            </div>
+  
+                                            <div className="mat-form-field-subscript-wrapper">
+                                              <div
+                                                className="mat-form-field-hint-wrapper"
+                                                style={{
+                                                  opacity: 1,
+                                                  transform: "translateY(0%)",
+                                                }}
+                                              ></div>
+                                            </div>
+                                          </div>
+                                        )}
+                                      {imptsk.changeImpactTaskReviews?.map(
+                                        (rwx, index) => (
+                                          <div
+                                            className="mat-form-field-wrapper"
+                                            key={index}
+                                          >
+                                            <div className="mat-form-field-flex">
+                                              <img
+                                                src="/assets/images/etc/userpic.png"
+                                                alt="Card cover image"
+                                                className="rounded-full mr-4"
+                                                style={{
+                                                  width: "3rem",
+                                                  height: "3rem",
+                                                }}
+                                              />
+                                              {AppActivity.canEdit &&
+                                              isMyComment(rwx) ? (
+                                                <div
+                                                  className="mat-form-field-infix"
+                                                  style={{ position: "relative" }}
+                                                >
+                                                  <textarea
+                                                    ref={textareaRef}
+                                                    rows="2"
+                                                    className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                                    placeholder="Write a comment..."
+                                                    id="ImpTaskReview265"
+                                                    data-placeholder="Write a comment..."
+                                                    aria-invalid="false"
+                                                    aria-required="false"
+                                                    style={{
+                                                      height: "36px",
+                                                      width: "100%",
+                                                      paddingRight: "100px",
+                                                    }}
+                                                    defaultValue={rwx?.remark}
+                                                    onChange={(e) =>
+                                                      setHandelCommentRemark(
+                                                        e.target.value
+                                                      )
+                                                    }
+                                                  ></textarea>
+  
+                                                  <button
+                                                    className="custom-update-button"
+                                                    onClick={() => {
+                                                      handelImpactCommentImp(
+                                                        imptsk.id,
+                                                        // itm.changeImpactTaskReviews[0]
+                                                        //   .id,
+                                                        2
+                                                      );
+                                                      if (textareaRef.current) {
+                                                        textareaRef.current.focus();
+                                                      }
+                                                    }}
+                                                  >
+                                                    Update
+                                                  </button>
+  
+                                                  <span className="mat-form-field-label-wrapper"></span>
+                                                </div>
+                                              ) : (
+  
+                                                <div className="mat-form-field-wrapper">
+                                                <div className="mat-form-field-flex">
+                                            
+                                                  <div>
+                                                    <div className="mat-form-field-infix mt-5">
+                                                      <span className="">
+                                                      {rwx?.createdByStaffName}
+                                                      </span>
+                                                      -{" "}
+                                                      <span className="text-grey">
+                                                      {rwx?.remark}
+                                                      </span>
+                                                    </div>
+                                                    <p
+                                                      className="mat-form-field-infix text-grey"
+                                                      style={{
+                                                        fontSize: "smaller",
+                                                      }}
+                                                    >
+   {imptsk.changeImpactTaskReviews[0]
+                                                ?.updatedAt &&
+                                                new Date(
+                                                  imptsk.changeImpactTaskReviews[0]?.updatedAt
+                                                ).toLocaleString("en-US", {
+                                                  month: "long",
+                                                  day: "numeric",
+                                                  year: "numeric",
+                                                  hour: "numeric",
+                                                  minute: "numeric",
+                                                  second: "numeric",
+                                                  hour12: true,
+                                                  timeZoneName: "short",
+                                                })}
+                                                    </p>
+                                                  </div>
+                                                </div>
+                                              </div>
+  
+  
+  
+                                              
+                                              )}
+                                            </div>
+                                     
+                                            <div className="mat-form-field-subscript-wrapper">
+                                              <div
+                                                className="mat-form-field-hint-wrapper"
+                                                style={{
+                                                  opacity: 1,
+                                                  transform: "translateY(0%)",
+                                                }}
+                                              ></div>
+                                            </div>
+                                          </div>
+                                        )
+                                      )}
+                                    </AccordionDetails>
+                                  </Accordion>
+                                </div>
+                              ) : AppActivity.canEdit ? (
+                                <div className="mat-form-field-wrapper mt-24">
+                                  <div className="mat-form-field-flex">
+                                    <img
+                                      src="/assets/images/etc/userpic.png"
+                                      alt="Card cover image"
+                                      className="rounded-full mr-4"
+                                      style={{
+                                        width: "5rem",
+                                        height: "5rem",
+                                      }}
+                                    />
+                                    <div
+                                      className="mat-form-field-infix"
+                                      style={{
+                                        position: "relative",
+                                        width: "100%",
+                                      }}
+                                    >
+                                      <textarea
+                                        rows="2"
+                                        className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize mt-0"
+                                        placeholder="Write a comment..."
+                                        id="ImpTaskReview265"
+                                        data-placeholder="Write a comment..."
+                                        aria-invalid="false"
+                                        aria-required="false"
+                                        style={{ height: "36px" }}
+                                        onChange={(e) =>
+                                          setHandelCommentRemark(e.target.value)
+                                        }
+                                      ></textarea>
+                                      <button
+                                        className="custom-update-button"
+                                        onClick={() =>
+                                          handelImpactCommentImp(imptsk.id, 1)
+                                        }
+                                      >
+                                        <span className="mat-button-wrapper">
+                                          Save
+                                        </span>
+                                        <span className="mat-ripple mat-button-ripple"></span>
+                                        <span className="mat-button-focus-overlay"></span>
+                                      </button>
+                                      <span className="mat-form-field-label-wrapper"></span>
+                                    </div>
+                                  </div>
+  
+                                  {/* <div className="mat-form-field-subscript-wrapper">
+                                <div
+                                  className="mat-form-field-hint-wrapper"
+                                  style={{
+                                    opacity: 1,
+                                    transform: "translateY(0%)",
+                                  }}
+                                ></div>
+                              </div> */}
+                                </div>
+                              ) : (
+                                <div className="ng-star-inserted">
+                                  <span
+                                    className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                    style={{
+                                      padding: "10px",
+                                    }}
+                                  >
+                                    No Reviews Added
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                     
+              </div>
+            ))}
+          </AccordionDetails>
+        </Accordion>
+        )
+  })
+    ) : (
+      <p>No tasks available</p>
+    )}
+  </tbody>
+  
+                <tfoot
+                  className="task-table-footer"
+                  style={{
+                    display: "none",
+                    bottom: 0,
+                    zIndex: 10,
+                  }}
+                >
+                  {/* Empty footer */}
+                </tfoot>
+              </table>
+           
+
+          
+
+           
+          </Box>
+          </Box>
+          </Box>
+        </Fade>
+      </Modal>
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -2719,6 +3754,18 @@ const EvaluationApproval = ({
             class="flex items-center w-full p-30 pt-12 pb-12 border-b justify-between"
           >
             <h2 className="text-2xl font-semibold">Evaluation Impacts</h2>
+            {/* <Button
+                    
+                    className="whitespace-nowrap ms-5"
+                    variant="contained"
+                    color="secondary"
+                    
+                    onClick={
+                      handelOpenAiModal
+                    }
+                  >
+                    open Ai
+                  </Button> */}
             <TextField
               variant="filled"
               fullWidth
