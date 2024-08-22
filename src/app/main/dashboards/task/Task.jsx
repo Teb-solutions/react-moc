@@ -596,7 +596,7 @@ const Task = () => {
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(
-          `/DocumentManager/DocList/${msgId}/Task?changeRequestToken=${taskToken}`
+          `/DocumentManager/DocList/${msgId ? msgId : selectedFile.documentId}/Task?changeRequestToken=${taskToken ? taskToken : selectedFile?.changeRequestToken}}`
         )
         .then((response) => {
           setOpenDrawer(false);
