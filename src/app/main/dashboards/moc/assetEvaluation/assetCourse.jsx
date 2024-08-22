@@ -2078,35 +2078,14 @@ const AssetCourse = () => {
               style={{ minHeight: "60px" }}
               onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
             >
-
-              <FuseSvgIcon size={20} onClick={() => handleEdit()}>heroicons-solid:pencil</FuseSvgIcon>
-
-
-            </AccordionSummary>
-
-          </Accordion>
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            open={openTeamAssignment}
-            onClose={handleCloseTeam}
-            closeAfterTransition
-            slots={{ backdrop: Backdrop }}
-            slotProps={{
-              backdrop: {
-                timeout: 500,
-              },
-            }}
-          >
-            <Fade in={openTeamAssignment}>
-              <Box sx={style}>
-                <Box
-                  style={{
-                    padding: "30px",
-                    backgroundColor: "#4f46e5",
-                    borderTopLeftRadius: "16px",
-                    borderTopRightRadius: "16px",
-                  }}
+              <div className="flex justify-between text-white">
+                <span className="text-popup font-medium">
+                  Edit Team  {""}
+                </span>
+                <span
+                  onClick={handleCloseTeam}
+                  style={{ cursor: "pointer" }}
+                  className="cursor-pointer"
                 >
                   <div className="flex justify-between text-white">
                     <span className="text-popup font-medium">
@@ -2154,43 +2133,117 @@ const AssetCourse = () => {
                     noValidate
                     autoComplete="off"
                   >
-                    <FormControl fullWidth>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    ></path>
+                  </svg>
+                </span>
+              </div>
+            </Box>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "30px",
+                marginTop: "0",
+                paddingBottom: "0",
+              }}
+            >
+              <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+      <FormControl fullWidth>
+        <Autocomplete
+          id="siteInCharge"
+          options={staffList}
+          getOptionLabel={(option) => option.text}
+          value={siteInCharge}
+          onChange={(event, newValue) => setSiteInCharge(newValue)}
+          renderInput={(params) => (
+            <TextField {...params} label="Site In Charge" helperText={null} />
+          )}
+          renderOption={(props, option) => (
+            <MenuItem {...props} key={option.value} value={option.value}>
+              <ListItemText primary={option.text} />
+            </MenuItem>
+          )}
+        />
+      </FormControl>
+    </Box>
+    <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+      <FormControl fullWidth>
+        <Autocomplete
+          id="changeLeader"
+          options={staffList}
+          getOptionLabel={(option) => option.text}
+          value={changeLeader}
+          onChange={(event, newValue) => setChangeLeader(newValue)}
+          renderInput={(params) => (
+            <TextField {...params} label="Change Leader" helperText={null} />
+          )}
+          renderOption={(props, option) => (
+            <MenuItem {...props} key={option.value} value={option.value}>
+              <ListItemText primary={option.text} />
+            </MenuItem>
+          )}
+        />
+      </FormControl>
+    </Box>
 
-                      <Autocomplete
-                        id="teamType"
 
-                        options={staffList}
-                        getOptionLabel={(option) => option.text}
-                        value={
-                          staffList.find(
-                            (option) => option.value === selectedTeamType
-                          ) || null
-                        }
-                        onChange={(event, newValue) => {
-                          handleTeamTypeChange({
-                            target: {
-                              name: "teamType",
-                              value: newValue ? newValue.value : "",
-                            },
-                          });
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="site in charge"
-                            helperText={null}
-                          />
-                        )}
-                        renderOption={(props, option) => (
-                          <MenuItem
-                            {...props}
-                            key={option.value}
-                            value={option.value}
-                          >
-                            <ListItemText primary={option.text} />
-                          </MenuItem>
-                        )}
-                      />
+    <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+      <FormControl fullWidth>
+        <Autocomplete
+          id="hseq"
+          options={staffList}
+          getOptionLabel={(option) => option.text}
+          value={hseq}
+          onChange={(event, newValue) => setHseq(newValue)}
+          renderInput={(params) => (
+            <TextField {...params} label="HSEQ" helperText={null} />
+          )}
+          renderOption={(props, option) => (
+            <MenuItem {...props} key={option.value} value={option.value}>
+              <ListItemText primary={option.text} />
+            </MenuItem>
+          )}
+        />
+      </FormControl>
+    </Box>
+
+
+    {/* <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+    <FormControl fullWidth>
+  <Autocomplete
+    multiple
+    id="hseq-autocomplete"
+    options={staffList}
+    getOptionLabel={(option) => option.text}
+    isOptionEqualToValue={(option, value) => option.value === value.value}
+    value={others}
+    onChange={(event, newValue) => {
+      setSelectedOthersStaffs(newValue);
+    }}
+    renderInput={(params) => (
+      <TextField {...params} variant="outlined" label="Others" fullWidth />
+    )}
+    renderOption={(props, option, { selected }) => (
+      <li {...props} key={option.value}>
+        <Checkbox checked={selected} />
+        <ListItemText primary={option.text} />
+      </li>
+    )}
+    renderTags={(value) => {
+      const selectedNames = value.map((option) => option.text).join(", ");
+      return <span>{selectedNames}</span>;
+    }}
+  />
+</FormControl>
+</Box> */}
+
+
+             
+            </div>
 
 
 
@@ -2384,14 +2437,14 @@ const AssetCourse = () => {
                     Update
                   </Button>
                 </div>
-              </Box>
-            </Fade>
-          </Modal>
+              </Box >
+            </Fade >
+          </Modal >
         </>
       }
-      scroll="content"
-      ref={pageLayout}
-    />
+scroll = "content"
+ref = { pageLayout }
+  />
   );
 };
 
