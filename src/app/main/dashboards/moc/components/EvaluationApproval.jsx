@@ -31,11 +31,11 @@ import {
 } from "@mui/material";
 import { withStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
-import React, { useEffect, useCallback, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SwipeableViews from "react-swipeable-views";
 import SearchIcon from "@mui/icons-material/Search";
 import Chart from "react-apexcharts";
-import { useState } from "react";
+
 import { apiAuth } from "src/utils/http";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SaveIcon from "@mui/icons-material/Save";
@@ -149,6 +149,7 @@ const EvaluationApproval = ({
       console.error("Error fetching records:", error);
     }
   }
+
   useEffect(() => {
     getRecords();
   }, [AppActivity.uid]);
@@ -980,6 +981,25 @@ const EvaluationApproval = ({
   const handelOpenAiModal = () => {
     setAiOpenModal(true)
   }
+
+
+  const uniqueEvaluationTeam = React.useMemo(() => {
+    const teamMap = new Map();
+
+    contentDetails?.evaluationTeam?.forEach((member) => {
+      const key = `${member.teamType}-${member.staffId}`;
+      if (!teamMap.has(key)) {
+        teamMap.set(key, member);
+      }
+    });
+
+    return Array.from(teamMap.values());
+  }, [contentDetails]);
+
+
+
+
+
   return (
     <div className="w-full h-full">
       <Modal
@@ -3365,7 +3385,7 @@ const EvaluationApproval = ({
             <h2 className="text-2xl font-semibold">Change Evaluation Team</h2>
           </div>
           <div className="evaluation-team-container grid p-30 pt-24 pb-24 grid-cols-1 md:grid-cols-3 gap-4">
-            {contentDetails?.evaluationTeam?.map((list, index) => (
+            {uniqueEvaluationTeam?.map((list, index) => (
               <div
                 className="inventory-grid grid items-center gap-4 py-3 px-2"
                 key={index}

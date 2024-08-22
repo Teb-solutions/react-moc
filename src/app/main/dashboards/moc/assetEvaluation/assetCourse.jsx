@@ -1656,11 +1656,18 @@ const AssetCourse = () => {
               break;
             case 3:
               const teams = resp.data.data;
+
               setSelectedOthersStaffs(
                 teams
                   .filter((t) => t.teamType === 3)
                   .map((t) => staffList.find((staff) => staff.value === t.staffId))
                   .filter(Boolean) // To remove any undefined values
+                  .reduce((uniqueStaffs, currentStaff) => {
+                    if (!uniqueStaffs.some((staff) => staff.value === currentStaff.value)) {
+                      uniqueStaffs.push(currentStaff);
+                    }
+                    return uniqueStaffs;
+                  }, [])
               );
             case 4:
               setSiteInCharge(staffList.find(option => option.value === member.staffId) || null);
@@ -1674,6 +1681,7 @@ const AssetCourse = () => {
 
   const handleCloseTeam = () => {
     setOpenTeamAssignment(false)
+
   }
 
   const [selectedStaffs, setSelectedStaffs] = useState([]);
@@ -1701,9 +1709,12 @@ const AssetCourse = () => {
   };
 
 
+
+
+
   const handelUpdateTeam = () => {
     const teamData = [];
-
+    const addedStaffIds = new Set();
     // Collect data from Site In Charge (teamType 4)
     if (siteInCharge) {
       teamData.push({
@@ -1728,16 +1739,20 @@ const AssetCourse = () => {
 
     // Collect data from HSEQ (teamType 3, multiple selections)
     others.forEach((staff) => {
-      teamData.push({
-        teamType: 3,
-        staffId: staff.value,
-      });
+      if (!addedStaffIds.has(staff.value)) {
+        teamData.push({
+          teamType: 3,
+          staffId: staff.value,
+        });
+        addedStaffIds.add(staff.value);
+      }
     });
 
     apiAuth
       .put(`/ChangeRequest/EditTeam?id=${assetEvaluationId}`, teamData)
       .then((resp) => {
         setOpenTeamAssignment(false)
+        setSelectedOthersStaffs([]);
         // Handle the response if needed
         toast.success("Team updated successfully")
         console.log("Team updated successfully:", resp.data);
@@ -2281,34 +2296,35 @@ const AssetCourse = () => {
                   </Box>
 
 
-                  {/* <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
-    <FormControl fullWidth>
-  <Autocomplete
-    multiple
-    id="hseq-autocomplete"
-    options={staffList}
-    getOptionLabel={(option) => option.text}
-    isOptionEqualToValue={(option, value) => option.value === value.value}
-    value={others}
-    onChange={(event, newValue) => {
-      setSelectedOthersStaffs(newValue);
-    }}
-    renderInput={(params) => (
-      <TextField {...params} variant="outlined" label="Others" fullWidth />
-    )}
-    renderOption={(props, option, { selected }) => (
-      <li {...props} key={option.value}>
-        <Checkbox checked={selected} />
-        <ListItemText primary={option.text} />
-      </li>
-    )}
-    renderTags={(value) => {
-      const selectedNames = value.map((option) => option.text).join(", ");
-      return <span>{selectedNames}</span>;
-    }}
-  />
-</FormControl>
-</Box> */}
+                  <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+                    <FormControl fullWidth>
+                      <Autocomplete
+                        multiple
+                        id="hseq-autocomplete"
+                        options={staffList}
+                        getOptionLabel={(option) => option.text}
+                        isOptionEqualToValue={(option, value) => option.value === value.value}
+                        value={others}
+                        onChange={(event, newValue) => {
+                          setSelectedOthersStaffs(newValue);
+                        }}
+                        // }}
+                        renderInput={(params) => (
+                          <TextField {...params} variant="outlined" label="Others" fullWidth />
+                        )}
+                        renderOption={(props, option, { selected }) => (
+                          <li {...props} key={option.value}>
+                            <Checkbox checked={selected} />
+                            <ListItemText primary={option.text} />
+                          </li>
+                        )}
+                        renderTags={(value) => {
+                          const selectedNames = value.map((option) => option.text).join(", ");
+                          return <span>{selectedNames}</span>;
+                        }}
+                      />
+                    </FormControl>
+                  </Box>
 
 
 
