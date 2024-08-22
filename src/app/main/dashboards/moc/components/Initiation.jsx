@@ -351,7 +351,7 @@ function Initiation(props) {
               </Button>
             </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "0" }}>
+              <Box className="flex justify-between" style={{ margin: "0", paddingTop: "0" }}>
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
