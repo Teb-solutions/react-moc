@@ -2184,7 +2184,7 @@ const handleEdit = () => {
             >
               <div className="flex justify-between text-white">
                 <span className="text-popup font-medium">
-                  Edit Team 
+                  Edit Team  {""}
                 </span>
                 <span
                   onClick={handleCloseTeam}
@@ -2309,6 +2309,7 @@ const handleEdit = () => {
   />
 </FormControl>
 </Box> */}
+
 
              
             </div>
