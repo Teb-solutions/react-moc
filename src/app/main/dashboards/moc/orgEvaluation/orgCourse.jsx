@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import Stepper from "@mui/material/Stepper";
 import { Link, useParams } from "react-router-dom";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { parseISO, format } from "date-fns";
 import {
   Accordion,
@@ -45,6 +46,10 @@ const orgCourse = () => {
   const [appActivity, setAppActivity] = useState([]);
   const [appActions, setApActions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const handelOpenSide = () => {
+    setLeftSidebarOpen(true);
+  };
 
   useEffect(() => {
     let lastIndex = -1;
@@ -291,145 +296,162 @@ const orgCourse = () => {
       leftSidebarOpen={leftSidebarOpen}
       leftSidebarContent={
         <>
-          {content.map((resp, respIndex) => (
-            <Accordion
-              key={respIndex}
-              style={{ margin: "0px" }}
-              expanded={respIndex === expandedAccordionIndex}
-              onChange={() => handleAccordionChange(respIndex)}
+        <div className="desktop_hide text-end p-30 pt-24 pb-24">
+          <FuseSvgIcon
+            className="text-48 cursor-pointer "
+            size={24}
+            style={{ display: "inline-block;" }}
+            color="action"
+            onClick={handelOpenSide}
+          >
+            heroicons-outline:menu
+          </FuseSvgIcon>
+        </div>
+        {content.map((resp, respIndex) => (
+          <Accordion
+            key={respIndex}
+            style={{ margin: "0px" }}
+            expanded={respIndex === expandedAccordionIndex}
+            onChange={() => handleAccordionChange(respIndex)}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+              style={{ minHeight: "60px" }}
             >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls="panel1-content"
-                id="panel1-header"
-                style={{ minHeight: "60px" }}
-              >
-                {resp.name}
-              </AccordionSummary>
-              <AccordionDetails>
-                <Stepper orientation="vertical">
-                  {resp.activities.map((step, index) => (
-                    <Step
-                      key={index}
+              {resp.name}
+            </AccordionSummary>
+            <AccordionDetails>
+              <Stepper orientation="vertical">
+                {resp.activities.map((step, index) => (
+                  <Step
+                    key={index}
+                    sx={{
+                      "& .MuiStepLabel-root, & .MuiStepContent-root": {
+                        cursor: step.canView ? "pointer!important" : "default!important",
+                      },
+                      "& .MuiStepContent-root": {
+                        color: "text.secondary",
+                        fontSize: 13,
+                      },
+                    }}
+                    
+                    onClick={(e) =>
+                      handleStepChange(
+                        e,
+                        resp.name,
+                        step.uid,
+                        step.code,
+                        step.version,
+                        step.refVersion,
+                        step.name,
+                        step.canEdit,
+                        step.canView
+                      )
+                    }
+                    expanded
+                    
+                   
+                  >
+                    <StepLabel
+                      className="font-medium"
+                      StepIconComponent={(props) => (
+                        <CustomStepIcon
+                          {...props}
+                          index={index}
+                          canView={step.canView}
+                          isComplete={step.isComplete}
+                          status={step.status}
+                        />
+                      )}
                       sx={{
-                        "& .MuiStepLabel-root, & .MuiStepContent-root": {
-                          cursor: "pointer!important",
-                        },
-                        "& .MuiStepContent-root": {
-                          color: "text.secondary",
-                          fontSize: 13,
-                        },
-                      }}
-                      onClick={(e) =>
-                        handleStepChange(
-                          e,
-                          resp.name,
-                          step.uid,
-                          step.code,
-                          step.version,
-                          step.refVersion,
-                          step.name,
-                          step.canEdit,
-                          step.canView
-                        )
-                      }
-                      expanded
-                    >
-                      <StepLabel
-                        className="font-medium"
-                        StepIconComponent={(props) => (
-                          <CustomStepIcon
-                            {...props}
-                            index={index}
-                            canView={step.canView}
-                            isComplete={step.isComplete}
-                            status={step.status}
-                          />
-                        )}
-                        sx={{
-                          "& .MuiSvgIcon-root": {
-                            color: "background.default",
-                            "& .MuiStepIcon-text": {
-                              fill: (_theme) => _theme.palette.text.secondary,
-                            },
-                            "&.Mui-completed": {
-                              color: "secondary.main",
-                              "& .MuiStepIcon-text ": {
-                                fill: (_theme) =>
-                                  _theme.palette.secondary.contrastText,
-                              },
-                            },
-                            "&.Mui-active": {
-                              color: "secondary.main",
-                              "& .MuiStepIcon-text ": {
-                                fill: (_theme) =>
-                                  _theme.palette.secondary.contrastText,
-                              },
+                        "& .MuiSvgIcon-root": {
+                          color: "background.default",
+                          "& .MuiStepIcon-text": {
+                            fill: (_theme) => _theme.palette.text.secondary,
+                          },
+                          "&.Mui-completed": {
+                            color: "secondary.main",
+                            "& .MuiStepIcon-text ": {
+                              fill: (_theme) =>
+                                _theme.palette.secondary.contrastText,
                             },
                           },
-                        }}
-                      >
-                        {step.name} v{step.version}
-                      </StepLabel>
-                      <StepContent>
-                        <CourseProgress
-                          course={step.isComplete === true ? 100 : 0}
-                        />
-                      </StepContent>
+                          "&.Mui-active": {
+                            color: "secondary.main",
+                            "& .MuiStepIcon-text ": {
+                              fill: (_theme) =>
+                                _theme.palette.secondary.contrastText,
+                            },
+                          },
+                        },
+                      }}
+                      
+                    >
+                      <span  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)" }:{}}>
 
-                      {step.code == "MOC_COMPLETED" ? (
-                        <StepContent style={{ fontSize: "10px" }}>
-                          Ended at{" "}
-                          <b>{formatDates(step.actualEndDate, "yyyy-MM-dd")}</b>
+
+                      {step.name} v{step.version}
+                      </span>
+                    </StepLabel>
+                    <StepContent>
+                      <CourseProgress
+                        course={step.isComplete === true ? 100 : 0}
+                      />
+                    </StepContent>
+                    {step.code == "MOC_COMPLETED" ? (
+                      <StepContent style={{ fontSize: "10px" }}>
+                        Ended at <b>{formatDates(step.actualEndDate)}</b>
+                      </StepContent>
+                    ) : (
+                      <>
+                        <StepContent
+                          style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}
+                          className="pt-4"
+                        >
+                          By{" "}
+                          <b>
+                            {step.targetUsers && step.targetUsers.length > 0
+                              ? step.targetUsers[0]
+                              : ""}
+                          </b>
                         </StepContent>
-                      ) : (
-                        <>
-                          <StepContent
-                            style={{ fontSize: "10px" }}
-                            className="pt-4"
-                          >
-                            By{" "}
-                            <b>
-                              {step.targetUsers && step.targetUsers.length > 0
-                                ? step.targetUsers[0]
-                                : ""}
-                            </b>
-                          </StepContent>
-                          <StepContent style={{ fontSize: "10px" }}>
-                            Started at{" "}
-                            <b>
-                              {formatDates(step.actualStartDate, "yyyy-MM-dd")}
-                            </b>
-                          </StepContent>
-                          <StepContent style={{ fontSize: "10px" }}>
-                            {step.actualEndDate === null ? (
-                              ""
-                            ) : (
-                              <>
-                                {step.status} at{" "}
-                                <b>
-                                  {formatDates(
-                                    step?.actualEndDate,
-                                    "yyyy-MM-dd"
-                                  )}
-                                </b>
-                              </>
-                            )}
-                          </StepContent>
-                          {!step?.isComplete && (
-                            <StepContent style={{ fontSize: "10px" }}>
-                              <b> Pending</b>
-                            </StepContent>
+                        <StepContent  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}>
+                          Started at{" "}
+                          <b>
+                            {formatDates(step.actualStartDate, "yyyy-MM-dd")}
+                          </b>
+                        </StepContent>
+                        <StepContent  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}>
+                          {step.actualEndDate === null ? (
+                            ""
+                          ) : (
+                            <>
+                              {step.status} at{" "}
+                              <b>
+                                {formatDates(
+                                  step?.actualEndDate,
+                                  "yyyy-MM-dd"
+                                )}
+                              </b>
+                            </>
                           )}
-                        </>
-                      )}
-                    </Step>
-                  ))}
-                </Stepper>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </>
+                        </StepContent>
+                        {!step?.isComplete && (
+                          <StepContent  style={currentActivityForm.uid==step.uid?{color: "blue",fontSize: "10px" }:{fontSize: "10px" }}>
+                            <b> Pending</b>
+                          </StepContent>
+                        )}
+                      </>
+                    )}
+                  </Step>
+                ))}
+              </Stepper>
+            </AccordionDetails>
+          </Accordion>
+        ))}
+      </>
       }
       scroll="content"
       ref={pageLayout}

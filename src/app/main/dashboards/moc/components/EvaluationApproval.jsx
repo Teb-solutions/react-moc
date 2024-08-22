@@ -45,6 +45,7 @@ import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
 import Initiation from "./Initiation";
 import { animateVisualElement } from "framer-motion";
+import { map } from "lodash";
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -149,7 +150,7 @@ const EvaluationApproval = ({
   }
   useEffect(() => {
     getRecords();
-  }, [AppActivity.uid]);
+  }, [AppActivity.uid,contentDetails]);
   const handleSaveClick = (type) => {
     const remark = type === "Consultaion" ? newRemark : newImpactTaskRemark;
     const payload = {
@@ -236,7 +237,7 @@ const EvaluationApproval = ({
     bgcolor: "background.paper",
 
     boxShadow: 24,
-    p: 4,
+  
   };
 
   const style2 = {
@@ -288,18 +289,18 @@ const EvaluationApproval = ({
   const [showReview, setshowReview] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  async function testReview() {
-    const response = await apiAuth.get(
-      `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-    );
+  // async function testReview() {
+  //   const response = await apiAuth.get(
+  //     `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+  //   );
 
-    setHandelCommentRemark("");
-    setContentDetails(response.data.data);
-  }
+  //   setHandelCommentRemark("");
+  //   setContentDetails(response.data.data);
+  // }
 
-  useEffect(() => {
-    testReview();
-  }, []);
+  // useEffect(() => {
+  //   testReview();
+  // }, []);
 
   const handelCommentImp = async (id, rwid, value) => {
     if (value == 1) {
@@ -2759,41 +2760,10 @@ const EvaluationApproval = ({
                 {/* Empty header */}
               </thead>
               <tbody className="task-table-body">
-  {contentDetails?.tasklist ? (
-    Object.entries(
-      contentDetails.tasklist.reduce((acc, task) => {
-        // Group tasks by particularName
-        if (!acc[task.particularName]) {
-          acc[task.particularName] = [];
-        }
-        acc[task.particularName].push(task);
-        return acc;
-      }, {})
-    ).map(([particularName, tasks]) => {
-      const reviewedCount = tasks.filter(task => task.changeImpactTaskReviews.length > 0).length;
-      const pendingCount = tasks.filter(task => task.changeImpactTaskReviews.length === 0).length;
-      return (
-      <Accordion className="mt-6" key={particularName}>
-       
-        <AccordionSummary aria-controls="panel1a-content" id="panel1a-header">
-          <Typography className="d-flex flex-wrap w-100" style={{alignItems:"center"}}>
-            <span>{particularName} </span>
-            <span style={{marginLeft:'auto'}}> Reviewed: {reviewedCount} | Pending: {pendingCount}
-              </span>
-              <Button
-                   
-                    className="whitespace-nowrap ms-5 ml-24"
-                    variant="contained"
-                    color="secondary"
-                    // style={{ marginTop: "10px" }}
-                 
-                  >
-                    Mark as reviewed
-                  </Button>
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          {tasks.sort((a, b) => b.sourceTaskId - a.sourceTaskId).map((imptsk) => (
+              {contentDetails?.tasklist ? (
+
+
+          contentDetails?.tasklist.map((imptsk) => (
             <div key={imptsk.id} className="mt-24 border-b pb-24">
           
                       <div className="task-table-row mat-row">
@@ -2858,10 +2828,10 @@ const EvaluationApproval = ({
                             previousTasks[imptsk.id] &&
                             previousTasks[imptsk.id].map((itm) => (
                               <div
-                                className="task-details px-0 mt-0 pt-0 border"
+                                className="task-details px-0 mt-0 pt-0 border "
                                 key={itm.id}
                               >
-                                <div class="mt-3 ms-9 font-semibold">
+                                <div class="mt-5 ms-9 font-semibold">
                                   V{itm.evaluationVersion}
                                 </div>
                                 <div className="task-detail prose prose-sm max-w-5xl mt-0 pt-0">
@@ -2869,55 +2839,55 @@ const EvaluationApproval = ({
                                     <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
                                       Impact
                                     </span>
-                                    <span className="task-detail-value d-inline-block mt-10">
+                                    <span className="task-detail-value d-inline-block mt-5">
                                       {itm.particularName +
                                         ">" +
                                         itm.particularSubName}
                                     </span>
                                   </div>
                                   <div className="task-detail-item mt-3">
-                                    <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
+                                    <span className="task-detail-label bg-default d-inline-block mt-5 rounded text-secondary font-semibold">
                                       What is Task
                                     </span>
-                                    <span className="task-detail-value d-inline-block mt-10">
+                                    <span className="task-detail-value d-inline-block mt-5">
                                       {itm.actionWhat}
                                     </span>
                                   </div>
                                   <div className="task-detail-item mt-5">
-                                    <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
+                                    <span className="task-detail-label bg-default d-inline-block mt-5 rounded text-secondary font-semibold">
                                       How is Task done
                                     </span>
-                                    <span className="task-detail-value d-inline-block mt-10">
+                                    <span className="task-detail-value d-inline-block mt-5">
                                       {itm.actionHow}
                                     </span>
                                   </div>
-                                  <div className="task-detail-item mt-5">
-                                    <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
+                                  <div className="task-detail-item ">
+                                    <span className="task-detail-label bg-default d-inline-block  rounded text-secondary font-semibold">
                                       Assigned to
                                     </span>
-                                    <span className="task-detail-value d-inline-block mt-10">
+                                    <span className="task-detail-value d-inline-block mt-5">
                                       {itm.assignedStaff}
                                     </span>
-                                    <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-10 text-secondary font-semibold">
+                                    <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-5 text-secondary font-semibold">
                                       Due Date
                                     </span>
-                                    <span className="task-detail-value d-inline-block mt-10">
+                                    <span className="task-detail-value d-inline-block mt-5">
                                       {formatDates(itm.dueDate)}
                                     </span>
-                                    <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-10 text-secondary font-semibold">
+                                    <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-5 text-secondary font-semibold">
                                       Deadline
                                     </span>
-                                    <span className="task-detail-value d-inline-block mt-10">
+                                    <span className="task-detail-value d-inline-block mt-5">
                                       {itm?.deadlineDisplay}
                                     </span>
                                   </div>
                                 </div>
-                                <div>&nbsp;</div>
+                                
                                 {itm?.changeImpactTaskReviews?.length != 0 && (
                                   <Accordion
                                     expanded={expanded === "panel2"}
                                     onChange={handleExpansionChange("panel2")}
-                                    className="mt-6"
+                                    className="mt-6 m-10"
                                   >
                                     <AccordionSummary
                                       expandIcon={<ExpandMoreIcon />}
@@ -2933,7 +2903,7 @@ const EvaluationApproval = ({
                                     </AccordionSummary>
                                     {itm?.changeImpactTaskReviews?.map(
                                       (rivew) => (
-                                        <AccordionDetails>
+                                        <AccordionDetails >
                                           <div className="mat-form-field-wrapper">
                                             <div className="mat-form-field-flex">
                                               <img
@@ -2946,7 +2916,7 @@ const EvaluationApproval = ({
                                                 }}
                                               />
                                               <div>
-                                                <div className="mat-form-field-infix mt-12">
+                                                <div className="mat-form-field-infix mt-5">
                                                   <span className="">
                                                     {rivew?.createdByStaffName}
                                                   </span>
@@ -2961,7 +2931,17 @@ const EvaluationApproval = ({
                                                     fontSize: "smaller",
                                                   }}
                                                 >
-                                                  {rivew?.updatedAt}
+                                                    {rivew?.updatedAt ? new Date(rivew.updatedAt).toLocaleString("en-US", {
+  
+    year: "numeric", // e.g., "2024"
+    month: "long", // e.g., "August"
+    day: "numeric", // e.g., "20"
+    hour: "2-digit", // e.g., "12 PM"
+    minute: "2-digit", // e.g., "46"
+    second: "2-digit", // e.g., "23"
+    hour12: true, // Use 12-hour clock
+    timeZoneName: "short" // e.g., "GMT+5"
+  }) : null}
                                                 </p>
                                               </div>
                                             </div>
@@ -3070,53 +3050,53 @@ const EvaluationApproval = ({
                                 </div>
                               </div>
                             </div>
-                            {imptsk?.riskAnalysisList?.length !== 0 && (
-                              <Paper style={{ margin: "10px 0 0 0" }}>
-                                <div
-                                  _ngcontent-fyk-c288=""
-                                  class="flex items-center w-full justify-between"
-                                  style={{
-                                    borderRadius: "20px",
-                                    backgroundColor: "rgb(241 248 255)",
-                                  }}
-                                >
-                                  <h6
-                                    _ngcontent-fyk-c288=""
-                                    class="text-small font-semibold"
-                                    style={{ padding: "15px" }}
-                                  >
-                                    Risk Details
-                                  </h6>
-                                  <h6
-                                    _ngcontent-fyk-c288=""
-                                    class="text-1xl font-semibold"
-                                    style={{ padding: "10px" }}
-                                  >
-                                    Human Measures
-                                  </h6>
-                                  <h6
-                                    _ngcontent-fyk-c288=""
-                                    class="text-1xl font-semibold"
-                                    style={{ padding: "10px" }}
-                                  >
-                                    Technical Measures
-                                  </h6>
-                                  <h6
-                                    _ngcontent-fyk-c288=""
-                                    class="text-1xl font-semibold"
-                                    style={{ padding: "10px" }}
-                                  >
-                                    ORGANISATIONAL MEASURES
-                                  </h6>
-                                </div>
-                                <div>
-                                  <table className="min-w-full divide-y divide-gray-200">
-                                    <tbody>
-                                      {contentDetails?.riskAnalysisList[0]?.riskAnalysisSubTasks?.map(
-                                        (sub, index) => (
-                                          <div key={index}>
-                                            {sub.riskAnalysisHazardTypes
-                                              ?.length === 0 ? (
+                            {imptsk?.riskAnalysisList?.length !== 0 && imptsk.particularid === 78 && (
+  <Paper style={{ margin: "10px 0 0 0" }}>
+    <div
+      className="flex items-center w-full justify-between"
+      style={{
+        borderRadius: "20px",
+        backgroundColor: "rgb(241 248 255)",
+      }}
+    >
+      <h6
+        className="text-small font-semibold"
+        style={{ padding: "15px" }}
+      >
+        Risk Details
+      </h6>
+      <h6
+        className="text-1xl font-semibold"
+        style={{ padding: "10px" }}
+      >
+        Human Measures
+      </h6>
+      <h6
+        className="text-1xl font-semibold"
+        style={{ padding: "10px" }}
+      >
+        Technical Measures
+      </h6>
+      <h6
+        className="text-1xl font-semibold"
+        style={{ padding: "10px" }}
+      >
+        Organisational Measures
+      </h6>
+    </div>
+    <div>
+      <table className="min-w-full divide-y divide-gray-200">
+        <tbody>
+          {imptsk?.riskAnalysisList?.map((subs, index) => (
+           
+            
+            subs?.riskAnalysisSubTasks?.map((sub, subIndex) => (
+              <div key={subIndex}>
+                 {console.log(subs.riskAnalysisSubTasks,"vvvvvvvvvvv")}
+                                            
+                                            {!sub.riskAnalysisHazardTypes
+                                              ?.length? (
+                                               
                                               <>
                                                 <div
                                                   _ngcontent-fyk-c288=""
@@ -3136,18 +3116,40 @@ const EvaluationApproval = ({
                                                   >
                                                     <Grid item xs={12} md={4}>
                                                       <h6
-                                                        style={{
-                                                          paddingBottom: "5px",
-                                                        }}
+                                                       
                                                       >
                                                         {sub.subTaskName}
                                                       </h6>
                                                     </Grid>
+                                                   
+                                                  </Grid>
+                                                  <Grid
+                                                    container
+                                                    className="inventory-grid"
+                                                    sx={{
+                                                      paddingY: 2,
+                                                      paddingX: {
+                                                        xs: 2,
+                                                        md: 1,
+                                                      },
+                                                    }}
+                                                  >
+                                                  <Grid item xs={12} md={4}>
+
+                                                  <h6
+                                                        style={{
+                                                          paddingBottom: "5px",
+                                                        }}
+                                                        className="text-brown"
+                                                      >
+                                                       <b>Risk Analysis not done</b>
+                                                      </h6>
+                                                  </Grid>
                                                   </Grid>
                                                 </div>
                                               </>
                                             ) : (
-                                              sub.riskAnalysisHazardTypes?.map(
+                                              sub?.riskAnalysisHazardTypes?.map(
                                                 (hazardType) => (
                                                   <div key={hazardType.id}>
                                                     {hazardType.riskAnalysisHazardSituation?.map(
@@ -3323,13 +3325,14 @@ const EvaluationApproval = ({
                                               )
                                             )}
                                           </div>
-                                        )
-                                      )}
-                                    </tbody>
-                                  </table>
-                                </div>
-                              </Paper>
-                            )}
+            ))
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </Paper>
+)}
+
 
                             {imptsk.changeImpactTaskReviews?.length > 0 ||
                             showReview ? (
@@ -3517,25 +3520,27 @@ const EvaluationApproval = ({
                                                 <span className="mat-form-field-label-wrapper"></span>
                                               </div>
                                             ) : (
-                                              <div className="mat-form-field-infix">
-                                                <span className="">
-                                                  {rwx?.createdByStaffName}
-                                                </span>{" "}
-                                                <span className="pl-8 text-grey">
-                                                  {" "}
-                                                  {rwx?.remark}
-                                                </span>
-                                              </div>
-                                            )}
-                                          </div>
-                                          <span
-                                            style={{
-                                              fontSize: "x-small",
-                                              paddingLeft: "35px",
-                                            }}
-                                          >
-                                            {" "}
-                                            {imptsk.changeImpactTaskReviews[0]
+
+                                              <div className="mat-form-field-wrapper">
+                                              <div className="mat-form-field-flex">
+                                          
+                                                <div>
+                                                  <div className="mat-form-field-infix mt-5">
+                                                    <span className="">
+                                                    {rwx?.createdByStaffName}
+                                                    </span>
+                                                    -{" "}
+                                                    <span className="text-grey">
+                                                    {rwx?.remark}
+                                                    </span>
+                                                  </div>
+                                                  <p
+                                                    className="mat-form-field-infix text-grey"
+                                                    style={{
+                                                      fontSize: "smaller",
+                                                    }}
+                                                  >
+ {imptsk.changeImpactTaskReviews[0]
                                               ?.updatedAt &&
                                               new Date(
                                                 imptsk.changeImpactTaskReviews[0]?.updatedAt
@@ -3549,7 +3554,17 @@ const EvaluationApproval = ({
                                                 hour12: true,
                                                 timeZoneName: "short",
                                               })}
-                                          </span>
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </div>
+
+
+
+                                            
+                                            )}
+                                          </div>
+                                   
                                           <div className="mat-form-field-subscript-wrapper">
                                             <div
                                               className="mat-form-field-hint-wrapper"
@@ -3640,11 +3655,8 @@ const EvaluationApproval = ({
                       </div>
                    
             </div>
-          ))}
-        </AccordionDetails>
-      </Accordion>
-      )
-})
+          ))
+
   ) : (
     <p>No tasks available</p>
   )}

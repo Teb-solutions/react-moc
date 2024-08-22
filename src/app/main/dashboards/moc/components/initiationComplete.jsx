@@ -1405,10 +1405,10 @@ const InitiationComplete = ({
                   <FormControl fullWidth>
                     <FormLabel>Expected Change Completion Date</FormLabel>
                     <span>
-                      {new Date(
+                    {new Date(
                         currentSummeryById?.changeTerminationDate
                       ).toLocaleString("en-US", {
-                        month: "short",
+                        month: "long",
                         day: "2-digit",
                         year: "numeric",
                       })}

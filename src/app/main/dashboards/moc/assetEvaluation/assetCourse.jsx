@@ -20,8 +20,11 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Autocomplete,
+  Checkbox,
   FormHelperText,
   FormLabel,
+  ListItemText,
   Step,
   StepContent,
   StepLabel,
@@ -177,6 +180,21 @@ const AssetCourse = () => {
     isEditable: true,
     taskReviewId: "",
   });
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "600px",
+    maxWidth: "80vw",
+    height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    // p: 4,
+    padding: "0px",
+  };
 
   const [taskAdd, setTaskAdd] = useState({
     particular: 0,
@@ -562,9 +580,7 @@ const AssetCourse = () => {
     overflow: "auto", // Smooth transition for opening/closing
   });
 
-  useEffect(() => {
-    getRecords();
-  }, []);
+
 
   const formatDate = (dateString) => {
     if (!dateString) {
@@ -590,7 +606,8 @@ const AssetCourse = () => {
       hour12: true,
     });
   };
-
+  const [staffList, setStaffList] = useState([]);
+  const [selectedTeamType, setSelectedTeamType] = useState(null);
   function getRecords() {
     apiAuth
       .get(`/ChangeRequest/RequestDetails?id=${assetEvaluationId}`)
@@ -602,6 +619,9 @@ const AssetCourse = () => {
             setContent(resp.data.data.phases);
             setValueRemark("");
           });
+      });
+      apiAuth.get(`/TeamAssignment/Create`).then((resp) => {
+        setStaffList(resp.data?.data.staffData);
       });
   }
 
@@ -1613,6 +1633,45 @@ const AssetCourse = () => {
     setLeftSidebarOpen(true);
   };
 
+  const [openTeamAssignment, setOpenTeamAssignment] = useState(false);
+  const handleEdit = () => {
+
+    setOpenTeamAssignment(true)
+    apiAuth
+    .get(`/ChangeRequest/TeamList?id=${assetEvaluationId}`)
+    .then((resp) => {
+    
+    });
+  };
+  
+  const handleCloseTeam=()=>{
+    setOpenTeamAssignment(false)
+  }
+
+  const [selectedStaffs, setSelectedStaffs] = useState([]);
+  const [teamAssignments, setTeamAssignments] = useState([]);
+  const handleTeamTypeChange = (event) => {
+    console.log(event.target.value, "pppppppp");
+    const { value } = event.target;
+    setSelectedTeamType(value);
+
+    const selectedStaff = staffList.find((staff) => staff.value === value);
+
+    if (selectedStaff) {
+      // Clear the existing team assignments and add the new one
+      setTeamAssignments([{ staffId: selectedStaff.value, teamType: "Hseq" }]);
+    }
+  };
+
+  const handleStaffChange = (event, newValue) => {
+    setSelectedStaffs(
+      newValue.map((staff) => ({
+        staffId: staff.value,
+        teamType: "Others",
+      }))
+    );
+  };
+
   if (isLoading) {
     return <FuseLoading />;
   }
@@ -1885,13 +1944,14 @@ const AssetCourse = () => {
                       key={index}
                       sx={{
                         "& .MuiStepLabel-root, & .MuiStepContent-root": {
-                          cursor: "pointer!important",
+                          cursor: step.canView ? "pointer!important" : "default!important",
                         },
                         "& .MuiStepContent-root": {
                           color: "text.secondary",
                           fontSize: 13,
                         },
                       }}
+                      
                       onClick={(e) =>
                         handleStepChange(
                           e,
@@ -1906,6 +1966,8 @@ const AssetCourse = () => {
                         )
                       }
                       expanded
+                      
+                     
                     >
                       <StepLabel
                         className="font-medium"
@@ -1940,8 +2002,13 @@ const AssetCourse = () => {
                             },
                           },
                         }}
+                        
                       >
+                        <span  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)" }:{}}>
+
+
                         {step.name} v{step.version}
+                        </span>
                       </StepLabel>
                       <StepContent>
                         <CourseProgress
@@ -1955,7 +2022,7 @@ const AssetCourse = () => {
                       ) : (
                         <>
                           <StepContent
-                            style={{ fontSize: "10px" }}
+                            style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}
                             className="pt-4"
                           >
                             By{" "}
@@ -1965,13 +2032,13 @@ const AssetCourse = () => {
                                 : ""}
                             </b>
                           </StepContent>
-                          <StepContent style={{ fontSize: "10px" }}>
+                          <StepContent  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}>
                             Started at{" "}
                             <b>
                               {formatDates(step.actualStartDate, "yyyy-MM-dd")}
                             </b>
                           </StepContent>
-                          <StepContent style={{ fontSize: "10px" }}>
+                          <StepContent  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}>
                             {step.actualEndDate === null ? (
                               ""
                             ) : (
@@ -1987,7 +2054,7 @@ const AssetCourse = () => {
                             )}
                           </StepContent>
                           {!step?.isComplete && (
-                            <StepContent style={{ fontSize: "10px" }}>
+                            <StepContent  style={currentActivityForm.uid==step.uid?{color: "blue",fontSize: "10px" }:{fontSize: "10px" }}>
                               <b> Pending</b>
                             </StepContent>
                           )}
@@ -1999,6 +2066,273 @@ const AssetCourse = () => {
               </AccordionDetails>
             </Accordion>
           ))}
+<Accordion
+  style={{ margin: "0px" }}
+  expanded={false} // This keeps the Accordion from expanding
+>
+  <AccordionSummary
+    style={{ minHeight: "60px" }}
+    onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
+  >
+   
+              <FuseSvgIcon size={20} onClick={() => handleEdit()}>heroicons-solid:pencil</FuseSvgIcon>
+            
+       
+  </AccordionSummary>
+
+</Accordion>
+<Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={openTeamAssignment}
+        onClose={handleCloseTeam}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={openTeamAssignment}>
+          <Box sx={style}>
+            <Box
+              style={{
+                padding: "30px",
+                backgroundColor: "#4f46e5",
+                borderTopLeftRadius: "16px",
+                borderTopRightRadius: "16px",
+              }}
+            >
+              <div className="flex justify-between text-white">
+                <span className="text-popup font-medium">
+                  Edit Team 
+                </span>
+                <span
+                  onClick={handleCloseTeam}
+                  style={{ cursor: "pointer" }}
+                  className="cursor-pointer"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    fit=""
+                    height="24"
+                    width="24"
+                    preserveAspectRatio="xMidYMid meet"
+                    focusable="false"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    ></path>
+                  </svg>
+                </span>
+              </div>
+            </Box>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "30px",
+                marginTop: "0",
+                paddingBottom: "0",
+              }}
+            >
+               <Box
+                component="form"
+                sx={{
+                  "& > :not(style)": { m: 1, marginTop: "30px" },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <FormControl fullWidth>
+                  
+                  <Autocomplete
+                    id="assignedStaffId"
+                    name="Site In Charge"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Site In Charge"
+                      
+                      />
+                    )}
+                  />
+
+                
+                </FormControl>
+              </Box>
+              <Box
+                component="form"
+                sx={{
+                  "& > :not(style)": { m: 1, marginTop: "30px" },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <FormControl fullWidth>
+                  
+                  <Autocomplete
+                    id="assignedStaffId"
+                    name="ChangeLeader"
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="ChangeLeader"
+                      
+                      />
+                    )}
+                  />
+
+                
+                </FormControl>
+              </Box>
+
+
+              <Box
+                component="form"
+                sx={{
+                  "& > :not(style)": { m: 1, marginTop: "30px" },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <FormControl fullWidth>
+                  
+                <Autocomplete
+                      id="teamType"
+                      
+                      options={staffList}
+                      getOptionLabel={(option) => option.text}
+                      value={
+                        staffList.find(
+                          (option) => option.value === selectedTeamType
+                        ) || null
+                      }
+                      onChange={(event, newValue) => {
+                        handleTeamTypeChange({
+                          target: {
+                            name: "teamType",
+                            value: newValue ? newValue.value : "",
+                          },
+                        });
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Hseq"
+                          helperText={null}
+                        />
+                      )}
+                      renderOption={(props, option) => (
+                        <MenuItem
+                          {...props}
+                          key={option.value}
+                          value={option.value}
+                        >
+                          <ListItemText primary={option.text} />
+                        </MenuItem>
+                      )}
+                    />
+                
+
+                
+                </FormControl>
+              </Box>
+              <Box   component="form"
+                sx={{
+                  "& > :not(style)": { m: 1, marginTop: "30px" },
+                }}
+                noValidate
+                autoComplete="off">
+                  <FormControl fullWidth >
+
+                    <Autocomplete
+                      multiple
+                      id="staff-autocomplete"
+                      options={staffList}
+                      getOptionLabel={(option) => option.text}
+                      isOptionEqualToValue={(option, value) =>
+                        option.value === value.value
+                      }
+                      value={staffList.filter((staff) =>
+                        selectedStaffs.some(
+                          (selected) => selected.staffId === staff.value
+                        )
+                      )}
+                      onChange={handleStaffChange}
+                      renderInput={(params) => (
+                        <TextField {...params} variant="outlined"  label="Others" fullWidth />
+                      )}
+                      renderOption={(props, option, { selected }) => (
+                        <li {...props} key={option.value}>
+                          <Checkbox checked={selected} />
+                          <ListItemText primary={option.text} />
+                        </li>
+                      )}
+                      renderTags={(value) => {
+                        // Create a comma-separated string of selected values
+                        const selectedNames = value
+                          .map((option) => option.text)
+                          .join(" , ");
+                        return <span>{selectedNames}</span>;
+                      }}
+                    />
+                  </FormControl>
+                </Box>
+             
+            </div>
+
+            <div
+              className="flex items-center space-x-12"
+              style={{
+                marginTop: "0",
+                marginBottom: "0",
+                justifyContent: "end",
+                padding: "30px",
+                paddingBottom: "30px",
+              }}
+            >
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="primary"
+                style={{
+                  padding: "15px",
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "1px solid grey",
+                  paddingLeft: "25px",
+                  paddingRight: "25px",
+                }}
+              onClick={handleCloseTeam}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="secondary"
+                style={{
+                  padding: "15px",
+                  backgroundColor: "#4f46e5",
+                  paddingLeft: "25px",
+                  paddingRight: "25px",
+                }}
+                type="submit"
+               
+              >
+                Update
+              </Button>
+            </div>
+          </Box>
+        </Fade>
+      </Modal>
         </>
       }
       scroll="content"

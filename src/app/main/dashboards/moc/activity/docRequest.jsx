@@ -267,6 +267,10 @@ function DocRequest() {
       setOpen(true);
     }
   };
+
+  const handelActClose=()=>{
+    navigate("/moc");
+  }
   const handleSubmitDocument = () => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
@@ -1063,6 +1067,7 @@ function DocRequest() {
                                       color: "black",
                                       border: "1px solid grey",
                                     }}
+
                                   >
                                     Cancel
                                   </Button>
@@ -1351,6 +1356,7 @@ function DocRequest() {
                         color: "black",
                         border: "1px solid grey",
                       }}
+                      onClick={handelActClose}
                     >
                       Cancel
                     </Button>

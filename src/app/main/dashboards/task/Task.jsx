@@ -280,6 +280,7 @@ const Task = () => {
       year: "numeric",
     });
   };
+  
 
   function handleSelectedCategory(event) {
     setSelectedCategory(event.target.value);
@@ -1724,8 +1725,10 @@ const Task = () => {
                                   "en-US",
                                   {
                                     month: "short",
-                                    day: "2-digit",
-                                    hour12: true,
+                                        day: "2-digit",
+                                        hour: "numeric",
+                                        minute: "numeric",
+                                        hour12: true,
                                   }
                                 )}
                               </div>
@@ -1737,14 +1740,11 @@ const Task = () => {
                             <div className="flex-0 mx-4 text-sm font-medium leading-5 text-secondary">
                               {" "}
                               You are added as a stakeholder on{" "}
-                              {new Date(task.assignedAt).toLocaleString(
-                                "en-US",
-                                {
-                                  month: "short",
-                                  day: "2-digit",
-                                  hour12: true,
-                                }
-                              )}{" "}
+                                                             {new Date(task.assignedAt).toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })}{" "}
                             </div>
                             <div className="flex-auto border-b"></div>
                           </div>
@@ -1828,9 +1828,12 @@ const Task = () => {
                               <div className="min-w-4 leading-5">
                                 {" "}
                                 Due Date:{" "}
-                                {new Date(task.dueDate).toLocaleDateString(
-                                  "en-US"
-                                )}{" "}
+                              
+                                  {new Date(task.dueDate).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })}
                               </div>
                             </div>
                           </div>
@@ -1895,7 +1898,15 @@ const Task = () => {
                                             : msg.dueDate && !msg.completedDate
                                               ? `Due on ${formatDates(msg.dueDate)}`
                                               : msg.completedDate
-                                                ? `Completed on ${formatDates(msg.completedDate)}`
+                                                ? `Completed on ${new Date(
+                                            msg.completedDate
+                                          ).toLocaleString("en-US", {
+                                            month: "short",
+                                            day: "2-digit",
+                                            hour: "numeric",
+                                            minute: "numeric",
+                                            hour12: true,
+                                          })}`
                                                 : "Unknown"}
                                       </small>
                                     </div>

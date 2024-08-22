@@ -715,7 +715,12 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                   >
                     {" "}
                     {contentChanges
-                      ? formatDates(contentDetails?.requestDate)
+                      ? 
+                      new Date(contentDetails?.requestDate).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
                       : contentDetails?.initiatorName}
                   </div>
                 </div>
@@ -933,7 +938,9 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                   >
                     {" "}
                     {contentChanges
-                      ? formatDates(contentDetails?.programCompletionDate)
+                      ? 
+                      new Date(contentDetails?.programCompletionDate).toLocaleDateString("en-GB")
+                     
                       : contentDetails?.changeLocationString}
                   </div>
                 </div>
