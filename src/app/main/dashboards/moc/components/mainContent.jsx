@@ -434,7 +434,7 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
@@ -577,7 +577,7 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="Description"
                       variant="standard"
                       disabled

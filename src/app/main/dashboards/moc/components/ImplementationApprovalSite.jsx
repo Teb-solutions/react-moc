@@ -222,7 +222,7 @@ const ImplementationApprovalSite = ({
           toast?.error(resp.data.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   const [open, setOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -574,7 +574,7 @@ const ImplementationApprovalSite = ({
                           </div>
 
                           {imptsk.implementationReviews.length > 0 ||
-                          showReview ? (
+                            showReview ? (
                             <div>
                               <Accordion
                                 className=" mt-10 pt-10"
@@ -619,10 +619,10 @@ const ImplementationApprovalSite = ({
                                       {hasAddedComment(
                                         imptsk.implementationReviews
                                       ) && (
-                                        <span className="text-green">
-                                          (You have added 1 review)
-                                        </span>
-                                      )}
+                                          <span className="text-green">
+                                            (You have added 1 review)
+                                          </span>
+                                        )}
                                     </Typography>
                                   </div>
                                 </AccordionSummary>
@@ -706,7 +706,7 @@ const ImplementationApprovalSite = ({
                                           }}
                                         />
                                         {AppActivity.canEdit &&
-                                        isMyComment(rwx) ? (
+                                          isMyComment(rwx) ? (
                                           <div
                                             className="mat-form-field-infix"
                                             style={{ position: "relative" }}
@@ -1020,8 +1020,20 @@ const ImplementationApprovalSite = ({
       >
         <Fade in={open}>
           <Box sx={style1}>
+            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+              <Button
+                className=""
+                variant="contained"
+                style={{ backgroundColor: "white" }}
+                onClick={handleModalClose}
+              >
+                <FuseSvgIcon size={20}>
+                  heroicons-outline:x
+                </FuseSvgIcon>
+              </Button>
+            </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "30px" }}>
+              <Box className="flex justify-between" style={{ margin: "0", paddingTop: "0" }}>
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
@@ -1160,7 +1172,7 @@ const ImplementationApprovalSite = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
@@ -1297,7 +1309,7 @@ const ImplementationApprovalSite = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="description"
                       variant="standard"
                       disabled

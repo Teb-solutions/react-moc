@@ -316,6 +316,7 @@ const InitiationComplete = ({
   const handleModalClose = () => {
     setOpen1(false);
     setOpenDrawer(false);
+    fileDetails(false)
   };
   const ListDoc1 = (id, activeid) => {
     apiAuth
@@ -874,8 +875,20 @@ const InitiationComplete = ({
       >
         <Fade in={open1}>
           <Box sx={style1}>
+            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+              <Button
+                className=""
+                variant="contained"
+                style={{ backgroundColor: "white" }}
+                onClick={handleModalClose}
+              >
+                <FuseSvgIcon size={20}>
+                  heroicons-outline:x
+                </FuseSvgIcon>
+              </Button>
+            </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "30px" }}>
+              <Box className="flex justify-between" style={{ margin: "0", paddingTop: "0" }}>
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
@@ -1013,7 +1026,7 @@ const InitiationComplete = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
@@ -1151,7 +1164,7 @@ const InitiationComplete = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="descritpion"
                       variant="standard"
                       disabled

@@ -350,6 +350,18 @@ export default function StickyHeadTable() {
       >
         <Fade in={open}>
           <Box sx={style}>
+            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+              <Button
+                className=""
+                variant="contained"
+                style={{ backgroundColor: "white" }}
+                onClick={handleClose}
+              >
+                <FuseSvgIcon size={20}>
+                  heroicons-outline:x
+                </FuseSvgIcon>
+              </Button>
+            </div>
             <Box
               style={{
                 padding: "30px",

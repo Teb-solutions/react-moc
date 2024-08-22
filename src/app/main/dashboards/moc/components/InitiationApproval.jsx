@@ -230,6 +230,7 @@ function InitiationApproval(props) {
     setDocumenDowToken(doc.token);
   };
   const handelDetailDoc1 = (doc) => {
+
     setSelectedDocument1(doc);
     setFileDetails1(true);
     setDocumenDowToken1(doc.token);
@@ -261,7 +262,7 @@ function InitiationApproval(props) {
   const handleSubmitAsset = (e) => {
     const formData = new FormData();
     formData.append("name", selectedFile1.name);
-    formData.append("descritpion", selectedFile1.description);
+    formData.append("descritpion", selectedFile1.descritpion);
     formData.append("type", selectedFile1.type);
     formData.append("document", selectedFile1.document);
     formData.append("documentType", "Approval");
@@ -333,6 +334,7 @@ function InitiationApproval(props) {
   };
 
   const handleSubmitDelete1 = () => {
+
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(
@@ -603,8 +605,20 @@ function InitiationApproval(props) {
       >
         <Fade in={open}>
           <Box sx={style1}>
+            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+              <Button
+                className=""
+                variant="contained"
+                style={{ backgroundColor: "white" }}
+                onClick={handleModalClose}
+              >
+                <FuseSvgIcon size={20}>
+                  heroicons-outline:x
+                </FuseSvgIcon>
+              </Button>
+            </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "30px" }}>
+              <Box className="flex justify-between " style={{ margin: "0", paddingTop: "0" }}>
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
@@ -743,7 +757,7 @@ function InitiationApproval(props) {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="descritpion"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
@@ -880,7 +894,7 @@ function InitiationApproval(props) {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="Description"
                       variant="standard"
                       disabled
@@ -955,9 +969,22 @@ function InitiationApproval(props) {
         }}
       >
         <Fade in={open1}>
+
           <Box sx={style1}>
+            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+              <Button
+                className=""
+                variant="contained"
+                style={{ backgroundColor: "white" }}
+                onClick={handleModalClose1}
+              >
+                <FuseSvgIcon size={20}>
+                  heroicons-outline:x
+                </FuseSvgIcon>
+              </Button>
+            </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "30px" }}>
+              <Box className="flex justify-between" style={{ margin: "0" }}>
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
@@ -1100,7 +1127,7 @@ function InitiationApproval(props) {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="descritpion"
                       variant="standard"
                       onChange={handelFileDiscriptionChange1}
@@ -1237,7 +1264,7 @@ function InitiationApproval(props) {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="Description"
                       variant="standard"
                       disabled

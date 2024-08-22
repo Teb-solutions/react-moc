@@ -210,7 +210,7 @@ function AssetRequest() {
     }
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => {});
+      .then((response) => { });
   };
 
   const handelDetailDoc = (doc) => {
@@ -1129,9 +1129,24 @@ function AssetRequest() {
                           backgroundColor: "rgba(0, 0, 0, 0.5)",
                         },
                       }}
+
                     >
                       <Fade in={openDocModal}>
+
                         <Box sx={style1}>
+                          <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+                            <Button
+                              className=""
+                              variant="contained"
+                              style={{ backgroundColor: "white" }}
+                              onClick={handleOpenDocModalClose}
+                            >
+                              <FuseSvgIcon size={20}>
+                                heroicons-outline:x
+                              </FuseSvgIcon>
+                            </Button>
+                          </div>
+
                           <Box sx={{ flex: 1 }}>
                             <Box
                               className="flex justify-between"
@@ -1294,7 +1309,7 @@ function AssetRequest() {
                                 >
                                   <TextField
                                     id="standard-basic"
-                                    label={<BoldLabel>Description</BoldLabel>}
+                                    label={<>Description</>}
                                     name="descritpion"
                                     variant="standard"
                                     onChange={handelFileDiscriptionChange}
@@ -1444,7 +1459,7 @@ function AssetRequest() {
                                 >
                                   <TextField
                                     id="standard-basic"
-                                    label={<BoldLabel>Description</BoldLabel>}
+                                    label={<>Description</>}
                                     name="description"
                                     variant="standard"
                                     disabled

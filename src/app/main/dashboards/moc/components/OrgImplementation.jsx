@@ -889,7 +889,7 @@ const OrgImplementation = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="descritpion"
                       variant="standard"
                       disabled
@@ -1018,7 +1018,7 @@ const OrgImplementation = ({
                     <div className="flex flex-wrap justify-between w-100 pr-10">
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           Task #{detail.id}
@@ -1026,7 +1026,7 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center" style={{}}>
                           {detail.isCompleted && detail.taskStatus === 3 ? (
@@ -1040,13 +1040,13 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">No Risks</div>
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           {detail.assignedStaff}
@@ -1054,7 +1054,7 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           {formatDate(detail.dueDate)}
@@ -1062,7 +1062,7 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           <StyledBadge badgeContent={detail?.audits?.length}>
@@ -1218,13 +1218,13 @@ const OrgImplementation = ({
                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                       <small>
                                         {msg.startedDate &&
-                                        !msg.workInProgressDate &&
-                                        !msg.completedDate &&
-                                        !msg.dueDate
+                                          !msg.workInProgressDate &&
+                                          !msg.completedDate &&
+                                          !msg.dueDate
                                           ? `Started on ${formatDate(msg.startedDate)}`
                                           : msg.workInProgressDate &&
-                                              !msg.completedDate &&
-                                              !msg.dueDate
+                                            !msg.completedDate &&
+                                            !msg.dueDate
                                             ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
                                             : msg.dueDate && !msg.completedDate
                                               ? `Due on ${formatDate(msg.dueDate)}`

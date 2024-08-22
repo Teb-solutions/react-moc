@@ -145,7 +145,7 @@ function DocRequest() {
     }
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => {});
+      .then((response) => { });
   };
 
   const handelDetailDoc = (doc) => {
@@ -1036,7 +1036,7 @@ function DocRequest() {
                                   >
                                     <TextField
                                       id="standard-basic"
-                                      label={<BoldLabel>Description</BoldLabel>}
+                                      label={<>Description</>}
                                       name="description"
                                       variant="standard"
                                       onChange={handelFileDiscriptionChange}
@@ -1185,7 +1185,7 @@ function DocRequest() {
                                   >
                                     <TextField
                                       id="standard-basic"
-                                      label={<BoldLabel>Description</BoldLabel>}
+                                      label={<>Description</>}
                                       name="description"
                                       variant="standard"
                                       disabled

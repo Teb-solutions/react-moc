@@ -516,7 +516,7 @@ function Course() {
   };
 
   const handelOpenAudit = async (audits, value) => {
-    debugger;
+
     setOpenAudit(true);
     const transformedData = audits.map((item, index) =>
       createData(
@@ -869,16 +869,17 @@ function Course() {
     bgcolor: "background.paper",
 
     boxShadow: 24,
+    p: 2,
   };
   const [viewrisk, setViewRisk] = useState(false);
 
   const taskFormControlStyles = viewrisk
     ? {
-        borderColor: "white",
-        m: 1,
-        maxWidth: "100%",
-        border: "1px solid white",
-      }
+      borderColor: "white",
+      m: 1,
+      maxWidth: "100%",
+      border: "1px solid white",
+    }
     : { m: 1, maxWidth: "100%" };
 
   const styleImp = {
@@ -1311,7 +1312,7 @@ function Course() {
       .then((resp) => {
         apiAuth.get(`/Staff/LOV`).then((resp) => {
           setDocStaff(resp.data.data);
-          apiAuth.get(`/LookupData/Lov/5`).then((resp) => {});
+          apiAuth.get(`/LookupData/Lov/5`).then((resp) => { });
         });
       });
   };
@@ -2424,7 +2425,7 @@ function Course() {
                                       {column.render
                                         ? column.render(row) // Render custom actions
                                         : column.format &&
-                                            typeof value === "number"
+                                          typeof value === "number"
                                           ? column.format(value)
                                           : value}
                                     </TableCell>
@@ -2846,9 +2847,21 @@ function Course() {
                             <Fade in={openMoc}>
                               <Box sx={style1}>
                                 <Box sx={{ flex: 1 }}>
+                                  <div className="flex justify-end " style={{ marginTop: "-16px", marginRight: "-16px" }} >
+                                    <Button
+                                      className=""
+                                      variant="contained"
+                                      style={{ backgroundColor: "white" }}
+                                      onClick={handleModalClose}
+                                    >
+                                      <FuseSvgIcon size={20}>
+                                        heroicons-outline:x
+                                      </FuseSvgIcon>
+                                    </Button>
+                                  </div>
                                   <Box
                                     className="flex justify-between"
-                                    style={{ margin: "30px" }}
+                                    style={{ margin: "0", padddingTop: "0" }}
                                   >
                                     <Typography
                                       id="transition-modal-title"
@@ -3016,7 +3029,7 @@ function Course() {
                                         <TextField
                                           id="standard-basic"
                                           label={
-                                            <BoldLabel>Description</BoldLabel>
+                                            <>Description</>
                                           }
                                           name="descritpion"
                                           variant="standard"
@@ -3172,14 +3185,14 @@ function Course() {
                                         <TextField
                                           id="standard-basic"
                                           label={
-                                            <BoldLabel>Description</BoldLabel>
+                                            <>Description</>
                                           }
                                           name="description"
                                           variant="standard"
                                           disabled
                                           value={
                                             selectedDocument?.description ===
-                                            null
+                                              null
                                               ? ""
                                               : selectedDocument?.descritpion
                                           }
@@ -3369,7 +3382,7 @@ function Course() {
                                       style={{
                                         backgroundColor:
                                           list.comments == "" ||
-                                          list.comments == null
+                                            list.comments == null
                                             ? "rgba(252,165,165)"
                                             : "rgba(134,239,172)",
                                         padding: "5px",
@@ -3456,7 +3469,7 @@ function Course() {
                                       style={{
                                         backgroundColor:
                                           list.comments == "" ||
-                                          list.comments == null
+                                            list.comments == null
                                             ? "rgba(252,165,165)"
                                             : "rgba(134,239,172)",
                                         padding: "5px",
@@ -4238,20 +4251,20 @@ function Course() {
                                         border: "none",
                                       },
                                       "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                        {
-                                          border: "none",
-                                        },
+                                      {
+                                        border: "none",
+                                      },
                                       "&:hover .MuiOutlinedInput-notchedOutline":
-                                        {
-                                          border: "none",
-                                        },
+                                      {
+                                        border: "none",
+                                      },
                                       "& .MuiSelect-icon": {
                                         display: "none",
                                       },
                                       "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                        {
-                                          padding: "0px",
-                                        },
+                                      {
+                                        padding: "0px",
+                                      },
                                     }}
                                   >
                                     <MenuItem value="" disabled>
@@ -4517,24 +4530,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                                {
-                                                  padding: "0px",
-                                                },
+                                              {
+                                                padding: "0px",
+                                              },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -4632,24 +4645,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                                {
-                                                  padding: "0px",
-                                                },
+                                              {
+                                                padding: "0px",
+                                              },
                                             }}
                                           >
                                             {potentialFrequencyDetails.map(
@@ -4791,24 +4804,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                                {
-                                                  padding: "0px",
-                                                },
+                                              {
+                                                padding: "0px",
+                                              },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -4895,24 +4908,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                                {
-                                                  padding: "0px",
-                                                },
+                                              {
+                                                padding: "0px",
+                                              },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -5221,24 +5234,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                                {
-                                                  padding: "0px",
-                                                },
+                                              {
+                                                padding: "0px",
+                                              },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -5346,24 +5359,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                                {
-                                                  padding: "0px",
-                                                },
+                                              {
+                                                padding: "0px",
+                                              },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -5534,24 +5547,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                                {
-                                                  padding: "0px",
-                                                },
+                                              {
+                                                padding: "0px",
+                                              },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -5663,24 +5676,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                  border: "none",
-                                                },
+                                              {
+                                                border: "none",
+                                              },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                                {
-                                                  padding: "0px",
-                                                },
+                                              {
+                                                padding: "0px",
+                                              },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -5821,13 +5834,13 @@ function Course() {
                                     : formValues.residualRiskClassification == 2
                                       ? "purple"
                                       : formValues.residualRiskClassification ==
-                                          3
+                                        3
                                         ? "orange"
                                         : formValues.residualRiskClassification ==
-                                            4
+                                          4
                                           ? "yellow"
                                           : formValues.residualRiskClassification ==
-                                              5
+                                            5
                                             ? "green"
                                             : "",
                                 borderRadius: "5px",
@@ -6112,14 +6125,14 @@ function Course() {
                                         <TextField
                                           id="standard-basic"
                                           label={
-                                            <BoldLabel>Description</BoldLabel>
+                                            <>Description</>
                                           }
                                           name="description"
                                           variant="standard"
                                           disabled
                                           value={
                                             selectedDocument?.description ===
-                                            null
+                                              null
                                               ? ""
                                               : selectedDocument?.descritpion
                                           }
@@ -6280,7 +6293,7 @@ function Course() {
                                         <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
                                           <div className="flex items-center">
                                             {task.isCompleted &&
-                                            task.taskStatus === 3 ? (
+                                              task.taskStatus === 3 ? (
                                               <span className="text-green">
                                                 Approved
                                               </span>
@@ -6331,7 +6344,7 @@ function Course() {
                                         </div>
                                         <div
                                           className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                          // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                         >
                                           <div className="flex items-center">
                                             <StyledBadge
@@ -6522,16 +6535,16 @@ function Course() {
                                                       <div className="my-0.5 text-xs font-medium text-secondary">
                                                         <small>
                                                           {msg.startedDate &&
-                                                          !msg.workInProgressDate &&
-                                                          !msg.completedDate &&
-                                                          !msg.dueDate
+                                                            !msg.workInProgressDate &&
+                                                            !msg.completedDate &&
+                                                            !msg.dueDate
                                                             ? `Started on ${formatDates(msg.startedDate)}`
                                                             : msg.workInProgressDate &&
-                                                                !msg.completedDate &&
-                                                                !msg.dueDate
+                                                              !msg.completedDate &&
+                                                              !msg.dueDate
                                                               ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                                               : msg.dueDate &&
-                                                                  !msg.completedDate
+                                                                !msg.completedDate
                                                                 ? `Due on ${formatDates(msg.dueDate)}`
                                                                 : msg.completedDate
                                                                   ? `Completed on ${formatDates(msg.completedDate)}`
@@ -6541,11 +6554,11 @@ function Course() {
                                                     </div>
                                                     {documentCounts[msg.id] ? (
                                                       documentCounts[msg.id] !=
-                                                        0 && (
+                                                      0 && (
                                                         <StyledBadge
                                                           badgeContent={
                                                             documentCounts[
-                                                              msg.id
+                                                            msg.id
                                                             ]
                                                           }
                                                         >
@@ -6771,7 +6784,7 @@ function Course() {
                                                               {subItm
                                                                 .riskAnalysisHazardTypes
                                                                 .length ===
-                                                              0 ? (
+                                                                0 ? (
                                                                 <TableRow>
                                                                   <TableCell>
                                                                     <Grid
@@ -6862,16 +6875,16 @@ function Course() {
                                                                                   style={{
                                                                                     backgroundColor:
                                                                                       situation.residualRiskClassificationDisplay ===
-                                                                                      "HighRisk"
+                                                                                        "HighRisk"
                                                                                         ? "red"
                                                                                         : situation.residualRiskClassificationDisplay ===
-                                                                                            "LowRisk"
+                                                                                          "LowRisk"
                                                                                           ? "yellow"
                                                                                           : situation.residualRiskClassificationDisplay ===
-                                                                                              "AverageRisk"
+                                                                                            "AverageRisk"
                                                                                             ? "orange"
                                                                                             : situation.residualRiskClassificationDisplay ===
-                                                                                                "SignificantRisk"
+                                                                                              "SignificantRisk"
                                                                                               ? "purple"
                                                                                               : "green",
                                                                                     width:
@@ -6880,7 +6893,7 @@ function Course() {
                                                                                       "3px",
                                                                                     color:
                                                                                       situation.residualRiskClassificationDisplay ===
-                                                                                      "LowRisk"
+                                                                                        "LowRisk"
                                                                                         ? "#000"
                                                                                         : "white",
                                                                                     borderRadius:
@@ -6893,7 +6906,7 @@ function Course() {
                                                                                       "12px",
                                                                                     fontWeight:
                                                                                       situation.residualRiskClassificationDisplay ===
-                                                                                      "LowRisk"
+                                                                                        "LowRisk"
                                                                                         ? ""
                                                                                         : "bold",
                                                                                   }}
@@ -7651,8 +7664,8 @@ function Course() {
                                         name="audit"
                                         onChange={handleChangeAddTask}
                                         value={taskAdd.audit}
-                                        // error={!!errorsAddTask.audit}
-                                        // helperText={errorsAddTask.audit}
+                                      // error={!!errorsAddTask.audit}
+                                      // helperText={errorsAddTask.audit}
                                       />
                                     </Box>
                                   </div>
@@ -8148,7 +8161,7 @@ function Course() {
                                       </div>
 
                                       {currentActivityForm.canEdit &&
-                                      !imptsk.implementationReviews.length ? (
+                                        !imptsk.implementationReviews.length ? (
                                         <div className="mat-form-field-wrapper">
                                           <div className="mat-form-field-flex">
                                             <img
@@ -8258,8 +8271,8 @@ function Course() {
                                                   {hasAddedComment(
                                                     imptsk?.implementationReviews
                                                   ) && (
-                                                    <span className="text-green"></span>
-                                                  )}
+                                                      <span className="text-green"></span>
+                                                    )}
                                                 </Typography>
                                               </div>
                                             </AccordionSummary>
@@ -8398,7 +8411,7 @@ function Course() {
                       </div>
 
                       {appActivity.isComplete &&
-                      appActivity.status != "Pending" ? (
+                        appActivity.status != "Pending" ? (
                         <div
                           className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
                           style={{ width: "40%" }}

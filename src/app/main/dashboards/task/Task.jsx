@@ -205,6 +205,7 @@ const Task = () => {
       apiAuth
         .get(`ChangeImpact/ListTaskCommentst?id=${task.order}`)
         .then((response) => {
+          setListDocument([])
           const comments = response.data.data;
           setTaskClick(comments);
           comments.forEach((comment) => {
@@ -356,7 +357,7 @@ const Task = () => {
           toast.success("Successfull");
         }
       })
-      .catch((err) => {});
+      .catch((err) => { });
   };
 
   const handleSubmit = () => {
@@ -417,6 +418,7 @@ const Task = () => {
   const handleOpenDocModalClose = () => {
     setOpenDocModal(false);
     setOpenDrawer(false);
+    setFileDetails(false)
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
@@ -540,6 +542,7 @@ const Task = () => {
   const [documenDowToken, setDocumenDowToken] = useState("");
 
   const handleDownload = () => {
+
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`, {
         responseType: "blob",
@@ -548,7 +551,7 @@ const Task = () => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
-        link.setAttribute("download", fileName); // or any other extension
+        link.setAttribute("download", selectedDocument.name); // or any other extension
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -560,6 +563,7 @@ const Task = () => {
   };
 
   const handelDetailDoc = (doc) => {
+
     setSelectedDocument(doc);
     console.log(doc, "doccc");
     setFileDetails(true);
@@ -591,7 +595,7 @@ const Task = () => {
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(
-          `/DocumentManager/DocList/${selectedFile.documentId}/Task?changeRequestToken=${selectedFile?.changeRequestToken}`
+          `/DocumentManager/DocList/${msgId}/Task?changeRequestToken=${taskToken}`
         )
         .then((response) => {
           setOpenDrawer(false);
@@ -741,13 +745,29 @@ const Task = () => {
       >
         <Fade in={openDocModal}>
           <Box sx={style1}>
+            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "1px", marginRight: "0px", padding: "0 0 -24px " }} >
+              <Button
+                className=""
+                variant="contained"
+                style={{ backgroundColor: "white" }}
+                onClick={handleOpenDocModalClose}
+              >
+                <FuseSvgIcon size={20}>
+                  heroicons-outline:x
+                </FuseSvgIcon>
+              </Button>
+            </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between p-30 pt-24 pb-24">
+              <Box className="flex justify-between p-30  pb-24" sx={{
+                marginTop: "0 !important",
+                paddingTop: "0 !important",
+              }}>
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
                   component="h2"
                   className="text-2xl"
+
                 >
                   File Manager
                   <Typography id="transition-modal-subtitle" component="h2">
@@ -877,7 +897,7 @@ const Task = () => {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
@@ -1001,10 +1021,10 @@ const Task = () => {
                       disabled
                       value={new Date(
                         selectedDocument.createdAt
-                      ).toLocaleString("en-US", {
-                        month: "short",
-                        day: "2-digit",
-                        year: "2-digit",
+                      ).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
                       })}
                     />
                   </Box>
@@ -1018,8 +1038,8 @@ const Task = () => {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
-                      name="Description"
+                      label={<>Description</>}
+                      name="description"
                       variant="standard"
                       disabled
                       value={
@@ -1048,25 +1068,26 @@ const Task = () => {
                   >
                     Download
                   </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                    onClick={(e) =>
-                      handleDelete(
-                        e,
-                        selectedDocument?.documentId,
-                        selectedDocument?.token
-                      )
-                    }
-                  >
-                    Delete
-                  </Button>
+                  {!task.completed &&
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        border: "1px solid grey",
+                      }}
+                      onClick={(e) =>
+                        handleDelete(
+                          e,
+                          selectedDocument?.documentId,
+                          selectedDocument?.token
+                        )
+                      }
+                    >
+                      Delete
+                    </Button>}
                 </div>
               </Box>
             )}
@@ -1884,13 +1905,13 @@ const Task = () => {
                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                       <small>
                                         {msg.startedDate &&
-                                        !msg.workInProgressDate &&
-                                        !msg.completedDate &&
-                                        !msg.dueDate
+                                          !msg.workInProgressDate &&
+                                          !msg.completedDate &&
+                                          !msg.dueDate
                                           ? `Started on ${formatDates(msg.startedDate)}`
                                           : msg.workInProgressDate &&
-                                              !msg.completedDate &&
-                                              !msg.dueDate
+                                            !msg.completedDate &&
+                                            !msg.dueDate
                                             ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                             : msg.dueDate && !msg.completedDate
                                               ? `Due on ${formatDates(msg.dueDate)}`
