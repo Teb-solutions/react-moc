@@ -1,7 +1,7 @@
 import { styled } from "@mui/material/styles";
 import MocHeader from "./MocHeader";
 import FusePageCarded from "@fuse/core/FusePageCarded";
-import _ from "@lodash";
+import _ from "lodash";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -9,18 +9,14 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { motion } from "framer-motion";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import Switch from "@mui/material/Switch";
 import { FormControlLabel } from "@mui/material";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
-import {
-  useGetAcademyCategoriesQuery,
-  useGetAcademyCoursesQuery,
-} from "./evaluation/AcademyApi";
-import CourseCard from "./CourseCard";
 import { apiAuth } from "src/utils/http";
-import Loader from "../../loader/Loader";
 import FuseLoading from "@fuse/core/FuseLoading";
+import CourseTable from "./CourseTable";
+import CourseCard from "./CourseCard";
 
 const Root = styled(FusePageCarded)({
   "& .FusePageCarded-header": {},
@@ -53,11 +49,10 @@ function MocApp() {
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedCategoryType, setSelectedCategoryType] = useState("all");
-
   const [hideCompleted, setHideCompleted] = useState(false);
+  const [viewTable, setViewTable] = useState(false);
   const [originalData, setOriginalData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
   const [site, setSite] = useState([]);
   const categories = [
     {
@@ -98,17 +93,17 @@ function MocApp() {
 
     getRecords();
   }, []);
-  const handleSelectedCategory = (event) => {
+
+  const handleSelectedCategory = useCallback((event) => {
     setSelectedCategory(event.target.value);
-  };
-  const handleSelectedCategoryType = (event) => {
+  }, []);
+
+  const handleSelectedCategoryType = useCallback((event) => {
     setSelectedCategoryType(event.target.value);
-  };
+  }, []);
 
   const filteredData = useMemo(() => {
     return _.filter(originalData, (item) => {
-      console.log("Selected Category:", selectedCategory);
-
       if (
         selectedCategory !== "all" &&
         item.siteId !== parseInt(selectedCategory, 10)
@@ -137,9 +132,9 @@ function MocApp() {
     selectedCategoryType,
   ]);
 
-  function handleSearchText(event) {
+  const handleSearchText = (event) => {
     setSearchText(event.target.value);
-  }
+  };
 
   if (isLoading) {
     return <FuseLoading />;
@@ -159,7 +154,7 @@ function MocApp() {
                   id="category-select"
                   label="Category"
                   value={selectedCategory}
-                  onChange={(event) => handleSelectedCategory(event)}
+                  onChange={handleSelectedCategory}
                 >
                   <MenuItem value="all">
                     <em>All</em>
@@ -184,7 +179,7 @@ function MocApp() {
                     <em>All</em>
                   </MenuItem>
                   {categories?.map((category) => (
-                    <MenuItem value={category.value} key={category.id}>
+                    <MenuItem value={category.value} key={category.value}>
                       {category.name}
                     </MenuItem>
                   ))}
@@ -205,48 +200,54 @@ function MocApp() {
                 }}
               />
             </div>
+            <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
+              <FormControlLabel
+                label="View as table"
+                control={
+                  <Switch
+                    onChange={(ev) => setViewTable(ev.target.checked)}
+                    checked={viewTable}
+                    name="viewTable"
+                  />
+                }
+              />
+              {!viewTable&&(
 
-            <FormControlLabel
-              label="Hide completed"
-              control={
-                <Switch
-                  onChange={(ev) => {
-                    setHideCompleted(ev.target.checked);
-                  }}
-                  checked={hideCompleted}
-                  name="hideCompleted"
-                />
-              }
-            />
+
+              <FormControlLabel
+                label="Hide completed"
+                control={
+                  <Switch
+                    onChange={(ev) => setHideCompleted(ev.target.checked)}
+                    checked={hideCompleted}
+                    name="hideCompleted"
+                  />
+                }
+              />
+  )}
+            </div>
           </div>
-          <div className="mt-10 p-4 ">
+          <div className="mt-10 p-4">
             <Typography variant="body2" color="textSecondary">
               <b>MOC Requests count:</b> {filteredData.length}
             </Typography>
           </div>
-          {filteredData &&
-            (filteredData.length > 0 ? (
-              <motion.div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-32 mt-32 sm:mt-20"
-                variants={container}
-                initial="hidden"
-                animate="show"
-              >
-                {filteredData.map((course) => {
-                  return (
-                    <motion.div variants={item} key={course.id}>
-                      <CourseCard course={course} />
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            ) : (
-              <div className="flex flex-1 items-center justify-center">
-                <Typography color="text.secondary" className="text-24 my-24">
-                  No courses found!
-                </Typography>
-              </div>
-            ))}
+          {viewTable ? (
+            <CourseTable filteredDatas={filteredData} />
+          ) : (
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-32 mt-32 sm:mt-20"
+              variants={container}
+              initial="hidden"
+              animate="show"
+            >
+              {filteredData.map((course) => (
+                <motion.div variants={item} key={course.id}>
+                  <CourseCard course={course} />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
         </div>
       }
     />

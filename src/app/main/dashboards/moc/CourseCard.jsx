@@ -46,7 +46,10 @@ function CourseCard(props) {
               ? `/moc/assetEvaluation/${course.token}`
               : course.requestTypeName === "Document"
                 ? `/moc/evaluation/${course.token}`
-                : `/moc/orgEvaluation/${course.token}`
+                :course.requestTypeName === "Engg"
+                ? `/moc/assetEvaluation/${course.token}`:course.requestTypeName === "TransportAct"
+                ? `/moc/assetEvaluation/${course.token}`:course.requestTypeName === "Others"
+                ? `/moc/assetEvaluation/${course.token}`: `/moc/orgEvaluation/${course.token}`
           }
           component={Link}
           className="px-12 min-w-120"

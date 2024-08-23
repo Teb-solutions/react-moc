@@ -780,6 +780,13 @@ const AssetCourse = () => {
           case AssetPhasesEnum.IMPLEMENTATIONAPPROVAL:
             actualPhaseName = "ImplementationApproval";
             break;
+            case AssetPhasesEnum.IMPTRANS:
+              actualPhaseName = "ImplementationApproval";
+              break;
+              case AssetPhasesEnum.INITRANS:
+              actualPhaseName = "InitiationRequest";
+              break;
+            
 
           default:
             actualPhaseName = " ";
