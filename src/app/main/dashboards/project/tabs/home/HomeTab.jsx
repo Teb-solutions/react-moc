@@ -369,7 +369,7 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
           </Typography>
         </Paper>
       </motion.div>
-      {riskMatrixList?.length && (
+      {riskMatrixList?.length ? (
         <motion.div variants={item} className="sm:col-span-2 md:col-span-4">
           <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
             <div style={{ backgroundColor: "white" }}>
@@ -481,7 +481,7 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
             </div>
           </Paper>
         </motion.div>
-      )}
+      ):""}
       <motion.div variants={item} className="sm:col-span-2 md:col-span-4">
         <Paper className="flex flex-col flex-auto p-30 pt-24 pb-24 shadow rounded-2xl overflow-hidden">
           <div className="flex flex-col sm:flex-row items-start justify-between">

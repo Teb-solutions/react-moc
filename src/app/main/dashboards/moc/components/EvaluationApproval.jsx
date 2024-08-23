@@ -238,7 +238,7 @@ const EvaluationApproval = ({
     bgcolor: "background.paper",
 
     boxShadow: 24,
-
+    p: 4
   };
 
   const styleAi = {
@@ -5271,8 +5271,20 @@ const EvaluationApproval = ({
       >
         <Fade in={open1}>
           <Box sx={style1}>
+            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+              <Button
+                className=""
+                variant="contained"
+                style={{ backgroundColor: "white" }}
+                onClick={handleModalClose1}
+              >
+                <FuseSvgIcon size={20}>
+                  heroicons-outline:x
+                </FuseSvgIcon>
+              </Button>
+            </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "30px" }}>
+              <Box className="flex justify-between" style={{ margin: "0", paddingTop: "0" }}>
                 <Typography
                   id="transition-modal-title"
                   variant="h6"

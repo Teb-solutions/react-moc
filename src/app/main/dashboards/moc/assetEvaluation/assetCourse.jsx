@@ -780,6 +780,13 @@ const AssetCourse = () => {
           case AssetPhasesEnum.IMPLEMENTATIONAPPROVAL:
             actualPhaseName = "ImplementationApproval";
             break;
+            case AssetPhasesEnum.IMPTRANS:
+              actualPhaseName = "ImplementationApproval";
+              break;
+              case AssetPhasesEnum.INITRANS:
+              actualPhaseName = "InitiationRequest";
+              break;
+            
 
           default:
             actualPhaseName = " ";
@@ -1841,6 +1848,9 @@ const AssetCourse = () => {
           reqno={reqNo}
           verName={verName}
           name={contentDetails?.projectName}
+          sidemenu={true}
+          setLeftSidebarOpen={setLeftSidebarOpen}
+          leftSidebarOpen={leftSidebarOpen}
         />
       }
       content={
