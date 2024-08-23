@@ -1641,11 +1641,23 @@ const AssetCourse = () => {
   };
 
   const [openTeamAssignment, setOpenTeamAssignment] = useState(false);
+  const [openApprover, setOpenApprover] = useState(false);
+
   const [siteInCharge, setSiteInCharge] = useState(null);
   const [changeLeader, setChangeLeader] = useState(null);
   const [others, setSelectedOthersStaffs] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
   const [hseq, setHseq] = useState(null);
+
+
+const handleEditApprover=()=>{
+setOpenApprover(true)
+}
+const handleEditApproverClose=()=>{
+setOpenApprover(fasle)
+
+}
+
   const handleEdit = () => {
     setOpenTeamAssignment(true);
     apiAuth
@@ -2192,12 +2204,24 @@ const AssetCourse = () => {
                             style={currentActivityForm.uid == step.uid ? { color: "rgb(79, 70, 229)", fontSize: "10px" } : { fontSize: "10px" }}
                             className="pt-4"
                           >
+                            <div className="d-flex justify-between">
+                            <span>
                             By{" "}
                             <b>
                               {step.targetUsers && step.targetUsers.length > 0
                                 ? step.targetUsers[0]
                                 : ""}
                             </b>
+                            </span>
+                            {!step?.isComplete && (
+                              <span className="cursor-pointer"> 
+
+                                <FuseSvgIcon size={20} onClick={() => handleEditApprover()}>heroicons-solid:pencil</FuseSvgIcon>
+                              </span>
+
+                            )}
+                            </div>
+
                           </StepContent>
                           <StepContent style={currentActivityForm.uid == step.uid ? { color: "rgb(79, 70, 229)", fontSize: "10px" } : { fontSize: "10px" }}>
                             Started at{" "}
@@ -2457,6 +2481,137 @@ const AssetCourse = () => {
                     }}
                     type="submit"
                     onClick={handelUpdateTeam}
+                  >
+                    Update
+                  </Button>
+                </div>
+              </Box>
+            </Fade>
+          </Modal>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={openApprover}
+            onClose={()=>setOpenApprover(false)}
+            closeAfterTransition
+            slots={{ backdrop: Backdrop }}
+            slotProps={{
+              backdrop: {
+                timeout: 500,
+              },
+            }}
+          >
+            <Fade in={openApprover}>
+              <Box sx={style}>
+                <Box
+                  style={{
+                    padding: "30px",
+                    backgroundColor: "#4f46e5",
+                    borderTopLeftRadius: "16px",
+                    borderTopRightRadius: "16px",
+                  }}
+                >
+                  <div className="flex justify-between text-white">
+                    <span className="text-popup font-medium">
+                      Edit Approver  {""}
+                    </span>
+                    <span
+                      onClick={()=>setOpenApprover(false)}
+                      style={{ cursor: "pointer" }}
+                      className="cursor-pointer"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        fit=""
+                        height="24"
+                        width="24"
+                        preserveAspectRatio="xMidYMid meet"
+                        focusable="false"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                      </svg>
+                    </span>
+                  </div>
+                </Box>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "30px",
+                    marginTop: "0",
+                    paddingBottom: "0",
+                  }}
+                >
+                  <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+                    <FormControl fullWidth>
+                      <Autocomplete
+                        id="siteInCharge"
+                        options={staffList}
+                        getOptionLabel={(option) => option.text}
+                        value={siteInCharge}
+                        onChange={
+                          handleSiteInChargeChange
+                          // (event, newValue) => setSiteInCharge(newValue)
+                        }
+                        renderInput={(params) => (
+                          <TextField {...params} label="Approver" error={!!validationErrors.siteInCharge}
+                            helperText={validationErrors.siteInCharge} />
+                        )}
+                        renderOption={(props, option) => (
+                          <MenuItem {...props} key={option.value} value={option.value}>
+                            <ListItemText primary={option.text} />
+                          </MenuItem>
+                        )}
+                      />
+                    </FormControl>
+                  </Box>
+       
+                </div>
+
+                <div
+                  className="flex items-center space-x-12"
+                  style={{
+                    marginTop: "0",
+                    marginBottom: "0",
+                    justifyContent: "end",
+                    padding: "30px",
+                    paddingBottom: "30px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      padding: "15px",
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                      paddingLeft: "25px",
+                      paddingRight: "25px",
+                    }}
+                    onClick={()=>setOpenApprover(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    style={{
+                      padding: "15px",
+                      backgroundColor: "#4f46e5",
+                      paddingLeft: "25px",
+                      paddingRight: "25px",
+                    }}
+                    type="submit"
                   >
                     Update
                   </Button>
