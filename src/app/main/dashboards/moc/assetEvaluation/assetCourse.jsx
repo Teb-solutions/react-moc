@@ -1644,7 +1644,7 @@ const AssetCourse = () => {
   const [siteInCharge, setSiteInCharge] = useState(null);
   const [changeLeader, setChangeLeader] = useState(null);
   const [others, setSelectedOthersStaffs] = useState([]);
-
+  const [validationErrors, setValidationErrors] = useState({});
   const [hseq, setHseq] = useState(null);
   const handleEdit = () => {
     setOpenTeamAssignment(true);
@@ -1715,11 +1715,75 @@ const AssetCourse = () => {
     );
   };
 
+  const handleSiteInChargeChange = (event, newValue) => {
+    setSiteInCharge(newValue);
 
+    // Clear validation error for Site In Charge if the input is valid
+    if (newValue) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        siteInCharge: null,
+      }));
+    }
+  };
+
+  const handleChangeLeaderChange = (event, newValue) => {
+    setChangeLeader(newValue);
+
+    // Clear validation error for Change Leader if the input is valid
+    if (newValue) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        changeLeader: null,
+      }));
+    }
+  };
+  const handleHseqChange = (event, newValue) => {
+    setHseq(newValue);
+
+    // Clear validation error for HSEQ if the input is valid
+    if (newValue) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        hseq: null,
+      }));
+    }
+  };
+
+
+  const handleOthersChange = (event, newValue) => {
+
+    setSelectedOthersStaffs(newValue);
+    if (newValue.length > 0) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        others: null,
+      }));
+    };
+  }
 
 
 
   const handelUpdateTeam = () => {
+    let errors = {};
+
+    if (!siteInCharge) {
+      errors.siteInCharge = "Site In Charge is required.";
+    }
+    if (!changeLeader) {
+      errors.changeLeader = "Change Leader is required.";
+    }
+    if (!hseq) {
+      errors.hseq = "HSEQ is required.";
+    }
+    if (others.length === 0) {
+      errors.others = "At least one 'Others' selection is required.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return; // Stop the API call if there are validation errors
+    }
     const teamData = [];
     const addedStaffIds = new Set();
     // Collect data from Site In Charge (teamType 4)
@@ -2252,9 +2316,13 @@ const AssetCourse = () => {
                         options={staffList}
                         getOptionLabel={(option) => option.text}
                         value={siteInCharge}
-                        onChange={(event, newValue) => setSiteInCharge(newValue)}
+                        onChange={
+                          handleSiteInChargeChange
+                          // (event, newValue) => setSiteInCharge(newValue)
+                        }
                         renderInput={(params) => (
-                          <TextField {...params} label="Site In Charge" helperText={null} />
+                          <TextField {...params} label="Site In Charge" error={!!validationErrors.siteInCharge}
+                            helperText={validationErrors.siteInCharge} />
                         )}
                         renderOption={(props, option) => (
                           <MenuItem {...props} key={option.value} value={option.value}>
@@ -2271,9 +2339,13 @@ const AssetCourse = () => {
                         options={staffList}
                         getOptionLabel={(option) => option.text}
                         value={changeLeader}
-                        onChange={(event, newValue) => setChangeLeader(newValue)}
+                        onChange={
+                          handleChangeLeaderChange
+
+                        }
                         renderInput={(params) => (
-                          <TextField {...params} label="Change Leader" helperText={null} />
+                          <TextField {...params} label="Change Leader" error={!!validationErrors.changeLeader}
+                            helperText={validationErrors.changeLeader} />
                         )}
                         renderOption={(props, option) => (
                           <MenuItem {...props} key={option.value} value={option.value}>
@@ -2292,9 +2364,13 @@ const AssetCourse = () => {
                         options={staffList}
                         getOptionLabel={(option) => option.text}
                         value={hseq}
-                        onChange={(event, newValue) => setHseq(newValue)}
+                        onChange={
+                          handleHseqChange
+                          // (event, newValue) => setHseq(newValue)
+                        }
                         renderInput={(params) => (
-                          <TextField {...params} label="HSEQ" helperText={null} />
+                          <TextField {...params} label="HSEQ" error={!!validationErrors.hseq}
+                            helperText={validationErrors.hseq} />
                         )}
                         renderOption={(props, option) => (
                           <MenuItem {...props} key={option.value} value={option.value}>
@@ -2315,12 +2391,15 @@ const AssetCourse = () => {
                         getOptionLabel={(option) => option.text}
                         isOptionEqualToValue={(option, value) => option.value === value.value}
                         value={others}
-                        onChange={(event, newValue) => {
-                          setSelectedOthersStaffs(newValue);
-                        }}
-                        // }}
+                        onChange={handleOthersChange
+                          //   (event, newValue) => {
+                          //   setSelectedOthersStaffs(newValue);
+                          // }
+                        }
+
                         renderInput={(params) => (
-                          <TextField {...params} variant="outlined" label="Others" fullWidth />
+                          <TextField {...params} variant="outlined" label="Others" fullWidth error={!!validationErrors.others}
+                            helperText={validationErrors.others} />
                         )}
                         renderOption={(props, option, { selected }) => (
                           <li {...props} key={option.value}>
