@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
 
 function MocHeader(props) {
-  const { activity, reqno, risk, master, type, nothing, verName, name } = props;
+  const { activity, reqno, risk, master, type, nothing, verName, name ,sidemenu,setLeftSidebarOpen,leftSidebarOpen} = props;
   const routeParams = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -47,6 +47,10 @@ function MocHeader(props) {
     }
     navigate(path);
   };
+
+  const handelOpenSide=()=>{
+    setLeftSidebarOpen(!leftSidebarOpen)
+  }
 
   return (
     <div
@@ -140,7 +144,20 @@ function MocHeader(props) {
 
         <div className="flex sm:hidden" />
       </div>
+    
       <div className="mt-10 md:mt-0" style={{ justifyContent: "end" }}>
+        {sidemenu&&(
+
+      <FuseSvgIcon
+                className="text-48 cursor-pointer "
+                size={24}
+                style={{ display: "inline-block;" }}
+                color="action"
+                onClick={handelOpenSide}
+              >
+                heroicons-outline:menu
+              </FuseSvgIcon>
+        )}
         {urlContainsMocOrRisk && Object.keys(routeParams).length === 0 && (
           <Button
             className=""

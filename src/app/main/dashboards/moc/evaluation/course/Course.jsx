@@ -2241,7 +2241,9 @@ function Course() {
 
   return (
     <FusePageSimple
-      header={<MocHeader activity={actName} reqno={reqNo} />}
+      header={<MocHeader activity={actName} reqno={reqNo} sidemenu={true}
+      setLeftSidebarOpen={setLeftSidebarOpen}
+      leftSidebarOpen={leftSidebarOpen} />}
       content={
         <div className="w-full">
           <ToastContainer className="toast-container" />

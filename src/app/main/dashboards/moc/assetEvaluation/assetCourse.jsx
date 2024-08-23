@@ -1784,6 +1784,9 @@ const AssetCourse = () => {
           reqno={reqNo}
           verName={verName}
           name={contentDetails?.projectName}
+          sidemenu={true}
+          setLeftSidebarOpen={setLeftSidebarOpen}
+          leftSidebarOpen={leftSidebarOpen}
         />
       }
       content={
