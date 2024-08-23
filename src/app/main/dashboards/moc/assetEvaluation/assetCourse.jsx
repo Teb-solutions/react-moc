@@ -1708,13 +1708,52 @@ const AssetCourse = () => {
     );
   };
 
+  const handleSiteInChargeChange = (event, newValue) => {
+    setSiteInCharge(newValue);
+
+    // Clear validation error for Site In Charge if the input is valid
+    if (newValue) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        siteInCharge: null,
+      }));
+    }
+  };
+
+  const handleChangeLeaderChange = (event, newValue) => {
+    setChangeLeader(newValue);
+
+    // Clear validation error for Change Leader if the input is valid
+    if (newValue) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        changeLeader: null,
+      }));
+    }
+  };
+  const handleHseqChange = (event, newValue) => {
+    setHseq(newValue);
+
+    // Clear validation error for HSEQ if the input is valid
+    if (newValue) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        hseq: null,
+      }));
+    }
+  };
+
 
   const handleOthersChange = (event, newValue) => {
 
     setSelectedOthersStaffs(newValue);
-
-  };
-
+    if (newValue.length > 0) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        others: null,
+      }));
+    };
+  }
 
 
 
@@ -2267,7 +2306,10 @@ const AssetCourse = () => {
                         options={staffList}
                         getOptionLabel={(option) => option.text}
                         value={siteInCharge}
-                        onChange={(event, newValue) => setSiteInCharge(newValue)}
+                        onChange={
+                          handleSiteInChargeChange
+                          // (event, newValue) => setSiteInCharge(newValue)
+                        }
                         renderInput={(params) => (
                           <TextField {...params} label="Site In Charge" error={!!validationErrors.siteInCharge}
                             helperText={validationErrors.siteInCharge} />
@@ -2287,7 +2329,10 @@ const AssetCourse = () => {
                         options={staffList}
                         getOptionLabel={(option) => option.text}
                         value={changeLeader}
-                        onChange={(event, newValue) => setChangeLeader(newValue)}
+                        onChange={
+                          handleChangeLeaderChange
+
+                        }
                         renderInput={(params) => (
                           <TextField {...params} label="Change Leader" error={!!validationErrors.changeLeader}
                             helperText={validationErrors.changeLeader} />
@@ -2309,7 +2354,10 @@ const AssetCourse = () => {
                         options={staffList}
                         getOptionLabel={(option) => option.text}
                         value={hseq}
-                        onChange={(event, newValue) => setHseq(newValue)}
+                        onChange={
+                          handleHseqChange
+                          // (event, newValue) => setHseq(newValue)
+                        }
                         renderInput={(params) => (
                           <TextField {...params} label="HSEQ" error={!!validationErrors.hseq}
                             helperText={validationErrors.hseq} />
