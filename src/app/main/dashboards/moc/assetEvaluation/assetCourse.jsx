@@ -238,7 +238,7 @@ const AssetCourse = () => {
     apiAuth.get(`/LookupData/Lov/16`).then((resp) => {
       setParticular(resp.data.data);
     });
-    apiAuth.get(`/LookupData/Lov/11`).then((resp) => { });
+    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {});
   };
 
   const handleCloseImplemntationTask = () => setOpenImplemntationTask(false);
@@ -431,7 +431,7 @@ const AssetCourse = () => {
               setAddStake(false);
             });
         })
-        .catch((error) => { });
+        .catch((error) => {});
     }
   };
 
@@ -579,8 +579,6 @@ const AssetCourse = () => {
     transition: "right 0.3s ease",
     overflow: "auto", // Smooth transition for opening/closing
   });
-
-
 
   const formatDate = (dateString) => {
     if (!dateString) {
@@ -780,13 +778,12 @@ const AssetCourse = () => {
           case AssetPhasesEnum.IMPLEMENTATIONAPPROVAL:
             actualPhaseName = "ImplementationApproval";
             break;
-            case AssetPhasesEnum.IMPTRANS:
-              actualPhaseName = "ImplementationApproval";
-              break;
-              case AssetPhasesEnum.INITRANS:
-              actualPhaseName = "InitiationRequest";
-              break;
-            
+          case AssetPhasesEnum.IMPTRANS:
+            actualPhaseName = "ImplementationApproval";
+            break;
+          case AssetPhasesEnum.INITRANS:
+            actualPhaseName = "InitiationRequest";
+            break;
 
           default:
             actualPhaseName = " ";
@@ -1470,7 +1467,7 @@ const AssetCourse = () => {
       .then((resp) => {
         apiAuth.get(`/Staff/LOV`).then((resp) => {
           setDocStaff(resp.data.data);
-          apiAuth.get(`/LookupData/Lov/5`).then((resp) => { });
+          apiAuth.get(`/LookupData/Lov/5`).then((resp) => {});
         });
       });
   };
@@ -1648,15 +1645,26 @@ const AssetCourse = () => {
   const [others, setSelectedOthersStaffs] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
   const [hseq, setHseq] = useState(null);
+  const [siteInId, setSiteInChargeId] = useState();
+  const [editId, setEditId] = useState("");
 
+  const handleEditApprover = (step) => {
+    // Find the matching staff based on targetUserIds
+    const selectedApprover = staffList.find(
+      (staff) => staff.value === step.targetUserIds[0] // Assuming only one targetUserId
+    );
 
-const handleEditApprover=()=>{
-setOpenApprover(true)
-}
-const handleEditApproverClose=()=>{
-setOpenApprover(fasle)
+    // Set the selected approver in the state
+    setSiteInChargeId(selectedApprover || null);
+    setEditId(step.uid);
+    // Open the modal
+    setOpenApprover(true);
+    setValidationErrors({});
+  };
 
-}
+  const handleEditApproverClose = () => {
+    setOpenApprover(fasle);
+  };
 
   const handleEdit = () => {
     setOpenTeamAssignment(true);
@@ -1668,10 +1676,16 @@ setOpenApprover(fasle)
         team.forEach((member) => {
           switch (member.teamType) {
             case 1:
-              setChangeLeader(staffList.find(option => option.value === member.staffId) || null);
+              setChangeLeader(
+                staffList.find((option) => option.value === member.staffId) ||
+                  null
+              );
               break;
             case 2:
-              setHseq(staffList.find(option => option.value === member.staffId) || null);
+              setHseq(
+                staffList.find((option) => option.value === member.staffId) ||
+                  null
+              );
               break;
             case 3:
               const teams = resp.data.data;
@@ -1679,17 +1693,26 @@ setOpenApprover(fasle)
               setSelectedOthersStaffs(
                 teams
                   .filter((t) => t.teamType === 3)
-                  .map((t) => staffList.find((staff) => staff.value === t.staffId))
+                  .map((t) =>
+                    staffList.find((staff) => staff.value === t.staffId)
+                  )
                   .filter(Boolean) // To remove any undefined values
                   .reduce((uniqueStaffs, currentStaff) => {
-                    if (!uniqueStaffs.some((staff) => staff.value === currentStaff.value)) {
+                    if (
+                      !uniqueStaffs.some(
+                        (staff) => staff.value === currentStaff.value
+                      )
+                    ) {
                       uniqueStaffs.push(currentStaff);
                     }
                     return uniqueStaffs;
                   }, [])
               );
             case 4:
-              setSiteInCharge(staffList.find(option => option.value === member.staffId) || null);
+              setSiteInCharge(
+                staffList.find((option) => option.value === member.staffId) ||
+                  null
+              );
               break;
             default:
               break;
@@ -1699,9 +1722,8 @@ setOpenApprover(fasle)
   };
 
   const handleCloseTeam = () => {
-    setOpenTeamAssignment(false)
-
-  }
+    setOpenTeamAssignment(false);
+  };
 
   const [selectedStaffs, setSelectedStaffs] = useState([]);
   const [teamAssignments, setTeamAssignments] = useState([]);
@@ -1728,15 +1750,35 @@ setOpenApprover(fasle)
   };
 
   const handleSiteInChargeChange = (event, newValue) => {
-    setSiteInCharge(newValue);
+    setSiteInChargeId(newValue);
 
-    // Clear validation error for Site In Charge if the input is valid
     if (newValue) {
       setValidationErrors((prevErrors) => ({
         ...prevErrors,
-        siteInCharge: null,
+        siteInId: null,
       }));
     }
+  };
+
+  const updateActivityTargetUsers = () => {
+    let errors = {};
+
+    if (!siteInId) {
+      errors.siteInId = "Staff is required.";
+      setValidationErrors(errors);
+    }
+
+    apiAuth
+      .post("/Activity/UpdateActivityTargetUsers", {
+        activityUID: editId,
+        targetUserIds: [siteInId.value],
+      })
+      .then((resp) => {
+        toast.success("Successfully Updated");
+        getRecords();
+
+        setOpenApprover(false);
+      });
   };
 
   const handleChangeLeaderChange = (event, newValue) => {
@@ -1762,19 +1804,15 @@ setOpenApprover(fasle)
     }
   };
 
-
   const handleOthersChange = (event, newValue) => {
-
     setSelectedOthersStaffs(newValue);
     if (newValue.length > 0) {
       setValidationErrors((prevErrors) => ({
         ...prevErrors,
         others: null,
       }));
-    };
-  }
-
-
+    }
+  };
 
   const handelUpdateTeam = () => {
     let errors = {};
@@ -1834,19 +1872,17 @@ setOpenApprover(fasle)
     apiAuth
       .put(`/ChangeRequest/EditTeam?id=${assetEvaluationId}`, teamData)
       .then((resp) => {
-        setOpenTeamAssignment(false)
+        setOpenTeamAssignment(false);
         setSelectedOthersStaffs([]);
         // Handle the response if needed
-        toast.success("Team updated successfully")
+        toast.success("Team updated successfully");
         console.log("Team updated successfully:", resp.data);
       })
       .catch((error) => {
-        toast.success("Error updating team")
+        toast.success("Error updating team");
         console.error("Error updating team:", error);
       });
   };
-
-
 
   if (isLoading) {
     return <FuseLoading />;
@@ -2123,14 +2159,15 @@ setOpenApprover(fasle)
                       key={index}
                       sx={{
                         "& .MuiStepLabel-root, & .MuiStepContent-root": {
-                          cursor: step.canView ? "pointer!important" : "default!important",
+                          cursor: step.canView
+                            ? "pointer!important"
+                            : "default!important",
                         },
                         "& .MuiStepContent-root": {
                           color: "text.secondary",
                           fontSize: 13,
                         },
                       }}
-
                       onClick={(e) =>
                         handleStepChange(
                           e,
@@ -2145,8 +2182,6 @@ setOpenApprover(fasle)
                         )
                       }
                       expanded
-
-
                     >
                       <StepLabel
                         className="font-medium"
@@ -2181,11 +2216,14 @@ setOpenApprover(fasle)
                             },
                           },
                         }}
-
                       >
-                        <span style={currentActivityForm.uid == step.uid ? { color: "rgb(79, 70, 229)" } : {}}>
-
-
+                        <span
+                          style={
+                            currentActivityForm.uid == step.uid
+                              ? { color: "rgb(79, 70, 229)" }
+                              : {}
+                          }
+                        >
                           {step.name} v{step.version}
                         </span>
                       </StepLabel>
@@ -2201,35 +2239,64 @@ setOpenApprover(fasle)
                       ) : (
                         <>
                           <StepContent
-                            style={currentActivityForm.uid == step.uid ? { color: "rgb(79, 70, 229)", fontSize: "10px" } : { fontSize: "10px" }}
+                            style={
+                              currentActivityForm.uid == step.uid
+                                ? {
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
+                                : { fontSize: "10px" }
+                            }
                             className="pt-4"
                           >
                             <div className="d-flex justify-between">
-                            <span>
-                            By{" "}
-                            <b>
-                              {step.targetUsers && step.targetUsers.length > 0
-                                ? step.targetUsers[0]
-                                : ""}
-                            </b>
-                            </span>
-                            {!step?.isComplete && (
-                              <span className="cursor-pointer"> 
-
-                                <FuseSvgIcon size={20} onClick={() => handleEditApprover()}>heroicons-solid:pencil</FuseSvgIcon>
+                              <span>
+                                By{" "}
+                                <b>
+                                  {step.targetUsers &&
+                                  step.targetUsers.length > 0
+                                    ? step.targetUsers[0]
+                                    : ""}
+                                </b>
                               </span>
-
-                            )}
+                              {!step?.isComplete && (
+                                <span className="cursor-pointer">
+                                  <FuseSvgIcon
+                                    size={20}
+                                    onClick={() => handleEditApprover(step)}
+                                  >
+                                    heroicons-solid:pencil
+                                  </FuseSvgIcon>
+                                </span>
+                              )}
+                              {console.log(step.name, "looooooooooo")}
                             </div>
-
                           </StepContent>
-                          <StepContent style={currentActivityForm.uid == step.uid ? { color: "rgb(79, 70, 229)", fontSize: "10px" } : { fontSize: "10px" }}>
+                          <StepContent
+                            style={
+                              currentActivityForm.uid == step.uid
+                                ? {
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
+                                : { fontSize: "10px" }
+                            }
+                          >
                             Started at{" "}
                             <b>
                               {formatDates(step.actualStartDate, "yyyy-MM-dd")}
                             </b>
                           </StepContent>
-                          <StepContent style={currentActivityForm.uid == step.uid ? { color: "rgb(79, 70, 229)", fontSize: "10px" } : { fontSize: "10px" }}>
+                          <StepContent
+                            style={
+                              currentActivityForm.uid == step.uid
+                                ? {
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
+                                : { fontSize: "10px" }
+                            }
+                          >
                             {step.actualEndDate === null ? (
                               ""
                             ) : (
@@ -2245,7 +2312,13 @@ setOpenApprover(fasle)
                             )}
                           </StepContent>
                           {!step?.isComplete && (
-                            <StepContent style={currentActivityForm.uid == step.uid ? { color: "blue", fontSize: "10px" } : { fontSize: "10px" }}>
+                            <StepContent
+                              style={
+                                currentActivityForm.uid == step.uid
+                                  ? { color: "blue", fontSize: "10px" }
+                                  : { fontSize: "10px" }
+                              }
+                            >
                               <b> Pending</b>
                             </StepContent>
                           )}
@@ -2265,12 +2338,10 @@ setOpenApprover(fasle)
               style={{ minHeight: "60px" }}
               onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
             >
-
-              <FuseSvgIcon size={20} onClick={() => handleEdit()}>heroicons-solid:pencil</FuseSvgIcon>
-
-
+              <FuseSvgIcon size={20} onClick={() => handleEdit()}>
+                heroicons-solid:pencil
+              </FuseSvgIcon>
             </AccordionSummary>
-
           </Accordion>
           <Modal
             aria-labelledby="transition-modal-title"
@@ -2297,7 +2368,7 @@ setOpenApprover(fasle)
                 >
                   <div className="flex justify-between text-white">
                     <span className="text-popup font-medium">
-                      Edit Team  {""}
+                      Edit Team {""}
                     </span>
                     <span
                       onClick={handleCloseTeam}
@@ -2333,7 +2404,12 @@ setOpenApprover(fasle)
                     paddingBottom: "0",
                   }}
                 >
-                  <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, marginTop: "30px" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
                     <FormControl fullWidth>
                       <Autocomplete
                         id="siteInCharge"
@@ -2345,34 +2421,52 @@ setOpenApprover(fasle)
                           // (event, newValue) => setSiteInCharge(newValue)
                         }
                         renderInput={(params) => (
-                          <TextField {...params} label="Site In Charge" error={!!validationErrors.siteInCharge}
-                            helperText={validationErrors.siteInCharge} />
+                          <TextField
+                            {...params}
+                            label="Site In Charge"
+                            error={!!validationErrors.siteInCharge}
+                            helperText={validationErrors.siteInCharge}
+                          />
                         )}
                         renderOption={(props, option) => (
-                          <MenuItem {...props} key={option.value} value={option.value}>
+                          <MenuItem
+                            {...props}
+                            key={option.value}
+                            value={option.value}
+                          >
                             <ListItemText primary={option.text} />
                           </MenuItem>
                         )}
                       />
                     </FormControl>
                   </Box>
-                  <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, marginTop: "30px" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
                     <FormControl fullWidth>
                       <Autocomplete
                         id="changeLeader"
                         options={staffList}
                         getOptionLabel={(option) => option.text}
                         value={changeLeader}
-                        onChange={
-                          handleChangeLeaderChange
-
-                        }
+                        onChange={handleChangeLeaderChange}
                         renderInput={(params) => (
-                          <TextField {...params} label="Change Leader" error={!!validationErrors.changeLeader}
-                            helperText={validationErrors.changeLeader} />
+                          <TextField
+                            {...params}
+                            label="Change Leader"
+                            error={!!validationErrors.changeLeader}
+                            helperText={validationErrors.changeLeader}
+                          />
                         )}
                         renderOption={(props, option) => (
-                          <MenuItem {...props} key={option.value} value={option.value}>
+                          <MenuItem
+                            {...props}
+                            key={option.value}
+                            value={option.value}
+                          >
                             <ListItemText primary={option.text} />
                           </MenuItem>
                         )}
@@ -2380,8 +2474,12 @@ setOpenApprover(fasle)
                     </FormControl>
                   </Box>
 
-
-                  <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, marginTop: "30px" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
                     <FormControl fullWidth>
                       <Autocomplete
                         id="hseq"
@@ -2393,11 +2491,19 @@ setOpenApprover(fasle)
                           // (event, newValue) => setHseq(newValue)
                         }
                         renderInput={(params) => (
-                          <TextField {...params} label="HSEQ" error={!!validationErrors.hseq}
-                            helperText={validationErrors.hseq} />
+                          <TextField
+                            {...params}
+                            label="HSEQ"
+                            error={!!validationErrors.hseq}
+                            helperText={validationErrors.hseq}
+                          />
                         )}
                         renderOption={(props, option) => (
-                          <MenuItem {...props} key={option.value} value={option.value}>
+                          <MenuItem
+                            {...props}
+                            key={option.value}
+                            value={option.value}
+                          >
                             <ListItemText primary={option.text} />
                           </MenuItem>
                         )}
@@ -2405,25 +2511,37 @@ setOpenApprover(fasle)
                     </FormControl>
                   </Box>
 
-
-                  <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, marginTop: "30px" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
                     <FormControl fullWidth>
                       <Autocomplete
                         multiple
                         id="hseq-autocomplete"
                         options={staffList}
                         getOptionLabel={(option) => option.text}
-                        isOptionEqualToValue={(option, value) => option.value === value.value}
+                        isOptionEqualToValue={(option, value) =>
+                          option.value === value.value
+                        }
                         value={others}
-                        onChange={handleOthersChange
+                        onChange={
+                          handleOthersChange
                           //   (event, newValue) => {
                           //   setSelectedOthersStaffs(newValue);
                           // }
                         }
-
                         renderInput={(params) => (
-                          <TextField {...params} variant="outlined" label="Others" fullWidth error={!!validationErrors.others}
-                            helperText={validationErrors.others} />
+                          <TextField
+                            {...params}
+                            variant="outlined"
+                            label="Others"
+                            fullWidth
+                            error={!!validationErrors.others}
+                            helperText={validationErrors.others}
+                          />
                         )}
                         renderOption={(props, option, { selected }) => (
                           <li {...props} key={option.value}>
@@ -2432,15 +2550,14 @@ setOpenApprover(fasle)
                           </li>
                         )}
                         renderTags={(value) => {
-                          const selectedNames = value.map((option) => option.text).join(", ");
+                          const selectedNames = value
+                            .map((option) => option.text)
+                            .join(", ");
                           return <span>{selectedNames}</span>;
                         }}
                       />
                     </FormControl>
                   </Box>
-
-
-
                 </div>
 
                 <div
@@ -2492,7 +2609,7 @@ setOpenApprover(fasle)
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
             open={openApprover}
-            onClose={()=>setOpenApprover(false)}
+            onClose={() => setOpenApprover(false)}
             closeAfterTransition
             slots={{ backdrop: Backdrop }}
             slotProps={{
@@ -2513,10 +2630,10 @@ setOpenApprover(fasle)
                 >
                   <div className="flex justify-between text-white">
                     <span className="text-popup font-medium">
-                      Edit Approver  {""}
+                      Edit Activity Assignee{""}
                     </span>
                     <span
-                      onClick={()=>setOpenApprover(false)}
+                      onClick={() => setOpenApprover(false)}
                       style={{ cursor: "pointer" }}
                       className="cursor-pointer"
                     >
@@ -2549,30 +2666,39 @@ setOpenApprover(fasle)
                     paddingBottom: "0",
                   }}
                 >
-                  <Box component="form" sx={{ "& > :not(style)": { m: 1, marginTop: "30px" }, }} noValidate autoComplete="off">
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, marginTop: "30px" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
                     <FormControl fullWidth>
                       <Autocomplete
                         id="siteInCharge"
                         options={staffList}
                         getOptionLabel={(option) => option.text}
-                        value={siteInCharge}
-                        onChange={
-                          handleSiteInChargeChange
-                          // (event, newValue) => setSiteInCharge(newValue)
-                        }
+                        value={siteInId}
+                        onChange={handleSiteInChargeChange}
                         renderInput={(params) => (
-                          <TextField {...params} label="Approver" error={!!validationErrors.siteInCharge}
-                            helperText={validationErrors.siteInCharge} />
+                          <TextField
+                            {...params}
+                            label="Staff*"
+                            error={!!validationErrors.siteInId}
+                            helperText={validationErrors.siteInId}
+                          />
                         )}
                         renderOption={(props, option) => (
-                          <MenuItem {...props} key={option.value} value={option.value}>
+                          <MenuItem
+                            {...props}
+                            key={option.value}
+                            value={option.value}
+                          >
                             <ListItemText primary={option.text} />
                           </MenuItem>
                         )}
                       />
                     </FormControl>
                   </Box>
-       
                 </div>
 
                 <div
@@ -2597,7 +2723,7 @@ setOpenApprover(fasle)
                       paddingLeft: "25px",
                       paddingRight: "25px",
                     }}
-                    onClick={()=>setOpenApprover(false)}
+                    onClick={() => setOpenApprover(false)}
                   >
                     Cancel
                   </Button>
@@ -2612,6 +2738,7 @@ setOpenApprover(fasle)
                       paddingRight: "25px",
                     }}
                     type="submit"
+                    onClick={updateActivityTargetUsers}
                   >
                     Update
                   </Button>
