@@ -483,7 +483,7 @@ function Initiation(props) {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange1}
@@ -626,7 +626,7 @@ function Initiation(props) {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="Description"
                       variant="standard"
                       disabled
@@ -954,7 +954,7 @@ function Initiation(props) {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
@@ -1091,7 +1091,7 @@ function Initiation(props) {
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="Description"
                       variant="standard"
                       disabled

@@ -2147,7 +2147,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="description"
                       variant="standard"
                       onChange={handelFileResDiscriptionChange}
@@ -2272,7 +2272,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="descritpion"
                       variant="standard"
                       disabled
@@ -2678,7 +2678,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="description"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
@@ -2821,7 +2821,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="Description"
                       variant="standard"
                       disabled
@@ -5427,7 +5427,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="descritpion"
                       variant="standard"
                       onChange={handelFileDiscriptionChange}
@@ -5570,7 +5570,7 @@ const EvaluationApproval = ({
                   >
                     <TextField
                       id="standard-basic"
-                      label={<BoldLabel>Description</BoldLabel>}
+                      label={<>Description</>}
                       name="Description"
                       variant="standard"
                       disabled
