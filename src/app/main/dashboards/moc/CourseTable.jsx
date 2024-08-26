@@ -106,7 +106,7 @@ export default function StickyHeadTable({filteredDatas}) {
       },
       {
         id: "changeleader",
-        label: "Moc Leader",
+        label: "Doc Controllers",
         //minWidth: 170,
         align: "left",
         format: (value) => value.toLocaleString("en-US"),
