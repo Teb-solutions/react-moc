@@ -268,7 +268,12 @@ function UserMenu() {
               </ListItemIcon>
               <ListItemText primary="Change Password" />
             </MenuItem>
-            <MenuItem component={Link} to="/sign-in" role="button">
+            <MenuItem
+              component={Link}
+              onClick={() => localStorage.clear()}
+              to="/sign-in"
+              role="button"
+            >
               <ListItemIcon className="min-w-40">
                 <FuseSvgIcon>heroicons-outline:lock-closed</FuseSvgIcon>
               </ListItemIcon>
