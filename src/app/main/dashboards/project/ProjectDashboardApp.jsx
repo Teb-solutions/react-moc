@@ -49,6 +49,19 @@ function ProjectDashboardApp() {
 
   const fetchdataSetting = useCallback(async () => {
     try {
+      if (!localStorage.getItem("jwt_access_ticket_token")) {
+        const ticketResp = await apiTicketAuth.post("/Account/access-token", {
+          userName: "MOC_CLIENT",
+          password: "M@c_3#21c_ukl",
+          deviceId: "string",
+        });
+
+        console.log("Ticket access token response:", ticketResp);
+        localStorage.setItem(
+          "jwt_access_ticket_token",
+          ticketResp.data.accessToken
+        );
+      }
       apiAuth.get(`/Dashboard/Get`).then(async (resp) => {
         setData(resp?.data?.data);
         const transformedData = resp?.data?.data?.approvalsPendingRequests?.map(
@@ -68,19 +81,6 @@ function ProjectDashboardApp() {
 
         setRiskMatrixList(transformedData);
         setIsLoading(false);
-        if (!localStorage.getItem("jwt_access_ticket_token")) {
-          const ticketResp = await apiTicketAuth.post("/Account/access-token", {
-            userName: "MOC_CLIENT",
-            password: "M@c_3#21c_ukl",
-            deviceId: "string",
-          });
-
-          console.log("Ticket access token response:", ticketResp);
-          localStorage.setItem(
-            "jwt_access_ticket_token",
-            ticketResp.data.accessToken
-          );
-        }
       });
     } catch (err) {
       console.log(err);
