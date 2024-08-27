@@ -62,14 +62,6 @@ const JwtSignInTab = () => {
   const { isValid, dirtyFields, errors } = formState;
 
   useEffect(() => {
-    setValue("userName", "J0230643", {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
-    setValue("password", "Password123@", {
-      shouldDirty: true,
-      shouldValidate: true,
-    });
     setValue("mFAOtp", "", {
       shouldDirty: true,
     });
