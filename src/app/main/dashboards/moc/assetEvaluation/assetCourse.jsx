@@ -2259,7 +2259,7 @@ const AssetCourse = () => {
                                     : ""}
                                 </b>
                               </span>
-                              {!step?.isComplete && (
+                              {/* {!step?.isComplete && (
                                 <span className="cursor-pointer">
                                   <FuseSvgIcon
                                     size={20}
@@ -2268,8 +2268,7 @@ const AssetCourse = () => {
                                     heroicons-solid:pencil
                                   </FuseSvgIcon>
                                 </span>
-                              )}
-                              {console.log(step.name, "looooooooooo")}
+                              )} */}
                             </div>
                           </StepContent>
                           <StepContent
@@ -2330,7 +2329,7 @@ const AssetCourse = () => {
               </AccordionDetails>
             </Accordion>
           ))}
-          <Accordion
+          {/* <Accordion
             style={{ margin: "0px" }}
             expanded={false} // This keeps the Accordion from expanding
           >
@@ -2342,7 +2341,7 @@ const AssetCourse = () => {
                 heroicons-solid:pencil
               </FuseSvgIcon>
             </AccordionSummary>
-          </Accordion>
+          </Accordion> */}
           <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
