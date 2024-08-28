@@ -117,7 +117,7 @@ const TicketModal = ({ open, handleClose }) => {
     const tokenTicket = localStorage.getItem("jwt_access_ticket_token");
     try {
       const response = await axios.post(
-        "https://pmpcrmstag.tebs.co.in/api/v1/tickets",
+        "https://pmcrm.tebs.co.in/api/v1/tickets",
         ticketData,
         {
           headers: {
