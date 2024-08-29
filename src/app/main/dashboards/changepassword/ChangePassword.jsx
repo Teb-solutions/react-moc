@@ -164,7 +164,6 @@ function Course() {
           password: passwords.currentPassword,
         })
         .then((resp) => {
-          console.log(resp.data, "lollooo");
           if (resp.data.statusCode == 400) {
             setIsLoading(false);
             setPasswords({
@@ -183,7 +182,8 @@ function Course() {
             toast.error(resp.data.message);
           } else {
             setIsLoading(false);
-            navigate("/dashboards/project");
+            toast.success("Successfully Changed");
+            setTimeout(() => navigate("/dashboards/project"), 1000);
           }
         });
     }
