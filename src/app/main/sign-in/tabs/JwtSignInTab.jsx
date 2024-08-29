@@ -117,7 +117,7 @@ const JwtSignInTab = () => {
           }
         } else {
           setLoading(false);
-          toast?.error("Some Error Occured");
+          toast?.error("Username or Password is invalid");
         }
       });
     } catch (error) {
