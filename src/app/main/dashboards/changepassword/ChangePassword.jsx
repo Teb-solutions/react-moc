@@ -19,6 +19,7 @@ import { apiAuth } from "src/utils/http";
 import { useNavigate } from "react-router";
 import Loader from "../../loader/Loader";
 import { useCallback } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -163,8 +164,27 @@ function Course() {
           password: passwords.currentPassword,
         })
         .then((resp) => {
-          setIsLoading(false);
-          navigate("/dashboards/project");
+          console.log(resp.data, "lollooo");
+          if (resp.data.statusCode == 400) {
+            setIsLoading(false);
+            setPasswords({
+              currentPassword: "",
+              newPassword: "",
+              confirmPassword: "",
+            });
+            toast.error(resp.data.message);
+          } else if (resp.data.statusCode == 500) {
+            setIsLoading(false);
+            setPasswords({
+              currentPassword: "",
+              newPassword: "",
+              confirmPassword: "",
+            });
+            toast.error(resp.data.message);
+          } else {
+            setIsLoading(false);
+            navigate("/dashboards/project");
+          }
         });
     }
   };
@@ -218,6 +238,7 @@ function Course() {
     <FusePageSimple
       content={
         <div className="w-full">
+          <ToastContainer className="toast-container" />
           <Container style={{ marginLeft: "0px" }}>
             <Box
               display="flex"

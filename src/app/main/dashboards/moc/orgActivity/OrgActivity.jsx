@@ -163,9 +163,9 @@ function OrgActivity() {
         setOpen(true);
       });
   };
-  const handelActClose=()=>{
+  const handelActClose = () => {
     navigate("/moc");
-  }
+  };
   const formatDate = (dateString) => {
     if (!dateString) {
       return "Invalid date";
@@ -493,7 +493,7 @@ function OrgActivity() {
                     <FormControl
                       className="custom_margin2"
                       sx={{
-                        // m: 1,
+                        m: 1,
                         width: "100%",
                         maxWidth: "100%",
                       }}

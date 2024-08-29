@@ -100,6 +100,10 @@ const Notification = () => {
           ></div>
         </>
       ))}
+
+      {notificationList.length == 0 && (
+        <h2 className="text-center mt-5 text-grey">No Data Found !!</h2>
+      )}
     </>
   );
 };

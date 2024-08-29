@@ -10,6 +10,8 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
+import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+
 import {
   TicketCategoryEnum,
   TicketPriorityEnum,
@@ -20,7 +22,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const TicketModal = ({ open, handleClose }) => {
+const TicketModal = ({ open, handleClose, errors, setErrors }) => {
   const styleImp = {
     position: "absolute",
     top: "50%",
@@ -51,7 +53,6 @@ const TicketModal = ({ open, handleClose }) => {
     dueDate: "2024-08-02T06:50:53.617Z",
     status: 1,
   });
-  const [errors, setErrors] = useState({});
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -117,7 +118,7 @@ const TicketModal = ({ open, handleClose }) => {
     const tokenTicket = localStorage.getItem("jwt_access_ticket_token");
     try {
       const response = await axios.post(
-        "https://pmpcrmstag.tebs.co.in/api/v1/tickets",
+        "https://pmcrm.tebs.co.in/api/v1/tickets",
         ticketData,
         {
           headers: {
@@ -186,7 +187,7 @@ const TicketModal = ({ open, handleClose }) => {
     >
       <Fade in={open}>
         <Box sx={styleImp} className="p-0">
-          <div className="p-30 pt-24 pb-24 border-b">
+          <div className="p-30 pt-24 pb-24 border-b d-flex justify-between">
             <Typography
               id="transition-modal-title"
               variant="h6"
@@ -195,13 +196,16 @@ const TicketModal = ({ open, handleClose }) => {
             >
               Create new ticket
             </Typography>
+            <Button onClick={handleClose}>
+              <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
+            </Button>
           </div>
           <Box component="form" className="p-30 pt-24 pb-24">
             <p className="text-blue text-lg mb-24">Ticket Info</p>
             <Box>
               <TextField
                 fullWidth
-                label="Subject"
+                label="Subject*"
                 name="subject"
                 value={ticketData.subject}
                 onChange={handleInputChange}
@@ -212,7 +216,7 @@ const TicketModal = ({ open, handleClose }) => {
             <Box sx={{ marginTop: 2 }}>
               <TextField
                 fullWidth
-                label="Customer Name"
+                label="Created By*"
                 name="customerName"
                 value={ticketData.customerName}
                 onChange={handleInputChange}
@@ -223,7 +227,7 @@ const TicketModal = ({ open, handleClose }) => {
             <Box sx={{ marginTop: 2 }}>
               <TextField
                 fullWidth
-                label="Description"
+                label="Description*"
                 name="message"
                 multiline
                 rows={4}
@@ -241,7 +245,7 @@ const TicketModal = ({ open, handleClose }) => {
               }}
             >
               <FormControl fullWidth error={!!errors.ticketCategory}>
-                <InputLabel>Ticket Category</InputLabel>
+                <InputLabel>Ticket Category*</InputLabel>
                 <Select
                   name="ticketCategory"
                   value={ticketData.ticketCategory}
@@ -256,7 +260,7 @@ const TicketModal = ({ open, handleClose }) => {
                 )}
               </FormControl>
               <FormControl fullWidth error={!!errors.ticketPriority}>
-                <InputLabel>Ticket Priority</InputLabel>
+                <InputLabel>Ticket Priority*</InputLabel>
                 <Select
                   name="ticketPriority"
                   value={ticketData.ticketPriority}

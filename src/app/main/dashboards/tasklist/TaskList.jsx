@@ -90,7 +90,13 @@ export default function StickyHeadTable() {
                 ? `/moc/assetEvaluation/${item.changeRequestToken}`
                 : item.changeRequestTypeName === "Document"
                   ? `/moc/evaluation/${item.changeRequestToken}`
-                  : `/moc/orgEvaluation/${item.changeRequestToken}`
+                  : item.changeRequestTypeName === "Engg"
+                    ? `/moc/assetEvaluation/${item.changeRequestToken}`
+                    : item.changeRequestTypeName === "TransportAct"
+                      ? `/moc/assetEvaluation/${item.changeRequestToken}`
+                      : item.changeRequestTypeName === "Others"
+                        ? `/moc/assetEvaluation/${item.changeRequestToken}`
+                        : `/moc/orgEvaluation/${item.changeRequestToken}`
             }
           >
             {item.changeRequestNo}

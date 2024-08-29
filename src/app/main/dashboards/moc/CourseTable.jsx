@@ -118,7 +118,7 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
     },
     {
       id: "changeleader",
-      label: "Doc Controllers",
+      label: "Change Leader/Doc Controller",
       //minWidth: 170,
       align: "left",
       format: (value) => value.toLocaleString("en-US"),

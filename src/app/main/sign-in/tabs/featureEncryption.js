@@ -17,6 +17,6 @@ export const decryptFeature = () => {
     const bytes = CryptoJS.AES.decrypt(encryptedDatas, secretKey);
     return bytes.toString(CryptoJS.enc.Utf8);
   } else {
-    console.error("Failed to retrieve encrypted data from cookies.");
+    // console.error("Failed to retrieve encrypted data from cookies.");
   }
 };

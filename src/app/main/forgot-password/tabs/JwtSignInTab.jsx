@@ -120,7 +120,7 @@ function JwtSignInTab() {
       apiAuth
         .post(`/Account/ResetPassword`, payload)
         .then((resp) => {
-          if (resp.data.statusCode === 400) {
+          if (resp.data.statusCode == 400) {
             toast?.error(resp.data.message);
           } else {
             toast?.success("Password reset successfully");
@@ -138,6 +138,7 @@ function JwtSignInTab() {
 
   return (
     <div className="w-full">
+      <ToastContainer className="toast-container" />
       <form
         name="loginForm"
         noValidate

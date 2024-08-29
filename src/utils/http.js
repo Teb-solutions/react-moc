@@ -78,14 +78,14 @@ export const apiAuth = axios.create({
 });
 
 export const apiTicketClient = axios.create({
-  baseURL: "https://pmpprofilestag.tebs.co.in/api/v1",
+  baseURL: "https://pmprofiles.tebs.co.in/api/v1/",
   headers: {
     Accept: "application/json",
   },
 });
 
 export const apiTicketAuth = axios.create({
-  baseURL: "https://pmpprofilestag.tebs.co.in/api/v1/",
+  baseURL: "https://pmprofiles.tebs.co.in/api/v1/",
   headers: {
     Accept: "application/json",
   },
