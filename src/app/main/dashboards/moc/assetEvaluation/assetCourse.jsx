@@ -2269,6 +2269,7 @@ const AssetCourse = () => {
                                   </FuseSvgIcon>
                                 </span>
                               )} */}
+                              {console.log(step.name, "looooooooooo")}
                             </div>
                           </StepContent>
                           <StepContent

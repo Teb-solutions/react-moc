@@ -427,7 +427,6 @@ body.sidebar1-open .maincntainer {
   margin-top: 0.5rem;
   padding-left: 10px;
   padding-right: 10px;
-  
 }
 
 .task-detail-label {
@@ -1137,7 +1136,7 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
   margin-top: 1rem;
 }
 .custom_margin2 {
-  margin-top: 31px;
+  margin-top: 30px;
 }
 .custom_margin2 > div > div > div > input {
   height: 20px;

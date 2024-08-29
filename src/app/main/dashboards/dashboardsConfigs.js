@@ -33,6 +33,7 @@ import RiskAppConfig from "./riskRegister/riskRegisterConfig";
 import TransportActivityConfig from "./riskRegister/TransportActivity/TransportConfig";
 import TicketConfig from "./ticketlist/TicketConfig";
 import taskListConfig from "./tasklist/TaskListConfig";
+import RecycleConfig from "./masters/recycle/RecycleConfig";
 
 /**
  * Dashboards
@@ -53,6 +54,7 @@ const dashboardsConfigs = [
   FunctionConfig,
   LocationConfig,
   ActivityConfig,
+  RecycleConfig,
   HighRiskActivityConfig,
   ChangeEvaluationConfig,
   ParticularConfig,

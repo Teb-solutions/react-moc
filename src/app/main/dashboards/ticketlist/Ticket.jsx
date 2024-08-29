@@ -50,7 +50,7 @@ function createData(
   subject,
   message,
   category,
-  // priority,
+  priority,
   ticketstatus,
   customername,
   action,
@@ -64,7 +64,7 @@ function createData(
     subject,
     message,
     category: mapEnumValueToName(category, TicketCategoryEnum),
-    // priority: mapEnumValueToName(priority, TicketPriorityEnum),
+    priority: mapEnumValueToName(priority, TicketPriorityEnum),
     ticketstatus: mapEnumValueToName(ticketstatus, TicketStatusEnum),
     customername,
     action,
@@ -161,6 +161,7 @@ export default function Ticket() {
   });
   const [open, setOpen] = useState(false);
   const [openView, setOpenView] = useState({});
+  const [ticketCode, setTicketCode] = useState("");
 
   const [isViewMode, setViewMode] = useState(false);
 
@@ -203,7 +204,7 @@ export default function Ticket() {
   async function getRecords() {
     const tokenTicket = localStorage.getItem("jwt_access_ticket_token");
     const response = await axios.get(
-      "https://pmpcrmstag.tebs.co.in/api/v1/project/tickets/list?projectId=5EC94E1B-E058-4008-EC12-08DC9C361D1D",
+      "https://pmcrm.tebs.co.in/api/v1/project/tickets/list?projectId=5EC94E1B-E058-4008-EC12-08DC9C361D1D",
       {
         headers: {
           Authorization: `Bearer ${tokenTicket}`,
@@ -225,7 +226,7 @@ export default function Ticket() {
           item.subject,
           item.message,
           item.ticketCategory,
-          // item.ticketPriority,
+          item.ticketPriority,
           item.ticketStatus,
           item.customerName,
           "Action",
@@ -311,6 +312,7 @@ export default function Ticket() {
     setViewMode(true);
     setOpenView(row);
     console.log(row, "rowwwww");
+    setTicketCode(row.code);
 
     handleOpen();
   };
@@ -369,7 +371,7 @@ export default function Ticket() {
           <Box sx={style}>
             <Box sx={headerStyle} className="p-30 pt-24 pb-24">
               <Typography variant="span" component="span">
-                Ticket Details
+                Ticket Details #{ticketCode}
               </Typography>
               <IconButton onClick={handleClose} sx={{ color: "inherit" }}>
                 <CloseIcon />
@@ -467,18 +469,24 @@ export default function Ticket() {
             </Box> */}
             <Paper className="w-full mx-auto overflow-hidden ">
               <div className="p-30 pt-24 pb-24">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full gap-6">
-                  <div>
-                    <div className="mt-3 leading-6 text-secondary">
-                      <b>Subject</b>
+                <div className="grid grid-cols-1  lg:gap-16 w-full gap-7">
+                  <div className="grid grid-cols-1 gap-y-6 w-full">
+                    <div>
+                      <div className="mt-3 leading-6 text-secondary">
+                        <b>Subject</b>
+                      </div>
+                      <div className="text-lg leading-6 font-medium text-grey">
+                        {openView.subject}
+                      </div>
                     </div>
-                    <div className="text-lg leading-6 ">{openView.subject}</div>
                   </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full gap-7">
                   <div>
                     <div className="mt-3 leading-6 text-secondary">
                       <b>Created By</b>
                     </div>
-                    <div className="text-lg leading-6 ">
+                    <div className="text-lg leading-6 font-medium text-grey">
                       {openView.customername ? openView.customername : "-"}
                     </div>
                   </div>
@@ -486,7 +494,7 @@ export default function Ticket() {
                     <div className="mt-3 leading-6 text-secondary">
                       <b>Status</b>
                     </div>
-                    <div className="text-lg leading-6 ">
+                    <div className="text-lg leading-6 font-medium text-grey">
                       {openView.ticketstatus}
                     </div>
                   </div>
@@ -494,7 +502,7 @@ export default function Ticket() {
                     <div className="mt-3 leading-6 text-secondary">
                       <b>Priority</b>
                     </div>
-                    <div className="text-lg leading-6">
+                    <div className="text-lg leading-6 font-medium text-grey">
                       {openView.priority ? openView.priority : "-"}
                     </div>
                   </div>
@@ -502,7 +510,7 @@ export default function Ticket() {
                     <div className="mt-3 leading-6 text-secondary">
                       <b>Category</b>
                     </div>
-                    <div className="text-lg leading-6 ">
+                    <div className="text-lg leading-6 font-medium text-grey">
                       {openView.category}
                     </div>
                   </div>
@@ -510,7 +518,7 @@ export default function Ticket() {
                     <div className=" leading-6 text-secondary">
                       <b>Comments</b>
                     </div>
-                    <div className="text-lg leading-6 ">
+                    <div className="text-lg leading-6 font-medium text-grey">
                       {openView.lastComment}
                     </div>
                   </div>
@@ -521,7 +529,9 @@ export default function Ticket() {
                     <div className="mt-5 leading-6 text-secondary">
                       <b>Description</b>
                     </div>
-                    <div className="text-lg leading-6 ">{openView.message}</div>
+                    <div className="text-lg leading-6 font-medium text-grey">
+                      {openView.message}
+                    </div>
                   </div>
                 </div>
 

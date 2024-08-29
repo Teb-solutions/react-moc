@@ -1230,6 +1230,7 @@ const Task = () => {
                               color: "black",
                               border: "1px solid grey",
                             }}
+                            onClick={() => setSidebarOpen(false)}
                           >
                             Cancel
                           </Button>

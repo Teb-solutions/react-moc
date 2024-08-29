@@ -210,7 +210,7 @@ function AssetRequest() {
     }
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => { });
+      .then((response) => {});
   };
 
   const handelDetailDoc = (doc) => {
@@ -222,7 +222,7 @@ function AssetRequest() {
   const handleOpenDocModalClose = () => {
     setOpenDocModal(false);
     setOpenDrawer(false);
-    setFileDetails(false)
+    setFileDetails(false);
   };
 
   const toggleDrawer = (open) => () => {
@@ -326,9 +326,9 @@ function AssetRequest() {
     }
   };
 
-  const handelActClose=()=>{
+  const handelActClose = () => {
     navigate("/moc");
-  }
+  };
   const handleSubmitDocument = () => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
@@ -870,11 +870,16 @@ function AssetRequest() {
                       value={documentState.type}
                       onChange={handleChange}
                     >
-                      {mockType.map((option) => (
-                        <MenuItem key={option.id} value={option.value}>
-                          {option.text}
-                        </MenuItem>
-                      ))}
+                      {mockType
+                        .filter(
+                          (option) =>
+                            option.text !== "Org" && option.text !== "Document"
+                        )
+                        .map((option) => (
+                          <MenuItem key={option.value} value={option.value}>
+                            {option.text}
+                          </MenuItem>
+                        ))}
                     </Select>
                     {!!errors.type && (
                       <FormHelperText>{errors.type}</FormHelperText>
@@ -1134,12 +1139,17 @@ function AssetRequest() {
                           backgroundColor: "rgba(0, 0, 0, 0.5)",
                         },
                       }}
-
                     >
                       <Fade in={openDocModal}>
-
                         <Box sx={style1}>
-                          <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+                          <div
+                            className="flex justify-end mx-4 sm:mx-8"
+                            style={{
+                              marginTop: "-32px",
+                              marginRight: "-29px",
+                              padding: "0 0 -24px ",
+                            }}
+                          >
                             <Button
                               className=""
                               variant="contained"

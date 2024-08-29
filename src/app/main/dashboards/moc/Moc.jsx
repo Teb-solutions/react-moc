@@ -211,20 +211,18 @@ function MocApp() {
                   />
                 }
               />
-              {!viewTable&&(
-
-
-              <FormControlLabel
-                label="Hide completed"
-                control={
-                  <Switch
-                    onChange={(ev) => setHideCompleted(ev.target.checked)}
-                    checked={hideCompleted}
-                    name="hideCompleted"
-                  />
-                }
-              />
-  )}
+              {!viewTable && (
+                <FormControlLabel
+                  label="Hide completed"
+                  control={
+                    <Switch
+                      onChange={(ev) => setHideCompleted(ev.target.checked)}
+                      checked={hideCompleted}
+                      name="hideCompleted"
+                    />
+                  }
+                />
+              )}
             </div>
           </div>
           <div className="mt-10 p-4">
@@ -233,7 +231,10 @@ function MocApp() {
             </Typography>
           </div>
           {viewTable ? (
-            <CourseTable filteredDatas={filteredData} />
+            <CourseTable
+              filteredDatas={filteredData}
+              setOriginalData={setOriginalData}
+            />
           ) : (
             <motion.div
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-32 mt-32 sm:mt-20"

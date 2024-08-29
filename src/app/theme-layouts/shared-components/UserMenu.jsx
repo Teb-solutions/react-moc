@@ -40,7 +40,7 @@ function UserMenu() {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [bookmarkAnchorEl, setBookmarkAnchorEl] = useState(null);
-
+  const [errors, setErrors] = useState({});
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
@@ -51,6 +51,7 @@ function UserMenu() {
 
   const handleModalClose = () => {
     setModalOpen(false);
+    setErrors({});
   };
 
   const open = Boolean(anchorEl);
@@ -323,7 +324,12 @@ function UserMenu() {
           </>
         )}
       </Popover>
-      <TicketModal open={modalOpen} handleClose={handleModalClose} />
+      <TicketModal
+        errors={errors}
+        setErrors={setErrors}
+        open={modalOpen}
+        handleClose={handleModalClose}
+      />
     </>
   );
 }

@@ -90,6 +90,7 @@ const SessionList = () => {
         _ngcontent-fyk-c288=""
         class="flex items-center w-full  border-b justify-between"
       ></div>
+
       {sessionList?.map((list) => (
         <>
           <Paper
@@ -243,6 +244,9 @@ const SessionList = () => {
           ></div>
         </>
       ))}
+      {sessionList.length == 0 && (
+        <h2 className="text-center mt-5 text-grey">No Data Found !!</h2>
+      )}
     </>
   );
 };

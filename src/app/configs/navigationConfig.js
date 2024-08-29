@@ -230,6 +230,13 @@ const navigationConfig1 = [
             url: "/masters/designationtask",
             feature: "MST",
           },
+          {
+            id: "masters.Recycle",
+            title: "Recycle",
+            type: "item",
+            url: "/masters/recycle",
+            // feature: "MST",
+          },
         ],
       },
       {
@@ -267,6 +274,7 @@ const shouldIncludeItem = (item) => {
     "session.request",
     "notifications.request",
     "ticketlist.request",
+    "masters.Recycle",
   ];
 
   if (defaultItems.includes(item.id)) {
