@@ -291,27 +291,32 @@ export default function StickyHeadTable() {
     handleOpenDelete();
   };
 
-  const handleChangeDense = (event, index) => {
+
+  const handleChangeDense = (event, row) => {
+
     const updatedDepartmentList = [...riskTimeList];
-    const updatedRow = updatedDepartmentList[index];
-    updatedRow.isActive = event.target.checked;
+    const updatedRow = updatedDepartmentList.find(item => item.id === row.id);
 
-    // Update the state immediately to reflect the change in the UI
-    setRiskTimeList(updatedDepartmentList);
+    if (updatedRow) {
+      updatedRow.isActive = event.target.checked;
 
-    // Call the update API
-    apiAuth
-      .put(`/LookupData/Update/${updatedRow.id}`, {
-        ...updatedRow,
-        isActive: updatedRow.isActive,
-      })
-      .then((resp) => {
-        toast.success("Updated.");
-        getRecords(); // Fetch the updated records
-      })
-      .catch((error) => {
-        console.error("Failed to update the status:", error);
-      });
+      // Update the state immediately to reflect the change in the UI
+      setRiskTimeList(updatedDepartmentList);
+
+      // Call the update API
+      apiAuth
+        .put(`/LookupData/Update/${updatedRow.id}`, {
+          ...updatedRow,
+          isActive: updatedRow.isActive,
+        })
+        .then((resp) => {
+          toast.success("Updated.");
+          getRecords(); // Fetch the updated records
+        })
+        .catch((error) => {
+          console.error("Failed to update the status:", error);
+        });
+    }
   };
   if (isLoading) {
     return <FuseLoading />;
@@ -657,7 +662,7 @@ export default function StickyHeadTable() {
                                     onChange={(event) =>
                                       handleChangeDense(
                                         event,
-                                        page * rowsPerPage + row.index - 1
+                                        row
                                       )
                                     } // Passes the index of the department
                                   />

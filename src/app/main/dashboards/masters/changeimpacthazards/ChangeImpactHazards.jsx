@@ -286,10 +286,34 @@ export default function StickyHeadTable() {
           toast.error("Code Maximum length is 2 charcters");
         } else {
           apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
-            setOpen(false);
-            toast.success("Created.");
-
-            getRecords();
+            if (resp.data.statusCode === 200) {
+              setOpen(false);
+              toast.success("Created.");
+              setLookUpAdd({
+                ...lookupAdd,
+                LookupType: "changeimpacthazards",
+                code: "",
+                crudMode: "INSERT",
+                description: "",
+                isActive: true,
+                name: "",
+                parentId: 0,
+              });
+              getRecords();
+            } else {
+              setLookUpAdd({
+                ...lookupAdd,
+                LookupType: "changeimpacthazards",
+                code: "",
+                crudMode: "INSERT",
+                description: "",
+                isActive: true,
+                name: "",
+                parentId: 0,
+              });
+              setOpen(false);
+              toast.error(resp.data.message)
+            }
           });
         }
       }
@@ -321,27 +345,32 @@ export default function StickyHeadTable() {
     handleOpenDelete();
   };
 
-  const handleChangeDense = (event, index) => {
+
+  const handleChangeDense = (event, row) => {
+
     const updatedDepartmentList = [...hazardList];
-    const updatedRow = updatedDepartmentList[index];
-    updatedRow.isActive = event.target.checked;
+    const updatedRow = updatedDepartmentList.find(item => item.id === row.id);
 
-    // Update the state immediately to reflect the change in the UI
-    SetHazardList(updatedDepartmentList);
+    if (updatedRow) {
+      updatedRow.isActive = event.target.checked;
 
-    // Call the update API
-    apiAuth
-      .put(`/LookupData/Update/${updatedRow.id}`, {
-        ...updatedRow,
-        isActive: updatedRow.isActive,
-      })
-      .then((resp) => {
-        toast.success("Updated.");
-        getRecords(); // Fetch the updated records
-      })
-      .catch((error) => {
-        console.error("Failed to update the status:", error);
-      });
+      // Update the state immediately to reflect the change in the UI
+      SetHazardList(updatedDepartmentList);
+
+      // Call the update API
+      apiAuth
+        .put(`/LookupData/Update/${updatedRow.id}`, {
+          ...updatedRow,
+          isActive: updatedRow.isActive,
+        })
+        .then((resp) => {
+          toast.success("Updated.");
+          getRecords(); // Fetch the updated records
+        })
+        .catch((error) => {
+          console.error("Failed to update the status:", error);
+        });
+    }
   };
 
   if (isLoading) {
@@ -704,7 +733,7 @@ export default function StickyHeadTable() {
                                     onChange={(event) =>
                                       handleChangeDense(
                                         event,
-                                        page * rowsPerPage + row.index - 1
+                                        row
                                       )
                                     } // Passes the index of the department
                                   />

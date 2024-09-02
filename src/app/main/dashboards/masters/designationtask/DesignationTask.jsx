@@ -143,6 +143,7 @@ export default function StickyHeadTable() {
   );
 
   const [lookupAdd, setLookUpAdd] = useState({
+
     crudMode: "INSERT",
     description: "",
     isActive: true,
@@ -205,6 +206,7 @@ export default function StickyHeadTable() {
   }, [dense]);
 
   const handleAdd = (event) => {
+
     const { name, value } = event.target;
     setLookUpAdd({
       ...lookupAdd,
@@ -228,10 +230,12 @@ export default function StickyHeadTable() {
   const handleClose = () => {
     setLookUpAdd({
       ...lookupAdd,
+
       crudMode: "INSERT",
       description: "",
       isActive: true,
       name: "",
+
       designationId: 0,
     });
     setOpen(false);
@@ -244,7 +248,7 @@ export default function StickyHeadTable() {
   const handleCloseDelete = () => setDelete(false);
 
   const handleSubmitDelete = () => {
-    apiAuth.delete(`/LookupData/Delete/${Id}`).then((resp) => {
+    apiAuth.delete(`/DesignationTask/${Id}`).then((resp) => {
       if (resp.data.statusCode == "424") {
         toast.error(resp.data.message);
         setDelete(false);
@@ -267,8 +271,8 @@ export default function StickyHeadTable() {
 
   const validate = () => {
     let tempErrors = {};
-    if (!lookupAdd.parentId) tempErrors.parentId = "Designation is required";
-    if (!lookupAdd.code) tempErrors.code = "Code is required";
+    if (!lookupAdd.designationId) tempErrors.designationId = "Designation is required";
+    if (!lookupAdd.name) tempErrors.name = "Name is required";
     if (!lookupAdd.description)
       tempErrors.description = "Description is required";
 
@@ -280,17 +284,51 @@ export default function StickyHeadTable() {
     e.preventDefault();
     if (validate()) {
       if (lookupAdd.crudMode == "UPDATE") {
-        apiAuth.put(`/LookupData/Update/${Id}`, lookupAdd).then((resp) => {
+        apiAuth.put(`/DesignationTask/${Id}`, {
+          designationId: lookupAdd.designationId,
+          name: lookupAdd.name,
+          description: lookupAdd.description,
+          isActive: lookupAdd.isActive
+        }).then((resp) => {
           setOpen(false);
           toast.success("Updated.");
           getRecords();
         });
       } else {
-        apiAuth.post(`/LookupData/Create`, lookupAdd).then((resp) => {
-          setOpen(false);
-          toast.success("Created.");
+        apiAuth.post(`/DesignationTask/Create`, {
+          designationId: lookupAdd.designationId,
+          name: lookupAdd.name,
+          description: lookupAdd.description
+        }).then((resp) => {
 
-          getRecords();
+          if (resp.data.statusCode === 200) {
+            setOpen(false);
+            toast.success("Created.");
+            setLookUpAdd({
+              ...lookupAdd,
+
+              crudMode: "INSERT",
+              description: "",
+              isActive: true,
+              name: "",
+
+              designationId: 0,
+            });
+            getRecords();
+          } else {
+            setLookUpAdd({
+              ...lookupAdd,
+
+              crudMode: "INSERT",
+              description: "",
+              isActive: true,
+              name: "",
+
+              designationId: 0,
+            });
+            setOpen(false);
+            toast.error(resp.data.message)
+          }
         });
       }
     }
@@ -318,28 +356,32 @@ export default function StickyHeadTable() {
     handleOpenDelete();
   };
 
-  const handleChangeDense = (event, index, row) => {
-    console.log(row, "rowwwwwww");
+
+  const handleChangeDense = (event, row) => {
+
     const updatedDepartmentList = [...hazardList];
-    const updatedRow = updatedDepartmentList[index];
-    updatedRow.isActive = event.target.checked;
+    const updatedRow = updatedDepartmentList.find(item => item.id === row.id);
 
-    // Update the state immediately to reflect the change in the UI
-    SetHazardList(updatedDepartmentList);
+    if (updatedRow) {
+      updatedRow.isActive = event.target.checked;
 
-    // Call the update API
-    apiAuth
-      .put(`/DesignationTask/${updatedRow.id}`, {
-        ...updatedRow,
-        isActive: updatedRow.isActive,
-      })
-      .then((resp) => {
-        toast.success("Updated.");
-        getRecords(); // Fetch the updated records
-      })
-      .catch((error) => {
-        console.error("Failed to update the status:", error);
-      });
+      // Update the state immediately to reflect the change in the UI
+      SetHazardList(updatedDepartmentList);
+
+      // Call the update API
+      apiAuth
+        .put(`/DesignationTask/${updatedRow.id}`, {
+          ...updatedRow,
+          isActive: updatedRow.isActive,
+        })
+        .then((resp) => {
+          toast.success("Updated.");
+          getRecords(); // Fetch the updated records
+        })
+        .catch((error) => {
+          console.error("Failed to update the status:", error);
+        });
+    }
   };
 
   if (isLoading) {
@@ -433,7 +475,7 @@ export default function StickyHeadTable() {
                     onChange={handleAdd}
                     // label="Designation *"
                     fullWidth
-                    error={!!errors.parentId}
+                    error={!!errors.designationId}
                   >
                     <MenuItem value="" disabled>
                       <em>Designation *</em>
@@ -444,8 +486,8 @@ export default function StickyHeadTable() {
                       </MenuItem>
                     ))}
                   </Select>
-                  {errors.parentId && (
-                    <span style={{ color: "red" }}>{errors.parentId}</span>
+                  {errors.designationId && (
+                    <span style={{ color: "red" }}>{errors.designationId}</span>
                   )}
                 </FormControl>
               </Box>
@@ -454,12 +496,12 @@ export default function StickyHeadTable() {
                   id="code"
                   fullWidth
                   label="Task Name *"
-                  name="code"
-                  value={lookupAdd.code}
+                  name="name"
+                  value={lookupAdd.name}
                   variant="outlined"
                   onChange={handleAdd}
-                  error={!!errors.code}
-                  helperText={errors.code}
+                  error={!!errors.name}
+                  helperText={errors.name}
                 />
               </Box>
               <Box>
@@ -707,7 +749,6 @@ export default function StickyHeadTable() {
                                     onChange={(event) =>
                                       handleChangeDense(
                                         event,
-                                        page * rowsPerPage + row.index - 1,
                                         row
                                       )
                                     } // Passes the index of the department
