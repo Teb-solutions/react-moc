@@ -316,7 +316,7 @@ const InitiationComplete = ({
   const handleModalClose = () => {
     setOpen1(false);
     setOpenDrawer(false);
-    fileDetails(false)
+    fileDetails(false);
   };
   const ListDoc1 = (id, activeid) => {
     apiAuth
@@ -875,20 +875,28 @@ const InitiationComplete = ({
       >
         <Fade in={open1}>
           <Box sx={style1}>
-            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+            <div
+              className="flex justify-end mx-4 sm:mx-8"
+              style={{
+                marginTop: "-32px",
+                marginRight: "-29px",
+                padding: "0 0 -24px ",
+              }}
+            >
               <Button
                 className=""
                 variant="contained"
                 style={{ backgroundColor: "white" }}
                 onClick={handleModalClose}
               >
-                <FuseSvgIcon size={20}>
-                  heroicons-outline:x
-                </FuseSvgIcon>
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
               </Button>
             </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "0", paddingTop: "0" }}>
+              <Box
+                className="flex justify-between"
+                style={{ margin: "0", paddingTop: "0" }}
+              >
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
@@ -1010,7 +1018,7 @@ const InitiationComplete = ({
                   >
                     <TextField
                       id="selectedFileName"
-                      label="Selecte File"
+                      label="Select File"
                       variant="standard"
                       disabled
                       value={selectedFile.name}
@@ -1418,7 +1426,7 @@ const InitiationComplete = ({
                   <FormControl fullWidth>
                     <FormLabel>Expected Change Completion Date</FormLabel>
                     <span>
-                    {new Date(
+                      {new Date(
                         currentSummeryById?.changeTerminationDate
                       ).toLocaleString("en-US", {
                         month: "long",

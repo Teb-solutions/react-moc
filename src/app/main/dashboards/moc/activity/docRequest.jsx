@@ -145,7 +145,7 @@ function DocRequest() {
     }
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => { });
+      .then((response) => {});
   };
 
   const handelDetailDoc = (doc) => {
@@ -268,9 +268,9 @@ function DocRequest() {
     }
   };
 
-  const handelActClose=()=>{
+  const handelActClose = () => {
     navigate("/moc");
-  }
+  };
   const handleSubmitDocument = () => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
@@ -1021,7 +1021,7 @@ function DocRequest() {
                                   >
                                     <TextField
                                       id="selectedFileName"
-                                      label="Selecte File"
+                                      label="Select File"
                                       variant="standard"
                                       disabled
                                       value={selectedFile.name}
@@ -1067,7 +1067,6 @@ function DocRequest() {
                                       color: "black",
                                       border: "1px solid grey",
                                     }}
-
                                   >
                                     Cancel
                                   </Button>

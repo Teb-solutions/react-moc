@@ -679,15 +679,15 @@ const AssetCourse = () => {
           {
             y: 400,
             y2: 800,
-            borderColor: "#000",
-            fillColor: "#fe1919",
+            borderColor: "#fff",
+            fillColor: "#fff",
             opacity: 0.2,
           },
           {
             y: 200,
             y2: 400,
-            borderColor: "#000",
-            fillColor: "#FEB019",
+            borderColor: "#fff",
+            fillColor: "#fff",
             opacity: 0.2,
           },
         ],
@@ -2251,11 +2251,10 @@ const AssetCourse = () => {
                           >
                             <div className="d-flex justify-between">
                               <span>
-                                By{" "}
                                 <b>
                                   {step.targetUsers &&
                                   step.targetUsers.length > 0
-                                    ? step.targetUsers[0]
+                                    ? "By " + step.targetUsers[0]
                                     : ""}
                                 </b>
                               </span>

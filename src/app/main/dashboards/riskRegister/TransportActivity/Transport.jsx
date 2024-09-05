@@ -167,7 +167,7 @@ function TransportApp() {
     }
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => { });
+      .then((response) => {});
   };
 
   const handelDetailDoc = (doc) => {
@@ -745,7 +745,7 @@ function TransportApp() {
                   <FormControl
                     fullWidth
                     sx={{ m: 1 }}
-                  // error={!!errors.projectName}
+                    // error={!!errors.projectName}
                   >
                     <InputLabel htmlFor="projectName">Title *</InputLabel>
                     <OutlinedInput
@@ -767,7 +767,7 @@ function TransportApp() {
                   <FormControl
                     fullWidth
                     sx={{ m: 1 }}
-                  // error={!!errors.projectName}
+                    // error={!!errors.projectName}
                   >
                     <InputLabel htmlFor="projectDescription">
                       Description *
@@ -1019,7 +1019,7 @@ function TransportApp() {
                                 >
                                   <TextField
                                     id="selectedFileName"
-                                    label="Selecte File"
+                                    label="Select File"
                                     variant="standard"
                                     disabled
                                     value={selectedFile.name}
@@ -1337,7 +1337,7 @@ function TransportApp() {
                             color="secondary"
                             style={{ padding: "23px", backgroundColor: "red" }}
                             type="submit"
-                          // onClick={handleSubmit}
+                            // onClick={handleSubmit}
                           >
                             Submit
                           </Button>

@@ -126,6 +126,12 @@ const EvaluationApproval = ({
 
   const [open, setOpen] = useState(false);
 
+  const [expanded, setExpanded] = useState(false);
+  const [clickedTasks, setClickedTasks] = useState({});
+  const [showReview, setshowReview] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [commentExtValidation, setCommentExtValidation] = useState(null);
+
   const handleInputChange = (event, type) => {
     if (type === "Consultaion") {
       setNewRemark(event.target.value);
@@ -154,6 +160,10 @@ const EvaluationApproval = ({
   }, [AppActivity.uid, contentDetails]);
   const handleSaveClick = (type) => {
     const remark = type === "Consultaion" ? newRemark : newImpactTaskRemark;
+    if (!remark) {
+      toast?.error("Please enter a comment");
+      return;
+    }
     const payload = {
       activityId: AppActivity.uid,
       remark: remark,
@@ -178,12 +188,20 @@ const EvaluationApproval = ({
           setNewRemark("");
           setNewImpactTaskRemark("");
           getRecords();
+        })
+        .catch((error) => {
+          console.error("Error adding comment:", error);
+          toast?.error("Error adding comment");
         });
     }
 
     console.log(payload, "payyy");
   };
   const handleUpdateClick = (index, id) => {
+    if (!remarkRequest[index].remark) {
+      toast?.error("Please enter a comment");
+      return;
+    }
     const payload = {
       activityId: remarkRequest[index].activityId,
       remark: remarkRequest[index].remark,
@@ -199,13 +217,24 @@ const EvaluationApproval = ({
       )
       .then((response) => {
         if (response.status === 200) {
-          const updatedRemarks = [...remarks];
-          updatedRemarks[index] = response.data.data[index];
+          // alert("Comment updated successfully");
+          // const updatedRemarks = [...remarks];
+          // updatedRemarks[index] = response.data.data[index];
           // setRemarks(updatedRemarks);
+          toast.success("Comment updated successfully");
         }
       })
       .catch((error) => {
-        console.error("Error updating the remark:", error);
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.error("Error response data:", error.response.data);
+          console.error("Error response status:", error.response.status);
+          console.error("Error response headers:", error.response.headers);
+          toast.error(
+            `Error: ${error.response.data.message || "Error updating comment"}`
+          );
+        }
       });
   };
   const handleStaffChange = (event) => {
@@ -300,11 +329,6 @@ const EvaluationApproval = ({
       right: "8px",
     },
   }))(Badge);
-
-  const [expanded, setExpanded] = useState(false);
-  const [clickedTasks, setClickedTasks] = useState({});
-  const [showReview, setshowReview] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   // async function testReview() {
   //   const response = await apiAuth.get(
@@ -474,6 +498,12 @@ const EvaluationApproval = ({
     setIsLoading(true);
     const taskIds = selectedTasks.map((task) => task.id);
     // Prepare payload in the required format
+    if (selectedStaff.length === 0 || email === "" || comments === "") {
+      setIsLoading(false);
+      setCommentExtValidation("* Please fill all madatory fields");
+      toast?.error("Please fill all fields");
+      return;
+    }
     const payload = {
       comments: comments,
       team: selectedStaff,
@@ -482,6 +512,7 @@ const EvaluationApproval = ({
       ActivityCode: lastActCode?.code,
       Version: lastActCode?.version,
     };
+    // alert(comments);
     console.log(payload, "payload");
     apiAuth
       .put(`/SummaryDetails/SendComment/${assetEvaluationId}`, payload)
@@ -546,9 +577,6 @@ const EvaluationApproval = ({
         setIsLoading(false);
       });
   };
-  if (isLoading) {
-    return <FuseLoading />;
-  }
 
   const ListDoc = (id, activeid) => {
     apiAuth
@@ -993,1043 +1021,316 @@ const EvaluationApproval = ({
   }, [contentDetails]);
 
   return (
-    <div className="w-full h-full">
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={apiOpenModal}
-        onClose={handelCloseAiModal}
-        closeAfterTransition
-        // Customize backdrop appearance
-        BackdropComponent={Backdrop}
-        // Props for backdrop customization
-        BackdropProps={{
-          timeout: 500, // Adjust as needed
-          style: {
-            // Add backdrop styles here
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          },
-        }}
-      >
-        <Fade in={apiOpenModal}>
-          <Box sx={styleAi}>
-            <Box sx={{ flex: 1 }}>
-              <div className="flex justify-end mt-5">
-                <Button
-                  variant="contained"
-                  style={{ backgroundColor: "white" }}
-                  onClick={handelCloseAiModal}
-                >
-                  <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
-                </Button>
-              </div>
-              <Box className="flex justify-between" style={{ margin: "30px" }}>
-                <table className="task-table mat-table task_table">
-                  <thead
-                    className="task-table-header"
-                    style={{ display: "none" }}
+    <>
+      {isLoading && <FuseLoading />}
+      <div className="w-full h-full">
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={apiOpenModal}
+          onClose={handelCloseAiModal}
+          closeAfterTransition
+          // Customize backdrop appearance
+          BackdropComponent={Backdrop}
+          // Props for backdrop customization
+          BackdropProps={{
+            timeout: 500, // Adjust as needed
+            style: {
+              // Add backdrop styles here
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+          }}
+        >
+          <Fade in={apiOpenModal}>
+            <Box sx={styleAi}>
+              <Box sx={{ flex: 1 }}>
+                <div className="flex justify-end mt-5">
+                  <Button
+                    variant="contained"
+                    style={{ backgroundColor: "white" }}
+                    onClick={handelCloseAiModal}
                   >
-                    {/* Empty header */}
-                  </thead>
-                  <tbody className="task-table-body">
-                    {contentDetails?.tasklist ? (
-                      Object.entries(
-                        contentDetails.tasklist.reduce((acc, task) => {
-                          // Group tasks by particularName
-                          if (!acc[task.particularName]) {
-                            acc[task.particularName] = {
-                              tasks: [],
-                              reviewAddedCount: 0,
-                              noReviewAddedCount: 0,
-                            };
-                          }
-                          acc[task.particularName].tasks.push(task);
+                    <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
+                  </Button>
+                </div>
+                <Box
+                  className="flex justify-between"
+                  style={{ margin: "30px" }}
+                >
+                  <table className="task-table mat-table task_table">
+                    <thead
+                      className="task-table-header"
+                      style={{ display: "none" }}
+                    >
+                      {/* Empty header */}
+                    </thead>
+                    <tbody className="task-table-body">
+                      {contentDetails?.tasklist ? (
+                        Object.entries(
+                          contentDetails.tasklist.reduce((acc, task) => {
+                            // Group tasks by particularName
+                            if (!acc[task.particularName]) {
+                              acc[task.particularName] = {
+                                tasks: [],
+                                reviewAddedCount: 0,
+                                noReviewAddedCount: 0,
+                              };
+                            }
+                            acc[task.particularName].tasks.push(task);
 
-                          // Update counts based on task properties
-                          if (task.reviewd) {
-                            acc[task.particularName].reviewAddedCount += 1;
-                          } else {
-                            acc[task.particularName].noReviewAddedCount += 1;
-                          }
+                            // Update counts based on task properties
+                            if (task.reviewd) {
+                              acc[task.particularName].reviewAddedCount += 1;
+                            } else {
+                              acc[task.particularName].noReviewAddedCount += 1;
+                            }
 
-                          return acc;
-                        }, {})
-                      ).map(
-                        ([
-                          particularName,
-                          { tasks, reviewAddedCount, noReviewAddedCount },
-                        ]) => {
-                          return (
-                            <Accordion className="mt-6" key={particularName}>
-                              <AccordionSummary
-                                aria-controls="panel1a-content"
-                                id="panel1a-header"
-                              >
-                                <Typography
-                                  className="d-flex flex-wrap w-100"
-                                  style={{ alignItems: "center" }}
+                            return acc;
+                          }, {})
+                        ).map(
+                          ([
+                            particularName,
+                            { tasks, reviewAddedCount, noReviewAddedCount },
+                          ]) => {
+                            return (
+                              <Accordion className="mt-6" key={particularName}>
+                                <AccordionSummary
+                                  aria-controls="panel1a-content"
+                                  id="panel1a-header"
                                 >
-                                  <span>{particularName} </span>
+                                  <Typography
+                                    className="d-flex flex-wrap w-100"
+                                    style={{ alignItems: "center" }}
+                                  >
+                                    <span>{particularName} </span>
 
-                                  {AppActivity.canEdit && (
-                                    <>
-                                      <span style={{ marginLeft: "auto" }}>
-                                        <b className="text-green">Reviewed:</b>{" "}
-                                        {reviewAddedCount} |{" "}
-                                        <b className="text-red">Pending:</b>{" "}
-                                        {noReviewAddedCount}
-                                      </span>
-                                      <Button
-                                        className="whitespace-nowrap ms-5 ml-24"
-                                        variant="contained"
-                                        color="secondary"
-                                        // style={{ marginTop: "10px" }}
+                                    {AppActivity.canEdit && (
+                                      <>
+                                        <span style={{ marginLeft: "auto" }}>
+                                          <b className="text-green">
+                                            Reviewed:
+                                          </b>{" "}
+                                          {reviewAddedCount} |{" "}
+                                          <b className="text-red">Pending:</b>{" "}
+                                          {noReviewAddedCount}
+                                        </span>
+                                        <Button
+                                          className="whitespace-nowrap ms-5 ml-24"
+                                          variant="contained"
+                                          color="secondary"
+                                          // style={{ marginTop: "10px" }}
+                                        >
+                                          Mark as reviewed
+                                        </Button>
+                                      </>
+                                    )}
+                                  </Typography>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                  {tasks
+                                    // Sort tasks: not reviewed tasks first
+                                    .sort((a, b) =>
+                                      a.reviewd === b.reviewd
+                                        ? 0
+                                        : a.reviewd
+                                          ? 1
+                                          : -1
+                                    )
+                                    .map((imptsk) => (
+                                      <div
+                                        key={imptsk.id}
+                                        className="mt-24 border-b pb-24"
                                       >
-                                        Mark as reviewed
-                                      </Button>
-                                    </>
-                                  )}
-                                </Typography>
-                              </AccordionSummary>
-                              <AccordionDetails>
-                                {tasks
-                                  // Sort tasks: not reviewed tasks first
-                                  .sort((a, b) =>
-                                    a.reviewd === b.reviewd
-                                      ? 0
-                                      : a.reviewd
-                                        ? 1
-                                        : -1
-                                  )
-                                  .map((imptsk) => (
-                                    <div
-                                      key={imptsk.id}
-                                      className="mt-24 border-b pb-24"
-                                    >
-                                      <div className="task-table-row mat-row">
-                                        <div className="task-table-cell mat-cell">
-                                          <div className="task-header p-0 flex items-center">
-                                            <div className="task-id flex flex-col">
-                                              <span
-                                                className="task-id-text font-semibold text-xl leading-none"
-                                                style={{ fontSize: "20px" }}
-                                              >
-                                                Task #{imptsk?.sourceTaskId}
-                                              </span>
-                                            </div>
+                                        <div className="task-table-row mat-row">
+                                          <div className="task-table-cell mat-cell">
+                                            <div className="task-header p-0 flex items-center">
+                                              <div className="task-id flex flex-col">
+                                                <span
+                                                  className="task-id-text font-semibold text-xl leading-none"
+                                                  style={{ fontSize: "20px" }}
+                                                >
+                                                  Task #{imptsk?.sourceTaskId}
+                                                </span>
+                                              </div>
 
-                                            {imptsk.requestTypeName !=
-                                              "Document" &&
-                                              AppActivity.canEdit && (
-                                                <div className="task-button ml-auto">
-                                                  <button
-                                                    className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
-                                                    onClick={() =>
-                                                      handelImpactreview(
-                                                        imptsk.id
-                                                      )
-                                                    }
-                                                    disabled={
-                                                      imptsk?.reviewd ||
-                                                      clickedTasks[imptsk.id]
-                                                    }
-                                                    style={{
-                                                      backgroundColor:
+                                              {imptsk.requestTypeName !=
+                                                "Document" &&
+                                                AppActivity.canEdit && (
+                                                  <div className="task-button ml-auto">
+                                                    <button
+                                                      className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
+                                                      onClick={() =>
+                                                        handelImpactreview(
+                                                          imptsk.id
+                                                        )
+                                                      }
+                                                      disabled={
                                                         imptsk?.reviewd ||
                                                         clickedTasks[imptsk.id]
-                                                          ? "rgba(220,252,231)"
-                                                          : "",
-                                                    }}
-                                                  >
-                                                    {imptsk?.reviewd ||
-                                                    clickedTasks[imptsk.id] ? (
-                                                      <span className="mat-button-wrapper">
-                                                        You have reviewed this
-                                                        just now
-                                                      </span>
-                                                    ) : (
-                                                      <span className="mat-button-wrapper">
-                                                        Click here to mark as
-                                                        reviewed
-                                                      </span>
-                                                    )}
-                                                  </button>
-                                                </div>
-                                              )}
-                                          </div>
-                                          {imptsk.sourceTaskId !== imptsk.id &&
-                                            (!imptsk.showPreviousTasks ||
-                                              imptsk.showPreviousTasks ===
-                                                null) && (
-                                              <span
-                                                className="text-sm text-secondary text-blue-500 font-bold cursor-pointer leading-none mt-1 ms-3"
-                                                onClick={() =>
-                                                  toggleDetails(imptsk.id)
-                                                }
-                                              >
-                                                {selectedTaskId !== imptsk.id
-                                                  ? "Show previous versions"
-                                                  : "Hide previous versions"}
-                                              </span>
-                                            )}
-
-                                          {selectedTaskId === imptsk.id &&
-                                            previousTasks[imptsk.id] &&
-                                            previousTasks[imptsk.id].map(
-                                              (itm) => (
-                                                <div
-                                                  className="task-details px-0 mt-0 pt-0 border "
-                                                  key={itm.id}
-                                                >
-                                                  <div class="mt-5 ms-9 font-semibold">
-                                                    V{itm.evaluationVersion}
-                                                  </div>
-                                                  <div className="task-detail prose prose-sm max-w-5xl mt-0 pt-0">
-                                                    <div className="task-detail-item mt-0 pt-0">
-                                                      <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
-                                                        Particular Sub Name
-                                                      </span>
-                                                      <span className="task-detail-value d-inline-block mt-5">
-                                                        {itm.particularSubName}
-                                                      </span>
-                                                      <span className="task-detail-label ms-5 bg-default d-inline-block mt-2 rounded text-secondary font-semibold">
-                                                        What is Task
-                                                      </span>
-                                                      <span className="task-detail-value d-inline-block mt-2">
-                                                        {itm.actionWhat}
-                                                      </span>
-                                                    </div>
-
-                                                    <div className="task-detail-item ">
-                                                      <span className="task-detail-label bg-default d-inline-block mt-2 rounded text-secondary font-semibold">
-                                                        How is Task done
-                                                      </span>
-                                                      <span className="task-detail-value d-inline-block mt-2">
-                                                        {itm.actionHow}
-                                                      </span>
-                                                    </div>
-                                                    <div className="task-detail-item ">
-                                                      <span className="task-detail-label bg-default d-inline-block mt-2  rounded text-secondary font-semibold">
-                                                        Assigned to
-                                                      </span>
-                                                      <span className="task-detail-value d-inline-block mt-2">
-                                                        {itm.assignedStaff}
-                                                      </span>
-                                                      <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-2 text-secondary font-semibold">
-                                                        Due Date
-                                                      </span>
-                                                      <span className="task-detail-value d-inline-block mt-2">
-                                                        {formatDates(
-                                                          itm.dueDate
-                                                        )}
-                                                      </span>
-                                                      <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-2 text-secondary font-semibold">
-                                                        Deadline
-                                                      </span>
-                                                      <span className="task-detail-value d-inline-block mt-2">
-                                                        {itm?.deadlineDisplay}
-                                                      </span>
-                                                    </div>
-                                                  </div>
-
-                                                  {itm?.changeImpactTaskReviews
-                                                    ?.length != 0 && (
-                                                    <Accordion
-                                                      expanded={
-                                                        expanded === "panel2"
                                                       }
-                                                      onChange={handleExpansionChange(
-                                                        "panel2"
-                                                      )}
-                                                      className="mt-6 m-10"
+                                                      style={{
+                                                        backgroundColor:
+                                                          imptsk?.reviewd ||
+                                                          clickedTasks[
+                                                            imptsk.id
+                                                          ]
+                                                            ? "rgba(220,252,231)"
+                                                            : "",
+                                                      }}
                                                     >
-                                                      <AccordionSummary
-                                                        expandIcon={
-                                                          <ExpandMoreIcon />
-                                                        }
-                                                        aria-controls="panel1a-content"
-                                                        id="panel1a-header"
-                                                      >
-                                                        <Typography>
-                                                          <span className="text-brown">
-                                                            {
-                                                              itm
-                                                                ?.changeImpactTaskReviews
-                                                                ?.length
-                                                            }{" "}
-                                                            Reviews
-                                                          </span>{" "}
-                                                        </Typography>
-                                                      </AccordionSummary>
-                                                      {itm?.changeImpactTaskReviews?.map(
-                                                        (rivew) => (
-                                                          <AccordionDetails>
-                                                            <div className="mat-form-field-wrapper">
-                                                              <div className="mat-form-field-flex">
-                                                                <img
-                                                                  src="/assets/images/etc/userpic.png"
-                                                                  alt="Card cover image"
-                                                                  className="rounded-full mr-4"
-                                                                  style={{
-                                                                    width:
-                                                                      "3rem",
-                                                                    height:
-                                                                      "3rem",
-                                                                  }}
-                                                                />
-                                                                <div>
-                                                                  <div className="mat-form-field-infix mt-5">
-                                                                    <span className="">
-                                                                      {
-                                                                        rivew?.createdByStaffName
-                                                                      }
-                                                                    </span>
-                                                                    -{" "}
-                                                                    <span className="text-grey">
-                                                                      {
-                                                                        rivew?.remark
-                                                                      }
-                                                                    </span>
-                                                                  </div>
-                                                                  <p
-                                                                    className="mat-form-field-infix text-grey"
-                                                                    style={{
-                                                                      fontSize:
-                                                                        "smaller",
-                                                                    }}
-                                                                  >
-                                                                    {rivew?.updatedAt
-                                                                      ? new Date(
-                                                                          rivew.updatedAt
-                                                                        ).toLocaleString(
-                                                                          "en-US",
-                                                                          {
-                                                                            year: "numeric", // e.g., "2024"
-                                                                            month:
-                                                                              "long", // e.g., "August"
-                                                                            day: "numeric", // e.g., "20"
-                                                                            hour: "2-digit", // e.g., "12 PM"
-                                                                            minute:
-                                                                              "2-digit", // e.g., "46"
-                                                                            second:
-                                                                              "2-digit", // e.g., "23"
-                                                                            hour12: true, // Use 12-hour clock
-                                                                            timeZoneName:
-                                                                              "short", // e.g., "GMT+5"
-                                                                          }
-                                                                        )
-                                                                      : null}
-                                                                  </p>
-                                                                </div>
-                                                              </div>
-                                                            </div>
-                                                          </AccordionDetails>
-                                                        )
+                                                      {imptsk?.reviewd ||
+                                                      clickedTasks[
+                                                        imptsk.id
+                                                      ] ? (
+                                                        <span className="mat-button-wrapper">
+                                                          You have reviewed this
+                                                          just now
+                                                        </span>
+                                                      ) : (
+                                                        <span className="mat-button-wrapper">
+                                                          Click here to mark as
+                                                          reviewed
+                                                        </span>
                                                       )}
-                                                    </Accordion>
-                                                  )}
-                                                </div>
-                                              )
-                                            )}
-                                          <div className="task-details p-0">
-                                            <div className="task-detail prose prose-sm max-w-5xl">
-                                              <div className="task-detail-item p-0 mt-0">
-                                                <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
-                                                  Particular Sub Name
-                                                </span>
-                                                <span className="task-detail-value d-inline-block mt-10">
-                                                  {imptsk.particularSubName}
-                                                </span>
-                                                <span className="task-detail-label bg-default rounded ms-5 d-inline-block mt-10 text-secondary font-semibold">
-                                                  What is Task
-                                                </span>
-                                                <span className="task-detail-value d-inline-block mt-10">
-                                                  {imptsk.actionWhat}
-                                                </span>
-                                              </div>
-
-                                              <div className="task-detail-item p-0 mt-0">
-                                                <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
-                                                  How is Task done
-                                                </span>
-                                                <span className="task-detail-value d-inline-block mt-10">
-                                                  {imptsk.actionHow}
-                                                </span>
-                                              </div>
-                                              <div
-                                                className="task-detail-item p-0 mt-0 flex "
-                                                style={{
-                                                  justifyContent:
-                                                    "space-between",
-                                                }}
-                                              >
-                                                <div>
-                                                  <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
-                                                    Assigned to
-                                                  </span>
-                                                  <span className="task-detail-value d-inline-block mt-10">
-                                                    {imptsk.assignedStaff}
-                                                  </span>
-                                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 ml-2 text-secondary font-semibold">
-                                                    Due Date
-                                                  </span>
-                                                  <span className="task-detail-value d-inline-block mt-10">
-                                                    {formatDates(
-                                                      imptsk.dueDate
-                                                    )}
-                                                  </span>
-                                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 ml-2 text-secondary font-semibold">
-                                                    Deadline
-                                                  </span>
-                                                  <span className="task-detail-value d-inline-block mt-10">
-                                                    {imptsk?.deadlineDisplay}
-                                                  </span>
-                                                </div>
-                                                <div>
-                                                  {AppActivity.canEdit && (
-                                                    <div
-                                                      style={{ float: "right" }}
-                                                    >
-                                                      <FormGroup>
-                                                        <FormControlLabel
-                                                          control={
-                                                            <Checkbox
-                                                              onChange={(e) =>
-                                                                handleCheckboxChange(
-                                                                  e.target
-                                                                    .checked,
-                                                                  {
-                                                                    id: imptsk.id,
-                                                                    impact:
-                                                                      imptsk.particularName +
-                                                                      ">" +
-                                                                      imptsk.particularSubName,
-                                                                    task: imptsk.actionWhat,
-                                                                    how: imptsk.actionHow,
-                                                                    assignedTo:
-                                                                      imptsk.assignedStaff,
-                                                                    dueDate:
-                                                                      formatDates(
-                                                                        imptsk.dueDate
-                                                                      ),
-                                                                    deadline:
-                                                                      imptsk.deadlineDisplay,
-                                                                    taskId:
-                                                                      imptsk?.id,
-                                                                  }
-                                                                )
-                                                              }
-                                                              id="check289-input"
-                                                              inputProps={{
-                                                                "aria-label":
-                                                                  "primary checkbox",
-                                                              }}
-                                                              color="primary"
-                                                            />
-                                                          }
-                                                          label="Need External Consultation"
-                                                        />
-                                                      </FormGroup>
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              </div>
+                                                    </button>
+                                                  </div>
+                                                )}
                                             </div>
-                                            {imptsk?.riskAnalysisList
-                                              ?.length !== 0 &&
-                                              imptsk.particularid === 78 && (
-                                                <Paper
-                                                  style={{
-                                                    margin: "10px 0 0 0",
-                                                  }}
+                                            {imptsk.sourceTaskId !==
+                                              imptsk.id &&
+                                              (!imptsk.showPreviousTasks ||
+                                                imptsk.showPreviousTasks ===
+                                                  null) && (
+                                                <span
+                                                  className="text-sm text-secondary text-blue-500 font-bold cursor-pointer leading-none mt-1 ms-3"
+                                                  onClick={() =>
+                                                    toggleDetails(imptsk.id)
+                                                  }
                                                 >
-                                                  <div
-                                                    className="flex items-center w-full justify-between"
-                                                    style={{
-                                                      borderRadius: "20px",
-                                                      backgroundColor:
-                                                        "rgb(241 248 255)",
-                                                    }}
-                                                  >
-                                                    <h6
-                                                      className="text-small font-semibold"
-                                                      style={{
-                                                        padding: "15px",
-                                                      }}
-                                                    >
-                                                      Risk Details
-                                                    </h6>
-                                                    <h6
-                                                      className="text-1xl font-semibold"
-                                                      style={{
-                                                        padding: "10px",
-                                                      }}
-                                                    >
-                                                      Human Measures
-                                                    </h6>
-                                                    <h6
-                                                      className="text-1xl font-semibold"
-                                                      style={{
-                                                        padding: "10px",
-                                                      }}
-                                                    >
-                                                      Technical Measures
-                                                    </h6>
-                                                    <h6
-                                                      className="text-1xl font-semibold"
-                                                      style={{
-                                                        padding: "10px",
-                                                      }}
-                                                    >
-                                                      Organisational Measures
-                                                    </h6>
-                                                  </div>
-                                                  <div>
-                                                    <table className="min-w-full divide-y divide-gray-200">
-                                                      <tbody>
-                                                        {imptsk?.riskAnalysisList?.map(
-                                                          (subs, index) =>
-                                                            subs?.riskAnalysisSubTasks?.map(
-                                                              (
-                                                                sub,
-                                                                subIndex
-                                                              ) => (
-                                                                <div
-                                                                  key={subIndex}
-                                                                >
-                                                                  {console.log(
-                                                                    subs.riskAnalysisSubTasks,
-                                                                    "vvvvvvvvvvv"
-                                                                  )}
-
-                                                                  {!sub
-                                                                    .riskAnalysisHazardTypes
-                                                                    ?.length ? (
-                                                                    <>
-                                                                      <div
-                                                                        _ngcontent-fyk-c288=""
-                                                                        class="flex items-center w-full  border-b justify-between"
-                                                                      ></div>
-                                                                      <div>
-                                                                        <Grid
-                                                                          container
-                                                                          className="inventory-grid"
-                                                                          sx={{
-                                                                            paddingY: 2,
-                                                                            paddingX:
-                                                                              {
-                                                                                xs: 2,
-                                                                                md: 1,
-                                                                              },
-                                                                          }}
-                                                                        >
-                                                                          <Grid
-                                                                            item
-                                                                            xs={
-                                                                              12
-                                                                            }
-                                                                            md={
-                                                                              4
-                                                                            }
-                                                                          >
-                                                                            <h6>
-                                                                              {
-                                                                                sub.subTaskName
-                                                                              }
-                                                                            </h6>
-                                                                          </Grid>
-                                                                        </Grid>
-                                                                        <Grid
-                                                                          container
-                                                                          className="inventory-grid"
-                                                                          sx={{
-                                                                            paddingY: 2,
-                                                                            paddingX:
-                                                                              {
-                                                                                xs: 2,
-                                                                                md: 1,
-                                                                              },
-                                                                          }}
-                                                                        >
-                                                                          <Grid
-                                                                            item
-                                                                            xs={
-                                                                              12
-                                                                            }
-                                                                            md={
-                                                                              4
-                                                                            }
-                                                                          >
-                                                                            <h6
-                                                                              style={{
-                                                                                paddingBottom:
-                                                                                  "5px",
-                                                                              }}
-                                                                              className="text-brown"
-                                                                            >
-                                                                              <b>
-                                                                                Risk
-                                                                                Analysis
-                                                                                not
-                                                                                done
-                                                                              </b>
-                                                                            </h6>
-                                                                          </Grid>
-                                                                        </Grid>
-                                                                      </div>
-                                                                    </>
-                                                                  ) : (
-                                                                    sub?.riskAnalysisHazardTypes?.map(
-                                                                      (
-                                                                        hazardType
-                                                                      ) => (
-                                                                        <div
-                                                                          key={
-                                                                            hazardType.id
-                                                                          }
-                                                                        >
-                                                                          {hazardType.riskAnalysisHazardSituation?.map(
-                                                                            (
-                                                                              situation
-                                                                            ) => (
-                                                                              <div
-                                                                                key={
-                                                                                  situation.id
-                                                                                }
-                                                                              >
-                                                                                <Grid
-                                                                                  container
-                                                                                  spacing={
-                                                                                    2
-                                                                                  }
-                                                                                  className="inventory-grid"
-                                                                                  sx={{
-                                                                                    paddingY: 2,
-                                                                                    paddingX:
-                                                                                      {
-                                                                                        xs: 2,
-                                                                                        md: 3,
-                                                                                      },
-                                                                                  }}
-                                                                                >
-                                                                                  <Grid
-                                                                                    item
-                                                                                    xs={
-                                                                                      12
-                                                                                    }
-                                                                                    md={
-                                                                                      3
-                                                                                    }
-                                                                                  >
-                                                                                    <Typography
-                                                                                      variant="body2"
-                                                                                      color="text.primary"
-                                                                                      fontWeight="fontWeightRegular"
-                                                                                      style={{
-                                                                                        backgroundColor:
-                                                                                          situation.residualRiskClassificationDisplay ===
-                                                                                          "HighRisk"
-                                                                                            ? "red"
-                                                                                            : situation.residualRiskClassificationDisplay ===
-                                                                                                "LowRisk"
-                                                                                              ? "yellow"
-                                                                                              : situation.residualRiskClassificationDisplay ===
-                                                                                                  "AverageRisk"
-                                                                                                ? "orange"
-                                                                                                : situation.residualRiskClassificationDisplay ===
-                                                                                                    "SignificantRisk"
-                                                                                                  ? "purple"
-                                                                                                  : "green",
-                                                                                        width:
-                                                                                          "35%",
-                                                                                        padding:
-                                                                                          "3px",
-                                                                                        color:
-                                                                                          situation.residualRiskClassificationDisplay ===
-                                                                                          "LowRisk"
-                                                                                            ? "#000"
-                                                                                            : "white",
-                                                                                        borderRadius:
-                                                                                          "5px",
-                                                                                        textAlign:
-                                                                                          "center",
-                                                                                        fontSize:
-                                                                                          "12px",
-                                                                                        fontWeight:
-                                                                                          situation.residualRiskClassificationDisplay ===
-                                                                                          "LowRisk"
-                                                                                            ? ""
-                                                                                            : "bold",
-                                                                                      }}
-                                                                                    >
-                                                                                      {
-                                                                                        situation.residualRiskClassificationDisplay
-                                                                                      }
-                                                                                    </Typography>
-                                                                                  </Grid>
-                                                                                  <Grid
-                                                                                    item
-                                                                                    xs={
-                                                                                      12
-                                                                                    }
-                                                                                    md={
-                                                                                      3
-                                                                                    }
-                                                                                  >
-                                                                                    <Typography
-                                                                                      variant="body2"
-                                                                                      color="text.primary"
-                                                                                      fontWeight="fontWeightRegular"
-                                                                                      style={{
-                                                                                        marginLeft:
-                                                                                          "10px",
-                                                                                        fontSize:
-                                                                                          "12px",
-                                                                                      }}
-                                                                                    >
-                                                                                      {
-                                                                                        situation.humanControlMeasure
-                                                                                      }
-                                                                                    </Typography>
-                                                                                  </Grid>
-                                                                                  <Grid
-                                                                                    item
-                                                                                    xs={
-                                                                                      12
-                                                                                    }
-                                                                                    md={
-                                                                                      3
-                                                                                    }
-                                                                                  >
-                                                                                    <Typography
-                                                                                      variant="body2"
-                                                                                      color="text.primary"
-                                                                                      fontWeight="fontWeightRegular"
-                                                                                      style={{
-                                                                                        marginLeft:
-                                                                                          "42px",
-                                                                                        fontSize:
-                                                                                          "12px",
-                                                                                      }}
-                                                                                    >
-                                                                                      {
-                                                                                        situation.technicalControlMeasure
-                                                                                      }
-                                                                                    </Typography>
-                                                                                  </Grid>
-                                                                                  <Grid
-                                                                                    item
-                                                                                    xs={
-                                                                                      12
-                                                                                    }
-                                                                                    md={
-                                                                                      3
-                                                                                    }
-                                                                                  >
-                                                                                    <Typography
-                                                                                      variant="body2"
-                                                                                      color="text.primary"
-                                                                                      fontWeight="fontWeightRegular"
-                                                                                      style={{
-                                                                                        marginLeft:
-                                                                                          "82px",
-                                                                                        fontSize:
-                                                                                          "12px",
-                                                                                      }}
-                                                                                    >
-                                                                                      {
-                                                                                        situation.organisationalControlMeasure
-                                                                                      }
-                                                                                    </Typography>
-                                                                                  </Grid>
-                                                                                </Grid>
-                                                                                <h6
-                                                                                  style={{
-                                                                                    paddingLeft:
-                                                                                      "10px",
-                                                                                    paddingBottom:
-                                                                                      "5px",
-                                                                                  }}
-                                                                                >
-                                                                                  {
-                                                                                    sub.subTaskName
-                                                                                  }
-                                                                                </h6>
-                                                                                <h6
-                                                                                  style={{
-                                                                                    paddingLeft:
-                                                                                      "10px",
-                                                                                    paddingBottom:
-                                                                                      "5px",
-                                                                                  }}
-                                                                                >
-                                                                                  -{" "}
-                                                                                  {
-                                                                                    hazardType.hazardTypeDisplay
-                                                                                  }
-                                                                                </h6>
-                                                                                <h6
-                                                                                  style={{
-                                                                                    paddingLeft:
-                                                                                      "10px",
-                                                                                    paddingBottom:
-                                                                                      "5px",
-                                                                                  }}
-                                                                                >
-                                                                                  -{" "}
-                                                                                  {
-                                                                                    situation.hazardousSituation
-                                                                                  }
-                                                                                </h6>
-                                                                              </div>
-                                                                            )
-                                                                          )}
-                                                                        </div>
-                                                                      )
-                                                                    )
-                                                                  )}
-                                                                </div>
-                                                              )
-                                                            )
-                                                        )}
-                                                      </tbody>
-                                                    </table>
-                                                  </div>
-                                                </Paper>
+                                                  {selectedTaskId !== imptsk.id
+                                                    ? "Show previous versions"
+                                                    : "Hide previous versions"}
+                                                </span>
                                               )}
 
-                                            {imptsk.changeImpactTaskReviews
-                                              ?.length > 0 || showReview ? (
-                                              <div className="mt-12">
-                                                <Accordion
-                                                  expanded={
-                                                    expanded == imptsk.id
-                                                  }
-                                                  onChange={handleExpansionChange(
-                                                    imptsk.id
-                                                  )}
-                                                >
-                                                  <AccordionSummary
-                                                    expandIcon={
-                                                      <ExpandMoreIcon />
-                                                    }
-                                                    aria-controls="panel1a-content"
-                                                    id="panel1a-header"
-                                                    style={{
-                                                      display: "flex",
-                                                      justifyContent:
-                                                        AppActivity.canEdit
-                                                          ? "space-between"
-                                                          : "flex-start",
-                                                    }}
+                                            {selectedTaskId === imptsk.id &&
+                                              previousTasks[imptsk.id] &&
+                                              previousTasks[imptsk.id].map(
+                                                (itm) => (
+                                                  <div
+                                                    className="task-details px-0 mt-0 pt-0 border "
+                                                    key={itm.id}
                                                   >
-                                                    {AppActivity.canEdit && (
-                                                      <button
-                                                        className="custom-add-review-button"
-                                                        style={{
-                                                          marginRight: 16,
-                                                        }}
-                                                      >
-                                                        Add Review
-                                                      </button>
-                                                    )}
-                                                    <div
-                                                      style={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        flexGrow: 1, // This makes the div take up remaining space
-                                                        justifyContent:
-                                                          AppActivity.canEdit
-                                                            ? "flex-end"
-                                                            : "flex-start",
-                                                      }}
-                                                    >
-                                                      <Typography>
-                                                        <span className="text-brown">
-                                                          {
-                                                            imptsk
-                                                              ?.changeImpactTaskReviews
-                                                              ?.length
-                                                          }{" "}
-                                                          Reviews
-                                                        </span>{" "}
-                                                        {hasAddedComment(
-                                                          imptsk.changeImpactTaskReviews
-                                                        ) && (
-                                                          <span className="text-green">
-                                                            (You have added 1
-                                                            review)
-                                                          </span>
-                                                        )}
-                                                      </Typography>
+                                                    <div class="mt-5 ms-9 font-semibold">
+                                                      V{itm.evaluationVersion}
                                                     </div>
-                                                  </AccordionSummary>
-                                                  <AccordionDetails>
-                                                    {AppActivity.canEdit &&
-                                                      !hasAddedComment(
-                                                        imptsk.changeImpactTaskReviews
-                                                      ) && (
-                                                        <div className="mat-form-field-wrapper">
-                                                          <div className="mat-form-field-flex">
-                                                            <img
-                                                              src="/assets/images/etc/userpic.png"
-                                                              alt="Card cover image"
-                                                              className="rounded-full mr-4"
-                                                              style={{
-                                                                width: "5rem",
-                                                                height: "5rem",
-                                                              }}
-                                                            />
-                                                            <div
-                                                              className="mat-form-field-infix"
-                                                              style={{
-                                                                position:
-                                                                  "relative",
-                                                                width: "100%",
-                                                              }}
-                                                            >
-                                                              <textarea
-                                                                rows="2"
-                                                                className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                                                placeholder="Write a comment..."
-                                                                id="ImpTaskReview265"
-                                                                data-placeholder="Write a comment..."
-                                                                aria-invalid="false"
-                                                                aria-required="false"
-                                                                style={{
-                                                                  height:
-                                                                    "36px",
-                                                                }}
-                                                                onChange={(e) =>
-                                                                  setHandelCommentRemark(
-                                                                    e.target
-                                                                      .value
-                                                                  )
-                                                                }
-                                                              ></textarea>
-                                                              <button
-                                                                className="custom-update-button"
-                                                                onClick={() =>
-                                                                  handelImpactCommentImp(
-                                                                    imptsk.id,
-                                                                    1
-                                                                  )
-                                                                }
-                                                              >
-                                                                <span className="mat-button-wrapper">
-                                                                  Save
-                                                                </span>
-                                                                <span className="mat-ripple mat-button-ripple"></span>
-                                                                <span className="mat-button-focus-overlay"></span>
-                                                              </button>
-                                                              <span className="mat-form-field-label-wrapper"></span>
-                                                            </div>
-                                                          </div>
+                                                    <div className="task-detail prose prose-sm max-w-5xl mt-0 pt-0">
+                                                      <div className="task-detail-item mt-0 pt-0">
+                                                        <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
+                                                          Particular Sub Name
+                                                        </span>
+                                                        <span className="task-detail-value d-inline-block mt-5">
+                                                          {
+                                                            itm.particularSubName
+                                                          }
+                                                        </span>
+                                                        <span className="task-detail-label ms-5 bg-default d-inline-block mt-2 rounded text-secondary font-semibold">
+                                                          What is Task
+                                                        </span>
+                                                        <span className="task-detail-value d-inline-block mt-2">
+                                                          {itm.actionWhat}
+                                                        </span>
+                                                      </div>
 
-                                                          <div className="mat-form-field-subscript-wrapper">
-                                                            <div
-                                                              className="mat-form-field-hint-wrapper"
-                                                              style={{
-                                                                opacity: 1,
-                                                                transform:
-                                                                  "translateY(0%)",
-                                                              }}
-                                                            ></div>
-                                                          </div>
-                                                        </div>
-                                                      )}
-                                                    {imptsk.changeImpactTaskReviews?.map(
-                                                      (rwx, index) => (
-                                                        <div
-                                                          className="mat-form-field-wrapper"
-                                                          key={index}
+                                                      <div className="task-detail-item ">
+                                                        <span className="task-detail-label bg-default d-inline-block mt-2 rounded text-secondary font-semibold">
+                                                          How is Task done
+                                                        </span>
+                                                        <span className="task-detail-value d-inline-block mt-2">
+                                                          {itm.actionHow}
+                                                        </span>
+                                                      </div>
+                                                      <div className="task-detail-item ">
+                                                        <span className="task-detail-label bg-default d-inline-block mt-2  rounded text-secondary font-semibold">
+                                                          Assigned to
+                                                        </span>
+                                                        <span className="task-detail-value d-inline-block mt-2">
+                                                          {itm.assignedStaff}
+                                                        </span>
+                                                        <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-2 text-secondary font-semibold">
+                                                          Due Date
+                                                        </span>
+                                                        <span className="task-detail-value d-inline-block mt-2">
+                                                          {formatDates(
+                                                            itm.dueDate
+                                                          )}
+                                                        </span>
+                                                        <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-2 text-secondary font-semibold">
+                                                          Deadline
+                                                        </span>
+                                                        <span className="task-detail-value d-inline-block mt-2">
+                                                          {itm?.deadlineDisplay}
+                                                        </span>
+                                                      </div>
+                                                    </div>
+
+                                                    {itm
+                                                      ?.changeImpactTaskReviews
+                                                      ?.length != 0 && (
+                                                      <Accordion
+                                                        expanded={
+                                                          expanded === "panel2"
+                                                        }
+                                                        onChange={handleExpansionChange(
+                                                          "panel2"
+                                                        )}
+                                                        className="mt-6 m-10"
+                                                      >
+                                                        <AccordionSummary
+                                                          expandIcon={
+                                                            <ExpandMoreIcon />
+                                                          }
+                                                          aria-controls="panel1a-content"
+                                                          id="panel1a-header"
                                                         >
-                                                          <div className="mat-form-field-flex">
-                                                            <img
-                                                              src="/assets/images/etc/userpic.png"
-                                                              alt="Card cover image"
-                                                              className="rounded-full mr-4"
-                                                              style={{
-                                                                width: "3rem",
-                                                                height: "3rem",
-                                                              }}
-                                                            />
-                                                            {AppActivity.canEdit &&
-                                                            isMyComment(rwx) ? (
-                                                              <div
-                                                                className="mat-form-field-infix"
-                                                                style={{
-                                                                  position:
-                                                                    "relative",
-                                                                }}
-                                                              >
-                                                                <textarea
-                                                                  ref={
-                                                                    textareaRef
-                                                                  }
-                                                                  rows="2"
-                                                                  className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                                                  placeholder="Write a comment..."
-                                                                  id="ImpTaskReview265"
-                                                                  data-placeholder="Write a comment..."
-                                                                  aria-invalid="false"
-                                                                  aria-required="false"
-                                                                  style={{
-                                                                    height:
-                                                                      "36px",
-                                                                    width:
-                                                                      "100%",
-                                                                    paddingRight:
-                                                                      "100px",
-                                                                  }}
-                                                                  defaultValue={
-                                                                    rwx?.remark
-                                                                  }
-                                                                  onChange={(
-                                                                    e
-                                                                  ) =>
-                                                                    setHandelCommentRemark(
-                                                                      e.target
-                                                                        .value
-                                                                    )
-                                                                  }
-                                                                ></textarea>
-
-                                                                <button
-                                                                  className="custom-update-button"
-                                                                  onClick={() => {
-                                                                    handelImpactCommentImp(
-                                                                      imptsk.id,
-                                                                      // itm.changeImpactTaskReviews[0]
-                                                                      //   .id,
-                                                                      2
-                                                                    );
-                                                                    if (
-                                                                      textareaRef.current
-                                                                    ) {
-                                                                      textareaRef.current.focus();
-                                                                    }
-                                                                  }}
-                                                                >
-                                                                  Update
-                                                                </button>
-
-                                                                <span className="mat-form-field-label-wrapper"></span>
-                                                              </div>
-                                                            ) : (
+                                                          <Typography>
+                                                            <span className="text-brown">
+                                                              {
+                                                                itm
+                                                                  ?.changeImpactTaskReviews
+                                                                  ?.length
+                                                              }{" "}
+                                                              Reviews
+                                                            </span>{" "}
+                                                          </Typography>
+                                                        </AccordionSummary>
+                                                        {itm?.changeImpactTaskReviews?.map(
+                                                          (rivew) => (
+                                                            <AccordionDetails>
                                                               <div className="mat-form-field-wrapper">
                                                                 <div className="mat-form-field-flex">
+                                                                  <img
+                                                                    src="/assets/images/etc/userpic.png"
+                                                                    alt="Card cover image"
+                                                                    className="rounded-full mr-4"
+                                                                    style={{
+                                                                      width:
+                                                                        "3rem",
+                                                                      height:
+                                                                        "3rem",
+                                                                    }}
+                                                                  />
                                                                   <div>
                                                                     <div className="mat-form-field-infix mt-5">
                                                                       <span className="">
                                                                         {
-                                                                          rwx?.createdByStaffName
+                                                                          rivew?.createdByStaffName
                                                                         }
                                                                       </span>
                                                                       -{" "}
                                                                       <span className="text-grey">
                                                                         {
-                                                                          rwx?.remark
+                                                                          rivew?.remark
                                                                         }
                                                                       </span>
                                                                     </div>
@@ -2040,105 +1341,859 @@ const EvaluationApproval = ({
                                                                           "smaller",
                                                                       }}
                                                                     >
-                                                                      {imptsk
-                                                                        .changeImpactTaskReviews[0]
-                                                                        ?.updatedAt &&
-                                                                        new Date(
-                                                                          imptsk.changeImpactTaskReviews[0]?.updatedAt
-                                                                        ).toLocaleString(
-                                                                          "en-US",
-                                                                          {
-                                                                            month:
-                                                                              "long",
-                                                                            day: "numeric",
-                                                                            year: "numeric",
-                                                                            hour: "numeric",
-                                                                            minute:
-                                                                              "numeric",
-                                                                            second:
-                                                                              "numeric",
-                                                                            hour12: true,
-                                                                            timeZoneName:
-                                                                              "short",
-                                                                          }
-                                                                        )}
+                                                                      {rivew?.updatedAt
+                                                                        ? new Date(
+                                                                            rivew.updatedAt
+                                                                          ).toLocaleString(
+                                                                            "en-US",
+                                                                            {
+                                                                              year: "numeric", // e.g., "2024"
+                                                                              month:
+                                                                                "long", // e.g., "August"
+                                                                              day: "numeric", // e.g., "20"
+                                                                              hour: "2-digit", // e.g., "12 PM"
+                                                                              minute:
+                                                                                "2-digit", // e.g., "46"
+                                                                              second:
+                                                                                "2-digit", // e.g., "23"
+                                                                              hour12: true, // Use 12-hour clock
+                                                                              timeZoneName:
+                                                                                "short", // e.g., "GMT+5"
+                                                                            }
+                                                                          )
+                                                                        : null}
                                                                     </p>
                                                                   </div>
                                                                 </div>
                                                               </div>
-                                                            )}
-                                                          </div>
-
-                                                          <div className="mat-form-field-subscript-wrapper">
-                                                            <div
-                                                              className="mat-form-field-hint-wrapper"
-                                                              style={{
-                                                                opacity: 1,
-                                                                transform:
-                                                                  "translateY(0%)",
-                                                              }}
-                                                            ></div>
-                                                          </div>
-                                                        </div>
-                                                      )
+                                                            </AccordionDetails>
+                                                          )
+                                                        )}
+                                                      </Accordion>
                                                     )}
-                                                  </AccordionDetails>
-                                                </Accordion>
-                                              </div>
-                                            ) : AppActivity.canEdit ? (
-                                              <div className="mat-form-field-wrapper mt-24">
-                                                <div className="mat-form-field-flex">
-                                                  <img
-                                                    src="/assets/images/etc/userpic.png"
-                                                    alt="Card cover image"
-                                                    className="rounded-full mr-4"
-                                                    style={{
-                                                      width: "5rem",
-                                                      height: "5rem",
-                                                    }}
-                                                  />
-                                                  <div
-                                                    className="mat-form-field-infix"
-                                                    style={{
-                                                      position: "relative",
-                                                      width: "100%",
-                                                    }}
-                                                  >
-                                                    <textarea
-                                                      rows="2"
-                                                      className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize mt-0"
-                                                      placeholder="Write a comment..."
-                                                      id="ImpTaskReview265"
-                                                      data-placeholder="Write a comment..."
-                                                      aria-invalid="false"
-                                                      aria-required="false"
-                                                      style={{ height: "36px" }}
-                                                      onChange={(e) =>
-                                                        setHandelCommentRemark(
-                                                          e.target.value
-                                                        )
-                                                      }
-                                                    ></textarea>
-                                                    <button
-                                                      className="custom-update-button"
-                                                      onClick={() =>
-                                                        handelImpactCommentImp(
-                                                          imptsk.id,
-                                                          1
-                                                        )
-                                                      }
-                                                    >
-                                                      <span className="mat-button-wrapper">
-                                                        Save
-                                                      </span>
-                                                      <span className="mat-ripple mat-button-ripple"></span>
-                                                      <span className="mat-button-focus-overlay"></span>
-                                                    </button>
-                                                    <span className="mat-form-field-label-wrapper"></span>
                                                   </div>
+                                                )
+                                              )}
+                                            <div className="task-details p-0">
+                                              <div className="task-detail prose prose-sm max-w-5xl">
+                                                <div className="task-detail-item p-0 mt-0">
+                                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
+                                                    Particular Sub Name
+                                                  </span>
+                                                  <span className="task-detail-value d-inline-block mt-10">
+                                                    {imptsk.particularSubName}
+                                                  </span>
+                                                  <span className="task-detail-label bg-default rounded ms-5 d-inline-block mt-10 text-secondary font-semibold">
+                                                    What is Task
+                                                  </span>
+                                                  <span className="task-detail-value d-inline-block mt-10">
+                                                    {imptsk.actionWhat}
+                                                  </span>
                                                 </div>
 
-                                                {/* <div className="mat-form-field-subscript-wrapper">
+                                                <div className="task-detail-item p-0 mt-0">
+                                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
+                                                    How is Task done
+                                                  </span>
+                                                  <span className="task-detail-value d-inline-block mt-10">
+                                                    {imptsk.actionHow}
+                                                  </span>
+                                                </div>
+                                                <div
+                                                  className="task-detail-item p-0 mt-0 flex "
+                                                  style={{
+                                                    justifyContent:
+                                                      "space-between",
+                                                  }}
+                                                >
+                                                  <div>
+                                                    <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
+                                                      Assigned to
+                                                    </span>
+                                                    <span className="task-detail-value d-inline-block mt-10">
+                                                      {imptsk.assignedStaff}
+                                                    </span>
+                                                    <span className="task-detail-label bg-default rounded  d-inline-block mt-10 ml-2 text-secondary font-semibold">
+                                                      Due Date
+                                                    </span>
+                                                    <span className="task-detail-value d-inline-block mt-10">
+                                                      {formatDates(
+                                                        imptsk.dueDate
+                                                      )}
+                                                    </span>
+                                                    <span className="task-detail-label bg-default rounded  d-inline-block mt-10 ml-2 text-secondary font-semibold">
+                                                      Deadline
+                                                    </span>
+                                                    <span className="task-detail-value d-inline-block mt-10">
+                                                      {imptsk?.deadlineDisplay}
+                                                    </span>
+                                                  </div>
+                                                  <div>
+                                                    {AppActivity.canEdit && (
+                                                      <div
+                                                        style={{
+                                                          float: "right",
+                                                        }}
+                                                      >
+                                                        <FormGroup>
+                                                          <FormControlLabel
+                                                            control={
+                                                              <Checkbox
+                                                                onChange={(e) =>
+                                                                  handleCheckboxChange(
+                                                                    e.target
+                                                                      .checked,
+                                                                    {
+                                                                      id: imptsk.id,
+                                                                      impact:
+                                                                        imptsk.particularName +
+                                                                        ">" +
+                                                                        imptsk.particularSubName,
+                                                                      task: imptsk.actionWhat,
+                                                                      how: imptsk.actionHow,
+                                                                      assignedTo:
+                                                                        imptsk.assignedStaff,
+                                                                      dueDate:
+                                                                        formatDates(
+                                                                          imptsk.dueDate
+                                                                        ),
+                                                                      deadline:
+                                                                        imptsk.deadlineDisplay,
+                                                                      taskId:
+                                                                        imptsk?.id,
+                                                                    }
+                                                                  )
+                                                                }
+                                                                id="check289-input"
+                                                                inputProps={{
+                                                                  "aria-label":
+                                                                    "primary checkbox",
+                                                                }}
+                                                                color="primary"
+                                                              />
+                                                            }
+                                                            label="Need External Consultation"
+                                                          />
+                                                        </FormGroup>
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              {imptsk?.riskAnalysisList
+                                                ?.length !== 0 &&
+                                                imptsk.particularid === 78 && (
+                                                  <Paper
+                                                    style={{
+                                                      margin: "10px 0 0 0",
+                                                    }}
+                                                  >
+                                                    <div
+                                                      className="flex items-center w-full justify-between"
+                                                      style={{
+                                                        borderRadius: "20px",
+                                                        backgroundColor:
+                                                          "rgb(241 248 255)",
+                                                      }}
+                                                    >
+                                                      <h6
+                                                        className="text-small font-semibold"
+                                                        style={{
+                                                          padding: "15px",
+                                                        }}
+                                                      >
+                                                        Risk Details
+                                                      </h6>
+                                                      <h6
+                                                        className="text-1xl font-semibold"
+                                                        style={{
+                                                          padding: "10px",
+                                                        }}
+                                                      >
+                                                        Human Measures
+                                                      </h6>
+                                                      <h6
+                                                        className="text-1xl font-semibold"
+                                                        style={{
+                                                          padding: "10px",
+                                                        }}
+                                                      >
+                                                        Technical Measures
+                                                      </h6>
+                                                      <h6
+                                                        className="text-1xl font-semibold"
+                                                        style={{
+                                                          padding: "10px",
+                                                        }}
+                                                      >
+                                                        Organisational Measures
+                                                      </h6>
+                                                    </div>
+                                                    <div>
+                                                      <table className="min-w-full divide-y divide-gray-200">
+                                                        <tbody>
+                                                          {imptsk?.riskAnalysisList?.map(
+                                                            (subs, index) =>
+                                                              subs?.riskAnalysisSubTasks?.map(
+                                                                (
+                                                                  sub,
+                                                                  subIndex
+                                                                ) => (
+                                                                  <div
+                                                                    key={
+                                                                      subIndex
+                                                                    }
+                                                                  >
+                                                                    {console.log(
+                                                                      subs.riskAnalysisSubTasks,
+                                                                      "vvvvvvvvvvv"
+                                                                    )}
+
+                                                                    {!sub
+                                                                      .riskAnalysisHazardTypes
+                                                                      ?.length ? (
+                                                                      <>
+                                                                        <div
+                                                                          _ngcontent-fyk-c288=""
+                                                                          class="flex items-center w-full  border-b justify-between"
+                                                                        ></div>
+                                                                        <div>
+                                                                          <Grid
+                                                                            container
+                                                                            className="inventory-grid"
+                                                                            sx={{
+                                                                              paddingY: 2,
+                                                                              paddingX:
+                                                                                {
+                                                                                  xs: 2,
+                                                                                  md: 1,
+                                                                                },
+                                                                            }}
+                                                                          >
+                                                                            <Grid
+                                                                              item
+                                                                              xs={
+                                                                                12
+                                                                              }
+                                                                              md={
+                                                                                4
+                                                                              }
+                                                                            >
+                                                                              <h6>
+                                                                                {
+                                                                                  sub.subTaskName
+                                                                                }
+                                                                              </h6>
+                                                                            </Grid>
+                                                                          </Grid>
+                                                                          <Grid
+                                                                            container
+                                                                            className="inventory-grid"
+                                                                            sx={{
+                                                                              paddingY: 2,
+                                                                              paddingX:
+                                                                                {
+                                                                                  xs: 2,
+                                                                                  md: 1,
+                                                                                },
+                                                                            }}
+                                                                          >
+                                                                            <Grid
+                                                                              item
+                                                                              xs={
+                                                                                12
+                                                                              }
+                                                                              md={
+                                                                                4
+                                                                              }
+                                                                            >
+                                                                              <h6
+                                                                                style={{
+                                                                                  paddingBottom:
+                                                                                    "5px",
+                                                                                }}
+                                                                                className="text-brown"
+                                                                              >
+                                                                                <b>
+                                                                                  Risk
+                                                                                  Analysis
+                                                                                  not
+                                                                                  done
+                                                                                </b>
+                                                                              </h6>
+                                                                            </Grid>
+                                                                          </Grid>
+                                                                        </div>
+                                                                      </>
+                                                                    ) : (
+                                                                      sub?.riskAnalysisHazardTypes?.map(
+                                                                        (
+                                                                          hazardType
+                                                                        ) => (
+                                                                          <div
+                                                                            key={
+                                                                              hazardType.id
+                                                                            }
+                                                                          >
+                                                                            {hazardType.riskAnalysisHazardSituation?.map(
+                                                                              (
+                                                                                situation
+                                                                              ) => (
+                                                                                <div
+                                                                                  key={
+                                                                                    situation.id
+                                                                                  }
+                                                                                >
+                                                                                  <Grid
+                                                                                    container
+                                                                                    spacing={
+                                                                                      2
+                                                                                    }
+                                                                                    className="inventory-grid"
+                                                                                    sx={{
+                                                                                      paddingY: 2,
+                                                                                      paddingX:
+                                                                                        {
+                                                                                          xs: 2,
+                                                                                          md: 3,
+                                                                                        },
+                                                                                    }}
+                                                                                  >
+                                                                                    <Grid
+                                                                                      item
+                                                                                      xs={
+                                                                                        12
+                                                                                      }
+                                                                                      md={
+                                                                                        3
+                                                                                      }
+                                                                                    >
+                                                                                      <Typography
+                                                                                        variant="body2"
+                                                                                        color="text.primary"
+                                                                                        fontWeight="fontWeightRegular"
+                                                                                        style={{
+                                                                                          backgroundColor:
+                                                                                            situation.residualRiskClassificationDisplay ===
+                                                                                            "HighRisk"
+                                                                                              ? "red"
+                                                                                              : situation.residualRiskClassificationDisplay ===
+                                                                                                  "LowRisk"
+                                                                                                ? "yellow"
+                                                                                                : situation.residualRiskClassificationDisplay ===
+                                                                                                    "AverageRisk"
+                                                                                                  ? "orange"
+                                                                                                  : situation.residualRiskClassificationDisplay ===
+                                                                                                      "SignificantRisk"
+                                                                                                    ? "purple"
+                                                                                                    : "green",
+                                                                                          width:
+                                                                                            "35%",
+                                                                                          padding:
+                                                                                            "3px",
+                                                                                          color:
+                                                                                            situation.residualRiskClassificationDisplay ===
+                                                                                            "LowRisk"
+                                                                                              ? "#000"
+                                                                                              : "white",
+                                                                                          borderRadius:
+                                                                                            "5px",
+                                                                                          textAlign:
+                                                                                            "center",
+                                                                                          fontSize:
+                                                                                            "12px",
+                                                                                          fontWeight:
+                                                                                            situation.residualRiskClassificationDisplay ===
+                                                                                            "LowRisk"
+                                                                                              ? ""
+                                                                                              : "bold",
+                                                                                        }}
+                                                                                      >
+                                                                                        {
+                                                                                          situation.residualRiskClassificationDisplay
+                                                                                        }
+                                                                                      </Typography>
+                                                                                    </Grid>
+                                                                                    <Grid
+                                                                                      item
+                                                                                      xs={
+                                                                                        12
+                                                                                      }
+                                                                                      md={
+                                                                                        3
+                                                                                      }
+                                                                                    >
+                                                                                      <Typography
+                                                                                        variant="body2"
+                                                                                        color="text.primary"
+                                                                                        fontWeight="fontWeightRegular"
+                                                                                        style={{
+                                                                                          marginLeft:
+                                                                                            "10px",
+                                                                                          fontSize:
+                                                                                            "12px",
+                                                                                        }}
+                                                                                      >
+                                                                                        {
+                                                                                          situation.humanControlMeasure
+                                                                                        }
+                                                                                      </Typography>
+                                                                                    </Grid>
+                                                                                    <Grid
+                                                                                      item
+                                                                                      xs={
+                                                                                        12
+                                                                                      }
+                                                                                      md={
+                                                                                        3
+                                                                                      }
+                                                                                    >
+                                                                                      <Typography
+                                                                                        variant="body2"
+                                                                                        color="text.primary"
+                                                                                        fontWeight="fontWeightRegular"
+                                                                                        style={{
+                                                                                          marginLeft:
+                                                                                            "42px",
+                                                                                          fontSize:
+                                                                                            "12px",
+                                                                                        }}
+                                                                                      >
+                                                                                        {
+                                                                                          situation.technicalControlMeasure
+                                                                                        }
+                                                                                      </Typography>
+                                                                                    </Grid>
+                                                                                    <Grid
+                                                                                      item
+                                                                                      xs={
+                                                                                        12
+                                                                                      }
+                                                                                      md={
+                                                                                        3
+                                                                                      }
+                                                                                    >
+                                                                                      <Typography
+                                                                                        variant="body2"
+                                                                                        color="text.primary"
+                                                                                        fontWeight="fontWeightRegular"
+                                                                                        style={{
+                                                                                          marginLeft:
+                                                                                            "82px",
+                                                                                          fontSize:
+                                                                                            "12px",
+                                                                                        }}
+                                                                                      >
+                                                                                        {
+                                                                                          situation.organisationalControlMeasure
+                                                                                        }
+                                                                                      </Typography>
+                                                                                    </Grid>
+                                                                                  </Grid>
+                                                                                  <h6
+                                                                                    style={{
+                                                                                      paddingLeft:
+                                                                                        "10px",
+                                                                                      paddingBottom:
+                                                                                        "5px",
+                                                                                    }}
+                                                                                  >
+                                                                                    {
+                                                                                      sub.subTaskName
+                                                                                    }
+                                                                                  </h6>
+                                                                                  <h6
+                                                                                    style={{
+                                                                                      paddingLeft:
+                                                                                        "10px",
+                                                                                      paddingBottom:
+                                                                                        "5px",
+                                                                                    }}
+                                                                                  >
+                                                                                    -{" "}
+                                                                                    {
+                                                                                      hazardType.hazardTypeDisplay
+                                                                                    }
+                                                                                  </h6>
+                                                                                  <h6
+                                                                                    style={{
+                                                                                      paddingLeft:
+                                                                                        "10px",
+                                                                                      paddingBottom:
+                                                                                        "5px",
+                                                                                    }}
+                                                                                  >
+                                                                                    -{" "}
+                                                                                    {
+                                                                                      situation.hazardousSituation
+                                                                                    }
+                                                                                  </h6>
+                                                                                </div>
+                                                                              )
+                                                                            )}
+                                                                          </div>
+                                                                        )
+                                                                      )
+                                                                    )}
+                                                                  </div>
+                                                                )
+                                                              )
+                                                          )}
+                                                        </tbody>
+                                                      </table>
+                                                    </div>
+                                                  </Paper>
+                                                )}
+
+                                              {imptsk.changeImpactTaskReviews
+                                                ?.length > 0 || showReview ? (
+                                                <div className="mt-12">
+                                                  <Accordion
+                                                    expanded={
+                                                      expanded == imptsk.id
+                                                    }
+                                                    onChange={handleExpansionChange(
+                                                      imptsk.id
+                                                    )}
+                                                  >
+                                                    <AccordionSummary
+                                                      expandIcon={
+                                                        <ExpandMoreIcon />
+                                                      }
+                                                      aria-controls="panel1a-content"
+                                                      id="panel1a-header"
+                                                      style={{
+                                                        display: "flex",
+                                                        justifyContent:
+                                                          AppActivity.canEdit
+                                                            ? "space-between"
+                                                            : "flex-start",
+                                                      }}
+                                                    >
+                                                      {AppActivity.canEdit && (
+                                                        <button
+                                                          className="custom-add-review-button"
+                                                          style={{
+                                                            marginRight: 16,
+                                                          }}
+                                                        >
+                                                          Add Review
+                                                        </button>
+                                                      )}
+                                                      <div
+                                                        style={{
+                                                          display: "flex",
+                                                          alignItems: "center",
+                                                          flexGrow: 1, // This makes the div take up remaining space
+                                                          justifyContent:
+                                                            AppActivity.canEdit
+                                                              ? "flex-end"
+                                                              : "flex-start",
+                                                        }}
+                                                      >
+                                                        <Typography>
+                                                          <span className="text-brown">
+                                                            {
+                                                              imptsk
+                                                                ?.changeImpactTaskReviews
+                                                                ?.length
+                                                            }{" "}
+                                                            Reviews
+                                                          </span>{" "}
+                                                          {hasAddedComment(
+                                                            imptsk.changeImpactTaskReviews
+                                                          ) && (
+                                                            <span className="text-green">
+                                                              (You have added 1
+                                                              review)
+                                                            </span>
+                                                          )}
+                                                        </Typography>
+                                                      </div>
+                                                    </AccordionSummary>
+                                                    <AccordionDetails>
+                                                      {AppActivity.canEdit &&
+                                                        !hasAddedComment(
+                                                          imptsk.changeImpactTaskReviews
+                                                        ) && (
+                                                          <div className="mat-form-field-wrapper">
+                                                            <div className="mat-form-field-flex">
+                                                              <img
+                                                                src="/assets/images/etc/userpic.png"
+                                                                alt="Card cover image"
+                                                                className="rounded-full mr-4"
+                                                                style={{
+                                                                  width: "5rem",
+                                                                  height:
+                                                                    "5rem",
+                                                                }}
+                                                              />
+                                                              <div
+                                                                className="mat-form-field-infix"
+                                                                style={{
+                                                                  position:
+                                                                    "relative",
+                                                                  width: "100%",
+                                                                }}
+                                                              >
+                                                                <textarea
+                                                                  rows="2"
+                                                                  className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                                                  placeholder="Write a comment..."
+                                                                  id="ImpTaskReview265"
+                                                                  data-placeholder="Write a comment..."
+                                                                  aria-invalid="false"
+                                                                  aria-required="false"
+                                                                  style={{
+                                                                    height:
+                                                                      "36px",
+                                                                  }}
+                                                                  onChange={(
+                                                                    e
+                                                                  ) =>
+                                                                    setHandelCommentRemark(
+                                                                      e.target
+                                                                        .value
+                                                                    )
+                                                                  }
+                                                                ></textarea>
+                                                                <button
+                                                                  className="custom-update-button"
+                                                                  onClick={() =>
+                                                                    handelImpactCommentImp(
+                                                                      imptsk.id,
+                                                                      1
+                                                                    )
+                                                                  }
+                                                                >
+                                                                  <span className="mat-button-wrapper">
+                                                                    Save
+                                                                  </span>
+                                                                  <span className="mat-ripple mat-button-ripple"></span>
+                                                                  <span className="mat-button-focus-overlay"></span>
+                                                                </button>
+                                                                <span className="mat-form-field-label-wrapper"></span>
+                                                              </div>
+                                                            </div>
+
+                                                            <div className="mat-form-field-subscript-wrapper">
+                                                              <div
+                                                                className="mat-form-field-hint-wrapper"
+                                                                style={{
+                                                                  opacity: 1,
+                                                                  transform:
+                                                                    "translateY(0%)",
+                                                                }}
+                                                              ></div>
+                                                            </div>
+                                                          </div>
+                                                        )}
+                                                      {imptsk.changeImpactTaskReviews?.map(
+                                                        (rwx, index) => (
+                                                          <div
+                                                            className="mat-form-field-wrapper"
+                                                            key={index}
+                                                          >
+                                                            <div className="mat-form-field-flex">
+                                                              <img
+                                                                src="/assets/images/etc/userpic.png"
+                                                                alt="Card cover image"
+                                                                className="rounded-full mr-4"
+                                                                style={{
+                                                                  width: "3rem",
+                                                                  height:
+                                                                    "3rem",
+                                                                }}
+                                                              />
+                                                              {AppActivity.canEdit &&
+                                                              isMyComment(
+                                                                rwx
+                                                              ) ? (
+                                                                <div
+                                                                  className="mat-form-field-infix"
+                                                                  style={{
+                                                                    position:
+                                                                      "relative",
+                                                                  }}
+                                                                >
+                                                                  <textarea
+                                                                    ref={
+                                                                      textareaRef
+                                                                    }
+                                                                    rows="2"
+                                                                    className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                                                    placeholder="Write a comment..."
+                                                                    id="ImpTaskReview265"
+                                                                    data-placeholder="Write a comment..."
+                                                                    aria-invalid="false"
+                                                                    aria-required="false"
+                                                                    style={{
+                                                                      height:
+                                                                        "36px",
+                                                                      width:
+                                                                        "100%",
+                                                                      paddingRight:
+                                                                        "100px",
+                                                                    }}
+                                                                    defaultValue={
+                                                                      rwx?.remark
+                                                                    }
+                                                                    onChange={(
+                                                                      e
+                                                                    ) =>
+                                                                      setHandelCommentRemark(
+                                                                        e.target
+                                                                          .value
+                                                                      )
+                                                                    }
+                                                                  ></textarea>
+
+                                                                  <button
+                                                                    className="custom-update-button"
+                                                                    onClick={() => {
+                                                                      handelImpactCommentImp(
+                                                                        imptsk.id,
+                                                                        // itm.changeImpactTaskReviews[0]
+                                                                        //   .id,
+                                                                        2
+                                                                      );
+                                                                      if (
+                                                                        textareaRef.current
+                                                                      ) {
+                                                                        textareaRef.current.focus();
+                                                                      }
+                                                                    }}
+                                                                  >
+                                                                    Update
+                                                                  </button>
+
+                                                                  <span className="mat-form-field-label-wrapper"></span>
+                                                                </div>
+                                                              ) : (
+                                                                <div className="mat-form-field-wrapper">
+                                                                  <div className="mat-form-field-flex">
+                                                                    <div>
+                                                                      <div className="mat-form-field-infix mt-5">
+                                                                        <span className="">
+                                                                          {
+                                                                            rwx?.createdByStaffName
+                                                                          }
+                                                                        </span>
+                                                                        -{" "}
+                                                                        <span className="text-grey">
+                                                                          {
+                                                                            rwx?.remark
+                                                                          }
+                                                                        </span>
+                                                                      </div>
+                                                                      <p
+                                                                        className="mat-form-field-infix text-grey"
+                                                                        style={{
+                                                                          fontSize:
+                                                                            "smaller",
+                                                                        }}
+                                                                      >
+                                                                        {imptsk
+                                                                          .changeImpactTaskReviews[0]
+                                                                          ?.updatedAt &&
+                                                                          new Date(
+                                                                            imptsk.changeImpactTaskReviews[0]?.updatedAt
+                                                                          ).toLocaleString(
+                                                                            "en-US",
+                                                                            {
+                                                                              month:
+                                                                                "long",
+                                                                              day: "numeric",
+                                                                              year: "numeric",
+                                                                              hour: "numeric",
+                                                                              minute:
+                                                                                "numeric",
+                                                                              second:
+                                                                                "numeric",
+                                                                              hour12: true,
+                                                                              timeZoneName:
+                                                                                "short",
+                                                                            }
+                                                                          )}
+                                                                      </p>
+                                                                    </div>
+                                                                  </div>
+                                                                </div>
+                                                              )}
+                                                            </div>
+
+                                                            <div className="mat-form-field-subscript-wrapper">
+                                                              <div
+                                                                className="mat-form-field-hint-wrapper"
+                                                                style={{
+                                                                  opacity: 1,
+                                                                  transform:
+                                                                    "translateY(0%)",
+                                                                }}
+                                                              ></div>
+                                                            </div>
+                                                          </div>
+                                                        )
+                                                      )}
+                                                    </AccordionDetails>
+                                                  </Accordion>
+                                                </div>
+                                              ) : AppActivity.canEdit ? (
+                                                <div className="mat-form-field-wrapper mt-24">
+                                                  <div className="mat-form-field-flex">
+                                                    <img
+                                                      src="/assets/images/etc/userpic.png"
+                                                      alt="Card cover image"
+                                                      className="rounded-full mr-4"
+                                                      style={{
+                                                        width: "5rem",
+                                                        height: "5rem",
+                                                      }}
+                                                    />
+                                                    <div
+                                                      className="mat-form-field-infix"
+                                                      style={{
+                                                        position: "relative",
+                                                        width: "100%",
+                                                      }}
+                                                    >
+                                                      <textarea
+                                                        rows="2"
+                                                        className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize mt-0"
+                                                        placeholder="Write a comment..."
+                                                        id="ImpTaskReview265"
+                                                        data-placeholder="Write a comment..."
+                                                        aria-invalid="false"
+                                                        aria-required="false"
+                                                        style={{
+                                                          height: "36px",
+                                                        }}
+                                                        onChange={(e) =>
+                                                          setHandelCommentRemark(
+                                                            e.target.value
+                                                          )
+                                                        }
+                                                      ></textarea>
+                                                      <button
+                                                        className="custom-update-button"
+                                                        onClick={() =>
+                                                          handelImpactCommentImp(
+                                                            imptsk.id,
+                                                            1
+                                                          )
+                                                        }
+                                                      >
+                                                        <span className="mat-button-wrapper">
+                                                          Save
+                                                        </span>
+                                                        <span className="mat-ripple mat-button-ripple"></span>
+                                                        <span className="mat-button-focus-overlay"></span>
+                                                      </button>
+                                                      <span className="mat-form-field-label-wrapper"></span>
+                                                    </div>
+                                                  </div>
+
+                                                  {/* <div className="mat-form-field-subscript-wrapper">
                                 <div
                                   className="mat-form-field-hint-wrapper"
                                   style={{
@@ -2147,353 +2202,217 @@ const EvaluationApproval = ({
                                   }}
                                 ></div>
                               </div> */}
-                                              </div>
-                                            ) : (
-                                              <div className="ng-star-inserted">
-                                                <span
-                                                  className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
-                                                  style={{
-                                                    padding: "10px",
-                                                  }}
-                                                >
-                                                  No Reviews Added
-                                                </span>
-                                              </div>
-                                            )}
+                                                </div>
+                                              ) : (
+                                                <div className="ng-star-inserted">
+                                                  <span
+                                                    className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                                    style={{
+                                                      padding: "10px",
+                                                    }}
+                                                  >
+                                                    No Reviews Added
+                                                  </span>
+                                                </div>
+                                              )}
+                                            </div>
                                           </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  ))}
-                              </AccordionDetails>
-                            </Accordion>
-                          );
-                        }
-                      )
-                    ) : (
-                      <p>No tasks available</p>
-                    )}
-                  </tbody>
+                                    ))}
+                                </AccordionDetails>
+                              </Accordion>
+                            );
+                          }
+                        )
+                      ) : (
+                        <p>No tasks available</p>
+                      )}
+                    </tbody>
 
-                  <tfoot
-                    className="task-table-footer"
-                    style={{
-                      display: "none",
-                      bottom: 0,
-                      zIndex: 10,
-                    }}
-                  >
-                    {/* Empty footer */}
-                  </tfoot>
-                </table>
-              </Box>
-            </Box>
-          </Box>
-        </Fade>
-      </Modal>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={taskRespOpen}
-        onClose={handleRespModalClose}
-        closeAfterTransition
-        // Customize backdrop appearance
-        BackdropComponent={Backdrop}
-        // Props for backdrop customization
-        BackdropProps={{
-          timeout: 500, // Adjust as needed
-          style: {
-            // Add backdrop styles here
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          },
-        }}
-      >
-        <Fade in={taskRespOpen}>
-          <Box sx={style1}>
-            <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "30px" }}>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{ fontSize: "3rem" }}
-                >
-                  File Manager
-                  <Typography id="transition-modal-subtitle" component="h2">
-                    {taskRespListDocument.length} Files
-                  </Typography>
-                </Typography>
-                {AppActivity?.canExecute && (
-                  <Box>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={toggleDrawerRes(true)}
-                    >
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                      <span className="mx-4 sm:mx-8">Upload File</span>
-                    </Button>
-                  </Box>
-                )}
-              </Box>
-              <Box>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
-                  component="div"
-                  style={{
-                    backgroundColor: "#e3eeff80",
-                  }}
-                >
-                  {taskRespListDocument.map((doc, index) => (
-                    <div className="content" key={index}>
-                      <div
-                        onClick={() => handelRespDetailDoc(doc)}
-                        style={{ textAlign: "-webkit-center" }}
-                      >
-                        <img src="/assets/images/etc/icon_N.png" />
-                        <h6 className="truncate-text">{doc?.name}</h6>
-                        <h6>by {doc?.staffName}</h6>
-                      </div>
-                    </div>
-                  ))}
-                </Typography>
-              </Box>
-            </Box>
-
-            {openDrawerRes && !fileDetailsRes && (
-              <Box sx={drawerStyle(openDrawerRes)}>
-                <div className="flex justify-end">
-                  <Button
-                    variant="contained"
-                    style={{ backgroundColor: "white" }}
-                    onClick={() => setOpenDrawerRes(false)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                  </Button>
-                </div>
-                <div>&nbsp;</div>
-                <div className="text-center">
-                  <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelRespFileChange(e);
-                    }}
-                  />
-                  <label htmlFor="fileInput">
-                    <Button
-                      variant="contained"
-                      color="secondary"
+                    <tfoot
+                      className="task-table-footer"
                       style={{
-                        backgroundColor: "#24a0ed",
-                        borderRadius: "5px",
-                        paddingLeft: "50px",
-                        paddingRight: "50px",
+                        display: "none",
+                        bottom: 0,
+                        zIndex: 10,
                       }}
-                      component="span"
                     >
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                      <span className="mx-4 sm:mx-8">Upload File</span>
-                    </Button>
-                  </label>
-                  <Box
-                    component="form"
-                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<BoldLabel>Information</BoldLabel>}
-                      variant="standard"
-                      disabled
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="selectedFileName"
-                      label="Selected File"
-                      variant="standard"
-                      disabled
-                      value={selectedRespFile.name}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<>Description</>}
-                      name="description"
-                      variant="standard"
-                      onChange={handelFileResDiscriptionChange}
-                      value={selectedRespFile.description}
-                    />
-                  </Box>
-                </div>
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    marginTop: "15px",
-                    justifyContent: "end",
-                    backgroundColor: "rgba(248,250,252)",
-                    padding: "10px",
-                  }}
+                      {/* Empty footer */}
+                    </tfoot>
+                  </table>
+                </Box>
+              </Box>
+            </Box>
+          </Fade>
+        </Modal>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={taskRespOpen}
+          onClose={handleRespModalClose}
+          closeAfterTransition
+          // Customize backdrop appearance
+          BackdropComponent={Backdrop}
+          // Props for backdrop customization
+          BackdropProps={{
+            timeout: 500, // Adjust as needed
+            style: {
+              // Add backdrop styles here
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+          }}
+        >
+          <Fade in={taskRespOpen}>
+            <Box sx={style1}>
+              <Box sx={{ flex: 1 }}>
+                <Box
+                  className="flex justify-between"
+                  style={{ margin: "30px" }}
                 >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{ fontSize: "3rem" }}
+                  >
+                    File Manager
+                    <Typography id="transition-modal-subtitle" component="h2">
+                      {taskRespListDocument.length} Files
+                    </Typography>
+                  </Typography>
+                  {AppActivity?.canExecute && (
+                    <Box>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={toggleDrawerRes(true)}
+                      >
+                        <FuseSvgIcon size={20}>
+                          heroicons-outline:plus
+                        </FuseSvgIcon>
+                        <span className="mx-4 sm:mx-8">Upload File</span>
+                      </Button>
+                    </Box>
+                  )}
+                </Box>
+                <Box>
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                    component="div"
                     style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
+                      backgroundColor: "#e3eeff80",
                     }}
                   >
-                    Cancel
-                  </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    onClick={handleSubmitResponse}
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </Box>
-            )}
-
-            {fileDetailsRes && (
-              <Box sx={drawerStyle(fileDetailsRes)}>
-                <div className="flex justify-end">
-                  <Button
-                    variant="contained"
-                    style={{ backgroundColor: "white" }}
-                    onClick={() => setFileDetailsRes(false)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                  </Button>
-                </div>
-                <div>&nbsp;</div>
-                <div className="text-center">
-                  <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    disabled
-                  />
-                  <label htmlFor="fileInput">
-                    <div className="">
-                      <div style={{ textAlign: "-webkit-center" }}>
-                        <img src="/assets/images/etc/icon_N.png" />
+                    {taskRespListDocument.map((doc, index) => (
+                      <div className="content" key={index}>
+                        <div
+                          onClick={() => handelRespDetailDoc(doc)}
+                          style={{ textAlign: "-webkit-center" }}
+                        >
+                          <img src="/assets/images/etc/icon_N.png" />
+                          <h6 className="truncate-text">{doc?.name}</h6>
+                          <h6>by {doc?.staffName}</h6>
+                        </div>
                       </div>
-                      {selectedResDocument?.name}
-                    </div>
-                  </label>
-                  <Box
-                    component="form"
-                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<BoldLabel>Information</BoldLabel>}
-                      variant="standard"
-                      disabled
+                    ))}
+                  </Typography>
+                </Box>
+              </Box>
+
+              {openDrawerRes && !fileDetailsRes && (
+                <Box sx={drawerStyle(openDrawerRes)}>
+                  <div className="flex justify-end">
+                    <Button
+                      variant="contained"
+                      style={{ backgroundColor: "white" }}
+                      onClick={() => setOpenDrawerRes(false)}
+                    >
+                      <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+                    </Button>
+                  </div>
+                  <div>&nbsp;</div>
+                  <div className="text-center">
+                    <input
+                      type="file"
+                      id="fileInput"
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        handelRespFileChange(e);
+                      }}
                     />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                    noValidate
-                    autoComplete="off"
+                    <label htmlFor="fileInput">
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        style={{
+                          backgroundColor: "#24a0ed",
+                          borderRadius: "5px",
+                          paddingLeft: "50px",
+                          paddingRight: "50px",
+                        }}
+                        component="span"
+                      >
+                        <FuseSvgIcon size={20}>
+                          heroicons-outline:plus
+                        </FuseSvgIcon>
+                        <span className="mx-4 sm:mx-8">Upload File</span>
+                      </Button>
+                    </label>
+                    <Box
+                      component="form"
+                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<BoldLabel>Information</BoldLabel>}
+                        variant="standard"
+                        disabled
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="selectedFileName"
+                        label="Selected File"
+                        variant="standard"
+                        disabled
+                        value={selectedRespFile.name}
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<>Description</>}
+                        name="description"
+                        variant="standard"
+                        onChange={handelFileResDiscriptionChange}
+                        value={selectedRespFile.description}
+                      />
+                    </Box>
+                  </div>
+                  <div
+                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                    style={{
+                      marginTop: "15px",
+                      justifyContent: "end",
+                      backgroundColor: "rgba(248,250,252)",
+                      padding: "10px",
+                    }}
                   >
-                    <TextField
-                      id="selectedFileName"
-                      label="Created By"
-                      variant="standard"
-                      disabled
-                      value={selectedResDocument?.staffName}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label="Created At"
-                      name="description"
-                      variant="standard"
-                      disabled
-                      value={new Date(
-                        selectedResDocument?.createdAt
-                      ).toLocaleString("en-US", {
-                        month: "short",
-                        day: "2-digit",
-                        year: "2-digit",
-                      })}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<>Description</>}
-                      name="descritpion"
-                      variant="standard"
-                      disabled
-                      value={
-                        selectedResDocument?.descritpion === "null"
-                          ? ""
-                          : selectedResDocument?.descritpion
-                      }
-                    />
-                  </Box>
-                </div>
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    marginTop: "15px",
-                    justifyContent: "end",
-                    backgroundColor: "rgba(248,250,252)",
-                    padding: "10px",
-                  }}
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    onClick={handleResDownload}
-                  >
-                    Download
-                  </Button>
-                  {AppActivity?.canExecute && (
                     <Button
                       className="whitespace-nowrap"
                       variant="contained"
@@ -2503,249 +2422,391 @@ const EvaluationApproval = ({
                         color: "black",
                         border: "1px solid grey",
                       }}
-                      onClick={(e) =>
-                        handleResDelete(
-                          e,
-                          selectedResDocument?.documentId,
-                          selectedResDocument?.token
-                        )
-                      }
                     >
-                      Delete
+                      Cancel
                     </Button>
-                  )}
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                      onClick={handleSubmitResponse}
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </Box>
+              )}
+
+              {fileDetailsRes && (
+                <Box sx={drawerStyle(fileDetailsRes)}>
+                  <div className="flex justify-end">
+                    <Button
+                      variant="contained"
+                      style={{ backgroundColor: "white" }}
+                      onClick={() => setFileDetailsRes(false)}
+                    >
+                      <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+                    </Button>
+                  </div>
+                  <div>&nbsp;</div>
+                  <div className="text-center">
+                    <input
+                      type="file"
+                      id="fileInput"
+                      style={{ display: "none" }}
+                      disabled
+                    />
+                    <label htmlFor="fileInput">
+                      <div className="">
+                        <div style={{ textAlign: "-webkit-center" }}>
+                          <img src="/assets/images/etc/icon_N.png" />
+                        </div>
+                        {selectedResDocument?.name}
+                      </div>
+                    </label>
+                    <Box
+                      component="form"
+                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<BoldLabel>Information</BoldLabel>}
+                        variant="standard"
+                        disabled
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="selectedFileName"
+                        label="Created By"
+                        variant="standard"
+                        disabled
+                        value={selectedResDocument?.staffName}
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label="Created At"
+                        name="description"
+                        variant="standard"
+                        disabled
+                        value={new Date(
+                          selectedResDocument?.createdAt
+                        ).toLocaleString("en-US", {
+                          month: "short",
+                          day: "2-digit",
+                          year: "2-digit",
+                        })}
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<>Description</>}
+                        name="descritpion"
+                        variant="standard"
+                        disabled
+                        value={
+                          selectedResDocument?.descritpion === "null"
+                            ? ""
+                            : selectedResDocument?.descritpion
+                        }
+                      />
+                    </Box>
+                  </div>
+                  <div
+                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                    style={{
+                      marginTop: "15px",
+                      justifyContent: "end",
+                      backgroundColor: "rgba(248,250,252)",
+                      padding: "10px",
+                    }}
+                  >
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                      onClick={handleResDownload}
+                    >
+                      Download
+                    </Button>
+                    {AppActivity?.canExecute && (
+                      <Button
+                        className="whitespace-nowrap"
+                        variant="contained"
+                        color="primary"
+                        style={{
+                          backgroundColor: "white",
+                          color: "black",
+                          border: "1px solid grey",
+                        }}
+                        onClick={(e) =>
+                          handleResDelete(
+                            e,
+                            selectedResDocument?.documentId,
+                            selectedResDocument?.token
+                          )
+                        }
+                      >
+                        Delete
+                      </Button>
+                    )}
+                  </div>
+                </Box>
+              )}
+            </Box>
+          </Fade>
+        </Modal>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={Resdeletes}
+          onClose={handleCloseDelete}
+          closeAfterTransition
+          slots={{ backdrop: Backdrop }}
+          slotProps={{
+            backdrop: {
+              timeout: 500,
+            },
+          }}
+        >
+          <Fade in={Resdeletes}>
+            <Box sx={style2}>
+              <Box>
+                <div className="flex">
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "15px",
+                      marginRight: "5px",
+                      marginTop: "5px",
+
+                      color: "red",
+                    }}
+                  >
+                    <img src="/assets/images/etc/icon.png" />
+                  </Typography>
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "2rem",
+                    }}
+                  >
+                    Confirm action
+                    <Typography
+                      id="transition-modal-title"
+                      variant="h6"
+                      component="h2"
+                      style={{
+                        fontSize: "15px",
+                        fontWeight: "800px !important",
+                        color: "grey",
+                      }}
+                    >
+                      Do you want to delete ?
+                    </Typography>
+                  </Typography>
                 </div>
               </Box>
-            )}
-          </Box>
-        </Fade>
-      </Modal>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={Resdeletes}
-        onClose={handleCloseDelete}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={Resdeletes}>
-          <Box sx={style2}>
-            <Box>
-              <div className="flex">
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
+              <div
+                className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                style={{
+                  marginTop: "15px",
+                  justifyContent: "end",
+                  backgroundColor: " rgba(248,250,252)",
+                  padding: "10px",
+                }}
+              >
+                <Button
+                  className="whitespace-nowrap"
+                  variant="contained"
+                  color="primary"
                   style={{
-                    fontSize: "15px",
-                    marginRight: "5px",
-                    marginTop: "5px",
-
-                    color: "red",
+                    padding: "23px",
+                    backgroundColor: "white",
+                    color: "black",
+                    border: "1px solid grey",
                   }}
+                  onClick={handleResCloseDelete}
                 >
-                  <img src="/assets/images/etc/icon.png" />
-                </Typography>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
+                  Cancel
+                </Button>
+                <Button
+                  className="whitespace-nowrap"
+                  variant="contained"
+                  color="secondary"
                   style={{
-                    fontSize: "2rem",
+                    padding: "23px",
+                    backgroundColor: "red",
                   }}
+                  type="submit"
+                  onClick={handleResSubmitDelete}
                 >
-                  Confirm action
+                  Confirm
+                </Button>
+              </div>
+            </Box>
+          </Fade>
+        </Modal>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={deletes}
+          onClose={handleCloseDelete}
+          closeAfterTransition
+          slots={{ backdrop: Backdrop }}
+          slotProps={{
+            backdrop: {
+              timeout: 500,
+            },
+          }}
+        >
+          <Fade in={deletes}>
+            <Box sx={style2}>
+              <Box>
+                <div className="flex">
                   <Typography
                     id="transition-modal-title"
                     variant="h6"
                     component="h2"
                     style={{
                       fontSize: "15px",
-                      fontWeight: "800px !important",
-                      color: "grey",
+                      marginRight: "5px",
+                      marginTop: "5px",
+
+                      color: "red",
                     }}
                   >
-                    Do you want to delete ?
+                    <img src="/assets/images/etc/icon.png" />
                   </Typography>
-                </Typography>
-              </div>
-            </Box>
-            <div
-              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-              style={{
-                marginTop: "15px",
-                justifyContent: "end",
-                backgroundColor: " rgba(248,250,252)",
-                padding: "10px",
-              }}
-            >
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="primary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid grey",
-                }}
-                onClick={handleResCloseDelete}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="secondary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "red",
-                }}
-                type="submit"
-                onClick={handleResSubmitDelete}
-              >
-                Confirm
-              </Button>
-            </div>
-          </Box>
-        </Fade>
-      </Modal>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={deletes}
-        onClose={handleCloseDelete}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={deletes}>
-          <Box sx={style2}>
-            <Box>
-              <div className="flex">
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "15px",
-                    marginRight: "5px",
-                    marginTop: "5px",
-
-                    color: "red",
-                  }}
-                >
-                  <img src="/assets/images/etc/icon.png" />
-                </Typography>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "2rem",
-                  }}
-                >
-                  Confirm action
                   <Typography
                     id="transition-modal-title"
                     variant="h6"
                     component="h2"
                     style={{
-                      fontSize: "15px",
-                      fontWeight: "800px !important",
-                      color: "grey",
+                      fontSize: "2rem",
                     }}
                   >
-                    Do you want to delete ?
+                    Confirm action
+                    <Typography
+                      id="transition-modal-title"
+                      variant="h6"
+                      component="h2"
+                      style={{
+                        fontSize: "15px",
+                        fontWeight: "800px !important",
+                        color: "grey",
+                      }}
+                    >
+                      Do you want to delete ?
+                    </Typography>
                   </Typography>
-                </Typography>
+                </div>
+              </Box>
+              <div
+                className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                style={{
+                  marginTop: "15px",
+                  justifyContent: "end",
+                  backgroundColor: " rgba(248,250,252)",
+                  padding: "10px",
+                }}
+              >
+                <Button
+                  className="whitespace-nowrap"
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    padding: "23px",
+                    backgroundColor: "white",
+                    color: "black",
+                    border: "1px solid grey",
+                  }}
+                  onClick={handleCloseDelete}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="whitespace-nowrap"
+                  variant="contained"
+                  color="secondary"
+                  style={{
+                    padding: "23px",
+                    backgroundColor: "red",
+                  }}
+                  type="submit"
+                  onClick={handleSubmitDelete}
+                >
+                  Confirm
+                </Button>
               </div>
             </Box>
-            <div
-              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-              style={{
-                marginTop: "15px",
-                justifyContent: "end",
-                backgroundColor: " rgba(248,250,252)",
-                padding: "10px",
-              }}
-            >
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="primary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid grey",
-                }}
-                onClick={handleCloseDelete}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="secondary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "red",
-                }}
-                type="submit"
-                onClick={handleSubmitDelete}
-              >
-                Confirm
-              </Button>
-            </div>
-          </Box>
-        </Fade>
-      </Modal>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={open}
-        onClose={handleModalClose1}
-        closeAfterTransition
-        // Customize backdrop appearance
-        BackdropComponent={Backdrop}
-        // Props for backdrop customization
-        BackdropProps={{
-          timeout: 500, // Adjust as needed
-          style: {
-            // Add backdrop styles here
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          },
-        }}
-      >
-        <Fade in={open}>
-          <Box sx={style1}>
-            <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "30px" }}>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "3rem",
-                  }}
+          </Fade>
+        </Modal>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={open}
+          onClose={handleModalClose1}
+          closeAfterTransition
+          // Customize backdrop appearance
+          BackdropComponent={Backdrop}
+          // Props for backdrop customization
+          BackdropProps={{
+            timeout: 500, // Adjust as needed
+            style: {
+              // Add backdrop styles here
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+          }}
+        >
+          <Fade in={open}>
+            <Box sx={style1}>
+              <Box sx={{ flex: 1 }}>
+                <Box
+                  className="flex justify-between"
+                  style={{ margin: "30px" }}
                 >
-                  File Manager
-                  <Typography id="transition-modal-subtitle" component="h2">
-                    {contentDetails.documentCount} Files
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "3rem",
+                    }}
+                  >
+                    File Manager
+                    <Typography id="transition-modal-subtitle" component="h2">
+                      {contentDetails.documentCount} Files
+                    </Typography>
                   </Typography>
-                </Typography>
-                <Box>
-                  {/* <Button
+                  <Box>
+                    {/* <Button
                     className=""
                     variant="contained"
                     color="secondary"
@@ -2754,296 +2815,305 @@ const EvaluationApproval = ({
                     <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
                     <span className="mx-4 sm:mx-8">Upload File</span>
                   </Button> */}
+                  </Box>
+                </Box>
+                <Box>
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                    component="div"
+                    style={{
+                      backgroundColor: "#e3eeff80",
+                    }}
+                  >
+                    {listDocument1.map((doc, index) => (
+                      <div className="content " key={index}>
+                        <div
+                          onClick={() => handelDetailDoc(doc)}
+                          style={{ textAlign: "-webkit-center" }}
+                        >
+                          {doc.fileType === "JPG" ? (
+                            <img
+                              src="/assets/images/etc/icon_N.png"
+                              style={{}}
+                            />
+                          ) : doc.fileType === "JPG" ? (
+                            <img
+                              src="/assets/images/etc/icon_N.png"
+                              style={{}}
+                            />
+                          ) : (
+                            <img
+                              src="/assets/images/etc/icon_N.png"
+                              style={{}}
+                            />
+                          )}
+                          <h6 className="truncate-text">{doc?.name}</h6>
+                          <h6>by {doc?.staffName}</h6>
+                        </div>
+                      </div>
+                    ))}
+                  </Typography>
                 </Box>
               </Box>
-              <Box>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
-                  component="div"
-                  style={{
-                    backgroundColor: "#e3eeff80",
-                  }}
-                >
-                  {listDocument1.map((doc, index) => (
-                    <div className="content " key={index}>
-                      <div
-                        onClick={() => handelDetailDoc(doc)}
-                        style={{ textAlign: "-webkit-center" }}
-                      >
-                        {doc.fileType === "JPG" ? (
-                          <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        ) : doc.fileType === "JPG" ? (
-                          <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        ) : (
-                          <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        )}
-                        <h6 className="truncate-text">{doc?.name}</h6>
-                        <h6>by {doc?.staffName}</h6>
-                      </div>
-                    </div>
-                  ))}
-                </Typography>
-              </Box>
-            </Box>
-            {openDrawer && !fileDetails && (
-              <Box sx={drawerStyle(openDrawer)}>
-                <div className="flex justify-end">
-                  <Button
-                    className=""
-                    variant="contained"
-                    style={{ backgroundColor: "white" }}
-                    onClick={() => setOpenDrawer(false)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                  </Button>
-                </div>
-                <div>&nbsp;</div>
-                <div className="text-center">
-                  <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
-                  />
-                  <label htmlFor="fileInput">
+              {openDrawer && !fileDetails && (
+                <Box sx={drawerStyle(openDrawer)}>
+                  <div className="flex justify-end">
                     <Button
                       className=""
                       variant="contained"
-                      color="secondary"
-                      style={{
-                        backgroundColor: "#24a0ed",
-                        borderRadius: "5px",
-                        paddingLeft: "50px",
-                        paddingRight: "50px",
-                      }}
-                      component="span"
+                      style={{ backgroundColor: "white" }}
+                      onClick={() => setOpenDrawer(false)}
                     >
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                      <span className="mx-4 sm:mx-8">Upload File</span>
+                      <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                     </Button>
-                  </label>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<BoldLabel>Information</BoldLabel>}
-                      variant="standard"
-                      disabled
+                  </div>
+                  <div>&nbsp;</div>
+                  <div className="text-center">
+                    <input
+                      type="file"
+                      id="fileInput"
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        handelFileChange(e);
+                      }}
                     />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="selectedFileName"
-                      label="Selecte File"
-                      variant="standard"
-                      disabled
-                      value={selectedFile.name}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<>Description</>}
-                      name="description"
-                      variant="standard"
-                      onChange={handelFileDiscriptionChange}
-                      value={selectedFile.descritpion}
-                    />
-                  </Box>
-                </div>
-
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    marginTop: "15px",
-                    justifyContent: "end",
-                    backgroundColor: " rgba(248,250,252)",
-                    padding: "10px",
-                  }}
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    onClick={handleSubmitAsset}
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </Box>
-            )}
-
-            {fileDetails && (
-              <Box sx={drawerStyle(fileDetails)}>
-                <div className="flex justify-end">
-                  <Button
-                    className=""
-                    variant="contained"
-                    style={{ backgroundColor: "white" }}
-                    onClick={() => setFileDetails(false)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                  </Button>
-                </div>
-                <div>&nbsp;</div>
-                <div className="text-center">
-                  <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    // onChange={(e) => {
-                    //   handelFileChange(e);
-                    // }}
-                    disabled
-                  />
-                  <label htmlFor="fileInput">
-                    <div className=" ">
-                      <div
-                        // onClick={handelDetailDoc}
+                    <label htmlFor="fileInput">
+                      <Button
+                        className=""
+                        variant="contained"
+                        color="secondary"
                         style={{
-                          textAlign: "-webkit-center",
+                          backgroundColor: "#24a0ed",
+                          borderRadius: "5px",
+                          paddingLeft: "50px",
+                          paddingRight: "50px",
                         }}
+                        component="span"
                       >
-                        <img src="/assets/images/etc/icon_N.png" />
-                      </div>
-                      {selectedDocument?.name}
-                    </div>
-                  </label>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<BoldLabel>Information</BoldLabel>}
-                      variant="standard"
-                      disabled
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="selectedFileName"
-                      label="Created By"
-                      variant="standard"
-                      disabled
-                      value={selectedDocument.staffName}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label=" Created At"
-                      name="description"
-                      variant="standard"
-                      disabled
-                      value={new Date(
-                        selectedDocument.createdAt
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<>Description</>}
-                      name="Description"
-                      variant="standard"
-                      disabled
-                      value={
-                        selectedDocument?.description === null
-                          ? ""
-                          : selectedDocument?.descritpion
-                      }
-                    />
-                  </Box>
-                </div>
+                        <FuseSvgIcon size={20}>
+                          heroicons-outline:plus
+                        </FuseSvgIcon>
+                        <span className="mx-4 sm:mx-8">Upload File</span>
+                      </Button>
+                    </label>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<BoldLabel>Information</BoldLabel>}
+                        variant="standard"
+                        disabled
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="selectedFileName"
+                        label="Select File"
+                        variant="standard"
+                        disabled
+                        value={selectedFile.name}
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<>Description</>}
+                        name="description"
+                        variant="standard"
+                        onChange={handelFileDiscriptionChange}
+                        value={selectedFile.descritpion}
+                      />
+                    </Box>
+                  </div>
 
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    marginTop: "15px",
-                    justifyContent: "center",
-                    backgroundColor: " rgba(248,250,252)",
-                    padding: "10px",
-                  }}
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    onClick={handleDownload}
+                  <div
+                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                    style={{
+                      marginTop: "15px",
+                      justifyContent: "end",
+                      backgroundColor: " rgba(248,250,252)",
+                      padding: "10px",
+                    }}
                   >
-                    Download
-                  </Button>
-                  {/* <Button
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        border: "1px solid grey",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                      onClick={handleSubmitAsset}
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </Box>
+              )}
+
+              {fileDetails && (
+                <Box sx={drawerStyle(fileDetails)}>
+                  <div className="flex justify-end">
+                    <Button
+                      className=""
+                      variant="contained"
+                      style={{ backgroundColor: "white" }}
+                      onClick={() => setFileDetails(false)}
+                    >
+                      <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+                    </Button>
+                  </div>
+                  <div>&nbsp;</div>
+                  <div className="text-center">
+                    <input
+                      type="file"
+                      id="fileInput"
+                      style={{ display: "none" }}
+                      // onChange={(e) => {
+                      //   handelFileChange(e);
+                      // }}
+                      disabled
+                    />
+                    <label htmlFor="fileInput">
+                      <div className=" ">
+                        <div
+                          // onClick={handelDetailDoc}
+                          style={{
+                            textAlign: "-webkit-center",
+                          }}
+                        >
+                          <img src="/assets/images/etc/icon_N.png" />
+                        </div>
+                        {selectedDocument?.name}
+                      </div>
+                    </label>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<BoldLabel>Information</BoldLabel>}
+                        variant="standard"
+                        disabled
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="selectedFileName"
+                        label="Created By"
+                        variant="standard"
+                        disabled
+                        value={selectedDocument.staffName}
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label=" Created At"
+                        name="description"
+                        variant="standard"
+                        disabled
+                        value={new Date(
+                          selectedDocument.createdAt
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<>Description</>}
+                        name="Description"
+                        variant="standard"
+                        disabled
+                        value={
+                          selectedDocument?.description === null
+                            ? ""
+                            : selectedDocument?.descritpion
+                        }
+                      />
+                    </Box>
+                  </div>
+
+                  <div
+                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                    style={{
+                      marginTop: "15px",
+                      justifyContent: "center",
+                      backgroundColor: " rgba(248,250,252)",
+                      padding: "10px",
+                    }}
+                  >
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                      onClick={handleDownload}
+                    >
+                      Download
+                    </Button>
+                    {/* <Button
                     className="whitespace-nowrap"
                     variant="contained"
                     color="primary"
@@ -3062,259 +3132,267 @@ const EvaluationApproval = ({
                   >
                     Delete
                   </Button> */}
-                </div>
-              </Box>
-            )}
-          </Box>
-        </Fade>
-      </Modal>
-      <ToastContainer
-        className="toast-container"
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        closeButton={true}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <Initiation
-        contentDetailsini={contentDetailsini}
-        assetEvaluationId={assetEvaluationId}
-        contentDetailsT={contentDetails}
-        contentDetailsDocu={contentDetails}
-      />
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 1000,
-          // backgroundColor: "white",
-          padding: "10px",
-          display: showSendPopup ? "flex" : "none",
-          justifyContent: "end",
-          color: "white",
-        }}
-      >
-        <Button
-          className="whitespace-nowrap ms-5"
-          variant="contained"
-          color="secondary"
-          style={{
-            padding: "10px",
-            borderRadius: "20px",
-          }}
-          onClick={handledateExtendopen}
-        >
-          Send selected {selectedTasks?.length} task(s) for external
-          consultation
-        </Button>
-      </div>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={dateExtendopen}
-        onClose={handlehandledateExtendClose}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={dateExtendopen}>
-          <Box sx={style1}>
-            <Box
-              style={{
-                padding: "30px",
-                backgroundColor: "#4f46e5",
-                borderTopLeftRadius: "16px",
-                borderTopRightRadius: "16px",
-                color: "white",
-              }}
-            >
-              Send for external consultation
+                  </div>
+                </Box>
+              )}
             </Box>
+          </Fade>
+        </Modal>
+        <ToastContainer
+          className="toast-container"
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          closeButton={true}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        <Initiation
+          contentDetailsini={contentDetailsini}
+          assetEvaluationId={assetEvaluationId}
+          contentDetailsT={contentDetails}
+          contentDetailsDocu={contentDetails}
+        />
+        <div
+          style={{
+            position: "sticky",
+            top: 0,
+            zIndex: 1000,
+            // backgroundColor: "white",
+            padding: "10px",
+            display: showSendPopup ? "flex" : "none",
+            justifyContent: "end",
+            color: "white",
+          }}
+        >
+          <Button
+            className="whitespace-nowrap ms-5"
+            variant="contained"
+            color="secondary"
+            style={{
+              padding: "10px",
+              borderRadius: "20px",
+            }}
+            onClick={handledateExtendopen}
+          >
+            Send selected {selectedTasks?.length} task(s) for external
+            consultation
+          </Button>
+        </div>
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={dateExtendopen}
+          onClose={handlehandledateExtendClose}
+          closeAfterTransition
+          slots={{ backdrop: Backdrop }}
+          slotProps={{
+            backdrop: {
+              timeout: 500,
+            },
+          }}
+        >
+          <Fade in={dateExtendopen}>
+            <Box sx={style1}>
+              <Box
+                style={{
+                  padding: "30px",
+                  backgroundColor: "#4f46e5",
+                  borderTopLeftRadius: "16px",
+                  borderTopRightRadius: "16px",
+                  color: "white",
+                }}
+              >
+                Send for external consultation
+              </Box>
 
-            <Box sx={{ overflow: "auto", padding: "5px 30px 0 30px" }}>
-              <Grid container spacing={2} className="mt-5">
-                <Grid item xs={12}>
-                  <Table
-                    className="mat-elevatio demo-table col-span-12 mt-0 w-full table_custome"
-                    sx={{ width: "100%" }}
-                  >
-                    <TableHead
-                      sx={{
-                        borderBottom: "2px solid silver",
-                        fontSize: "medium",
-                      }}
+              <Box sx={{ overflow: "auto", padding: "5px 30px 0 30px" }}>
+                <Grid container spacing={2} className="mt-5">
+                  <Grid item xs={12}>
+                    <Table
+                      className="mat-elevatio demo-table col-span-12 mt-0 w-full table_custome"
+                      sx={{ width: "100%" }}
                     >
-                      <TableRow>
-                        <TableCell className="text-left">Impact</TableCell>
-                        <TableCell className="text-left">
-                          What is the task
-                        </TableCell>
-                        <TableCell className="text-left">
-                          How is the task done
-                        </TableCell>
-                        <TableCell className="text-left">
-                          Task Deadline
-                        </TableCell>
-                        <TableCell className="text-left">
-                          Task Assigned To
-                        </TableCell>
-                        <TableCell className="text-left">Due Date</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {selectedTasks?.map((update) => (
-                        <TableRow key={update.id}>
-                          <TableCell
-                            className="text-left"
-                            // sx={{ border: "1px solid silver" }}
-                          >
-                            {update.impact}
-                          </TableCell>
-                          <TableCell
-                            className="text-left"
-                            // sx={{ border: "1px solid silver" }}
-                          >
-                            {update.task}
-                          </TableCell>
-                          <TableCell
-                            className="text-left"
-                            // sx={{ border: "1px solid silver" }}
-                          >
-                            {update.how}
-                          </TableCell>
-                          <TableCell
-                            className="text-left"
-                            // sx={{ border: "1px solid silver" }}
-                          >
-                            {update.deadline}
-                          </TableCell>
-                          <TableCell
-                            className="text-left"
-                            // sx={{ border: "1px solid silver" }}
-                          >
-                            {update.assignedTo}
-                          </TableCell>
-                          <TableCell
-                            className="text-left"
-                            // sx={{ border: "1px solid silver" }}
-                          >
-                            {formatDates(update.dueDate)}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                  <div>&nbsp;</div>
-                  <Grid item xs={12} className="mt-5">
-                    <FormControl fullWidth sx={{ flexGrow: 1 }}>
-                      <InputLabel id="staff-label">Select Staff</InputLabel>
-                      <Select
-                        labelId="staff-label"
-                        id="staff-select"
-                        multiple
-                        value={selectedStaff}
-                        onChange={handleStaffChange}
-                        renderValue={(selected) => (
-                          <div style={{ display: "flex", flexWrap: "wrap" }}>
-                            {selected.map((value) => (
-                              <div key={value}>
-                                <ListItemText
-                                  primary={
-                                    staff.find(
-                                      (staffMember) =>
-                                        staffMember.value === value
-                                    )?.text
-                                  }
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        MenuProps={{
-                          PaperProps: {
-                            style: {
-                              maxHeight: 300,
-                            },
-                          },
+                      <TableHead
+                        sx={{
+                          borderBottom: "2px solid silver",
+                          fontSize: "medium",
                         }}
                       >
-                        {staff.map((option) => (
-                          <MenuItem key={option.value} value={option.value}>
-                            <Checkbox
-                              checked={selectedStaff.indexOf(option.value) > -1}
-                            />
-                            <ListItemText primary={option.text} />
-                          </MenuItem>
+                        <TableRow>
+                          <TableCell className="text-left">Impact</TableCell>
+                          <TableCell className="text-left">
+                            What is the task
+                          </TableCell>
+                          <TableCell className="text-left">
+                            How is the task done
+                          </TableCell>
+                          <TableCell className="text-left">
+                            Task Deadline
+                          </TableCell>
+                          <TableCell className="text-left">
+                            Task Assigned To
+                          </TableCell>
+                          <TableCell className="text-left">Due Date</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {selectedTasks?.map((update) => (
+                          <TableRow key={update.id}>
+                            <TableCell
+                              className="text-left"
+                              // sx={{ border: "1px solid silver" }}
+                            >
+                              {update.impact}
+                            </TableCell>
+                            <TableCell
+                              className="text-left"
+                              // sx={{ border: "1px solid silver" }}
+                            >
+                              {update.task}
+                            </TableCell>
+                            <TableCell
+                              className="text-left"
+                              // sx={{ border: "1px solid silver" }}
+                            >
+                              {update.how}
+                            </TableCell>
+                            <TableCell
+                              className="text-left"
+                              // sx={{ border: "1px solid silver" }}
+                            >
+                              {update.deadline}
+                            </TableCell>
+                            <TableCell
+                              className="text-left"
+                              // sx={{ border: "1px solid silver" }}
+                            >
+                              {update.assignedTo}
+                            </TableCell>
+                            <TableCell
+                              className="text-left"
+                              // sx={{ border: "1px solid silver" }}
+                            >
+                              {formatDates(update.dueDate)}
+                            </TableCell>
+                          </TableRow>
                         ))}
-                      </Select>
-                    </FormControl>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    className="mt-5"
-                    style={{ marginTop: "10px" }}
-                  >
-                    <TextField
-                      label="Email"
-                      multiline
-                      rows={1}
-                      fullWidth
-                      required
-                      value={email}
-                      onChange={handleEmailChange}
-                    />
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    className="mt-5"
-                    style={{ marginTop: "10px" }}
-                  >
-                    <TextField
-                      label="Comments"
-                      multiline
-                      rows={1}
-                      fullWidth
-                      required
-                      value={comments}
-                      onChange={handleCommentsChange}
-                    />
-                  </Grid>
-                  <div
-                    className="p-30 pt-24 pb-24"
-                    style={{
-                      display: "flex",
-                      justifyContent: "end",
-                    }}
-                  >
-                    <div>
-                      <Button
-                        variant="contained"
-                        style={{ color: "white", backgroundColor: "blue" }}
-                        onClick={handleSubmit}
-                      >
-                        Send Email
-                      </Button>
+                      </TableBody>
+                    </Table>
+                    <div>&nbsp;</div>
+                    <Grid item xs={12} className="mt-5">
+                      <FormControl fullWidth sx={{ flexGrow: 1 }}>
+                        <InputLabel id="staff-label">Select Staff</InputLabel>
+                        <Select
+                          labelId="staff-label"
+                          id="staff-select"
+                          multiple
+                          value={selectedStaff}
+                          onChange={handleStaffChange}
+                          renderValue={(selected) => (
+                            <div style={{ display: "flex", flexWrap: "wrap" }}>
+                              {selected.map((value) => (
+                                <div key={value}>
+                                  <ListItemText
+                                    primary={
+                                      staff.find(
+                                        (staffMember) =>
+                                          staffMember.value === value
+                                      )?.text
+                                    }
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          MenuProps={{
+                            PaperProps: {
+                              style: {
+                                maxHeight: 300,
+                              },
+                            },
+                          }}
+                        >
+                          {staff.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              <Checkbox
+                                checked={
+                                  selectedStaff.indexOf(option.value) > -1
+                                }
+                              />
+                              <ListItemText primary={option.text} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      className="mt-5"
+                      style={{ marginTop: "10px" }}
+                    >
+                      <TextField
+                        label="Email"
+                        multiline
+                        rows={1}
+                        fullWidth
+                        required
+                        value={email}
+                        onChange={handleEmailChange}
+                      />
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      className="mt-5"
+                      style={{ marginTop: "10px" }}
+                    >
+                      <TextField
+                        label="Comments"
+                        // className={`${commentExtValidation ? "border border-red-500" : ""}`}
+                        className="border-0"
+                        multiline
+                        rows={1}
+                        fullWidth
+                        required
+                        value={comments}
+                        onChange={handleCommentsChange}
+                      />
+                      <div className="mt-5 text-sm text-red-500">
+                        {commentExtValidation}
+                      </div>
+                    </Grid>
+                    <div
+                      className="p-30 pt-24 pb-24"
+                      style={{
+                        display: "flex",
+                        justifyContent: "end",
+                      }}
+                    >
+                      <div>
+                        <Button
+                          disabled={isLoading}
+                          variant="contained"
+                          style={{ color: "white", backgroundColor: "blue" }}
+                          onClick={handleSubmit}
+                        >
+                          Send Email
+                        </Button>
+                      </div>
                     </div>
-                  </div>
+                  </Grid>
                 </Grid>
-              </Grid>
+              </Box>
             </Box>
-          </Box>
-        </Fade>
-      </Modal>
-      {/* <SwipeableViews style={{ overflow: "hidden" }}>
+          </Fade>
+        </Modal>
+        {/* <SwipeableViews style={{ overflow: "hidden" }}>
         <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div>
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
@@ -3559,402 +3637,416 @@ const EvaluationApproval = ({
           </div>
         </Paper>
       </SwipeableViews> */}
-      <SwipeableViews style={{ overflow: "hidden" }}>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
-          <div className="flex items-center w-full border-b justify-between p-30 pt-14 pb-14">
-            <h2 className="text-2xl font-semibold">Change Evaluation Team</h2>
-          </div>
-          <div className="evaluation-team-container grid p-30 pt-24 pb-24 grid-cols-1 md:grid-cols-3 gap-4">
-            {uniqueEvaluationTeam?.map((list, index) => (
-              <div
-                className="inventory-grid grid items-center gap-4 py-3 px-2"
-                key={index}
-              >
+        <SwipeableViews style={{ overflow: "hidden" }}>
+          <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
+            <div className="flex items-center w-full border-b justify-between p-30 pt-14 pb-14">
+              <h2 className="text-2xl font-semibold">Change Evaluation Team</h2>
+            </div>
+            <div className="evaluation-team-container grid p-30 pt-24 pb-24 grid-cols-1 md:grid-cols-3 gap-4">
+              {uniqueEvaluationTeam?.map((list, index) => (
                 <div
-                  className="flex items-center"
-                  style={{ marginTop: "15px" }}
+                  className="inventory-grid grid items-center gap-4 py-3 px-2"
+                  key={index}
                 >
+                  <div
+                    className="flex items-center"
+                    style={{ marginTop: "15px" }}
+                  >
+                    <img
+                      src="/assets/images/etc/userpic.png"
+                      alt="Card cover image"
+                      className="rounded-full mr-4"
+                      style={{ width: "4rem", height: "4rem" }}
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-semibold leading-none">
+                        {list.staffName}
+                      </span>
+                      <span className="text-sm text-secondary leading-none pt-5">
+                        {list?.roleName}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Paper>
+        </SwipeableViews>
+        <SwipeableViews>
+          <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
+            <div
+              _ngcontent-fyk-c288=""
+              class="flex items-center w-full p-30 pt-12 pb-12 border-b justify-between"
+            >
+              <h2 className="text-2xl font-semibold">Stake Holders</h2>
+              <TextField
+                variant="filled"
+                fullWidth
+                placeholder="Search"
+                // style={{ marginBottom: "15px" }}
+                //   value={searchTerm}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment
+                      position="start"
+                      style={{ marginTop: "0px" }}
+                    >
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ width: 320 }}
+              />
+            </div>
+            {contentDetails?.consultaion?.map((itm) => (
+              <div className="p-30 pt-24 pb-24">
+                <div className="flex items-center">
                   <img
                     src="/assets/images/etc/userpic.png"
                     alt="Card cover image"
                     className="rounded-full mr-4"
-                    style={{ width: "4rem", height: "4rem" }}
+                    style={{ width: "3.5rem", height: "3.5rem" }}
                   />
                   <div className="flex flex-col">
                     <span className="font-semibold leading-none">
-                      {list.staffName}
+                      {itm?.staff}
                     </span>
                     <span className="text-sm text-secondary leading-none pt-5">
-                      {list?.roleName}
+                      Consulted On {formatDates(itm?.consultedDate)}
                     </span>
                   </div>
+                  {itm.requestTypeName != "Document" && AppActivity.canEdit && (
+                    <div className="task-button ml-auto">
+                      <button
+                        className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
+                        onClick={() => handelreview(itm.id)}
+                        style={{
+                          backgroundColor:
+                            itm?.reviewd || clickedTasks[itm.id]
+                              ? "rgba(220,252,231)"
+                              : "",
+                        }}
+                      >
+                        {itm?.reviewd || clickedTasks[itm.id] ? (
+                          <span className="mat-button-wrapper">
+                            You have reviewed this just now
+                          </span>
+                        ) : (
+                          <span className="mat-button-wrapper">
+                            Click here to mark as reviewed
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
-          </div>
-        </Paper>
-      </SwipeableViews>
-      <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
-          <div
-            _ngcontent-fyk-c288=""
-            class="flex items-center w-full p-30 pt-12 pb-12 border-b justify-between"
-          >
-            <h2 className="text-2xl font-semibold">Stake Holders</h2>
-            <TextField
-              variant="filled"
-              fullWidth
-              placeholder="Search"
-              // style={{ marginBottom: "15px" }}
-              //   value={searchTerm}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start" style={{ marginTop: "0px" }}>
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ width: 320 }}
-            />
-          </div>
-          {contentDetails?.consultaion?.map((itm) => (
-            <div className="p-30 pt-24 pb-24">
-              <div className="flex items-center">
-                <img
-                  src="/assets/images/etc/userpic.png"
-                  alt="Card cover image"
-                  className="rounded-full mr-4"
-                  style={{ width: "3.5rem", height: "3.5rem" }}
-                />
-                <div className="flex flex-col">
-                  <span className="font-semibold leading-none">
-                    {itm?.staff}
-                  </span>
-                  <span className="text-sm text-secondary leading-none pt-5">
-                    Consulted On {formatDates(itm?.consultedDate)}
-                  </span>
+                <div
+                  className="flex items-center"
+                  style={{ marginTop: "10px" }}
+                >
+                  <h5> {itm?.remark}</h5>
                 </div>
-                {itm.requestTypeName != "Document" && AppActivity.canEdit && (
-                  <div className="task-button ml-auto">
-                    <button
-                      className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
-                      onClick={() => handelreview(itm.id)}
-                      style={{
-                        backgroundColor:
-                          itm?.reviewd || clickedTasks[itm.id]
-                            ? "rgba(220,252,231)"
-                            : "",
-                      }}
-                    >
-                      {itm?.reviewd || clickedTasks[itm.id] ? (
-                        <span className="mat-button-wrapper">
-                          You have reviewed this just now
-                        </span>
-                      ) : (
-                        <span className="mat-button-wrapper">
-                          Click here to mark as reviewed
-                        </span>
-                      )}
-                    </button>
-                  </div>
-                )}
-              </div>
-              <div className="flex items-center" style={{ marginTop: "10px" }}>
-                <h5> {itm?.remark}</h5>
-              </div>
-              <div className="mt-5" style={{ marginTop: "20px" }}>
-                <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                  Task Added
-                </span>
+                <div className="mt-5" style={{ marginTop: "20px" }}>
+                  <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                    Task Added
+                  </span>
 
-                <span className="task-detail-value">{itm.tasks[0]}</span>
-              </div>
-              <div>&nbsp;</div>
-              {!AppActivity.canEdit && itm.reviews?.length == 0 && (
-                <span className="task-detail-value">No Reviews added</span>
-              )}
-              {itm.reviews?.length > 0 || showReview ? (
-                <div>
-                  <Accordion
-                    expanded={expanded == itm.id}
-                    onChange={handleExpansionChange(itm.id)}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="panel1a-content"
-                      id="panel1a-header"
-                      style={{
-                        display: "flex",
-                        justifyContent: AppActivity.canEdit
-                          ? "space-between"
-                          : "flex-start",
-                      }}
+                  <span className="task-detail-value">{itm.tasks[0]}</span>
+                </div>
+                <div>&nbsp;</div>
+                {!AppActivity.canEdit && itm.reviews?.length == 0 && (
+                  <span className="task-detail-value">No Reviews added</span>
+                )}
+                {itm.reviews?.length > 0 || showReview ? (
+                  <div>
+                    <Accordion
+                      expanded={expanded == itm.id}
+                      onChange={handleExpansionChange(itm.id)}
                     >
-                      {AppActivity.canEdit && (
-                        <button
-                          className="custom-add-review-button"
-                          style={{ marginRight: 16 }}
-                        >
-                          Add Review
-                        </button>
-                      )}
-                      <div
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
                         style={{
                           display: "flex",
-                          alignItems: "center",
-                          flexGrow: 1, // This makes the div take up remaining space
                           justifyContent: AppActivity.canEdit
-                            ? "flex-end"
+                            ? "space-between"
                             : "flex-start",
                         }}
                       >
-                        <Typography>
-                          <span className="text-brown">
-                            {itm?.reviews?.length} Review
-                          </span>{" "}
-                          {hasAddedComment(itm.reviews) && (
-                            <span className="text-green">
-                              (You have added 1 review)
-                            </span>
-                          )}
-                        </Typography>
-                      </div>
-                    </AccordionSummary>
-
-                    <AccordionDetails>
-                      {AppActivity.canEdit && !hasAddedComment(itm.reviews) && (
-                        <div className="mat-form-field-wrapper">
-                          <div className="mat-form-field-flex">
-                            <img
-                              src="/assets/images/etc/userpic.png"
-                              alt="Card cover image"
-                              className="rounded-full mr-4"
-                              style={{
-                                width: "5rem",
-                                height: "5rem",
-                              }}
-                            />
-                            <div
-                              className="mat-form-field-infix"
-                              style={{ position: "relative", width: "100%" }}
-                            >
-                              <textarea
-                                rows="2"
-                                className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                placeholder="Write a comment..."
-                                id="ImpTaskReview265"
-                                data-placeholder="Write a comment..."
-                                aria-invalid="false"
-                                aria-required="false"
-                                style={{
-                                  height: "36px",
-                                  width: "100%",
-                                  paddingRight: "100px",
-                                }}
-                                onChange={(e) =>
-                                  setHandelCommentRemark(e.target.value)
-                                }
-                              ></textarea>
-                              <button
-                                className="custom-update-button"
-                                onClick={() => handelCommentImp(itm.id, 1, 1)}
-                              >
-                                Save
-                              </button>
-                              <span className="mat-form-field-label-wrapper"></span>
-                            </div>
-                          </div>
-
-                          <div className="mat-form-field-subscript-wrapper">
-                            <div
-                              className="mat-form-field-hint-wrapper"
-                              style={{
-                                opacity: 1,
-                                transform: "translateY(0%)",
-                              }}
-                            ></div>
-                          </div>
+                        {AppActivity.canEdit && (
+                          <button
+                            className="custom-add-review-button"
+                            style={{ marginRight: 16 }}
+                          >
+                            Add Review
+                          </button>
+                        )}
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexGrow: 1, // This makes the div take up remaining space
+                            justifyContent: AppActivity.canEdit
+                              ? "flex-end"
+                              : "flex-start",
+                          }}
+                        >
+                          <Typography>
+                            <span className="text-brown">
+                              {itm?.reviews?.length} Review
+                            </span>{" "}
+                            {hasAddedComment(itm.reviews) && (
+                              <span className="text-green">
+                                (You have added 1 review)
+                              </span>
+                            )}
+                          </Typography>
                         </div>
-                      )}
-                      {itm?.reviews?.map((rwv, index) => (
-                        <div className="mat-form-field-wrapper" key={index}>
-                          <div className="mat-form-field-flex">
-                            <img
-                              src="/assets/images/etc/userpic.png"
-                              alt="Card cover image"
-                              className="rounded-full mr-4"
-                              style={{
-                                width: "3rem",
-                                height: "3rem",
-                              }}
-                            />
+                      </AccordionSummary>
 
-                            {AppActivity.canEdit && isMyComment(rwv) ? (
-                              <div
-                                className="mat-form-field-infix"
-                                style={{ position: "relative" }}
-                              >
-                                <textarea
-                                  ref={textareaRef}
-                                  rows="2"
-                                  className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                  placeholder="Write a comment..."
-                                  id="ImpTaskReview265"
-                                  data-placeholder="Write a comment..."
-                                  aria-invalid="false"
-                                  aria-required="false"
+                      <AccordionDetails>
+                        {AppActivity.canEdit &&
+                          !hasAddedComment(itm.reviews) && (
+                            <div className="mat-form-field-wrapper">
+                              <div className="mat-form-field-flex">
+                                <img
+                                  src="/assets/images/etc/userpic.png"
+                                  alt="Card cover image"
+                                  className="rounded-full mr-4"
                                   style={{
-                                    height: "36px",
-                                    width: "100%",
-                                    paddingRight: "100px",
+                                    width: "5rem",
+                                    height: "5rem",
                                   }}
-                                  defaultValue={
-                                    index[0] ? handelCommentRemark : rwv?.remark
-                                  }
-                                  onChange={(e) =>
-                                    setHandelCommentRemark(e.target.value)
-                                  }
-                                ></textarea>
-
-                                <button
-                                  className="custom-update-button"
-                                  onClick={() => {
-                                    if (itm.reviews?.length > 0) {
-                                      const reviewId =
-                                        itm.reviews?.length === 1
-                                          ? itm.reviews[0].id
-                                          : itm.reviews[1].id;
-                                      handelCommentImp(itm.id, reviewId, 2);
-                                    } else {
-                                      // Handle the case where there are no reviews
-                                      console.error("No reviews available");
-                                    }
-                                    if (textareaRef.current) {
-                                      textareaRef.current.focus();
-                                    }
+                                />
+                                <div
+                                  className="mat-form-field-infix"
+                                  style={{
+                                    position: "relative",
+                                    width: "100%",
                                   }}
                                 >
-                                  Update
-                                </button>
+                                  <textarea
+                                    rows="2"
+                                    className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                    placeholder="Write a comment..."
+                                    id="ImpTaskReview265"
+                                    data-placeholder="Write a comment..."
+                                    aria-invalid="false"
+                                    aria-required="false"
+                                    style={{
+                                      height: "36px",
+                                      width: "100%",
+                                      paddingRight: "100px",
+                                    }}
+                                    onChange={(e) =>
+                                      setHandelCommentRemark(e.target.value)
+                                    }
+                                  ></textarea>
+                                  <button
+                                    className="custom-update-button"
+                                    onClick={() =>
+                                      handelCommentImp(itm.id, 1, 1)
+                                    }
+                                  >
+                                    Save
+                                  </button>
+                                  <span className="mat-form-field-label-wrapper"></span>
+                                </div>
+                              </div>
 
-                                <span className="mat-form-field-label-wrapper"></span>
+                              <div className="mat-form-field-subscript-wrapper">
+                                <div
+                                  className="mat-form-field-hint-wrapper"
+                                  style={{
+                                    opacity: 1,
+                                    transform: "translateY(0%)",
+                                  }}
+                                ></div>
                               </div>
-                            ) : (
-                              <div className="mat-form-field-infix">
-                                <span className="">
-                                  {rwv?.createdByStaffName + "55"}
-                                </span>
-                                &nbsp;&nbsp;
-                                <span className=" pl-1 text-gray">
-                                  {rwv?.remark}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                          <span
-                            style={{
-                              fontSize: "x-small",
-                              paddingLeft: "35px",
-                            }}
-                          >
-                            {" "}
-                            {itm.reviews[0]?.updatedAt &&
-                              new Date(
-                                itm.reviews[0]?.updatedAt
-                              ).toLocaleString("en-US", {
-                                month: "long",
-                                day: "numeric",
-                                year: "numeric",
-                                hour: "numeric",
-                                minute: "numeric",
-                                second: "numeric",
-                                hour12: true,
-                                timeZoneName: "short",
-                              })}
-                          </span>
-                          <div className="mat-form-field-subscript-wrapper">
-                            <div
-                              className="mat-form-field-hint-wrapper"
+                            </div>
+                          )}
+                        {itm?.reviews?.map((rwv, index) => (
+                          <div className="mat-form-field-wrapper" key={index}>
+                            <div className="mat-form-field-flex">
+                              <img
+                                src="/assets/images/etc/userpic.png"
+                                alt="Card cover image"
+                                className="rounded-full mr-4"
+                                style={{
+                                  width: "3rem",
+                                  height: "3rem",
+                                }}
+                              />
+
+                              {AppActivity.canEdit && isMyComment(rwv) ? (
+                                <div
+                                  className="mat-form-field-infix"
+                                  style={{ position: "relative" }}
+                                >
+                                  <textarea
+                                    ref={textareaRef}
+                                    rows="2"
+                                    className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                    placeholder="Write a comment..."
+                                    id="ImpTaskReview265"
+                                    data-placeholder="Write a comment..."
+                                    aria-invalid="false"
+                                    aria-required="false"
+                                    style={{
+                                      height: "36px",
+                                      width: "100%",
+                                      paddingRight: "100px",
+                                    }}
+                                    defaultValue={
+                                      index[0]
+                                        ? handelCommentRemark
+                                        : rwv?.remark
+                                    }
+                                    onChange={(e) =>
+                                      setHandelCommentRemark(e.target.value)
+                                    }
+                                  ></textarea>
+
+                                  <button
+                                    className="custom-update-button"
+                                    onClick={() => {
+                                      if (itm.reviews?.length > 0) {
+                                        const reviewId =
+                                          itm.reviews?.length === 1
+                                            ? itm.reviews[0].id
+                                            : itm.reviews[1].id;
+                                        handelCommentImp(itm.id, reviewId, 2);
+                                      } else {
+                                        // Handle the case where there are no reviews
+                                        console.error("No reviews available");
+                                      }
+                                      if (textareaRef.current) {
+                                        textareaRef.current.focus();
+                                      }
+                                    }}
+                                  >
+                                    Update
+                                  </button>
+
+                                  <span className="mat-form-field-label-wrapper"></span>
+                                </div>
+                              ) : (
+                                <div className="mat-form-field-infix">
+                                  <span className="">
+                                    {rwv?.createdByStaffName + "55"}
+                                  </span>
+                                  &nbsp;&nbsp;
+                                  <span className=" pl-1 text-gray">
+                                    {rwv?.remark}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                            <span
                               style={{
-                                opacity: 1,
-                                transform: "translateY(0%)",
+                                fontSize: "x-small",
+                                paddingLeft: "35px",
                               }}
-                            ></div>
+                            >
+                              {" "}
+                              {itm.reviews[0]?.updatedAt &&
+                                new Date(
+                                  itm.reviews[0]?.updatedAt
+                                ).toLocaleString("en-US", {
+                                  month: "long",
+                                  day: "numeric",
+                                  year: "numeric",
+                                  hour: "numeric",
+                                  minute: "numeric",
+                                  second: "numeric",
+                                  hour12: true,
+                                  timeZoneName: "short",
+                                })}
+                            </span>
+                            <div className="mat-form-field-subscript-wrapper">
+                              <div
+                                className="mat-form-field-hint-wrapper"
+                                style={{
+                                  opacity: 1,
+                                  transform: "translateY(0%)",
+                                }}
+                              ></div>
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </AccordionDetails>
-                  </Accordion>
-                </div>
-              ) : (
-                AppActivity.canEdit &&
-                !hasAddedComment(itm.reviews) && (
-                  <div className="mat-form-field-wrapper">
-                    <div className="mat-form-field-flex">
-                      <img
-                        src="/assets/images/etc/userpic.png"
-                        alt="Card cover image"
-                        className="rounded-full mr-4"
-                        style={{
-                          width: "5rem",
-                          height: "5rem",
-                        }}
-                      />
-                      <div
-                        className="mat-form-field-infix"
-                        style={{ position: "relative", width: "100%" }}
-                      >
-                        <textarea
-                          rows="2"
-                          className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                          placeholder="Write a comment..."
-                          id="ImpTaskReview265"
-                          data-placeholder="Write a comment..."
-                          aria-invalid="false"
-                          aria-required="false"
+                        ))}
+                      </AccordionDetails>
+                    </Accordion>
+                  </div>
+                ) : (
+                  AppActivity.canEdit &&
+                  !hasAddedComment(itm.reviews) && (
+                    <div className="mat-form-field-wrapper">
+                      <div className="mat-form-field-flex">
+                        <img
+                          src="/assets/images/etc/userpic.png"
+                          alt="Card cover image"
+                          className="rounded-full mr-4"
                           style={{
-                            height: "36px",
-                            width: "100%",
-                            paddingRight: "100px",
+                            width: "5rem",
+                            height: "5rem",
                           }}
-                          onChange={(e) =>
-                            setHandelCommentRemark(e.target.value)
-                          }
-                        ></textarea>
-                        <button
-                          className="custom-update-button"
-                          onClick={() => handelCommentImp(itm.id, 1, 1)}
+                        />
+                        <div
+                          className="mat-form-field-infix"
+                          style={{ position: "relative", width: "100%" }}
                         >
-                          Save
-                        </button>
-                        <span className="mat-form-field-label-wrapper"></span>
+                          <textarea
+                            rows="2"
+                            className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                            placeholder="Write a comment..."
+                            id="ImpTaskReview265"
+                            data-placeholder="Write a comment..."
+                            aria-invalid="false"
+                            aria-required="false"
+                            style={{
+                              height: "36px",
+                              width: "100%",
+                              paddingRight: "100px",
+                            }}
+                            onChange={(e) =>
+                              setHandelCommentRemark(e.target.value)
+                            }
+                          ></textarea>
+                          <button
+                            className="custom-update-button"
+                            onClick={() => handelCommentImp(itm.id, 1, 1)}
+                          >
+                            Save
+                          </button>
+                          <span className="mat-form-field-label-wrapper"></span>
+                        </div>
+                      </div>
+
+                      <div className="mat-form-field-subscript-wrapper">
+                        <div
+                          className="mat-form-field-hint-wrapper"
+                          style={{
+                            opacity: 1,
+                            transform: "translateY(0%)",
+                          }}
+                        ></div>
                       </div>
                     </div>
-
-                    <div className="mat-form-field-subscript-wrapper">
-                      <div
-                        className="mat-form-field-hint-wrapper"
-                        style={{
-                          opacity: 1,
-                          transform: "translateY(0%)",
-                        }}
-                      ></div>
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
-          ))}
-        </Paper>
-      </SwipeableViews>
-      <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
-          <div
-            _ngcontent-fyk-c288=""
-            class="flex items-center w-full p-30 pt-12 pb-12 border-b justify-between"
-          >
-            <h2 className="text-2xl font-semibold">Evaluation Impacts</h2>
-            {/* <Button
+                  )
+                )}
+              </div>
+            ))}
+          </Paper>
+        </SwipeableViews>
+        <SwipeableViews>
+          <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
+            <div
+              _ngcontent-fyk-c288=""
+              class="flex items-center w-full p-30 pt-12 pb-12 border-b justify-between"
+            >
+              <h2 className="text-2xl font-semibold">Evaluation Impacts</h2>
+              {/* <Button
                     
                     className="whitespace-nowrap ms-5"
                     variant="contained"
@@ -3966,189 +4058,790 @@ const EvaluationApproval = ({
                   >
                     Open AI
                   </Button> */}
-            <TextField
-              variant="filled"
-              fullWidth
-              placeholder="Search"
-              // style={{ marginBottom: "15px" }}
-              //   value={searchTerm}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start" style={{ marginTop: "0px" }}>
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ width: 320 }}
-            />
-          </div>
-          <div className="p-30 pt-24 pb-24">
-            {showRiskAnalysisChart && (
-              <div id="chart" class="mb-2 mt-2 p-2">
-                <Chart
-                  options={{
-                    ...riskAnalysisChartOptions,
-                    annotations: riskAnalysisChartOptions.annotations || {},
-                    dataLabels: riskAnalysisChartOptions.dataLabels || {},
-                    grid: riskAnalysisChartOptions.grid || {},
-                    stroke: riskAnalysisChartOptions.stroke || {},
-                    title: riskAnalysisChartOptions.title || {},
-                    xaxis: riskAnalysisChartOptions.xaxis || {},
-                  }}
-                  series={riskAnalysisChartOptions.series || []}
-                  type={riskAnalysisChartOptions.chart.type || "scatter"}
-                  height={riskAnalysisChartOptions.chart.height || 350}
-                />
-              </div>
-            )}
+              <TextField
+                variant="filled"
+                fullWidth
+                placeholder="Search"
+                // style={{ marginBottom: "15px" }}
+                //   value={searchTerm}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment
+                      position="start"
+                      style={{ marginTop: "0px" }}
+                    >
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ width: 320 }}
+              />
+            </div>
+            <div className="p-30 pt-24 pb-24">
+              {showRiskAnalysisChart && (
+                <div id="chart" class="mb-2 mt-2 p-2">
+                  <Chart
+                    options={{
+                      ...riskAnalysisChartOptions,
+                      annotations: riskAnalysisChartOptions.annotations || {},
+                      dataLabels: riskAnalysisChartOptions.dataLabels || {},
+                      grid: riskAnalysisChartOptions.grid || {},
+                      stroke: riskAnalysisChartOptions.stroke || {},
+                      title: riskAnalysisChartOptions.title || {},
+                      xaxis: riskAnalysisChartOptions.xaxis || {},
+                    }}
+                    series={riskAnalysisChartOptions.series || []}
+                    type={riskAnalysisChartOptions.chart.type || "scatter"}
+                    height={riskAnalysisChartOptions.chart.height || 350}
+                  />
+                </div>
+              )}
 
-            <table className="task-table mat-table task_table">
-              <thead className="task-table-header" style={{ display: "none" }}>
-                {/* Empty header */}
-              </thead>
-              <tbody className="task-table-body">
-                {contentDetails?.tasklist ? (
-                  contentDetails?.tasklist.map((imptsk) => (
-                    <div key={imptsk.id} className="mt-24 border-b pb-24">
-                      <div className="task-table-row mat-row">
-                        <div className="task-table-cell mat-cell">
-                          <div className="task-header p-0 flex items-center">
-                            <div className="task-id flex flex-col">
-                              <span
-                                className="task-id-text font-semibold text-xl leading-none"
-                                style={{ fontSize: "20px" }}
-                              >
-                                Task #{imptsk?.sourceTaskId}
-                              </span>
-                            </div>
+              <table className="task-table mat-table task_table">
+                <thead
+                  className="task-table-header"
+                  style={{ display: "none" }}
+                >
+                  {/* Empty header */}
+                </thead>
+                <tbody className="task-table-body">
+                  {contentDetails?.tasklist ? (
+                    contentDetails?.tasklist.map((imptsk) => (
+                      <div key={imptsk.id} className="mt-24 border-b pb-24">
+                        <div className="task-table-row mat-row">
+                          <div className="task-table-cell mat-cell">
+                            <div className="task-header p-0 flex items-center">
+                              <div className="task-id flex flex-col">
+                                <span
+                                  className="task-id-text font-semibold text-xl leading-none"
+                                  style={{ fontSize: "20px" }}
+                                >
+                                  Task #{imptsk?.sourceTaskId}
+                                </span>
+                              </div>
 
-                            {imptsk.requestTypeName != "Document" &&
-                              AppActivity.canEdit && (
-                                <div className="task-button ml-auto">
-                                  <button
-                                    className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
-                                    onClick={() =>
-                                      handelImpactreview(imptsk.id)
-                                    }
-                                    disabled={
-                                      imptsk?.reviewd || clickedTasks[imptsk.id]
-                                    }
-                                    style={{
-                                      backgroundColor:
+                              {imptsk.requestTypeName != "Document" &&
+                                AppActivity.canEdit && (
+                                  <div className="task-button ml-auto">
+                                    <button
+                                      className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
+                                      onClick={() =>
+                                        handelImpactreview(imptsk.id)
+                                      }
+                                      disabled={
                                         imptsk?.reviewd ||
                                         clickedTasks[imptsk.id]
-                                          ? "rgba(220,252,231)"
-                                          : "",
-                                    }}
-                                  >
-                                    {imptsk?.reviewd ||
-                                    clickedTasks[imptsk.id] ? (
-                                      <span className="mat-button-wrapper">
-                                        You have reviewed this just now
-                                      </span>
-                                    ) : (
-                                      <span className="mat-button-wrapper">
-                                        Click here to mark as reviewed
-                                      </span>
-                                    )}
-                                  </button>
-                                </div>
+                                      }
+                                      style={{
+                                        backgroundColor:
+                                          imptsk?.reviewd ||
+                                          clickedTasks[imptsk.id]
+                                            ? "rgba(220,252,231)"
+                                            : "",
+                                      }}
+                                    >
+                                      {imptsk?.reviewd ||
+                                      clickedTasks[imptsk.id] ? (
+                                        <span className="mat-button-wrapper">
+                                          You have reviewed this just now
+                                        </span>
+                                      ) : (
+                                        <span className="mat-button-wrapper">
+                                          Click here to mark as reviewed
+                                        </span>
+                                      )}
+                                    </button>
+                                  </div>
+                                )}
+                            </div>
+                            {imptsk.sourceTaskId !== imptsk.id &&
+                              (!imptsk.showPreviousTasks ||
+                                imptsk.showPreviousTasks === null) && (
+                                <span
+                                  className="text-sm text-secondary text-blue-500 font-bold cursor-pointer leading-none mt-1 ms-3"
+                                  onClick={() => toggleDetails(imptsk.id)}
+                                >
+                                  {selectedTaskId !== imptsk.id
+                                    ? "Show previous versions"
+                                    : "Hide previous versions"}
+                                </span>
                               )}
-                          </div>
-                          {imptsk.sourceTaskId !== imptsk.id &&
-                            (!imptsk.showPreviousTasks ||
-                              imptsk.showPreviousTasks === null) && (
-                              <span
-                                className="text-sm text-secondary text-blue-500 font-bold cursor-pointer leading-none mt-1 ms-3"
-                                onClick={() => toggleDetails(imptsk.id)}
-                              >
-                                {selectedTaskId !== imptsk.id
-                                  ? "Show previous versions"
-                                  : "Hide previous versions"}
-                              </span>
-                            )}
 
-                          {selectedTaskId === imptsk.id &&
-                            previousTasks[imptsk.id] &&
-                            previousTasks[imptsk.id].map((itm) => (
-                              <div
-                                className="task-details px-0 mt-0 pt-0 border "
-                                key={itm.id}
-                              >
-                                <div class="mt-5 ms-9 font-semibold">
-                                  V{itm.evaluationVersion}
+                            {selectedTaskId === imptsk.id &&
+                              previousTasks[imptsk.id] &&
+                              previousTasks[imptsk.id].map((itm) => (
+                                <div
+                                  className="task-details px-0 mt-0 pt-0 border "
+                                  key={itm.id}
+                                >
+                                  <div class="mt-5 ms-9 font-semibold">
+                                    V{itm.evaluationVersion}
+                                  </div>
+                                  <div className="task-detail prose prose-sm max-w-5xl mt-0 pt-0">
+                                    <div className="task-detail-item mt-0 pt-0">
+                                      <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
+                                        Impact
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-5">
+                                        {itm.particularName +
+                                          ">" +
+                                          itm.particularSubName}
+                                      </span>
+                                    </div>
+                                    <div className="task-detail-item mt-0">
+                                      <span className="task-detail-label bg-default d-inline-block mt-3 rounded text-secondary font-semibold">
+                                        What is Task
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-3">
+                                        {itm.actionWhat}
+                                      </span>
+                                    </div>
+                                    <div className="task-detail-item mt-0">
+                                      <span className="task-detail-label bg-default d-inline-block mt-3 rounded text-secondary font-semibold">
+                                        How is Task done
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-3">
+                                        {itm.actionHow}
+                                      </span>
+                                    </div>
+                                    <div className="task-detail-item mt-0">
+                                      <span className="task-detail-label bg-default d-inline-block  rounded text-secondary font-semibold">
+                                        Assigned to
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-3">
+                                        {itm.assignedStaff}
+                                      </span>
+                                      <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-3 text-secondary font-semibold">
+                                        Due Date
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-3">
+                                        {formatDates(itm.dueDate)}
+                                      </span>
+                                      <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-3 text-secondary font-semibold">
+                                        Deadline
+                                      </span>
+                                      <span className="task-detail-value d-inline-block mt-3">
+                                        {itm?.deadlineDisplay}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  {itm?.changeImpactTaskReviews?.length !=
+                                    0 && (
+                                    <Accordion
+                                      expanded={expanded === "panel2"}
+                                      onChange={handleExpansionChange("panel2")}
+                                      className="mt-6 m-10"
+                                    >
+                                      <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                      >
+                                        <Typography>
+                                          <span className="text-brown">
+                                            {
+                                              itm?.changeImpactTaskReviews
+                                                ?.length
+                                            }{" "}
+                                            Reviews
+                                          </span>{" "}
+                                        </Typography>
+                                      </AccordionSummary>
+                                      {itm?.changeImpactTaskReviews?.map(
+                                        (rivew) => (
+                                          <AccordionDetails>
+                                            <div className="mat-form-field-wrapper">
+                                              <div className="mat-form-field-flex">
+                                                <img
+                                                  src="/assets/images/etc/userpic.png"
+                                                  alt="Card cover image"
+                                                  className="rounded-full mr-4"
+                                                  style={{
+                                                    width: "3rem",
+                                                    height: "3rem",
+                                                  }}
+                                                />
+                                                <div>
+                                                  <div className="mat-form-field-infix mt-5">
+                                                    <span className="">
+                                                      {
+                                                        rivew?.createdByStaffName
+                                                      }
+                                                    </span>
+                                                    -{" "}
+                                                    <span className="text-grey">
+                                                      {rivew?.remark}
+                                                    </span>
+                                                  </div>
+                                                  <p
+                                                    className="mat-form-field-infix text-grey"
+                                                    style={{
+                                                      fontSize: "smaller",
+                                                    }}
+                                                  >
+                                                    {rivew?.updatedAt
+                                                      ? new Date(
+                                                          rivew.updatedAt
+                                                        ).toLocaleString(
+                                                          "en-US",
+                                                          {
+                                                            year: "numeric", // e.g., "2024"
+                                                            month: "long", // e.g., "August"
+                                                            day: "numeric", // e.g., "20"
+                                                            hour: "2-digit", // e.g., "12 PM"
+                                                            minute: "2-digit", // e.g., "46"
+                                                            second: "2-digit", // e.g., "23"
+                                                            hour12: true, // Use 12-hour clock
+                                                            timeZoneName:
+                                                              "short", // e.g., "GMT+5"
+                                                          }
+                                                        )
+                                                      : null}
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </div>
+                                          </AccordionDetails>
+                                        )
+                                      )}
+                                    </Accordion>
+                                  )}
                                 </div>
-                                <div className="task-detail prose prose-sm max-w-5xl mt-0 pt-0">
-                                  <div className="task-detail-item mt-0 pt-0">
-                                    <span className="task-detail-label bg-default d-inline-block mt-10 rounded text-secondary font-semibold">
-                                      Impact
-                                    </span>
-                                    <span className="task-detail-value d-inline-block mt-5">
-                                      {itm.particularName +
-                                        ">" +
-                                        itm.particularSubName}
-                                    </span>
-                                  </div>
-                                  <div className="task-detail-item mt-0">
-                                    <span className="task-detail-label bg-default d-inline-block mt-3 rounded text-secondary font-semibold">
-                                      What is Task
-                                    </span>
-                                    <span className="task-detail-value d-inline-block mt-3">
-                                      {itm.actionWhat}
-                                    </span>
-                                  </div>
-                                  <div className="task-detail-item mt-0">
-                                    <span className="task-detail-label bg-default d-inline-block mt-3 rounded text-secondary font-semibold">
-                                      How is Task done
-                                    </span>
-                                    <span className="task-detail-value d-inline-block mt-3">
-                                      {itm.actionHow}
-                                    </span>
-                                  </div>
-                                  <div className="task-detail-item mt-0">
-                                    <span className="task-detail-label bg-default d-inline-block  rounded text-secondary font-semibold">
+                              ))}
+                            <div className="task-details p-0">
+                              <div className="task-detail prose prose-sm max-w-5xl">
+                                <div className="task-detail-item p-0 mt-0">
+                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
+                                    Impact
+                                  </span>
+                                  <span className="task-detail-value d-inline-block mt-10">
+                                    {imptsk.particularName +
+                                      ">" +
+                                      imptsk.particularSubName}
+                                  </span>
+                                </div>
+                                <div className="task-detail-item p-0 mt-0">
+                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
+                                    What is Task
+                                  </span>
+                                  <span className="task-detail-value d-inline-block mt-10">
+                                    {imptsk.actionWhat}
+                                  </span>
+                                </div>
+                                <div className="task-detail-item p-0 mt-0">
+                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
+                                    How is Task done
+                                  </span>
+                                  <span className="task-detail-value d-inline-block mt-10">
+                                    {imptsk.actionHow}
+                                  </span>
+                                </div>
+                                <div
+                                  className="task-detail-item p-0 mt-0 flex "
+                                  style={{ justifyContent: "space-between" }}
+                                >
+                                  <div>
+                                    <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
                                       Assigned to
                                     </span>
-                                    <span className="task-detail-value d-inline-block mt-3">
-                                      {itm.assignedStaff}
+                                    <span className="task-detail-value d-inline-block mt-10">
+                                      {imptsk.assignedStaff}
                                     </span>
-                                    <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-3 text-secondary font-semibold">
+                                    <span className="task-detail-label bg-default rounded  d-inline-block mt-10 ml-2 text-secondary font-semibold">
                                       Due Date
                                     </span>
-                                    <span className="task-detail-value d-inline-block mt-3">
-                                      {formatDates(itm.dueDate)}
+                                    <span className="task-detail-value d-inline-block mt-10">
+                                      {formatDates(imptsk.dueDate)}
                                     </span>
-                                    <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-3 text-secondary font-semibold">
+                                    <span className="task-detail-label bg-default rounded  d-inline-block mt-10 ml-2 text-secondary font-semibold">
                                       Deadline
                                     </span>
-                                    <span className="task-detail-value d-inline-block mt-3">
-                                      {itm?.deadlineDisplay}
+                                    <span className="task-detail-value d-inline-block mt-10">
+                                      {imptsk?.deadlineDisplay}
                                     </span>
                                   </div>
+                                  <div>
+                                    {AppActivity.canEdit && (
+                                      <div style={{ float: "right" }}>
+                                        <FormGroup>
+                                          <FormControlLabel
+                                            control={
+                                              <Checkbox
+                                                onChange={(e) =>
+                                                  handleCheckboxChange(
+                                                    e.target.checked,
+                                                    {
+                                                      id: imptsk.id,
+                                                      impact:
+                                                        imptsk.particularName +
+                                                        ">" +
+                                                        imptsk.particularSubName,
+                                                      task: imptsk.actionWhat,
+                                                      how: imptsk.actionHow,
+                                                      assignedTo:
+                                                        imptsk.assignedStaff,
+                                                      dueDate: formatDates(
+                                                        imptsk.dueDate
+                                                      ),
+                                                      deadline:
+                                                        imptsk.deadlineDisplay,
+                                                      taskId: imptsk?.id,
+                                                    }
+                                                  )
+                                                }
+                                                id="check289-input"
+                                                inputProps={{
+                                                  "aria-label":
+                                                    "primary checkbox",
+                                                }}
+                                                color="primary"
+                                              />
+                                            }
+                                            label="Need External Consultation"
+                                          />
+                                        </FormGroup>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
+                              </div>
+                              {imptsk?.riskAnalysisList?.length !== 0 &&
+                                imptsk.particularid === 78 && (
+                                  <Paper style={{ margin: "10px 0 0 0" }}>
+                                    <div
+                                      className="flex items-center w-full justify-between"
+                                      style={{
+                                        borderRadius: "20px",
+                                        backgroundColor: "rgb(241 248 255)",
+                                      }}
+                                    >
+                                      <h6
+                                        className="text-small font-semibold"
+                                        style={{ padding: "15px" }}
+                                      >
+                                        Risk Details
+                                      </h6>
+                                      <h6
+                                        className="text-1xl font-semibold"
+                                        style={{ padding: "10px" }}
+                                      >
+                                        Human Measures
+                                      </h6>
+                                      <h6
+                                        className="text-1xl font-semibold"
+                                        style={{ padding: "10px" }}
+                                      >
+                                        Technical Measures
+                                      </h6>
+                                      <h6
+                                        className="text-1xl font-semibold"
+                                        style={{ padding: "10px" }}
+                                      >
+                                        Organisational Measures
+                                      </h6>
+                                    </div>
+                                    <div>
+                                      <table className="min-w-full divide-y divide-gray-200">
+                                        <tbody>
+                                          {imptsk?.riskAnalysisList?.map(
+                                            (subs, index) =>
+                                              subs?.riskAnalysisSubTasks?.map(
+                                                (sub, subIndex) => (
+                                                  <div key={subIndex}>
+                                                    {console.log(
+                                                      subs.riskAnalysisSubTasks,
+                                                      "vvvvvvvvvvv"
+                                                    )}
 
-                                {itm?.changeImpactTaskReviews?.length != 0 && (
+                                                    {!sub
+                                                      .riskAnalysisHazardTypes
+                                                      ?.length ? (
+                                                      <>
+                                                        <div
+                                                          _ngcontent-fyk-c288=""
+                                                          class="flex items-center w-full  border-b justify-between"
+                                                        ></div>
+                                                        <div>
+                                                          <Grid
+                                                            container
+                                                            className="inventory-grid"
+                                                            sx={{
+                                                              paddingY: 2,
+                                                              paddingX: {
+                                                                xs: 2,
+                                                                md: 1,
+                                                              },
+                                                            }}
+                                                          >
+                                                            <Grid
+                                                              item
+                                                              xs={12}
+                                                              md={4}
+                                                            >
+                                                              <h6>
+                                                                {
+                                                                  sub.subTaskName
+                                                                }
+                                                              </h6>
+                                                            </Grid>
+                                                          </Grid>
+                                                          <Grid
+                                                            container
+                                                            className="inventory-grid"
+                                                            sx={{
+                                                              paddingY: 2,
+                                                              paddingX: {
+                                                                xs: 2,
+                                                                md: 1,
+                                                              },
+                                                            }}
+                                                          >
+                                                            <Grid
+                                                              item
+                                                              xs={12}
+                                                              md={4}
+                                                            >
+                                                              <h6
+                                                                style={{
+                                                                  paddingBottom:
+                                                                    "5px",
+                                                                }}
+                                                                className="text-brown"
+                                                              >
+                                                                <b>
+                                                                  Risk Analysis
+                                                                  not done
+                                                                </b>
+                                                              </h6>
+                                                            </Grid>
+                                                          </Grid>
+                                                        </div>
+                                                      </>
+                                                    ) : (
+                                                      sub?.riskAnalysisHazardTypes?.map(
+                                                        (hazardType) => (
+                                                          <div
+                                                            key={hazardType.id}
+                                                          >
+                                                            {hazardType.riskAnalysisHazardSituation?.map(
+                                                              (situation) => (
+                                                                <div
+                                                                  key={
+                                                                    situation.id
+                                                                  }
+                                                                >
+                                                                  <Grid
+                                                                    container
+                                                                    spacing={2}
+                                                                    className="inventory-grid"
+                                                                    sx={{
+                                                                      paddingY: 2,
+                                                                      paddingX:
+                                                                        {
+                                                                          xs: 2,
+                                                                          md: 3,
+                                                                        },
+                                                                    }}
+                                                                  >
+                                                                    <Grid
+                                                                      item
+                                                                      xs={12}
+                                                                      md={3}
+                                                                    >
+                                                                      <Typography
+                                                                        variant="body2"
+                                                                        color="text.primary"
+                                                                        fontWeight="fontWeightRegular"
+                                                                        style={{
+                                                                          backgroundColor:
+                                                                            situation.residualRiskClassificationDisplay ===
+                                                                            "HighRisk"
+                                                                              ? "red"
+                                                                              : situation.residualRiskClassificationDisplay ===
+                                                                                  "LowRisk"
+                                                                                ? "yellow"
+                                                                                : situation.residualRiskClassificationDisplay ===
+                                                                                    "AverageRisk"
+                                                                                  ? "orange"
+                                                                                  : situation.residualRiskClassificationDisplay ===
+                                                                                      "SignificantRisk"
+                                                                                    ? "purple"
+                                                                                    : "green",
+                                                                          width:
+                                                                            "35%",
+                                                                          padding:
+                                                                            "3px",
+                                                                          color:
+                                                                            situation.residualRiskClassificationDisplay ===
+                                                                            "LowRisk"
+                                                                              ? "#000"
+                                                                              : "white",
+                                                                          borderRadius:
+                                                                            "5px",
+                                                                          textAlign:
+                                                                            "center",
+                                                                          fontSize:
+                                                                            "12px",
+                                                                          fontWeight:
+                                                                            situation.residualRiskClassificationDisplay ===
+                                                                            "LowRisk"
+                                                                              ? ""
+                                                                              : "bold",
+                                                                        }}
+                                                                      >
+                                                                        {
+                                                                          situation.residualRiskClassificationDisplay
+                                                                        }
+                                                                      </Typography>
+                                                                    </Grid>
+                                                                    <Grid
+                                                                      item
+                                                                      xs={12}
+                                                                      md={3}
+                                                                    >
+                                                                      <Typography
+                                                                        variant="body2"
+                                                                        color="text.primary"
+                                                                        fontWeight="fontWeightRegular"
+                                                                        style={{
+                                                                          marginLeft:
+                                                                            "10px",
+                                                                          fontSize:
+                                                                            "12px",
+                                                                        }}
+                                                                      >
+                                                                        {
+                                                                          situation.humanControlMeasure
+                                                                        }
+                                                                      </Typography>
+                                                                    </Grid>
+                                                                    <Grid
+                                                                      item
+                                                                      xs={12}
+                                                                      md={3}
+                                                                    >
+                                                                      <Typography
+                                                                        variant="body2"
+                                                                        color="text.primary"
+                                                                        fontWeight="fontWeightRegular"
+                                                                        style={{
+                                                                          marginLeft:
+                                                                            "42px",
+                                                                          fontSize:
+                                                                            "12px",
+                                                                        }}
+                                                                      >
+                                                                        {
+                                                                          situation.technicalControlMeasure
+                                                                        }
+                                                                      </Typography>
+                                                                    </Grid>
+                                                                    <Grid
+                                                                      item
+                                                                      xs={12}
+                                                                      md={3}
+                                                                    >
+                                                                      <Typography
+                                                                        variant="body2"
+                                                                        color="text.primary"
+                                                                        fontWeight="fontWeightRegular"
+                                                                        style={{
+                                                                          marginLeft:
+                                                                            "82px",
+                                                                          fontSize:
+                                                                            "12px",
+                                                                        }}
+                                                                      >
+                                                                        {
+                                                                          situation.organisationalControlMeasure
+                                                                        }
+                                                                      </Typography>
+                                                                    </Grid>
+                                                                  </Grid>
+                                                                  <h6
+                                                                    style={{
+                                                                      paddingLeft:
+                                                                        "10px",
+                                                                      paddingBottom:
+                                                                        "5px",
+                                                                    }}
+                                                                  >
+                                                                    {
+                                                                      sub.subTaskName
+                                                                    }
+                                                                  </h6>
+                                                                  <h6
+                                                                    style={{
+                                                                      paddingLeft:
+                                                                        "10px",
+                                                                      paddingBottom:
+                                                                        "5px",
+                                                                    }}
+                                                                  >
+                                                                    -{" "}
+                                                                    {
+                                                                      hazardType.hazardTypeDisplay
+                                                                    }
+                                                                  </h6>
+                                                                  <h6
+                                                                    style={{
+                                                                      paddingLeft:
+                                                                        "10px",
+                                                                      paddingBottom:
+                                                                        "5px",
+                                                                    }}
+                                                                  >
+                                                                    -{" "}
+                                                                    {
+                                                                      situation.hazardousSituation
+                                                                    }
+                                                                  </h6>
+                                                                </div>
+                                                              )
+                                                            )}
+                                                          </div>
+                                                        )
+                                                      )
+                                                    )}
+                                                  </div>
+                                                )
+                                              )
+                                          )}
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </Paper>
+                                )}
+
+                              {imptsk.changeImpactTaskReviews?.length > 0 ||
+                              showReview ? (
+                                <div className="mt-12">
                                   <Accordion
-                                    expanded={expanded === "panel2"}
-                                    onChange={handleExpansionChange("panel2")}
-                                    className="mt-6 m-10"
+                                    expanded={expanded == imptsk.id}
+                                    onChange={handleExpansionChange(imptsk.id)}
                                   >
                                     <AccordionSummary
                                       expandIcon={<ExpandMoreIcon />}
                                       aria-controls="panel1a-content"
                                       id="panel1a-header"
+                                      style={{
+                                        display: "flex",
+                                        justifyContent: AppActivity.canEdit
+                                          ? "space-between"
+                                          : "flex-start",
+                                      }}
                                     >
-                                      <Typography>
-                                        <span className="text-brown">
-                                          {itm?.changeImpactTaskReviews?.length}{" "}
-                                          Reviews
-                                        </span>{" "}
-                                      </Typography>
+                                      {AppActivity.canEdit && (
+                                        <button
+                                          className="custom-add-review-button"
+                                          style={{ marginRight: 16 }}
+                                        >
+                                          Add Review
+                                        </button>
+                                      )}
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          flexGrow: 1, // This makes the div take up remaining space
+                                          justifyContent: AppActivity.canEdit
+                                            ? "flex-end"
+                                            : "flex-start",
+                                        }}
+                                      >
+                                        <Typography>
+                                          <span className="text-brown">
+                                            {
+                                              imptsk?.changeImpactTaskReviews
+                                                ?.length
+                                            }{" "}
+                                            Reviews
+                                          </span>{" "}
+                                          {hasAddedComment(
+                                            imptsk.changeImpactTaskReviews
+                                          ) && (
+                                            <span className="text-green">
+                                              (You have added 1 review)
+                                            </span>
+                                          )}
+                                        </Typography>
+                                      </div>
                                     </AccordionSummary>
-                                    {itm?.changeImpactTaskReviews?.map(
-                                      (rivew) => (
-                                        <AccordionDetails>
+                                    <AccordionDetails>
+                                      {AppActivity.canEdit &&
+                                        !hasAddedComment(
+                                          imptsk.changeImpactTaskReviews
+                                        ) && (
                                           <div className="mat-form-field-wrapper">
+                                            <div className="mat-form-field-flex">
+                                              <img
+                                                src="/assets/images/etc/userpic.png"
+                                                alt="Card cover image"
+                                                className="rounded-full mr-4"
+                                                style={{
+                                                  width: "5rem",
+                                                  height: "5rem",
+                                                }}
+                                              />
+                                              <div
+                                                className="mat-form-field-infix"
+                                                style={{
+                                                  position: "relative",
+                                                  width: "100%",
+                                                }}
+                                              >
+                                                <textarea
+                                                  rows="2"
+                                                  className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                                  placeholder="Write a comment..."
+                                                  id="ImpTaskReview265"
+                                                  data-placeholder="Write a comment..."
+                                                  aria-invalid="false"
+                                                  aria-required="false"
+                                                  style={{ height: "36px" }}
+                                                  onChange={(e) =>
+                                                    setHandelCommentRemark(
+                                                      e.target.value
+                                                    )
+                                                  }
+                                                ></textarea>
+                                                <button
+                                                  className="custom-update-button"
+                                                  onClick={() =>
+                                                    handelImpactCommentImp(
+                                                      imptsk.id,
+                                                      1
+                                                    )
+                                                  }
+                                                >
+                                                  <span className="mat-button-wrapper">
+                                                    Save
+                                                  </span>
+                                                  <span className="mat-ripple mat-button-ripple"></span>
+                                                  <span className="mat-button-focus-overlay"></span>
+                                                </button>
+                                                <span className="mat-form-field-label-wrapper"></span>
+                                              </div>
+                                            </div>
+
+                                            <div className="mat-form-field-subscript-wrapper">
+                                              <div
+                                                className="mat-form-field-hint-wrapper"
+                                                style={{
+                                                  opacity: 1,
+                                                  transform: "translateY(0%)",
+                                                }}
+                                              ></div>
+                                            </div>
+                                          </div>
+                                        )}
+                                      {imptsk.changeImpactTaskReviews?.map(
+                                        (rwx, index) => (
+                                          <div
+                                            className="mat-form-field-wrapper"
+                                            key={index}
+                                          >
                                             <div className="mat-form-field-flex">
                                               <img
                                                 src="/assets/images/etc/userpic.png"
@@ -4159,747 +4852,166 @@ const EvaluationApproval = ({
                                                   height: "3rem",
                                                 }}
                                               />
-                                              <div>
-                                                <div className="mat-form-field-infix mt-5">
-                                                  <span className="">
-                                                    {rivew?.createdByStaffName}
-                                                  </span>
-                                                  -{" "}
-                                                  <span className="text-grey">
-                                                    {rivew?.remark}
-                                                  </span>
-                                                </div>
-                                                <p
-                                                  className="mat-form-field-infix text-grey"
+                                              {AppActivity.canEdit &&
+                                              isMyComment(rwx) ? (
+                                                <div
+                                                  className="mat-form-field-infix"
                                                   style={{
-                                                    fontSize: "smaller",
+                                                    position: "relative",
                                                   }}
                                                 >
-                                                  {rivew?.updatedAt
-                                                    ? new Date(
-                                                        rivew.updatedAt
-                                                      ).toLocaleString(
-                                                        "en-US",
-                                                        {
-                                                          year: "numeric", // e.g., "2024"
-                                                          month: "long", // e.g., "August"
-                                                          day: "numeric", // e.g., "20"
-                                                          hour: "2-digit", // e.g., "12 PM"
-                                                          minute: "2-digit", // e.g., "46"
-                                                          second: "2-digit", // e.g., "23"
-                                                          hour12: true, // Use 12-hour clock
-                                                          timeZoneName: "short", // e.g., "GMT+5"
-                                                        }
+                                                  <textarea
+                                                    ref={textareaRef}
+                                                    rows="2"
+                                                    className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
+                                                    placeholder="Write a comment..."
+                                                    id="ImpTaskReview265"
+                                                    data-placeholder="Write a comment..."
+                                                    aria-invalid="false"
+                                                    aria-required="false"
+                                                    style={{
+                                                      height: "36px",
+                                                      width: "100%",
+                                                      paddingRight: "100px",
+                                                    }}
+                                                    defaultValue={rwx?.remark}
+                                                    onChange={(e) =>
+                                                      setHandelCommentRemark(
+                                                        e.target.value
                                                       )
-                                                    : null}
-                                                </p>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </AccordionDetails>
-                                      )
-                                    )}
-                                  </Accordion>
-                                )}
-                              </div>
-                            ))}
-                          <div className="task-details p-0">
-                            <div className="task-detail prose prose-sm max-w-5xl">
-                              <div className="task-detail-item p-0 mt-0">
-                                <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
-                                  Impact
-                                </span>
-                                <span className="task-detail-value d-inline-block mt-10">
-                                  {imptsk.particularName +
-                                    ">" +
-                                    imptsk.particularSubName}
-                                </span>
-                              </div>
-                              <div className="task-detail-item p-0 mt-0">
-                                <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
-                                  What is Task
-                                </span>
-                                <span className="task-detail-value d-inline-block mt-10">
-                                  {imptsk.actionWhat}
-                                </span>
-                              </div>
-                              <div className="task-detail-item p-0 mt-0">
-                                <span className="task-detail-label bg-default rounded  d-inline-block mt-10 text-secondary font-semibold">
-                                  How is Task done
-                                </span>
-                                <span className="task-detail-value d-inline-block mt-10">
-                                  {imptsk.actionHow}
-                                </span>
-                              </div>
-                              <div
-                                className="task-detail-item p-0 mt-0 flex "
-                                style={{ justifyContent: "space-between" }}
-                              >
-                                <div>
-                                  <span className="task-detail-label bg-default rounded d-inline-block mt-10 text-secondary font-semibold">
-                                    Assigned to
-                                  </span>
-                                  <span className="task-detail-value d-inline-block mt-10">
-                                    {imptsk.assignedStaff}
-                                  </span>
-                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 ml-2 text-secondary font-semibold">
-                                    Due Date
-                                  </span>
-                                  <span className="task-detail-value d-inline-block mt-10">
-                                    {formatDates(imptsk.dueDate)}
-                                  </span>
-                                  <span className="task-detail-label bg-default rounded  d-inline-block mt-10 ml-2 text-secondary font-semibold">
-                                    Deadline
-                                  </span>
-                                  <span className="task-detail-value d-inline-block mt-10">
-                                    {imptsk?.deadlineDisplay}
-                                  </span>
-                                </div>
-                                <div>
-                                  {AppActivity.canEdit && (
-                                    <div style={{ float: "right" }}>
-                                      <FormGroup>
-                                        <FormControlLabel
-                                          control={
-                                            <Checkbox
-                                              onChange={(e) =>
-                                                handleCheckboxChange(
-                                                  e.target.checked,
-                                                  {
-                                                    id: imptsk.id,
-                                                    impact:
-                                                      imptsk.particularName +
-                                                      ">" +
-                                                      imptsk.particularSubName,
-                                                    task: imptsk.actionWhat,
-                                                    how: imptsk.actionHow,
-                                                    assignedTo:
-                                                      imptsk.assignedStaff,
-                                                    dueDate: formatDates(
-                                                      imptsk.dueDate
-                                                    ),
-                                                    deadline:
-                                                      imptsk.deadlineDisplay,
-                                                    taskId: imptsk?.id,
-                                                  }
-                                                )
-                                              }
-                                              id="check289-input"
-                                              inputProps={{
-                                                "aria-label":
-                                                  "primary checkbox",
-                                              }}
-                                              color="primary"
-                                            />
-                                          }
-                                          label="Need External Consultation"
-                                        />
-                                      </FormGroup>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                            {imptsk?.riskAnalysisList?.length !== 0 &&
-                              imptsk.particularid === 78 && (
-                                <Paper style={{ margin: "10px 0 0 0" }}>
-                                  <div
-                                    className="flex items-center w-full justify-between"
-                                    style={{
-                                      borderRadius: "20px",
-                                      backgroundColor: "rgb(241 248 255)",
-                                    }}
-                                  >
-                                    <h6
-                                      className="text-small font-semibold"
-                                      style={{ padding: "15px" }}
-                                    >
-                                      Risk Details
-                                    </h6>
-                                    <h6
-                                      className="text-1xl font-semibold"
-                                      style={{ padding: "10px" }}
-                                    >
-                                      Human Measures
-                                    </h6>
-                                    <h6
-                                      className="text-1xl font-semibold"
-                                      style={{ padding: "10px" }}
-                                    >
-                                      Technical Measures
-                                    </h6>
-                                    <h6
-                                      className="text-1xl font-semibold"
-                                      style={{ padding: "10px" }}
-                                    >
-                                      Organisational Measures
-                                    </h6>
-                                  </div>
-                                  <div>
-                                    <table className="min-w-full divide-y divide-gray-200">
-                                      <tbody>
-                                        {imptsk?.riskAnalysisList?.map(
-                                          (subs, index) =>
-                                            subs?.riskAnalysisSubTasks?.map(
-                                              (sub, subIndex) => (
-                                                <div key={subIndex}>
-                                                  {console.log(
-                                                    subs.riskAnalysisSubTasks,
-                                                    "vvvvvvvvvvv"
-                                                  )}
-
-                                                  {!sub.riskAnalysisHazardTypes
-                                                    ?.length ? (
-                                                    <>
-                                                      <div
-                                                        _ngcontent-fyk-c288=""
-                                                        class="flex items-center w-full  border-b justify-between"
-                                                      ></div>
-                                                      <div>
-                                                        <Grid
-                                                          container
-                                                          className="inventory-grid"
-                                                          sx={{
-                                                            paddingY: 2,
-                                                            paddingX: {
-                                                              xs: 2,
-                                                              md: 1,
-                                                            },
-                                                          }}
-                                                        >
-                                                          <Grid
-                                                            item
-                                                            xs={12}
-                                                            md={4}
-                                                          >
-                                                            <h6>
-                                                              {sub.subTaskName}
-                                                            </h6>
-                                                          </Grid>
-                                                        </Grid>
-                                                        <Grid
-                                                          container
-                                                          className="inventory-grid"
-                                                          sx={{
-                                                            paddingY: 2,
-                                                            paddingX: {
-                                                              xs: 2,
-                                                              md: 1,
-                                                            },
-                                                          }}
-                                                        >
-                                                          <Grid
-                                                            item
-                                                            xs={12}
-                                                            md={4}
-                                                          >
-                                                            <h6
-                                                              style={{
-                                                                paddingBottom:
-                                                                  "5px",
-                                                              }}
-                                                              className="text-brown"
-                                                            >
-                                                              <b>
-                                                                Risk Analysis
-                                                                not done
-                                                              </b>
-                                                            </h6>
-                                                          </Grid>
-                                                        </Grid>
-                                                      </div>
-                                                    </>
-                                                  ) : (
-                                                    sub?.riskAnalysisHazardTypes?.map(
-                                                      (hazardType) => (
-                                                        <div
-                                                          key={hazardType.id}
-                                                        >
-                                                          {hazardType.riskAnalysisHazardSituation?.map(
-                                                            (situation) => (
-                                                              <div
-                                                                key={
-                                                                  situation.id
-                                                                }
-                                                              >
-                                                                <Grid
-                                                                  container
-                                                                  spacing={2}
-                                                                  className="inventory-grid"
-                                                                  sx={{
-                                                                    paddingY: 2,
-                                                                    paddingX: {
-                                                                      xs: 2,
-                                                                      md: 3,
-                                                                    },
-                                                                  }}
-                                                                >
-                                                                  <Grid
-                                                                    item
-                                                                    xs={12}
-                                                                    md={3}
-                                                                  >
-                                                                    <Typography
-                                                                      variant="body2"
-                                                                      color="text.primary"
-                                                                      fontWeight="fontWeightRegular"
-                                                                      style={{
-                                                                        backgroundColor:
-                                                                          situation.residualRiskClassificationDisplay ===
-                                                                          "HighRisk"
-                                                                            ? "red"
-                                                                            : situation.residualRiskClassificationDisplay ===
-                                                                                "LowRisk"
-                                                                              ? "yellow"
-                                                                              : situation.residualRiskClassificationDisplay ===
-                                                                                  "AverageRisk"
-                                                                                ? "orange"
-                                                                                : situation.residualRiskClassificationDisplay ===
-                                                                                    "SignificantRisk"
-                                                                                  ? "purple"
-                                                                                  : "green",
-                                                                        width:
-                                                                          "35%",
-                                                                        padding:
-                                                                          "3px",
-                                                                        color:
-                                                                          situation.residualRiskClassificationDisplay ===
-                                                                          "LowRisk"
-                                                                            ? "#000"
-                                                                            : "white",
-                                                                        borderRadius:
-                                                                          "5px",
-                                                                        textAlign:
-                                                                          "center",
-                                                                        fontSize:
-                                                                          "12px",
-                                                                        fontWeight:
-                                                                          situation.residualRiskClassificationDisplay ===
-                                                                          "LowRisk"
-                                                                            ? ""
-                                                                            : "bold",
-                                                                      }}
-                                                                    >
-                                                                      {
-                                                                        situation.residualRiskClassificationDisplay
-                                                                      }
-                                                                    </Typography>
-                                                                  </Grid>
-                                                                  <Grid
-                                                                    item
-                                                                    xs={12}
-                                                                    md={3}
-                                                                  >
-                                                                    <Typography
-                                                                      variant="body2"
-                                                                      color="text.primary"
-                                                                      fontWeight="fontWeightRegular"
-                                                                      style={{
-                                                                        marginLeft:
-                                                                          "10px",
-                                                                        fontSize:
-                                                                          "12px",
-                                                                      }}
-                                                                    >
-                                                                      {
-                                                                        situation.humanControlMeasure
-                                                                      }
-                                                                    </Typography>
-                                                                  </Grid>
-                                                                  <Grid
-                                                                    item
-                                                                    xs={12}
-                                                                    md={3}
-                                                                  >
-                                                                    <Typography
-                                                                      variant="body2"
-                                                                      color="text.primary"
-                                                                      fontWeight="fontWeightRegular"
-                                                                      style={{
-                                                                        marginLeft:
-                                                                          "42px",
-                                                                        fontSize:
-                                                                          "12px",
-                                                                      }}
-                                                                    >
-                                                                      {
-                                                                        situation.technicalControlMeasure
-                                                                      }
-                                                                    </Typography>
-                                                                  </Grid>
-                                                                  <Grid
-                                                                    item
-                                                                    xs={12}
-                                                                    md={3}
-                                                                  >
-                                                                    <Typography
-                                                                      variant="body2"
-                                                                      color="text.primary"
-                                                                      fontWeight="fontWeightRegular"
-                                                                      style={{
-                                                                        marginLeft:
-                                                                          "82px",
-                                                                        fontSize:
-                                                                          "12px",
-                                                                      }}
-                                                                    >
-                                                                      {
-                                                                        situation.organisationalControlMeasure
-                                                                      }
-                                                                    </Typography>
-                                                                  </Grid>
-                                                                </Grid>
-                                                                <h6
-                                                                  style={{
-                                                                    paddingLeft:
-                                                                      "10px",
-                                                                    paddingBottom:
-                                                                      "5px",
-                                                                  }}
-                                                                >
-                                                                  {
-                                                                    sub.subTaskName
-                                                                  }
-                                                                </h6>
-                                                                <h6
-                                                                  style={{
-                                                                    paddingLeft:
-                                                                      "10px",
-                                                                    paddingBottom:
-                                                                      "5px",
-                                                                  }}
-                                                                >
-                                                                  -{" "}
-                                                                  {
-                                                                    hazardType.hazardTypeDisplay
-                                                                  }
-                                                                </h6>
-                                                                <h6
-                                                                  style={{
-                                                                    paddingLeft:
-                                                                      "10px",
-                                                                    paddingBottom:
-                                                                      "5px",
-                                                                  }}
-                                                                >
-                                                                  -{" "}
-                                                                  {
-                                                                    situation.hazardousSituation
-                                                                  }
-                                                                </h6>
-                                                              </div>
-                                                            )
-                                                          )}
-                                                        </div>
-                                                      )
-                                                    )
-                                                  )}
-                                                </div>
-                                              )
-                                            )
-                                        )}
-                                      </tbody>
-                                    </table>
-                                  </div>
-                                </Paper>
-                              )}
-
-                            {imptsk.changeImpactTaskReviews?.length > 0 ||
-                            showReview ? (
-                              <div className="mt-12">
-                                <Accordion
-                                  expanded={expanded == imptsk.id}
-                                  onChange={handleExpansionChange(imptsk.id)}
-                                >
-                                  <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
-                                    style={{
-                                      display: "flex",
-                                      justifyContent: AppActivity.canEdit
-                                        ? "space-between"
-                                        : "flex-start",
-                                    }}
-                                  >
-                                    {AppActivity.canEdit && (
-                                      <button
-                                        className="custom-add-review-button"
-                                        style={{ marginRight: 16 }}
-                                      >
-                                        Add Review
-                                      </button>
-                                    )}
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        flexGrow: 1, // This makes the div take up remaining space
-                                        justifyContent: AppActivity.canEdit
-                                          ? "flex-end"
-                                          : "flex-start",
-                                      }}
-                                    >
-                                      <Typography>
-                                        <span className="text-brown">
-                                          {
-                                            imptsk?.changeImpactTaskReviews
-                                              ?.length
-                                          }{" "}
-                                          Reviews
-                                        </span>{" "}
-                                        {hasAddedComment(
-                                          imptsk.changeImpactTaskReviews
-                                        ) && (
-                                          <span className="text-green">
-                                            (You have added 1 review)
-                                          </span>
-                                        )}
-                                      </Typography>
-                                    </div>
-                                  </AccordionSummary>
-                                  <AccordionDetails>
-                                    {AppActivity.canEdit &&
-                                      !hasAddedComment(
-                                        imptsk.changeImpactTaskReviews
-                                      ) && (
-                                        <div className="mat-form-field-wrapper">
-                                          <div className="mat-form-field-flex">
-                                            <img
-                                              src="/assets/images/etc/userpic.png"
-                                              alt="Card cover image"
-                                              className="rounded-full mr-4"
-                                              style={{
-                                                width: "5rem",
-                                                height: "5rem",
-                                              }}
-                                            />
-                                            <div
-                                              className="mat-form-field-infix"
-                                              style={{
-                                                position: "relative",
-                                                width: "100%",
-                                              }}
-                                            >
-                                              <textarea
-                                                rows="2"
-                                                className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                                placeholder="Write a comment..."
-                                                id="ImpTaskReview265"
-                                                data-placeholder="Write a comment..."
-                                                aria-invalid="false"
-                                                aria-required="false"
-                                                style={{ height: "36px" }}
-                                                onChange={(e) =>
-                                                  setHandelCommentRemark(
-                                                    e.target.value
-                                                  )
-                                                }
-                                              ></textarea>
-                                              <button
-                                                className="custom-update-button"
-                                                onClick={() =>
-                                                  handelImpactCommentImp(
-                                                    imptsk.id,
-                                                    1
-                                                  )
-                                                }
-                                              >
-                                                <span className="mat-button-wrapper">
-                                                  Save
-                                                </span>
-                                                <span className="mat-ripple mat-button-ripple"></span>
-                                                <span className="mat-button-focus-overlay"></span>
-                                              </button>
-                                              <span className="mat-form-field-label-wrapper"></span>
-                                            </div>
-                                          </div>
-
-                                          <div className="mat-form-field-subscript-wrapper">
-                                            <div
-                                              className="mat-form-field-hint-wrapper"
-                                              style={{
-                                                opacity: 1,
-                                                transform: "translateY(0%)",
-                                              }}
-                                            ></div>
-                                          </div>
-                                        </div>
-                                      )}
-                                    {imptsk.changeImpactTaskReviews?.map(
-                                      (rwx, index) => (
-                                        <div
-                                          className="mat-form-field-wrapper"
-                                          key={index}
-                                        >
-                                          <div className="mat-form-field-flex">
-                                            <img
-                                              src="/assets/images/etc/userpic.png"
-                                              alt="Card cover image"
-                                              className="rounded-full mr-4"
-                                              style={{
-                                                width: "3rem",
-                                                height: "3rem",
-                                              }}
-                                            />
-                                            {AppActivity.canEdit &&
-                                            isMyComment(rwx) ? (
-                                              <div
-                                                className="mat-form-field-infix"
-                                                style={{ position: "relative" }}
-                                              >
-                                                <textarea
-                                                  ref={textareaRef}
-                                                  rows="2"
-                                                  className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
-                                                  placeholder="Write a comment..."
-                                                  id="ImpTaskReview265"
-                                                  data-placeholder="Write a comment..."
-                                                  aria-invalid="false"
-                                                  aria-required="false"
-                                                  style={{
-                                                    height: "36px",
-                                                    width: "100%",
-                                                    paddingRight: "100px",
-                                                  }}
-                                                  defaultValue={rwx?.remark}
-                                                  onChange={(e) =>
-                                                    setHandelCommentRemark(
-                                                      e.target.value
-                                                    )
-                                                  }
-                                                ></textarea>
-
-                                                <button
-                                                  className="custom-update-button"
-                                                  onClick={() => {
-                                                    handelImpactCommentImp(
-                                                      imptsk.id,
-                                                      // itm.changeImpactTaskReviews[0]
-                                                      //   .id,
-                                                      2
-                                                    );
-                                                    if (textareaRef.current) {
-                                                      textareaRef.current.focus();
                                                     }
-                                                  }}
-                                                >
-                                                  Update
-                                                </button>
+                                                  ></textarea>
 
-                                                <span className="mat-form-field-label-wrapper"></span>
-                                              </div>
-                                            ) : (
-                                              <div className="mat-form-field-wrapper">
-                                                <div className="mat-form-field-flex">
-                                                  <div>
-                                                    <div className="mat-form-field-infix mt-5">
-                                                      <span className="">
-                                                        {
-                                                          rwx?.createdByStaffName
-                                                        }
-                                                      </span>
-                                                      -{" "}
-                                                      <span className="text-grey">
-                                                        {rwx?.remark}
-                                                      </span>
-                                                    </div>
-                                                    <p
-                                                      className="mat-form-field-infix text-grey"
-                                                      style={{
-                                                        fontSize: "smaller",
-                                                      }}
-                                                    >
-                                                      {imptsk
-                                                        .changeImpactTaskReviews[0]
-                                                        ?.updatedAt &&
-                                                        new Date(
-                                                          imptsk.changeImpactTaskReviews[0]?.updatedAt
-                                                        ).toLocaleString(
-                                                          "en-US",
+                                                  <button
+                                                    className="custom-update-button"
+                                                    onClick={() => {
+                                                      handelImpactCommentImp(
+                                                        imptsk.id,
+                                                        // itm.changeImpactTaskReviews[0]
+                                                        //   .id,
+                                                        2
+                                                      );
+                                                      if (textareaRef.current) {
+                                                        textareaRef.current.focus();
+                                                      }
+                                                    }}
+                                                  >
+                                                    Update
+                                                  </button>
+
+                                                  <span className="mat-form-field-label-wrapper"></span>
+                                                </div>
+                                              ) : (
+                                                <div className="mat-form-field-wrapper">
+                                                  <div className="mat-form-field-flex">
+                                                    <div>
+                                                      <div className="mat-form-field-infix mt-5">
+                                                        <span className="">
                                                           {
-                                                            month: "long",
-                                                            day: "numeric",
-                                                            year: "numeric",
-                                                            hour: "numeric",
-                                                            minute: "numeric",
-                                                            second: "numeric",
-                                                            hour12: true,
-                                                            timeZoneName:
-                                                              "short",
+                                                            rwx?.createdByStaffName
                                                           }
-                                                        )}
-                                                    </p>
+                                                        </span>
+                                                        -{" "}
+                                                        <span className="text-grey">
+                                                          {rwx?.remark}
+                                                        </span>
+                                                      </div>
+                                                      <p
+                                                        className="mat-form-field-infix text-grey"
+                                                        style={{
+                                                          fontSize: "smaller",
+                                                        }}
+                                                      >
+                                                        {imptsk
+                                                          .changeImpactTaskReviews[0]
+                                                          ?.updatedAt &&
+                                                          new Date(
+                                                            imptsk.changeImpactTaskReviews[0]?.updatedAt
+                                                          ).toLocaleString(
+                                                            "en-US",
+                                                            {
+                                                              month: "long",
+                                                              day: "numeric",
+                                                              year: "numeric",
+                                                              hour: "numeric",
+                                                              minute: "numeric",
+                                                              second: "numeric",
+                                                              hour12: true,
+                                                              timeZoneName:
+                                                                "short",
+                                                            }
+                                                          )}
+                                                      </p>
+                                                    </div>
                                                   </div>
                                                 </div>
-                                              </div>
-                                            )}
-                                          </div>
+                                              )}
+                                            </div>
 
-                                          <div className="mat-form-field-subscript-wrapper">
-                                            <div
-                                              className="mat-form-field-hint-wrapper"
-                                              style={{
-                                                opacity: 1,
-                                                transform: "translateY(0%)",
-                                              }}
-                                            ></div>
+                                            <div className="mat-form-field-subscript-wrapper">
+                                              <div
+                                                className="mat-form-field-hint-wrapper"
+                                                style={{
+                                                  opacity: 1,
+                                                  transform: "translateY(0%)",
+                                                }}
+                                              ></div>
+                                            </div>
                                           </div>
-                                        </div>
-                                      )
-                                    )}
-                                  </AccordionDetails>
-                                </Accordion>
-                              </div>
-                            ) : AppActivity.canEdit ? (
-                              <div className="mat-form-field-wrapper mt-24">
-                                <div className="mat-form-field-flex">
-                                  <img
-                                    src="/assets/images/etc/userpic.png"
-                                    alt="Card cover image"
-                                    className="rounded-full mr-4"
-                                    style={{
-                                      width: "5rem",
-                                      height: "5rem",
-                                    }}
-                                  />
-                                  <div
-                                    className="mat-form-field-infix"
-                                    style={{
-                                      position: "relative",
-                                      width: "100%",
-                                    }}
-                                  >
-                                    <textarea
-                                      rows="2"
-                                      className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize mt-0"
-                                      placeholder="Write a comment..."
-                                      id="ImpTaskReview265"
-                                      data-placeholder="Write a comment..."
-                                      aria-invalid="false"
-                                      aria-required="false"
-                                      style={{ height: "36px" }}
-                                      onChange={(e) =>
-                                        setHandelCommentRemark(e.target.value)
-                                      }
-                                    ></textarea>
-                                    <button
-                                      className="custom-update-button"
-                                      onClick={() =>
-                                        handelImpactCommentImp(imptsk.id, 1)
-                                      }
-                                    >
-                                      <span className="mat-button-wrapper">
-                                        Save
-                                      </span>
-                                      <span className="mat-ripple mat-button-ripple"></span>
-                                      <span className="mat-button-focus-overlay"></span>
-                                    </button>
-                                    <span className="mat-form-field-label-wrapper"></span>
-                                  </div>
+                                        )
+                                      )}
+                                    </AccordionDetails>
+                                  </Accordion>
                                 </div>
+                              ) : AppActivity.canEdit ? (
+                                <div className="mat-form-field-wrapper mt-24">
+                                  <div className="mat-form-field-flex">
+                                    <img
+                                      src="/assets/images/etc/userpic.png"
+                                      alt="Card cover image"
+                                      className="rounded-full mr-4"
+                                      style={{
+                                        width: "5rem",
+                                        height: "5rem",
+                                      }}
+                                    />
+                                    <div
+                                      className="mat-form-field-infix"
+                                      style={{
+                                        position: "relative",
+                                        width: "100%",
+                                      }}
+                                    >
+                                      <textarea
+                                        rows="2"
+                                        className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize mt-0"
+                                        placeholder="Write a comment..."
+                                        id="ImpTaskReview265"
+                                        data-placeholder="Write a comment..."
+                                        aria-invalid="false"
+                                        aria-required="false"
+                                        style={{ height: "36px" }}
+                                        onChange={(e) =>
+                                          setHandelCommentRemark(e.target.value)
+                                        }
+                                      ></textarea>
+                                      <button
+                                        className="custom-update-button"
+                                        onClick={() =>
+                                          handelImpactCommentImp(imptsk.id, 1)
+                                        }
+                                      >
+                                        <span className="mat-button-wrapper">
+                                          Save
+                                        </span>
+                                        <span className="mat-ripple mat-button-ripple"></span>
+                                        <span className="mat-button-focus-overlay"></span>
+                                      </button>
+                                      <span className="mat-form-field-label-wrapper"></span>
+                                    </div>
+                                  </div>
 
-                                {/* <div className="mat-form-field-subscript-wrapper">
+                                  {/* <div className="mat-form-field-subscript-wrapper">
                               <div
                                 className="mat-form-field-hint-wrapper"
                                 style={{
@@ -4908,946 +5020,966 @@ const EvaluationApproval = ({
                                 }}
                               ></div>
                             </div> */}
-                              </div>
-                            ) : (
-                              <div className="ng-star-inserted">
-                                <span
-                                  className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
-                                  style={{
-                                    padding: "10px",
-                                  }}
-                                >
-                                  No Reviews Added
-                                </span>
-                              </div>
-                            )}
+                                </div>
+                              ) : (
+                                <div className="ng-star-inserted">
+                                  <span
+                                    className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                    style={{
+                                      padding: "10px",
+                                    }}
+                                  >
+                                    No Reviews Added
+                                  </span>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))
-                ) : (
-                  <p>No tasks available</p>
-                )}
-              </tbody>
+                    ))
+                  ) : (
+                    <p>No tasks available</p>
+                  )}
+                </tbody>
 
-              <tfoot
-                className="task-table-footer"
-                style={{
-                  display: "none",
-                  bottom: 0,
-                  zIndex: 10,
-                }}
-              >
-                {/* Empty footer */}
-              </tfoot>
-            </table>
-            {/* <div
+                <tfoot
+                  className="task-table-footer"
+                  style={{
+                    display: "none",
+                    bottom: 0,
+                    zIndex: 10,
+                  }}
+                >
+                  {/* Empty footer */}
+                </tfoot>
+              </table>
+              {/* <div
                 _ngcontent-fyk-c288=""
                 class="flex items-center w-full  border-b justify-between"
               ></div> */}
-          </div>
-        </Paper>
-      </SwipeableViews>
-      <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
-          <div
-            _ngcontent-fyk-c288=""
-            class="flex items-center w-full p-30 pt-12 pb-12 border-b justify-between"
-          >
-            <h2 className="text-2xl font-semibold">
-              External Consultations for Tasks
-            </h2>
-            <TextField
-              variant="filled"
-              fullWidth
-              placeholder="Search"
-              // style={{ marginBottom: "15px" }}
-              //   value={searchTerm}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start" style={{ marginTop: "0px" }}>
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-              sx={{ width: 320 }}
-            />
-          </div>
-          <div className="p-30 pt-24 pb-24">
-            {contentDetails?.externalconsultations?.map((imptsk) => (
-              <>
-                <table className="task-table mat-table">
-                  <thead
-                    className="task-table-header"
-                    style={{ display: "none" }}
-                  >
-                    {/* Empty header */}
-                  </thead>
-                  <tbody className="task-table-body">
-                    <tr className="task-table-row mat-row">
-                      <td className="task-table-cell mat-cell">
-                        <div className="task-header flex items-center">
-                          <div className="task-id flex flex-col">
-                            <span
-                              className="task-id-text font-semibold text-xl leading-none"
-                              style={{ fontSize: "20px" }}
-                            >
-                              Task #{imptsk?.taskIDs}
-                            </span>
+            </div>
+          </Paper>
+        </SwipeableViews>
+        <SwipeableViews>
+          <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
+            <div
+              _ngcontent-fyk-c288=""
+              class="flex items-center w-full p-30 pt-12 pb-12 border-b justify-between"
+            >
+              <h2 className="text-2xl font-semibold">
+                External Consultations for Tasks
+              </h2>
+              <TextField
+                variant="filled"
+                fullWidth
+                placeholder="Search"
+                // style={{ marginBottom: "15px" }}
+                //   value={searchTerm}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment
+                      position="start"
+                      style={{ marginTop: "0px" }}
+                    >
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                sx={{ width: 320 }}
+              />
+            </div>
+            <div className="p-30 pt-24 pb-24">
+              {contentDetails?.externalconsultations?.map((imptsk) => (
+                <>
+                  <table className="task-table mat-table">
+                    <thead
+                      className="task-table-header"
+                      style={{ display: "none" }}
+                    >
+                      {/* Empty header */}
+                    </thead>
+                    <tbody className="task-table-body">
+                      <tr className="task-table-row mat-row">
+                        <td className="task-table-cell mat-cell">
+                          <div className="task-header flex items-center">
+                            <div className="task-id flex flex-col">
+                              <span
+                                className="task-id-text font-semibold text-xl leading-none"
+                                style={{ fontSize: "20px" }}
+                              >
+                                Task #{imptsk?.taskIDs}
+                              </span>
 
-                            <span
-                              className="task-id-text font-semibold leading-none"
-                              style={{ font: "menu" }}
-                            >
-                              Initiated by {imptsk?.createdBy} on{" "}
-                              {formatDatess(imptsk?.externalconsultationDate)}
-                            </span>
-                          </div>
-                          <div className="task-button ml-auto">
-                            <button
-                              className="task-mark-reviewed-button mat-stroked-button"
-                              onClick={(e) => TaskDocuHandle(imptsk.id)}
-                            >
-                              <span className="mat-button-wrapper">
-                                {imptsk?.documents == 0
-                                  ? "No Responses"
-                                  : `${imptsk?.documents} Responses`}
-                              </span>
-                            </button>
-                          </div>
-                        </div>
-                        <div className="task-details px-6 mt-2">
-                          <div className="task-detail prose prose-sm max-w-5xl">
-                            <div className="task-detail-item mt-3">
-                              <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                                Staff Email Ids
-                              </span>
-                              <span className="task-detail-value">
-                                {imptsk.staffEmailIDs}
+                              <span
+                                className="task-id-text font-semibold leading-none"
+                                style={{ font: "menu" }}
+                              >
+                                Initiated by {imptsk?.createdBy} on{" "}
+                                {formatDatess(imptsk?.externalconsultationDate)}
                               </span>
                             </div>
-                            <div className="task-detail-item mt-3">
-                              <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                                External Email Ids
-                              </span>
-                              <span className="task-detail-value">
-                                {imptsk.externalEmailIDs}
-                              </span>
-                            </div>
-                            <div className="task-detail-item">
-                              <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                                Comments
-                              </span>
-                              <span className="task-detail-value">
-                                {imptsk.remark}
-                              </span>
+                            <div className="task-button ml-auto">
+                              <button
+                                className="task-mark-reviewed-button mat-stroked-button"
+                                onClick={(e) => TaskDocuHandle(imptsk.id)}
+                              >
+                                <span className="mat-button-wrapper">
+                                  {imptsk?.documents == 0
+                                    ? "No Responses"
+                                    : `${imptsk?.documents} Responses`}
+                                </span>
+                              </button>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot
-                    className="task-table-footer"
+                          <div className="task-details px-6 mt-2">
+                            <div className="task-detail prose prose-sm max-w-5xl">
+                              <div className="task-detail-item mt-3">
+                                <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                  Staff Email Ids
+                                </span>
+                                <span className="task-detail-value">
+                                  {imptsk.staffEmailIDs}
+                                </span>
+                              </div>
+                              <div className="task-detail-item mt-3">
+                                <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                  External Email Ids
+                                </span>
+                                <span className="task-detail-value">
+                                  {imptsk.externalEmailIDs}
+                                </span>
+                              </div>
+                              <div className="task-detail-item">
+                                <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                  Comments
+                                </span>
+                                <span className="task-detail-value">
+                                  {imptsk.remark}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot
+                      className="task-table-footer"
+                      style={{
+                        display: "none",
+                        bottom: 0,
+                        zIndex: 10,
+                      }}
+                    >
+                      {/* Empty footer */}
+                    </tfoot>
+                  </table>
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="flex items-center w-full border-b m-7 justify-between"
+                  ></div>
+                </>
+              ))}
+              {contentDetails?.externalconsultations?.length == 0 && (
+                <span className="mt-5">No external consultations found.</span>
+              )}
+            </div>
+          </Paper>
+        </SwipeableViews>
+        <SwipeableViews>
+          <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
+            <div
+              _ngcontent-fyk-c288=""
+              class="flex items-center w-full p-30 pt-14 pb-14 border-b justify-between"
+            >
+              <h2 className="text-2xl font-semibold">Approval</h2>
+            </div>
+            <div className="p-30 pt-24 pb-24 border-b ">
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6}>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Consultation Comment</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <div
+                        _ngcontent-fyk-c288=""
+                        class="flex items-center w-full  border-b justify-between"
+                      ></div>
+                      {AppActivity.canEdit && (
+                        <TableBody>
+                          {remarkRequest.map(
+                            (remark, index) =>
+                              remark.evaluationTypeString === "Consultaion" && (
+                                <TableRow key={index}>
+                                  <TableCell>
+                                    <TextField
+                                      id={`tasks-comment-${index}`}
+                                      label="Write your consultation comments..."
+                                      multiline
+                                      rows={1}
+                                      fullWidth
+                                      sx={{
+                                        "& .MuiInputBase-root": {
+                                          height: "auto",
+                                        },
+                                        "& .MuiInputBase-inputMultiline": {
+                                          height: "100px", // Set desired height here
+                                        },
+                                      }}
+                                      InputProps={{
+                                        endAdornment: (
+                                          <InputAdornment
+                                            position="end"
+                                            style={{ height: "90px" }}
+                                          >
+                                            <Button
+                                              variant="contained"
+                                              color="secondary"
+                                              style={{
+                                                float: "right",
+
+                                                marginBottom: "3px",
+                                              }}
+                                              // Add functionality to update the comment here if needed
+                                              onClick={() =>
+                                                handleUpdateClick(
+                                                  index,
+                                                  remark.id
+                                                )
+                                              }
+                                            >
+                                              Update
+                                            </Button>
+                                          </InputAdornment>
+                                        ),
+                                      }}
+                                      value={remark.remark}
+                                      onChange={(event) =>
+                                        handleRemarkChange(index, event)
+                                      }
+                                    />
+                                    <h6 className="ps-4 pt-6 text-grey">
+                                      {remark.createdBy +
+                                        "-" +
+                                        formatDates(remark.createdAt)}
+                                    </h6>
+                                  </TableCell>
+                                </TableRow>
+                              )
+                          )}
+                          <TableRow>
+                            <TableCell>
+                              <TextField
+                                id="tasks-comment-new"
+                                label="Write your Consultation comments..."
+                                multiline
+                                rows={1}
+                                fullWidth
+                                value={newRemark}
+                                onChange={(event) =>
+                                  handleInputChange(event, "Consultaion")
+                                }
+                                sx={{
+                                  "& .MuiInputBase-root": {
+                                    height: "auto",
+                                  },
+                                  "& .MuiInputBase-inputMultiline": {
+                                    height: "100px", // Set desired height here
+                                  },
+                                }}
+                                InputProps={{
+                                  endAdornment: (
+                                    <InputAdornment
+                                      position="end"
+                                      style={{ height: "90px" }}
+                                    >
+                                      <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        style={{
+                                          float: "right",
+
+                                          marginBottom: "3px",
+                                        }}
+                                        onClick={() =>
+                                          handleSaveClick("Consultaion")
+                                        }
+                                      >
+                                        Save
+                                      </Button>
+                                    </InputAdornment>
+                                  ),
+                                }}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      )}
+                      {!AppActivity.canEdit && (
+                        <TableBody>
+                          {remarkRequest.map(
+                            (remark, index) =>
+                              remark.evaluationTypeString === "Consultaion" && (
+                                <TableRow key={index}>
+                                  <TableCell>
+                                    <div className="flex">
+                                      <img
+                                        src="/assets/images/etc/userpic.png"
+                                        alt="Card cover image"
+                                        className="rounded-full mr-4"
+                                        style={{
+                                          width: "4rem",
+                                          height: "4rem",
+                                        }}
+                                      />
+                                      <div className="ps-4">
+                                        <h6 className="pt-2 text-black">
+                                          <b>{remark.createdBy}</b> -{" "}
+                                          {remark?.remark}
+                                        </h6>
+                                        <h6
+                                          className="pt-1 text-grey"
+                                          style={{ display: "block" }}
+                                        >
+                                          {formatDates(remark.createdAt)}
+                                        </h6>
+                                      </div>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              )
+                          )}
+
+                          {remarkRequest?.length == 0 && (
+                            <TableRow>
+                              <TableCell>
+                                <div className="flex">
+                                  <h5 className="ps-4 pt-2 text-black text-center">
+                                    <b>No Comments</b>
+                                  </h5>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      )}
+                    </Table>
+                  </TableContainer>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Tasks Comment</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <div className="flex items-center w-full border-b justify-between"></div>
+                      {AppActivity.canEdit && (
+                        <TableBody>
+                          {remarkRequest.map(
+                            (remark, index) =>
+                              remark.evaluationTypeString === "ImpactTask" && (
+                                <TableRow key={index}>
+                                  <TableCell>
+                                    <TextField
+                                      id={`impact-task-comment-${index}`}
+                                      label="Write your task comments..."
+                                      multiline
+                                      rows={1}
+                                      fullWidth
+                                      value={remark.remark}
+                                      onChange={(event) =>
+                                        handleRemarkChange(index, event)
+                                      }
+                                      sx={{
+                                        "& .MuiInputBase-root": {
+                                          height: "auto",
+                                        },
+                                        "& .MuiInputBase-inputMultiline": {
+                                          height: "100px",
+                                        },
+                                      }}
+                                      InputProps={{
+                                        endAdornment: (
+                                          <InputAdornment
+                                            position="end"
+                                            style={{ height: "90px" }}
+                                          >
+                                            <Button
+                                              variant="contained"
+                                              color="secondary"
+                                              style={{
+                                                float: "right",
+
+                                                marginBottom: "3px",
+                                              }}
+                                              onClick={() =>
+                                                handleUpdateClick(
+                                                  index,
+                                                  remark.id
+                                                )
+                                              }
+                                            >
+                                              Update
+                                            </Button>
+                                          </InputAdornment>
+                                        ),
+                                      }}
+                                    />
+                                    <h6 className="ps-4 pt-6 text-grey">
+                                      {remark.createdBy +
+                                        "-" +
+                                        formatDates(remark.createdAt)}
+                                    </h6>
+                                  </TableCell>
+                                </TableRow>
+                              )
+                          )}
+                          <TableRow>
+                            <TableCell>
+                              <TextField
+                                id="tasks-comment"
+                                label="Write your task comments..."
+                                multiline
+                                rows={1}
+                                fullWidth
+                                value={newImpactTaskRemark}
+                                onChange={(event) =>
+                                  handleInputChange(event, "ImpactTask")
+                                }
+                                InputProps={{
+                                  endAdornment: (
+                                    <InputAdornment
+                                      position="end"
+                                      style={{ height: "90px" }}
+                                    >
+                                      <Button
+                                        variant="contained"
+                                        color="secondary"
+                                        style={{
+                                          float: "right",
+                                          marginBottom: "3px",
+                                        }}
+                                        onClick={() =>
+                                          handleSaveClick("ImpactTask")
+                                        }
+                                      >
+                                        Save
+                                      </Button>
+                                    </InputAdornment>
+                                  ),
+                                }}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        </TableBody>
+                      )}
+                      {!AppActivity.canEdit && (
+                        <TableBody>
+                          {remarkRequest.map(
+                            (remark, index) =>
+                              remark.evaluationTypeString === "ImpactTask" && (
+                                <TableRow key={index}>
+                                  <TableCell>
+                                    <div className="flex">
+                                      <img
+                                        src="/assets/images/etc/userpic.png"
+                                        alt="Card cover image"
+                                        className="rounded-full mr-4"
+                                        style={{
+                                          width: "4rem",
+                                          height: "4rem",
+                                        }}
+                                      />
+                                      <div className="ps-4">
+                                        <h6 className="pt-2 text-black">
+                                          <b>{remark.createdBy}</b>{" "}
+                                          {remark?.remark}
+                                        </h6>
+                                        <h6
+                                          className="pt-1 text-grey"
+                                          style={{ display: "block" }}
+                                        >
+                                          {formatDates(remark.createdAt)}
+                                        </h6>
+                                      </div>
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              )
+                          )}
+                          {remarkRequest?.length == 0 && (
+                            <TableRow>
+                              <TableCell>
+                                <div className="flex">
+                                  <h5 className="ps-4 pt-2 text-black text-center">
+                                    <b>No Comments</b>
+                                  </h5>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          )}
+                        </TableBody>
+                      )}
+                    </Table>
+                  </TableContainer>
+                </Grid>
+              </Grid>
+            </div>
+
+            <div className="flex items-center w-full p-30 pt-24 pb-24 justify-between">
+              <div className="flex justify-start">
+                <StyledBadge
+                  badgeContent={
+                    listDocument.length != 0
+                      ? listDocument.length
+                      : CountApprove
+                  }
+                >
+                  <Button
+                    className="whitespace-nowrap"
                     style={{
-                      display: "none",
-                      bottom: 0,
-                      zIndex: 10,
+                      border: "1px solid",
+                      backgroundColor: "transparent",
+                      color: "black",
+                      borderColor: "rgba(203,213,225)",
                     }}
+                    variant="contained"
+                    color="warning"
+                    startIcon={
+                      <FuseSvgIcon size={20}>
+                        heroicons-solid:upload
+                      </FuseSvgIcon>
+                    }
+                    onClick={handleOpen1}
                   >
-                    {/* Empty footer */}
-                  </tfoot>
-                </table>
-                <div
-                  _ngcontent-fyk-c288=""
-                  class="flex items-center w-full border-b m-7 justify-between"
-                ></div>
-              </>
-            ))}
-            {contentDetails?.externalconsultations?.length == 0 && (
-              <span className="mt-5">No external consultations found.</span>
-            )}
-          </div>
-        </Paper>
-      </SwipeableViews>
-      <SwipeableViews>
-        <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
-          <div
-            _ngcontent-fyk-c288=""
-            class="flex items-center w-full p-30 pt-14 pb-14 border-b justify-between"
-          >
-            <h2 className="text-2xl font-semibold">Approval</h2>
-          </div>
-          <div className="p-30 pt-24 pb-24 border-b ">
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TableContainer component={Paper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Consultation Comment</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <div
-                      _ngcontent-fyk-c288=""
-                      class="flex items-center w-full  border-b justify-between"
-                    ></div>
-                    {AppActivity.canEdit && (
-                      <TableBody>
-                        {remarkRequest.map(
-                          (remark, index) =>
-                            remark.evaluationTypeString === "Consultaion" && (
-                              <TableRow key={index}>
-                                <TableCell>
-                                  <TextField
-                                    id={`tasks-comment-${index}`}
-                                    label="Write your task comments..."
-                                    multiline
-                                    rows={1}
-                                    fullWidth
-                                    sx={{
-                                      "& .MuiInputBase-root": {
-                                        height: "auto",
-                                      },
-                                      "& .MuiInputBase-inputMultiline": {
-                                        height: "100px", // Set desired height here
-                                      },
-                                    }}
-                                    InputProps={{
-                                      endAdornment: (
-                                        <InputAdornment
-                                          position="end"
-                                          style={{ height: "90px" }}
-                                        >
-                                          <Button
-                                            variant="contained"
-                                            color="secondary"
-                                            style={{
-                                              float: "right",
+                    Document
+                  </Button>
+                </StyledBadge>
+              </div>
 
-                                              marginBottom: "3px",
-                                            }}
-                                            // Add functionality to update the comment here if needed
-                                            onClick={() =>
-                                              handleUpdateClick(
-                                                index,
-                                                remark.id
-                                              )
-                                            }
-                                          >
-                                            Update
-                                          </Button>
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                    value={remark.remark}
-                                    onChange={(event) =>
-                                      handleRemarkChange(index, event)
-                                    }
-                                  />
-                                  <h6 className="ps-4 pt-6 text-grey">
-                                    {remark.createdBy +
-                                      "-" +
-                                      formatDates(remark.createdAt)}
-                                  </h6>
-                                </TableCell>
-                              </TableRow>
-                            )
-                        )}
-                        <TableRow>
-                          <TableCell>
-                            <TextField
-                              id="tasks-comment-new"
-                              label="Write your Consultation comments..."
-                              multiline
-                              rows={1}
-                              fullWidth
-                              value={newRemark}
-                              onChange={(event) =>
-                                handleInputChange(event, "Consultaion")
-                              }
-                              sx={{
-                                "& .MuiInputBase-root": {
-                                  height: "auto",
-                                },
-                                "& .MuiInputBase-inputMultiline": {
-                                  height: "100px", // Set desired height here
-                                },
-                              }}
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment
-                                    position="end"
-                                    style={{ height: "90px" }}
-                                  >
-                                    <Button
-                                      variant="contained"
-                                      color="secondary"
-                                      style={{
-                                        float: "right",
+              {AppActivity?.canExecute && (
+                <div className="flex justify-end">
+                  {AppActions.map((btn) => (
+                    <Button
+                      key={btn.uid}
+                      className="whitespace-nowrap ms-5"
+                      variant="contained"
+                      color="secondary"
+                      // style={{ marginTop: "10px" }}
 
-                                        marginBottom: "3px",
-                                      }}
-                                      onClick={() =>
-                                        handleSaveClick("Consultaion")
-                                      }
-                                    >
-                                      Save
-                                    </Button>
-                                  </InputAdornment>
-                                ),
-                              }}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    )}
-                    {!AppActivity.canEdit && (
-                      <TableBody>
-                        {remarkRequest.map(
-                          (remark, index) =>
-                            remark.evaluationTypeString === "Consultaion" && (
-                              <TableRow key={index}>
-                                <TableCell>
-                                  <div className="flex">
-                                    <img
-                                      src="/assets/images/etc/userpic.png"
-                                      alt="Card cover image"
-                                      className="rounded-full mr-4"
-                                      style={{
-                                        width: "4rem",
-                                        height: "4rem",
-                                      }}
-                                    />
-                                    <div className="ps-4">
-                                      <h6 className="pt-2 text-black">
-                                        <b>{remark.createdBy}</b> -{" "}
-                                        {remark?.remark}
-                                      </h6>
-                                      <h6
-                                        className="pt-1 text-grey"
-                                        style={{ display: "block" }}
-                                      >
-                                        {formatDates(remark.createdAt)}
-                                      </h6>
-                                    </div>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            )
-                        )}
+                      onClick={(e) => {
+                        // console.log(btn, "btn");
+                        SubmitApprovelCreate(e, btn.uid, btn.name, btn.type);
+                        // alert(1);
+                      }}
+                    >
+                      {btn.name}
+                    </Button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </Paper>
+        </SwipeableViews>
 
-                        {remarkRequest?.length == 0 && (
-                          <TableRow>
-                            <TableCell>
-                              <div className="flex">
-                                <h5 className="ps-4 pt-2 text-black text-center">
-                                  <b>No Comments</b>
-                                </h5>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    )}
-                  </Table>
-                </TableContainer>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TableContainer component={Paper}>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Tasks Comment</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <div className="flex items-center w-full border-b justify-between"></div>
-                    {AppActivity.canEdit && (
-                      <TableBody>
-                        {remarkRequest.map(
-                          (remark, index) =>
-                            remark.evaluationTypeString === "ImpactTask" && (
-                              <TableRow key={index}>
-                                <TableCell>
-                                  <TextField
-                                    id={`impact-task-comment-${index}`}
-                                    label="Write your task comments..."
-                                    multiline
-                                    rows={1}
-                                    fullWidth
-                                    value={remark.remark}
-                                    onChange={(event) =>
-                                      handleRemarkChange(index, event)
-                                    }
-                                    sx={{
-                                      "& .MuiInputBase-root": {
-                                        height: "auto",
-                                      },
-                                      "& .MuiInputBase-inputMultiline": {
-                                        height: "100px",
-                                      },
-                                    }}
-                                    InputProps={{
-                                      endAdornment: (
-                                        <InputAdornment
-                                          position="end"
-                                          style={{ height: "90px" }}
-                                        >
-                                          <Button
-                                            variant="contained"
-                                            color="secondary"
-                                            style={{
-                                              float: "right",
-
-                                              marginBottom: "3px",
-                                            }}
-                                            onClick={() =>
-                                              handleUpdateClick(
-                                                index,
-                                                remark.id
-                                              )
-                                            }
-                                          >
-                                            Update
-                                          </Button>
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                  />
-                                  <h6 className="ps-4 pt-6 text-grey">
-                                    {remark.createdBy +
-                                      "-" +
-                                      formatDates(remark.createdAt)}
-                                  </h6>
-                                </TableCell>
-                              </TableRow>
-                            )
-                        )}
-                        <TableRow>
-                          <TableCell>
-                            <TextField
-                              id="tasks-comment"
-                              label="Write your task comments..."
-                              multiline
-                              rows={1}
-                              fullWidth
-                              value={newImpactTaskRemark}
-                              onChange={(event) =>
-                                handleInputChange(event, "ImpactTask")
-                              }
-                              InputProps={{
-                                endAdornment: (
-                                  <InputAdornment
-                                    position="end"
-                                    style={{ height: "90px" }}
-                                  >
-                                    <Button
-                                      variant="contained"
-                                      color="secondary"
-                                      style={{
-                                        float: "right",
-                                        marginBottom: "3px",
-                                      }}
-                                      onClick={() =>
-                                        handleSaveClick("ImpactTask")
-                                      }
-                                    >
-                                      Save
-                                    </Button>
-                                  </InputAdornment>
-                                ),
-                              }}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    )}
-                    {!AppActivity.canEdit && (
-                      <TableBody>
-                        {remarkRequest.map(
-                          (remark, index) =>
-                            remark.evaluationTypeString === "ImpactTask" && (
-                              <TableRow key={index}>
-                                <TableCell>
-                                  <div className="flex">
-                                    <img
-                                      src="/assets/images/etc/userpic.png"
-                                      alt="Card cover image"
-                                      className="rounded-full mr-4"
-                                      style={{
-                                        width: "4rem",
-                                        height: "4rem",
-                                      }}
-                                    />
-                                    <div className="ps-4">
-                                      <h6 className="pt-2 text-black">
-                                        <b>{remark.createdBy}</b>{" "}
-                                        {remark?.remark}
-                                      </h6>
-                                      <h6
-                                        className="pt-1 text-grey"
-                                        style={{ display: "block" }}
-                                      >
-                                        {formatDates(remark.createdAt)}
-                                      </h6>
-                                    </div>
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            )
-                        )}
-                        {remarkRequest?.length == 0 && (
-                          <TableRow>
-                            <TableCell>
-                              <div className="flex">
-                                <h5 className="ps-4 pt-2 text-black text-center">
-                                  <b>No Comments</b>
-                                </h5>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
-                    )}
-                  </Table>
-                </TableContainer>
-              </Grid>
-            </Grid>
-          </div>
-
-          <div className="flex items-center w-full p-30 pt-24 pb-24 justify-between">
-            <div className="flex justify-start">
-              <StyledBadge
-                badgeContent={
-                  listDocument.length != 0 ? listDocument.length : CountApprove
-                }
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={open1}
+          onClose={handleModalClose}
+          closeAfterTransition
+          // Customize backdrop appearance
+          BackdropComponent={Backdrop}
+          // Props for backdrop customization
+          BackdropProps={{
+            timeout: 500, // Adjust as needed
+            style: {
+              // Add backdrop styles here
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+            },
+          }}
+        >
+          <Fade in={open1}>
+            <Box sx={style1}>
+              <div
+                className="flex justify-end mx-4 sm:mx-8"
+                style={{
+                  marginTop: "-32px",
+                  marginRight: "-29px",
+                  padding: "0 0 -24px ",
+                }}
               >
                 <Button
-                  className="whitespace-nowrap"
-                  style={{
-                    border: "1px solid",
-                    backgroundColor: "transparent",
-                    color: "black",
-                    borderColor: "rgba(203,213,225)",
-                  }}
+                  className=""
                   variant="contained"
-                  color="warning"
-                  startIcon={
-                    <FuseSvgIcon size={20}>heroicons-solid:upload</FuseSvgIcon>
-                  }
-                  onClick={handleOpen1}
+                  style={{ backgroundColor: "white" }}
+                  onClick={handleModalClose1}
                 >
-                  Document
+                  <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                 </Button>
-              </StyledBadge>
-            </div>
-
-            {AppActivity?.canExecute && (
-              <div className="flex justify-end">
-                {AppActions.map((btn) => (
-                  <Button
-                    key={btn.uid}
-                    className="whitespace-nowrap ms-5"
-                    variant="contained"
-                    color="secondary"
-                    // style={{ marginTop: "10px" }}
-                    onClick={(e) =>
-                      SubmitApprovelCreate(e, btn.uid, btn.name, btn.type)
-                    }
-                  >
-                    {btn.name}
-                  </Button>
-                ))}
               </div>
-            )}
-          </div>
-        </Paper>
-      </SwipeableViews>
-
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={open1}
-        onClose={handleModalClose}
-        closeAfterTransition
-        // Customize backdrop appearance
-        BackdropComponent={Backdrop}
-        // Props for backdrop customization
-        BackdropProps={{
-          timeout: 500, // Adjust as needed
-          style: {
-            // Add backdrop styles here
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          },
-        }}
-      >
-        <Fade in={open1}>
-          <Box sx={style1}>
-            <div
-              className="flex justify-end mx-4 sm:mx-8"
-              style={{
-                marginTop: "-32px",
-                marginRight: "-29px",
-                padding: "0 0 -24px ",
-              }}
-            >
-              <Button
-                className=""
-                variant="contained"
-                style={{ backgroundColor: "white" }}
-                onClick={handleModalClose1}
-              >
-                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-              </Button>
-            </div>
-            <Box sx={{ flex: 1 }}>
-              <Box
-                className="flex justify-between"
-                style={{ margin: "0", paddingTop: "0" }}
-              >
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "3rem",
-                  }}
+              <Box sx={{ flex: 1 }}>
+                <Box
+                  className="flex justify-between"
+                  style={{ margin: "0", paddingTop: "0" }}
                 >
-                  File Manager
-                  <Typography id="transition-modal-subtitle" component="h2">
-                    {listDocument.length} Files
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "3rem",
+                    }}
+                  >
+                    File Manager
+                    <Typography id="transition-modal-subtitle" component="h2">
+                      {listDocument.length} Files
+                    </Typography>
                   </Typography>
-                </Typography>
-                {AppActivity?.canExecute && (
-                  <Box>
-                    <Button
-                      className=""
-                      variant="contained"
-                      color="secondary"
-                      onClick={toggleDrawer(true)}
-                    >
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                      <span className="mx-4 sm:mx-8">Upload File</span>
-                    </Button>
-                  </Box>
-                )}
-              </Box>
-              <Box>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
-                  component="div"
-                  style={{
-                    backgroundColor: "#e3eeff80",
-                  }}
-                >
-                  {listDocument.map((doc, index) => (
-                    <div className="content " key={index}>
-                      <div
-                        onClick={() => handelDetailDoc(doc)}
-                        style={{ textAlign: "-webkit-center" }}
+                  {AppActivity?.canExecute && (
+                    <Box>
+                      <Button
+                        className=""
+                        variant="contained"
+                        color="secondary"
+                        onClick={toggleDrawer(true)}
                       >
-                        {doc.fileType === "JPG" ? (
-                          <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        ) : doc.fileType === "JPG" ? (
-                          <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        ) : (
-                          <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        )}
-                        <h6 className="truncate-text">{doc?.name}</h6>
-                        <h6>by {doc?.staffName}</h6>
-                      </div>
-                    </div>
-                  ))}
-                </Typography>
-              </Box>
-            </Box>
-            {openDrawer && !fileDetails && (
-              <Box sx={drawerStyle(openDrawer)}>
-                <div className="flex justify-end">
-                  <Button
-                    className=""
-                    variant="contained"
-                    style={{ backgroundColor: "white" }}
-                    onClick={() => setOpenDrawer(false)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                  </Button>
-                </div>
-                <div>&nbsp;</div>
-                <div className="text-center">
-                  <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
+                        <FuseSvgIcon size={20}>
+                          heroicons-outline:plus
+                        </FuseSvgIcon>
+                        <span className="mx-4 sm:mx-8">Upload File</span>
+                      </Button>
+                    </Box>
+                  )}
+                </Box>
+                <Box>
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
+                    component="div"
+                    style={{
+                      backgroundColor: "#e3eeff80",
                     }}
-                  />
-                  <label htmlFor="fileInput">
+                  >
+                    {listDocument.map((doc, index) => (
+                      <div className="content " key={index}>
+                        <div
+                          onClick={() => handelDetailDoc(doc)}
+                          style={{ textAlign: "-webkit-center" }}
+                        >
+                          {doc.fileType === "JPG" ? (
+                            <img
+                              src="/assets/images/etc/icon_N.png"
+                              style={{}}
+                            />
+                          ) : doc.fileType === "JPG" ? (
+                            <img
+                              src="/assets/images/etc/icon_N.png"
+                              style={{}}
+                            />
+                          ) : (
+                            <img
+                              src="/assets/images/etc/icon_N.png"
+                              style={{}}
+                            />
+                          )}
+                          <h6 className="truncate-text">{doc?.name}</h6>
+                          <h6>by {doc?.staffName}</h6>
+                        </div>
+                      </div>
+                    ))}
+                  </Typography>
+                </Box>
+              </Box>
+              {openDrawer && !fileDetails && (
+                <Box sx={drawerStyle(openDrawer)}>
+                  <div className="flex justify-end">
                     <Button
                       className=""
                       variant="contained"
-                      color="secondary"
-                      style={{
-                        backgroundColor: "#24a0ed",
-                        borderRadius: "5px",
-                        paddingLeft: "50px",
-                        paddingRight: "50px",
+                      style={{ backgroundColor: "white" }}
+                      onClick={() => setOpenDrawer(false)}
+                    >
+                      <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+                    </Button>
+                  </div>
+                  <div>&nbsp;</div>
+                  <div className="text-center">
+                    <input
+                      type="file"
+                      id="fileInput"
+                      style={{ display: "none" }}
+                      onChange={(e) => {
+                        handelFileChange(e);
                       }}
-                      component="span"
-                    >
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                      <span className="mx-4 sm:mx-8">Upload File</span>
-                    </Button>
-                  </label>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<BoldLabel>Information</BoldLabel>}
-                      variant="standard"
-                      disabled
                     />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="selectedFileName"
-                      label="Selecte File"
-                      variant="standard"
-                      disabled
-                      value={selectedFile.name}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<>Description</>}
-                      name="descritpion"
-                      variant="standard"
-                      onChange={handelFileDiscriptionChange}
-                      value={selectedFile.descritpion}
-                    />
-                  </Box>
-                </div>
-
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    marginTop: "15px",
-                    justifyContent: "end",
-                    backgroundColor: " rgba(248,250,252)",
-                    padding: "10px",
-                  }}
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    onClick={handleSubmitAsset}
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </Box>
-            )}
-
-            {fileDetails && (
-              <Box sx={drawerStyle(fileDetails)}>
-                <div className="flex justify-end">
-                  <Button
-                    className=""
-                    variant="contained"
-                    style={{ backgroundColor: "white" }}
-                    onClick={() => setFileDetails(false)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                  </Button>
-                </div>
-                <div>&nbsp;</div>
-                <div className="text-center">
-                  <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    disabled
-                    // onChange={(e) => {
-                    //   handelFileChange(e);
-                    // }}
-                  />
-                  <label htmlFor="fileInput">
-                    <div className=" ">
-                      <div
-                        // onClick={handelDetailDoc}
+                    <label htmlFor="fileInput">
+                      <Button
+                        className=""
+                        variant="contained"
+                        color="secondary"
                         style={{
-                          textAlign: "-webkit-center",
+                          backgroundColor: "#24a0ed",
+                          borderRadius: "5px",
+                          paddingLeft: "50px",
+                          paddingRight: "50px",
                         }}
+                        component="span"
                       >
-                        <img src="/assets/images/etc/icon_N.png" />
-                      </div>
-                      {selectedDocument?.name}
-                    </div>
-                  </label>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<BoldLabel>Information</BoldLabel>}
-                      variant="standard"
-                      disabled
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="selectedFileName"
-                      label="Created By"
-                      variant="standard"
-                      disabled
-                      value={selectedDocument?.staffName}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label=" Created At"
-                      name="description"
-                      variant="standard"
-                      disabled
-                      value={new Date(
-                        selectedDocument.createdAt
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<>Description</>}
-                      name="Description"
-                      variant="standard"
-                      disabled
-                      value={
-                        selectedDocument?.description === null
-                          ? ""
-                          : selectedDocument?.descritpion
-                      }
-                    />
-                  </Box>
-                </div>
+                        <FuseSvgIcon size={20}>
+                          heroicons-outline:plus
+                        </FuseSvgIcon>
+                        <span className="mx-4 sm:mx-8">Upload File</span>
+                      </Button>
+                    </label>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<BoldLabel>Information</BoldLabel>}
+                        variant="standard"
+                        disabled
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="selectedFileName"
+                        label="Select File"
+                        variant="standard"
+                        disabled
+                        value={selectedFile.name}
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<>Description</>}
+                        name="descritpion"
+                        variant="standard"
+                        onChange={handelFileDiscriptionChange}
+                        value={selectedFile.descritpion}
+                      />
+                    </Box>
+                  </div>
 
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    marginTop: "15px",
-                    justifyContent: "end",
-                    backgroundColor: " rgba(248,250,252)",
-                    padding: "10px",
-                  }}
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    onClick={handleDownload}
-                  >
-                    Download
-                  </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
+                  <div
+                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                     style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
+                      marginTop: "15px",
+                      justifyContent: "end",
+                      backgroundColor: " rgba(248,250,252)",
+                      padding: "10px",
                     }}
-                    onClick={(e) =>
-                      handleDelete(
-                        e,
-                        selectedDocument?.documentId,
-                        selectedDocument?.token
-                      )
-                    }
                   >
-                    Delete
-                  </Button>
-                </div>
-              </Box>
-            )}
-          </Box>
-        </Fade>
-      </Modal>
-    </div>
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        border: "1px solid grey",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                      onClick={handleSubmitAsset}
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </Box>
+              )}
+
+              {fileDetails && (
+                <Box sx={drawerStyle(fileDetails)}>
+                  <div className="flex justify-end">
+                    <Button
+                      className=""
+                      variant="contained"
+                      style={{ backgroundColor: "white" }}
+                      onClick={() => setFileDetails(false)}
+                    >
+                      <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+                    </Button>
+                  </div>
+                  <div>&nbsp;</div>
+                  <div className="text-center">
+                    <input
+                      type="file"
+                      id="fileInput"
+                      style={{ display: "none" }}
+                      disabled
+                      // onChange={(e) => {
+                      //   handelFileChange(e);
+                      // }}
+                    />
+                    <label htmlFor="fileInput">
+                      <div className=" ">
+                        <div
+                          // onClick={handelDetailDoc}
+                          style={{
+                            textAlign: "-webkit-center",
+                          }}
+                        >
+                          <img src="/assets/images/etc/icon_N.png" />
+                        </div>
+                        {selectedDocument?.name}
+                      </div>
+                    </label>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<BoldLabel>Information</BoldLabel>}
+                        variant="standard"
+                        disabled
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="selectedFileName"
+                        label="Created By"
+                        variant="standard"
+                        disabled
+                        value={selectedDocument?.staffName}
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label=" Created At"
+                        name="description"
+                        variant="standard"
+                        disabled
+                        value={new Date(
+                          selectedDocument.createdAt
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      />
+                    </Box>
+                    <Box
+                      component="form"
+                      sx={{
+                        "& > :not(style)": { m: 1, width: "25ch" },
+                      }}
+                      noValidate
+                      autoComplete="off"
+                    >
+                      <TextField
+                        id="standard-basic"
+                        label={<>Description</>}
+                        name="Description"
+                        variant="standard"
+                        disabled
+                        value={
+                          selectedDocument?.description === null
+                            ? ""
+                            : selectedDocument?.descritpion
+                        }
+                      />
+                    </Box>
+                  </div>
+
+                  <div
+                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                    style={{
+                      marginTop: "15px",
+                      justifyContent: "end",
+                      backgroundColor: " rgba(248,250,252)",
+                      padding: "10px",
+                    }}
+                  >
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="secondary"
+                      type="submit"
+                      onClick={handleDownload}
+                    >
+                      Download
+                    </Button>
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        backgroundColor: "white",
+                        color: "black",
+                        border: "1px solid grey",
+                      }}
+                      onClick={(e) =>
+                        handleDelete(
+                          e,
+                          selectedDocument?.documentId,
+                          selectedDocument?.token
+                        )
+                      }
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </Box>
+              )}
+            </Box>
+          </Fade>
+        </Modal>
+      </div>
+    </>
   );
 };
 

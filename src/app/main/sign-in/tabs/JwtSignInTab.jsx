@@ -9,6 +9,10 @@ import Checkbox from "@mui/material/Checkbox";
 import { Link, Router, useNavigate } from "react-router-dom";
 import { useAuth } from "src/app/auth/AuthRouteProvider";
 import { z } from "zod";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ReCAPTCHA from "react-google-recaptcha";
 import Cookies from "js-cookie";
@@ -130,6 +134,11 @@ const JwtSignInTab = () => {
       });
     }
   }
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="w-full">
@@ -179,12 +188,25 @@ const JwtSignInTab = () => {
               {...field}
               className="mb-24"
               label="Password"
-              type="password"
+              type={showPassword ? "text" : "password"}
               error={!!errors.password}
               helperText={errors?.password?.message}
               variant="outlined"
               required
               fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
           )}
         />

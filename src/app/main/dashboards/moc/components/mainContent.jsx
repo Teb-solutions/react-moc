@@ -418,7 +418,7 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                   >
                     <TextField
                       id="selectedFileName"
-                      label="Selecte File"
+                      label="Select File"
                       variant="standard"
                       disabled
                       value={selectedFile.name}
@@ -715,12 +715,13 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                   >
                     {" "}
                     {contentChanges
-                      ? 
-                      new Date(contentDetails?.requestDate).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
+                      ? new Date(
+                          contentDetails?.requestDate
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
                       : contentDetails?.initiatorName}
                   </div>
                 </div>
@@ -938,9 +939,9 @@ function MainComponent({ contentDetails, contentChanges, assetEvaluationId }) {
                   >
                     {" "}
                     {contentChanges
-                      ? 
-                      new Date(contentDetails?.programCompletionDate).toLocaleDateString("en-GB")
-                     
+                      ? new Date(
+                          contentDetails?.programCompletionDate
+                        ).toLocaleDateString("en-GB")
                       : contentDetails?.changeLocationString}
                   </div>
                 </div>

@@ -516,7 +516,6 @@ function Course() {
   };
 
   const handelOpenAudit = async (audits, value) => {
-
     setOpenAudit(true);
     const transformedData = audits.map((item, index) =>
       createData(
@@ -875,11 +874,11 @@ function Course() {
 
   const taskFormControlStyles = viewrisk
     ? {
-      borderColor: "white",
-      m: 1,
-      maxWidth: "100%",
-      border: "1px solid white",
-    }
+        borderColor: "white",
+        m: 1,
+        maxWidth: "100%",
+        border: "1px solid white",
+      }
     : { m: 1, maxWidth: "100%" };
 
   const styleImp = {
@@ -1122,13 +1121,14 @@ function Course() {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetailsIni(resp.data?.data);
               });
-              apiAuth
-                    .get(`DocMoc/GetImplementation/${evaluationId}`)
-                    .then((resp) => {
-                      setTaskLists(resp.data.data.taskList);
-                      setRiskLists(resp.data.data.riskAnalysisList);
+            apiAuth
+              .get(`DocMoc/GetImplementation/${evaluationId}`)
+              .then((resp) => {
+                setTaskLists(resp.data.data.taskList);
+                setRiskLists(resp.data.data.riskAnalysisList);
 
-                      setCheckLists(resp.data.data.checkList);})
+                setCheckLists(resp.data.data.checkList);
+              });
             apiAuth
               .get(
                 `/SummaryDetails/List?id=${evaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
@@ -1141,8 +1141,9 @@ function Course() {
                   setCloseActivity(resp.data.data.activity);
                 });
               });
-              apiAuth.get(`/Staff/LOV`).then((resp) => {
-                setDocStaff(resp.data.data);})
+            apiAuth.get(`/Staff/LOV`).then((resp) => {
+              setDocStaff(resp.data.data);
+            });
             break;
           default:
             console.log("No matching phase found");
@@ -1321,7 +1322,7 @@ function Course() {
       .then((resp) => {
         apiAuth.get(`/Staff/LOV`).then((resp) => {
           setDocStaff(resp.data.data);
-          apiAuth.get(`/LookupData/Lov/5`).then((resp) => { });
+          apiAuth.get(`/LookupData/Lov/5`).then((resp) => {});
         });
       });
   };
@@ -1498,10 +1499,12 @@ function Course() {
   };
 
   const handelCloseMoc = (uid) => {
-    const allItemsChecked = CheckLists.every(item => item.isChecked);
+    const allItemsChecked = CheckLists.every((item) => item.isChecked);
 
     if (!allItemsChecked) {
-      toast?.error("Please complete all checklist items before closing the MOC.");
+      toast?.error(
+        "Please complete all checklist items before closing the MOC."
+      );
       return;
     }
     setIsLoading(true);
@@ -2241,9 +2244,15 @@ function Course() {
 
   return (
     <FusePageSimple
-      header={<MocHeader activity={actName} reqno={reqNo} sidemenu={true}
-      setLeftSidebarOpen={setLeftSidebarOpen}
-      leftSidebarOpen={leftSidebarOpen} />}
+      header={
+        <MocHeader
+          activity={actName}
+          reqno={reqNo}
+          sidemenu={true}
+          setLeftSidebarOpen={setLeftSidebarOpen}
+          leftSidebarOpen={leftSidebarOpen}
+        />
+      }
       content={
         <div className="w-full">
           <ToastContainer className="toast-container" />
@@ -2446,7 +2455,7 @@ function Course() {
                                       {column.render
                                         ? column.render(row) // Render custom actions
                                         : column.format &&
-                                          typeof value === "number"
+                                            typeof value === "number"
                                           ? column.format(value)
                                           : value}
                                     </TableCell>
@@ -2868,7 +2877,13 @@ function Course() {
                             <Fade in={openMoc}>
                               <Box sx={style1}>
                                 <Box sx={{ flex: 1 }}>
-                                  <div className="flex justify-end " style={{ marginTop: "-16px", marginRight: "-16px" }} >
+                                  <div
+                                    className="flex justify-end "
+                                    style={{
+                                      marginTop: "-16px",
+                                      marginRight: "-16px",
+                                    }}
+                                  >
                                     <Button
                                       className=""
                                       variant="contained"
@@ -3029,7 +3044,7 @@ function Course() {
                                       >
                                         <TextField
                                           id="selectedFileName"
-                                          label="Selecte File"
+                                          label="Select File"
                                           variant="standard"
                                           name="name"
                                           disabled
@@ -3049,9 +3064,7 @@ function Course() {
                                       >
                                         <TextField
                                           id="standard-basic"
-                                          label={
-                                            <>Description</>
-                                          }
+                                          label={<>Description</>}
                                           name="descritpion"
                                           variant="standard"
                                           onChange={handelFileDiscriptionChange}
@@ -3205,15 +3218,13 @@ function Course() {
                                       >
                                         <TextField
                                           id="standard-basic"
-                                          label={
-                                            <>Description</>
-                                          }
+                                          label={<>Description</>}
                                           name="description"
                                           variant="standard"
                                           disabled
                                           value={
                                             selectedDocument?.description ===
-                                              null
+                                            null
                                               ? ""
                                               : selectedDocument?.descritpion
                                           }
@@ -3403,7 +3414,7 @@ function Course() {
                                       style={{
                                         backgroundColor:
                                           list.comments == "" ||
-                                            list.comments == null
+                                          list.comments == null
                                             ? "rgba(252,165,165)"
                                             : "rgba(134,239,172)",
                                         padding: "5px",
@@ -3490,7 +3501,7 @@ function Course() {
                                       style={{
                                         backgroundColor:
                                           list.comments == "" ||
-                                            list.comments == null
+                                          list.comments == null
                                             ? "rgba(252,165,165)"
                                             : "rgba(134,239,172)",
                                         padding: "5px",
@@ -3579,7 +3590,7 @@ function Course() {
                                 >
                                   <Box sx={{}}>
                                     <DatePicker
-                                      label="Validity Expires On *"
+                                      label="Consulted On *"
                                       name="consultedDate"
                                       value={form.data.consultedDate}
                                       onChange={(date) =>
@@ -4045,7 +4056,9 @@ function Course() {
                             class="text-lg leading-6 font-medium"
                           >
                             {" "}
-                            {new Date(contentDetails?.docOldValidityDate).toLocaleDateString("en-GB")}
+                            {new Date(
+                              contentDetails?.docOldValidityDate
+                            ).toLocaleDateString("en-GB")}
                           </div>
                         </div>
                       </div>
@@ -4272,20 +4285,20 @@ function Course() {
                                         border: "none",
                                       },
                                       "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                      {
-                                        border: "none",
-                                      },
+                                        {
+                                          border: "none",
+                                        },
                                       "&:hover .MuiOutlinedInput-notchedOutline":
-                                      {
-                                        border: "none",
-                                      },
+                                        {
+                                          border: "none",
+                                        },
                                       "& .MuiSelect-icon": {
                                         display: "none",
                                       },
                                       "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                      {
-                                        padding: "0px",
-                                      },
+                                        {
+                                          padding: "0px",
+                                        },
                                     }}
                                   >
                                     <MenuItem value="" disabled>
@@ -4551,24 +4564,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                              {
-                                                padding: "0px",
-                                              },
+                                                {
+                                                  padding: "0px",
+                                                },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -4666,24 +4679,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                              {
-                                                padding: "0px",
-                                              },
+                                                {
+                                                  padding: "0px",
+                                                },
                                             }}
                                           >
                                             {potentialFrequencyDetails.map(
@@ -4825,24 +4838,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                              {
-                                                padding: "0px",
-                                              },
+                                                {
+                                                  padding: "0px",
+                                                },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -4929,24 +4942,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                              {
-                                                padding: "0px",
-                                              },
+                                                {
+                                                  padding: "0px",
+                                                },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -5255,24 +5268,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                              {
-                                                padding: "0px",
-                                              },
+                                                {
+                                                  padding: "0px",
+                                                },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -5380,24 +5393,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                              {
-                                                padding: "0px",
-                                              },
+                                                {
+                                                  padding: "0px",
+                                                },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -5568,24 +5581,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                              {
-                                                padding: "0px",
-                                              },
+                                                {
+                                                  padding: "0px",
+                                                },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -5697,24 +5710,24 @@ function Course() {
                                             disabled
                                             sx={{
                                               "& .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "&:hover .MuiOutlinedInput-notchedOutline":
-                                              {
-                                                border: "none",
-                                              },
+                                                {
+                                                  border: "none",
+                                                },
                                               "& .MuiSelect-icon": {
                                                 display: "none",
                                               },
                                               "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                              {
-                                                padding: "0px",
-                                              },
+                                                {
+                                                  padding: "0px",
+                                                },
                                             }}
                                           >
                                             <MenuItem value="" disabled>
@@ -5855,13 +5868,13 @@ function Course() {
                                     : formValues.residualRiskClassification == 2
                                       ? "purple"
                                       : formValues.residualRiskClassification ==
-                                        3
+                                          3
                                         ? "orange"
                                         : formValues.residualRiskClassification ==
-                                          4
+                                            4
                                           ? "yellow"
                                           : formValues.residualRiskClassification ==
-                                            5
+                                              5
                                             ? "green"
                                             : "",
                                 borderRadius: "5px",
@@ -6145,15 +6158,13 @@ function Course() {
                                       >
                                         <TextField
                                           id="standard-basic"
-                                          label={
-                                            <>Description</>
-                                          }
+                                          label={<>Description</>}
                                           name="description"
                                           variant="standard"
                                           disabled
                                           value={
                                             selectedDocument?.description ===
-                                              null
+                                            null
                                               ? ""
                                               : selectedDocument?.descritpion
                                           }
@@ -6197,7 +6208,6 @@ function Course() {
                               aria-label="basic tabs example"
                             >
                               <Tab label="Task" {...a11yProps(0)} />
-                           
                             </Tabs>
                           </Box>
                           <CustomTabPanel
@@ -6314,7 +6324,7 @@ function Course() {
                                         <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
                                           <div className="flex items-center">
                                             {task.isCompleted &&
-                                              task.taskStatus === 3 ? (
+                                            task.taskStatus === 3 ? (
                                               <span className="text-green">
                                                 Approved
                                               </span>
@@ -6360,16 +6370,18 @@ function Course() {
 
                                         <div className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2">
                                           <div className="flex items-center">
-                                          {new Date(task.dueDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })}
+                                            {new Date(
+                                              task.dueDate
+                                            ).toLocaleDateString("en-US", {
+                                              year: "numeric",
+                                              month: "short",
+                                              day: "numeric",
+                                            })}
                                           </div>
                                         </div>
                                         <div
                                           className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                        // style={{ width: "17%" }}
+                                          // style={{ width: "17%" }}
                                         >
                                           <div className="flex items-center">
                                             <StyledBadge
@@ -6496,12 +6508,16 @@ function Course() {
                                               >
                                                 <p>
                                                   Due Date :{" "}
-                                                 
-                                                  {new Date(task.dueDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })}
+                                                  {new Date(
+                                                    task.dueDate
+                                                  ).toLocaleDateString(
+                                                    "en-US",
+                                                    {
+                                                      year: "numeric",
+                                                      month: "short",
+                                                      day: "numeric",
+                                                    }
+                                                  )}
                                                 </p>
                                               </div>
                                             </div>
@@ -6565,16 +6581,16 @@ function Course() {
                                                       <div className="my-0.5 text-xs font-medium text-secondary">
                                                         <small>
                                                           {msg.startedDate &&
-                                                            !msg.workInProgressDate &&
-                                                            !msg.completedDate &&
-                                                            !msg.dueDate
+                                                          !msg.workInProgressDate &&
+                                                          !msg.completedDate &&
+                                                          !msg.dueDate
                                                             ? `Started on ${formatDates(msg.startedDate)}`
                                                             : msg.workInProgressDate &&
-                                                              !msg.completedDate &&
-                                                              !msg.dueDate
+                                                                !msg.completedDate &&
+                                                                !msg.dueDate
                                                               ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                                               : msg.dueDate &&
-                                                                !msg.completedDate
+                                                                  !msg.completedDate
                                                                 ? `Due on ${formatDates(msg.dueDate)}`
                                                                 : msg.completedDate
                                                                   ? `Completed on ${formatDates(msg.completedDate)}`
@@ -6584,11 +6600,11 @@ function Course() {
                                                     </div>
                                                     {documentCounts[msg.id] ? (
                                                       documentCounts[msg.id] !=
-                                                      0 && (
+                                                        0 && (
                                                         <StyledBadge
                                                           badgeContent={
                                                             documentCounts[
-                                                            msg.id
+                                                              msg.id
                                                             ]
                                                           }
                                                         >
@@ -6814,7 +6830,7 @@ function Course() {
                                                               {subItm
                                                                 .riskAnalysisHazardTypes
                                                                 .length ===
-                                                                0 ? (
+                                                              0 ? (
                                                                 <TableRow>
                                                                   <TableCell>
                                                                     <Grid
@@ -6905,16 +6921,16 @@ function Course() {
                                                                                   style={{
                                                                                     backgroundColor:
                                                                                       situation.residualRiskClassificationDisplay ===
-                                                                                        "HighRisk"
+                                                                                      "HighRisk"
                                                                                         ? "red"
                                                                                         : situation.residualRiskClassificationDisplay ===
-                                                                                          "LowRisk"
+                                                                                            "LowRisk"
                                                                                           ? "yellow"
                                                                                           : situation.residualRiskClassificationDisplay ===
-                                                                                            "AverageRisk"
+                                                                                              "AverageRisk"
                                                                                             ? "orange"
                                                                                             : situation.residualRiskClassificationDisplay ===
-                                                                                              "SignificantRisk"
+                                                                                                "SignificantRisk"
                                                                                               ? "purple"
                                                                                               : "green",
                                                                                     width:
@@ -6923,7 +6939,7 @@ function Course() {
                                                                                       "3px",
                                                                                     color:
                                                                                       situation.residualRiskClassificationDisplay ===
-                                                                                        "LowRisk"
+                                                                                      "LowRisk"
                                                                                         ? "#000"
                                                                                         : "white",
                                                                                     borderRadius:
@@ -6936,7 +6952,7 @@ function Course() {
                                                                                       "12px",
                                                                                     fontWeight:
                                                                                       situation.residualRiskClassificationDisplay ===
-                                                                                        "LowRisk"
+                                                                                      "LowRisk"
                                                                                         ? ""
                                                                                         : "bold",
                                                                                   }}
@@ -7209,7 +7225,6 @@ function Course() {
                                 )}
                               </div>
                             )}
-                          
                         </Box>
                       </Paper>
                     )}
@@ -7561,8 +7576,8 @@ function Course() {
                                         name="audit"
                                         onChange={handleChangeAddTask}
                                         value={taskAdd.audit}
-                                      // error={!!errorsAddTask.audit}
-                                      // helperText={errorsAddTask.audit}
+                                        // error={!!errorsAddTask.audit}
+                                        // helperText={errorsAddTask.audit}
                                       />
                                     </Box>
                                   </div>
@@ -7664,12 +7679,13 @@ function Course() {
                               class="text-lg leading-6 font-medium"
                             >
                               {" "}
-                              {new Date(contentDetails?.requestDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })}
-                              
+                              {new Date(
+                                contentDetails?.requestDate
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              })}
                             </div>
                           </div>
                         </div>
@@ -7826,60 +7842,57 @@ function Course() {
                     </Paper>
 
                     <div className="flex flex-col px-4 py-3  border rounded m-24">
-                              <ul>
-                                {CheckLists.map((item) => (
-                                  <li key={item.id} className="pb-5">
-                                    <label>
-                                      <input
-                                        type="checkbox"
-                                        checked={item.isChecked}
-                                        style={{
-                                          margin: "5px",
-                                          color:
-                                            currentActivityForm.canEdit == false
-                                              ? "grey"
-                                              : "black",
-                                        }}
-                                        disabled={!currentActivityForm.canEdit}
-                                        onChange={() => {
-                                          handleCheckboxChange(item.item);
-                                        }}
-                                      />
-                                      <span
-                                        style={{
-                                          margin: "5px",
-                                          color:
-                                            currentActivityForm.canEdit == false
-                                              ? "grey"
-                                              : "black",
-                                        }}
-                                      >
-                                        {item.item}
-                                      </span>{" "}
-                                    </label>
-                                  </li>
-                                ))}
-                                {!currentActivityForm.isComplete &&
-                                  currentActivityForm.status === "Pending"&& (
-                                    <Button
-                                      className="whitespace-nowrap ms-5 "
-                                      variant="contained"
-                                      color="secondary"
-                                      style={{
-                                        marginTop: "10px",
-                                        width: "150px",
-                                        marginBottom: "5px",
-                                      }}
-                                      onClick={saveChanges}
-                                    >
-                                      Save
-                                    </Button>
-                                  )}
-                              </ul>
-                            </div>
-
-                       
-
+                      <ul>
+                        {CheckLists.map((item) => (
+                          <li key={item.id} className="pb-5">
+                            <label>
+                              <input
+                                type="checkbox"
+                                checked={item.isChecked}
+                                style={{
+                                  margin: "5px",
+                                  color:
+                                    currentActivityForm.canEdit == false
+                                      ? "grey"
+                                      : "black",
+                                }}
+                                disabled={!currentActivityForm.canEdit}
+                                onChange={() => {
+                                  handleCheckboxChange(item.item);
+                                }}
+                              />
+                              <span
+                                style={{
+                                  margin: "5px",
+                                  color:
+                                    currentActivityForm.canEdit == false
+                                      ? "grey"
+                                      : "black",
+                                }}
+                              >
+                                {item.item}
+                              </span>{" "}
+                            </label>
+                          </li>
+                        ))}
+                        {!currentActivityForm.isComplete &&
+                          currentActivityForm.status === "Pending" && (
+                            <Button
+                              className="whitespace-nowrap ms-5 "
+                              variant="contained"
+                              color="secondary"
+                              style={{
+                                marginTop: "10px",
+                                width: "150px",
+                                marginBottom: "5px",
+                              }}
+                              onClick={saveChanges}
+                            >
+                              Save
+                            </Button>
+                          )}
+                      </ul>
+                    </div>
 
                     {currentActivityForm.canEdit && (
                       <>
@@ -7956,11 +7969,14 @@ function Course() {
                                   {itm.staff}
                                 </span>
                                 <span className="text-sm text-secondary leading-none pt-5">
-                                  Consulted on {new Date(itm?.consultedDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })}
+                                  Consulted on{" "}
+                                  {new Date(
+                                    itm?.consultedDate
+                                  ).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  })}
                                 </span>
                               </div>
                             </div>
@@ -8123,7 +8139,7 @@ function Course() {
                                       </div>
 
                                       {currentActivityForm.canEdit &&
-                                        !imptsk.implementationReviews.length ? (
+                                      !imptsk.implementationReviews.length ? (
                                         <div className="mat-form-field-wrapper">
                                           <div className="mat-form-field-flex">
                                             <img
@@ -8233,8 +8249,8 @@ function Course() {
                                                   {hasAddedComment(
                                                     imptsk?.implementationReviews
                                                   ) && (
-                                                      <span className="text-green"></span>
-                                                    )}
+                                                    <span className="text-green"></span>
+                                                  )}
                                                 </Typography>
                                               </div>
                                             </AccordionSummary>
@@ -8373,7 +8389,7 @@ function Course() {
                       </div>
 
                       {appActivity.isComplete &&
-                        appActivity.status != "Pending" ? (
+                      appActivity.status != "Pending" ? (
                         <div
                           className="inventory-grid grid items-center gap-4 p-30 pt-24 pb-24"
                           style={{ width: "40%" }}
@@ -8453,162 +8469,195 @@ function Course() {
       leftSidebarOpen={leftSidebarOpen}
       leftSidebarContent={
         <>
-        <div className="desktop_hide text-end p-30 pt-24 pb-24">
-          <FuseSvgIcon
-            className="text-48 cursor-pointer "
-            size={24}
-            style={{ display: "inline-block;" }}
-            color="action"
-            onClick={handelOpenSide}
-          >
-            heroicons-outline:menu
-          </FuseSvgIcon>
-        </div>
-        {content.map((resp, respIndex) => (
-          <Accordion
-            key={respIndex}
-            style={{ margin: "0px" }}
-            expanded={respIndex === expandedAccordionIndex}
-            onChange={() => handleAccordionChange(respIndex)}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1-content"
-              id="panel1-header"
-              style={{ minHeight: "60px" }}
+          <div className="desktop_hide text-end p-30 pt-24 pb-24">
+            <FuseSvgIcon
+              className="text-48 cursor-pointer "
+              size={24}
+              style={{ display: "inline-block;" }}
+              color="action"
+              onClick={handelOpenSide}
             >
-              {resp.name}
-            </AccordionSummary>
-            <AccordionDetails>
-              <Stepper orientation="vertical">
-                {resp.activities.map((step, index) => (
-                  <Step
-                    key={index}
-                    sx={{
-                      "& .MuiStepLabel-root, & .MuiStepContent-root": {
-                        cursor: step.canView ? "pointer!important" : "default!important",
-                      },
-                      "& .MuiStepContent-root": {
-                        color: "text.secondary",
-                        fontSize: 13,
-                      },
-                    }}
-                    
-                    onClick={(e) =>
-                      handleStepChange(
-                        e,
-                        resp.name,
-                        step.uid,
-                        step.code,
-                        step.version,
-                        step.refVersion,
-                        step.name,
-                        step.canEdit,
-                        step.canView
-                      )
-                    }
-                    expanded
-                    
-                   
-                  >
-                    <StepLabel
-                      className="font-medium"
-                      StepIconComponent={(props) => (
-                        <CustomStepIcon
-                          {...props}
-                          index={index}
-                          canView={step.canView}
-                          isComplete={step.isComplete}
-                          status={step.status}
-                        />
-                      )}
+              heroicons-outline:menu
+            </FuseSvgIcon>
+          </div>
+          {content.map((resp, respIndex) => (
+            <Accordion
+              key={respIndex}
+              style={{ margin: "0px" }}
+              expanded={respIndex === expandedAccordionIndex}
+              onChange={() => handleAccordionChange(respIndex)}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+                style={{ minHeight: "60px" }}
+              >
+                {resp.name}
+              </AccordionSummary>
+              <AccordionDetails>
+                <Stepper orientation="vertical">
+                  {resp.activities.map((step, index) => (
+                    <Step
+                      key={index}
                       sx={{
-                        "& .MuiSvgIcon-root": {
-                          color: "background.default",
-                          "& .MuiStepIcon-text": {
-                            fill: (_theme) => _theme.palette.text.secondary,
-                          },
-                          "&.Mui-completed": {
-                            color: "secondary.main",
-                            "& .MuiStepIcon-text ": {
-                              fill: (_theme) =>
-                                _theme.palette.secondary.contrastText,
-                            },
-                          },
-                          "&.Mui-active": {
-                            color: "secondary.main",
-                            "& .MuiStepIcon-text ": {
-                              fill: (_theme) =>
-                                _theme.palette.secondary.contrastText,
-                            },
-                          },
+                        "& .MuiStepLabel-root, & .MuiStepContent-root": {
+                          cursor: step.canView
+                            ? "pointer!important"
+                            : "default!important",
+                        },
+                        "& .MuiStepContent-root": {
+                          color: "text.secondary",
+                          fontSize: 13,
                         },
                       }}
-                      
+                      onClick={(e) =>
+                        handleStepChange(
+                          e,
+                          resp.name,
+                          step.uid,
+                          step.code,
+                          step.version,
+                          step.refVersion,
+                          step.name,
+                          step.canEdit,
+                          step.canView
+                        )
+                      }
+                      expanded
                     >
-                      <span  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)" }:{}}>
-
-
-                      {step.name} v{step.version}
-                      </span>
-                    </StepLabel>
-                    <StepContent>
-                      <CourseProgress
-                        course={step.isComplete === true ? 100 : 0}
-                      />
-                    </StepContent>
-                    {step.code == "MOC_COMPLETED" ? (
-                      <StepContent style={{ fontSize: "10px" }}>
-                        Ended at <b>{formatDates(step.actualEndDate)}</b>
-                      </StepContent>
-                    ) : (
-                      <>
-                        <StepContent
-                          style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}
-                          className="pt-4"
-                        >
-                          By{" "}
-                          <b>
-                            {step.targetUsers && step.targetUsers.length > 0
-                              ? step.targetUsers[0]
-                              : ""}
-                          </b>
-                        </StepContent>
-                        <StepContent  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}>
-                          Started at{" "}
-                          <b>
-                            {formatDates(step.actualStartDate, "yyyy-MM-dd")}
-                          </b>
-                        </StepContent>
-                        <StepContent  style={currentActivityForm.uid==step.uid?{color: "rgb(79, 70, 229)",fontSize: "10px" }:{fontSize: "10px" }}>
-                          {step.actualEndDate === null ? (
-                            ""
-                          ) : (
-                            <>
-                              {step.status} at{" "}
-                              <b>
-                                {formatDates(
-                                  step?.actualEndDate,
-                                  "yyyy-MM-dd"
-                                )}
-                              </b>
-                            </>
-                          )}
-                        </StepContent>
-                        {!step?.isComplete && (
-                          <StepContent  style={currentActivityForm.uid==step.uid?{color: "blue",fontSize: "10px" }:{fontSize: "10px" }}>
-                            <b> Pending</b>
-                          </StepContent>
+                      <StepLabel
+                        className="font-medium"
+                        StepIconComponent={(props) => (
+                          <CustomStepIcon
+                            {...props}
+                            index={index}
+                            canView={step.canView}
+                            isComplete={step.isComplete}
+                            status={step.status}
+                          />
                         )}
-                      </>
-                    )}
-                  </Step>
-                ))}
-              </Stepper>
-            </AccordionDetails>
-          </Accordion>
-        ))}
-      </>
+                        sx={{
+                          "& .MuiSvgIcon-root": {
+                            color: "background.default",
+                            "& .MuiStepIcon-text": {
+                              fill: (_theme) => _theme.palette.text.secondary,
+                            },
+                            "&.Mui-completed": {
+                              color: "secondary.main",
+                              "& .MuiStepIcon-text ": {
+                                fill: (_theme) =>
+                                  _theme.palette.secondary.contrastText,
+                              },
+                            },
+                            "&.Mui-active": {
+                              color: "secondary.main",
+                              "& .MuiStepIcon-text ": {
+                                fill: (_theme) =>
+                                  _theme.palette.secondary.contrastText,
+                              },
+                            },
+                          },
+                        }}
+                      >
+                        <span
+                          style={
+                            currentActivityForm.uid == step.uid
+                              ? { color: "rgb(79, 70, 229)" }
+                              : {}
+                          }
+                        >
+                          {step.name} v{step.version}
+                        </span>
+                      </StepLabel>
+                      <StepContent>
+                        <CourseProgress
+                          course={step.isComplete === true ? 100 : 0}
+                        />
+                      </StepContent>
+                      {step.code == "MOC_COMPLETED" ? (
+                        <StepContent style={{ fontSize: "10px" }}>
+                          Ended at <b>{formatDates(step.actualEndDate)}</b>
+                        </StepContent>
+                      ) : (
+                        <>
+                          <StepContent
+                            style={
+                              currentActivityForm.uid == step.uid
+                                ? {
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
+                                : { fontSize: "10px" }
+                            }
+                            className="pt-4"
+                          >
+                            By{" "}
+                            <b>
+                              {step.targetUsers && step.targetUsers.length > 0
+                                ? step.targetUsers[0]
+                                : ""}
+                            </b>
+                          </StepContent>
+                          <StepContent
+                            style={
+                              currentActivityForm.uid == step.uid
+                                ? {
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
+                                : { fontSize: "10px" }
+                            }
+                          >
+                            Started at{" "}
+                            <b>
+                              {formatDates(step.actualStartDate, "yyyy-MM-dd")}
+                            </b>
+                          </StepContent>
+                          <StepContent
+                            style={
+                              currentActivityForm.uid == step.uid
+                                ? {
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
+                                : { fontSize: "10px" }
+                            }
+                          >
+                            {step.actualEndDate === null ? (
+                              ""
+                            ) : (
+                              <>
+                                {step.status} at{" "}
+                                <b>
+                                  {formatDates(
+                                    step?.actualEndDate,
+                                    "yyyy-MM-dd"
+                                  )}
+                                </b>
+                              </>
+                            )}
+                          </StepContent>
+                          {!step?.isComplete && (
+                            <StepContent
+                              style={
+                                currentActivityForm.uid == step.uid
+                                  ? { color: "blue", fontSize: "10px" }
+                                  : { fontSize: "10px" }
+                              }
+                            >
+                              <b> Pending</b>
+                            </StepContent>
+                          )}
+                        </>
+                      )}
+                    </Step>
+                  ))}
+                </Stepper>
+              </AccordionDetails>
+            </Accordion>
+          ))}
+        </>
       }
       scroll="content"
       ref={pageLayout}

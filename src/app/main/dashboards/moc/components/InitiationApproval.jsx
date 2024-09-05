@@ -173,12 +173,12 @@ function InitiationApproval(props) {
   const handleModalClose = () => {
     setOpen(false);
     setOpenDrawer(false);
-    fileDetails(false)
+    fileDetails(false);
   };
   const handleModalClose1 = () => {
     setOpen1(false);
     setOpenDrawer1(false);
-    fileDetails1(false)
+    fileDetails1(false);
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer1(open);
@@ -232,7 +232,6 @@ function InitiationApproval(props) {
     setDocumenDowToken(doc.token);
   };
   const handelDetailDoc1 = (doc) => {
-
     setSelectedDocument1(doc);
     setFileDetails1(true);
     setDocumenDowToken1(doc.token);
@@ -336,7 +335,6 @@ function InitiationApproval(props) {
   };
 
   const handleSubmitDelete1 = () => {
-
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(
@@ -607,20 +605,28 @@ function InitiationApproval(props) {
       >
         <Fade in={open}>
           <Box sx={style1}>
-            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+            <div
+              className="flex justify-end mx-4 sm:mx-8"
+              style={{
+                marginTop: "-32px",
+                marginRight: "-29px",
+                padding: "0 0 -24px ",
+              }}
+            >
               <Button
                 className=""
                 variant="contained"
                 style={{ backgroundColor: "white" }}
                 onClick={handleModalClose}
               >
-                <FuseSvgIcon size={20}>
-                  heroicons-outline:x
-                </FuseSvgIcon>
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
               </Button>
             </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between " style={{ margin: "0", paddingTop: "0" }}>
+              <Box
+                className="flex justify-between "
+                style={{ margin: "0", paddingTop: "0" }}
+              >
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
@@ -743,7 +749,7 @@ function InitiationApproval(props) {
                   >
                     <TextField
                       id="selectedFileName"
-                      label="Selecte File"
+                      label="Select File"
                       variant="standard"
                       disabled
                       value={selectedFile.name}
@@ -971,18 +977,22 @@ function InitiationApproval(props) {
         }}
       >
         <Fade in={open1}>
-
           <Box sx={style1}>
-            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+            <div
+              className="flex justify-end mx-4 sm:mx-8"
+              style={{
+                marginTop: "-32px",
+                marginRight: "-29px",
+                padding: "0 0 -24px ",
+              }}
+            >
               <Button
                 className=""
                 variant="contained"
                 style={{ backgroundColor: "white" }}
                 onClick={handleModalClose1}
               >
-                <FuseSvgIcon size={20}>
-                  heroicons-outline:x
-                </FuseSvgIcon>
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
               </Button>
             </div>
             <Box sx={{ flex: 1 }}>
@@ -1113,7 +1123,7 @@ function InitiationApproval(props) {
                   >
                     <TextField
                       id="selectedFileName"
-                      label="Selecte File"
+                      label="Select File"
                       variant="standard"
                       disabled
                       value={selectedFile1.name}

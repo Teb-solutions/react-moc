@@ -222,7 +222,7 @@ const ImplementationApprovalSite = ({
           toast?.error(resp.data.message);
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   };
   const [open, setOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -243,7 +243,7 @@ const ImplementationApprovalSite = ({
   const handleModalClose = () => {
     setOpen(false);
     setOpenDrawer(false);
-    setFileDetails(false)
+    setFileDetails(false);
   };
   const ListDoc = (id, activeid) => {
     apiAuth
@@ -530,11 +530,14 @@ const ImplementationApprovalSite = ({
                                 Due Date
                               </span>
                               <span className="task-detail-value">
-                                {new Date(imptsk.dueDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })}
+                                {new Date(imptsk.dueDate).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )}
                               </span>
                               <span className="task-detail-label bg-default rounded d-inline-block ml-2 text-secondary font-semibold">
                                 Deadline
@@ -572,19 +575,20 @@ const ImplementationApprovalSite = ({
 
                                 <span className="text-sm text-secondary leading-none pt-5">
                                   Completed on{" "}
-                                 
-                                  {new Date(imptsk?.completedAt).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })}
+                                  {new Date(
+                                    imptsk?.completedAt
+                                  ).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  })}
                                 </span>
                               </div>
                             </div>
                           </div>
 
                           {imptsk.implementationReviews.length > 0 ||
-                            showReview ? (
+                          showReview ? (
                             <div>
                               <Accordion
                                 className=" mt-10 pt-10"
@@ -629,10 +633,10 @@ const ImplementationApprovalSite = ({
                                       {hasAddedComment(
                                         imptsk.implementationReviews
                                       ) && (
-                                          <span className="text-green">
-                                            (You have added 1 review)
-                                          </span>
-                                        )}
+                                        <span className="text-green">
+                                          (You have added 1 review)
+                                        </span>
+                                      )}
                                     </Typography>
                                   </div>
                                 </AccordionSummary>
@@ -716,7 +720,7 @@ const ImplementationApprovalSite = ({
                                           }}
                                         />
                                         {AppActivity.canEdit &&
-                                          isMyComment(rwx) ? (
+                                        isMyComment(rwx) ? (
                                           <div
                                             className="mat-form-field-infix"
                                             style={{ position: "relative" }}
@@ -1030,20 +1034,28 @@ const ImplementationApprovalSite = ({
       >
         <Fade in={open}>
           <Box sx={style1}>
-            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+            <div
+              className="flex justify-end mx-4 sm:mx-8"
+              style={{
+                marginTop: "-32px",
+                marginRight: "-29px",
+                padding: "0 0 -24px ",
+              }}
+            >
               <Button
                 className=""
                 variant="contained"
                 style={{ backgroundColor: "white" }}
                 onClick={handleModalClose}
               >
-                <FuseSvgIcon size={20}>
-                  heroicons-outline:x
-                </FuseSvgIcon>
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
               </Button>
             </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "0", paddingTop: "0" }}>
+              <Box
+                className="flex justify-between"
+                style={{ margin: "0", paddingTop: "0" }}
+              >
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
@@ -1166,7 +1178,7 @@ const ImplementationApprovalSite = ({
                   >
                     <TextField
                       id="selectedFileName"
-                      label="Selecte File"
+                      label="Select File"
                       variant="standard"
                       disabled
                       value={selectedFile.name}

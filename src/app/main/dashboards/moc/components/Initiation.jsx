@@ -191,7 +191,7 @@ function Initiation(props) {
   const handleModalClose = () => {
     setOpen(false);
     setOpenDrawer(false);
-    fileDetails(false)
+    fileDetails(false);
   };
 
   const ListDoc = (id, changeRequestId) => {
@@ -277,8 +277,8 @@ function Initiation(props) {
   const handleModalClose1 = () => {
     setOpen1(false);
     setOpenDrawer1(false);
-    fileDetails(false)
-    fileDetails1(false)
+    fileDetails(false);
+    fileDetails1(false);
   };
 
   const handleOpen1 = () => {
@@ -338,20 +338,28 @@ function Initiation(props) {
       >
         <Fade in={open1}>
           <Box sx={style1}>
-            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-29px", padding: "0 0 -24px " }} >
+            <div
+              className="flex justify-end mx-4 sm:mx-8"
+              style={{
+                marginTop: "-32px",
+                marginRight: "-29px",
+                padding: "0 0 -24px ",
+              }}
+            >
               <Button
                 className=""
                 variant="contained"
                 style={{ backgroundColor: "white" }}
                 onClick={handleModalClose1}
               >
-                <FuseSvgIcon size={20}>
-                  heroicons-outline:x
-                </FuseSvgIcon>
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
               </Button>
             </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between" style={{ margin: "0", paddingTop: "0" }}>
+              <Box
+                className="flex justify-between"
+                style={{ margin: "0", paddingTop: "0" }}
+              >
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
@@ -467,7 +475,7 @@ function Initiation(props) {
                   >
                     <TextField
                       id="selectedFileName"
-                      label="Selecte File"
+                      label="Select File"
                       variant="standard"
                       disabled
                       value={selectedFile1.name}
@@ -798,16 +806,21 @@ function Initiation(props) {
       >
         <Fade in={open}>
           <Box sx={style1}>
-            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "-32px", marginRight: "-32px", padding: "0 0 -24px " }} >
+            <div
+              className="flex justify-end mx-4 sm:mx-8"
+              style={{
+                marginTop: "-32px",
+                marginRight: "-32px",
+                padding: "0 0 -24px ",
+              }}
+            >
               <Button
                 className=""
                 variant="contained"
                 style={{ backgroundColor: "white" }}
                 onClick={handleModalClose}
               >
-                <FuseSvgIcon size={20}>
-                  heroicons-outline:x
-                </FuseSvgIcon>
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
               </Button>
             </div>
             <Box sx={{ flex: 1 }}>
@@ -938,7 +951,7 @@ function Initiation(props) {
                   >
                     <TextField
                       id="selectedFileName"
-                      label="Selecte File"
+                      label="Select File"
                       variant="standard"
                       disabled
                       value={selectedFile.name}
@@ -1016,9 +1029,9 @@ function Initiation(props) {
                     id="fileInput"
                     style={{ display: "none" }}
                     disabled
-                  // onChange={(e) => {
-                  //   handelFileChange(e);
-                  // }}
+                    // onChange={(e) => {
+                    //   handelFileChange(e);
+                    // }}
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">

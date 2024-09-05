@@ -7,7 +7,7 @@ import TextField from "@mui/material/TextField";
 import Backdrop from "@mui/material/Backdrop";
 import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
-import { useGetAcademyCategoriesQuery } from "../moc/evaluation/AcademyApi";
+// import { useGetAcademyCategoriesQuery } from "../moc/evaluation/AcademyApi";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -38,6 +38,8 @@ import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { useLocation } from "react-router-dom";
 import { display, minHeight } from "@mui/system";
+import { set } from "lodash";
+import dayjs from "dayjs";
 
 const Task = () => {
   const style = {
@@ -115,7 +117,7 @@ const Task = () => {
   });
   const [docId, setDocId] = useState("");
   const [docToken, setDocToken] = useState("");
-  const { data: categories } = useGetAcademyCategoriesQuery();
+  // const { data: categories } = useGetAcademyCategoriesQuery();
   const [taskList, setTaskList] = useState([]);
   const [taskClick, setTaskClick] = useState([]);
   const [deletes, setDeletes] = useState(false);
@@ -126,6 +128,7 @@ const Task = () => {
   const [selectedCategoryEvalImp, setSelectedCategoryEvalImp] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [comments, setComments] = useState("");
+  const [commentss, setCommentss] = useState("");
   const router = useParams();
   const [open, setOpen] = useState(false);
   const [dateExtendopen, setDateExtendOpen] = useState(false);
@@ -133,7 +136,7 @@ const Task = () => {
   const [fileDetails, setFileDetails] = useState(false);
 
   const [reqDate, setReqDate] = useState(null);
-  const [commentss, setCommentss] = useState("");
+
   const [openDocModal, setOpenDocModal] = useState(false);
   const [listDocument, setListDocument] = useState([]);
   const [fileUrl, setFileUrl] = useState("");
@@ -143,7 +146,10 @@ const Task = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [msgId, setmsgId] = useState("");
   const [taskToken, setTaskToken] = useState("");
-
+  const [taskCommentValidation, setTaskCommentValidation] = useState(null);
+  const [dueDateCommentValidation, setDueDateCommentValidation] =
+    useState(null);
+  const [dueDateValidation, setDueDateValidation] = useState(null);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     description: "",
@@ -153,6 +159,7 @@ const Task = () => {
     documentId: "",
     changeRequestToken: "",
   });
+  const [newDocument, setNewDocument] = useState(false);
   console.log(selectedFile);
   // Extract the task.id from the URL
 
@@ -180,7 +187,16 @@ const Task = () => {
 
   const handleOpen = (e) => {
     e.preventDefault();
-    setOpen(true);
+    if (!comments || comments === "") {
+      // toast.error("Please enter a comment");
+      setTaskCommentValidation("Comments are required");
+      return;
+    }
+    if (task.taskType == 2 && priority == 3) {
+      setOpen(true);
+    } else {
+      handleSubmit();
+    }
   };
   const handleClose = () => setOpen(false);
   const getRecords = () => {
@@ -200,12 +216,21 @@ const Task = () => {
 
     window.history.pushState({}, "", `/task/${task.id}`);
     setTask(task);
+    console.clear();
+    console.log(task);
+    setTaskCommentValidation(null);
+    setComments("");
+    setCommentss("");
+    setReqDate(null);
+    setDueDateValidation(null);
+    setDueDateCommentValidation(null);
     setSidebarOpen(true);
+    setPriority(task.taskStatus);
     if (task.sourceTaskId != null) {
       apiAuth
         .get(`ChangeImpact/ListTaskCommentst?id=${task.order}`)
         .then((response) => {
-          setListDocument([])
+          setListDocument([]);
           const comments = response.data.data;
           setTaskClick(comments);
           comments.forEach((comment) => {
@@ -281,7 +306,6 @@ const Task = () => {
       year: "numeric",
     });
   };
-  
 
   function handleSelectedCategory(event) {
     setSelectedCategory(event.target.value);
@@ -328,19 +352,37 @@ const Task = () => {
   };
 
   const handleSubmits = (task) => {
-    let formattedReqDate = reqDate;
-    let formattedOldDate = task.dueDate;
+    if (!commentss || !reqDate) {
+      // toast.error("Please enter the required fields");
+      if (!reqDate) setDueDateValidation("Due Date is required");
+      if (!comments)
+        setDueDateCommentValidation("Please provide a reason for extension");
+      // alert(1);
+      return;
+    }
 
-    if (reqDate instanceof Date) {
-      formattedReqDate = reqDate.toLocaleDateString("en-US");
-    }
-    if (task.dueDate instanceof Date) {
-      formattedOldDate = reqDate.toLocaleDateString("en-US");
-    }
+    let formattedReqDate = dayjs(reqDate).format("YYYY-MM-DD");
+    let formattedOldDate = task.dueDate;
+    // formattedReqDate = dayjs(reqDate).format("MM/DD/YYYY");
+
+    // formattedOldDate = dayjs(task.dueDate).format("MM/DD/YYYY");
+
+    // if (reqDate) {
+    //   formattedReqDate = reqDate.toLocaleDateString("en-US");
+    // }
+    // if (task.dueDate) {
+    //   formattedOldDate = task.dueDate.toLocaleDateString("en-US");
+    // }
+
+    console.log({
+      OldDate: formattedOldDate,
+      RequestComments: commentss,
+      RequestDate: formattedReqDate,
+    });
 
     apiAuth
       .put(
-        `/Task/TaskDateUpdate/?requestToken=${task?.changeRequestToken}&&taskId=${task?.sourceTaskId}`,
+        `/Task/TaskDateUpdate/?requestToken=${task?.changeRequestToken}&taskId=${task?.sourceTaskId}`,
         {
           OldDate: formattedOldDate,
           RequestComments: commentss,
@@ -348,20 +390,28 @@ const Task = () => {
         }
       )
       .then((response) => {
-        if (response.data.data == null || response.data.statusCode == 500) {
-          setDateExtendOpen(false);
-          toast.error(response.data.message);
-        } else {
-          setDateExtendOpen(false);
-          setComments("");
-          setReqDate(null);
-          toast.success("Successfull");
-        }
+        setDateExtendOpen(false);
+        toast.success(response.data.message);
+        setCommentss("");
+        setReqDate(null);
+        setTask({
+          ...task,
+          activeDateUpdateRequest: 1,
+        });
       })
-      .catch((err) => { });
+      .catch((err) => {
+        setDateExtendOpen(false);
+        toast.error("Some error occured");
+      });
   };
 
   const handleSubmit = () => {
+    // if (!comments || comments === "") {
+    //   // toast.error("Please enter a comment");
+    //   setTaskCommentValidation("Comments are required");
+    //   return;
+    // }
+
     setSidebarOpen(false);
 
     setIsLoading(true);
@@ -372,7 +422,7 @@ const Task = () => {
       ...task,
       notes: comments,
       documentId: selectedFile.documentId,
-      taskStatus: 2,
+      taskStatus: priority,
       startedDate: "0001-01-01T00:00:00",
     };
 
@@ -399,6 +449,8 @@ const Task = () => {
   const handleOpenDocModal = (e, task) => {
     setviewDoc(false);
     setFileDetails(false);
+    setListDocument([]);
+    setNewDocument(true);
     setSelectedFile({
       name: "",
       description: "",
@@ -419,7 +471,7 @@ const Task = () => {
   const handleOpenDocModalClose = () => {
     setOpenDocModal(false);
     setOpenDrawer(false);
-    setFileDetails(false)
+    setFileDetails(false);
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
@@ -525,6 +577,7 @@ const Task = () => {
 
   const handelViewDocument = (e, id, task) => {
     e.preventDefault();
+    setNewDocument(false);
     setviewDoc(true);
     setOpenDocModal(true);
     setmsgId(id);
@@ -543,13 +596,12 @@ const Task = () => {
   const [documenDowToken, setDocumenDowToken] = useState("");
 
   const handleDownload = () => {
-
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`, {
         responseType: "blob",
       })
       .then((response) => {
-        setFileDetails(false)
+        setFileDetails(false);
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement("a");
         link.href = url;
@@ -565,7 +617,6 @@ const Task = () => {
   };
 
   const handelDetailDoc = (doc) => {
-
     setSelectedDocument(doc);
     console.log(doc, "doccc");
     setFileDetails(true);
@@ -747,29 +798,36 @@ const Task = () => {
       >
         <Fade in={openDocModal}>
           <Box sx={style1}>
-            <div className="flex justify-end mx-4 sm:mx-8" style={{ marginTop: "1px", marginRight: "0px", padding: "0 0 -24px " }} >
+            <div
+              className="flex justify-end mx-4 sm:mx-8"
+              style={{
+                marginTop: "1px",
+                marginRight: "0px",
+                padding: "0 0 -24px ",
+              }}
+            >
               <Button
                 className=""
                 variant="contained"
                 style={{ backgroundColor: "white" }}
                 onClick={handleOpenDocModalClose}
               >
-                <FuseSvgIcon size={20}>
-                  heroicons-outline:x
-                </FuseSvgIcon>
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
               </Button>
             </div>
             <Box sx={{ flex: 1 }}>
-              <Box className="flex justify-between p-30  pb-24" sx={{
-                marginTop: "0 !important",
-                paddingTop: "0 !important",
-              }}>
+              <Box
+                className="flex justify-between p-30  pb-24"
+                sx={{
+                  marginTop: "0 !important",
+                  paddingTop: "0 !important",
+                }}
+              >
                 <Typography
                   id="transition-modal-title"
                   variant="h6"
                   component="h2"
                   className="text-2xl"
-
                 >
                   File Manager
                   <Typography id="transition-modal-subtitle" component="h2">
@@ -883,7 +941,7 @@ const Task = () => {
                   >
                     <TextField
                       id="selectedFileName"
-                      label="Selecte File"
+                      label="Select File"
                       variant="standard"
                       disabled
                       value={selectedFile.name}
@@ -1070,7 +1128,7 @@ const Task = () => {
                   >
                     Download
                   </Button>
-                  {!task.completed &&
+                  {!task.completed && (
                     <Button
                       className="whitespace-nowrap"
                       variant="contained"
@@ -1089,7 +1147,8 @@ const Task = () => {
                       }
                     >
                       Delete
-                    </Button>}
+                    </Button>
+                  )}
                 </div>
               </Box>
             )}
@@ -1246,7 +1305,10 @@ const Task = () => {
                           className="flex items-center mr-4"
                           style={{ color: !task.completed ? "black" : "grey" }}
                         >
-                          # {task.sourceTaskId}
+                          #{" "}
+                          {task.sourceTaskId
+                            ? task.sourceTaskId
+                            : task.requestId}
                         </div>
                         <div
                           className="mr-4 truncate"
@@ -1616,13 +1678,26 @@ const Task = () => {
                       <DatePicker
                         label="Request Date*"
                         value={reqDate}
-                        onChange={(newValue) => setReqDate(newValue)}
+                        onChange={(newValue) => {
+                          setReqDate(newValue);
+                          setDueDateValidation(null);
+                        }}
                         renderInput={(params) => (
-                          <TextField {...params} fullWidth required />
+                          <TextField
+                            {...params}
+                            className={`${dueDateValidation ? "border border-red-500" : ""}`}
+                            fullWidth
+                            required
+                          />
                         )}
                         minDate={new Date("2023-11-15")}
                       />
                     </LocalizationProvider>
+                    <div>
+                      <span className="text-xs text-red-500 text-grey">
+                        {dueDateValidation}
+                      </span>
+                    </div>
                   </Grid>
                   <Grid item xs={12} className="mt-5">
                     <TextField
@@ -1632,8 +1707,21 @@ const Task = () => {
                       fullWidth
                       required
                       value={commentss}
-                      onChange={(e) => setCommentss(e.target.value)}
+                      className={`${dueDateCommentValidation ? "error" : ""}`}
+                      onChange={(e) => {
+                        setCommentss(e.target.value);
+                        setDueDateCommentValidation(
+                          e.target.value.length > 0
+                            ? ""
+                            : "Please enter a reason for extension"
+                        );
+                      }}
                     />
+                    <div>
+                      <span className="text-xs text-red-500 text-grey">
+                        {dueDateCommentValidation}
+                      </span>
+                    </div>
                   </Grid>
                   <Grid
                     item
@@ -1670,7 +1758,8 @@ const Task = () => {
               <span className="pr-4 pl-3.5">
                 <div className="flex items-center justify-center">
                   <span className="font-bold text-xl">
-                    Task # {task.sourceTaskId}
+                    Task #{" "}
+                    {task.sourceTaskId ? task.sourceTaskId : task.requestId}
                   </span>
                 </div>
               </span>
@@ -1747,10 +1836,10 @@ const Task = () => {
                                   "en-US",
                                   {
                                     month: "short",
-                                        day: "2-digit",
-                                        hour: "numeric",
-                                        minute: "numeric",
-                                        hour12: true,
+                                    day: "2-digit",
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                    hour12: true,
                                   }
                                 )}
                               </div>
@@ -1762,11 +1851,14 @@ const Task = () => {
                             <div className="flex-0 mx-4 text-sm font-medium leading-5 text-secondary">
                               {" "}
                               You are added as a stakeholder on{" "}
-                                                             {new Date(task.assignedAt).toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })}{" "}
+                              {new Date(task.assignedAt).toLocaleString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                }
+                              )}{" "}
                             </div>
                             <div className="flex-auto border-b"></div>
                           </div>
@@ -1850,12 +1942,14 @@ const Task = () => {
                               <div className="min-w-4 leading-5">
                                 {" "}
                                 Due Date:{" "}
-                              
-                                  {new Date(task.dueDate).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })}
+                                {new Date(task.dueDate).toLocaleDateString(
+                                  "en-US",
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                )}
                               </div>
                             </div>
                           </div>
@@ -1909,26 +2003,26 @@ const Task = () => {
                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                       <small>
                                         {msg.startedDate &&
-                                          !msg.workInProgressDate &&
-                                          !msg.completedDate &&
-                                          !msg.dueDate
+                                        !msg.workInProgressDate &&
+                                        !msg.completedDate &&
+                                        !msg.dueDate
                                           ? `Started on ${formatDates(msg.startedDate)}`
                                           : msg.workInProgressDate &&
-                                            !msg.completedDate &&
-                                            !msg.dueDate
+                                              !msg.completedDate &&
+                                              !msg.dueDate
                                             ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                             : msg.dueDate && !msg.completedDate
                                               ? `Due on ${formatDates(msg.dueDate)}`
                                               : msg.completedDate
                                                 ? `Completed on ${new Date(
-                                            msg.completedDate
-                                          ).toLocaleString("en-US", {
-                                            month: "short",
-                                            day: "2-digit",
-                                            hour: "numeric",
-                                            minute: "numeric",
-                                            hour12: true,
-                                          })}`
+                                                    msg.completedDate
+                                                  ).toLocaleString("en-US", {
+                                                    month: "short",
+                                                    day: "2-digit",
+                                                    hour: "numeric",
+                                                    minute: "numeric",
+                                                    hour12: true,
+                                                  })}`
                                                 : "Unknown"}
                                       </small>
                                     </div>
@@ -2069,7 +2163,7 @@ const Task = () => {
                     <textarea
                       rows="1"
                       placeholder="Write your comments *"
-                      className="w-full border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-600"
+                      className={`w-full border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-blue-600 ${taskCommentValidation?.length > 0 ? "border-red-500" : ""}`}
                       spellCheck="false"
                       style={{
                         paddingTop: "1.2rem",
@@ -2079,18 +2173,28 @@ const Task = () => {
                         height: "calc(1.2rem + 7.2rem)", // Adjust height to include padding
                         overflow: "hidden", // Prevent scrollbar
                       }}
-                      onChange={(e) => setComments(e.target.value)}
+                      onChange={(e) => {
+                        setComments(e.target.value);
+                        setTaskCommentValidation(
+                          e.target.value.length > 0
+                            ? ""
+                            : "Comments are required"
+                        );
+                      }}
                       value={comments}
                     ></textarea>
+
                     {task.taskType == 2 && (
-                      <StyledBadge badgeContent={listDocument.length}>
+                      <StyledBadge
+                        badgeContent={newDocument ? listDocument.length : null}
+                      >
                         <button
                           style={{
                             position: "absolute",
                             right: "10px",
                             bottom: "32px",
                             padding: "5px 10px",
-                            color: "black",
+                            color: "red",
                             border: "none",
                             borderRadius: "5px",
                             cursor: "pointer",
@@ -2104,6 +2208,9 @@ const Task = () => {
                       </StyledBadge>
                     )}
                   </div>
+                  <div className="text-red-500 text-xs mt-0 mr-4 text-right">
+                    {taskCommentValidation}
+                  </div>
                   {task.taskType == 2 && (
                     <RadioGroup
                       className="flex flex-row-reverse"
@@ -2115,21 +2222,21 @@ const Task = () => {
                         control={<Radio />}
                         label="Completed"
                         className="mt-2"
-                        checked={task.priority == 3}
+                        checked={priority == 3}
                         value={3}
                       />
                       <FormControlLabel
                         control={<Radio />}
                         label="Work in progress"
                         className="mt-2 pr-4"
-                        checked={task.priority == 2}
+                        checked={priority == 2}
                         value={2}
                       />
                       <FormControlLabel
                         control={<Radio />}
                         label="Started"
                         className="mt-2 pr-4"
-                        checked={task.priority == 1}
+                        checked={priority == 1}
                         value={1}
                       />
                     </RadioGroup>

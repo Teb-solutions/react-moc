@@ -1305,7 +1305,7 @@ function AssetRequest() {
                                 >
                                   <TextField
                                     id="selectedFileName"
-                                    label="Selecte File"
+                                    label="Select File"
                                     variant="standard"
                                     disabled
                                     value={selectedFile?.name}
