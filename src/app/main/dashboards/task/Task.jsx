@@ -169,7 +169,7 @@ const Task = () => {
 
   useEffect(() => {
     setPriority(task.priority);
-  }, [task]);
+  }, []);
 
   const handlePriorityChange = (event) => {
     const newPriority = parseInt(event.target.value, 10);
@@ -179,8 +179,10 @@ const Task = () => {
       priority: newPriority,
     }));
   };
-  const handledateExtendopen = (e) => {
+  const handledateExtendopen = (e, task) => {
     e.preventDefault();
+    getRecords();
+    setTask(task);
     setDateExtendOpen(true);
   };
   const handlehandledateExtendClose = () => setDateExtendOpen(false);
@@ -390,14 +392,21 @@ const Task = () => {
         }
       )
       .then((response) => {
-        setDateExtendOpen(false);
-        toast.success(response.data.message);
-        setCommentss("");
-        setReqDate(null);
-        setTask({
-          ...task,
-          activeDateUpdateRequest: 1,
-        });
+        if (response.data.statusCode == 500) {
+          getRecords();
+          setDateExtendOpen(false);
+
+          toast.error(response.data.message);
+        } else {
+          setDateExtendOpen(false);
+          toast.success(response.data.message);
+          setCommentss("");
+          setReqDate(null);
+          setTask({
+            ...task,
+            activeDateUpdateRequest: 1,
+          });
+        }
       })
       .catch((err) => {
         setDateExtendOpen(false);
@@ -1769,7 +1778,7 @@ const Task = () => {
                   <button
                     className="focus:outline-none px-4 py-2 text-dark bg-white-600 border rounded-3xl flex items-center justify-center"
                     style={{ padding: "10px", marginRight: "10px" }}
-                    onClick={handledateExtendopen}
+                    onClick={(e) => handledateExtendopen(e, task)}
                   >
                     {task.activeDateUpdateRequest !== 1 ? (
                       <span className="ml-2 font-semibold">Extend Date</span>

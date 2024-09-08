@@ -144,6 +144,10 @@ const InitiationComplete = ({
       ...prevState,
       [name]: value,
     }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
 
   const getRecords = async (classType) => {
@@ -167,6 +171,11 @@ const InitiationComplete = ({
       TerminationDate: date,
       changeTerminationDate: date,
     });
+
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      TerminationDate: "",
+    }));
   };
 
   const handleClassChange = (event) => {
@@ -176,17 +185,53 @@ const InitiationComplete = ({
       classCategory: event.target.value,
     });
     setSelectedClass(selectedValue);
-
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      classCategory: "",
+    }));
     if (selectedValue == 1) {
       getRecords(1);
     } else if (selectedValue == 2) {
       getRecords(2);
     }
   };
+  const [errors, setErrors] = useState({});
+
+  const validateForm = (formData) => {
+    let errors = {};
+
+    // Validation checks
+    if (!formData.classCategory)
+      errors.classCategory = "Class Category is required";
+    if (!formData.changeLeaderId)
+      errors.changeLeaderId = "Change Leader is required";
+    if (!formData.changeLocation)
+      errors.changeLocation = "Change Location is required";
+    if (!formData.changeType) errors.changeType = "Change Type is required";
+    if (!formData.TerminationDate)
+      errors.TerminationDate = "Expected Change Completion Date is required";
+    if (!formData.briefDescription)
+      errors.briefDescription = "Brief Description is required";
+    if (!formData.changeBenefits)
+      errors.changeBenefits = "Change Benefits are required";
+
+    return errors;
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     setIsLoading(true);
+
+    // Call the validation function and pass the form data (IniComp)
+    const formErrors = validateForm(IniComp);
+
+    // If there are errors, set them and stop form submission
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors);
+      setIsLoading(false);
+      setOpen(false);
+      return;
+    }
     const TermDate = new Date(IniComp.TerminationDate);
     const ChangeTermDate = new Date(IniComp.TerminationDate);
 
@@ -836,7 +881,7 @@ const InitiationComplete = ({
                 variant="outlined"
                 onClick={handleClose}
                 style={{
-                  padding: "10px 20px",
+                  padding: "23px",
                   marginRight: "10px",
                   borderColor: "grey",
                 }}
@@ -847,7 +892,10 @@ const InitiationComplete = ({
                 variant="contained"
                 color="secondary"
                 onClick={handleSubmit}
-                style={{ padding: "10px 20px" }}
+                style={{
+                  padding: "23px",
+                  backgroundColor: "red",
+                }}
               >
                 Submit
               </Button>
@@ -1284,6 +1332,9 @@ const InitiationComplete = ({
                         label="Class II"
                       />
                     </RadioGroup>
+                    {errors.classCategory && (
+                      <span className="error-text">{errors.classCategory}</span>
+                    )}
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
@@ -1297,7 +1348,7 @@ const InitiationComplete = ({
 
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <FormLabel>Change Leader</FormLabel>
+                    <FormLabel>Change Leader *</FormLabel>
                     <Select
                       name="changeLeaderId"
                       value={IniComp?.changeLeaderId}
@@ -1309,23 +1360,33 @@ const InitiationComplete = ({
                         </MenuItem>
                       ))}
                     </Select>
+                    {errors.changeLeaderId && (
+                      <span className="error-text">
+                        {errors.changeLeaderId}
+                      </span>
+                    )}
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
                     <FormLabel>
-                      Change Location (you can add multiple locations)
+                      Change Location * (you can add multiple locations)
                     </FormLabel>
                     <OutlinedInput
                       name="changeLocation"
                       value={IniComp?.changeLocation}
                       onChange={handleChange}
                     />
+                    {errors.changeLocation && (
+                      <span className="error-text">
+                        {errors.changeLocation}
+                      </span>
+                    )}
                   </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth>
-                    <FormLabel>Change Type</FormLabel>
+                    <FormLabel>Change Type *</FormLabel>
                     <RadioGroup
                       row
                       name="changeType"
@@ -1343,11 +1404,14 @@ const InitiationComplete = ({
                         label="Temporary"
                       />
                     </RadioGroup>
+                    {errors.changeType && (
+                      <span className="error-text">{errors.changeType}</span>
+                    )}
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <FormLabel>Expected Change Completion Date</FormLabel>
+                    <FormLabel>Expected Change Completion Date *</FormLabel>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                       <DatePicker
                         value={IniComp?.TerminationDate}
@@ -1357,26 +1421,41 @@ const InitiationComplete = ({
                         )}
                       />
                     </LocalizationProvider>
+                    {errors.TerminationDate && (
+                      <span className="error-text">
+                        {errors.TerminationDate}
+                      </span>
+                    )}
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <FormLabel>Brief Description</FormLabel>
+                    <FormLabel>Brief Description *</FormLabel>
                     <OutlinedInput
                       name="briefDescription"
                       value={IniComp?.briefDescription}
                       onChange={handleChange}
                     />
+                    {errors.briefDescription && (
+                      <span className="error-text">
+                        {errors.briefDescription}
+                      </span>
+                    )}
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
-                    <FormLabel>Change Benefits</FormLabel>
+                    <FormLabel>Change Benefits *</FormLabel>
                     <OutlinedInput
                       name="changeBenefits"
                       value={IniComp?.changeBenefits}
                       onChange={handleChange}
                     />
+                    {errors.changeBenefits && (
+                      <span className="error-text">
+                        {errors.changeBenefits}
+                      </span>
+                    )}
                   </FormControl>
                 </Grid>
               </>

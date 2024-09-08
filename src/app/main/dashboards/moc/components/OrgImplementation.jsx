@@ -163,6 +163,7 @@ const OrgImplementation = ({
   const [expanded, setExpanded] = useState(null);
   const [impComments, setImpComments] = useState([]);
   const [comments, setComments] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [openAudit, setOpenAudit] = useState(false);
   const [openAuditComment, setOpenAuditComment] = useState(false);
   const handleCloseAudit = () => setOpenAudit(false);
@@ -265,6 +266,11 @@ const OrgImplementation = ({
   };
 
   const handelApproveImpl = (e, task) => {
+    if (comments.trim() === "") {
+      setErrorMessage("Comments are required.");
+      return;
+    }
+    setErrorMessage("");
     const updatedTask = {
       ...task,
       submissionList: impComments,
@@ -280,7 +286,12 @@ const OrgImplementation = ({
       .post(`ChangeImpact/ActionTask?id=${orgEvaluationId}`, updatedTask)
       .then((response) => {
         getRecords();
-        console.log(response);
+        apiAuth
+          .get(`ChangeImpact/ListTaskCommentst?id=${task.id}`)
+          .then((resp) => {
+            const comments = resp.data.data;
+            setImpComments(comments);
+          });
       })
       .catch((error) => {
         console.error(error);
@@ -288,6 +299,11 @@ const OrgImplementation = ({
   };
 
   const handelRejectImpl = (e, task) => {
+    if (comments.trim() === "") {
+      setErrorMessage("Comments are required.");
+      return;
+    }
+    setErrorMessage("");
     const updatedTask = {
       ...task,
       comments: comments,
@@ -295,12 +311,18 @@ const OrgImplementation = ({
       ChangeEvaluationId: 0,
       ParentId: 0,
       taskStatus: 4,
+      changeImapactId: 0,
     };
     apiAuth
       .post(`/ChangeImpact/ActionTask?id=${orgEvaluationId}`, updatedTask)
       .then((response) => {
         getRecords();
-        console.log(response);
+        apiAuth
+          .get(`ChangeImpact/ListTaskCommentst?id=${task.id}`)
+          .then((resp) => {
+            const comments = resp.data.data;
+            setImpComments(comments);
+          });
       })
       .catch((error) => {
         console.error(error);
@@ -320,10 +342,15 @@ const OrgImplementation = ({
           formUID: appActivity.formUID,
         })
         .then((response) => {
-          toast?.success("MOC successfully closed");
-          setTimeout(() => {
-            location.reload();
-          }, 1000);
+          if (response.data.statusCode == 400) {
+            toast?.error(response.data.message);
+          } else {
+            toast?.success("MOC successfully closed");
+
+            setTimeout(() => {
+              location.reload();
+            }, 1000);
+          }
         })
         .catch((error) => {
           console.error(error);
@@ -1340,12 +1367,20 @@ const OrgImplementation = ({
                                       <OutlinedInput
                                         id="reasonForNewDocument"
                                         name="reasonForNewDocument"
-                                        onChange={(e) =>
-                                          setComments(e.target.value)
-                                        }
+                                        onChange={(e) => {
+                                          setComments(e.target.value);
+                                          if (e.target.value.trim() !== "") {
+                                            setErrorMessage(""); // Clear error message on input change
+                                          }
+                                        }}
                                         label="Reason For Change*"
                                         className="mt-5"
                                       />
+                                      {errorMessage && (
+                                        <div className="text-red-500 text-sm mt-1">
+                                          {errorMessage}
+                                        </div>
+                                      )}
                                     </FormControl>
                                   </Box>
                                 </div>

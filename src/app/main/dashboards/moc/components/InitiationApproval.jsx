@@ -38,6 +38,7 @@ function InitiationApproval(props) {
     assetEvaluationId,
     contentDetails,
     CountApprove,
+    errorMessage,
   } = props;
   const [deletes, setDeletes] = useState(false);
   const [deletes1, setDeletes1] = useState(false);
@@ -1506,7 +1507,7 @@ function InitiationApproval(props) {
                       htmlFor="reasonForNewDocument"
                       className="font-semibold leading-none"
                     >
-                      Comment
+                      Comment *
                     </FormLabel>
                     <OutlinedInput
                       id="reasonForNewDocument"
@@ -1531,6 +1532,11 @@ function InitiationApproval(props) {
                         },
                       }}
                     />
+                    {errorMessage && (
+                      <div className="text-red-500 text-sm mt-1">
+                        {errorMessage}
+                      </div>
+                    )}
                   </FormControl>
                 </Box>
               )}

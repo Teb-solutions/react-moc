@@ -340,6 +340,9 @@ const AssetCourse = () => {
 
   const handleChangeRemark = (event) => {
     setValueRemark(event.target.value);
+    if (event.target.value.trim() !== "") {
+      setErrorMessage(""); // Clear error message on input change
+    }
   };
 
   const handleChangeStaffDate = (id, date) => {
@@ -1405,7 +1408,13 @@ const AssetCourse = () => {
         }
       });
   };
+  const [errorMessage, setErrorMessage] = useState("");
   const SubmitApprovelCreate = (e, uid, name, type) => {
+    if (valueRemark.trim() === "") {
+      setErrorMessage("Comments are required.");
+      return;
+    }
+    setErrorMessage("");
     setIsLoading(true);
     apiAuth
       .post(`/ApprovalManager/Create/${assetEvaluationId}`, {
@@ -1927,6 +1936,7 @@ const AssetCourse = () => {
                   assetEvaluationId={assetEvaluationId}
                   CountApprove={CountApprove}
                   contentDetails={contentDetailsIni}
+                  errorMessage={errorMessage}
                 />
               )}
               {currentPhase === "InitiationComplete" && (

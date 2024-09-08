@@ -111,6 +111,8 @@ function Course() {
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
   const [contentDetailsIni, setContentDetailsIni] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessageTask, setErrorMessageTask] = useState("");
 
   const [changeEvaluationId, setChangeEvaluationId] = useState();
   const [handelUrlChange, setHandelUrlChange] = useState({
@@ -660,6 +662,9 @@ function Course() {
   };
 
   const handleChangeRemark = (event) => {
+    if (event.target.value.trim() !== "") {
+      setErrorMessage(""); // Clear error message on input change
+    }
     setValueRemark(event.target.value);
   };
 
@@ -1236,6 +1241,11 @@ function Course() {
       });
   };
   const SubmitApprovelCreate = (e, uid, name, type) => {
+    if (valueRemark.trim() === "") {
+      setErrorMessage("Comments are required.");
+      return;
+    }
+    setErrorMessage("");
     setIsLoading(true);
 
     apiAuth
@@ -1259,6 +1269,8 @@ function Course() {
           getRecords();
           setIsLoading(false);
         } else {
+          setIsLoading(false);
+
           toast?.error(resp.data.message);
         }
       })
@@ -1295,7 +1307,7 @@ function Course() {
                   }
                 )
                 .then((resp) => {
-                  toast?.success("MOC has Created");
+                  toast?.success("Submitted Successfully");
                   getRecords();
                   setIsLoading(false);
                 })
@@ -1314,7 +1326,13 @@ function Course() {
 
   const handelAddStake = () => {
     setErrorStake("");
-
+    setErrors([]);
+    setForms([
+      {
+        id: Date.now(),
+        data: { consultedDate: new Date(), consultedStaffId: "" },
+      },
+    ]);
     setAddStake(true);
 
     apiAuth
@@ -1352,6 +1370,11 @@ function Course() {
   };
 
   const handelApproveImpl = (e, task) => {
+    if (comments.trim() === "") {
+      setErrorMessageTask("Comments are required.");
+      return;
+    }
+    setErrorMessageTask("");
     setIsLoading(true);
     const updatedTask = {
       ...task,
@@ -1382,6 +1405,11 @@ function Course() {
   };
 
   const handelRejectImpl = (e, task) => {
+    if (comments.trim() === "") {
+      setErrorMessageTask("Comments are required.");
+      return;
+    }
+    setErrorMessageTask("");
     const updatedTask = {
       ...task,
       comments: comments,
@@ -1516,12 +1544,17 @@ function Course() {
         formUID: closeActivity.formUID,
       })
       .then((resp) => {
-        toast?.success("MOC Successfully Closed");
-
-        setTimeout(() => {
-          getRecords();
+        if (resp.data.statusCode == 400) {
           setIsLoading(false);
-        }, 3000);
+
+          toast?.error(resp.data.message);
+        } else {
+          toast?.success("MOC Successfully Closed");
+          setTimeout(() => {
+            getRecords();
+            setIsLoading(false);
+          }, 2000);
+        }
       });
   };
 
@@ -3365,7 +3398,7 @@ function Course() {
                             <b>Stakeholders</b>
                           </div>
                         ) : (
-                          <div className="font-semibold">
+                          <div className="font-semibold text-blue cursor-pointer">
                             <a
                               rel="noopener noreferrer"
                               onClick={() => setAddStake(false)}
@@ -6670,7 +6703,7 @@ function Course() {
                                                         {" "}
                                                         {msg.approvalStatusDate && (
                                                           <>
-                                                            {msg.approverId
+                                                            {msg.taskStatus == 3
                                                               ? "Approved on"
                                                               : "Rejected on"}{" "}
                                                             {new Date(
@@ -6729,14 +6762,27 @@ function Course() {
                                                           <OutlinedInput
                                                             id="reasonForNewDocument"
                                                             name="reasonForNewDocument"
-                                                            onChange={(e) =>
+                                                            onChange={(e) => {
                                                               setComments(
                                                                 e.target.value
-                                                              )
-                                                            }
+                                                              );
+                                                              if (
+                                                                e.target.value.trim() !==
+                                                                ""
+                                                              ) {
+                                                                setErrorMessageTask(
+                                                                  ""
+                                                                ); // Clear error message on input change
+                                                              }
+                                                            }}
                                                             label="Reason For Change*"
                                                             className="mt-5"
                                                           />
+                                                          {errorMessageTask && (
+                                                            <div className="text-red-500 text-sm mt-1">
+                                                              {errorMessageTask}
+                                                            </div>
+                                                          )}
                                                         </FormControl>
                                                       </Box>
                                                     </div>
@@ -8170,6 +8216,7 @@ function Course() {
                                                   height: "40px",
                                                   width: "100%",
                                                   paddingRight: "100px",
+                                                  fontSize: "13px",
                                                 }}
                                                 onChange={(e) =>
                                                   setHandelCommentRemark(
@@ -8280,7 +8327,10 @@ function Course() {
                                                       data-placeholder="Write a comment..."
                                                       aria-invalid="false"
                                                       aria-required="false"
-                                                      style={{ height: "36px" }}
+                                                      style={{
+                                                        height: "36px",
+                                                        fontSize: "13px",
+                                                      }}
                                                       defaultValue={
                                                         imptsk
                                                           ?.implementationReviews[0]
@@ -8313,8 +8363,8 @@ function Course() {
                                                 </div>
                                                 <span
                                                   style={{
-                                                    fontSize: "x-small",
-                                                    paddingLeft: "60px",
+                                                    fontSize: "13px",
+                                                    paddingLeft: "40px",
                                                   }}
                                                 >
                                                   {" "}
@@ -8418,7 +8468,7 @@ function Course() {
                                 }}
                               >
                                 <span className="font-semibold leading-none">
-                                  Comment
+                                  Comment *
                                 </span>
                                 <OutlinedInput
                                   id="reasonForNewDocument"
@@ -8428,6 +8478,11 @@ function Course() {
                                   className="mt-5"
                                   value={valueRemark}
                                 />
+                                {errorMessage && (
+                                  <div className="text-red-500 text-sm mt-1">
+                                    {errorMessage}
+                                  </div>
+                                )}
                               </FormControl>
                             </Box>
                           )}

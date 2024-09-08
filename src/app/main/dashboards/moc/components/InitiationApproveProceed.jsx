@@ -97,7 +97,7 @@ function InitiationApprovalProceed({
     setSelectedTeamType(value);
 
     const selectedStaff = staffList.find((staff) => staff.value === value);
-
+    setErrors((prevErrors) => ({ ...prevErrors, hseq: "" }));
     if (selectedStaff) {
       // Clear the existing team assignments and add the new one
       setTeamAssignments([{ staffId: selectedStaff.value, teamType: "Hseq" }]);
@@ -111,42 +111,72 @@ function InitiationApprovalProceed({
         teamType: "Others",
       }))
     );
+    setErrors((prevErrors) => ({ ...prevErrors, others: "" }));
   };
 
   console.log(AppActivity, "payloadss");
-
+  const [errors, setErrors] = useState({
+    hseq: "",
+    others: "",
+  });
   const handleSubmit = () => {
-    if (selectedStaffs[0]?.staffId == selectedTeamType) {
-      setOpen(false);
-      toast.error("Same staff cannot be added multiple times.");
-    } else {
-      setIsLoading(true);
-      const payload = {
-        teamAssignments: [...teamAssignments, ...selectedStaffs],
-        executeActivity: {
-          activityUID: AppActivity.uid,
-          actionUID: AppActions[0].uid, // Assuming AppActions is an array, use the correct index or structure to access uid
-        },
-      };
-      console.log(payload, "payyyyyy");
-      apiAuth
-        .put(`/TeamAssignment/Create?id=${assetEvaluationId}`, payload)
-        .then((resp) => {
-          console.log("Response:", resp.data);
-          setIsLoading(false);
-          setOpen(false);
-          apiAuth
-            .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
-            .then((resp) => {
-              setContent(resp.data.data.phases);
-            });
-          getRecords();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          setIsLoading(false);
-        });
+    let hasError = false;
+    let validationErrors = { hseq: "", others: "" };
+
+    // Validate Hseq selection
+    if (!selectedTeamType) {
+      validationErrors.hseq = "Please select at least one Hseq staff.";
+      hasError = true;
     }
+
+    // Validate Others selection
+    if (selectedStaffs.length === 0) {
+      validationErrors.others =
+        "Please select at least one staff under Others.";
+      hasError = true;
+    }
+
+    // Check for duplicate staff
+    if (selectedStaffs[0]?.staffId === selectedTeamType) {
+      toast.error("Same staff cannot be added multiple times.");
+      hasError = true;
+    }
+
+    // If there are any validation errors, update the state and stop submission
+    if (hasError) {
+      setErrors(validationErrors);
+      setOpen(false);
+      return;
+    }
+
+    // Clear validation errors and proceed with submission
+    setErrors({ hseq: "", others: "" });
+    setIsLoading(true);
+
+    const payload = {
+      teamAssignments: [...teamAssignments, ...selectedStaffs],
+      executeActivity: {
+        activityUID: AppActivity.uid,
+        actionUID: AppActions[0].uid,
+      },
+    };
+
+    apiAuth
+      .put(`/TeamAssignment/Create?id=${assetEvaluationId}`, payload)
+      .then((resp) => {
+        setIsLoading(false);
+        setOpen(false);
+        apiAuth
+          .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
+          .then((resp) => {
+            setContent(resp.data.data.phases);
+          });
+        getRecords();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        setIsLoading(false);
+      });
   };
 
   if (isLoading) {
@@ -324,8 +354,8 @@ function InitiationApprovalProceed({
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          error={false}
-                          helperText={null}
+                          error={!!errors.hseq}
+                          helperText={errors.hseq}
                         />
                       )}
                       renderOption={(props, option) => (
@@ -363,7 +393,11 @@ function InitiationApprovalProceed({
                       )}
                       onChange={handleStaffChange}
                       renderInput={(params) => (
-                        <TextField {...params} variant="outlined" fullWidth />
+                        <TextField
+                          {...params}
+                          error={!!errors.others}
+                          helperText={errors.others}
+                        />
                       )}
                       renderOption={(props, option, { selected }) => (
                         <li {...props} key={option.value}>

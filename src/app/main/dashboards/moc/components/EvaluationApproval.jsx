@@ -46,7 +46,7 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import Initiation from "./Initiation";
 import { animateVisualElement } from "framer-motion";
 import { map } from "lodash";
-import { maxHeight } from "@mui/system";
+import { display, maxHeight } from "@mui/system";
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -267,7 +267,6 @@ const EvaluationApproval = ({
     bgcolor: "background.paper",
 
     boxShadow: 24,
-    p: 4,
   };
 
   const styleAi = {
@@ -501,7 +500,6 @@ const EvaluationApproval = ({
     if (selectedStaff.length === 0 || email === "" || comments === "") {
       setIsLoading(false);
       setCommentExtValidation("* Please fill all madatory fields");
-      toast?.error("Please fill all fields");
       return;
     }
     const payload = {
@@ -513,10 +511,11 @@ const EvaluationApproval = ({
       Version: lastActCode?.version,
     };
     // alert(comments);
-    console.log(payload, "payload");
     apiAuth
       .put(`/SummaryDetails/SendComment/${assetEvaluationId}`, payload)
       .then((response) => {
+        setDateExtendOpen(false);
+
         toast?.success(
           "Selected tasks successfully sent for external consultation"
         );
@@ -528,7 +527,6 @@ const EvaluationApproval = ({
           .then((resp) => {
             setIsLoading(false);
             location.reload();
-            setDateExtendOpen(false);
 
             setShowSendPopup(false);
 
@@ -560,6 +558,7 @@ const EvaluationApproval = ({
       .post(`/ApprovalManager/Create/${assetEvaluationId}`, payload)
       .then((response) => {
         if (response.data.statusCode != 400) {
+          toast?.success("Successfull");
           setIsLoading(false);
 
           apiAuth
@@ -3206,9 +3205,14 @@ const EvaluationApproval = ({
                   borderTopLeftRadius: "16px",
                   borderTopRightRadius: "16px",
                   color: "white",
+                  display: "flex",
+                  justifyContent: "space-between",
                 }}
               >
-                Send for external consultation
+                <h5>Send for external consultation</h5>
+                <Button onClick={handlehandledateExtendClose}>
+                  <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
+                </Button>
               </Box>
 
               <Box sx={{ overflow: "auto", padding: "5px 30px 0 30px" }}>
@@ -3793,7 +3797,10 @@ const EvaluationApproval = ({
                           }}
                         >
                           <Typography>
-                            <span className="text-brown">
+                            <span
+                              className="text-brown"
+                              style={{ fontSize: "16px" }}
+                            >
                               {itm?.reviews?.length} Review
                             </span>{" "}
                             {hasAddedComment(itm.reviews) && (
@@ -3838,6 +3845,7 @@ const EvaluationApproval = ({
                                       height: "36px",
                                       width: "100%",
                                       paddingRight: "100px",
+                                      fontSize: "13px",
                                     }}
                                     onChange={(e) =>
                                       setHandelCommentRemark(e.target.value)
@@ -3897,6 +3905,7 @@ const EvaluationApproval = ({
                                       height: "36px",
                                       width: "100%",
                                       paddingRight: "100px",
+                                      fontSize: "13px",
                                     }}
                                     defaultValue={
                                       index[0]
@@ -3933,11 +3942,17 @@ const EvaluationApproval = ({
                                 </div>
                               ) : (
                                 <div className="mat-form-field-infix">
-                                  <span className="">
+                                  <span
+                                    className=""
+                                    style={{ fontSize: "15px" }}
+                                  >
                                     {rwv?.createdByStaffName + "55"}
                                   </span>
                                   &nbsp;&nbsp;
-                                  <span className=" pl-1 text-gray">
+                                  <span
+                                    className=" pl-1 text-gray"
+                                    style={{ fontSize: "14px" }}
+                                  >
                                     {rwv?.remark}
                                   </span>
                                 </div>
@@ -3947,6 +3962,7 @@ const EvaluationApproval = ({
                               style={{
                                 fontSize: "x-small",
                                 paddingLeft: "35px",
+                                fontSize: "13px",
                               }}
                             >
                               {" "}
@@ -4008,6 +4024,7 @@ const EvaluationApproval = ({
                               height: "36px",
                               width: "100%",
                               paddingRight: "100px",
+                              fontSize: "13px",
                             }}
                             onChange={(e) =>
                               setHandelCommentRemark(e.target.value)
@@ -4239,7 +4256,10 @@ const EvaluationApproval = ({
                                         id="panel1a-header"
                                       >
                                         <Typography>
-                                          <span className="text-brown">
+                                          <span
+                                            className="text-brown"
+                                            style={{ fontSize: "16px" }}
+                                          >
                                             {
                                               itm?.changeImpactTaskReviews
                                                 ?.length
@@ -4264,20 +4284,30 @@ const EvaluationApproval = ({
                                                 />
                                                 <div>
                                                   <div className="mat-form-field-infix mt-5">
-                                                    <span className="">
+                                                    <span
+                                                      className=""
+                                                      style={{
+                                                        fontSize: "15px",
+                                                      }}
+                                                    >
                                                       {
                                                         rivew?.createdByStaffName
                                                       }
                                                     </span>
                                                     -{" "}
-                                                    <span className="text-grey">
+                                                    <span
+                                                      className="text-grey"
+                                                      style={{
+                                                        fontSize: "14px",
+                                                      }}
+                                                    >
                                                       {rivew?.remark}
                                                     </span>
                                                   </div>
                                                   <p
                                                     className="mat-form-field-infix text-grey"
                                                     style={{
-                                                      fontSize: "smaller",
+                                                      fontSize: "13px",
                                                     }}
                                                   >
                                                     {rivew?.updatedAt
@@ -4751,7 +4781,10 @@ const EvaluationApproval = ({
                                         }}
                                       >
                                         <Typography>
-                                          <span className="text-brown">
+                                          <span
+                                            className="text-brown"
+                                            style={{ fontSize: "16px" }}
+                                          >
                                             {
                                               imptsk?.changeImpactTaskReviews
                                                 ?.length
@@ -4799,7 +4832,10 @@ const EvaluationApproval = ({
                                                   data-placeholder="Write a comment..."
                                                   aria-invalid="false"
                                                   aria-required="false"
-                                                  style={{ height: "36px" }}
+                                                  style={{
+                                                    height: "36px",
+                                                    fontSize: "13px",
+                                                  }}
                                                   onChange={(e) =>
                                                     setHandelCommentRemark(
                                                       e.target.value
@@ -4873,6 +4909,7 @@ const EvaluationApproval = ({
                                                       height: "36px",
                                                       width: "100%",
                                                       paddingRight: "100px",
+                                                      fontSize: "13px",
                                                     }}
                                                     defaultValue={rwx?.remark}
                                                     onChange={(e) =>
@@ -4906,20 +4943,30 @@ const EvaluationApproval = ({
                                                   <div className="mat-form-field-flex">
                                                     <div>
                                                       <div className="mat-form-field-infix mt-5">
-                                                        <span className="">
+                                                        <span
+                                                          className=""
+                                                          style={{
+                                                            fontSize: "15px",
+                                                          }}
+                                                        >
                                                           {
                                                             rwx?.createdByStaffName
                                                           }
                                                         </span>
                                                         -{" "}
-                                                        <span className="text-grey">
+                                                        <span
+                                                          className="text-grey"
+                                                          style={{
+                                                            fontSize: "14px",
+                                                          }}
+                                                        >
                                                           {rwx?.remark}
                                                         </span>
                                                       </div>
                                                       <p
                                                         className="mat-form-field-infix text-grey"
                                                         style={{
-                                                          fontSize: "smaller",
+                                                          fontSize: "13px",
                                                         }}
                                                       >
                                                         {imptsk
@@ -4990,7 +5037,10 @@ const EvaluationApproval = ({
                                         data-placeholder="Write a comment..."
                                         aria-invalid="false"
                                         aria-required="false"
-                                        style={{ height: "36px" }}
+                                        style={{
+                                          height: "36px",
+                                          fontSize: "13px",
+                                        }}
                                         onChange={(e) =>
                                           setHandelCommentRemark(e.target.value)
                                         }
@@ -5112,7 +5162,7 @@ const EvaluationApproval = ({
                               </span>
 
                               <span
-                                className="task-id-text font-semibold leading-none"
+                                className="task-id-text font-semibold leading-none ps-3"
                                 style={{ font: "menu" }}
                               >
                                 Initiated by {imptsk?.createdBy} on{" "}
@@ -5142,7 +5192,7 @@ const EvaluationApproval = ({
                                   {imptsk.staffEmailIDs}
                                 </span>
                               </div>
-                              <div className="task-detail-item mt-3">
+                              <div className="task-detail-item mt-5">
                                 <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
                                   External Email Ids
                                 </span>
@@ -5150,7 +5200,7 @@ const EvaluationApproval = ({
                                   {imptsk.externalEmailIDs}
                                 </span>
                               </div>
-                              <div className="task-detail-item">
+                              <div className="task-detail-item mt-5">
                                 <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
                                   Comments
                                 </span>

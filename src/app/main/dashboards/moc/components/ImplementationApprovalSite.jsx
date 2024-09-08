@@ -107,6 +107,7 @@ const ImplementationApprovalSite = ({
   const [deletes, setDeletes] = useState(false);
   const [handelCommentRemark, setHandelCommentRemark] = useState("");
   const [docId, setDocId] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const [docToken, setDocToken] = useState("");
   const handleExpansionChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -114,6 +115,9 @@ const ImplementationApprovalSite = ({
 
   const handleChangeRemark = (event) => {
     setValueRemark(event.target.value);
+    if (event.target.value.trim() !== "") {
+      setErrorMessage(""); // Clear error message on input change
+    }
   };
 
   function getRecords() {
@@ -195,6 +199,11 @@ const ImplementationApprovalSite = ({
   };
 
   const SubmitApprovelCreate = (e, uid, name, type) => {
+    if (valueRemark.trim() === "") {
+      setErrorMessage("Comments are required.");
+      return;
+    }
+    setErrorMessage("");
     apiAuth
       .post(`/ApprovalManager/Create/${assetEvaluationId}`, {
         actionUID: uid,
@@ -626,7 +635,10 @@ const ImplementationApprovalSite = ({
                                     }}
                                   >
                                     <Typography>
-                                      <span className="text-brown">
+                                      <span
+                                        className="text-brown"
+                                        style={{ fontSize: "16px" }}
+                                      >
                                         {imptsk?.implementationReviews?.length}{" "}
                                         Reviews
                                       </span>{" "}
@@ -672,7 +684,10 @@ const ImplementationApprovalSite = ({
                                               data-placeholder="Write a comment..."
                                               aria-invalid="false"
                                               aria-required="false"
-                                              style={{ height: "36px" }}
+                                              style={{
+                                                height: "36px",
+                                                fontSize: "13px",
+                                              }}
                                               defaultValue={imptsk?.remark}
                                               onChange={(e) =>
                                                 setHandelCommentRemark(
@@ -737,6 +752,7 @@ const ImplementationApprovalSite = ({
                                                 height: "36px",
                                                 width: "100%",
                                                 paddingRight: "100px",
+                                                fontSize: "13px",
                                               }}
                                               defaultValue={rwx?.remark}
                                               onChange={(e) =>
@@ -766,17 +782,23 @@ const ImplementationApprovalSite = ({
                                         ) : (
                                           <div>
                                             <div className="mat-form-field-infix mt-12">
-                                              <span className="mr-3">
+                                              <span
+                                                className="mr-3"
+                                                style={{ fontSize: "15px" }}
+                                              >
                                                 {rwx?.createdByStaffName}
                                               </span>
 
-                                              <span className="text-grey ml-3">
+                                              <span
+                                                className="text-grey ml-3"
+                                                style={{ fontSize: "14px" }}
+                                              >
                                                 {rwx?.remark}
                                               </span>
                                             </div>
                                             <p
                                               className="mat-form-field-infix text-grey"
-                                              style={{ fontSize: "smaller" }}
+                                              style={{ fontSize: "13px" }}
                                             >
                                               {formatDatess(rwx?.updatedAt)}
                                             </p>
@@ -851,6 +873,7 @@ const ImplementationApprovalSite = ({
                                         height: "36px",
                                         width: "100%",
                                         paddingRight: "100px",
+                                        fontSize: "13px",
                                       }}
                                       onChange={(e) =>
                                         setHandelCommentRemark(e.target.value)
@@ -914,8 +937,8 @@ const ImplementationApprovalSite = ({
                   className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
                   style={{ width: "40%" }}
                 >
-                  <span className="font-semibold leading-none">
-                    Approver Comment: {ApprovalManager?.remark}
+                  <span className="leading-none">
+                    <b>Approver Comment:</b> {ApprovalManager?.remark}
                   </span>
                 </div>
               </div>
@@ -932,7 +955,7 @@ const ImplementationApprovalSite = ({
                           htmlFor="reasonForNewDocument"
                           className="font-semibold leading-none"
                         >
-                          Comment
+                          Comment *
                         </FormLabel>
                         <OutlinedInput
                           id="reasonForNewDocument"
@@ -957,6 +980,11 @@ const ImplementationApprovalSite = ({
                             },
                           }}
                         />
+                        {errorMessage && (
+                          <div className="text-red-500 text-sm mt-1">
+                            {errorMessage}
+                          </div>
+                        )}
                       </FormControl>
                     </Box>
                   )}

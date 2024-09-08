@@ -1307,3 +1307,9 @@ a:not([role="button"]):not(.MuiButtonBase-root) {
   max-width: unset !important;
   flex: none;
 }
+
+.error-text {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}

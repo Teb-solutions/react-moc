@@ -36,7 +36,17 @@ const SessionList = () => {
     return format(date, "MMM d, h:mm a");
   };
 
+  const [commentError, setCommentError] = useState("");
+
+  const handleCommentChange = (e) => {
+    setComment(e.target.value);
+    if (commentError) setCommentError(""); // Clear the error on input change
+  };
   const handleAccept = (id, ChangeId) => {
+    if (!Comment) {
+      setCommentError("Comment is required");
+      return; // Do not proceed if the comment is empty
+    }
     setIsLoading(true);
 
     apiAuth
@@ -55,6 +65,10 @@ const SessionList = () => {
       });
   };
   const handleReject = (id, ChangeId) => {
+    if (!Comment) {
+      setCommentError("Comment is required");
+      return; // Do not proceed if the comment is empty
+    }
     setIsLoading(true);
     apiAuth
       .put(`/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Reject`, {
@@ -176,12 +190,12 @@ const SessionList = () => {
                                 htmlFor="reasonForNewDocument"
                                 className="font-semibold leading-none"
                               >
-                                Comment
+                                Comment *
                               </FormLabel>
                               <OutlinedInput
                                 id="reasonForNewDocument"
                                 name="reasonForNewDocument"
-                                onChange={(e) => setComment(e.target.value)}
+                                onChange={handleCommentChange}
                                 label="Reason For Change*"
                                 className="mt-5"
                                 sx={{
@@ -200,6 +214,13 @@ const SessionList = () => {
                                   },
                                 }}
                               />
+                              {commentError && (
+                                <span
+                                  style={{ color: "red", fontSize: "12px" }}
+                                >
+                                  {commentError}
+                                </span>
+                              )}
                             </FormControl>
                           </Box>
                           <div className="flex justify-start">

@@ -138,16 +138,19 @@ function EvaluationChange({
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [remark, setRemark] = useState("");
   const [sessionTaskList, setSessionTaskList] = useState([]);
-
+  const [taskError, setTaskError] = useState("");
+  const [remarkError, setRemarkError] = useState("");
   const handleChangeTask = (event) => {
     const {
       target: { value },
     } = event;
     setSelectedTasks(typeof value === "string" ? value.split(",") : value);
+    setTaskError("");
   };
 
   const handleRemarkChange = (event) => {
     setRemark(event.target.value);
+    setRemarkError("");
   };
 
   const [value, setValue] = useState(0);
@@ -201,7 +204,17 @@ function EvaluationChange({
     setOpenSession(true);
   };
 
-  const handleChange = (newValue) => setValue(newValue);
+  const handleChange = (newValue) => {
+    setValue(newValue);
+    if (newValue == 1) {
+      setAddConsultation(false);
+    } else {
+      setAddConsultation(false);
+      setEditConsultation(false);
+
+      setForms([]);
+    }
+  };
 
   const calculateModalHeight = () => {
     const totalItems = Object.values(groupedData).reduce(
@@ -295,6 +308,7 @@ function EvaluationChange({
     }));
     setSelectedItems(defaultSelections);
   }, [TeamAssignmentList]);
+
   const handleCheckboxChange = (teamType, staffId, staffName) => {
     setSelectedItems((prevSelectedItems) => {
       const isSelected = prevSelectedItems.some(
@@ -312,6 +326,12 @@ function EvaluationChange({
   const timerRef = useRef();
 
   const handelCreateSession = () => {
+    if (selectedItems.length < 3) {
+      setOpen(false);
+      toast?.error("Please select at least 3 members to start the session.");
+      return; // Exit the function if validation fails
+    }
+
     setIsLoading(true);
     apiAuth
       .post(
@@ -411,8 +431,11 @@ function EvaluationChange({
       consultedDate: null,
       consultedStaffId: "",
     };
-    setForms((prevForms) => [...prevForms, newForm]);
+
+    // Replace the forms array with just the new form
+    setForms([newForm]);
   };
+
   const handleRemoveForm = (id) => {
     const newForms = forms.filter((form) => form.id !== id);
     setForms(newForms);
@@ -502,40 +525,46 @@ function EvaluationChange({
   };
 
   const handleSubmit = () => {
-    setIsLoading(true);
-    const payload = forms.map((form) => ({
-      id: 0,
-      changeRequestId: 0,
-      changeEvaluationId: 0,
-      consultedDate: form.consultedDate
-        ? formatDates(form.consultedDate)
-        : null,
-      consultedStaffDesignationId: "",
-      consultedStaffId: form.consultedStaffId,
-      taskReviewId: "",
-      comments: "",
-      isActive: true,
-      isEditable: true,
-    }));
+    if (validateAdd()) {
+      setIsLoading(true);
+      const payload = forms.map((form) => ({
+        id: 0,
+        changeRequestId: 0,
+        changeEvaluationId: 0,
+        consultedDate: form.consultedDate
+          ? formatDates(form.consultedDate)
+          : null,
+        consultedStaffDesignationId: "",
+        consultedStaffId: form.consultedStaffId,
+        taskReviewId: "",
+        comments: "",
+        isActive: true,
+        isEditable: true,
+      }));
 
-    apiAuth
-      .post(
-        `/ChangeEvaluationConsultation/Create/${Session.id}/${assetEvaluationId}`,
-        payload
-      )
-      .then((resp) => {
-        setIsLoading(false);
+      apiAuth
+        .post(
+          `/ChangeEvaluationConsultation/Create/${Session.id}/${assetEvaluationId}`,
+          payload
+        )
+        .then((resp) => {
+          setIsLoading(false);
 
-        setAddConsultation(false);
-        getRecords();
-      })
-      .catch((error) => {
-        setIsLoading(false);
+          setAddConsultation(false);
+          getRecords();
+        })
+        .catch((error) => {
+          setIsLoading(false);
 
-        console.error("Error submitting the form:", error);
-      });
+          console.error("Error submitting the form:", error);
+        });
+    }
   };
   const handelImpactSubmit = () => {
+    if (!validateAddTask() || !validateTasks()) {
+      // If there are validation errors, do not proceed with the submit
+      return;
+    }
     setIsLoading(true);
     const payload = [
       {
@@ -598,6 +627,8 @@ function EvaluationChange({
   };
   const [EditComments, setEditComments] = useState("");
   const handelEditConsultation = (staff, date, stffid, id, comments) => {
+    setRemarkError("");
+    setTaskError("");
     setAddConsultation(true);
 
     setEditConsultation(true);
@@ -610,6 +641,23 @@ function EvaluationChange({
   };
 
   const handleSave = () => {
+    let hasError = false;
+    setTaskError("");
+    setRemarkError("");
+
+    if (selectedTasks.length === 0) {
+      setTaskError("Please select at least one task.");
+      hasError = true;
+    }
+
+    if (remark.trim() === "") {
+      setRemarkError("Remarks cannot be empty.");
+      hasError = true;
+    }
+
+    if (hasError) {
+      return; // Prevent the API call if there are validation errors
+    }
     setIsLoading(true);
     const apiData = {
       consultedDate: editStaffDate,
@@ -1612,6 +1660,8 @@ function EvaluationChange({
     }
   };
 
+  const hasComments = list.some((item) => item.comments !== "");
+
   if (isLoading) {
     return <FuseLoading />;
   }
@@ -1751,310 +1801,309 @@ function EvaluationChange({
               </Box>
 
               <CustomTabPanel value={value} index={0}>
-                {list.length && !AddCunsultation ? (
-                  list.map((itms) => (
-                    <Accordion style={{ margin: "0px" }}>
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1-content"
-                        id="panel1-header"
-                        style={{ minHeight: "60px" }}
-                      >
-                        <div className="flex flex-wrap w-full">
-                          {/* User Info Section */}
-                          <div
-                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                            style={{ marginRight: "auto", width: "40%" }}
-                          >
-                            <div className="flex items-center">
-                              <img
-                                src="/assets/images/etc/userpic.png"
-                                alt="Card cover image"
-                                className="rounded-full mr-4"
-                                style={{ width: "4rem", height: "4rem" }}
-                              />
-                              <div className="flex flex-col">
-                                <span
-                                  className="font-semibold leading-none"
-                                  style={{
-                                    fontSize: "12px",
-                                    whiteSpace: "nowrap",
-                                  }}
-                                >
-                                  {itms.staff}
-                                </span>
-                                <span className="text-sm text-secondary leading-none pt-5">
-                                  Consulted on {new Date(
-                        itms.consultedDate
-                      ).toLocaleString("en-US", {
-                        month: "short",
-                        day: "2-digit",
-                        year: "numeric",
-                      })} 
-                                </span>
+                {list.length && !AddCunsultation
+                  ? list.map((itms) => (
+                      <Accordion style={{ margin: "0px" }}>
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls="panel1-content"
+                          id="panel1-header"
+                          style={{ minHeight: "60px" }}
+                        >
+                          <div className="flex flex-wrap w-full">
+                            {/* User Info Section */}
+                            <div
+                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                              style={{ marginRight: "auto", width: "40%" }}
+                            >
+                              <div className="flex items-center">
+                                <img
+                                  src="/assets/images/etc/userpic.png"
+                                  alt="Card cover image"
+                                  className="rounded-full mr-4"
+                                  style={{ width: "4rem", height: "4rem" }}
+                                />
+                                <div className="flex flex-col">
+                                  <span
+                                    className="font-semibold leading-none"
+                                    style={{
+                                      fontSize: "12px",
+                                      whiteSpace: "nowrap",
+                                    }}
+                                  >
+                                    {itms.staff}
+                                  </span>
+                                  <span className="text-sm text-secondary leading-none pt-5">
+                                    Consulted on{" "}
+                                    {new Date(
+                                      itms.consultedDate
+                                    ).toLocaleString("en-US", {
+                                      month: "short",
+                                      day: "2-digit",
+                                      year: "numeric",
+                                    })}
+                                  </span>
+                                </div>
                               </div>
                             </div>
-                          </div>
 
-                          {/* Comments Section */}
-                          <div
-                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                            style={{ width: "15%" }}
-                          >
-                            <div className="flex items-center">
-                              <div
-                                className="py-0.5 px-3 rounded-full text-sm"
-                                style={{
-                                  backgroundColor:
-                                    itms.comments === "" ||
-                                    itms.comments == null
-                                      ? "rgba(252,165,165)"
-                                      : "rgba(134,239,172)",
-                                  padding: "5px",
-                                }}
-                              >
-                                {itms.comments === ""
-                                  ? "No Comments Added"
-                                  : "Comments Added"}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Tasks Section */}
-                          <div
-                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                            style={{ width: "15%" }}
-                          >
-                            <div className="flex items-center">
-                              <div
-                                className="py-0.5 px-3 rounded-full text-sm"
-                                style={{
-                                  backgroundColor:
-                                    itms.tasks.length === 0
-                                      ? "rgba(252,165,165)"
-                                      : "rgba(134,239,172)",
-                                  padding: "5px",
-                                  marginLeft: "15px",
-                                }}
-                              >
-                                {itms.tasks.length === 0
-                                  ? "No Task Added"
-                                  : `${itms.tasks.length} Task Added`}
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Reviews Section */}
-                          <div
-                            className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                            style={{ width: "15%" }}
-                          >
-                            <div className="flex items-center">
-                              {itms.reviews.length !== 0 ? (
+                            {/* Comments Section */}
+                            <div
+                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                              style={{ width: "15%" }}
+                            >
+                              <div className="flex items-center">
                                 <div
                                   className="py-0.5 px-3 rounded-full text-sm"
                                   style={{
-                                    backgroundColor: "rgba(252,165,165)",
+                                    backgroundColor:
+                                      itms.comments === "" ||
+                                      itms.comments == null
+                                        ? "rgba(252,165,165)"
+                                        : "rgba(134,239,172)",
+                                    padding: "5px",
+                                  }}
+                                >
+                                  {itms.comments === ""
+                                    ? "No Comments Added"
+                                    : "Comments Added"}
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Tasks Section */}
+                            <div
+                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                              style={{ width: "15%" }}
+                            >
+                              <div className="flex items-center">
+                                <div
+                                  className="py-0.5 px-3 rounded-full text-sm"
+                                  style={{
+                                    backgroundColor:
+                                      itms.tasks.length === 0
+                                        ? "rgba(252,165,165)"
+                                        : "rgba(134,239,172)",
                                     padding: "5px",
                                     marginLeft: "15px",
                                   }}
                                 >
-                                  {`${itms.reviews.length} Reviews Added`}
+                                  {itms.tasks.length === 0
+                                    ? "No Task Added"
+                                    : `${itms.tasks.length} Task Added`}
                                 </div>
-                              ) : (
-                                <div
-                                  className="py-0.5 px-3 rounded-full text-sm"
-                                  style={{
-                                    padding: "5px",
-                                    marginLeft: "28px",
-                                  }}
-                                >
-                                  No Reviews
-                                </div>
-                              )}
+                              </div>
+                            </div>
+
+                            {/* Reviews Section */}
+                            <div
+                              className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                              style={{ width: "15%" }}
+                            >
+                              <div className="flex items-center">
+                                {itms.reviews.length !== 0 ? (
+                                  <div
+                                    className="py-0.5 px-3 rounded-full text-sm"
+                                    style={{
+                                      backgroundColor: "rgba(252,165,165)",
+                                      padding: "5px",
+                                      marginLeft: "15px",
+                                    }}
+                                  >
+                                    {`${itms.reviews.length} Reviews Added`}
+                                  </div>
+                                ) : (
+                                  <div
+                                    className="py-0.5 px-3 rounded-full text-sm"
+                                    style={{
+                                      padding: "5px",
+                                      marginLeft: "28px",
+                                    }}
+                                  >
+                                    No Reviews
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </AccordionSummary>
+                        </AccordionSummary>
 
-                      <AccordionDetails>
-                        <Stepper orientation="vertical">
-                          <Step>
-                            <div className="mat-expansion-panel-body ng-tns-c137-15">
-                              <div className="mt-2 ng-tns-c137-15">
-                                <div className="prose prose-sm max-w-5xl">
-                                  <div className="ng-star-inserted">
-                                    <span
-                                      className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
-                                      style={{
-                                        paddingBottom: "10px",
-                                      }}
-                                    >
-                                      {itms.comments == "" ? (
-                                        <span
-                                          className="inline-flex bg-default rounded  mr-5 mt-5 ms-5 text-secondary max-w-5xl"
-                                          style={{
-                                            paddingBottom: "10px",
-                                          }}
-                                        >
-                                          No Comments Added.
-                                        </span>
-                                      ) : (
-                                        <div className="mb-12">
-                                          <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                                            comments
+                        <AccordionDetails>
+                          <Stepper orientation="vertical">
+                            <Step>
+                              <div className="mat-expansion-panel-body ng-tns-c137-15">
+                                <div className="mt-2 ng-tns-c137-15">
+                                  <div className="prose prose-sm max-w-5xl">
+                                    <div className="ng-star-inserted">
+                                      <span
+                                        className="inline-flex bg-default rounded  mr-5 text-secondary font-semibold"
+                                        style={{
+                                          paddingBottom: "10px",
+                                        }}
+                                      >
+                                        {itms.comments == "" ? (
+                                          <span
+                                            className="inline-flex bg-default rounded  mr-5 mt-5 ms-5 text-secondary max-w-5xl"
+                                            style={{
+                                              paddingBottom: "10px",
+                                            }}
+                                          >
+                                            No Comments Added.
                                           </span>
-                                          <span className="task-detail-value">
-                                            {itms.comments}
-                                          </span>
-                                        </div>
-                                      )}
-                                    </span>
+                                        ) : (
+                                          <div className="mb-12">
+                                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                              comments
+                                            </span>
+                                            <span className="task-detail-value">
+                                              {itms.comments}
+                                            </span>
+                                          </div>
+                                        )}
+                                      </span>
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
-                              {itms?.remark != "" && itms.tasks[0] && (
-                                <>
-                                  <div className="">
-                                    <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                                      Task Added
-                                    </span>
-                                    <span className="task-detail-value">
-                                      {itms.tasks[0]}
-                                    </span>
-                                  </div>
-                                  <div
-                                    className=""
-                                    style={{ marginTop: "25px" }}
+                                {itms?.remark != "" && itms.tasks[0] && (
+                                  <>
+                                    <div className="">
+                                      <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                        Task Added
+                                      </span>
+                                      <span className="task-detail-value">
+                                        {itms.tasks[0]}
+                                      </span>
+                                    </div>
+                                    <div
+                                      className=""
+                                      style={{ marginTop: "25px" }}
+                                    >
+                                      <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
+                                        Remarks
+                                      </span>
+                                      <span className="task-detail-value">
+                                        {itms.remark}
+                                      </span>
+                                    </div>
+                                  </>
+                                )}
+                                {itms?.reviews?.length == 0 && (
+                                  <span
+                                    className="inline-flex bg-default rounded mt-5  ms-5 text-secondary "
+                                    style={{
+                                      paddingBottom: "10px",
+                                    }}
                                   >
-                                    <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                                      Remarks
-                                    </span>
-                                    <span className="task-detail-value">
-                                      {itms.remark}
-                                    </span>
-                                  </div>
-                                </>
-                              )}
-                              {itms?.reviews?.length == 0 && (
-                                <span
-                                  className="inline-flex bg-default rounded mt-5  ms-5 text-secondary "
-                                  style={{
-                                    paddingBottom: "10px",
-                                  }}
-                                >
-                                  No reviews added.
-                                </span>
-                              )}
-                              {itms?.reviews?.length != 0 && (
-                                <Accordion
-                                  expanded={expanded === "panel1"}
-                                  onChange={handleExpansionChange("panel1")}
-                                  className="mt-6"
-                                  
-                                >
-                                  <AccordionSummary
-                                    expandIcon={<ExpandMoreIcon />}
-                                    aria-controls="panel1a-content"
-                                    id="panel1a-header"
+                                    No reviews added.
+                                  </span>
+                                )}
+                                {itms?.reviews?.length != 0 && (
+                                  <Accordion
+                                    expanded={expanded === "panel1"}
+                                    onChange={handleExpansionChange("panel1")}
+                                    className="mt-6"
                                   >
-                                    <Typography>
-                                      <span className="text-brown">
-                                        {itms?.reviews?.length} Reviews
-                                      </span>{" "}
-                                    </Typography>
-                                  </AccordionSummary>
-                                  {itms?.reviews?.map((rivew) => (
-                                    <AccordionDetails>
-                                      <div className="mat-form-field-wrapper">
-                                        <div className="mat-form-field-flex">
-                                          <img
-                                            src="/assets/images/etc/userpic.png"
-                                            alt="Card cover image"
-                                            className="rounded-full mr-4"
-                                            style={{
-                                              width: "3rem",
-                                              height: "3rem",
-                                            }}
-                                          />
-                                          <div>
-                                            <div className="mat-form-field-infix mt-12">
-                                              <span className="">
-                                                {rivew?.createdByStaffName}
-                                              </span>
-                                              -{" "}
-                                              <span className="text-grey">
-                                                {rivew?.remark}
-                                              </span>
-                                            </div>
-                                            <p
-                                              className="mat-form-field-infix text-grey"
+                                    <AccordionSummary
+                                      expandIcon={<ExpandMoreIcon />}
+                                      aria-controls="panel1a-content"
+                                      id="panel1a-header"
+                                    >
+                                      <Typography>
+                                        <span className="text-brown">
+                                          {itms?.reviews?.length} Reviews
+                                        </span>{" "}
+                                      </Typography>
+                                    </AccordionSummary>
+                                    {itms?.reviews?.map((rivew) => (
+                                      <AccordionDetails>
+                                        <div className="mat-form-field-wrapper">
+                                          <div className="mat-form-field-flex">
+                                            <img
+                                              src="/assets/images/etc/userpic.png"
+                                              alt="Card cover image"
+                                              className="rounded-full mr-4"
                                               style={{
-                                                fontSize: "smaller",
+                                                width: "3rem",
+                                                height: "3rem",
                                               }}
-                                            >
-                                              {rivew?.updatedAt}
-                                            </p>
+                                            />
+                                            <div>
+                                              <div className="mat-form-field-infix mt-12">
+                                                <span className="">
+                                                  {rivew?.createdByStaffName}
+                                                </span>
+                                                -{" "}
+                                                <span className="text-grey">
+                                                  {rivew?.remark}
+                                                </span>
+                                              </div>
+                                              <p
+                                                className="mat-form-field-infix text-grey"
+                                                style={{
+                                                  fontSize: "smaller",
+                                                }}
+                                              >
+                                                {rivew?.updatedAt}
+                                              </p>
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    </AccordionDetails>
-                                  ))}
-                                </Accordion>
-                              )}
-                              <div>
-                                {AppActivity.canEdit &&
-                                  JSON.parse(
-                                    localStorage.getItem("isActiveSession")
-                                  ) && (
-                                    <Button
-                                      className=" mt-5"
-                                      variant="contained"
-                                      sx={{
-                                        backgroundColor: "white",
-                                        color: "black",
-                                        border: "1px solid black",
-                                        marginTop: "8px",
-                                      }}
-                                      startIcon={
-                                        <FuseSvgIcon size={20}>
-                                          heroicons-outline:user-add
-                                        </FuseSvgIcon>
-                                      }
-                                      onClick={() =>
-                                        handelEditConsultation(
-                                          itms.staff,
-                                          itms.consultedDate,
-                                          itms.consultedStaffId,
-                                          itms.id,
-                                          itms.comments
-                                        )
-                                      }
-                                    >
-                                      Edit Consultation
-                                    </Button>
-                                  )}
+                                      </AccordionDetails>
+                                    ))}
+                                  </Accordion>
+                                )}
+                                <div>
+                                  {AppActivity.canEdit &&
+                                    JSON.parse(
+                                      localStorage.getItem("isActiveSession")
+                                    ) && (
+                                      <Button
+                                        className=" mt-5"
+                                        variant="contained"
+                                        sx={{
+                                          backgroundColor: "white",
+                                          color: "black",
+                                          border: "1px solid black",
+                                          marginTop: "8px",
+                                        }}
+                                        startIcon={
+                                          <FuseSvgIcon size={20}>
+                                            heroicons-outline:user-add
+                                          </FuseSvgIcon>
+                                        }
+                                        onClick={() =>
+                                          handelEditConsultation(
+                                            itms.staff,
+                                            itms.consultedDate,
+                                            itms.consultedStaffId,
+                                            itms.id,
+                                            itms.comments
+                                          )
+                                        }
+                                      >
+                                        Edit Consultation
+                                      </Button>
+                                    )}
+                                </div>
                               </div>
-                            </div>
-                          </Step>
-                        </Stepper>
-                      </AccordionDetails>
-                    </Accordion>
-                  ))
-                ) : (
-                  <Typography className="ps-5">
-                    No Evaluation Consultations added
-                  </Typography>
-                )}
-
-                <div className="flex justify-start">
-                  <div
-                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                    style={{ marginTop: "15px" }}
-                  >
-                    {AppActivity.canEdit &&
-                      Session.activeSession?.status == 2 &&
-                      !AddCunsultation && (
+                            </Step>
+                          </Stepper>
+                        </AccordionDetails>
+                      </Accordion>
+                    ))
+                  : list.length == 0 && (
+                      <Typography className="ps-5 pb-5">
+                        No Evaluation Consultations added
+                      </Typography>
+                    )}
+                {AppActivity.canEdit &&
+                  Session.activeSession?.status == 2 &&
+                  !AddCunsultation && (
+                    <div className="flex justify-start">
+                      <div
+                        className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                        style={{ marginTop: "15px" }}
+                      >
                         <Button
                           className="whitespace-nowrap"
                           variant="contained"
@@ -2069,13 +2118,13 @@ function EvaluationChange({
                         >
                           Add New Consultation
                         </Button>
-                      )}
-                  </div>
-                </div>
+                      </div>
+                    </div>
+                  )}
                 {AddCunsultation && (
-                  <div className="font-semibold ps-5 text-blue">
+                  <div className="font-semibold ps-5 text-blue cursor-pointer">
                     <a rel="noopener noreferrer" onClick={handlebackList}>
-                      Back to List
+                      Back to Consulataion list view
                     </a>
                   </div>
                 )}
@@ -2086,7 +2135,7 @@ function EvaluationChange({
                       forms.map((form, index) => (
                         <div
                           style={{
-                            marginTop: "30px",
+                            marginTop: "25px",
                             justifyContent: "space-start",
                           }}
                           className="flex flex-row "
@@ -2250,22 +2299,30 @@ function EvaluationChange({
                       className="py-0.5 px-3 rounded-full text-sm  mt-5"
                       style={{ paddingLeft: "10px", paddingTop: "10px" }}
                     ></div>
-                    {list.map((itms) => (
-                      <>
-                        {itms.comments == "" ? (
-                          "  No Comments Added By staff"
-                        ) : (
-                          <div className="mb-12 ms-8">
-                            <span className="task-detail-label bg-default rounded  text-secondary font-semibold">
-                              Comments by Staff
-                            </span>
-                            <span className="task-detail-value">
-                              {itms.comments}
-                            </span>
-                          </div>
-                        )}
-                      </>
-                    ))}
+                    {hasComments ? (
+                      list.map((itms, index) => (
+                        <div key={index} className="mb-12 ms-8">
+                          {itms.comments === "" ? (
+                            ""
+                          ) : (
+                            <>
+                              <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                                Comments by Staff
+                              </span>
+                              <span className="task-detail-value">
+                                {itms.comments}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      ))
+                    ) : (
+                      <div className="mb-12 ms-8">
+                        <span className=" bg-default rounded text-secondary font-semibold">
+                          No Comments Added By staff
+                        </span>
+                      </div>
+                    )}
 
                     <Box
                       sx={{
@@ -2318,6 +2375,9 @@ function EvaluationChange({
                             </MenuItem>
                           ))}
                         </Select>
+                        {taskError && (
+                          <div style={{ color: "red" }}>{taskError}</div>
+                        )}
                       </FormControl>
                     </Box>
                     <Box sx={{ display: "flex", flexWrap: "wrap" }}>
@@ -2336,6 +2396,9 @@ function EvaluationChange({
                           className="mt-5"
                           value={remark}
                         />
+                        {remarkError && (
+                          <div style={{ color: "red" }}>{remarkError}</div>
+                        )}
                       </FormControl>
                     </Box>
                     <div
@@ -2959,13 +3022,16 @@ function EvaluationChange({
                                                           Due Date
                                                         </span>
                                                         <span className="task-detail-value d-inline-block mt-10">
-                                                        {new Date(
-                        itm.dueDate
-                      ).toLocaleString("en-US", {
-                        month: "short",
-                        day: "2-digit",
-                        year: "numeric",
-                      })}
+                                                          {new Date(
+                                                            itm.dueDate
+                                                          ).toLocaleString(
+                                                            "en-US",
+                                                            {
+                                                              month: "short",
+                                                              day: "2-digit",
+                                                              year: "numeric",
+                                                            }
+                                                          )}
                                                         </span>
                                                         <span className="task-detail-label bg-default rounded ml-2 d-inline-block mt-10 text-secondary font-semibold">
                                                           Deadline
@@ -3088,14 +3154,13 @@ function EvaluationChange({
                                                     Due Date
                                                   </span>
                                                   <span className="task-detail-value d-inline-block mt-5">
-                                                   
                                                     {new Date(
-                        imptsk.dueDate
-                      ).toLocaleString("en-US", {
-                        month: "short",
-                        day: "2-digit",
-                        year: "numeric",
-                      })}
+                                                      imptsk.dueDate
+                                                    ).toLocaleString("en-US", {
+                                                      month: "short",
+                                                      day: "2-digit",
+                                                      year: "numeric",
+                                                    })}
                                                   </span>
                                                   <span className="task-detail-label bg-default rounded mt-5 d-inline-block ml-2 text-secondary font-semibold">
                                                     Deadline
@@ -3264,12 +3329,13 @@ function EvaluationChange({
                   {AddImpact && (
                     <>
                       <div
-                        className="font-semibold ps-5 text-blue"
+                        className="font-semibold ps-5 text-blue "
                         style={{ padding: "15px" }}
                       >
                         <a
                           rel="noopener noreferrer"
                           onClick={handlebackImpactList}
+                          className="cursor-pointer"
                         >
                           Back to Impact View
                         </a>
@@ -3385,7 +3451,7 @@ function EvaluationChange({
                                     style={{ fontSize: "13px" }}
                                   >
                                     Detail of Hazard or How the Action/Task to
-                                    be Achieved
+                                    be Achievedss
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={12} md={3}>
@@ -4002,15 +4068,12 @@ function EvaluationChange({
                         ))}
                       <div className=" pt-24 pb-24">
                         <Button
-                          className="whitespace-nowrap"
                           style={{
-                            border: "1px solid",
-                            backgroundColor: "#0000",
-                            color: "black",
-                            borderColor: "rgba(203,213,225)",
                             marginLeft: "20px",
                           }}
+                          className="whitespace-nowrap"
                           variant="contained"
+                          color="secondary"
                           startIcon={
                             <FuseSvgIcon size={20}>
                               heroicons-outline:plus
@@ -4080,34 +4143,27 @@ function EvaluationChange({
             </Box>
             {AddCunsultation && !editConsultation && (
               <>
+                <Button
+                  className="whitespace-nowrap mb-5"
+                  variant="contained"
+                  color="secondary"
+                  style={{ marginLeft: "37px" }}
+                  startIcon={
+                    <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+                  }
+                  onClick={handleAddConsultation}
+                >
+                  Add New Stakeholder
+                </Button>
                 <div
                   // className="my-10"
                   style={{ borderTopWidth: "2px" }}
                 ></div>
 
                 <div
-                  className="flex justify-between items-center p-30 pb-24 pt-24 space-x-12"
+                  className="flex justify-end items-center p-30 pb-24 pt-24 space-x-12"
                   // style={{ marginTop: "15px" }}
                 >
-                  <Button
-                    className="whitespace-nowrap"
-                    style={{
-                      border: "1px solid",
-                      backgroundColor: "black",
-                      color: "white",
-                      marginLeft: "10px",
-                    }}
-                    variant="contained"
-                    startIcon={
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                    }
-                    onClick={handleAddConsultation}
-                  >
-                    Add Stakeholder
-                  </Button>
-
                   <div className="flex items-center space-x-12">
                     <Button
                       className="whitespace-nowrap"
@@ -4127,9 +4183,14 @@ function EvaluationChange({
                       variant="contained"
                       color="secondary"
                       style={{ padding: "15px" }}
+                      startIcon={
+                        <FuseSvgIcon size={20}>
+                          heroicons-outline:plus
+                        </FuseSvgIcon>
+                      }
                       onClick={handleSubmit}
                     >
-                      Submit
+                      Add Stakeholders
                     </Button>
                   </div>
                 </div>
@@ -4174,7 +4235,7 @@ function EvaluationChange({
                 <Link
                   rel="noopener noreferrer"
                   onClick={goBack}
-                  className="text-blue"
+                  className="text-blue cursour-pointer"
                 >
                   {viewrisk ? "Back to Impact List" : "Go Back"}
                 </Link>
@@ -5925,31 +5986,36 @@ function EvaluationChange({
                             <TableRow></TableRow>
                           </TableHead>
                           <TableBody>
-                            {groupedData[role].map((item) => (
-                              <div
-                                key={item.value}
-                                style={{ marginTop: "10px" }}
-                              >
-                                <label>
-                                  <Checkbox
-                                    checked={selectedItems.some(
-                                      (selectedItem) =>
-                                        selectedItem.teamType ===
-                                          item.teamType &&
-                                        selectedItem.staffId === item.staffId
-                                    )}
-                                    onChange={() =>
-                                      handleCheckboxChange(
-                                        item.teamType,
-                                        item.staffId,
-                                        item.staffName
-                                      )
-                                    }
-                                  />
-                                  <span>{item.staffName}</span>
-                                </label>
-                              </div>
-                            ))}
+                            {groupedData[role].map((item) => {
+                              const isAlwaysChecked = selectedItems.some(
+                                (selectedItem) =>
+                                  selectedItem.teamType === item.teamType &&
+                                  selectedItem.staffId === item.staffId
+                              );
+
+                              return (
+                                <div
+                                  key={item.value}
+                                  style={{ marginTop: "10px" }}
+                                >
+                                  <label>
+                                    <Checkbox
+                                      checked={isAlwaysChecked}
+                                      onChange={() =>
+                                        !isAlwaysChecked &&
+                                        handleCheckboxChange(
+                                          item.teamType,
+                                          item.staffId,
+                                          item.staffName
+                                        )
+                                      }
+                                      disabled={isAlwaysChecked} // Disable checkbox if it's always checked
+                                    />
+                                    <span>{item.staffName}</span>
+                                  </label>
+                                </div>
+                              );
+                            })}
                           </TableBody>
                         </Table>
                       </>

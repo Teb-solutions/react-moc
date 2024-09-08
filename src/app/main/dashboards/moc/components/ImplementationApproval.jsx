@@ -46,6 +46,7 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import { withStyles } from "@mui/styles";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { display } from "@mui/system";
 // Adjust the path based on your project structure
 
 function createData(
@@ -145,6 +146,19 @@ function ImplementationApproval({
     boxShadow: 24,
     p: 4,
   };
+  const styleAudit = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "1200px",
+    maxWidth: "80vw",
+    height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+  };
   const style1 = {
     position: "absolute",
     top: "50%",
@@ -199,7 +213,7 @@ function ImplementationApproval({
   const handleCloseImplemntationTask = () => setOpenImplemntationTask(false);
   const handleCloseAudit = () => setOpenAudit(false);
   const handleCloseAuditComment = () => setOpenAuditComment(false);
-
+  const [errorMessage, setErrorMessage] = useState("");
   const [errorsAddTask, setErrorsAddTask] = useState({});
   const [currentAudit, setCurrentAudit] = useState([]);
   const [docStaff, setDocStaff] = useState([]);
@@ -438,6 +452,11 @@ function ImplementationApproval({
   };
 
   const handelApproveImpl = (e, task) => {
+    if (comments.trim() === "") {
+      setErrorMessage("Comments are required.");
+      return;
+    }
+    setErrorMessage("");
     const updatedTask = {
       ...task,
       submissionList: impComments,
@@ -462,6 +481,11 @@ function ImplementationApproval({
   };
 
   const handelRejectImpl = (e, task) => {
+    // if (comments.trim() === "") {
+    //   setErrorMessage("Comments are required.");
+    //   return;
+    // }
+    setErrorMessage("");
     const updatedTask = {
       ...task,
       comments: comments,
@@ -1487,7 +1511,7 @@ function ImplementationApproval({
         }}
       >
         <Fade in={openAudit}>
-          <Box sx={style1}>
+          <Box sx={styleAudit}>
             <Box
               className="p-30 pt-24 pb-24"
               style={{
@@ -1495,9 +1519,14 @@ function ImplementationApproval({
                 borderTopLeftRadius: "16px",
                 borderTopRightRadius: "16px",
                 color: "white",
+                display: "flex",
+                justifyContent: "space-between",
               }}
             >
-              Audit List
+              <h5>Audit List</h5>
+              <Button className="" onClick={handleCloseAudit}>
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+              </Button>
             </Box>
             <div className="p-30 pt-24 pb-24">
               <div
@@ -1770,7 +1799,7 @@ function ImplementationApproval({
                                   color="warning"
                                   onClick={handleOpenImplemntationTask}
                                 >
-                                  Add New Taskssss
+                                  Add New Task
                                 </Button>
                               )}
                             {/* <Button
@@ -2161,7 +2190,7 @@ function ImplementationApproval({
                                                     {" "}
                                                     {msg.approvalStatusDate && (
                                                       <>
-                                                        {msg.approverId
+                                                        {msg.taskStatus == 3
                                                           ? "Approved on"
                                                           : "Rejected on"}{" "}
                                                         {new Date(
@@ -2217,14 +2246,25 @@ function ImplementationApproval({
                                                       <OutlinedInput
                                                         id="reasonForNewDocument"
                                                         name="reasonForNewDocument"
-                                                        onChange={(e) =>
+                                                        onChange={(e) => {
                                                           setComments(
                                                             e.target.value
-                                                          )
-                                                        }
+                                                          );
+                                                          if (
+                                                            e.target.value.trim() !==
+                                                            ""
+                                                          ) {
+                                                            setErrorMessage(""); // Clear error message on input change
+                                                          }
+                                                        }}
                                                         label="Reason For Change*"
                                                         className="mt-5"
                                                       />
+                                                      {errorMessage && (
+                                                        <div className="text-red-500 text-sm mt-1">
+                                                          {errorMessage}
+                                                        </div>
+                                                      )}
                                                     </FormControl>
                                                   </Box>
                                                 </div>
