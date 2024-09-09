@@ -407,6 +407,7 @@ function ImplementationApproval({
     }));
   };
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [documentCounts, setDocumentCounts] = useState({});
 
   const handelComments = (e, taskid) => {
     apiAuth
@@ -416,15 +417,18 @@ function ImplementationApproval({
 
         setImpComments(comments);
 
-        if (comments.length) {
+        comments.forEach((comment) => {
+          const id = comment.id;
           apiAuth
-            .get(
-              `/DocumentManager/DocumentCount?id=${comments[0].id}&documentType=Task`
-            )
-            .then((Resp) => {
-              setCountApprove(Resp.data.data);
+            .get(`/DocumentManager/DocumentCount?id=${id}&documentType=Task`)
+            .then((documentResp) => {
+              const count = documentResp.data.data; // Assuming this is the count value
+              setDocumentCounts((prevCounts) => ({
+                ...prevCounts,
+                [id]: count,
+              }));
             });
-        }
+        });
       })
       .catch((error) => {
         console.error("Error fetching task comments:", error);
@@ -2140,22 +2144,25 @@ function ImplementationApproval({
                                                     right: "10px",
                                                   }}
                                                 >
-                                                  <FuseSvgIcon size={20}>
-                                                    heroicons-solid:document
-                                                  </FuseSvgIcon>
-                                                  {countApprove != 0 && (
-                                                    <span
-                                                      className="count"
+                                                  <StyledBadge
+                                                    badgeContent={
+                                                      documentCounts[msg.id]
+                                                    }
+                                                  >
+                                                    <button
+                                                      className="icon-button"
+                                                      onClick={() =>
+                                                        handleOpen(msg.id)
+                                                      }
                                                       style={{
-                                                        backgroundColor:
-                                                          "black",
+                                                        top: "-0px",
                                                       }}
                                                     >
-                                                      {countApprove
-                                                        ? countApprove
-                                                        : listDocument.length}
-                                                    </span>
-                                                  )}
+                                                      <FuseSvgIcon size={20}>
+                                                        heroicons-solid:document
+                                                      </FuseSvgIcon>
+                                                    </button>
+                                                  </StyledBadge>
                                                 </button>
                                               </div>
                                             )}

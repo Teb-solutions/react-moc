@@ -76,6 +76,9 @@ const EvaluationApproval = ({
   const [docId, setDocId] = useState("");
   const [docToken, setDocToken] = useState("");
   const [remarkRequest, setRemarkRequest] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessageTask, setErrorMessageTask] = useState("");
+
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     descritpion: "",
@@ -106,7 +109,7 @@ const EvaluationApproval = ({
 
   //ResponseTask end
   const [documenResDowToken, setDocumenResDowToken] = useState("");
-  const [handelCommentRemark, setHandelCommentRemark] = useState("");
+  const [handelCommentRemarks, setHandelCommentRemarks] = useState({});
 
   const [selectedTasks, setSelectedTasks] = useState([]);
   const [showSendPopup, setShowSendPopup] = useState(false);
@@ -136,8 +139,14 @@ const EvaluationApproval = ({
   const handleInputChange = (event, type) => {
     if (type === "Consultaion") {
       setNewRemark(event.target.value);
+      if (event.target.value.trim() !== "") {
+        setErrorMessage(""); // Clear error message on input change
+      }
     } else if (type === "ImpactTask") {
       setNewImpactTaskRemark(event.target.value);
+      if (event.target.value.trim() !== "") {
+        setErrorMessageTask(""); // Clear error message on input change
+      }
     }
   };
   const handleRemarkChange = (index, event) => {
@@ -160,6 +169,14 @@ const EvaluationApproval = ({
     getRecords();
   }, [AppActivity.uid, contentDetails]);
   const handleSaveClick = (type) => {
+    if (type === "Consultaion" && newRemark.trim() === "") {
+      setErrorMessage("Consultaion Comments are required.");
+      return;
+    }
+    if (type === "ImpactTask" && newImpactTaskRemark.trim() === "") {
+      setErrorMessageTask("ImpactTask Comments are required.");
+      return;
+    }
     const remark = type === "Consultaion" ? newRemark : newImpactTaskRemark;
     if (!remark) {
       toast?.error("Please enter a comment");
@@ -355,20 +372,29 @@ const EvaluationApproval = ({
   useEffect(() => {
     testReview();
   }, []);
-
+  const setHandelCommentRemark = (id, value) => {
+    setHandelCommentRemarks((prevRemarks) => ({
+      ...prevRemarks,
+      [id]: value,
+    }));
+  };
   const handelCommentImp = async (id, rwid, value) => {
+    const remark = handelCommentRemarks[id];
     if (value == 1) {
       // setshowReview(true);
       apiAuth
         .put(
           `/ChangeEvaluationConsultation/AddReview/${id}/${lastActCode.code}/0`,
           {
-            remark: handelCommentRemark,
+            remark: remark,
           }
         )
         .then(async (resp) => {
           toast?.success("Review successfully added");
-          setHandelCommentRemark("");
+          setHandelCommentRemarks((prevRemarks) => ({
+            ...prevRemarks,
+            [id]: "", // Clear remark after saving
+          }));
           testReview();
         });
     } else {
@@ -376,11 +402,14 @@ const EvaluationApproval = ({
         .put(
           `/ChangeEvaluationConsultation/AddReview/${id}/${lastActCode.code}/${rwid}`,
           {
-            remark: handelCommentRemark,
+            remark: remark,
           }
         )
         .then(async (resp) => {
-          setHandelCommentRemark("");
+          setHandelCommentRemarks((prevRemarks) => ({
+            ...prevRemarks,
+            [id]: "", // Clear remark after updating
+          }));
           toast?.success("Review successfully updated");
           testReview();
         });
@@ -388,12 +417,17 @@ const EvaluationApproval = ({
   };
 
   const handelImpactCommentImp = (id, value) => {
+    const remark = handelCommentRemarks[id];
+
     apiAuth
       .put(`/Task/AddReview/${id}/${lastActCode.code}`, {
-        remark: handelCommentRemark,
+        remark: remark,
       })
       .then((resp) => {
-        setHandelCommentRemark("");
+        setHandelCommentRemarks((prevRemarks) => ({
+          ...prevRemarks,
+          [id]: "", // Clear remark after updating
+        }));
         if (value === 1) {
           // setshowReview(true);
           toast?.success("Review successfully added");
@@ -402,7 +436,10 @@ const EvaluationApproval = ({
           toast?.success("Review successfully Updated");
           testReview();
         }
-        setHandelCommentRemark("");
+        setHandelCommentRemarks((prevRemarks) => ({
+          ...prevRemarks,
+          [id]: "", // Clear remark after updating
+        }));
       });
   };
 
@@ -3937,7 +3974,10 @@ const EvaluationApproval = ({
                                         : rwv?.remark
                                     }
                                     onChange={(e) =>
-                                      setHandelCommentRemark(e.target.value)
+                                      setHandelCommentRemark(
+                                        itm.id,
+                                        e.target.value
+                                      )
                                     }
                                   ></textarea>
 
@@ -3958,6 +3998,14 @@ const EvaluationApproval = ({
                                         textareaRef.current.focus();
                                       }
                                     }}
+                                    style={
+                                      !handelCommentRemarks[itm.id]?.trim()
+                                        ? { backgroundColor: "#cdcdcd" }
+                                        : {}
+                                    }
+                                    disabled={
+                                      !handelCommentRemarks[itm.id]?.trim()
+                                    }
                                   >
                                     Update
                                   </button>
@@ -4050,13 +4098,20 @@ const EvaluationApproval = ({
                               paddingRight: "100px",
                               fontSize: "13px",
                             }}
+                            value={handelCommentRemarks[itm.id] || ""}
                             onChange={(e) =>
-                              setHandelCommentRemark(e.target.value)
+                              setHandelCommentRemark(itm.id, e.target.value)
                             }
                           ></textarea>
                           <button
                             className="custom-update-button"
                             onClick={() => handelCommentImp(itm.id, 1, 1)}
+                            style={
+                              !handelCommentRemarks[itm.id]?.trim()
+                                ? { backgroundColor: "#cdcdcd" }
+                                : {}
+                            }
+                            disabled={!handelCommentRemarks[itm.id]?.trim()}
                           >
                             Save
                           </button>
@@ -5388,6 +5443,11 @@ const EvaluationApproval = ({
                                   ),
                                 }}
                               />
+                              {errorMessage && (
+                                <div className="text-red-500 text-sm mt-1">
+                                  {errorMessage}
+                                </div>
+                              )}
                             </TableCell>
                           </TableRow>
                         </TableBody>
@@ -5548,6 +5608,11 @@ const EvaluationApproval = ({
                                   ),
                                 }}
                               />
+                              {errorMessageTask && (
+                                <div className="text-red-500 text-sm mt-1">
+                                  {errorMessageTask}
+                                </div>
+                              )}
                             </TableCell>
                           </TableRow>
                         </TableBody>
