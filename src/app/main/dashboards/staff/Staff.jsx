@@ -407,7 +407,7 @@ const Task = () => {
           </InputLabel>
         </div>
 
-        <b className="text-lg">113 staffs</b>
+        <b className="text-lg">{filteredTaskList.length} staffs</b>
 
         <Box className="flex-grow-2 mt-10">
           <TextField

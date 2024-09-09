@@ -57,16 +57,6 @@ function InitiationApprovalProceed({
     p: 4,
   };
 
-  const handleOpen = (btn) => {
-    setOpen(true);
-    setIniComp((prevState) => ({
-      ...prevState,
-      actionUID: btn.uid,
-      executeActivity: {
-        actionUID: btn.uid,
-      },
-    }));
-  };
   function getRecords() {
     try {
       apiAuth.get(`/TeamAssignment/Create`).then((resp) => {
@@ -119,7 +109,8 @@ function InitiationApprovalProceed({
     hseq: "",
     others: "",
   });
-  const handleSubmit = () => {
+
+  const handleOpen = (btn) => {
     let hasError = false;
     let validationErrors = { hseq: "", others: "" };
 
@@ -145,12 +136,21 @@ function InitiationApprovalProceed({
     // If there are any validation errors, update the state and stop submission
     if (hasError) {
       setErrors(validationErrors);
-      setOpen(false);
       return;
     }
 
     // Clear validation errors and proceed with submission
     setErrors({ hseq: "", others: "" });
+    setOpen(true);
+    setIniComp((prevState) => ({
+      ...prevState,
+      actionUID: btn.uid,
+      executeActivity: {
+        actionUID: btn.uid,
+      },
+    }));
+  };
+  const handleSubmit = () => {
     setIsLoading(true);
 
     const payload = {

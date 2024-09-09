@@ -109,17 +109,6 @@ const InitiationComplete = ({
   };
   const handleClose = () => setOpen(false);
 
-  const handleOpen = (btn) => {
-    setOpen(true);
-    setIniComp((prevState) => ({
-      ...prevState,
-      actionUID: btn.uid,
-      executeActivity: {
-        actionUID: btn.uid,
-      },
-    }));
-  };
-
   const [IniComp, setIniComp] = useState({
     classCategory: "1",
     changeLeaderId: "",
@@ -218,20 +207,31 @@ const InitiationComplete = ({
     return errors;
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setIsLoading(true);
-
-    // Call the validation function and pass the form data (IniComp)
+  const handleOpen = (btn) => {
     const formErrors = validateForm(IniComp);
 
     // If there are errors, set them and stop form submission
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
       setIsLoading(false);
-      setOpen(false);
       return;
     }
+    setOpen(true);
+    setIniComp((prevState) => ({
+      ...prevState,
+      actionUID: btn.uid,
+      executeActivity: {
+        actionUID: btn.uid,
+      },
+    }));
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    // Call the validation function and pass the form data (IniComp)
+
     const TermDate = new Date(IniComp.TerminationDate);
     const ChangeTermDate = new Date(IniComp.TerminationDate);
 

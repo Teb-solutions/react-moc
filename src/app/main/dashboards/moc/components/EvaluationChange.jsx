@@ -427,13 +427,13 @@ function EvaluationChange({
 
   const handleAddForm = () => {
     const newForm = {
-      id: Date.now(),
+      id: Date.now(), // Unique ID for each form
       consultedDate: null,
       consultedStaffId: "",
     };
 
-    // Replace the forms array with just the new form
-    setForms([newForm]);
+    // Append the new form to the existing forms
+    setForms((prevForms) => [...prevForms, newForm]);
   };
 
   const handleRemoveForm = (id) => {
@@ -453,6 +453,7 @@ function EvaluationChange({
       particularSubCategory: "",
       hazardDetail: "",
     });
+    setHazardDetailsForm([]);
     handlebackImpactList();
     setAddTakForms([]);
     setEditSubTask([]);
@@ -4106,7 +4107,7 @@ function EvaluationChange({
                             }
                             onClick={handelImpactSubmit}
                           >
-                            Submit
+                            Add Tasks
                           </Button>
                         </div>
                       </div>
