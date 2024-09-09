@@ -335,7 +335,7 @@ function Course() {
   const [handelCommentRemark, setHandelCommentRemark] = useState("");
   const [ApprovalManager, setApprovalManager] = useState({});
   const [expanded, setExpanded] = useState(false);
-  const [comment, setComment] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const handleExpansionChange = () => {
     setExpanded(!expanded);
@@ -873,7 +873,6 @@ function Course() {
     bgcolor: "background.paper",
 
     boxShadow: 24,
-    p: 2,
   };
   const [viewrisk, setViewRisk] = useState(false);
 
@@ -1375,6 +1374,7 @@ function Course() {
       return;
     }
     setErrorMessageTask("");
+    setIsButtonDisabled(true);
     setIsLoading(true);
     const updatedTask = {
       ...task,
@@ -1394,7 +1394,7 @@ function Course() {
 
         setIsLoading(false);
 
-        console.log(response);
+        setIsButtonDisabled(false);
       })
       .catch((error) => {
         setOpen(false);
@@ -1410,6 +1410,7 @@ function Course() {
       return;
     }
     setErrorMessageTask("");
+    setIsButtonDisabled(true);
     const updatedTask = {
       ...task,
       comments: comments,
@@ -1425,7 +1426,7 @@ function Course() {
         setComments("");
         getRecords();
 
-        console.log(response);
+        setIsButtonDisabled(false);
       })
       .catch((error) => {
         setOpen(false);
@@ -2401,14 +2402,19 @@ function Course() {
               <Box sx={style1}>
                 <Box
                   style={{
-                    padding: "30px",
+                    padding: "20px",
                     backgroundColor: "#4f46e5",
                     borderTopLeftRadius: "16px",
                     borderTopRightRadius: "16px",
                     color: "white",
+                    display: "flex",
+                    justifyContent: "space-between",
                   }}
                 >
-                  Audit List
+                  <h5 className="pt-12"> Audit List </h5>
+                  <Button onClick={handleCloseAudit}>
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+                  </Button>
                 </Box>
                 <div
                   _ngcontent-fyk-c288=""
@@ -2531,14 +2537,19 @@ function Course() {
               <Box sx={styleAuditCom}>
                 <Box
                   style={{
-                    padding: "30px",
+                    padding: "20px",
                     backgroundColor: "#4f46e5",
                     borderTopLeftRadius: "16px",
                     borderTopRightRadius: "16px",
                     color: "white",
+                    display: "flex",
+                    justifyContent: "space-between",
                   }}
                 >
-                  <h4>Add Audit</h4>
+                  <h5 className="pt-12">Add Audit</h5>
+                  <Button onClick={handleCloseAuditComment}>
+                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+                  </Button>
                 </Box>
                 <Box>
                   <Typography
@@ -2948,6 +2959,7 @@ function Course() {
                                         {listDocument1.length} Files
                                       </Typography>
                                     </Typography>
+
                                     {currentActivityForm.canExecute && (
                                       <Box>
                                         <Button
@@ -6050,6 +6062,11 @@ function Course() {
                                         {listDocument.length} Files
                                       </Typography>
                                     </Typography>
+                                    <Button onClick={handleClose}>
+                                      <FuseSvgIcon size={20}>
+                                        heroicons-outline:x
+                                      </FuseSvgIcon>
+                                    </Button>
                                   </Box>
 
                                   <Box>
@@ -6805,6 +6822,9 @@ function Course() {
                                                             task
                                                           )
                                                         }
+                                                        disabled={
+                                                          isButtonDisabled
+                                                        }
                                                       >
                                                         Reject
                                                       </Button>
@@ -6820,6 +6840,9 @@ function Course() {
                                                             e,
                                                             task
                                                           )
+                                                        }
+                                                        disabled={
+                                                          isButtonDisabled
                                                         }
                                                       >
                                                         Approve

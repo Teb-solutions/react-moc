@@ -1234,7 +1234,6 @@ function AssetRequest() {
                               <div className="flex justify-end">
                                 <Button
                                   className=""
-                                  variant="contained"
                                   // style={{ backgroundColor: "white" }}
                                   onClick={() => setOpenDrawer(false)}
                                 >
@@ -1259,7 +1258,6 @@ function AssetRequest() {
                                     variant="contained"
                                     color="secondary"
                                     style={{
-                                      backgroundColor: "#24a0ed",
                                       borderRadius: "5px",
                                       paddingLeft: "50px",
                                       paddingRight: "50px",

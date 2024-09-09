@@ -527,6 +527,7 @@ function EvaluationChange({
 
   const handleSubmit = () => {
     if (validateAdd()) {
+      setForms([]);
       setIsLoading(true);
       const payload = forms.map((form) => ({
         id: 0,

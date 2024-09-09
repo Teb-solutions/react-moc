@@ -256,6 +256,19 @@ const EvaluationApproval = ({
     });
     setDateExtendOpen(true);
   };
+  const style1Modal = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "1200px",
+    maxWidth: "80vw",
+    height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+    p: 4,
+    boxShadow: 24,
+  };
   const style1 = {
     position: "absolute",
     top: "50%",
@@ -330,18 +343,18 @@ const EvaluationApproval = ({
     },
   }))(Badge);
 
-  // async function testReview() {
-  //   const response = await apiAuth.get(
-  //     `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-  //   );
+  async function testReview() {
+    const response = await apiAuth.get(
+      `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+    );
 
-  //   setHandelCommentRemark("");
-  //   setContentDetails(response.data.data);
-  // }
+    setHandelCommentRemark("");
+    setContentDetails(response.data.data);
+  }
 
-  // useEffect(() => {
-  //   testReview();
-  // }, []);
+  useEffect(() => {
+    testReview();
+  }, []);
 
   const handelCommentImp = async (id, rwid, value) => {
     if (value == 1) {
@@ -2265,10 +2278,20 @@ const EvaluationApproval = ({
         >
           <Fade in={taskRespOpen}>
             <Box sx={style1}>
+              <div className="flex justify-end mx-4 sm:mx-8">
+                <Button
+                  className=""
+                  variant="contained"
+                  style={{ backgroundColor: "white" }}
+                  onClick={handleRespModalClose}
+                >
+                  <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+                </Button>
+              </div>
               <Box sx={{ flex: 1 }}>
                 <Box
                   className="flex justify-between"
-                  style={{ margin: "30px" }}
+                  style={{ margin: "20px" }}
                 >
                   <Typography
                     id="transition-modal-title"
@@ -5656,7 +5679,7 @@ const EvaluationApproval = ({
           }}
         >
           <Fade in={open1}>
-            <Box sx={style1}>
+            <Box sx={style1Modal}>
               <div
                 className="flex justify-end mx-4 sm:mx-8"
                 style={{
@@ -5669,7 +5692,7 @@ const EvaluationApproval = ({
                   className=""
                   variant="contained"
                   style={{ backgroundColor: "white" }}
-                  onClick={handleModalClose1}
+                  onClick={handleModalClose}
                 >
                   <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                 </Button>

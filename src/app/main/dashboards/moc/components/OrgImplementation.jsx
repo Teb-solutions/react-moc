@@ -36,6 +36,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { styled } from "@mui/material/styles";
 import { withStyles } from "@mui/styles";
+import { display } from "@mui/system";
 function createData(
   index,
 
@@ -156,7 +157,7 @@ const OrgImplementation = ({
     Badge: {
       background: "#2c3e50",
       color: "#fff",
-      top: "3px",
+      top: "17px",
       right: "8px",
     },
   }))(Badge);
@@ -169,6 +170,7 @@ const OrgImplementation = ({
   const handleCloseAudit = () => setOpenAudit(false);
   const handleCloseAuditComment = () => setOpenAuditComment(false);
   const [currentAudit, setCurrentAudit] = useState([]);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const [auditData, setAuditData] = useState({
     comments: "",
@@ -271,6 +273,8 @@ const OrgImplementation = ({
       return;
     }
     setErrorMessage("");
+    setIsButtonDisabled(true);
+
     const updatedTask = {
       ...task,
       submissionList: impComments,
@@ -286,6 +290,8 @@ const OrgImplementation = ({
       .post(`ChangeImpact/ActionTask?id=${orgEvaluationId}`, updatedTask)
       .then((response) => {
         getRecords();
+        setIsButtonDisabled(false);
+
         apiAuth
           .get(`ChangeImpact/ListTaskCommentst?id=${task.id}`)
           .then((resp) => {
@@ -304,6 +310,8 @@ const OrgImplementation = ({
       return;
     }
     setErrorMessage("");
+    setIsButtonDisabled(true);
+
     const updatedTask = {
       ...task,
       comments: comments,
@@ -317,6 +325,8 @@ const OrgImplementation = ({
       .post(`/ChangeImpact/ActionTask?id=${orgEvaluationId}`, updatedTask)
       .then((response) => {
         getRecords();
+        setIsButtonDisabled(false);
+
         apiAuth
           .get(`ChangeImpact/ListTaskCommentst?id=${task.id}`)
           .then((resp) => {
@@ -574,14 +584,19 @@ const OrgImplementation = ({
           <Box sx={styleAuditCom}>
             <Box
               style={{
-                padding: "30px",
+                padding: "20px",
                 backgroundColor: "#4f46e5",
                 borderTopLeftRadius: "16px",
                 borderTopRightRadius: "16px",
                 color: "white",
+                display: "flex",
+                justifyContent: "space-between",
               }}
             >
-              <h4>Add Audit</h4>
+              <h5 className="pt-12">Add Audit </h5>
+              <Button onClick={handleCloseAuditComment}>
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+              </Button>
             </Box>
             <Box>
               <Typography
@@ -659,9 +674,14 @@ const OrgImplementation = ({
                 borderTopLeftRadius: "16px",
                 borderTopRightRadius: "16px",
                 color: "white",
+                display: "flex",
+                justifyContent: "space-between",
               }}
             >
-              Audit List
+              <h5 className="pt-12">Audit List</h5>
+              <Button onClick={() => setOpenAudit(false)}>
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+              </Button>
             </Box>
             <div
               _ngcontent-fyk-c288=""
@@ -792,6 +812,9 @@ const OrgImplementation = ({
                 >
                   File Manager
                 </Typography>
+                <Button onClick={handleClose}>
+                  <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+                </Button>
               </Box>
             </Box>
             <Box>
@@ -1397,6 +1420,7 @@ const OrgImplementation = ({
                                       color: "black",
                                     }}
                                     onClick={(e) => handelRejectImpl(e, detail)}
+                                    disabled={isButtonDisabled}
                                   >
                                     Reject
                                   </Button>
@@ -1410,6 +1434,7 @@ const OrgImplementation = ({
                                     onClick={(e) =>
                                       handelApproveImpl(e, detail)
                                     }
+                                    disabled={isButtonDisabled}
                                   >
                                     Approve
                                   </Button>

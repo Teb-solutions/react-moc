@@ -185,7 +185,6 @@ function ImplementationApproval({
     bgcolor: "background.paper",
 
     boxShadow: 24,
-    p: 4,
   };
   const formatDate = (date) => {
     return new Date(date).toLocaleString("en-US", {
@@ -407,6 +406,7 @@ function ImplementationApproval({
       dueDate: date,
     }));
   };
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const handelComments = (e, taskid) => {
     apiAuth
@@ -457,6 +457,7 @@ function ImplementationApproval({
       return;
     }
     setErrorMessage("");
+    setIsButtonDisabled(true);
     const updatedTask = {
       ...task,
       submissionList: impComments,
@@ -473,7 +474,7 @@ function ImplementationApproval({
       .then((response) => {
         getRecords();
         handelComments(e, task.id);
-        console.log(response);
+        setIsButtonDisabled(false);
       })
       .catch((error) => {
         console.error(error);
@@ -481,11 +482,12 @@ function ImplementationApproval({
   };
 
   const handelRejectImpl = (e, task) => {
-    // if (comments.trim() === "") {
-    //   setErrorMessage("Comments are required.");
-    //   return;
-    // }
+    if (comments.trim() === "") {
+      setErrorMessage("Comments are required.");
+      return;
+    }
     setErrorMessage("");
+    setIsButtonDisabled(true);
     const updatedTask = {
       ...task,
       comments: comments,
@@ -499,7 +501,7 @@ function ImplementationApproval({
       .then((response) => {
         handelComments(e, task.id);
         getRecords();
-        console.log(response);
+        setIsButtonDisabled(false);
       })
       .catch((error) => {
         console.error(error);
@@ -1183,15 +1185,20 @@ function ImplementationApproval({
         <Fade in={openAuditComment}>
           <Box sx={styleAuditCom}>
             <Box
+              className="p-30 pt-24 pb-24"
               style={{
-                padding: "30px",
                 backgroundColor: "#4f46e5",
                 borderTopLeftRadius: "16px",
                 borderTopRightRadius: "16px",
                 color: "white",
+                display: "flex",
+                justifyContent: "space-between",
               }}
             >
-              <h4>Add Audit</h4>
+              <h5 className="pt-12">Add Audit</h5>
+              <Button className="" onClick={handleCloseAuditComment}>
+                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
+              </Button>
             </Box>
             <Box>
               <Typography
@@ -1523,7 +1530,7 @@ function ImplementationApproval({
                 justifyContent: "space-between",
               }}
             >
-              <h5>Audit List</h5>
+              <h5 className="pt-12">Audit List</h5>
               <Button className="" onClick={handleCloseAudit}>
                 <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
               </Button>
@@ -2286,6 +2293,7 @@ function ImplementationApproval({
                                                         detail
                                                       )
                                                     }
+                                                    disabled={isButtonDisabled}
                                                   >
                                                     Reject
                                                   </Button>
@@ -2302,6 +2310,7 @@ function ImplementationApproval({
                                                         detail
                                                       )
                                                     }
+                                                    disabled={isButtonDisabled}
                                                   >
                                                     Approve
                                                   </Button>
