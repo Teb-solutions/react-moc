@@ -1599,9 +1599,10 @@ const EvaluationApproval = ({
                                                                       "vvvvvvvvvvv"
                                                                     )}
 
-                                                                    {!sub
+                                                                    {sub
                                                                       .riskAnalysisHazardTypes
-                                                                      ?.length ? (
+                                                                      ?.length ==
+                                                                    0 ? (
                                                                       <>
                                                                         <div
                                                                           _ngcontent-fyk-c288=""
@@ -4553,270 +4554,286 @@ const EvaluationApproval = ({
                                     <div>
                                       <table className="min-w-full divide-y divide-gray-200">
                                         <tbody>
-                                          {imptsk?.riskAnalysisList?.map(
-                                            (subs, index) =>
-                                              subs?.riskAnalysisSubTasks?.map(
-                                                (sub, subIndex) => (
-                                                  <div key={subIndex}>
-                                                    {console.log(
-                                                      subs.riskAnalysisSubTasks,
-                                                      "vvvvvvvvvvv"
-                                                    )}
-
-                                                    {!sub
-                                                      .riskAnalysisHazardTypes
-                                                      ?.length ? (
-                                                      <>
-                                                        <div
-                                                          _ngcontent-fyk-c288=""
-                                                          class="flex items-center w-full  border-b justify-between"
-                                                        ></div>
-                                                        <div>
-                                                          <Grid
-                                                            container
-                                                            className="inventory-grid"
-                                                            sx={{
-                                                              paddingY: 2,
-                                                              paddingX: {
-                                                                xs: 2,
-                                                                md: 1,
-                                                              },
-                                                            }}
-                                                          >
-                                                            <Grid
-                                                              item
-                                                              xs={12}
-                                                              md={4}
-                                                            >
-                                                              <h6>
-                                                                {
-                                                                  sub.subTaskName
-                                                                }
-                                                              </h6>
-                                                            </Grid>
-                                                          </Grid>
-                                                          <Grid
-                                                            container
-                                                            className="inventory-grid"
-                                                            sx={{
-                                                              paddingY: 2,
-                                                              paddingX: {
-                                                                xs: 2,
-                                                                md: 1,
-                                                              },
-                                                            }}
-                                                          >
-                                                            <Grid
-                                                              item
-                                                              xs={12}
-                                                              md={4}
-                                                            >
-                                                              <h6
-                                                                style={{
-                                                                  paddingBottom:
-                                                                    "5px",
-                                                                }}
-                                                                className="text-brown"
-                                                              >
-                                                                <b>
-                                                                  Risk Analysis
-                                                                  not done
-                                                                </b>
-                                                              </h6>
-                                                            </Grid>
-                                                          </Grid>
-                                                        </div>
-                                                      </>
-                                                    ) : (
-                                                      sub?.riskAnalysisHazardTypes?.map(
-                                                        (hazardType) => (
-                                                          <div
-                                                            key={hazardType.id}
-                                                          >
-                                                            {hazardType.riskAnalysisHazardSituation?.map(
-                                                              (situation) => (
-                                                                <div
-                                                                  key={
-                                                                    situation.id
-                                                                  }
-                                                                >
-                                                                  <Grid
-                                                                    container
-                                                                    spacing={2}
-                                                                    className="inventory-grid"
-                                                                    sx={{
-                                                                      paddingY: 2,
-                                                                      paddingX:
-                                                                        {
-                                                                          xs: 2,
-                                                                          md: 3,
-                                                                        },
-                                                                    }}
-                                                                  >
-                                                                    <Grid
-                                                                      item
-                                                                      xs={12}
-                                                                      md={3}
-                                                                    >
-                                                                      <Typography
-                                                                        variant="body2"
-                                                                        color="text.primary"
-                                                                        fontWeight="fontWeightRegular"
-                                                                        style={{
-                                                                          backgroundColor:
-                                                                            situation.residualRiskClassificationDisplay ===
-                                                                            "HighRisk"
-                                                                              ? "red"
-                                                                              : situation.residualRiskClassificationDisplay ===
-                                                                                  "LowRisk"
-                                                                                ? "yellow"
-                                                                                : situation.residualRiskClassificationDisplay ===
-                                                                                    "AverageRisk"
-                                                                                  ? "orange"
-                                                                                  : situation.residualRiskClassificationDisplay ===
-                                                                                      "SignificantRisk"
-                                                                                    ? "purple"
-                                                                                    : "green",
-                                                                          width:
-                                                                            "35%",
-                                                                          padding:
-                                                                            "3px",
-                                                                          color:
-                                                                            situation.residualRiskClassificationDisplay ===
-                                                                            "LowRisk"
-                                                                              ? "#000"
-                                                                              : "white",
-                                                                          borderRadius:
-                                                                            "5px",
-                                                                          textAlign:
-                                                                            "center",
-                                                                          fontSize:
-                                                                            "12px",
-                                                                          fontWeight:
-                                                                            situation.residualRiskClassificationDisplay ===
-                                                                            "LowRisk"
-                                                                              ? ""
-                                                                              : "bold",
-                                                                        }}
-                                                                      >
-                                                                        {
-                                                                          situation.residualRiskClassificationDisplay
-                                                                        }
-                                                                      </Typography>
-                                                                    </Grid>
-                                                                    <Grid
-                                                                      item
-                                                                      xs={12}
-                                                                      md={3}
-                                                                    >
-                                                                      <Typography
-                                                                        variant="body2"
-                                                                        color="text.primary"
-                                                                        fontWeight="fontWeightRegular"
-                                                                        style={{
-                                                                          marginLeft:
-                                                                            "10px",
-                                                                          fontSize:
-                                                                            "12px",
-                                                                        }}
-                                                                      >
-                                                                        {
-                                                                          situation.humanControlMeasure
-                                                                        }
-                                                                      </Typography>
-                                                                    </Grid>
-                                                                    <Grid
-                                                                      item
-                                                                      xs={12}
-                                                                      md={3}
-                                                                    >
-                                                                      <Typography
-                                                                        variant="body2"
-                                                                        color="text.primary"
-                                                                        fontWeight="fontWeightRegular"
-                                                                        style={{
-                                                                          marginLeft:
-                                                                            "42px",
-                                                                          fontSize:
-                                                                            "12px",
-                                                                        }}
-                                                                      >
-                                                                        {
-                                                                          situation.technicalControlMeasure
-                                                                        }
-                                                                      </Typography>
-                                                                    </Grid>
-                                                                    <Grid
-                                                                      item
-                                                                      xs={12}
-                                                                      md={3}
-                                                                    >
-                                                                      <Typography
-                                                                        variant="body2"
-                                                                        color="text.primary"
-                                                                        fontWeight="fontWeightRegular"
-                                                                        style={{
-                                                                          marginLeft:
-                                                                            "82px",
-                                                                          fontSize:
-                                                                            "12px",
-                                                                        }}
-                                                                      >
-                                                                        {
-                                                                          situation.organisationalControlMeasure
-                                                                        }
-                                                                      </Typography>
-                                                                    </Grid>
-                                                                  </Grid>
-                                                                  <h6
-                                                                    style={{
-                                                                      paddingLeft:
-                                                                        "10px",
-                                                                      paddingBottom:
-                                                                        "5px",
-                                                                    }}
-                                                                  >
-                                                                    {
-                                                                      sub.subTaskName
-                                                                    }
-                                                                  </h6>
-                                                                  <h6
-                                                                    style={{
-                                                                      paddingLeft:
-                                                                        "10px",
-                                                                      paddingBottom:
-                                                                        "5px",
-                                                                    }}
-                                                                  >
-                                                                    -{" "}
-                                                                    {
-                                                                      hazardType.hazardTypeDisplay
-                                                                    }
-                                                                  </h6>
-                                                                  <h6
-                                                                    style={{
-                                                                      paddingLeft:
-                                                                        "10px",
-                                                                      paddingBottom:
-                                                                        "5px",
-                                                                    }}
-                                                                  >
-                                                                    -{" "}
-                                                                    {
-                                                                      situation.hazardousSituation
-                                                                    }
-                                                                  </h6>
-                                                                </div>
-                                                              )
-                                                            )}
-                                                          </div>
-                                                        )
-                                                      )
-                                                    )}
-                                                  </div>
-                                                )
-                                              )
+                                          {console.log(
+                                            imptsk?.riskAnalysisList,
+                                            "ppppppp"
                                           )}
+                                          {imptsk?.riskAnalysisList !=
+                                            undefined &&
+                                            imptsk?.riskAnalysisList?.map(
+                                              (subs, index) =>
+                                                subs?.riskAnalysisSubTasks?.map(
+                                                  (sub, subIndex) => (
+                                                    <tr key={subIndex}>
+                                                      <td colSpan="4">
+                                                        {sub
+                                                          .riskAnalysisHazardTypes
+                                                          .length === 0 ? (
+                                                          <>
+                                                            <div
+                                                              _ngcontent-fyk-c288=""
+                                                              className="flex items-center w-full border-b justify-between"
+                                                            ></div>
+                                                            <Grid
+                                                              container
+                                                              className="inventory-grid"
+                                                              sx={{
+                                                                paddingY: 2,
+                                                                paddingX: {
+                                                                  xs: 2,
+                                                                  md: 1,
+                                                                },
+                                                              }}
+                                                            >
+                                                              <Grid
+                                                                item
+                                                                xs={12}
+                                                                md={4}
+                                                              >
+                                                                <h6>
+                                                                  {
+                                                                    sub.subTaskName
+                                                                  }
+                                                                </h6>
+                                                              </Grid>
+                                                            </Grid>
+                                                            <Grid
+                                                              container
+                                                              className="inventory-grid"
+                                                              sx={{
+                                                                paddingY: 2,
+                                                                paddingX: {
+                                                                  xs: 2,
+                                                                  md: 1,
+                                                                },
+                                                              }}
+                                                            >
+                                                              <Grid
+                                                                item
+                                                                xs={12}
+                                                                md={4}
+                                                              >
+                                                                <h6
+                                                                  style={{
+                                                                    paddingBottom:
+                                                                      "5px",
+                                                                  }}
+                                                                  className="text-brown"
+                                                                >
+                                                                  <b>
+                                                                    Risk
+                                                                    Analysis not
+                                                                    done
+                                                                  </b>
+                                                                </h6>
+                                                              </Grid>
+                                                            </Grid>
+                                                          </>
+                                                        ) : (
+                                                          sub?.riskAnalysisHazardTypes?.map(
+                                                            (hazardType) => (
+                                                              <div
+                                                                key={
+                                                                  hazardType.id
+                                                                }
+                                                              >
+                                                                {hazardType.riskAnalysisHazardSituation?.map(
+                                                                  (
+                                                                    situation
+                                                                  ) => (
+                                                                    <div
+                                                                      key={
+                                                                        situation.id
+                                                                      }
+                                                                    >
+                                                                      <Grid
+                                                                        container
+                                                                        spacing={
+                                                                          2
+                                                                        }
+                                                                        className="inventory-grid"
+                                                                        sx={{
+                                                                          paddingY: 2,
+                                                                          paddingX:
+                                                                            {
+                                                                              xs: 2,
+                                                                              md: 3,
+                                                                            },
+                                                                        }}
+                                                                      >
+                                                                        <Grid
+                                                                          item
+                                                                          xs={
+                                                                            12
+                                                                          }
+                                                                          md={3}
+                                                                        >
+                                                                          <Typography
+                                                                            variant="body2"
+                                                                            color="text.primary"
+                                                                            fontWeight="fontWeightRegular"
+                                                                            style={{
+                                                                              backgroundColor:
+                                                                                situation.residualRiskClassificationDisplay ===
+                                                                                "HighRisk"
+                                                                                  ? "red"
+                                                                                  : situation.residualRiskClassificationDisplay ===
+                                                                                      "LowRisk"
+                                                                                    ? "yellow"
+                                                                                    : situation.residualRiskClassificationDisplay ===
+                                                                                        "AverageRisk"
+                                                                                      ? "orange"
+                                                                                      : situation.residualRiskClassificationDisplay ===
+                                                                                          "SignificantRisk"
+                                                                                        ? "purple"
+                                                                                        : "green",
+                                                                              width:
+                                                                                "35%",
+                                                                              padding:
+                                                                                "3px",
+                                                                              color:
+                                                                                situation.residualRiskClassificationDisplay ===
+                                                                                "LowRisk"
+                                                                                  ? "#000"
+                                                                                  : "white",
+                                                                              borderRadius:
+                                                                                "5px",
+                                                                              textAlign:
+                                                                                "center",
+                                                                              fontSize:
+                                                                                "12px",
+                                                                              fontWeight:
+                                                                                situation.residualRiskClassificationDisplay ===
+                                                                                "LowRisk"
+                                                                                  ? ""
+                                                                                  : "bold",
+                                                                            }}
+                                                                          >
+                                                                            {
+                                                                              situation.residualRiskClassificationDisplay
+                                                                            }
+                                                                          </Typography>
+                                                                        </Grid>
+                                                                        <Grid
+                                                                          item
+                                                                          xs={
+                                                                            12
+                                                                          }
+                                                                          md={3}
+                                                                        >
+                                                                          <Typography
+                                                                            variant="body2"
+                                                                            color="text.primary"
+                                                                            fontWeight="fontWeightRegular"
+                                                                            style={{
+                                                                              marginLeft:
+                                                                                "10px",
+                                                                              fontSize:
+                                                                                "12px",
+                                                                            }}
+                                                                          >
+                                                                            {
+                                                                              situation.humanControlMeasure
+                                                                            }
+                                                                          </Typography>
+                                                                        </Grid>
+                                                                        <Grid
+                                                                          item
+                                                                          xs={
+                                                                            12
+                                                                          }
+                                                                          md={3}
+                                                                        >
+                                                                          <Typography
+                                                                            variant="body2"
+                                                                            color="text.primary"
+                                                                            fontWeight="fontWeightRegular"
+                                                                            style={{
+                                                                              marginLeft:
+                                                                                "42px",
+                                                                              fontSize:
+                                                                                "12px",
+                                                                            }}
+                                                                          >
+                                                                            {
+                                                                              situation.technicalControlMeasure
+                                                                            }
+                                                                          </Typography>
+                                                                        </Grid>
+                                                                        <Grid
+                                                                          item
+                                                                          xs={
+                                                                            12
+                                                                          }
+                                                                          md={3}
+                                                                        >
+                                                                          <Typography
+                                                                            variant="body2"
+                                                                            color="text.primary"
+                                                                            fontWeight="fontWeightRegular"
+                                                                            style={{
+                                                                              marginLeft:
+                                                                                "82px",
+                                                                              fontSize:
+                                                                                "12px",
+                                                                            }}
+                                                                          >
+                                                                            {
+                                                                              situation.organisationalControlMeasure
+                                                                            }
+                                                                          </Typography>
+                                                                        </Grid>
+                                                                      </Grid>
+                                                                      <h6
+                                                                        style={{
+                                                                          paddingLeft:
+                                                                            "10px",
+                                                                          paddingBottom:
+                                                                            "5px",
+                                                                        }}
+                                                                      >
+                                                                        {
+                                                                          sub.subTaskName
+                                                                        }
+                                                                      </h6>
+                                                                      <h6
+                                                                        style={{
+                                                                          paddingLeft:
+                                                                            "10px",
+                                                                          paddingBottom:
+                                                                            "5px",
+                                                                        }}
+                                                                      >
+                                                                        -{" "}
+                                                                        {
+                                                                          hazardType.hazardTypeDisplay
+                                                                        }
+                                                                      </h6>
+                                                                      <h6
+                                                                        style={{
+                                                                          paddingLeft:
+                                                                            "10px",
+                                                                          paddingBottom:
+                                                                            "5px",
+                                                                        }}
+                                                                      >
+                                                                        -{" "}
+                                                                        {
+                                                                          situation.hazardousSituation
+                                                                        }
+                                                                      </h6>
+                                                                    </div>
+                                                                  )
+                                                                )}
+                                                              </div>
+                                                            )
+                                                          )
+                                                        )}
+                                                      </td>
+                                                    </tr>
+                                                  )
+                                                )
+                                            )}
                                         </tbody>
                                       </table>
                                     </div>

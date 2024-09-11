@@ -593,23 +593,25 @@ function EvaluationChange({
         })),
         documentStatus: "Pending",
         isShowDetail: true,
-        changeImpactTasks: impactForm?.changeImpactTasks?.map((task) => ({
-          id: task.id,
-          changeRequestId: task.changeRequestId,
-          changeEvaluationId: task.changeEvaluationId,
-          changeImapactId: task.changeImapactId,
-          actionWhat: task.actionWhat,
-          actionHow: task.actionHow,
-          actionComments: "",
-          deadline: task.deadline, // Replace with actual value if necessary
-          assignedStaffId: task.assignedStaffId,
-          taskReviewId: "",
-          dueDate: formatDates(task.dueDate),
-          isCompleted: false,
-          completedAt: "",
-          isActive: true,
-          isEditable: true,
-        })),
+        changeImpactTasks: impactForm?.changeImpactTasks?.length
+          ? impactForm.changeImpactTasks.map((task) => ({
+              id: task.id,
+              changeRequestId: task.changeRequestId,
+              changeEvaluationId: task.changeEvaluationId,
+              changeImapactId: task.changeImapactId,
+              actionWhat: task.actionWhat,
+              actionHow: task.actionHow,
+              actionComments: "",
+              deadline: task.deadline, // Replace with actual value if necessary
+              assignedStaffId: task.assignedStaffId,
+              taskReviewId: "",
+              dueDate: formatDates(task.dueDate),
+              isCompleted: false,
+              completedAt: "",
+              isActive: true,
+              isEditable: true,
+            }))
+          : [],
       },
     ];
 
@@ -702,6 +704,7 @@ function EvaluationChange({
   ) => {
     handlebackImpactList();
     setAddCImpact(true);
+    setHazardDetails(false);
     setImpactForm({
       particular: particular,
       particularSubCategory: particularSubCategory,
@@ -5803,6 +5806,7 @@ function EvaluationChange({
                       marginLeft: "10px",
                     }}
                     variant="contained"
+                    onClick={() => setRisk(false)}
                   >
                     Cancel
                   </Button>

@@ -1994,6 +1994,63 @@ function ImplementationApproval({
                                             </FuseSvgIcon>
                                           </Button>
                                         )}
+                                        {detail?.taskDateUpdates.length !== 0 &&
+                                          currentActivityForm?.canEdit &&
+                                          (!detail.taskDateUpdates[
+                                            detail.taskDateUpdates.length - 1
+                                          ]?.approvedComments ? (
+                                            <Button
+                                              className="whitespace-nowrap ms-5"
+                                              style={{
+                                                border: "1px solid",
+                                                backgroundColor: "#0000",
+                                                color: "black",
+                                                borderColor:
+                                                  "rgba(203,213,225)",
+                                              }}
+                                              variant="contained"
+                                              color="warning"
+                                              onClick={() =>
+                                                handelOpenAuditComment(
+                                                  detail.id
+                                                )
+                                              }
+                                            >
+                                              <FuseSvgIcon
+                                                className="text-48"
+                                                size={24}
+                                                color="red"
+                                              >
+                                                heroicons-outline:calendar
+                                              </FuseSvgIcon>
+                                            </Button>
+                                          ) : (
+                                            <Button
+                                              className="whitespace-nowrap ms-5"
+                                              style={{
+                                                border: "1px solid",
+                                                backgroundColor: "#0000",
+                                                color: "black",
+                                                borderColor:
+                                                  "rgba(203,213,225)",
+                                              }}
+                                              variant="contained"
+                                              color="warning"
+                                              onClick={() =>
+                                                handelOpenAuditComment(
+                                                  detail.id
+                                                )
+                                              }
+                                            >
+                                              <FuseSvgIcon
+                                                className="text-48"
+                                                size={24}
+                                                color="action"
+                                              >
+                                                heroicons-outline:calendar
+                                              </FuseSvgIcon>
+                                            </Button>
+                                          ))}
                                       </div>
                                     </div>
                                   </div>

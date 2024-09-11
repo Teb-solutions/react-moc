@@ -1,9 +1,6 @@
 import FusePageSimple from "@fuse/core/FusePageSimple";
 import { useTheme } from "@mui/material/styles";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import Paper from "@mui/material/Paper";
 import Stepper from "@mui/material/Stepper";
 import Backdrop from "@mui/material/Backdrop";
 import Modal from "@mui/material/Modal";
@@ -11,39 +8,22 @@ import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import SwipeableViews from "react-swipeable-views";
-import { parseISO, format } from "date-fns";
-import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { styled } from "@mui/material/styles";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Autocomplete,
   Checkbox,
-  FormHelperText,
-  FormLabel,
   ListItemText,
   Step,
   StepContent,
   StepLabel,
 } from "@mui/material";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-
 import Box from "@mui/material/Box";
-import React from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
 import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import SearchIcon from "@mui/icons-material/Search";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CourseProgress from "../CourseProgress";
@@ -62,37 +42,6 @@ import ImplementationApprovalSite from "../components/ImplementationApprovalSite
 import FuseLoading from "@fuse/core/FuseLoading";
 import CustomStepIcon from "../CustomStepIcon";
 import { useCallback } from "react";
-
-function CustomTabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
-
-/**
- * The Course page.
- */
 const AssetCourse = () => {
   // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const theme = useTheme();
@@ -117,17 +66,7 @@ const AssetCourse = () => {
   const [listDocument, setListDocument] = useState([]);
 
   const [open, setOpen] = useState(false);
-  const handleOpen = (id) => {
-    apiAuth
-      .get(
-        `DocumentManager/DocList/${id}/Task?changeRequestToken=${evaluationId}`
-      )
-      .then((response) => {
-        setListDocument(response?.data?.data);
-      });
-    setOpen(true);
-  };
-  const handleClose = () => setOpen(false);
+
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(-1);
   const [expandedAccordionIndex, setExpandedAccordionIndex] = useState(-1);
   const [actName, setActName] = useState("");
@@ -135,51 +74,16 @@ const AssetCourse = () => {
 
   const [reqNo, setReqNo] = useState("");
   const [canEdits, setCanEdits] = useState();
-  const [ChangeEvaluationDetail, setChangeEvaluationDetail] = useState([]);
-  const [CheckLists, setCheckLists] = useState([]);
-  const [evalActivity, setEvalActivity] = useState({});
+
   const [appActions, setAppActions] = useState([]);
   const [appActivity, setAppActivity] = useState({});
-  const [impActivity, setImpActivity] = useState({});
-  const [closeActivity, setCloseActivity] = useState({});
-  const [addStake, setAddStake] = useState(false);
-  const [docStaff, setDocStaff] = useState([]);
-  const [particular, setParticular] = useState([]);
-  const [particularSub, setParticularSub] = useState([]);
-  const [impComments, setImpComments] = useState([]);
+
   const [currentActivityForm, setCurrentActivityForm] = useState({});
-  const [fileDetails, setFileDetails] = useState(false);
-  const [selectedDocument, setSelectedDocument] = useState(null);
-  const [documenDowToken, setDocumenDowToken] = useState("");
-  const [fileName, setFileName] = useState("");
-  const [documentCounts, setDocumentCounts] = useState({});
-  const [errorsAddTask, setErrorsAddTask] = useState({});
-  const [errors, setErrors] = useState([]);
   const [errorsUrl, setErrorsUrl] = useState({});
-  const [handelCommentRemark, setHandelCommentRemark] = useState("");
   const [ApprovalManager, setApprovalManager] = useState({});
 
-  const [forms, setForms] = useState([
-    {
-      id: Date.now(),
-      data: { consultedDate: new Date(), consultedStaffId: "" },
-    },
-  ]);
-  const [value, setValue] = useState(0);
   const [valueRemark, setValueRemark] = useState("");
   const [remarkRequest, setRemarkRequest] = useState([]);
-  const [data, setData] = useState({
-    consultedDate: null,
-    consultedStaffId: "",
-    changeEvaluationId: 0,
-    changeRequestId: 0,
-    comments: "",
-    consultedStaffDesignationId: "",
-    id: 0,
-    isActive: true,
-    isEditable: true,
-    taskReviewId: "",
-  });
 
   const style = {
     position: "absolute",
@@ -196,63 +100,13 @@ const AssetCourse = () => {
     padding: "0px",
   };
 
-  const [taskAdd, setTaskAdd] = useState({
-    particular: 0,
-    particularSubCategory: 0,
-    impacHazards: "",
-    taskassignedto: "",
-    dueDate: new Date(),
-    actionHow: "",
-    actionWhat: "",
-    audit: "",
-    assignedStaffId: 1,
-    otherDetail: "",
-    changeImpactHazard: "",
-
-    ChangeImapactId: 0,
-    changeEvaluationId: 0,
-    deadline: 1,
-    hazardDetail: "",
-    isShowDetail: "",
-    parentId: "0",
-  });
   const [CountApprove, setCountApprove] = useState();
   const [CountApprove1, setCountApprove1] = useState();
   const [CountApprove2, setCountApprove2] = useState();
   const [CountApprove3, setCountApprove3] = useState();
   const [CountApprove4, setCountApprove4] = useState();
-  const [openImplemntationTask, setOpenImplemntationTask] = useState(false);
-  const [comments, setComments] = useState("");
-  const [reviewed, setReviewed] = useState({});
-  const [errorss, setErrorStake] = useState("");
-  const [handelApprover, setHandelApprover] = useState({
-    approver: "",
-  });
+
   const [showApexAndContent, setShowApexAndContent] = useState(false);
-
-  const handleOpenImplemntationTask = () => {
-    setOpenImplemntationTask(true);
-    apiAuth.get(`Staff/LOV`).then((resp) => {
-      setDocStaff(resp.data.data);
-    });
-    apiAuth.get(`/LookupData/Lov/16`).then((resp) => {
-      setParticular(resp.data.data);
-    });
-    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {});
-  };
-
-  const handleCloseImplemntationTask = () => setOpenImplemntationTask(false);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-  const handleChangeApprover = (e) => {
-    const { name, value } = e.target;
-    setHandelApprover((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
 
   const handleResize = useCallback(() => {
     if (window.innerWidth <= 768) {
@@ -274,190 +128,11 @@ const AssetCourse = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [handleResize]);
 
-  const handleChangeAddTask = (e) => {
-    const { name, value } = e.target;
-    setTaskAdd((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-
-    if (!!errorsAddTask[name]) {
-      setErrorsAddTask({ ...errorsAddTask, [name]: "" });
-    }
-
-    if (e.target.name == "particular") {
-      apiAuth.get(`/LookupData/Lov/17/${e.target.value}`).then((resp) => {
-        setParticularSub(resp.data.data);
-      });
-    }
-  };
-
-  const validateAddTask = () => {
-    let tempErrors = {};
-
-    if (!taskAdd.particular)
-      tempErrors.particular = "Particular Name is required";
-    if (!taskAdd.particularSubCategory)
-      tempErrors.particularSubCategory = "particular SubCategory  is required";
-    if (!taskAdd.impacHazards)
-      tempErrors.impacHazards = "impact Hazards  is required";
-    if (!taskAdd.actionHow) tempErrors.actionHow = "  Action How  is required";
-    if (!taskAdd.actionWhat)
-      tempErrors.actionWhat = "  Action What is required";
-    if (!taskAdd.taskassignedto)
-      tempErrors.taskassignedto = "Task Assigned Field is required";
-    if (!taskAdd.dueDate) tempErrors.dueDate = "Date Field is required";
-    if (!taskAdd.audit) tempErrors.audit = "Audit Field is required";
-
-    // Add other validations here
-    setErrorsAddTask(tempErrors);
-    return Object.keys(tempErrors).length === 0;
-  };
-
-  const handelTaskSubmit = (e) => {
-    if (validateAddTask()) {
-      apiAuth
-        .put(`ChangeImpact/Create/Task/${evaluationId}`, taskAdd)
-        .then((resp) => {
-          setOpenImplemntationTask(false);
-          setTaskAdd({
-            particular: "",
-            particularSubCategory: "",
-            impacHazards: "",
-            taskassignedto: "",
-            dueDate: new Date(),
-            actionHow: "",
-            actionWhat: "",
-            audit: "",
-            assignedStaffId: "",
-            otherDetail: "",
-            changeImpactHazard: "",
-          });
-        });
-      getRecords();
-    }
-  };
-
   const handleChangeRemark = (event) => {
     setValueRemark(event.target.value);
     if (event.target.value.trim() !== "") {
       setErrorMessage(""); // Clear error message on input change
     }
-  };
-
-  const handleChangeStaffDate = (id, date) => {
-    setForms((prevForms) =>
-      prevForms.map((form) =>
-        form.id === id
-          ? { ...form, data: { ...form.data, consultedDate: date } }
-          : form
-      )
-    );
-    setErrors((prevErrors) =>
-      prevErrors.map((error, index) =>
-        forms[index].id === id ? { ...error, consultedDate: "" } : error
-      )
-    );
-  };
-
-  const handleChangeTaskDate = (date) => {
-    setTaskAdd((prevState) => ({
-      ...prevState,
-      dueDate: date,
-    }));
-  };
-
-  const handleChangeStaff = (id, event) => {
-    const { name, value } = event.target;
-    setForms((prevForms) =>
-      prevForms.map((form) =>
-        form.id === id
-          ? { ...form, data: { ...form.data, [name]: value } }
-          : form
-      )
-    );
-    setErrors((prevErrors) =>
-      prevErrors.map((error, index) =>
-        forms[index].id === id ? { ...error, [name]: "" } : error
-      )
-    );
-  };
-
-  const validate = () => {
-    let tempErrors = forms.map((form) => ({
-      consultedDate: !form.data.consultedDate
-        ? "Consulted Date is required"
-        : "",
-      consultedStaffId: !form.data.consultedStaffId ? "Staff is required" : "",
-    }));
-
-    setErrors(tempErrors);
-    return tempErrors.every(
-      (error) => !error.consultedDate && !error.consultedStaffId
-    );
-  };
-
-  const handelSubmit = (e) => {
-    e.preventDefault();
-    if (validate()) {
-      const formattedForms = forms.map((form) => {
-        const date = form.data.consultedDate;
-        let formattedDate = null;
-
-        if (date) {
-          const day = String(date.getDate()).padStart(2, "0");
-          const month = String(date.getMonth() + 1); // Month is zero-based
-          const year = date.getFullYear();
-          formattedDate = `${month}/${day}/${year}`;
-        }
-
-        return {
-          ...data, // Assuming 'data' contains common fields
-          consultedDate: formattedDate,
-          consultedStaffId: form.data.consultedStaffId,
-        };
-      });
-
-      apiAuth
-        .post(
-          `/ChangeEvaluationConsultation/Create/${changeEvaluationId}/${evaluationId}`,
-          formattedForms
-        )
-        .then((response) => {
-          getRecords();
-          apiAuth
-            .get(
-              `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${changeEvaluationId}`
-            )
-            .then((resp) => {
-              setChangeEvaluationDetail(resp.data?.data);
-              setAddStake(false);
-            });
-        })
-        .catch((error) => {});
-    }
-  };
-
-  const handleAddForm = () => {
-    const newForms = [
-      ...forms,
-      { id: Date.now(), data: { consultedDate: null, consultedStaffId: "" } },
-    ];
-    setForms(newForms);
-    if (newForms.length > 1) {
-      setErrorStake("");
-    }
-  };
-
-  const handleRemoveForm = (id) => {
-    const newForms = forms.filter((form) => form.id !== id);
-    setForms(newForms);
-    if (newForms.length <= 1)
-      setErrorStake("At least one stakeholder is required.");
-  };
-
-  const handelNewForm = () => {
-    handleAddForm();
   };
 
   const [currentPhase, setCurrentPhase] = useState("");
@@ -531,72 +206,6 @@ const AssetCourse = () => {
     }
   };
 
-  const style1 = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "1100px",
-    maxWidth: "80vw",
-    height: "57%",
-    borderRadius: "16px",
-    bgcolor: "background.paper",
-
-    boxShadow: 24,
-    p: 4,
-    padding: "0px",
-  };
-
-  const styleImp = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "600px",
-    maxWidth: "80vw",
-    height: "auto",
-    borderRadius: "16px",
-    bgcolor: "background.paper",
-
-    boxShadow: 24,
-    p: 4,
-  };
-
-  const BoldLabel = styled("label")({
-    fontWeight: "bold",
-    color: "black",
-  });
-
-  const drawerStyle = (open) => ({
-    width: 350,
-    bgcolor: "background.paper",
-    borderTopRightRadius: "16px",
-    borderBottomRightRadius: "16px",
-    boxShadow: 24,
-    p: 2,
-    position: "absolute",
-    top: 0,
-    right: open ? 0 : -250, // Move drawer out of view when closed
-    height: "100%",
-    zIndex: 10,
-    transition: "right 0.3s ease",
-    overflow: "auto", // Smooth transition for opening/closing
-  });
-
-  const formatDate = (dateString) => {
-    if (!dateString) {
-      return "Invalid date";
-    }
-
-    try {
-      const date = parseISO(dateString);
-      return format(date, "MMMM dd, yyyy");
-    } catch (error) {
-      console.error("Error parsing date:", error);
-      return "Invalid date";
-    }
-  };
-
   const formatDates = (date) => {
     return new Date(date).toLocaleString("en-US", {
       month: "short",
@@ -608,7 +217,6 @@ const AssetCourse = () => {
     });
   };
   const [staffList, setStaffList] = useState([]);
-  const [selectedTeamType, setSelectedTeamType] = useState(null);
   function getRecords() {
     apiAuth
       .get(`/ChangeRequest/RequestDetails?id=${assetEvaluationId}`)
@@ -1158,7 +766,6 @@ const AssetCourse = () => {
 
                     setTasks(updatedTasks);
                     loadRiskAnalysisChart(updatedTasks);
-                    // https://mocapi.tebs.co.in/api/DocumentManager/DocumentCount?id=d09760aa3bf9487eb26f90bb53569bd0&documentType=Approval
                     apiAuth
                       .get(
                         `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
@@ -1335,79 +942,6 @@ const AssetCourse = () => {
     }
   };
 
-  // Update the onClick event to pass the necessary parameters
-  const handleUrlChange = (event) => {
-    setHandelUrlChange({
-      ...handelUrlChange,
-      urlRemarks: event.target.value,
-    });
-    setErrorsUrl({});
-  };
-
-  const validateUrl = () => {
-    let tempErrors = {};
-
-    // Add validation logic here
-    if (!handelUrlChange.urlRemarks) {
-      tempErrors.handelUrlChange = "Consolidated Document Url is required";
-    }
-
-    // Update the state with errors
-    setErrorsUrl(tempErrors);
-
-    // Return true if there are no errors
-    return Object.keys(tempErrors).length === 0;
-  };
-  const handelUrlUpdate = (e) => {
-    e.preventDefault();
-    if (validateUrl()) {
-      apiAuth
-        .post(`/DocMoc/UpdateEvaluationDocumentDetails/${changeEvaluationId}`, {
-          ConsolidatedDocumentUrl: handelUrlChange.urlRemarks,
-        })
-        .then((resp) => {
-          toast?.success("  Consolidated Document url successfully updated");
-        });
-    } else {
-      toast?.error("Concolidated Document Url is not valid");
-    }
-  };
-
-  const SubmitApprovel = (e, uid) => {
-    if (forms.length < 1) {
-      toast?.error("At least one stakeholder is required.");
-    }
-    apiAuth
-      .get(
-        `/ChangeEvaluationConsultation/DeatailsList?evaluationId=${changeEvaluationId}`
-      )
-      .then((resp) => {
-        const data = resp.data.data; // Assuming resp contains your data array
-
-        // Check if any object in data has an empty tasks array
-        const hasEmptyComment = data.some((item) => item.comments === "");
-        if (resp.data.data.length === 0) {
-          toast?.error("Minimum One stakeholders Required");
-        } else {
-          if (hasEmptyComment) {
-            toast?.error("All stakeholders must update the task");
-          } else {
-            apiAuth
-              .post(
-                `/DocMoc/EvaluationSubmitForApproval/${changeEvaluationId}`,
-                {
-                  actionUID: uid,
-                  activityUID: evalActivity.uid,
-                  formUID: changeEvaluationId,
-                }
-              )
-              .then((resp) => {
-                location.reload();
-              });
-          }
-        }
-      });
-  };
   const [errorMessage, setErrorMessage] = useState("");
   const SubmitApprovelCreate = (e, uid, name, type) => {
     if (valueRemark.trim() === "") {
@@ -1441,203 +975,7 @@ const AssetCourse = () => {
         setIsLoading(false);
       });
   };
-  const SubmitImpCreate = (e, uid) => {
-    apiAuth
-      .get(`/ChangeImpact/ListTask?id=${assetEvaluationId}`)
-      .then((resp) => {
-        if (handelApprover.approver == "") {
-          toast?.error("Select an approver");
-        } else {
-          toast?.success("MOC has Created");
-          apiAuth
-            .post(
-              `/DocMoc/ImplementationSubmit/${assetEvaluationId}/${handelApprover.approver}`,
-              {
-                actionUID: uid,
-                activityUID: impActivity.uid,
 
-                formUID: impActivity.formUID,
-              }
-            )
-            .then((resp) => {
-              getRecords();
-            });
-        }
-      });
-  };
-
-  const handelAddStake = () => {
-    setErrorStake("");
-
-    setAddStake(true);
-
-    apiAuth
-      .get(`/ApprovalManager/LOV/${assetEvaluationId}/1/Consultaion`)
-      .then((resp) => {
-        apiAuth.get(`/Staff/LOV`).then((resp) => {
-          setDocStaff(resp.data.data);
-          apiAuth.get(`/LookupData/Lov/5`).then((resp) => {});
-        });
-      });
-  };
-
-  const handelComments = (e, taskid) => {
-    apiAuth
-      .get(`ChangeImpact/ListTaskCommentst?id=${taskid}`)
-      .then((resp) => {
-        const comments = resp.data.data;
-        setImpComments(comments);
-        comments.forEach((comment) => {
-          const id = comment.id;
-          apiAuth
-            .get(`/DocumentManager/DocumentCount?id=${id}&documentType=Task`)
-            .then((documentResp) => {
-              const count = documentResp.data.data; // Assuming this is the count value
-              setDocumentCounts((prevCounts) => ({
-                ...prevCounts,
-                [id]: count,
-              }));
-            });
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching task comments:", error);
-      });
-  };
-
-  const handelApproveImpl = (e, task) => {
-    const updatedTask = {
-      ...task,
-      notes: comments,
-      submissionList: [impComments],
-      ChangeEvaluationId: 0,
-      ParentId: 0,
-      taskStatus: 3,
-    };
-
-    apiAuth
-      .post(`ChangeImpact/ActionTask?id=${assetEvaluationId}`, updatedTask)
-      .then((response) => {
-        getRecords();
-        console.log(response);
-      })
-      .catch((error) => {
-        setOpen(false);
-        console.error(error);
-      });
-  };
-
-  const handelRejectImpl = (e, task) => {
-    const updatedTask = {
-      ...task,
-      comments: comments,
-      submissionList: impComments,
-      ChangeEvaluationId: 0,
-      ParentId: 0,
-      taskStatus: 4,
-    };
-    apiAuth
-      .post(`ChangeImpact/ActionTask?id=${assetEvaluationId}`, updatedTask)
-      .then((response) => {
-        getRecords();
-        console.log(response);
-      })
-      .catch((error) => {
-        setOpen(false);
-        console.error(error);
-      });
-  };
-
-  const handleCheckboxChange = (id) => {
-    const updatedCheckList = CheckLists.map((item) => {
-      if (item.id === id) {
-        return { ...item, isChecked: !item.isChecked };
-      }
-      return item;
-    });
-    setCheckLists(updatedCheckList);
-  };
-
-  const saveChanges = () => {
-    apiAuth
-      .post(
-        `/DocMoc/UpdateImplementationChecklist/${assetEvaluationId}`,
-        CheckLists
-      )
-      .then((response) => {
-        toast?.success("Checklist successfully updated");
-        setOpen(false);
-        console.log(response);
-      });
-  };
-  const handelreview = (id) => {
-    apiAuth
-      .put(`/SummaryDetails/ImpReviewStatus/${assetEvaluationId}`, {
-        Task: [id],
-        ActivityCode: lastActCode.code,
-      })
-      .then((response) => {
-        setReviewed((prevReviewed) => ({
-          ...prevReviewed,
-          [id]: true,
-        }));
-        console.log(response);
-      });
-  };
-
-  const handelDetailDoc = (doc) => {
-    setSelectedDocument(doc);
-    setFileDetails(true);
-    setDocumenDowToken(doc.token);
-    setFileName(doc.name);
-  };
-
-  const handleDownload = () => {
-    apiAuth
-      .get(`/DocumentManager/download/${documenDowToken}`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", fileName); // or any other extension
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((error) => {
-        console.error("Download failed", error);
-      });
-  };
-
-  const handelCommentImp = (id) => {
-    apiAuth
-      .put(`/Task/ImpAddReview/${id}/IMPL_APPROVAL_VP_DIV`, {
-        remark: handelCommentRemark,
-      })
-      .then((resp) => {
-        setHandelCommentRemark("");
-        getRecords();
-      });
-  };
-
-  const handelCloseMoc = (uid) => {
-    apiAuth
-      .post(`/DocMoc/ImplementationSubmit/${assetEvaluationId}/22`, {
-        actionUID: uid,
-        activityUID: closeActivity.uid,
-
-        formUID: closeActivity.formUID,
-      })
-      .then((resp) => {
-        toast?.success("MOC Successfully Closed.");
-        setTimeout(() => {
-          getRecords();
-        }, 3000);
-      });
-  };
   useEffect(() => {
     handleStepChange();
   }, []);
@@ -1657,105 +995,8 @@ const AssetCourse = () => {
   const [siteInId, setSiteInChargeId] = useState();
   const [editId, setEditId] = useState("");
 
-  const handleEditApprover = (step) => {
-    // Find the matching staff based on targetUserIds
-    const selectedApprover = staffList.find(
-      (staff) => staff.value === step.targetUserIds[0] // Assuming only one targetUserId
-    );
-
-    // Set the selected approver in the state
-    setSiteInChargeId(selectedApprover || null);
-    setEditId(step.uid);
-    // Open the modal
-    setOpenApprover(true);
-    setValidationErrors({});
-  };
-
-  const handleEditApproverClose = () => {
-    setOpenApprover(fasle);
-  };
-
-  const handleEdit = () => {
-    setOpenTeamAssignment(true);
-    apiAuth
-      .get(`/ChangeRequest/TeamList?id=${assetEvaluationId}`)
-      .then((resp) => {
-        const team = resp.data.data;
-
-        team.forEach((member) => {
-          switch (member.teamType) {
-            case 1:
-              setChangeLeader(
-                staffList.find((option) => option.value === member.staffId) ||
-                  null
-              );
-              break;
-            case 2:
-              setHseq(
-                staffList.find((option) => option.value === member.staffId) ||
-                  null
-              );
-              break;
-            case 3:
-              const teams = resp.data.data;
-
-              setSelectedOthersStaffs(
-                teams
-                  .filter((t) => t.teamType === 3)
-                  .map((t) =>
-                    staffList.find((staff) => staff.value === t.staffId)
-                  )
-                  .filter(Boolean) // To remove any undefined values
-                  .reduce((uniqueStaffs, currentStaff) => {
-                    if (
-                      !uniqueStaffs.some(
-                        (staff) => staff.value === currentStaff.value
-                      )
-                    ) {
-                      uniqueStaffs.push(currentStaff);
-                    }
-                    return uniqueStaffs;
-                  }, [])
-              );
-            case 4:
-              setSiteInCharge(
-                staffList.find((option) => option.value === member.staffId) ||
-                  null
-              );
-              break;
-            default:
-              break;
-          }
-        });
-      });
-  };
-
   const handleCloseTeam = () => {
     setOpenTeamAssignment(false);
-  };
-
-  const [selectedStaffs, setSelectedStaffs] = useState([]);
-  const [teamAssignments, setTeamAssignments] = useState([]);
-  const handleTeamTypeChange = (event) => {
-    console.log(event.target.value, "pppppppp");
-    const { value } = event.target;
-    setSelectedTeamType(value);
-
-    const selectedStaff = staffList.find((staff) => staff.value === value);
-
-    if (selectedStaff) {
-      // Clear the existing team assignments and add the new one
-      setTeamAssignments([{ staffId: selectedStaff.value, teamType: "Hseq" }]);
-    }
-  };
-
-  const handleStaffChange = (event, newValue) => {
-    setSelectedStaffs(
-      newValue.map((staff) => ({
-        staffId: staff.value,
-        teamType: "Others",
-      }))
-    );
   };
 
   const handleSiteInChargeChange = (event, newValue) => {
