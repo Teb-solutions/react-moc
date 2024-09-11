@@ -170,23 +170,33 @@ const ImplementationApprovalSite = ({
       });
   };
 
+  const setHandelCommentRemarks = (id, value) => {
+
+    setHandelCommentRemark((prevRemarks) => ({
+      ...prevRemarks,
+      [id]: value,
+    }));
+  };
+
   const handelCommentImp = (id, value) => {
+
+    const remark = handelCommentRemark[id];
     if (value == 1) {
       apiAuth
         .put(`/Task/ImpAddReview/${id}/${lastActCode.code}`, {
-          remark: handelCommentRemark,
+          remark: remark,
         })
         .then((resp) => {
           // setshowReview(true);
-          toast?.success("Review successfully added");
           getRecords();
+          toast?.success("Review successfully added");
 
           setHandelCommentRemark("");
         });
     } else {
       apiAuth
         .put(`/Task/ImpAddReview/${id}/${lastActCode.code}`, {
-          remark: handelCommentRemark,
+          remark: remark,
         })
         .then((resp) => {
           // setshowReview(true);
@@ -231,7 +241,7 @@ const ImplementationApprovalSite = ({
           toast?.error(resp.data.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   const [open, setOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -597,7 +607,7 @@ const ImplementationApprovalSite = ({
                           </div>
 
                           {imptsk.implementationReviews.length > 0 ||
-                          showReview ? (
+                            showReview ? (
                             <div>
                               <Accordion
                                 className=" mt-10 pt-10"
@@ -645,10 +655,10 @@ const ImplementationApprovalSite = ({
                                       {hasAddedComment(
                                         imptsk.implementationReviews
                                       ) && (
-                                        <span className="text-green">
-                                          (You have added 1 review)
-                                        </span>
-                                      )}
+                                          <span className="text-green">
+                                            (You have added 1 review)
+                                          </span>
+                                        )}
                                     </Typography>
                                   </div>
                                 </AccordionSummary>
@@ -688,9 +698,11 @@ const ImplementationApprovalSite = ({
                                                 height: "36px",
                                                 fontSize: "13px",
                                               }}
-                                              defaultValue={imptsk?.remark}
+                                              // defaultValue={imptsk?.remark}
+
                                               onChange={(e) =>
-                                                setHandelCommentRemark(
+                                                setHandelCommentRemarks(
+                                                  imptsk.id,
                                                   e.target.value
                                                 )
                                               }
@@ -698,7 +710,8 @@ const ImplementationApprovalSite = ({
 
                                             <button
                                               className="custom-update-button"
-                                              style={{ float: "right" }}
+                                              style={!handelCommentRemark[imptsk.id]?.trim() ? { backgroundColor: "#cdcdcd", float: "right" } : { float: "right" }}
+
                                               onClick={() =>
                                                 handelCommentImp(
                                                   imptsk.id,
@@ -708,6 +721,7 @@ const ImplementationApprovalSite = ({
                                                   1
                                                 )
                                               }
+                                              disabled={!handelCommentRemark[imptsk.id]?.trim()}
                                             >
                                               <span className="mat-button-wrapper">
                                                 Save
@@ -735,7 +749,7 @@ const ImplementationApprovalSite = ({
                                           }}
                                         />
                                         {AppActivity.canEdit &&
-                                        isMyComment(rwx) ? (
+                                          isMyComment(rwx) ? (
                                           <div
                                             className="mat-form-field-infix"
                                             style={{ position: "relative" }}
@@ -756,7 +770,8 @@ const ImplementationApprovalSite = ({
                                               }}
                                               defaultValue={rwx?.remark}
                                               onChange={(e) =>
-                                                setHandelCommentRemark(
+                                                setHandelCommentRemarks(
+                                                  imptsk.id,
                                                   e.target.value
                                                 )
                                               }
@@ -764,6 +779,11 @@ const ImplementationApprovalSite = ({
 
                                             <button
                                               className="custom-update-button"
+                                              style={
+                                                !handelCommentRemark[imptsk.id]?.trim()
+                                                  ? { backgroundColor: "#cdcdcd" }
+                                                  : {}
+                                              }
                                               onClick={() =>
                                                 handelCommentImp(
                                                   imptsk.id,
@@ -773,6 +793,7 @@ const ImplementationApprovalSite = ({
                                                   2
                                                 )
                                               }
+                                              disabled={!handelCommentRemark[imptsk.id]?.trim()}
                                             >
                                               Update
                                             </button>
@@ -875,15 +896,22 @@ const ImplementationApprovalSite = ({
                                         paddingRight: "100px",
                                         fontSize: "13px",
                                       }}
+
                                       onChange={(e) =>
-                                        setHandelCommentRemark(e.target.value)
+                                        setHandelCommentRemarks(imptsk.id, e.target.value)
                                       }
                                     ></textarea>
                                     <button
                                       className="custom-update-button"
+                                      style={
+                                        !handelCommentRemark[imptsk.id]?.trim()
+                                          ? { backgroundColor: "#cdcdcd" }
+                                          : {}
+                                      }
                                       onClick={() =>
                                         handelCommentImp(imptsk.id, 1, 1)
                                       }
+                                      disabled={!handelCommentRemark[imptsk.id]?.trim()}
                                     >
                                       Save
                                     </button>

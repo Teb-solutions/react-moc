@@ -452,7 +452,7 @@ function ImplementationApproval({
     apiAuth.get(`/LookupData/Lov/16`).then((resp) => {
       setParticular(resp.data.data);
     });
-    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {});
+    apiAuth.get(`/LookupData/Lov/11`).then((resp) => { });
   };
 
   const handelApproveImpl = (e, task) => {
@@ -1042,9 +1042,9 @@ function ImplementationApproval({
                     id="fileInput"
                     style={{ display: "none" }}
                     disabled
-                    // onChange={(e) => {
-                    //   handelFileChange(e);
-                    // }}
+                  // onChange={(e) => {
+                  //   handelFileChange(e);
+                  // }}
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
@@ -1477,8 +1477,8 @@ function ImplementationApproval({
                           name="audit"
                           onChange={handleChangeAddTask}
                           value={taskAdd.audit}
-                          // error={!!errorsAddTask.audit}
-                          // helperText={errorsAddTask.audit}
+                        // error={!!errorsAddTask.audit}
+                        // helperText={errorsAddTask.audit}
                         />
                         <h6 className="text-grey">
                           If this task is based on Audit comments, please select
@@ -1616,7 +1616,7 @@ function ImplementationApproval({
                                     {column.render
                                       ? column.render(row) // Render custom actions
                                       : column.format &&
-                                          typeof value === "number"
+                                        typeof value === "number"
                                         ? column.format(value)
                                         : value}
                                   </TableCell>
@@ -1888,7 +1888,7 @@ function ImplementationApproval({
                                   <div className="d-flex flex-wrap justify-between w-100 pr-10">
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                     >
                                       <div className="flex items-center">
                                         <b>Task #{detail.id}</b>
@@ -1897,14 +1897,14 @@ function ImplementationApproval({
 
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                     >
                                       <div
                                         className="flex items-center"
                                         style={{}}
                                       >
                                         {detail.isCompleted &&
-                                        detail.taskStatus === 3 ? (
+                                          detail.taskStatus === 3 ? (
                                           <span className="text-green">
                                             Approved
                                           </span>
@@ -1922,7 +1922,7 @@ function ImplementationApproval({
                                     </div>
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                     >
                                       <div className="flex items-center">
                                         No Risks
@@ -1930,7 +1930,7 @@ function ImplementationApproval({
                                     </div>
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                     >
                                       <div className="flex items-center">
                                         {detail.assignedStaff}
@@ -1939,7 +1939,7 @@ function ImplementationApproval({
 
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                     >
                                       <div className="flex items-center">
                                         {formatDate(detail.dueDate)}
@@ -1947,7 +1947,7 @@ function ImplementationApproval({
                                     </div>
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                    // style={{ width: "17%" }}
                                     >
                                       <div className="flex items-center">
                                         <StyledBadge
@@ -2117,16 +2117,16 @@ function ImplementationApproval({
                                                   <div className="my-0.5 text-xs font-medium text-secondary">
                                                     <small>
                                                       {msg.startedDate &&
-                                                      !msg.workInProgressDate &&
-                                                      !msg.completedDate &&
-                                                      !msg.dueDate
+                                                        !msg.workInProgressDate &&
+                                                        !msg.completedDate &&
+                                                        !msg.dueDate
                                                         ? `Started on ${formatDate(msg.startedDate)}`
                                                         : msg.workInProgressDate &&
-                                                            !msg.completedDate &&
-                                                            !msg.dueDate
+                                                          !msg.completedDate &&
+                                                          !msg.dueDate
                                                           ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
                                                           : msg.dueDate &&
-                                                              !msg.completedDate
+                                                            !msg.completedDate
                                                             ? `Due on ${formatDate(msg.dueDate)}`
                                                             : msg.completedDate
                                                               ? `Completed on ${formatDate(msg.completedDate)}`
@@ -2134,36 +2134,42 @@ function ImplementationApproval({
                                                     </small>
                                                   </div>
                                                 </div>
-                                                <button
-                                                  className="icon-button"
-                                                  onClick={() =>
-                                                    handleOpen(msg.id)
-                                                  }
-                                                  style={{
-                                                    top: "-19px",
-                                                    right: "10px",
-                                                  }}
-                                                >
-                                                  <StyledBadge
-                                                    badgeContent={
-                                                      documentCounts[msg.id]
-                                                    }
-                                                  >
+                                                {documentCounts[msg.id] ? (
+                                                  documentCounts[msg.id] != 0 && (
                                                     <button
                                                       className="icon-button"
                                                       onClick={() =>
                                                         handleOpen(msg.id)
                                                       }
                                                       style={{
-                                                        top: "-0px",
+                                                        top: "-19px",
+                                                        right: "10px",
                                                       }}
                                                     >
-                                                      <FuseSvgIcon size={20}>
-                                                        heroicons-solid:document
-                                                      </FuseSvgIcon>
+                                                      <StyledBadge
+                                                        badgeContent={
+                                                          documentCounts[msg.id]
+                                                        }
+                                                      >
+                                                        <button
+                                                          className="icon-button"
+                                                          onClick={() =>
+                                                            handleOpen(msg.id)
+                                                          }
+                                                          style={{
+                                                            top: "-0px",
+                                                          }}
+                                                        >
+                                                          <FuseSvgIcon size={20}>
+                                                            heroicons-solid:document
+                                                          </FuseSvgIcon>
+                                                        </button>
+                                                      </StyledBadge>
                                                     </button>
-                                                  </StyledBadge>
-                                                </button>
+                                                  )
+                                                ) : (
+                                                  <></>
+                                                )}
                                               </div>
                                             )}
                                             {msg.comments && (
@@ -2204,7 +2210,7 @@ function ImplementationApproval({
                                                     {" "}
                                                     {msg.approvalStatusDate && (
                                                       <>
-                                                        {msg.taskStatus == 3
+                                                        {msg.taskStatus === 3
                                                           ? "Approved on"
                                                           : "Rejected on"}{" "}
                                                         {new Date(
@@ -2435,7 +2441,7 @@ function ImplementationApproval({
                     color="secondary"
                     // style={{ marginTop: "10px" }}
                     onClick={() => handlesumbitmodal(btn.uid)}
-                    // onClick={(e) => SubmitApprovelCreate(e, btn.uid)}
+                  // onClick={(e) => SubmitApprovelCreate(e, btn.uid)}
                   >
                     {btn.name}
                   </Button>
