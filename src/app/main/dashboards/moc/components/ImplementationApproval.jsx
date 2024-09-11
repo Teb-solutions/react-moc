@@ -4,6 +4,7 @@ import {
   Badge,
   Box,
   Button,
+  Checkbox,
   Fade,
   FormControl,
   FormHelperText,
@@ -46,6 +47,8 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import { withStyles } from "@mui/styles";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import dayjs from "dayjs";
+
 import { display } from "@mui/system";
 // Adjust the path based on your project structure
 
@@ -173,6 +176,32 @@ function ImplementationApproval({
     boxShadow: 24,
     p: 2,
   };
+  const styleExt = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "1200px",
+    maxWidth: "80vw",
+    height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+  };
+  const stylePssr = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "900px",
+    maxWidth: "80vw",
+    height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+  };
   const styleAuditCom = {
     position: "absolute",
     top: "50%",
@@ -229,7 +258,91 @@ function ImplementationApproval({
   const [docId, setDocId] = useState("");
   const [docToken, setDocToken] = useState("");
   const [openSubmit, setOpenSubmit] = useState(false);
+  const [dateExtendopen, setDateExtendOpen] = useState(false);
+  const [task, setTask] = useState({});
+  const [ShowTask, setShowTask] = useState(false);
+  const [reqDate, setReqDate] = useState(null);
+  const [commentss, setCommentss] = useState("");
+  const [pssrOpen, setPssrOpen] = useState(false);
+  const [pssrList, setPssrList] = useState([]);
+  const [checkedItems, setCheckedItems] = useState([]);
 
+  const handelPssrTeam = async () => {
+    setPssrOpen(true);
+
+    // Fetch the list of all staff members
+    const response = await apiAuth.get(`/Staff/LOV`);
+    const staffList = response.data?.data;
+
+    // Fetch the pre-selected PSSR team members
+    const response1 = await apiAuth.get(
+      `/PssrSession/List?id=${assetEvaluationId}`
+    );
+    const preSelectedTeam = response1.data?.data;
+
+    // Set pssrList to the fetched staff list
+    setPssrList(staffList);
+
+    // Match pre-selected staff with the staff list
+    const checkedStaff = staffList.filter((item) =>
+      preSelectedTeam.some((preItem) => preItem.staffId === item.value)
+    );
+
+    // Set checked items based on the pre-selected team
+    setCheckedItems(checkedStaff);
+  };
+  const handlePssrClose = () => {
+    setPssrOpen(false);
+  };
+
+  const handleCheckboxChange = (event, item) => {
+    const { checked } = event.target;
+
+    if (checked) {
+      setCheckedItems([...checkedItems, item]); // Add item to checkedItems array
+    } else {
+      setCheckedItems(checkedItems.filter((i) => i.value !== item.value)); // Remove item from checkedItems array
+    }
+  };
+  const handlePssrSave = async () => {
+    const payload = {
+      pssrTeam: checkedItems.map((item) => ({
+        isActive: true,
+        staffId: item.value, // Assuming `value` is `staffId`
+        staffName: item.text, // Set `staffName` to an empty string
+      })),
+    };
+
+    const response = await apiAuth
+      .put(`/PssrSession/TeamCreate?id=${assetEvaluationId}`, payload)
+      .then((resp) => {
+        toast.success("PSSR List Added");
+        setPssrOpen(false);
+      });
+  };
+
+  const [dueDateCommentValidation, setDueDateCommentValidation] =
+    useState(null);
+  const [dueDateValidation, setDueDateValidation] = useState(null);
+
+  const handledateExtendopen = (e, task, show) => {
+    e.preventDefault();
+    if (show == "false") {
+      setShowTask(true);
+    } else {
+      setShowTask(false);
+    }
+    getRecords();
+    setTask(task);
+
+    setDateExtendOpen(true);
+  };
+  const handlehandledateExtendClose = () => {
+    setDueDateValidation(false);
+
+    setDueDateCommentValidation(false);
+    setDateExtendOpen(false);
+  };
   const handleCloseSubmit = () => setOpenSubmit(false);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
@@ -240,7 +353,13 @@ function ImplementationApproval({
     documentId: "",
     changeRequestToken: null,
   });
-
+  const formatDates = (date) => {
+    return new Date(date).toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    });
+  };
   const drawerStyle = (open) => ({
     width: 350,
     bgcolor: "background.paper",
@@ -452,7 +571,7 @@ function ImplementationApproval({
     apiAuth.get(`/LookupData/Lov/16`).then((resp) => {
       setParticular(resp.data.data);
     });
-    apiAuth.get(`/LookupData/Lov/11`).then((resp) => { });
+    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {});
   };
 
   const handelApproveImpl = (e, task) => {
@@ -666,12 +785,6 @@ function ImplementationApproval({
   const handleCloseDelete = () => {
     setDeletes(false);
   };
-  const handleDelete = (e, id, token) => {
-    e.preventDefault();
-    setDocId(id);
-    setDocToken(token);
-    setDeletes(true);
-  };
 
   const handleSubmitDelete = () => {
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
@@ -687,6 +800,56 @@ function ImplementationApproval({
           setSelectedDocument("");
         });
     });
+  };
+  const handleSubmits = (task, value) => {
+    if (!commentss || !reqDate) {
+      if (!reqDate) setDueDateValidation("Due Date is required");
+      if (!comments)
+        setDueDateCommentValidation("Please provide a reason for extension");
+
+      return;
+    }
+    let formattedReqDate = dayjs(reqDate).format("MM-DD-YYYY");
+    let formattedOldDate = dayjs(task.dueDate).format("MM-DD-YYYY");
+
+    const lastTaskDateUpdate = task.taskDateUpdates.filter(
+      (update) => update.taskdateupdateStatus == 1
+    );
+
+    apiAuth
+      .put(
+        `/Task/ApproveTaskDateUpdate/?requestToken=${assetEvaluationId}&taskId=${task?.sourceTaskId}&updatedateID=${lastTaskDateUpdate[0].id}`,
+        {
+          OldDate: formattedOldDate,
+          ApprovedComments: commentss,
+          ApprovedDate: formattedReqDate,
+          TaskdateupdateStatus: value == 2 ? "Approved" : "Rejected",
+          updatedateID: lastTaskDateUpdate[0].id,
+        }
+      )
+      .then((response) => {
+        if (response.data.statusCode == 500) {
+          getRecords();
+          setDateExtendOpen(false);
+
+          toast.error(response.data.message);
+        } else {
+          setDateExtendOpen(false);
+          toast.success(response.data.message);
+          setTimeout(() => location.reload(), 1000);
+
+          setCommentss("");
+          setReqDate(null);
+          setTask({
+            ...task,
+            activeDateUpdateRequest: 1,
+          });
+        }
+      })
+      .catch((err) => {
+        setDateExtendOpen(false);
+        toast.error("Some error occured");
+      });
   };
 
   if (isLoading) {
@@ -1042,9 +1205,9 @@ function ImplementationApproval({
                     id="fileInput"
                     style={{ display: "none" }}
                     disabled
-                  // onChange={(e) => {
-                  //   handelFileChange(e);
-                  // }}
+                    // onChange={(e) => {
+                    //   handelFileChange(e);
+                    // }}
                   />
                   <label htmlFor="fileInput">
                     <div className=" ">
@@ -1477,8 +1640,8 @@ function ImplementationApproval({
                           name="audit"
                           onChange={handleChangeAddTask}
                           value={taskAdd.audit}
-                        // error={!!errorsAddTask.audit}
-                        // helperText={errorsAddTask.audit}
+                          // error={!!errorsAddTask.audit}
+                          // helperText={errorsAddTask.audit}
                         />
                         <h6 className="text-grey">
                           If this task is based on Audit comments, please select
@@ -1616,7 +1779,7 @@ function ImplementationApproval({
                                     {column.render
                                       ? column.render(row) // Render custom actions
                                       : column.format &&
-                                        typeof value === "number"
+                                          typeof value === "number"
                                         ? column.format(value)
                                         : value}
                                   </TableCell>
@@ -1740,6 +1903,352 @@ function ImplementationApproval({
         </Fade>
       </Modal>
 
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={dateExtendopen}
+        onClose={handlehandledateExtendClose}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={dateExtendopen}>
+          <Box sx={styleExt}>
+            <Box
+              style={{
+                padding: "30px",
+                backgroundColor: "#4f46e5",
+                borderTopLeftRadius: "16px",
+                borderTopRightRadius: "16px",
+                display: "flex",
+                justifyContent: "end",
+                color: "white",
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+              className="cursor-pointer"
+              onClick={handlehandledateExtendClose}
+            >
+              {" "}
+              <h4 className="pt-12">Extend Date</h4>
+              <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
+            </Box>
+
+            <Box sx={{ overflow: "auto", padding: "5px 30px 30px 30px" }}>
+              <Grid container spacing={2} className="mt-5">
+                <Grid item xs={12}>
+                  <Table
+                    className="mat-elevatio demo-table col-span-12 mt-0 w-full"
+                    sx={{ width: "100%" }}
+                  >
+                    <TableHead
+                      sx={{
+                        borderBottom: "2px solid silver",
+                        fontSize: "medium",
+                        border: "1px solid black",
+                      }}
+                    >
+                      <TableRow>
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ border: "1px solid black" }}
+                        >
+                          Actual Date
+                        </TableCell>
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ border: "1px solid black" }}
+                        >
+                          Request Comments
+                        </TableCell>
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ border: "1px solid black" }}
+                        >
+                          Request Date
+                        </TableCell>
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ width: "20%", border: "1px solid black" }}
+                        >
+                          Approved Comments
+                        </TableCell>
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ border: "1px solid black" }}
+                        >
+                          Approved Date
+                        </TableCell>
+                        <TableCell
+                          className="text-left pb-3"
+                          sx={{ border: "1px solid black" }}
+                        >
+                          Status
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {task?.taskDateUpdates?.map((update) => (
+                        <TableRow key={update.id}>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {formatDates(update.oldDate)}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {update.requestComments}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {formatDates(update.requestDate)}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {update.approvedComments || "N/A"}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {update.approvedDate
+                              ? formatDates(update.approvedDate)
+                              : "N/A"}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {update.taskdateupdateStatus == 2
+                              ? "Approved"
+                              : update.taskdateupdateStatus == 3
+                                ? "Rejected"
+                                : ""}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Grid>
+              </Grid>
+              {task?.taskDateUpdates?.length != 0 && !ShowTask && (
+                <Grid
+                  container
+                  spacing={2}
+                  className="flex mt-5"
+                  direction="row"
+                  alignItems="center"
+                >
+                  <Grid item xs={4}>
+                    <Typography variant="body1" className="font-semibold pt-4">
+                      Old Due Date
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      className="mt-2 cursor-pointer text-grey"
+                    >
+                      {formatDates(task?.taskDateUpdates?.[0]?.oldDate)}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Typography variant="body1" className="font-semibold pt-4">
+                      Request Date
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      className="mt-2 cursor-pointer text-grey"
+                    >
+                      {formatDates(task?.taskDateUpdates?.[0]?.requestDate)}
+                    </Typography>
+                  </Grid>
+
+                  <Grid item xs={4}>
+                    <Typography variant="body1" className="font-semibold pt-4">
+                      Request Comments
+                    </Typography>
+                    <Typography
+                      variant="body1"
+                      className="mt-2 cursor-pointer text-grey"
+                    >
+                      {task?.taskDateUpdates?.[0]?.requestComments}
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    container
+                    spacing={2}
+                    className="flex mt-5"
+                    direction="row"
+                    alignItems="center"
+                    paddingLeft="20px"
+                  >
+                    <Grid item xs={12} sm={12}>
+                      <LocalizationProvider
+                        dateAdapter={AdapterDateFns}
+                        style={{ width: "100%" }}
+                      >
+                        <DatePicker
+                          label="Request Date*"
+                          value={reqDate}
+                          onChange={(newValue) => {
+                            setReqDate(newValue);
+                            setDueDateValidation(null);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              className={`${dueDateValidation ? "border border-red-500" : ""}`}
+                              fullWidth
+                              required
+                            />
+                          )}
+                          minDate={new Date("2023-11-15")}
+                        />
+                      </LocalizationProvider>
+                      <div>
+                        <span className="text-xs text-red-500 text-grey">
+                          {dueDateValidation}
+                        </span>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} className="mt-5">
+                      <TextField
+                        label="Remark"
+                        multiline
+                        rows={1}
+                        fullWidth
+                        required
+                        value={commentss}
+                        className={`${dueDateCommentValidation ? "error" : ""}`}
+                        onChange={(e) => {
+                          setCommentss(e.target.value);
+                          setDueDateCommentValidation(
+                            e.target.value.length > 0
+                              ? ""
+                              : "Please enter a reason for extension"
+                          );
+                        }}
+                      />
+                      <div>
+                        <span className="text-xs text-red-500 text-grey">
+                          {dueDateCommentValidation}
+                        </span>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sx={{ paddingTop: "20px" }}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleSubmits(task, 2)}
+                        sx={{ float: "right" }}
+                        className="mx-12"
+                      >
+                        Approve
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleSubmits(task, 3)}
+                        sx={{ float: "right" }}
+                        className="bg-red"
+                      >
+                        Reject
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              )}
+            </Box>
+          </Box>
+        </Fade>
+      </Modal>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={pssrOpen}
+        onClose={handlePssrClose}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={pssrOpen}>
+          <Box sx={stylePssr}>
+            <Box
+              style={{
+                padding: "25px",
+                backgroundColor: "#4f46e5",
+                borderTopLeftRadius: "16px",
+                borderTopRightRadius: "16px",
+                display: "flex",
+                justifyContent: "space-between",
+                color: "white",
+              }}
+              className="cursor-pointer"
+              onClick={handlePssrClose}
+            >
+              <h4 className="pt-12">PSSR Team</h4>
+              <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
+            </Box>
+            <Box
+              sx={{
+                overflow: "auto",
+                padding: "5px 30px 30px 30px",
+                maxHeight: "500px",
+                overflowY: "auto",
+              }}
+            >
+              <ul style={{ listStyleType: "none", padding: 0 }}>
+                {pssrList.map((item) => (
+                  <li
+                    key={item.value}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <Checkbox
+                      checked={checkedItems.some((i) => i.value === item.value)}
+                      onChange={(e) => handleCheckboxChange(e, item)}
+                    />
+                    <label
+                      htmlFor={`pssr-${item.value}`}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      {item.text}
+                    </label>
+                  </li>
+                ))}
+              </ul>
+              <Button
+                variant="contained"
+                color="secondary"
+                sx={{ float: "right" }}
+                className="mx-12"
+                onClick={handlePssrSave}
+              >
+                Save
+              </Button>
+            </Box>
+          </Box>
+        </Fade>
+      </Modal>
+
       <Initiation
         contentDetailsT={contentDetails}
         contentDetailsini={contentDetailsini}
@@ -1751,7 +2260,28 @@ function ImplementationApproval({
           <div class="border-b">
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               <h2 className="text-2xl font-semibold">Implementation</h2>
+              {contentDetails?.isPssrRequired && (
+                <Button
+                  className="whitespace-nowrap "
+                  style={{
+                    border: "1px solid",
+                    backgroundColor: "#0000",
+                    color: "black",
+                    borderColor: "rgba(203,213,225)",
+                  }}
+                  variant="contained"
+                  color="warning"
+                  onClick={handelPssrTeam}
+                >
+                  <FuseSvgIcon className="text-48" size={24} color="action">
+                    heroicons-outline:document-add
+                  </FuseSvgIcon>
+                  Add PSSR Team
+                </Button>
+              )}
             </div>
+
+            {/* {console.log(contentDetails?.isPssrRequired, "contentDetails")} */}
             <Box className="p-30 pt-24 pb-24" sx={{ width: "100%" }}>
               <Stepper activeStep={activeStep} orientation="vertical">
                 {steps?.map((step, index) => {
@@ -1888,7 +2418,7 @@ function ImplementationApproval({
                                   <div className="d-flex flex-wrap justify-between w-100 pr-10">
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
+                                      // style={{ width: "17%" }}
                                     >
                                       <div className="flex items-center">
                                         <b>Task #{detail.id}</b>
@@ -1897,14 +2427,14 @@ function ImplementationApproval({
 
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
+                                      // style={{ width: "17%" }}
                                     >
                                       <div
                                         className="flex items-center"
                                         style={{}}
                                       >
                                         {detail.isCompleted &&
-                                          detail.taskStatus === 3 ? (
+                                        detail.taskStatus === 3 ? (
                                           <span className="text-green">
                                             Approved
                                           </span>
@@ -1922,7 +2452,7 @@ function ImplementationApproval({
                                     </div>
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
+                                      // style={{ width: "17%" }}
                                     >
                                       <div className="flex items-center">
                                         No Risks
@@ -1930,7 +2460,7 @@ function ImplementationApproval({
                                     </div>
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
+                                      // style={{ width: "17%" }}
                                     >
                                       <div className="flex items-center">
                                         {detail.assignedStaff}
@@ -1939,7 +2469,7 @@ function ImplementationApproval({
 
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
+                                      // style={{ width: "17%" }}
                                     >
                                       <div className="flex items-center">
                                         {formatDate(detail.dueDate)}
@@ -1947,7 +2477,7 @@ function ImplementationApproval({
                                     </div>
                                     <div
                                       className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                    // style={{ width: "17%" }}
+                                      // style={{ width: "17%" }}
                                     >
                                       <div className="flex items-center">
                                         <StyledBadge
@@ -1963,9 +2493,13 @@ function ImplementationApproval({
                                             }}
                                             variant="contained"
                                             color="warning"
-                                            onClick={() =>
-                                              handelOpenAudit(detail.audits, "")
-                                            }
+                                            onClick={() => {
+                                              e.stopPropagation();
+                                              handelOpenAudit(
+                                                detail.audits,
+                                                ""
+                                              );
+                                            }}
                                           >
                                             Audits
                                           </Button>
@@ -1981,9 +2515,10 @@ function ImplementationApproval({
                                             }}
                                             variant="contained"
                                             color="warning"
-                                            onClick={() =>
-                                              handelOpenAuditComment(detail.id)
-                                            }
+                                            onClick={() => {
+                                              e.stopPropagation();
+                                              handelOpenAuditComment(detail.id);
+                                            }}
                                           >
                                             <FuseSvgIcon
                                               className="text-48"
@@ -2010,11 +2545,14 @@ function ImplementationApproval({
                                               }}
                                               variant="contained"
                                               color="warning"
-                                              onClick={() =>
-                                                handelOpenAuditComment(
-                                                  detail.id
-                                                )
-                                              }
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                handledateExtendopen(
+                                                  e,
+                                                  detail,
+                                                  "true"
+                                                );
+                                              }}
                                             >
                                               <FuseSvgIcon
                                                 className="text-48"
@@ -2036,11 +2574,14 @@ function ImplementationApproval({
                                               }}
                                               variant="contained"
                                               color="warning"
-                                              onClick={() =>
-                                                handelOpenAuditComment(
-                                                  detail.id
-                                                )
-                                              }
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                handledateExtendopen(
+                                                  e,
+                                                  detail,
+                                                  "false"
+                                                );
+                                              }}
                                             >
                                               <FuseSvgIcon
                                                 className="text-48"
@@ -2174,16 +2715,16 @@ function ImplementationApproval({
                                                   <div className="my-0.5 text-xs font-medium text-secondary">
                                                     <small>
                                                       {msg.startedDate &&
-                                                        !msg.workInProgressDate &&
-                                                        !msg.completedDate &&
-                                                        !msg.dueDate
+                                                      !msg.workInProgressDate &&
+                                                      !msg.completedDate &&
+                                                      !msg.dueDate
                                                         ? `Started on ${formatDate(msg.startedDate)}`
                                                         : msg.workInProgressDate &&
-                                                          !msg.completedDate &&
-                                                          !msg.dueDate
+                                                            !msg.completedDate &&
+                                                            !msg.dueDate
                                                           ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
                                                           : msg.dueDate &&
-                                                            !msg.completedDate
+                                                              !msg.completedDate
                                                             ? `Due on ${formatDate(msg.dueDate)}`
                                                             : msg.completedDate
                                                               ? `Completed on ${formatDate(msg.completedDate)}`
@@ -2192,7 +2733,8 @@ function ImplementationApproval({
                                                   </div>
                                                 </div>
                                                 {documentCounts[msg.id] ? (
-                                                  documentCounts[msg.id] != 0 && (
+                                                  documentCounts[msg.id] !=
+                                                    0 && (
                                                     <button
                                                       className="icon-button"
                                                       onClick={() =>
@@ -2217,7 +2759,9 @@ function ImplementationApproval({
                                                             top: "-0px",
                                                           }}
                                                         >
-                                                          <FuseSvgIcon size={20}>
+                                                          <FuseSvgIcon
+                                                            size={20}
+                                                          >
                                                             heroicons-solid:document
                                                           </FuseSvgIcon>
                                                         </button>
@@ -2498,7 +3042,7 @@ function ImplementationApproval({
                     color="secondary"
                     // style={{ marginTop: "10px" }}
                     onClick={() => handlesumbitmodal(btn.uid)}
-                  // onClick={(e) => SubmitApprovelCreate(e, btn.uid)}
+                    // onClick={(e) => SubmitApprovelCreate(e, btn.uid)}
                   >
                     {btn.name}
                   </Button>

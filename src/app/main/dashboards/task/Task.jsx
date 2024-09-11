@@ -179,11 +179,20 @@ const Task = () => {
       priority: newPriority,
     }));
   };
+
+  const [pendingfilterdTask, setPendingFilterdTask] = useState({});
+
   const handledateExtendopen = (e, task) => {
     e.preventDefault();
     getRecords();
     setTask(task);
     setDateExtendOpen(true);
+    const activeTaskDateUpdate = task.taskDateUpdates.filter(
+      (update) => update.taskdateupdateStatus == 1
+    );
+    console.log(activeTaskDateUpdate, "activeTaskDateUpdate");
+
+    setPendingFilterdTask(activeTaskDateUpdate);
   };
   const handlehandledateExtendClose = () => setDateExtendOpen(false);
 
@@ -355,26 +364,15 @@ const Task = () => {
 
   const handleSubmits = (task) => {
     if (!commentss || !reqDate) {
-      // toast.error("Please enter the required fields");
       if (!reqDate) setDueDateValidation("Due Date is required");
       if (!comments)
         setDueDateCommentValidation("Please provide a reason for extension");
-      // alert(1);
+
       return;
     }
 
     let formattedReqDate = dayjs(reqDate).format("YYYY-MM-DD");
     let formattedOldDate = task.dueDate;
-    // formattedReqDate = dayjs(reqDate).format("MM/DD/YYYY");
-
-    // formattedOldDate = dayjs(task.dueDate).format("MM/DD/YYYY");
-
-    // if (reqDate) {
-    //   formattedReqDate = reqDate.toLocaleDateString("en-US");
-    // }
-    // if (task.dueDate) {
-    //   formattedOldDate = task.dueDate.toLocaleDateString("en-US");
-    // }
 
     console.log({
       OldDate: formattedOldDate,
@@ -395,11 +393,12 @@ const Task = () => {
         if (response.data.statusCode == 500) {
           getRecords();
           setDateExtendOpen(false);
-
           toast.error(response.data.message);
         } else {
           setDateExtendOpen(false);
           toast.success(response.data.message);
+          setTimeout(() => location.reload(), 1000);
+
           setCommentss("");
           setReqDate(null);
           setTask({
@@ -1530,11 +1529,13 @@ const Task = () => {
                 display: "flex",
                 justifyContent: "end",
                 color: "white",
+                display: "flex",
+                justifyContent: "space-between",
               }}
               className="cursor-pointer"
               onClick={handlehandledateExtendClose}
             >
-              {" "}
+              <h4 className="pt-12">Date Extend</h4>{" "}
               <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
             </Box>
 
@@ -1630,7 +1631,11 @@ const Task = () => {
                             className="text-left pb-3"
                             sx={{ border: "1px solid silver" }}
                           >
-                            {update.taskdateupdateStatus}
+                            {update.taskdateupdateStatus == 2
+                              ? "Approved"
+                              : update.taskdateupdateStatus == 3
+                                ? "Rejected"
+                                : ""}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -1638,7 +1643,7 @@ const Task = () => {
                   </Table>
                 </Grid>
               </Grid>
-              {task?.taskDateUpdates?.length != 0 && (
+              {pendingfilterdTask.length != 0 && (
                 <Grid container spacing={2} className=" flex mt-5">
                   <Grid item xs={12}>
                     <Typography variant="body1" className="font-semibold pt-4">
@@ -1648,7 +1653,7 @@ const Task = () => {
                       variant="body1"
                       className="mt-2 cursor-pointer text-grey"
                     >
-                      {formatDates(task?.taskDateUpdates?.[0].requestDate)}
+                      {formatDates(pendingfilterdTask?.[0]?.requestDate)}
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
@@ -1659,12 +1664,12 @@ const Task = () => {
                       variant="body1"
                       className="mt-2 cursor-pointer text-grey"
                     >
-                      {task.taskDateUpdates?.[0].requestComments}
+                      {pendingfilterdTask?.[0]?.requestComments}
                     </Typography>
                   </Grid>
                 </Grid>
               )}
-              {task?.taskDateUpdates?.length == 0 && (
+              {pendingfilterdTask?.length == 0 && (
                 <Grid container spacing={2} className="mt-5">
                   <Grid item xs={12}>
                     <Typography variant="body1" className="font-semibold pt-4">
