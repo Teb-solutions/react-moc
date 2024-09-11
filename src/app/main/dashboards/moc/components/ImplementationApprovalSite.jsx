@@ -171,7 +171,6 @@ const ImplementationApprovalSite = ({
   };
 
   const setHandelCommentRemarks = (id, value) => {
-
     setHandelCommentRemark((prevRemarks) => ({
       ...prevRemarks,
       [id]: value,
@@ -179,7 +178,6 @@ const ImplementationApprovalSite = ({
   };
 
   const handelCommentImp = (id, value) => {
-
     const remark = handelCommentRemark[id];
     if (value == 1) {
       apiAuth
@@ -241,7 +239,7 @@ const ImplementationApprovalSite = ({
           toast?.error(resp.data.message);
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   };
   const [open, setOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -607,7 +605,7 @@ const ImplementationApprovalSite = ({
                           </div>
 
                           {imptsk.implementationReviews.length > 0 ||
-                            showReview ? (
+                          showReview ? (
                             <div>
                               <Accordion
                                 className=" mt-10 pt-10"
@@ -655,10 +653,10 @@ const ImplementationApprovalSite = ({
                                       {hasAddedComment(
                                         imptsk.implementationReviews
                                       ) && (
-                                          <span className="text-green">
-                                            (You have added 1 review)
-                                          </span>
-                                        )}
+                                        <span className="text-green">
+                                          (You have added 1 review)
+                                        </span>
+                                      )}
                                     </Typography>
                                   </div>
                                 </AccordionSummary>
@@ -710,8 +708,17 @@ const ImplementationApprovalSite = ({
 
                                             <button
                                               className="custom-update-button"
-                                              style={!handelCommentRemark[imptsk.id]?.trim() ? { backgroundColor: "#cdcdcd", float: "right" } : { float: "right" }}
-
+                                              style={
+                                                !handelCommentRemark[
+                                                  imptsk.id
+                                                ]?.trim()
+                                                  ? {
+                                                      backgroundColor:
+                                                        "#cdcdcd",
+                                                      float: "right",
+                                                    }
+                                                  : { float: "right" }
+                                              }
                                               onClick={() =>
                                                 handelCommentImp(
                                                   imptsk.id,
@@ -721,7 +728,11 @@ const ImplementationApprovalSite = ({
                                                   1
                                                 )
                                               }
-                                              disabled={!handelCommentRemark[imptsk.id]?.trim()}
+                                              disabled={
+                                                !handelCommentRemark[
+                                                  imptsk.id
+                                                ]?.trim()
+                                              }
                                             >
                                               <span className="mat-button-wrapper">
                                                 Save
@@ -749,7 +760,7 @@ const ImplementationApprovalSite = ({
                                           }}
                                         />
                                         {AppActivity.canEdit &&
-                                          isMyComment(rwx) ? (
+                                        isMyComment(rwx) ? (
                                           <div
                                             className="mat-form-field-infix"
                                             style={{ position: "relative" }}
@@ -780,8 +791,13 @@ const ImplementationApprovalSite = ({
                                             <button
                                               className="custom-update-button"
                                               style={
-                                                !handelCommentRemark[imptsk.id]?.trim()
-                                                  ? { backgroundColor: "#cdcdcd" }
+                                                !handelCommentRemark[
+                                                  imptsk.id
+                                                ]?.trim()
+                                                  ? {
+                                                      backgroundColor:
+                                                        "#cdcdcd",
+                                                    }
                                                   : {}
                                               }
                                               onClick={() =>
@@ -793,7 +809,11 @@ const ImplementationApprovalSite = ({
                                                   2
                                                 )
                                               }
-                                              disabled={!handelCommentRemark[imptsk.id]?.trim()}
+                                              disabled={
+                                                !handelCommentRemark[
+                                                  imptsk.id
+                                                ]?.trim()
+                                              }
                                             >
                                               Update
                                             </button>
@@ -821,7 +841,18 @@ const ImplementationApprovalSite = ({
                                               className="mat-form-field-infix text-grey"
                                               style={{ fontSize: "13px" }}
                                             >
-                                              {formatDatess(rwx?.updatedAt)}
+                                              {new Date(
+                                                rwx?.updatedAt
+                                              ).toLocaleString("en-US", {
+                                                month: "long",
+                                                day: "numeric",
+                                                year: "numeric",
+                                                hour: "numeric",
+                                                minute: "numeric",
+                                                second: "numeric",
+                                                hour12: true,
+                                                timeZoneName: "short",
+                                              })}
                                             </p>
                                           </div>
                                         )}
@@ -848,6 +879,29 @@ const ImplementationApprovalSite = ({
                                       timeZoneName: "short",
                                     })}
                                 </span> */}
+                                      {AppActivity.canEdit &&
+                                        isMyComment(rwx) && (
+                                          <p
+                                            className="mat-form-field-infix text-black"
+                                            style={{
+                                              fontSize: "13px",
+                                              paddingLeft: "40px",
+                                            }}
+                                          >
+                                            {new Date(
+                                              rwx?.updatedAt
+                                            ).toLocaleString("en-US", {
+                                              month: "long",
+                                              day: "numeric",
+                                              year: "numeric",
+                                              hour: "numeric",
+                                              minute: "numeric",
+                                              second: "numeric",
+                                              hour12: true,
+                                              timeZoneName: "short",
+                                            })}
+                                          </p>
+                                        )}
                                       <div className="mat-form-field-subscript-wrapper">
                                         <div
                                           className="mat-form-field-hint-wrapper"
@@ -896,9 +950,11 @@ const ImplementationApprovalSite = ({
                                         paddingRight: "100px",
                                         fontSize: "13px",
                                       }}
-
                                       onChange={(e) =>
-                                        setHandelCommentRemarks(imptsk.id, e.target.value)
+                                        setHandelCommentRemarks(
+                                          imptsk.id,
+                                          e.target.value
+                                        )
                                       }
                                     ></textarea>
                                     <button
@@ -911,7 +967,9 @@ const ImplementationApprovalSite = ({
                                       onClick={() =>
                                         handelCommentImp(imptsk.id, 1, 1)
                                       }
-                                      disabled={!handelCommentRemark[imptsk.id]?.trim()}
+                                      disabled={
+                                        !handelCommentRemark[imptsk.id]?.trim()
+                                      }
                                     >
                                       Save
                                     </button>
