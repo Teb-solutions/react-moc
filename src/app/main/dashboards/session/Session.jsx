@@ -265,7 +265,7 @@ const SessionList = () => {
           ></div>
         </>
       ))}
-      {sessionList.length == 0 && (
+      {sessionList?.length == 0 && (
         <h2 className="text-center mt-5 text-grey">No Data Found !!</h2>
       )}
     </>
