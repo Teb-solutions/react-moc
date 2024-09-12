@@ -1583,7 +1583,7 @@ const AssetCourse = () => {
                                     : ""}
                                 </b>
                               </span>
-                              {!step?.isComplete && (
+                              {/* {!step?.isComplete && (
                                 <span className="cursor-pointer">
                                   <FuseSvgIcon
                                     size={20}
@@ -1592,7 +1592,7 @@ const AssetCourse = () => {
                                     heroicons-solid:pencil
                                   </FuseSvgIcon>
                                 </span>
-                              )}
+                              )} */}
                               {console.log(step.name, "looooooooooo")}
                             </div>
                           </StepContent>
