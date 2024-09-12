@@ -995,12 +995,68 @@ const AssetCourse = () => {
   const [siteInId, setSiteInChargeId] = useState();
   const [editId, setEditId] = useState("");
 
+  const handleEdit = () => {
+    setOpenTeamAssignment(true);
+    apiAuth
+      .get(`/ChangeRequest/TeamList?id=${assetEvaluationId}`)
+      .then((resp) => {
+        const team = resp.data.data;
+
+        team.forEach((member) => {
+          switch (member.teamType) {
+            case 1:
+              setChangeLeader(
+                staffList.find((option) => option.value === member.staffId) ||
+                  null
+              );
+              break;
+            case 2:
+              setHseq(
+                staffList.find((option) => option.value === member.staffId) ||
+                  null
+              );
+              break;
+            case 3:
+              const teams = resp.data.data;
+
+              setSelectedOthersStaffs(
+                teams
+                  .filter((t) => t.teamType === 3)
+                  .map((t) =>
+                    staffList.find((staff) => staff.value === t.staffId)
+                  )
+                  .filter(Boolean) // To remove any undefined values
+                  .reduce((uniqueStaffs, currentStaff) => {
+                    if (
+                      !uniqueStaffs.some(
+                        (staff) => staff.value === currentStaff.value
+                      )
+                    ) {
+                      uniqueStaffs.push(currentStaff);
+                    }
+                    return uniqueStaffs;
+                  }, [])
+              );
+            case 4:
+              setSiteInCharge(
+                staffList.find((option) => option.value === member.staffId) ||
+                  null
+              );
+              break;
+            default:
+              break;
+          }
+        });
+      });
+  };
+
   const handleCloseTeam = () => {
     setOpenTeamAssignment(false);
+    setValidationErrors({});
   };
 
   const handleSiteInChargeChange = (event, newValue) => {
-    setSiteInChargeId(newValue);
+    setSiteInCharge(newValue);
 
     if (newValue) {
       setValidationErrors((prevErrors) => ({
