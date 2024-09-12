@@ -264,8 +264,106 @@ function ImplementationApproval({
   const [reqDate, setReqDate] = useState(null);
   const [commentss, setCommentss] = useState("");
   const [pssrOpen, setPssrOpen] = useState(false);
+  const [pssrSessionOpen, setPssrSessionOpen] = useState(false);
+
   const [pssrList, setPssrList] = useState([]);
   const [checkedItems, setCheckedItems] = useState([]);
+  const [checkedStaff, setCheckedStaff] = useState([]);
+  const [isActiveSession, setIsActiveSession] = useState(false);
+  const [startSessionButon, setStartSessionButton] = useState(false);
+  const [pssrsessionStatus, setPssrsessionStatus] = useState(0); // Assuming status 0 initially
+  const [activeSessiondata, setActiveSessionData] = useState(null);
+  const [teamList, setteamList] = useState([]);
+
+  const handleSessionCheck = () => {
+    // Perform API call here to check session
+    // Example: Using fetch or axios
+    apiAuth
+      .get(`/PssrSession/SessionData?id=${assetEvaluationId}`)
+      .then((data) => {
+        // Assuming data structure matches the API response
+        if (data.message === "team not created") {
+          setStartSessionButton(false);
+        } else {
+          setStartSessionButton(true);
+        }
+
+        if (data.data && data.data?.data?.pssrSession) {
+          const session = data.data?.data?.pssrSession;
+          setActiveSessionData(session);
+          setteamList(session.teamList);
+          if (session.isActive || !session.isSessionEnded) {
+            setPssrsessionStatus(session.status);
+            setIsActiveSession(session.status === 2);
+          } else {
+            setIsActiveSession(false);
+          }
+        }
+      })
+
+      .catch((error) => {
+        console.error("Error fetching session data:", error);
+      });
+  };
+
+  useEffect(() => {
+    handleSessionCheck();
+  }, []);
+
+  const [saveTime, setSaveTime] = useState(null);
+  const [stopComment, setStopComment] = useState("");
+
+  const getCurrentFormattedDate = () => {
+    return new Date().toLocaleString("en-US", {
+      month: "numeric",
+      day: "numeric",
+      year: "2-digit",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+  };
+
+  const handleCheckboxSessionChange = (staffId) => {
+    setCheckedStaff(
+      (prevCheckedStaff) =>
+        prevCheckedStaff.includes(staffId)
+          ? prevCheckedStaff.filter((id) => id !== staffId) // Remove if unchecked
+          : [...prevCheckedStaff, staffId] // Add if checked
+    );
+  };
+  const handlePssrSessionSave = async () => {
+    const selectedTeamList = pssrList
+      .filter((item) => checkedStaff.includes(item.staffId)) // Get selected staff
+      .map((item) => ({
+        isActive: true,
+        staffId: item.staffId,
+        staffName: item.staffName,
+        staffMail: item.staffName, // Adjust this if you have a different field for email
+      }));
+
+    const payload = { teamList: selectedTeamList };
+    const response = await apiAuth
+      .put(`/PssrSession/CreatePssrSession?id=${assetEvaluationId}`, payload)
+      .then((resp) => {
+        // Save the date when the session is created
+
+        toast.success("PSSR Session List Added");
+        setPssrSessionOpen(false);
+        const saveTime = getCurrentFormattedDate();
+        setSaveTime(saveTime);
+      });
+  };
+
+  const handelPssrTeamSession = async () => {
+    setPssrSessionOpen(true);
+    const response1 = await apiAuth.get(
+      `/PssrSession/List?id=${assetEvaluationId}`
+    );
+    const staffList = response1.data?.data;
+    setPssrList(staffList);
+    handleSessionCheck();
+  };
 
   const handelPssrTeam = async () => {
     setPssrOpen(true);
@@ -318,6 +416,26 @@ function ImplementationApproval({
       .then((resp) => {
         toast.success("PSSR List Added");
         setPssrOpen(false);
+      });
+  };
+
+  const handleStopSession = () => {
+    setIsLoading(true);
+
+    apiAuth
+      .put(`/PssrSession/End/${assetEvaluationId}/${activeSessiondata.id}`, {
+        comments: stopComment,
+      })
+      .then((resp) => {
+        toast?.success("PSSR session has been stopped.");
+        setIsLoading(false);
+        getRecords();
+
+        setPssrSessionOpen(false);
+        setTimeout(() => location.reload(), 1000);
+      })
+      .catch(() => {
+        setIsLoading(false);
       });
   };
 
@@ -2249,6 +2367,173 @@ function ImplementationApproval({
         </Fade>
       </Modal>
 
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={pssrSessionOpen}
+        onClose={() => setPssrSessionOpen(false)}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
+      >
+        <Fade in={pssrSessionOpen}>
+          <Box sx={stylePssr}>
+            <Box
+              style={{
+                padding: "25px",
+                backgroundColor: "#4f46e5",
+                borderTopLeftRadius: "16px",
+                borderTopRightRadius: "16px",
+                display: "flex",
+                justifyContent: "space-between",
+                color: "white",
+              }}
+              className="cursor-pointer"
+              onClick={() => setPssrSessionOpen(false)}
+            >
+              <h4 className="pt-12" style={{ fontSize: "17px" }}>
+                PSSR Session
+              </h4>
+              <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
+            </Box>
+            <Box
+              sx={{
+                overflow: "auto",
+                padding: "5px 30px 30px 30px",
+                maxHeight: "500px",
+                overflowY: "auto",
+              }}
+            >
+              {pssrsessionStatus == 0 && (
+                <ul style={{ listStyleType: "none", padding: 0 }}>
+                  {pssrList.map((item) => (
+                    <li
+                      key={item.staffId}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginBottom: "10px",
+                      }}
+                    >
+                      <Checkbox
+                        checked={checkedStaff.includes(item.staffId)}
+                        onChange={() =>
+                          handleCheckboxSessionChange(item.staffId)
+                        }
+                      />
+                      <label
+                        htmlFor={`pssr-${item.staffId}`}
+                        style={{ marginLeft: "10px" }}
+                      >
+                        {item.staffName}
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <>
+                {(pssrsessionStatus == 1 || pssrsessionStatus == 2) && (
+                  <>
+                    <h2 style={{ padding: "2rem" }}>
+                      {pssrsessionStatus != 2 && " PSSR session created by "}
+                      {pssrsessionStatus == 1 ||
+                        (pssrsessionStatus == 2 && " PSSR session started by ")}
+                      {""}
+                      <b>{localStorage.getItem("username")} </b>
+                      on <b>{saveTime}</b>
+                    </h2>
+                    <h3 style={{ paddingLeft: "2rem" }}>
+                      {" "}
+                      <b>TEAM</b>
+                    </h3>
+                  </>
+                )}
+                <ul style={{ paddingLeft: "2rem" }}>
+                  {teamList.map((item) => (
+                    <li
+                      style={{
+                        fontSize: "16px",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      {item.staffName}
+                      {item.approvalStatus === 1 ? (
+                        <span
+                          style={{
+                            color: "orangered",
+                            fontSize: "14px",
+                            marginLeft: "8px",
+                          }}
+                        >
+                          Approval Pending
+                        </span>
+                      ) : item.approvalStatus === 2 ? (
+                        <span
+                          style={{
+                            color: "green",
+                            fontSize: "14px",
+                            marginLeft: "8px",
+                          }}
+                        >
+                          Approved
+                        </span>
+                      ) : (
+                        <span
+                          style={{
+                            color: "red",
+                            fontSize: "14px",
+                            marginLeft: "8px",
+                          }}
+                        >
+                          Rejected
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+                {pssrsessionStatus == 2 && (
+                  <div style={{ paddingLeft: "2rem" }}>
+                    <textarea
+                      placeholder="Comment *"
+                      onChange={(e) => setStopComment(e.target.value)}
+                    />
+                  </div>
+                )}
+
+                {pssrsessionStatus == 2 && (
+                  <div className="flex justify-end p-5 pt-24 pb-24">
+                    <button
+                      className="stop-session"
+                      onClick={handleStopSession}
+                    >
+                      Stop Session
+                    </button>
+                  </div>
+                )}
+              </>
+
+              {pssrsessionStatus == 0 && (
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  sx={{ float: "right" }}
+                  className="mx-12"
+                  onClick={handlePssrSessionSave}
+                >
+                  Save
+                </Button>
+              )}
+            </Box>
+          </Box>
+        </Fade>
+      </Modal>
+
       <Initiation
         contentDetailsT={contentDetails}
         contentDetailsini={contentDetailsini}
@@ -2260,25 +2545,77 @@ function ImplementationApproval({
           <div class="border-b">
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               <h2 className="text-2xl font-semibold">Implementation</h2>
-              {contentDetails?.isPssrRequired && (
-                <Button
-                  className="whitespace-nowrap "
-                  style={{
-                    border: "1px solid",
-                    backgroundColor: "#0000",
-                    color: "black",
-                    borderColor: "rgba(203,213,225)",
-                  }}
-                  variant="contained"
-                  color="warning"
-                  onClick={handelPssrTeam}
-                >
-                  <FuseSvgIcon className="text-48" size={24} color="action">
-                    heroicons-outline:document-add
-                  </FuseSvgIcon>
-                  Add PSSR Team
-                </Button>
-              )}
+              <div>
+                {contentDetails?.isPssrRequired &&
+                  !isActiveSession &&
+                  currentActivityForm.canEdit && (
+                    <Button
+                      className="whitespace-nowrap me-5"
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "#0000",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                      }}
+                      variant="contained"
+                      color="warning"
+                      onClick={handelPssrTeam}
+                    >
+                      <FuseSvgIcon className="text-48" size={24} color="action">
+                        heroicons-outline:document-add
+                      </FuseSvgIcon>
+                      {!startSessionButon
+                        ? "Add PSSR Team"
+                        : "Update PSSR Team"}
+                    </Button>
+                  )}
+                {contentDetails?.isPssrRequired &&
+                  startSessionButon &&
+                  currentActivityForm.canEdit && (
+                    <Button
+                      className="whitespace-nowrap me-5"
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "#0000",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                      }}
+                      variant="contained"
+                      color="warning"
+                      onClick={handelPssrTeamSession}
+                    >
+                      <FuseSvgIcon className="text-48" size={24} color="action">
+                        heroicons-outline:document-add
+                      </FuseSvgIcon>
+                      {pssrsessionStatus === 0 && "Create PSSR Session"}
+                      {pssrsessionStatus === 1 && "Start PSSR Session"}
+                      {pssrsessionStatus === 2 && "Stop PSSR Session"}
+
+                      {console.log(pssrsessionStatus, "pssrsessionStatus")}
+                    </Button>
+                  )}
+                {contentDetails?.isPssrRequired &&
+                  isActiveSession &&
+                  currentActivityForm.canEdit && (
+                    <Button
+                      className="whitespace-nowrap "
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "#0000",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                      }}
+                      variant="contained"
+                      color="warning"
+                      onClick={handelPssrTeamSession}
+                    >
+                      <FuseSvgIcon className="text-48" size={24} color="action">
+                        heroicons-outline:document-add
+                      </FuseSvgIcon>
+                      PSSR Checklist
+                    </Button>
+                  )}
+              </div>
             </div>
 
             {/* {console.log(contentDetails?.isPssrRequired, "contentDetails")} */}

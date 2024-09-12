@@ -42,20 +42,21 @@ const SessionList = () => {
     setComment(e.target.value);
     if (commentError) setCommentError(""); // Clear the error on input change
   };
-  const handleAccept = (id, ChangeId) => {
+  const handleAccept = (id, ChangeId, sessionType) => {
     if (!Comment) {
       setCommentError("Comment is required");
       return; // Do not proceed if the comment is empty
     }
     setIsLoading(true);
+    const apiPath =
+      sessionType === "PSSR"
+        ? `/PssrSession/SessionApprove/${ChangeId}/${id}/Approve`
+        : `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Approve`;
 
     apiAuth
-      .put(
-        `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Approve`,
-        {
-          comments: Comment,
-        }
-      )
+      .put(apiPath, {
+        comments: Comment,
+      })
       .then((resp) => {
         setTimeout(() => setIsLoading(false), 1000);
         getRecords();
@@ -64,14 +65,19 @@ const SessionList = () => {
         setIsLoading(false);
       });
   };
-  const handleReject = (id, ChangeId) => {
+  const handleReject = (id, ChangeId, sessionType) => {
     if (!Comment) {
       setCommentError("Comment is required");
       return; // Do not proceed if the comment is empty
     }
     setIsLoading(true);
+    const apiPath =
+      sessionType === "PSSR"
+        ? `/PssrSession/SessionApprove/${ChangeId}/${id}/Reject`
+        : `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Reject`;
+
     apiAuth
-      .put(`/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Reject`, {
+      .put(apiPath, {
         comments: Comment,
       })
       .then((resp) => {
@@ -234,7 +240,11 @@ const SessionList = () => {
                                 color="secondary"
                                 style={{ padding: "15px" }}
                                 onClick={() =>
-                                  handleAccept(list.id, list.changeRequestId)
+                                  handleAccept(
+                                    list.id,
+                                    list.changeRequestId,
+                                    list.sessionType
+                                  )
                                 }
                               >
                                 Accept
@@ -245,7 +255,11 @@ const SessionList = () => {
                                 color="secondary"
                                 style={{ padding: "15px" }}
                                 onClick={() =>
-                                  handleReject(list.id, list.changeRequestId)
+                                  handleReject(
+                                    list.id,
+                                    list.changeRequestId,
+                                    list.sessionType
+                                  )
                                 }
                               >
                                 Reject
