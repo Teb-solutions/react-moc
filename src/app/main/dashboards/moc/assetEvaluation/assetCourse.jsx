@@ -985,7 +985,6 @@ const AssetCourse = () => {
   };
 
   const [openTeamAssignment, setOpenTeamAssignment] = useState(false);
-  const [openApprover, setOpenApprover] = useState(false);
 
   const [siteInCharge, setSiteInCharge] = useState(null);
   const [changeLeader, setChangeLeader] = useState(null);
@@ -994,6 +993,25 @@ const AssetCourse = () => {
   const [hseq, setHseq] = useState(null);
   const [siteInId, setSiteInChargeId] = useState();
   const [editId, setEditId] = useState("");
+  const [openApprover, setOpenApprover] = useState(false);
+
+  const handleEditApproverClose = () => {
+    setOpenApprover(fasle);
+  };
+
+  const handleEditApprover = (step) => {
+    // Find the matching staff based on targetUserIds
+    const selectedApprover = staffList.find(
+      (staff) => staff.value === step.targetUserIds[0] // Assuming only one targetUserId
+    );
+
+    // Set the selected approver in the state
+    setSiteInChargeId(selectedApprover || null);
+    setEditId(step.uid);
+    // Open the modal
+    setOpenApprover(true);
+    setValidationErrors({});
+  };
 
   const handleEdit = () => {
     setOpenTeamAssignment(true);
@@ -1057,7 +1075,7 @@ const AssetCourse = () => {
 
   const handleSiteInChargeChange = (event, newValue) => {
     setSiteInCharge(newValue);
-
+    setSiteInChargeId(newValue);
     if (newValue) {
       setValidationErrors((prevErrors) => ({
         ...prevErrors,
@@ -1565,7 +1583,7 @@ const AssetCourse = () => {
                                     : ""}
                                 </b>
                               </span>
-                              {/* {!step?.isComplete && (
+                              {!step?.isComplete && (
                                 <span className="cursor-pointer">
                                   <FuseSvgIcon
                                     size={20}
@@ -1574,7 +1592,7 @@ const AssetCourse = () => {
                                     heroicons-solid:pencil
                                   </FuseSvgIcon>
                                 </span>
-                              )} */}
+                              )}
                               {console.log(step.name, "looooooooooo")}
                             </div>
                           </StepContent>
