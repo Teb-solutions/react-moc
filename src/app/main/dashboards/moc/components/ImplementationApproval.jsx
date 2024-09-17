@@ -7,6 +7,7 @@ import {
   Checkbox,
   Fade,
   FormControl,
+  FormControlLabel,
   FormHelperText,
   FormLabel,
   Grid,
@@ -15,6 +16,8 @@ import {
   Modal,
   OutlinedInput,
   Paper,
+  Radio,
+  RadioGroup,
   Select,
   Step,
   StepContent,
@@ -282,7 +285,7 @@ function ImplementationApproval({
       .get(`/PssrSession/SessionData?id=${assetEvaluationId}`)
       .then((data) => {
         // Assuming data structure matches the API response
-        if (data.message === "team not created") {
+        if (data.data?.message === "team not created") {
           setStartSessionButton(false);
         } else {
           setStartSessionButton(true);
@@ -310,19 +313,9 @@ function ImplementationApproval({
     handleSessionCheck();
   }, []);
 
-  const [saveTime, setSaveTime] = useState(null);
   const [stopComment, setStopComment] = useState("");
-
-  const getCurrentFormattedDate = () => {
-    return new Date().toLocaleString("en-US", {
-      month: "numeric",
-      day: "numeric",
-      year: "2-digit",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    });
-  };
+  const [showPssrCheckList, setShowPssrCheckList] = useState(false);
+  const [PssrCheckListData, setPssrCheckListData] = useState([]);
 
   const handleCheckboxSessionChange = (staffId) => {
     setCheckedStaff(
@@ -343,30 +336,38 @@ function ImplementationApproval({
       }));
 
     const payload = { teamList: selectedTeamList };
+
     const response = await apiAuth
       .put(`/PssrSession/CreatePssrSession?id=${assetEvaluationId}`, payload)
       .then((resp) => {
         // Save the date when the session is created
+        if (resp.data.statusCode == 400) {
+          setPssrSessionOpen(false);
 
-        toast.success("PSSR Session List Added");
-        setPssrSessionOpen(false);
-        const saveTime = getCurrentFormattedDate();
-        setSaveTime(saveTime);
+          toast.error(resp.data.message);
+        } else {
+          toast.success("PSSR Session List Added");
+          setPssrSessionOpen(false);
+          handleSessionCheck();
+          getRecords();
+        }
       });
   };
 
   const handelPssrTeamSession = async () => {
     setPssrSessionOpen(true);
+    setIsLoading(true);
     const response1 = await apiAuth.get(
       `/PssrSession/List?id=${assetEvaluationId}`
     );
     const staffList = response1.data?.data;
     setPssrList(staffList);
-    handleSessionCheck();
+    setIsLoading(false);
   };
 
   const handelPssrTeam = async () => {
     setPssrOpen(true);
+    setIsLoading(true);
 
     // Fetch the list of all staff members
     const response = await apiAuth.get(`/Staff/LOV`);
@@ -380,7 +381,8 @@ function ImplementationApproval({
 
     // Set pssrList to the fetched staff list
     setPssrList(staffList);
-
+    setIsLoading(false);
+    handleSessionCheck();
     // Match pre-selected staff with the staff list
     const checkedStaff = staffList.filter((item) =>
       preSelectedTeam.some((preItem) => preItem.staffId === item.value)
@@ -416,12 +418,12 @@ function ImplementationApproval({
       .then((resp) => {
         toast.success("PSSR List Added");
         setPssrOpen(false);
+        handleSessionCheck();
       });
   };
 
   const handleStopSession = () => {
     setIsLoading(true);
-
     apiAuth
       .put(`/PssrSession/End/${assetEvaluationId}/${activeSessiondata.id}`, {
         comments: stopComment,
@@ -438,6 +440,216 @@ function ImplementationApproval({
         setIsLoading(false);
       });
   };
+  const [remarksState, setRemarksState] = useState({});
+  const [radioState, setRadioState] = useState({});
+
+  const handelPssrCheckLists = () => {
+    setShowPssrCheckList(true);
+
+    apiAuth.get(`/LookupData/PssrLov/26/${assetEvaluationId}`).then((resp) => {
+      setPssrCheckListData(resp?.data?.data);
+    });
+  };
+
+  const [checklistData, setChecklistData] = useState([]);
+  const [documentCountsImp, setDocumentCountsImp] = useState({});
+  useEffect(() => {
+    if (PssrCheckListData?.pssrData) {
+      // Initialize checklistData from PssrCheckListData
+      const initialChecklistData = PssrCheckListData.pssrData.map((entry) => ({
+        ...entry,
+        documentId: entry.documentId || generateGUID(),
+      }));
+      setChecklistData(initialChecklistData);
+
+      // Initialize radioState and remarksState from PssrCheckListData
+      const radioInitialState = {};
+      const remarksInitialState = {};
+
+      PssrCheckListData.pssrData.forEach((item) => {
+        radioInitialState[item.particular] = item.checklistReviewStatus;
+        remarksInitialState[item.particular] = item.remarks;
+      });
+
+      setRadioState(radioInitialState);
+      setRemarksState(remarksInitialState);
+
+      // Fetch document counts based on IDs
+      const fetchDocumentCounts = async () => {
+        const ids = PssrCheckListData.pssrData.map((item) => item.id);
+
+        try {
+          const responses = await Promise.all(
+            ids.map((id) =>
+              apiAuth.get(
+                `DocumentManager/DocumentCount?id=${id}&documentType=ImplPSSR`
+              )
+            )
+          );
+
+          const counts = responses.reduce((acc, response) => {
+            const { data } = response.data;
+            // Extract id from response URL
+            const id = new URL(response.request.responseURL).searchParams.get(
+              "id"
+            );
+            acc[id] = data; // Extract document count
+            return acc;
+          }, {});
+
+          setDocumentCountsImp(counts);
+        } catch (error) {
+          console.error("Error fetching document counts:", error);
+        }
+      };
+
+      fetchDocumentCounts();
+    }
+  }, [PssrCheckListData]);
+
+  // Function to handle radio button change
+  const handleRadioChange = (childId, value) => {
+    setRadioState((prevState) => ({
+      ...prevState,
+      [childId]: value,
+    }));
+    updateChecklistData(childId, "checklistReviewStatus", value);
+  };
+
+  // Function to handle comments change
+  const handleCommentsChange = (childValue, newComment) => {
+    setRemarksState((prevState) => ({
+      ...prevState,
+      [childValue]: newComment,
+    }));
+    updateChecklistData(childValue, "remarks", newComment);
+  };
+
+  // Function to handle document upload (mock implementation for now)
+  // const handleDocumentUpload = (childId) => {
+  //   const documentId = generateGUID(); // Generate a new GUID
+  //   updateFormState(childId, "documentId", documentId);
+  // };
+
+  const updateChecklistData = (childId, field, value) => {
+    setChecklistData((prevData) => {
+      const updatedData = [...prevData];
+      const existingEntryIndex = updatedData.findIndex(
+        (entry) => entry.particular === childId
+      );
+
+      if (existingEntryIndex !== -1) {
+        updatedData[existingEntryIndex][field] = value;
+      } else {
+        const pssrEntry = PssrCheckListData?.pssrData.find(
+          (pssrItem) => pssrItem.particular === childId
+        );
+        const newEntry = {
+          id: 0, // Or any other unique identifier
+          particluarCategory: PssrCheckListData?.parentData.find(
+            (parent) =>
+              parent.value ===
+              PssrCheckListData?.childData.find(
+                (child) => child.value === childId
+              ).parentId
+          )?.value,
+          particular: childId,
+          remarks: pssrEntry
+            ? pssrEntry.remarks
+            : field === "remarks"
+              ? value
+              : "",
+          checklistReviewStatus: pssrEntry
+            ? pssrEntry.checklistReviewStatus
+            : field === "checklistReviewStatus"
+              ? value
+              : "",
+          documentId: pssrEntry
+            ? pssrEntry.documentId || generateGUID()
+            : generateGUID(),
+        };
+
+        updatedData.push(newEntry);
+      }
+
+      return updatedData;
+    });
+  };
+
+  const generateGUID = () => {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        const r = (Math.random() * 16) | 0,
+          v = c === "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      }
+    );
+  };
+
+  const handleSubmitCheckList = () => {
+    setIsLoading(true);
+    let taskListApproved = ImpDetails?.filter((x) => x.taskStatus == 3);
+
+    if (ImpDetails?.length != taskListApproved?.length) {
+      toast?.error("There are some pending Tasks to be reviewed.");
+      setOpenSubmit(false);
+      return;
+    }
+
+    let incompleteChecklists = PssrCheckListData?.childData?.filter((child) => {
+      // Find matching entry in checklistData by 'particular' field
+      const matchedEntry = checklistData.find(
+        (item) => item.particular === child.value
+      );
+
+      // If there's no matching entry in checklistData, skip this child (do not mark it incomplete)
+      if (!matchedEntry) {
+        return false; // Skip items without matching IDs
+      }
+
+      // Check if the matched entry is missing any required field (remarks, checklistRevNiewStatus, documentId)
+      return (
+        !matchedEntry.remarks || // Remarks should not be empty
+        !matchedEntry.checklistReviewStatus || // Review status should not be empty
+        !matchedEntry.documentId // Document ID should not be empty
+      );
+    });
+
+    // If any checklist from PssrCheckListData has missing fields, show error and prevent submission
+    if (incompleteChecklists.length > 0) {
+      toast?.error("Some items are not reviewed.");
+      setOpenSubmit(false);
+      return;
+    }
+
+    apiAuth
+      .put(`/ImplementationPSSR/Create?id=${assetEvaluationId}`, checklistData)
+      .then((resp) => {
+        if (resp.data.statusCode == 200) {
+          toast?.success("Checklist submitted successfully!");
+          setShowPssrCheckList(false);
+          setShowPssrEdit(false);
+          setIsLoading(false);
+        } else {
+          toast?.error(resp.data.message);
+
+          setIsLoading(false);
+        }
+        // Handle success response if needed
+      })
+      .catch((error) => {
+        toast?.error("An error occurred while submitting the checklist.");
+        // Handle error response
+      });
+  };
+  const [showPssrEdit, setShowPssrEdit] = useState(false);
+
+  const handlePssrEdit = () => {
+    setShowPssrEdit(true);
+  };
+
+  console.log(checklistData, "checklistData");
 
   const [dueDateCommentValidation, setDueDateCommentValidation] =
     useState(null);
@@ -2439,14 +2651,27 @@ function ImplementationApproval({
               <>
                 {(pssrsessionStatus == 1 || pssrsessionStatus == 2) && (
                   <>
-                    <h2 style={{ padding: "2rem" }}>
+                    <h3 style={{ padding: "2rem" }}>
                       {pssrsessionStatus != 2 && " PSSR session created by "}
                       {pssrsessionStatus == 1 ||
                         (pssrsessionStatus == 2 && " PSSR session started by ")}
                       {""}
                       <b>{localStorage.getItem("username")} </b>
-                      on <b>{saveTime}</b>
-                    </h2>
+                      on{" "}
+                      <b>
+                        {new Date(activeSessiondata?.startedAt).toLocaleString(
+                          "en-US",
+                          {
+                            month: "numeric",
+                            day: "numeric",
+                            year: "2-digit",
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                          }
+                        )}
+                      </b>
+                    </h3>
                     <h3 style={{ paddingLeft: "2rem" }}>
                       {" "}
                       <b>TEAM</b>
@@ -2511,6 +2736,10 @@ function ImplementationApproval({
                     <button
                       className="stop-session"
                       onClick={handleStopSession}
+                      style={
+                        stopComment == "" ? { backgroundColor: "#c5c5c5" } : {}
+                      }
+                      disabled={stopComment == ""}
                     >
                       Stop Session
                     </button>
@@ -2544,11 +2773,40 @@ function ImplementationApproval({
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div class="border-b">
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
-              <h2 className="text-2xl font-semibold">Implementation</h2>
+              {showPssrCheckList ? (
+                <div className="flex justify-between w-100">
+                  <h2 className="text-2xl font-semibold pt-5">
+                    PSSR Checklist
+                  </h2>
+                  {PssrCheckListData?.pssrData?.length && (
+                    <Button
+                      className="whitespace-nowrap"
+                      variant="contained"
+                      color="primary"
+                      style={{
+                        padding: "10px",
+                        backgroundColor: "white",
+                        color: "black",
+                        border: "1px solid grey",
+                      }}
+                      onClick={handlePssrEdit}
+                    >
+                      <FuseSvgIcon className="text-48" size={24} color="action">
+                        heroicons-outline:pencil-alt
+                      </FuseSvgIcon>
+                      Edit
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <h2 className="text-2xl font-semibold pt-5">Implementation</h2>
+              )}
+
               <div>
                 {contentDetails?.isPssrRequired &&
                   !isActiveSession &&
-                  currentActivityForm.canEdit && (
+                  currentActivityForm.canEdit &&
+                  !showPssrCheckList && (
                     <Button
                       className="whitespace-nowrap me-5"
                       style={{
@@ -2571,7 +2829,8 @@ function ImplementationApproval({
                   )}
                 {contentDetails?.isPssrRequired &&
                   startSessionButon &&
-                  currentActivityForm.canEdit && (
+                  currentActivityForm.canEdit &&
+                  !showPssrCheckList && (
                     <Button
                       className="whitespace-nowrap me-5"
                       style={{
@@ -2596,7 +2855,8 @@ function ImplementationApproval({
                   )}
                 {contentDetails?.isPssrRequired &&
                   isActiveSession &&
-                  currentActivityForm.canEdit && (
+                  currentActivityForm.canEdit &&
+                  !showPssrCheckList && (
                     <Button
                       className="whitespace-nowrap "
                       style={{
@@ -2607,7 +2867,7 @@ function ImplementationApproval({
                       }}
                       variant="contained"
                       color="warning"
-                      onClick={handelPssrTeamSession}
+                      onClick={handelPssrCheckLists}
                     >
                       <FuseSvgIcon className="text-48" size={24} color="action">
                         heroicons-outline:document-add
@@ -2618,69 +2878,69 @@ function ImplementationApproval({
               </div>
             </div>
 
-            {/* {console.log(contentDetails?.isPssrRequired, "contentDetails")} */}
-            <Box className="p-30 pt-24 pb-24" sx={{ width: "100%" }}>
-              <Stepper activeStep={activeStep} orientation="vertical">
-                {steps?.map((step, index) => {
-                  const tasksForStep = ImpDetails.filter(
-                    (detail) =>
-                      ChangeDeadlineLabel.get(detail.deadline) === step.label
-                  );
+            {!showPssrCheckList && (
+              <Box className="p-30 pt-24 pb-24" sx={{ width: "100%" }}>
+                <Stepper activeStep={activeStep} orientation="vertical">
+                  {steps?.map((step, index) => {
+                    const tasksForStep = ImpDetails.filter(
+                      (detail) =>
+                        ChangeDeadlineLabel.get(detail.deadline) === step.label
+                    );
 
-                  return (
-                    <Step key={step?.label}>
-                      <StepLabel
-                        onClick={() => setActiveStep(index)}
-                        StepIconProps={{
-                          sx: {
-                            "&.MuiStepIcon-root": { color: "blue" },
-                            "&.MuiStepIcon-active": { color: "blue" },
-                            "&.MuiStepIcon-completed": { color: "blue" },
-                          },
-                        }}
-                        sx={{
-                          backgroundColor:
-                            activeStep === index ? "#f0f0f0" : "#f9f9f9",
-                          padding: "15px",
-                          borderRadius: "10px",
-                          marginTop: "0",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {step?.label}
-                      </StepLabel>
-                      <StepContent>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="flex flex-wrap items-center w-full justify-between pt-10 pb-10"
+                    return (
+                      <Step key={step?.label}>
+                        <StepLabel
+                          onClick={() => setActiveStep(index)}
+                          StepIconProps={{
+                            sx: {
+                              "&.MuiStepIcon-root": { color: "blue" },
+                              "&.MuiStepIcon-active": { color: "blue" },
+                              "&.MuiStepIcon-completed": { color: "blue" },
+                            },
+                          }}
+                          sx={{
+                            backgroundColor:
+                              activeStep === index ? "#f0f0f0" : "#f9f9f9",
+                            padding: "15px",
+                            borderRadius: "10px",
+                            marginTop: "0",
+                            cursor: "pointer",
+                          }}
                         >
-                          <div className="flex flex-wrap items-center">
-                            <h2
-                              _ngcontent-fyk-c288=""
-                              class="text-lg font-semibold"
-                              style={{ marginRight: "15px" }}
-                            >
-                              {tasksForStep.length} Tasks
-                            </h2>
-                            {!currentActivityForm.isComplete &&
-                              currentActivityForm.status === "Pending" &&
-                              currentActivityForm.canEdit && (
-                                <Button
-                                  className="whitespace-nowrap "
-                                  style={{
-                                    border: "1px solid",
-                                    backgroundColor: "#0000",
-                                    color: "black",
-                                    borderColor: "rgba(203,213,225)",
-                                  }}
-                                  variant="contained"
-                                  color="warning"
-                                  onClick={handleOpenImplemntationTask}
-                                >
-                                  Add New Task
-                                </Button>
-                              )}
-                            {/* <Button
+                          {step?.label}
+                        </StepLabel>
+                        <StepContent>
+                          <div
+                            _ngcontent-fyk-c288=""
+                            class="flex flex-wrap items-center w-full justify-between pt-10 pb-10"
+                          >
+                            <div className="flex flex-wrap items-center">
+                              <h2
+                                _ngcontent-fyk-c288=""
+                                class="text-lg font-semibold"
+                                style={{ marginRight: "15px" }}
+                              >
+                                {tasksForStep.length} Tasks
+                              </h2>
+                              {!currentActivityForm.isComplete &&
+                                currentActivityForm.status === "Pending" &&
+                                currentActivityForm.canEdit && (
+                                  <Button
+                                    className="whitespace-nowrap "
+                                    style={{
+                                      border: "1px solid",
+                                      backgroundColor: "#0000",
+                                      color: "black",
+                                      borderColor: "rgba(203,213,225)",
+                                    }}
+                                    variant="contained"
+                                    color="warning"
+                                    onClick={handleOpenImplemntationTask}
+                                  >
+                                    Add New Task
+                                  </Button>
+                                )}
+                              {/* <Button
                             className="whitespace-nowrap mt-5 mb-5 ms-5"
                             style={{
                               border: "1px solid",
@@ -2694,154 +2954,159 @@ function ImplementationApproval({
                           >
                             Audits Lists
                           </Button> */}
+                            </div>
+
+                            <TextField
+                              variant="filled"
+                              fullWidth
+                              placeholder="Search"
+                              className="mt-10 md:mt-0"
+                              style={{
+                                backgroundColor: "white",
+                              }}
+                              //   value={searchTerm}
+                              InputProps={{
+                                startAdornment: (
+                                  <InputAdornment
+                                    position="start"
+                                    style={{
+                                      marginTop: "0px",
+                                      paddingTop: "0px",
+                                    }}
+                                  >
+                                    <SearchIcon />
+                                  </InputAdornment>
+                                ),
+                              }}
+                              sx={{ width: 320 }}
+                            />
                           </div>
+                          {ImpDetails.map((detail) => {
+                            const deadlineLabel = ChangeDeadlineLabel.get(
+                              detail.deadline
+                            );
 
-                          <TextField
-                            variant="filled"
-                            fullWidth
-                            placeholder="Search"
-                            className="mt-10 md:mt-0"
-                            style={{
-                              backgroundColor: "white",
-                            }}
-                            //   value={searchTerm}
-                            InputProps={{
-                              startAdornment: (
-                                <InputAdornment
-                                  position="start"
-                                  style={{
-                                    marginTop: "0px",
-                                    paddingTop: "0px",
+                            if (deadlineLabel === step?.label) {
+                              return (
+                                <Accordion
+                                  key={detail.id}
+                                  expanded={expanded === detail.id}
+                                  sx={{
+                                    mt: 2,
+                                    minHeight: "70px",
+                                    transition: "height 0.3s",
+                                    "&.Mui-expanded": {
+                                      minHeight: "100px",
+                                    },
+                                    "@media (max-width: 600px)": {
+                                      mt: 4,
+                                    },
                                   }}
+                                  onChange={handleAccordionChange(detail.id)}
                                 >
-                                  <SearchIcon />
-                                </InputAdornment>
-                              ),
-                            }}
-                            sx={{ width: 320 }}
-                          />
-                        </div>
-                        {ImpDetails.map((detail) => {
-                          const deadlineLabel = ChangeDeadlineLabel.get(
-                            detail.deadline
-                          );
-
-                          if (deadlineLabel === step?.label) {
-                            return (
-                              <Accordion
-                                key={detail.id}
-                                expanded={expanded === detail.id}
-                                sx={{
-                                  mt: 2,
-                                  minHeight: "70px",
-                                  transition: "height 0.3s",
-                                  "&.Mui-expanded": {
-                                    minHeight: "100px",
-                                  },
-                                  "@media (max-width: 600px)": {
-                                    mt: 4,
-                                  },
-                                }}
-                                onChange={handleAccordionChange(detail.id)}
-                              >
-                                <AccordionSummary
-                                  className="justify-content-Accordian_title"
-                                  style={{ minHeight: "60px" }}
-                                  expandIcon={<ExpandMoreIcon />}
-                                  aria-controls={`panel${index + 1}-content`}
-                                  id={`panel${index + 1}-header`}
-                                  onClick={(e) => handelComments(e, detail.id)}
-                                >
-                                  <div className="d-flex flex-wrap justify-between w-100 pr-10">
-                                    <div
-                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
-                                    >
-                                      <div className="flex items-center">
-                                        <b>Task #{detail.id}</b>
-                                      </div>
-                                    </div>
-
-                                    <div
-                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
-                                    >
+                                  <AccordionSummary
+                                    className="justify-content-Accordian_title"
+                                    style={{ minHeight: "60px" }}
+                                    expandIcon={<ExpandMoreIcon />}
+                                    aria-controls={`panel${index + 1}-content`}
+                                    id={`panel${index + 1}-header`}
+                                    onClick={(e) =>
+                                      handelComments(e, detail.id)
+                                    }
+                                  >
+                                    <div className="d-flex flex-wrap justify-between w-100 pr-10">
                                       <div
-                                        className="flex items-center"
-                                        style={{}}
+                                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                        // style={{ width: "17%" }}
                                       >
-                                        {detail.isCompleted &&
-                                        detail.taskStatus === 3 ? (
-                                          <span className="text-green">
-                                            Approved
-                                          </span>
-                                        ) : detail.isCompleted &&
-                                          detail.taskStatus !== 3 ? (
-                                          <span className="text-red">
-                                            Awaiting Approval
-                                          </span>
-                                        ) : (
-                                          <span className="text-black">
-                                            <b>Not Completed</b>
-                                          </span>
-                                        )}
+                                        <div className="flex items-center">
+                                          <b>Task #{detail.id}</b>
+                                        </div>
                                       </div>
-                                    </div>
-                                    <div
-                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
-                                    >
-                                      <div className="flex items-center">
-                                        No Risks
-                                      </div>
-                                    </div>
-                                    <div
-                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
-                                    >
-                                      <div className="flex items-center">
-                                        {detail.assignedStaff}
-                                      </div>
-                                    </div>
 
-                                    <div
-                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
-                                    >
-                                      <div className="flex items-center">
-                                        {formatDate(detail.dueDate)}
-                                      </div>
-                                    </div>
-                                    <div
-                                      className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
-                                    >
-                                      <div className="flex items-center">
-                                        <StyledBadge
-                                          badgeContent={detail?.audits?.length}
+                                      <div
+                                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                        // style={{ width: "17%" }}
+                                      >
+                                        <div
+                                          className="flex items-center"
+                                          style={{}}
                                         >
-                                          <Button
-                                            className="whitespace-nowrap"
-                                            style={{
-                                              border: "1px solid",
-                                              backgroundColor: "#0000",
-                                              color: "black",
-                                              borderColor: "rgba(203,213,225)",
-                                            }}
-                                            variant="contained"
-                                            color="warning"
-                                            onClick={() => {
-                                              e.stopPropagation();
-                                              handelOpenAudit(
-                                                detail.audits,
-                                                ""
-                                              );
-                                            }}
+                                          {detail.isCompleted &&
+                                          detail.taskStatus === 3 ? (
+                                            <span className="text-green">
+                                              Approved
+                                            </span>
+                                          ) : detail.isCompleted &&
+                                            detail.taskStatus !== 3 ? (
+                                            <span className="text-red">
+                                              Awaiting Approval
+                                            </span>
+                                          ) : (
+                                            <span className="text-black">
+                                              <b>Not Completed</b>
+                                            </span>
+                                          )}
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                        // style={{ width: "17%" }}
+                                      >
+                                        <div className="flex items-center">
+                                          No Risks
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                        // style={{ width: "17%" }}
+                                      >
+                                        <div className="flex items-center">
+                                          {detail.assignedStaff}
+                                        </div>
+                                      </div>
+
+                                      <div
+                                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                        // style={{ width: "17%" }}
+                                      >
+                                        <div className="flex items-center">
+                                          {formatDate(detail.dueDate)}
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                        // style={{ width: "17%" }}
+                                      >
+                                        <div className="flex items-center">
+                                          <StyledBadge
+                                            badgeContent={
+                                              detail?.audits?.length
+                                            }
                                           >
-                                            Audits
-                                          </Button>
-                                        </StyledBadge>
-                                        {currentActivityForm?.canEdit && (
+                                            <Button
+                                              className="whitespace-nowrap"
+                                              style={{
+                                                border: "1px solid",
+                                                backgroundColor: "#0000",
+                                                color: "black",
+                                                borderColor:
+                                                  "rgba(203,213,225)",
+                                              }}
+                                              variant="contained"
+                                              color="warning"
+                                              onClick={() => {
+                                                handelOpenAudit(
+                                                  detail.audits,
+                                                  ""
+                                                );
+                                                e.stopPropagation();
+                                              }}
+                                            >
+                                              Audits
+                                            </Button>
+                                          </StyledBadge>
+                                          {/* {currentActivityForm?.canEdit && ( */}
                                           <Button
                                             className="whitespace-nowrap ms-5"
                                             style={{
@@ -2853,8 +3118,8 @@ function ImplementationApproval({
                                             variant="contained"
                                             color="warning"
                                             onClick={() => {
-                                              e.stopPropagation();
                                               handelOpenAuditComment(detail.id);
+                                              e.stopPropagation();
                                             }}
                                           >
                                             <FuseSvgIcon
@@ -2865,253 +3130,114 @@ function ImplementationApproval({
                                               heroicons-outline:document-text
                                             </FuseSvgIcon>
                                           </Button>
-                                        )}
-                                        {detail?.taskDateUpdates.length !== 0 &&
-                                          currentActivityForm?.canEdit &&
-                                          (!detail.taskDateUpdates[
-                                            detail.taskDateUpdates.length - 1
-                                          ]?.approvedComments ? (
-                                            <Button
-                                              className="whitespace-nowrap ms-5"
-                                              style={{
-                                                border: "1px solid",
-                                                backgroundColor: "#0000",
-                                                color: "black",
-                                                borderColor:
-                                                  "rgba(203,213,225)",
-                                              }}
-                                              variant="contained"
-                                              color="warning"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                handledateExtendopen(
-                                                  e,
-                                                  detail,
-                                                  "true"
-                                                );
-                                              }}
-                                            >
-                                              <FuseSvgIcon
-                                                className="text-48"
-                                                size={24}
-                                                color="red"
+                                          {/* )} */}
+                                          {detail?.taskDateUpdates.length !==
+                                            0 &&
+                                            currentActivityForm?.canEdit &&
+                                            (!detail.taskDateUpdates[
+                                              detail.taskDateUpdates.length - 1
+                                            ]?.approvedComments ? (
+                                              <Button
+                                                className="whitespace-nowrap ms-5"
+                                                style={{
+                                                  border: "1px solid",
+                                                  backgroundColor: "#0000",
+                                                  color: "black",
+                                                  borderColor:
+                                                    "rgba(203,213,225)",
+                                                }}
+                                                variant="contained"
+                                                color="warning"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  handledateExtendopen(
+                                                    e,
+                                                    detail,
+                                                    "true"
+                                                  );
+                                                }}
                                               >
-                                                heroicons-outline:calendar
-                                              </FuseSvgIcon>
-                                            </Button>
-                                          ) : (
-                                            <Button
-                                              className="whitespace-nowrap ms-5"
-                                              style={{
-                                                border: "1px solid",
-                                                backgroundColor: "#0000",
-                                                color: "black",
-                                                borderColor:
-                                                  "rgba(203,213,225)",
-                                              }}
-                                              variant="contained"
-                                              color="warning"
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                handledateExtendopen(
-                                                  e,
-                                                  detail,
-                                                  "false"
-                                                );
-                                              }}
-                                            >
-                                              <FuseSvgIcon
-                                                className="text-48"
-                                                size={24}
-                                                color="action"
+                                                <FuseSvgIcon
+                                                  className="text-48"
+                                                  size={24}
+                                                  color="red"
+                                                >
+                                                  heroicons-outline:calendar
+                                                </FuseSvgIcon>
+                                              </Button>
+                                            ) : (
+                                              <Button
+                                                className="whitespace-nowrap ms-5"
+                                                style={{
+                                                  border: "1px solid",
+                                                  backgroundColor: "#0000",
+                                                  color: "black",
+                                                  borderColor:
+                                                    "rgba(203,213,225)",
+                                                }}
+                                                variant="contained"
+                                                color="warning"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  handledateExtendopen(
+                                                    e,
+                                                    detail,
+                                                    "false"
+                                                  );
+                                                }}
                                               >
-                                                heroicons-outline:calendar
-                                              </FuseSvgIcon>
-                                            </Button>
-                                          ))}
+                                                <FuseSvgIcon
+                                                  className="text-48"
+                                                  size={24}
+                                                  color="action"
+                                                >
+                                                  heroicons-outline:calendar
+                                                </FuseSvgIcon>
+                                              </Button>
+                                            ))}
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
-                                </AccordionSummary>
+                                  </AccordionSummary>
 
-                                <AccordionDetails>
-                                  <Stepper orientation="vertical">
-                                    <Step>
-                                      <div style={{ alignItems: "flex-start" }}>
-                                        <div className="flex flex-col items-start mb-08">
-                                          <div
-                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                            style={{
-                                              padding: "10px",
-                                              backgroundColor: "#dbeafe",
-                                            }}
-                                          >
-                                            <b>{detail?.assignedByStaff}</b>
-                                            <p>
-                                              What is the task :{" "}
-                                              {detail?.actionWhat}
-                                            </p>
-                                          </div>
-                                        </div>
-                                        <div className="flex flex-col items-start mb-08">
-                                          <div
-                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                            style={{
-                                              padding: "10px",
-                                              backgroundColor: "#dbeafe",
-                                            }}
-                                          >
-                                            <p>
-                                              How is Task done :{" "}
-                                              {detail?.actionHow}
-                                            </p>
-                                          </div>
-                                        </div>
-                                        {detail?.particularName &&
-                                          detail?.particularSubName && (
-                                            <div className="flex flex-col items-start mb-08">
-                                              <div
-                                                className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                                style={{
-                                                  padding: "10px",
-                                                  backgroundColor: "#dbeafe",
-                                                }}
-                                              >
-                                                <p>
-                                                  Impact :{" "}
-                                                  {`${detail?.particularName} > ${detail?.particularSubName}`}
-                                                </p>
-                                              </div>
+                                  <AccordionDetails>
+                                    <Stepper orientation="vertical">
+                                      <Step>
+                                        <div
+                                          style={{ alignItems: "flex-start" }}
+                                        >
+                                          <div className="flex flex-col items-start mb-08">
+                                            <div
+                                              className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                              style={{
+                                                padding: "10px",
+                                                backgroundColor: "#dbeafe",
+                                              }}
+                                            >
+                                              <b>{detail?.assignedByStaff}</b>
+                                              <p>
+                                                What is the task :{" "}
+                                                {detail?.actionWhat}
+                                              </p>
                                             </div>
-                                          )}
-                                        <div className="flex flex-col items-start mb-08">
-                                          <div
-                                            className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
-                                            style={{
-                                              padding: "10px",
-                                              backgroundColor: "#dbeafe",
-                                            }}
-                                          >
-                                            <p>
-                                              Due Date :{" "}
-                                              {formatDate(detail.dueDate)}
-                                            </p>
                                           </div>
-                                        </div>
-
-                                        <div className="flex items-center justify-center my-3">
-                                          <div className="flex-auto border-b"></div>
-                                          <div
-                                            className="flex-0 mt-10 "
-                                            style={{ fontSize: "xx-small" }}
-                                          >
-                                            <b>{detail?.assignedByStaff}</b> has
-                                            assigned task to{" "}
-                                            <b>{detail?.assignedStaff}</b> on{" "}
-                                            {formatDate(detail.assignedAt)}
+                                          <div className="flex flex-col items-start mb-08">
+                                            <div
+                                              className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                              style={{
+                                                padding: "10px",
+                                                backgroundColor: "#dbeafe",
+                                              }}
+                                            >
+                                              <p>
+                                                How is Task done :{" "}
+                                                {detail?.actionHow}
+                                              </p>
+                                            </div>
                                           </div>
-                                          <div className="flex-auto border-b"></div>
-                                        </div>
-
-                                        {impComments.map((msg) => (
-                                          <div
-                                            key={msg.id}
-                                            className="flex flex-row flex-wrap mb-2"
-                                            style={{
-                                              width: "auto",
-                                              display: "block",
-                                              clear: "both",
-                                            }}
-                                          >
-                                            {msg?.remark && (
-                                              <div
-                                                className="flex flex-row items-start mt-5"
-                                                style={{
-                                                  position: "relative",
-                                                  justifyContent: "end",
-                                                }}
-                                              >
-                                                <div
-                                                  className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
-                                                  style={{ padding: "10px" }}
-                                                >
-                                                  <div
-                                                    className="font-semibold"
-                                                    style={{
-                                                      fontSize: "smaller",
-                                                    }}
-                                                  >
-                                                    {" "}
-                                                    {detail.assignedStaff}{" "}
-                                                  </div>
-                                                  <div
-                                                    dangerouslySetInnerHTML={{
-                                                      __html: msg?.remark,
-                                                    }}
-                                                  ></div>
-                                                  <div className="my-0.5 text-xs font-medium text-secondary">
-                                                    <small>
-                                                      {msg.startedDate &&
-                                                      !msg.workInProgressDate &&
-                                                      !msg.completedDate &&
-                                                      !msg.dueDate
-                                                        ? `Started on ${formatDate(msg.startedDate)}`
-                                                        : msg.workInProgressDate &&
-                                                            !msg.completedDate &&
-                                                            !msg.dueDate
-                                                          ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
-                                                          : msg.dueDate &&
-                                                              !msg.completedDate
-                                                            ? `Due on ${formatDate(msg.dueDate)}`
-                                                            : msg.completedDate
-                                                              ? `Completed on ${formatDate(msg.completedDate)}`
-                                                              : "Unknown"}
-                                                    </small>
-                                                  </div>
-                                                </div>
-                                                {documentCounts[msg.id] ? (
-                                                  documentCounts[msg.id] !=
-                                                    0 && (
-                                                    <button
-                                                      className="icon-button"
-                                                      onClick={() =>
-                                                        handleOpen(msg.id)
-                                                      }
-                                                      style={{
-                                                        top: "-19px",
-                                                        right: "10px",
-                                                      }}
-                                                    >
-                                                      <StyledBadge
-                                                        badgeContent={
-                                                          documentCounts[msg.id]
-                                                        }
-                                                      >
-                                                        <button
-                                                          className="icon-button"
-                                                          onClick={() =>
-                                                            handleOpen(msg.id)
-                                                          }
-                                                          style={{
-                                                            top: "-0px",
-                                                          }}
-                                                        >
-                                                          <FuseSvgIcon
-                                                            size={20}
-                                                          >
-                                                            heroicons-solid:document
-                                                          </FuseSvgIcon>
-                                                        </button>
-                                                      </StyledBadge>
-                                                    </button>
-                                                  )
-                                                ) : (
-                                                  <></>
-                                                )}
-                                              </div>
-                                            )}
-                                            {msg.comments && (
-                                              <div className="flex flex-col items-start mt-5">
+                                          {detail?.particularName &&
+                                            detail?.particularSubName && (
+                                              <div className="flex flex-col items-start mb-08">
                                                 <div
                                                   className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
                                                   style={{
@@ -3119,256 +3245,591 @@ function ImplementationApproval({
                                                     backgroundColor: "#dbeafe",
                                                   }}
                                                 >
-                                                  <div
-                                                    className="font-semibold"
-                                                    style={{
-                                                      fontSize: "smaller",
-                                                    }}
-                                                  >
-                                                    {" "}
-                                                    {
-                                                      detail.assignedByStaff
-                                                    }{" "}
-                                                  </div>
-                                                  <div
-                                                    className="min-w-4 leading-5 "
-                                                    dangerouslySetInnerHTML={{
-                                                      __html: msg.comments,
-                                                    }}
-                                                    style={{
-                                                      fontSize: "smaller",
-                                                    }}
-                                                  ></div>
-                                                  <div
-                                                    className="min-w-4 leading-5"
-                                                    style={{
-                                                      fontSize: "xx-small",
-                                                    }}
-                                                  >
-                                                    {" "}
-                                                    {msg.approvalStatusDate && (
-                                                      <>
-                                                        {msg.taskStatus === 3
-                                                          ? "Approved on"
-                                                          : "Rejected on"}{" "}
-                                                        {new Date(
-                                                          msg.approvalStatusDate
-                                                        ).toLocaleString(
-                                                          "en-US",
-                                                          {
-                                                            month: "short",
-                                                            day: "2-digit",
-                                                            hour: "numeric",
-                                                            minute: "numeric",
-                                                            hour12: true,
-                                                          }
-                                                        )}
-                                                      </>
-                                                    )}
-                                                  </div>
+                                                  <p>
+                                                    Impact :{" "}
+                                                    {`${detail?.particularName} > ${detail?.particularSubName}`}
+                                                  </p>
                                                 </div>
                                               </div>
                                             )}
+                                          <div className="flex flex-col items-start mb-08">
+                                            <div
+                                              className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                              style={{
+                                                padding: "10px",
+                                                backgroundColor: "#dbeafe",
+                                              }}
+                                            >
+                                              <p>
+                                                Due Date :{" "}
+                                                {formatDate(detail.dueDate)}
+                                              </p>
+                                            </div>
                                           </div>
-                                        ))}
-                                        {detail.isCompleted &&
-                                          detail.taskStatus !== 3 && (
-                                            <>
-                                              <div className="flex flex-col shrink-0 mt-5 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+
+                                          <div className="flex items-center justify-center my-3">
+                                            <div className="flex-auto border-b"></div>
+                                            <div
+                                              className="flex-0 mt-10 "
+                                              style={{ fontSize: "xx-small" }}
+                                            >
+                                              <b>{detail?.assignedByStaff}</b>{" "}
+                                              has assigned task to{" "}
+                                              <b>{detail?.assignedStaff}</b> on{" "}
+                                              {formatDate(detail.assignedAt)}
+                                            </div>
+                                            <div className="flex-auto border-b"></div>
+                                          </div>
+
+                                          {impComments.map((msg) => (
+                                            <div
+                                              key={msg.id}
+                                              className="flex flex-row flex-wrap mb-2"
+                                              style={{
+                                                width: "auto",
+                                                display: "block",
+                                                clear: "both",
+                                              }}
+                                            >
+                                              {msg?.remark && (
                                                 <div
-                                                  _ngcontent-fyk-c288=""
-                                                  class="flex items-center w-full  border-b justify-between"
-                                                ></div>
-                                              </div>
-                                              {currentActivityForm.canEdit && (
-                                                <div
-                                                  className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                                  style={{ width: "100%" }}
+                                                  className="flex flex-row items-start mt-5"
+                                                  style={{
+                                                    position: "relative",
+                                                    justifyContent: "end",
+                                                  }}
                                                 >
-                                                  <Box
-                                                    sx={{
-                                                      display: "flex",
-                                                      flexWrap: "wrap",
-                                                    }}
+                                                  <div
+                                                    className="relative max-w-3/4 px-3 py-2 rounded-lg bg-grey-100 text-gray-700"
+                                                    style={{ padding: "10px" }}
                                                   >
-                                                    <FormControl
-                                                      fullWidth
-                                                      sx={{
-                                                        m: 1,
-                                                        maxWidth: "100%",
+                                                    <div
+                                                      className="font-semibold"
+                                                      style={{
+                                                        fontSize: "smaller",
                                                       }}
                                                     >
-                                                      <span className="font-semibold leading-none">
-                                                        Comments*
-                                                      </span>
-                                                      <OutlinedInput
-                                                        id="reasonForNewDocument"
-                                                        name="reasonForNewDocument"
-                                                        onChange={(e) => {
-                                                          setComments(
-                                                            e.target.value
-                                                          );
-                                                          if (
-                                                            e.target.value.trim() !==
-                                                            ""
-                                                          ) {
-                                                            setErrorMessage(""); // Clear error message on input change
-                                                          }
+                                                      {" "}
+                                                      {
+                                                        detail.assignedStaff
+                                                      }{" "}
+                                                    </div>
+                                                    <div
+                                                      dangerouslySetInnerHTML={{
+                                                        __html: msg?.remark,
+                                                      }}
+                                                    ></div>
+                                                    <div className="my-0.5 text-xs font-medium text-secondary">
+                                                      <small>
+                                                        {msg.startedDate &&
+                                                        !msg.workInProgressDate &&
+                                                        !msg.completedDate &&
+                                                        !msg.dueDate
+                                                          ? `Started on ${formatDate(msg.startedDate)}`
+                                                          : msg.workInProgressDate &&
+                                                              !msg.completedDate &&
+                                                              !msg.dueDate
+                                                            ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
+                                                            : msg.dueDate &&
+                                                                !msg.completedDate
+                                                              ? `Due on ${formatDate(msg.dueDate)}`
+                                                              : msg.completedDate
+                                                                ? `Completed on ${formatDate(msg.completedDate)}`
+                                                                : "Unknown"}
+                                                      </small>
+                                                    </div>
+                                                  </div>
+                                                  {documentCounts[msg.id] ? (
+                                                    documentCounts[msg.id] !=
+                                                      0 && (
+                                                      <button
+                                                        className="icon-button"
+                                                        onClick={() =>
+                                                          handleOpen(msg.id)
+                                                        }
+                                                        style={{
+                                                          top: "-19px",
+                                                          right: "10px",
                                                         }}
-                                                        label="Reason For Change*"
-                                                        className="mt-5"
-                                                      />
-                                                      {errorMessage && (
-                                                        <div className="text-red-500 text-sm mt-1">
-                                                          {errorMessage}
-                                                        </div>
+                                                      >
+                                                        <StyledBadge
+                                                          badgeContent={
+                                                            documentCounts[
+                                                              msg.id
+                                                            ]
+                                                          }
+                                                        >
+                                                          <button
+                                                            className="icon-button"
+                                                            onClick={() =>
+                                                              handleOpen(msg.id)
+                                                            }
+                                                            style={{
+                                                              top: "-0px",
+                                                            }}
+                                                          >
+                                                            <FuseSvgIcon
+                                                              size={20}
+                                                            >
+                                                              heroicons-solid:document
+                                                            </FuseSvgIcon>
+                                                          </button>
+                                                        </StyledBadge>
+                                                      </button>
+                                                    )
+                                                  ) : (
+                                                    <></>
+                                                  )}
+                                                </div>
+                                              )}
+                                              {msg.comments && (
+                                                <div className="flex flex-col items-start mt-5">
+                                                  <div
+                                                    className="relative max-w-3/4 px-3 py-2 rounded-lg bg-blue-100 text-gray-700"
+                                                    style={{
+                                                      padding: "10px",
+                                                      backgroundColor:
+                                                        "#dbeafe",
+                                                    }}
+                                                  >
+                                                    <div
+                                                      className="font-semibold"
+                                                      style={{
+                                                        fontSize: "smaller",
+                                                      }}
+                                                    >
+                                                      {" "}
+                                                      {
+                                                        detail.assignedByStaff
+                                                      }{" "}
+                                                    </div>
+                                                    <div
+                                                      className="min-w-4 leading-5 "
+                                                      dangerouslySetInnerHTML={{
+                                                        __html: msg.comments,
+                                                      }}
+                                                      style={{
+                                                        fontSize: "smaller",
+                                                      }}
+                                                    ></div>
+                                                    <div
+                                                      className="min-w-4 leading-5"
+                                                      style={{
+                                                        fontSize: "xx-small",
+                                                      }}
+                                                    >
+                                                      {" "}
+                                                      {msg.approvalStatusDate && (
+                                                        <>
+                                                          {msg.taskStatus === 3
+                                                            ? "Approved on"
+                                                            : "Rejected on"}{" "}
+                                                          {new Date(
+                                                            msg.approvalStatusDate
+                                                          ).toLocaleString(
+                                                            "en-US",
+                                                            {
+                                                              month: "short",
+                                                              day: "2-digit",
+                                                              hour: "numeric",
+                                                              minute: "numeric",
+                                                              hour12: true,
+                                                            }
+                                                          )}
+                                                        </>
                                                       )}
-                                                    </FormControl>
-                                                  </Box>
+                                                    </div>
+                                                  </div>
                                                 </div>
                                               )}
-                                              {currentActivityForm.canEdit && (
-                                                <div className="flex justify-start ">
-                                                  <Button
-                                                    className="whitespace-nowrap ms-5 "
-                                                    variant="contained"
-                                                    color="secondary"
-                                                    style={{
-                                                      marginTop: "10px",
-                                                      backgroundColor: "white",
-                                                      color: "black",
-                                                    }}
-                                                    onClick={(e) =>
-                                                      handelRejectImpl(
-                                                        e,
-                                                        detail
-                                                      )
-                                                    }
-                                                    disabled={isButtonDisabled}
-                                                  >
-                                                    Reject
-                                                  </Button>
-                                                  <Button
-                                                    className="whitespace-nowrap ms-5 "
-                                                    variant="contained"
-                                                    color="secondary"
-                                                    style={{
-                                                      marginTop: "10px",
-                                                    }}
-                                                    onClick={(e) =>
-                                                      handelApproveImpl(
-                                                        e,
-                                                        detail
-                                                      )
-                                                    }
-                                                    disabled={isButtonDisabled}
-                                                  >
-                                                    Approve
-                                                  </Button>
+                                            </div>
+                                          ))}
+                                          {detail.isCompleted &&
+                                            detail.taskStatus !== 3 && (
+                                              <>
+                                                <div className="flex flex-col shrink-0 mt-5 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
+                                                  <div
+                                                    _ngcontent-fyk-c288=""
+                                                    class="flex items-center w-full  border-b justify-between"
+                                                  ></div>
                                                 </div>
-                                              )}
-                                            </>
-                                          )}
-                                      </div>
-                                    </Step>
-                                  </Stepper>
-                                </AccordionDetails>
-                              </Accordion>
-                            );
-                          }
-                          return null;
-                        })}
-                        <div
-                          className="flex mt-7 pt-24"
-                          style={{ justifyContent: "end" }}
-                        >
-                          <Box>
-                            <div>
-                              <Button
-                                disabled={index === 0}
-                                onClick={handleBack}
-                                sx={{
-                                  mr: 1,
-                                  backgroundColor:
-                                    index !== 0 ? "black" : "default",
-                                  color: index !== 0 ? "white" : "default",
-                                  "&:hover": {
+                                                {currentActivityForm.canEdit && (
+                                                  <div
+                                                    className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
+                                                    style={{ width: "100%" }}
+                                                  >
+                                                    <Box
+                                                      sx={{
+                                                        display: "flex",
+                                                        flexWrap: "wrap",
+                                                      }}
+                                                    >
+                                                      <FormControl
+                                                        fullWidth
+                                                        sx={{
+                                                          m: 1,
+                                                          maxWidth: "100%",
+                                                        }}
+                                                      >
+                                                        <span className="font-semibold leading-none">
+                                                          Comments*
+                                                        </span>
+                                                        <OutlinedInput
+                                                          id="reasonForNewDocument"
+                                                          name="reasonForNewDocument"
+                                                          onChange={(e) => {
+                                                            setComments(
+                                                              e.target.value
+                                                            );
+                                                            if (
+                                                              e.target.value.trim() !==
+                                                              ""
+                                                            ) {
+                                                              setErrorMessage(
+                                                                ""
+                                                              ); // Clear error message on input change
+                                                            }
+                                                          }}
+                                                          label="Reason For Change*"
+                                                          className="mt-5"
+                                                        />
+                                                        {errorMessage && (
+                                                          <div className="text-red-500 text-sm mt-1">
+                                                            {errorMessage}
+                                                          </div>
+                                                        )}
+                                                      </FormControl>
+                                                    </Box>
+                                                  </div>
+                                                )}
+                                                {currentActivityForm.canEdit && (
+                                                  <div className="flex justify-start ">
+                                                    <Button
+                                                      className="whitespace-nowrap ms-5 "
+                                                      variant="contained"
+                                                      color="secondary"
+                                                      style={{
+                                                        marginTop: "10px",
+                                                        backgroundColor:
+                                                          "white",
+                                                        color: "black",
+                                                      }}
+                                                      onClick={(e) =>
+                                                        handelRejectImpl(
+                                                          e,
+                                                          detail
+                                                        )
+                                                      }
+                                                      disabled={
+                                                        isButtonDisabled
+                                                      }
+                                                    >
+                                                      Reject
+                                                    </Button>
+                                                    <Button
+                                                      className="whitespace-nowrap ms-5 "
+                                                      variant="contained"
+                                                      color="secondary"
+                                                      style={{
+                                                        marginTop: "10px",
+                                                      }}
+                                                      onClick={(e) =>
+                                                        handelApproveImpl(
+                                                          e,
+                                                          detail
+                                                        )
+                                                      }
+                                                      disabled={
+                                                        isButtonDisabled
+                                                      }
+                                                    >
+                                                      Approve
+                                                    </Button>
+                                                  </div>
+                                                )}
+                                              </>
+                                            )}
+                                        </div>
+                                      </Step>
+                                    </Stepper>
+                                  </AccordionDetails>
+                                </Accordion>
+                              );
+                            }
+                            return null;
+                          })}
+                          <div
+                            className="flex mt-7 pt-24"
+                            style={{ justifyContent: "end" }}
+                          >
+                            <Box>
+                              <div>
+                                <Button
+                                  disabled={index === 0}
+                                  onClick={handleBack}
+                                  sx={{
+                                    mr: 1,
                                     backgroundColor:
                                       index !== 0 ? "black" : "default",
-                                  },
-                                }}
-                                style={{
-                                  paddingLeft: "35px",
-                                  paddingRight: "35px",
-                                }}
-                              >
-                                Back
-                              </Button>
+                                    color: index !== 0 ? "white" : "default",
+                                    "&:hover": {
+                                      backgroundColor:
+                                        index !== 0 ? "black" : "default",
+                                    },
+                                  }}
+                                  style={{
+                                    paddingLeft: "35px",
+                                    paddingRight: "35px",
+                                  }}
+                                >
+                                  Back
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  onClick={handleNext}
+                                  sx={{ mr: 1 }}
+                                  style={{
+                                    color: "white",
+                                    backgroundColor: "blue",
+                                    paddingLeft: "35px",
+                                    paddingRight: "35px",
+                                  }}
+                                >
+                                  {index === steps.length - 1
+                                    ? "Finish"
+                                    : "Next"}
+                                </Button>
+                              </div>
+                            </Box>
+                          </div>
+                        </StepContent>
+                      </Step>
+                    );
+                  })}
+                </Stepper>
+
+                {activeStep === steps.length && (
+                  <Paper square elevation={0} className="pt-10 pb-10">
+                    <Button
+                      onClick={handleReset}
+                      sx={{ mt: 1, mr: 1 }}
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "#0000",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                      }}
+                    >
+                      Reset
+                    </Button>
+                  </Paper>
+                )}
+              </Box>
+            )}
+            {showPssrCheckList && (
+              <Box className="p-30 pt-24 pb-24" sx={{ width: "100%" }}>
+                {PssrCheckListData?.parentData?.map((parent) => {
+                  // Filter childData based on the matching parentId
+                  const matchingChildData =
+                    PssrCheckListData?.childData?.filter(
+                      (child) => child.parentId === parent.value
+                    );
+
+                  return (
+                    <Box key={parent.value} mb={4}>
+                      {/* Parent Section */}
+                      <Typography
+                        variant="h6"
+                        gutterBottom
+                        style={{ backgroundColor: "rgba(241,245,249, 1)" }}
+                        className="p-8"
+                      >
+                        {parent.text}
+                      </Typography>
+
+                      {/* Child Section */}
+                      {matchingChildData.map((child) => {
+                        // Find corresponding entry in pssrData
+                        const matchingPssrData =
+                          PssrCheckListData?.pssrData?.find(
+                            (pssrItem) => pssrItem.particular === child.value
+                          );
+                        const documentCount =
+                          documentCountsImp[matchingPssrData?.id] || 0;
+
+                        return (
+                          <Box
+                            key={child.value}
+                            mb={3}
+                            p={2}
+                            border={1}
+                            borderColor="grey.300"
+                            borderRadius={2}
+                          >
+                            <Typography variant="body1" gutterBottom>
+                              {child.text}
+                            </Typography>
+
+                            {/* Radio buttons for Yes, No, N/A with default value from pssrData */}
+                            <RadioGroup
+                              row
+                              value={
+                                radioState[child.value] ||
+                                matchingPssrData?.checklistReviewStatus ||
+                                "" // Controlled by state
+                              }
+                              onChange={(e) =>
+                                handleRadioChange(child.value, e.target.value)
+                              }
+                              disabled={!showPssrEdit}
+                            >
+                              <FormControlLabel
+                                value="Yes"
+                                control={<Radio />}
+                                label="Yes"
+                                disabled={!showPssrEdit}
+                              />
+                              <FormControlLabel
+                                value="No"
+                                control={<Radio />}
+                                label="No"
+                                disabled={!showPssrEdit}
+                              />
+                              <FormControlLabel
+                                value="N/A"
+                                control={<Radio />}
+                                label="N/A"
+                                disabled={!showPssrEdit}
+                              />
+                            </RadioGroup>
+
+                            {/* Comment Section with default value from pssrData */}
+                            {matchingPssrData?.remarks && !showPssrEdit ? (
+                              <h4 className="p-8">
+                                {matchingPssrData?.remarks}
+                              </h4>
+                            ) : (
+                              <TextField
+                                label="Add comments"
+                                multiline
+                                rows={3}
+                                variant="outlined"
+                                fullWidth
+                                margin="normal"
+                                value={
+                                  remarksState[child.value] ||
+                                  matchingPssrData?.remarks ||
+                                  "" /* Set the default value from state */
+                                }
+                                onChange={(e) =>
+                                  handleCommentsChange(
+                                    child.value,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            )}
+
+                            {/* Document upload button */}
+                            <StyledBadge badgeContent={documentCount}>
                               <Button
-                                variant="contained"
-                                onClick={handleNext}
-                                sx={{ mr: 1 }}
+                                className="whitespace-nowrap"
                                 style={{
-                                  color: "white",
-                                  backgroundColor: "blue",
-                                  paddingLeft: "35px",
-                                  paddingRight: "35px",
+                                  border: "1px solid",
+                                  backgroundColor: "#0000",
+                                  color: "black",
+                                  borderColor: "rgba(203,213,225)",
                                 }}
+                                variant="contained"
+                                color="warning"
+                                startIcon={
+                                  <FuseSvgIcon size={20}>
+                                    heroicons-solid:upload
+                                  </FuseSvgIcon>
+                                }
+                                onClick={() =>
+                                  handleDocumentUpload(child.value)
+                                }
                               >
-                                {index === steps.length - 1 ? "Finish" : "Next"}
+                                Document
                               </Button>
-                            </div>
+                            </StyledBadge>
                           </Box>
-                        </div>
-                      </StepContent>
-                    </Step>
+                        );
+                      })}
+                    </Box>
                   );
                 })}
-              </Stepper>
 
-              {activeStep === steps.length && (
-                <Paper square elevation={0} className="pt-10 pb-10">
+                <div
+                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                  style={{
+                    display: "flex",
+                    marginTop: "15px",
+                    justifyContent: "end",
+                    padding: "10px",
+                  }}
+                >
                   <Button
-                    onClick={handleReset}
-                    sx={{ mt: 1, mr: 1 }}
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
                     style={{
-                      border: "1px solid",
-                      backgroundColor: "#0000",
+                      padding: "23px",
+                      backgroundColor: "white",
                       color: "black",
-                      borderColor: "rgba(203,213,225)",
+                      border: "1px solid grey",
+                    }}
+                    onClick={() => {
+                      setShowPssrCheckList(false);
+                      setShowPssrEdit(false);
                     }}
                   >
-                    Reset
+                    Cancel
                   </Button>
-                </Paper>
-              )}
-            </Box>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    style={{
+                      padding: "23px",
+                    }}
+                    type="submit"
+                    onClick={handleSubmitCheckList}
+                  >
+                    Save
+                  </Button>
+                </div>
+              </Box>
+            )}
           </div>
 
           {/* <div
             _ngcontent-fyk-c288=""
             class="flex items-center w-full  border-b justify-between"
           ></div> */}
-          <div className="p-30 pt-24 pb-24 border-b">
-            <Button
-              className="whitespace-nowrap "
-              style={{
-                border: "1px solid",
-                backgroundColor: "#0000",
-                color: "black",
-                borderColor: "rgba(203,213,225)",
-              }}
-              variant="contained"
-              color="warning"
-              onClick={() => handelOpenAudit("", "fullList")}
-            >
-              <FuseSvgIcon className="text-48" size={24} color="action">
-                heroicons-outline:document-text
-              </FuseSvgIcon>
-              Audit Lists
-            </Button>
-          </div>
-          {lastActCode?.canExecute && (
+          {!showPssrCheckList && (
+            <div className="p-30 pt-24 pb-24 border-b">
+              <Button
+                className="whitespace-nowrap "
+                style={{
+                  border: "1px solid",
+                  backgroundColor: "#0000",
+                  color: "black",
+                  borderColor: "rgba(203,213,225)",
+                }}
+                variant="contained"
+                color="warning"
+                onClick={() => handelOpenAudit("", "fullList")}
+              >
+                <FuseSvgIcon className="text-48" size={24} color="action">
+                  heroicons-outline:document-text
+                </FuseSvgIcon>
+                Audit Lists
+              </Button>
+            </div>
+          )}
+          {lastActCode?.canExecute && !showPssrCheckList && (
             <div className="flex justify-end p-30">
               {AppActions.map((btn) => (
                 <>

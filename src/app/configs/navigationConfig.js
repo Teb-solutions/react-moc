@@ -182,6 +182,13 @@ const navigationConfig1 = [
             feature: "MST",
           },
           {
+            id: "masters.Staffrole",
+            title: "Staff Role",
+            type: "item",
+            url: "/masters/staffrole",
+            feature: "MST",
+          },
+          {
             id: "masters.ImplementationReview",
             title: "Implementation Review",
             type: "item",

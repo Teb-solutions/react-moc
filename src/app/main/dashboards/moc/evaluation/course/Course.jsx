@@ -1214,7 +1214,7 @@ function Course() {
           toast?.error("Minimum One stakeholders Required");
         } else {
           if (hasEmptyComment) {
-            toast?.error("All stakeholders must update the task");
+            toast?.error("All stakeholders must update  comments");
           } else {
             setIsLoading(true);
 

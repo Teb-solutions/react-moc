@@ -34,6 +34,7 @@ import TransportActivityConfig from "./riskRegister/TransportActivity/TransportC
 import TicketConfig from "./ticketlist/TicketConfig";
 import taskListConfig from "./tasklist/TaskListConfig";
 import RecycleConfig from "./masters/recycle/RecycleConfig";
+import StaffRoleConfig from "./masters/staffrole/StaffRoleConfig";
 
 /**
  * Dashboards
@@ -61,6 +62,7 @@ const dashboardsConfigs = [
   ParticularSubCategoryConfig,
   ChangeImpactHazardsConfig,
   SiteConfig,
+  StaffRoleConfig,
   ImplementationReviewConfig,
   PSSRCategoryConfig,
   PSSRSubCategoryConfig,
