@@ -588,7 +588,6 @@ function ImplementationApproval({
   };
 
   const handleSubmitCheckList = () => {
-    setIsLoading(true);
     let taskListApproved = ImpDetails?.filter((x) => x.taskStatus == 3);
 
     if (ImpDetails?.length != taskListApproved?.length) {
@@ -622,6 +621,7 @@ function ImplementationApproval({
       setOpenSubmit(false);
       return;
     }
+    setIsLoading(true);
 
     apiAuth
       .put(`/ImplementationPSSR/Create?id=${assetEvaluationId}`, checklistData)
