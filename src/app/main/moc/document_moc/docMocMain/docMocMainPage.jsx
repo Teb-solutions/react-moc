@@ -1,28 +1,20 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import FusePageSimple from "@fuse/core/FusePageSimple";
-import Paper from "@mui/material/Paper";
 import Stepper from "@mui/material/Stepper";
-import Button from "@mui/material/Button";
 import SwipeableViews from "react-swipeable-views";
-import { parseISO, format } from "date-fns";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Step,
-  Badge,
   StepContent,
   StepLabel,
 } from "@mui/material";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { apiAuth } from "src/utils/http";
 import CourseProgress from "../../homepage/CourseProgress";
 import MocHeader from "../../MocHeader";
-import TextField from "@mui/material/TextField";
-import InputAdornment from "@mui/material/InputAdornment";
-import SearchIcon from "@mui/icons-material/Search";
 import DocPhasesEnum from "../docPhaseEnum";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -34,6 +26,7 @@ import Approval from "../approval_components/Approval";
 import Implementation from "../implementation_components/Implementation";
 import { useParams } from "react-router";
 import ImplementationApproval from "../implementation_components/ImplementationApproval";
+import ImplementationClosure from "../implementation_components/implementationClosure";
 
 function Course() {
   // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
@@ -86,7 +79,6 @@ function Course() {
   const [actName, setActName] = useState("");
   const [reqNo, setReqNo] = useState("");
   const [canEdits, setCanEdits] = useState();
-  const [searchTerm, setSearchTerm] = useState("");
   const [ChangeEvaluationDetail, setChangeEvaluationDetail] = useState([]);
   const [taskLists, setTaskLists] = useState([]);
   const [riskLists, setRiskLists] = useState([]);
@@ -101,16 +93,9 @@ function Course() {
   const [closeActivity, setCloseActivity] = useState({});
   const [docStaff, setDocStaff] = useState([]);
   const [currentActivityForm, setCurrentActivityForm] = useState({});
-  const [handelCommentRemark, setHandelCommentRemark] = useState("");
   const [ApprovalManager, setApprovalManager] = useState({});
-  const [expanded, setExpanded] = useState(false);
-  const handleExpansionChange = () => {
-    setExpanded(!expanded);
-  };
   const [valueRemark, setValueRemark] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [reviewed, setReviewed] = useState({});
-  const [openMoc, setOpenMoc] = useState(false);
   const [currentPhase, setCurrentPhase] = useState("");
   const [currentPhaseName, setCurrentPhaseName] = useState("");
   const [lastActCode, setlastActCode] = useState("");
@@ -189,20 +174,6 @@ function Course() {
   useEffect(() => {
     getRecords();
   }, []);
-
-  const formatDate = (dateString) => {
-    if (!dateString) {
-      return "Invalid date";
-    }
-
-    try {
-      const date = parseISO(dateString);
-      return format(date, "MMMM dd, yyyy");
-    } catch (error) {
-      console.error("Error parsing date:", error);
-      return "Invalid date";
-    }
-  };
 
   const formatDates = (date) => {
     return new Date(date).toLocaleString("en-US", {
@@ -422,107 +393,6 @@ function Course() {
     }
   };
 
-  const hasAddedComment = (comments) => {
-    return comments.some((comment) => comment.isCreatedByMe);
-  };
-
-  const handleCheckboxChange = (id) => {
-    console.log(id, "CheckLists");
-    setCheckLists((prevCheckLists) =>
-      prevCheckLists.map((item) =>
-        item.item === id ? { ...item, isChecked: !item.isChecked } : item
-      )
-    );
-  };
-
-  console.log(CheckLists, "CheckLists");
-
-  const saveChanges = () => {
-    apiAuth
-      .post(`/DocMoc/UpdateImplementationChecklist/${evaluationId}`, CheckLists)
-      .then((response) => {
-        toast?.success("Checklist successfully updated");
-        setOpen(false);
-        console.log(response);
-      });
-  };
-  const handelreview = (id) => {
-    apiAuth
-      .put(`/SummaryDetails/ImpReviewStatus/${evaluationId}`, {
-        Task: [id],
-        ActivityCode: lastActCode.code,
-      })
-      .then((response) => {
-        setReviewed((prevReviewed) => ({
-          ...prevReviewed,
-          [id]: true,
-        }));
-        console.log(response);
-      });
-  };
-
-  const handelCommentImp = async (id, value) => {
-    await apiAuth
-      .put(`/Task/ImpAddReview/${id}/IMPL_APPROVAL_VP_DIV`, {
-        remark: handelCommentRemark,
-      })
-      .then(async (resp) => {
-        if (value == 1) {
-          toast?.success("Review successfully added");
-          await apiAuth
-            .get(
-              `/SummaryDetails/List?id=${evaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-            )
-            .then((resp) => {
-              setContentDetails(resp.data?.data);
-            });
-        } else {
-          toast?.success("Review successfully Updated");
-          await apiAuth
-            .get(
-              `/SummaryDetails/List?id=${evaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-            )
-            .then((resp) => {
-              setContentDetails(resp.data?.data);
-            });
-        }
-        setHandelCommentRemark("");
-        getRecords();
-      });
-  };
-
-  const handelCloseMoc = (uid) => {
-    const allItemsChecked = CheckLists.every((item) => item.isChecked);
-
-    if (!allItemsChecked) {
-      toast?.error(
-        "Please complete all checklist items before closing the MOC."
-      );
-      return;
-    }
-    setIsLoading(true);
-    apiAuth
-      .post(`/DocMoc/ImplementationSubmit/${evaluationId}/22`, {
-        actionUID: uid,
-        activityUID: closeActivity.uid,
-
-        formUID: closeActivity.formUID,
-      })
-      .then((resp) => {
-        if (resp.data.statusCode == 400) {
-          setIsLoading(false);
-
-          toast?.error(resp.data.message);
-        } else {
-          toast?.success("MOC Successfully Closed");
-          setTimeout(() => {
-            getRecords();
-            setIsLoading(false);
-          }, 2000);
-        }
-      });
-  };
-
   useEffect(() => {
     handleStepChange();
   }, []);
@@ -609,313 +479,19 @@ function Course() {
                   />
                 )}
                 {currentPhase === "docimplclosure" && (
-                  <Paper className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
-                    <div
-                      _ngcontent-fyk-c288=""
-                      class="flex items-center w-full p-30 pt-24 pb-24 border-b justify-between"
-                    >
-                      <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
-                        Closure by Doc Controller
-                      </h2>
-                    </div>
-                    <Paper className="w-full box_reset">
-                      <div
-                        _ngcontent-fyk-c288=""
-                        class="p-30 pt-24 pb-24  mb-0 ng-star-inserted"
-                      >
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="flex items-center w-full mb-10 justify-between"
-                        >
-                          <h2
-                            _ngcontent-fyk-c288=""
-                            class="text-xl font-semibold"
-                          >
-                            Summary Details
-                          </h2>
-                        </div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Request No{" "}
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.requestNo}
-                            </div>
-                          </div>
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Initiator
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.initiatorName}
-                            </div>
-                          </div>
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Initiated On
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {new Date(
-                                contentDetails?.requestDate
-                              ).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              })}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Type{" "}
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.requestTypeName}
-                            </div>
-                          </div>
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Document Name
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.projectName}
-                            </div>
-                          </div>
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Document Type
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetails?.documentType}New
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Document Description
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetailsIni?.projectDescription}
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Reason for New Document
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              {contentDetailsIni?.reasonForNewDocument}
-                            </div>
-                          </div>
-                        </div>
-
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Document Url
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              <a
-                                _ngcontent-fyk-c288=""
-                                target="_blank"
-                                class="text-blue-500 hover:text-blue-800"
-                                style={{ background: "none", color: "blue" }}
-                                href={contentDetails?.documentUrl}
-                              >
-                                {contentDetails?.documentUrl}
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full"
-                        >
-                          <div _ngcontent-fyk-c288="" className="my-6">
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="mt-3 leading-6 text-secondary"
-                            >
-                              Consolidated Document Url
-                            </div>
-                            <div
-                              _ngcontent-fyk-c288=""
-                              class="text-lg leading-6 font-medium"
-                            >
-                              {" "}
-                              <a
-                                _ngcontent-fyk-c288=""
-                                target="_blank"
-                                class="text-blue-500 hover:text-blue-800"
-                                style={{ background: "none", color: "blue" }}
-                                href={contentDetails?.documentUrl}
-                              >
-                                {contentDetails?.consolidatedDocumentUrl}
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </Paper>
-
-                    <div className="flex flex-col px-4 py-3  border rounded m-24">
-                      <ul>
-                        {CheckLists.map((item) => (
-                          <li key={item.id} className="pb-5">
-                            <label>
-                              <input
-                                type="checkbox"
-                                checked={item.isChecked}
-                                style={{
-                                  margin: "5px",
-                                  color:
-                                    currentActivityForm.canEdit == false
-                                      ? "grey"
-                                      : "black",
-                                }}
-                                disabled={!currentActivityForm.canEdit}
-                                onChange={() => {
-                                  handleCheckboxChange(item.item);
-                                }}
-                              />
-                              <span
-                                style={{
-                                  margin: "5px",
-                                  color:
-                                    currentActivityForm.canEdit == false
-                                      ? "grey"
-                                      : "black",
-                                }}
-                              >
-                                {item.item}
-                              </span>{" "}
-                            </label>
-                          </li>
-                        ))}
-                        {!currentActivityForm.isComplete &&
-                          currentActivityForm.status === "Pending" && (
-                            <Button
-                              className="whitespace-nowrap ms-5 "
-                              variant="contained"
-                              color="secondary"
-                              style={{
-                                marginTop: "10px",
-                                width: "150px",
-                                marginBottom: "5px",
-                              }}
-                              onClick={saveChanges}
-                            >
-                              Save
-                            </Button>
-                          )}
-                      </ul>
-                    </div>
-
-                    {currentActivityForm.canEdit && (
-                      <>
-                        <div
-                          _ngcontent-fyk-c288=""
-                          class="flex items-center w-full  border-b justify-between"
-                        ></div>
-                        <div className="flex justify-end p-30 pt-24 pb-24">
-                          {closeActions.map((btn) => (
-                            <Button
-                              className="whitespace-nowrap"
-                              variant="contained"
-                              color="secondary"
-                              onClick={(e) => handelCloseMoc(btn.uid)}
-                            >
-                              {btn.name}
-                            </Button>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </Paper>
+                  <ImplementationClosure
+                    currentActivityForm={currentActivityForm}
+                    CheckLists={CheckLists}
+                    setCheckLists={setCheckLists}
+                    contentDetails={contentDetails}
+                    closeActions={closeActions}
+                    setIsLoading={setIsLoading}
+                    contentDetailsIni={contentDetailsIni}
+                    setOpen={setOpen}
+                    evaluationId={evaluationId}
+                    closeActivity={closeActivity}
+                    getRecords={getRecords}
+                  />
                 )}
 
                 {currentPhase === "Approval" &&
