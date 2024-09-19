@@ -1,12 +1,12 @@
-import AssetCouseConfig from "../dashboards/moc/assetEvaluation/assetCourseConfig";
-import AcademyAppConfig from "../dashboards/moc/evaluation/AcademyAppConfig";
-import orgCouseConfig from "../dashboards/moc/orgEvaluation/orgCourseConfig";
-import riskCouseConfig from "../dashboards/riskRegister/riskEvaluation/riskCourseConfig";
+import AssetCouseConfig from "../moc/asset_moc/assetMocMain/assetMocMainPageConfig";
+import DocMainConfig from "../moc/document_moc/docMocMain/docMocMainPageConfig";
+import orgCouseConfig from "../moc/organization_moc/orgMocMain/orgMainPageConfig";
+import riskCouseConfig from "../riskRegister/riskEvaluation/riskCourseConfig";
 /**
  * The list of application configurations.
  */
 const appsConfigs = [
-  AcademyAppConfig,
+  DocMainConfig,
   AssetCouseConfig,
   orgCouseConfig,
   riskCouseConfig,

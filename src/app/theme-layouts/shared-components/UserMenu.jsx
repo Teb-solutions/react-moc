@@ -16,8 +16,8 @@ import { Badge, Tooltip } from "@mui/material";
 import NotificationPopup from "./NotificationPopup";
 import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
-import TicketModal from "src/app/main/dashboards/moc/modals/TicketModal";
 import BookmarkPopup from "./BookmarkPopup";
+import TicketModal from "src/app/main/moc/common_modal/TicketModal";
 
 /**
  * The user menu.
