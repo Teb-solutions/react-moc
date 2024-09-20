@@ -37,14 +37,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { styled } from "@mui/material/styles";
 import { withStyles } from "@mui/styles";
 import { display } from "@mui/system";
-function createData(
-  index,
-
-  Task,
-  Audit,
-  date,
-  staff
-) {
+import AuditModal from "../../common_modal/audit_modals/AddAudit";
+import AuditListModal from "../../common_modal/audit_modals/AuditList";
+function createData(index, Task, Audit, date, staff) {
   return { index, Task, Audit, date, staff };
 }
 const OrgImplementation = ({
@@ -56,54 +51,6 @@ const OrgImplementation = ({
   orgEvaluationId,
   setImpDetails,
 }) => {
-  const columns = [
-    { id: "index", label: "#", minWidth: 50 },
-    {
-      id: "Task",
-      label: "Task",
-      minWidth: 170,
-      align: "left",
-      format: (value) => value.toLocaleString("en-US"),
-    },
-    {
-      id: "Audit",
-      label: "Audit Comments",
-      minWidth: 170,
-      align: "left",
-      format: (value) => value.toLocaleString("en-US"),
-    },
-    {
-      id: "date",
-      label: "Done By Date",
-      minWidth: 170,
-      align: "left",
-      format: (value) => value.toLocaleString("en-US"),
-    },
-    {
-      id: "staff",
-      label: "Done BY staff",
-      minWidth: 170,
-      align: "left",
-      format: (value) => value.toLocaleString("en-US"),
-    },
-  ];
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const styleAuditCom = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: "800px",
-    maxWidth: "80vw",
-    height: "25%",
-    borderRadius: "16px",
-    bgcolor: "background.paper",
-
-    boxShadow: 24,
-    p: 4,
-    padding: "0px",
-  };
   const style1 = {
     position: "absolute",
     top: "50%",
@@ -167,8 +114,6 @@ const OrgImplementation = ({
   const [errorMessage, setErrorMessage] = useState("");
   const [openAudit, setOpenAudit] = useState(false);
   const [openAuditComment, setOpenAuditComment] = useState(false);
-  const handleCloseAudit = () => setOpenAudit(false);
-  const handleCloseAuditComment = () => setOpenAuditComment(false);
   const [currentAudit, setCurrentAudit] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
@@ -188,37 +133,12 @@ const OrgImplementation = ({
     });
   };
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const handleSearch = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  console.log(currentAudit, "ppppppp");
-
-  const filteredDepartmentList = currentAudit.filter((row) =>
-    row.Audit.toString().includes(searchQuery)
-  );
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
   const handelOpenAuditComment = (auditsid) => {
     setOpenAuditComment(true);
     setAuditData((prevState) => ({
       ...prevState,
       auditsid: auditsid,
-    }));
-  };
-  const handleAddAuditComment = (e) => {
-    const { name, value } = e.target;
-    setAuditData((prevState) => ({
-      ...prevState,
-      comments: value,
+      comments: "",
     }));
   };
   function getRecords() {
@@ -471,7 +391,6 @@ const OrgImplementation = ({
         pauseOnHover
         theme="light"
       />
-
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -567,223 +486,22 @@ const OrgImplementation = ({
           </Box>
         </Fade>
       </Modal>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
+      <AuditModal
         open={openAuditComment}
-        onClose={handleCloseAuditComment}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={openAuditComment}>
-          <Box sx={styleAuditCom}>
-            <Box
-              style={{
-                padding: "20px",
-                backgroundColor: "#4f46e5",
-                borderTopLeftRadius: "16px",
-                borderTopRightRadius: "16px",
-                color: "white",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <h5 className="pt-12">Add Audit </h5>
-              <Button onClick={handleCloseAuditComment}>
-                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-              </Button>
-            </Box>
-            <Box>
-              <Typography
-                id="transition-modal-title"
-                variant="h6"
-                component="h2"
-                style={{
-                  fontSize: "4rem",
-                  fontWeight: "800px !important",
-                }}
-              >
-                <div className="flex-auto">
-                  <div className="flex flex-col-reverse">
-                    <div
-                      style={{
-                        marginTop: "30px",
-                        justifyContent: "space-between",
-                        margin: "10px",
-                      }}
-                      className="flex flex-row"
-                    >
-                      <Box sx={{ width: "100%" }}>
-                        <FormLabel
-                          className="font-medium text-14"
-                          component="legend"
-                        >
-                          Comments *
-                        </FormLabel>
-                        <TextField
-                          fullWidth
-                          name="comments"
-                          onChange={handleAddAuditComment}
-                        />
-                      </Box>
-                    </div>
-                  </div>{" "}
-                </div>
-                <div className="flex justify-end ">
-                  <Button
-                    className="whitespace-nowrap ms-5 me-12 "
-                    variant="contained"
-                    color="secondary"
-                    style={{
-                      marginTop: "5px",
-                    }}
-                    onClick={handelAuditCommentSubmit}
-                  >
-                    Save
-                  </Button>
-                </div>
-              </Typography>
-            </Box>
-          </Box>
-        </Fade>
-      </Modal>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
+        handleClose={() => setOpenAuditComment(false)}
+        handleSubmit={handelAuditCommentSubmit}
+        auditData={auditData}
+        onChange={(name, value) =>
+          setAuditData((prev) => ({ ...prev, [name]: value }))
+        }
+      />
+      <AuditListModal
         open={openAudit}
-        onClose={handleCloseAudit}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={openAudit}>
-          <Box sx={style1}>
-            <Box
-              style={{
-                padding: "30px",
-                backgroundColor: "#4f46e5",
-                borderTopLeftRadius: "16px",
-                borderTopRightRadius: "16px",
-                color: "white",
-                display: "flex",
-                justifyContent: "space-between",
-              }}
-            >
-              <h5 className="pt-12">Audit List</h5>
-              <Button onClick={() => setOpenAudit(false)}>
-                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-              </Button>
-            </Box>
-            <div
-              _ngcontent-fyk-c288=""
-              class="flex items-center w-full  border-b justify-end"
-              style={{ marginTop: "10px" }}
-            >
-              <TextField
-                variant="filled"
-                fullWidth
-                placeholder="Search"
-                style={{
-                  marginBottom: "15px",
-                  backgroundColor: "white",
-                  marginRight: "30px",
-                }}
-                //   value={searchTerm}
-                onChange={handleSearch}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment
-                      position="start"
-                      style={{
-                        marginTop: "0px",
-                        paddingTop: "0px",
-                      }}
-                    >
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{ width: 320 }}
-              />
-            </div>
-            <Box sx={{ overflow: "auto", padding: "5px 30px 0 30px" }}>
-              <TableContainer style={{ marginTop: "15px" }}>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      {columns?.map((column) => (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{
-                            minWidth: column.minWidth,
-                          }}
-                        >
-                          {column?.label}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {filteredDepartmentList
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
-                      .map((row) => {
-                        return (
-                          <TableRow
-                            hover
-                            role="checkbox"
-                            tabIndex={-1}
-                            key={row.code}
-                            sx={{ padding: "default" }}
-                          >
-                            {columns.map((column) => {
-                              const value = row[column.id];
-                              return (
-                                <TableCell
-                                  key={column.id}
-                                  align={column.align}
-                                  style={{ borderBottom: "1px solid #dddddd" }}
-                                >
-                                  {column.render
-                                    ? column.render(row) // Render custom actions
-                                    : column.format && typeof value === "number"
-                                      ? column.format(value)
-                                      : value}
-                                </TableCell>
-                              );
-                            })}
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                style={{ display: "flex", marginTop: "10px" }}
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={currentAudit.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </Box>
-          </Box>
-        </Fade>
-      </Modal>
+        handleClose={() => setOpenAudit(false)}
+        auditData={currentAudit}
+        onAddAudit={openAudit}
+      />
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"

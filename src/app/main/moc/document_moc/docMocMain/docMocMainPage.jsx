@@ -26,7 +26,7 @@ import Approval from "../approval_components/Approval";
 import Implementation from "../implementation_components/Implementation";
 import { useParams } from "react-router";
 import ImplementationApproval from "../implementation_components/ImplementationApproval";
-import ImplementationClosure from "../implementation_components/implementationClosure";
+import ImplementationClosure from "../implementation_components/ImplementationClosure";
 
 function Course() {
   // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));

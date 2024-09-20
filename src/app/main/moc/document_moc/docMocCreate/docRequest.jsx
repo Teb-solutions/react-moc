@@ -37,6 +37,7 @@ import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
+import ConfirmationModal from "../../common_modal/confirmation_modal/ConfirmationModal";
 
 function DocRequest() {
   const style = {
@@ -1239,6 +1240,49 @@ function DocRequest() {
                         </Fade>
                       </Modal>
                     </div>
+                    <ConfirmationModal
+                      openSubmit={open}
+                      handleCloseSubmit={handleClose}
+                      title="Submit request"
+                    >
+                      <div
+                        className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                        style={{
+                          marginTop: "15px",
+                          justifyContent: "end",
+                          backgroundColor: " rgba(248,250,252)",
+                          padding: "10px",
+                        }}
+                      >
+                        <Button
+                          className="whitespace-nowrap"
+                          variant="contained"
+                          color="primary"
+                          style={{
+                            padding: "23px",
+                            backgroundColor: "white",
+                            color: "black",
+                            border: "1px solid grey",
+                          }}
+                          onClick={handleClose}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          className="whitespace-nowrap"
+                          variant="contained"
+                          color="secondary"
+                          style={{
+                            padding: "23px",
+                            backgroundColor: "red",
+                          }}
+                          type="submit"
+                          onClick={handleSubmit}
+                        >
+                          Submit
+                        </Button>
+                      </div>
+                    </ConfirmationModal>
                     <Button
                       className="whitespace-nowrap"
                       variant="contained"
@@ -1248,103 +1292,6 @@ function DocRequest() {
                     >
                       Submit
                     </Button>
-
-                    <Modal
-                      aria-labelledby="transition-modal-title"
-                      aria-describedby="transition-modal-description"
-                      open={open}
-                      onClose={handleClose}
-                      closeAfterTransition
-                      slots={{ backdrop: Backdrop }}
-                      slotProps={{
-                        backdrop: {
-                          timeout: 500,
-                        },
-                      }}
-                    >
-                      <Fade in={open}>
-                        <Box sx={style}>
-                          <Box>
-                            <div className="flex">
-                              <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                                style={{
-                                  fontSize: "15px",
-                                  marginRight: "5px",
-                                  marginTop: "5px",
-
-                                  color: "red",
-                                }}
-                              >
-                                <img src="/assets/images/etc/icon.png" />
-                              </Typography>
-                              <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                                style={{
-                                  fontSize: "2rem",
-                                }}
-                              >
-                                Submit request
-                                <Typography
-                                  id="transition-modal-title"
-                                  variant="h6"
-                                  component="h2"
-                                  style={{
-                                    fontSize: "15px",
-                                    fontWeight: "800px !important",
-                                    color: "grey",
-                                  }}
-                                >
-                                  Once submited you will not be able to revert !
-                                  Are you sure you want to continue ?
-                                </Typography>
-                              </Typography>
-                            </div>
-                          </Box>
-                          <div
-                            className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                            style={{
-                              marginTop: "15px",
-                              justifyContent: "end",
-                              backgroundColor: " rgba(248,250,252)",
-                              padding: "10px",
-                            }}
-                          >
-                            <Button
-                              className="whitespace-nowrap"
-                              variant="contained"
-                              color="primary"
-                              style={{
-                                padding: "23px",
-                                backgroundColor: "white",
-                                color: "black",
-                                border: "1px solid grey",
-                              }}
-                              onClick={handleClose}
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              className="whitespace-nowrap"
-                              variant="contained"
-                              color="secondary"
-                              style={{
-                                padding: "23px",
-                                backgroundColor: "red",
-                              }}
-                              type="submit"
-                              onClick={handleSubmit}
-                            >
-                              Submit
-                            </Button>
-                          </div>
-                        </Box>
-                      </Fade>
-                    </Modal>
                     <Button
                       className="whitespace-nowrap"
                       variant="contained"
