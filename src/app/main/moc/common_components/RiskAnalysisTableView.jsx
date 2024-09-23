@@ -13,19 +13,21 @@ import {
 import Typography from "@mui/material/Typography";
 
 const RiskAnalysisTableView = ({
+  Paper,
   matchingRisks,
   currentActivityForm,
   handelRisk,
   handelViewDetails,
   handelEditRiskDetails,
   handelRemoveDetails,
+  showEditRemove,
 }) => {
   return (
     <>
       <TableContainer
         component={Paper}
         style={{
-          margin: "0 0 10px 0",
+          margin: "10px 0 10px 0",
         }}
       >
         <Table>
@@ -65,34 +67,48 @@ const RiskAnalysisTableView = ({
                     <TableRow>
                       <TableCell>
                         <Grid container className="inventory-grid">
-                          <Grid item xs={12} md={4}>
+                          <Grid item xs={12} md={5}>
                             <Typography
                               variant="h6"
                               style={{
-                                paddingBottom: "5px",
+                                paddingLeft: "10px",
                               }}
                               className="text-sm"
                             >
                               {subItm.subTaskName}
                             </Typography>
                           </Grid>
-                          <Grid item xs={12}>
-                            {currentActivityForm.canEdit && (
-                              <span
-                                className="text-white d-inline-block"
-                                style={{
-                                  backgroundColor: "#2563eb",
-                                  borderRadius: "5px",
-                                  padding: "3px",
-                                  fontSize: "10px",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => handelRisk(subItm.id)}
-                              >
-                                Create New Risk Analysis
-                              </span>
-                            )}
+                        </Grid>
+                        {subItm.riskAnalysisHazardTypes.length === 0 && (
+                          <Grid item xs={12} md={4}>
+                            <Typography
+                              variant="h6"
+                              style={{
+                                paddingLeft: "10px",
+                              }}
+                              className="text-sm text-brown"
+                            >
+                              <b>Risk analysis not done</b>
+                            </Typography>
                           </Grid>
+                        )}
+                        <Grid item xs={12}>
+                          {currentActivityForm.canEdit && showEditRemove && (
+                            <span
+                              className="text-white d-inline-block"
+                              style={{
+                                backgroundColor: "#2563eb",
+                                borderRadius: "5px",
+                                marginLeft: "10px",
+                                padding: "4px",
+                                fontSize: "10px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => handelRisk(subItm.id)}
+                            >
+                              Create New Risk Analysis
+                            </span>
+                          )}
                         </Grid>
                       </TableCell>
                     </TableRow>
@@ -211,74 +227,76 @@ const RiskAnalysisTableView = ({
                                           </span>
                                         </span>
                                       </a>
-                                      {currentActivityForm.canEdit && (
-                                        <>
-                                          <a
-                                            title="Edit"
-                                            className="inline-flex items-center leading-6 text-primary mx-5 cursor-pointer hover:underline dark:hover:bg-hover"
-                                            onClick={() =>
-                                              handelEditRiskDetails(
-                                                situation.id,
-                                                subItm.id
-                                              )
-                                            }
-                                          >
-                                            <span className="inline-flex items-center">
-                                              <span
-                                                className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-12 bg-gray-200 text-black rounded"
-                                                style={{
-                                                  fontSize: "12px",
-                                                }}
-                                              >
-                                                Edit
+                                      {currentActivityForm.canEdit &&
+                                        showEditRemove && (
+                                          <>
+                                            <a
+                                              title="Edit"
+                                              className="inline-flex items-center leading-6 text-primary mx-5 cursor-pointer hover:underline dark:hover:bg-hover"
+                                              onClick={() =>
+                                                handelEditRiskDetails(
+                                                  situation.id,
+                                                  subItm.id
+                                                )
+                                              }
+                                            >
+                                              <span className="inline-flex items-center">
+                                                <span
+                                                  className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-12 bg-gray-200 text-black rounded"
+                                                  style={{
+                                                    fontSize: "12px",
+                                                  }}
+                                                >
+                                                  Edit
+                                                </span>
                                               </span>
-                                            </span>
-                                          </a>
+                                            </a>
 
-                                          <a
-                                            title="Remove"
-                                            className="inline-flex items-center leading-6 text-primary ml-2 cursor-pointer hover:underline dark:hover:bg-hover"
-                                            onClick={() =>
-                                              handelRemoveDetails(
-                                                situation.id,
-                                                subItm.id
-                                              )
-                                            }
-                                          >
-                                            <span className="inline-flex items-center">
-                                              <span
-                                                className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-12 bg-gray-200 text-black rounded"
-                                                style={{
-                                                  fontSize: "12px",
-                                                }}
-                                              >
-                                                Remove
+                                            <a
+                                              title="Remove"
+                                              className="inline-flex items-center leading-6 text-primary ml-2 cursor-pointer hover:underline dark:hover:bg-hover"
+                                              onClick={() =>
+                                                handelRemoveDetails(
+                                                  situation.id,
+                                                  subItm.id
+                                                )
+                                              }
+                                            >
+                                              <span className="inline-flex items-center">
+                                                <span
+                                                  className="font-medium cursor-pointer leading-5 fuse-vertical-navigation-item-badge-content hover:underline dark:hover:bg-hover px-12 bg-gray-200 text-black rounded"
+                                                  style={{
+                                                    fontSize: "12px",
+                                                  }}
+                                                >
+                                                  Remove
+                                                </span>
                                               </span>
-                                            </span>
-                                          </a>
-                                        </>
-                                      )}
+                                            </a>
+                                          </>
+                                        )}
                                     </div>
-                                    {currentActivityForm.canEdit && (
-                                      <span
-                                        className="text-white d-inline-block"
-                                        style={{
-                                          backgroundColor: "#2563eb",
-                                          borderRadius: "5px",
-                                          padding: "3px",
-                                          fontSize: "10px",
-                                          cursor: "pointer",
-                                        }}
-                                        onClick={() =>
-                                          handelRisk(
-                                            subItm.id,
-                                            hazardType.hazardType
-                                          )
-                                        }
-                                      >
-                                        Create New Risk Analysis
-                                      </span>
-                                    )}
+                                    {currentActivityForm.canEdit &&
+                                      showEditRemove && (
+                                        <span
+                                          className="text-white d-inline-block"
+                                          style={{
+                                            backgroundColor: "#2563eb",
+                                            borderRadius: "5px",
+                                            padding: "3px",
+                                            fontSize: "10px",
+                                            cursor: "pointer",
+                                          }}
+                                          onClick={() =>
+                                            handelRisk(
+                                              subItm.id,
+                                              hazardType.hazardType
+                                            )
+                                          }
+                                        >
+                                          Create New Risk Analysis
+                                        </span>
+                                      )}
                                   </div>
                                 </TableCell>
                               </TableRow>

@@ -2598,8 +2598,8 @@ const Implementation = ({
                                               className="icon-button"
                                               onClick={() => handleOpen(msg.id)}
                                               style={{
-                                                top: "-0px",
-                                                right: "-6px",
+                                                top: "2px",
+                                                right: "1px",
                                               }}
                                             >
                                               <FuseSvgIcon size={20}>
@@ -2768,6 +2768,7 @@ const Implementation = ({
                                   handelViewDetails={handelViewDetails}
                                   handelEditRiskDetails={handelEditRiskDetails}
                                   handelRemoveDetails={handelRemoveDetails}
+                                  showEditRemove={true}
                                 />
                               )}
                             </div>

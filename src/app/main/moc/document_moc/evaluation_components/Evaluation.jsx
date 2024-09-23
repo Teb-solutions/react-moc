@@ -293,8 +293,14 @@ const Evaluation = ({
                 }
               )
               .then((resp) => {
-                getRecords();
-                setIsLoading(false);
+                if (resp.data.statusCode == 400) {
+                  toast?.error(resp.data.message);
+                  setIsLoading(false);
+                } else {
+                  getRecords();
+                  setIsLoading(false);
+                }
+
                 // location.reload();
               })
               .catch((err) => {

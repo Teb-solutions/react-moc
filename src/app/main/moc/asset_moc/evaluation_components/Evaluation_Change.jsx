@@ -29,7 +29,6 @@ import { apiAuth } from "src/utils/http";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import CountdownTimer from "./CountdownTimer ";
 import "../componentStyle.css";
 import FuseLoading from "@fuse/core/FuseLoading";
 import Initiation from "../../common_components/Initiation";
@@ -38,6 +37,7 @@ import RiskAnalysis from "../../common_components/RiskAnalysis";
 import ConfirmationModal from "../../common_modal/confirmation_modal/ConfirmationModal";
 import SessionModal from "./SessionModal";
 import SessionListModal from "./SessionListModal";
+import CountdownTimer from "./CountdownTimer ";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -357,10 +357,12 @@ function EvaluationChange({
   const handleRemoveForm = (id) => {
     const newForms = forms.filter((form) => form.id !== id);
     setForms(newForms);
+    setAddConsultation(false);
   };
 
   const handleAddConsultation = () => {
     if (validateAdd()) {
+      setEditConsultation(false);
       handleAddForm();
       setAddConsultation(true);
     }
@@ -536,12 +538,17 @@ function EvaluationChange({
     apiAuth
       .put(`ChangeImpact/Create/${Session.id}/${assetEvaluationId}`, payload)
       .then((resp) => {
-        setIsLoading(false);
+        if (resp.data.statusCode == 200) {
+          setIsLoading(false);
 
-        setAddCImpact(false);
-        apiAuth.get(`/ChangeImpact/Get?id=${Session.id}`).then((resp) => {
-          setImpactList(resp.data?.data);
-        });
+          setHazardDetailsForm([]);
+          setAddCImpact(false);
+          apiAuth.get(`/ChangeImpact/Get?id=${Session.id}`).then((resp) => {
+            setImpactList(resp.data?.data);
+          });
+        } else {
+          toast.error(resp.data.message);
+        }
       })
       .catch((err) => {
         setIsLoading(false);
@@ -2188,22 +2195,20 @@ function EvaluationChange({
                       style={{ paddingLeft: "10px", paddingTop: "10px" }}
                     ></div>
                     {hasComments ? (
-                      list.map((itms, index) => (
-                        <div key={index} className="mb-12 ms-8">
-                          {itms.comments === "" ? (
-                            ""
-                          ) : (
-                            <>
-                              <span className="task-detail-label bg-default rounded text-secondary font-semibold">
-                                Comments by Staff
-                              </span>
-                              <span className="task-detail-value">
-                                {itms.comments}
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      ))
+                      <div className="mb-12 ms-8">
+                        {EditComments === "" ? (
+                          ""
+                        ) : (
+                          <>
+                            <span className="task-detail-label bg-default rounded text-secondary font-semibold">
+                              Comments by Staff
+                            </span>
+                            <span className="task-detail-value">
+                              {EditComments}
+                            </span>
+                          </>
+                        )}
+                      </div>
                     ) : (
                       <div className="mb-12 ms-8">
                         <span className=" bg-default rounded text-secondary font-semibold">
@@ -2483,6 +2488,7 @@ function EvaluationChange({
                                         handelEditRiskDetails
                                       }
                                       handelRemoveDetails={handelRemoveDetails}
+                                      showEditRemove={true}
                                     />
                                   )}
 

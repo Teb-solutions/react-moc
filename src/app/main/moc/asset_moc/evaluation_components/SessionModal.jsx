@@ -13,8 +13,8 @@ import {
   Checkbox,
 } from "@mui/material";
 import React from "react";
-import CountdownTimer from "./CountdownTimer ";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import CountdownTimer from "./CountdownTimer ";
 
 const SessionModal = ({
   open,

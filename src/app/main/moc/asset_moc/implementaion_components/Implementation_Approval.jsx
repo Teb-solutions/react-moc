@@ -3367,19 +3367,19 @@ function ImplementationApproval({
                                 value="Yes"
                                 control={<Radio />}
                                 label="Yes"
-                                disabled={!showPssrEdit}
+                                // disabled={!showPssrEdit}
                               />
                               <FormControlLabel
                                 value="No"
                                 control={<Radio />}
                                 label="No"
-                                disabled={!showPssrEdit}
+                                // disabled={!showPssrEdit}
                               />
                               <FormControlLabel
                                 value="N/A"
                                 control={<Radio />}
                                 label="N/A"
-                                disabled={!showPssrEdit}
+                                // disabled={!showPssrEdit}
                               />
                             </RadioGroup>
 

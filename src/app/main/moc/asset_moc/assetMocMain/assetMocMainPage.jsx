@@ -805,6 +805,11 @@ const AssetCourse = () => {
               setAppActions(resp.data.data.actions);
               setAppActivity(resp.data.data.activity);
             });
+            apiAuth
+              .get(`/ChangeRequest/RequestDetails?id=${assetEvaluationId}`)
+              .then((resp) => {
+                setContentDetails(resp.data.data);
+              });
             break;
           case "ImplementationApprovalSite":
             apiAuth
