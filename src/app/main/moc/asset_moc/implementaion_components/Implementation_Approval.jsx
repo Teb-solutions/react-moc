@@ -3361,25 +3361,33 @@ function ImplementationApproval({
                               onChange={(e) =>
                                 handleRadioChange(child.value, e.target.value)
                               }
-                              disabled={!showPssrEdit}
                             >
                               <FormControlLabel
                                 value="Yes"
                                 control={<Radio />}
                                 label="Yes"
-                                // disabled={!showPssrEdit}
+                                disabled={
+                                  radioState[child.value] === "Yes" &&
+                                  !showPssrEdit
+                                }
                               />
                               <FormControlLabel
                                 value="No"
                                 control={<Radio />}
                                 label="No"
-                                // disabled={!showPssrEdit}
+                                disabled={
+                                  radioState[child.value] === "No" &&
+                                  !showPssrEdit
+                                }
                               />
                               <FormControlLabel
                                 value="N/A"
                                 control={<Radio />}
                                 label="N/A"
-                                // disabled={!showPssrEdit}
+                                disabled={
+                                  radioState[child.value] === "N/A" &&
+                                  !showPssrEdit
+                                }
                               />
                             </RadioGroup>
 
