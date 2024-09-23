@@ -2700,7 +2700,7 @@ function ImplementationApproval({
                                         // style={{ width: "17%" }}
                                       >
                                         <div className="flex items-center">
-                                          <b>Task #{detail.id}</b>
+                                          <b>Task #{detail.sourceTaskId}</b>
                                         </div>
                                       </div>
 

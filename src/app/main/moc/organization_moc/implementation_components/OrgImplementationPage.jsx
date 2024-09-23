@@ -1010,7 +1010,7 @@ const OrgImplementation = ({
                                       className="icon-button"
                                       onClick={() => handleOpen(msg.id)}
                                       style={{
-                                        top: "-0px",
+                                        top: "20px",
                                       }}
                                     >
                                       <FuseSvgIcon size={20}>

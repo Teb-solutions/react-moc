@@ -163,11 +163,15 @@ const ImplementationApproval = ({
                         <button
                           className="task-mark-reviewed-button mat-stroked-button cursor-pointer"
                           onClick={() => handelreview(imptsk.id)}
+                          disabled={
+                            imptsk?.reviewd ||
+                            imptsk.implementationReviewStatus.length
+                          }
                           style={
                             reviewed[imptsk.id] ||
                             imptsk.implementationReviewStatus.length
                               ? {
-                                  backgroundColor: "#7FFFD4",
+                                  backgroundColor: "rgb(181 253 210 / 50%)",
                                 }
                               : {}
                           }

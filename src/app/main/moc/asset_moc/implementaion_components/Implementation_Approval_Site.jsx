@@ -500,12 +500,18 @@ const ImplementationApprovalSite = ({
                                 disabled={
                                   imptsk?.reviewd || clickedTasks[imptsk.id]
                                 }
-                                style={{
-                                  backgroundColor:
-                                    clickedTasks[imptsk.id] && "#7FFFD4",
-                                }}
+                                style={
+                                  reviewed[imptsk.id] ||
+                                  imptsk.implementationReviewStatus.length
+                                    ? {
+                                        backgroundColor:
+                                          "rgb(181 253 210 / 50%)",
+                                      }
+                                    : {}
+                                }
                               >
-                                {imptsk?.reviewd || clickedTasks[imptsk.id] ? (
+                                {imptsk?.reviewd ||
+                                imptsk.implementationReviewStatus.length ? (
                                   <span className="mat-button-wrapper">
                                     You have reviewed this just now
                                   </span>

@@ -37,7 +37,7 @@ import RiskAnalysis from "../../common_components/RiskAnalysis";
 import ConfirmationModal from "../../common_modal/confirmation_modal/ConfirmationModal";
 import SessionModal from "./SessionModal";
 import SessionListModal from "./SessionListModal";
-import CountdownTimer from "./CountdownTimer ";
+import CountdownTimer from "../../common_components/CountdownTimer ";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -3004,7 +3004,7 @@ function EvaluationChange({
                                     style={{ fontSize: "13px" }}
                                   >
                                     Detail of Hazard or How the Action/Task to
-                                    be Achievedss
+                                    be Achieved
                                   </Typography>
                                 </Grid>
                                 <Grid item xs={12} md={3}>
@@ -3324,7 +3324,7 @@ function EvaluationChange({
                         ) : (
                           <FormControl
                             fullWidth
-                            sx={{ m: 1, maxWidth: "100%" }}
+                            sx={{ maxWidth: "100%" }}
                             className="mt-10"
                           >
                             <FormLabel
