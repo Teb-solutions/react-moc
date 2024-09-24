@@ -19,6 +19,7 @@ import {
   Step,
   StepContent,
   StepLabel,
+  Tooltip,
 } from "@mui/material";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import Box from "@mui/material/Box";
@@ -42,6 +43,8 @@ import ImplementationApprovalSite from "../implementaion_components/Implementati
 import FuseLoading from "@fuse/core/FuseLoading";
 import CustomStepIcon from "../../homepage/CustomStepIcon";
 import { useCallback } from "react";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import HelpModal from "../../common_modal/HelpModal";
 const AssetCourse = () => {
   // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const theme = useTheme();
@@ -1212,6 +1215,16 @@ const AssetCourse = () => {
         console.error("Error updating team:", error);
       });
   };
+  const [showHelpmodal, setShowHelpModal] = useState(false);
+  const [activityName, setActivityName] = useState("");
+
+  const handelHelpModalOpen = (name) => {
+    setActivityName(name);
+    setShowHelpModal(true);
+  };
+  const handelHelpModalClose = () => {
+    setShowHelpModal(false);
+  };
 
   if (isLoading) {
     return <FuseLoading />;
@@ -1483,6 +1496,27 @@ const AssetCourse = () => {
                 {resp.name}
               </AccordionSummary>
               <AccordionDetails>
+                {resp.name != "Approval" && (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      width: "100%",
+                      justifyContent: "end",
+                    }}
+                  >
+                    <Tooltip
+                      title="Help"
+                      arrow
+                      onClick={() => handelHelpModalOpen(resp.name)}
+                    >
+                      <HelpOutlineIcon
+                        style={{ color: "#607d8b", marginLeft: "8px" }}
+                      />{" "}
+                      Help
+                    </Tooltip>
+                  </div>
+                )}
                 <Stepper orientation="vertical">
                   {resp.activities.map((step, index) => (
                     <Step
@@ -1672,6 +1706,13 @@ const AssetCourse = () => {
               </FuseSvgIcon>
             </AccordionSummary>
           </Accordion> */}
+
+          <HelpModal
+            showHelpmodal={showHelpmodal}
+            handelHelpModalClose={handelHelpModalClose}
+            activityName={activityName}
+          />
+
           <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"
