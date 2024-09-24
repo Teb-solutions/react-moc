@@ -180,8 +180,7 @@ function InitiationApproval(props) {
   const handleModalClose1 = () => {
     setOpen1(false);
     setOpenDrawer1(false);
-    setFileDetails1(false)
-
+    setFileDetails1(false);
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer1(open);
@@ -961,7 +960,27 @@ function InitiationApproval(props) {
           </Box>
         </Fade>
       </Modal>
-      <DocumentModal open={open1} step={1} formatDate={formatDate} handleDownload={handleDownload} handleModalClose={handleModalClose1} listDocument={listDocument1} selectedDocument={selectedDocument1} toggleDrawer={toggleDrawer} openDrawer={openDrawer1} setOpenDrawer={setOpenDrawer1} fileDetails={fileDetails1} setFileDetails={setFileDetails1} selectedFile={selectedFile1} handelDetailDoc={handelDetailDoc1} handelFileChange={handelFileChange1} handelFileDiscriptionChange={handelFileDiscriptionChange1} canExecute={currentActivityForm?.canExecute} handleSubmitDocument={handleSubmitAsset} handleDelete={handleDelete} />
+      <DocumentModal
+        open={open1}
+        step={1}
+        formatDate={formatDate}
+        handleDownload={handleDownload}
+        handleModalClose={handleModalClose1}
+        listDocument={listDocument1}
+        selectedDocument={selectedDocument1}
+        toggleDrawer={toggleDrawer}
+        openDrawer={openDrawer1}
+        setOpenDrawer={setOpenDrawer1}
+        fileDetails={fileDetails1}
+        setFileDetails={setFileDetails1}
+        selectedFile={selectedFile1}
+        handelDetailDoc={handelDetailDoc1}
+        handelFileChange={handelFileChange1}
+        handelFileDiscriptionChange={handelFileDiscriptionChange1}
+        canExecute={currentActivityForm?.canExecute}
+        handleSubmitDocument={handleSubmitAsset}
+        handleDelete={handleDelete}
+      />
 
       {/* <Modal
         aria-labelledby="transition-modal-title"

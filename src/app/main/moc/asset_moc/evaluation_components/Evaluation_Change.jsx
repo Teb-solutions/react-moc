@@ -37,7 +37,7 @@ import RiskAnalysis from "../../common_components/RiskAnalysis";
 import ConfirmationModal from "../../common_modal/confirmation_modal/ConfirmationModal";
 import SessionModal from "./SessionModal";
 import SessionListModal from "./SessionListModal";
-import CountdownTimer from "../../common_components/CountdownTimer ";
+import CountdownTimer from "./CountdownTimer ";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -3728,6 +3728,7 @@ function EvaluationChange({
                         marginLeft: "10px",
                       }}
                       variant="contained"
+                      onClick={handlebackList}
                     >
                       Cancel
                     </Button>

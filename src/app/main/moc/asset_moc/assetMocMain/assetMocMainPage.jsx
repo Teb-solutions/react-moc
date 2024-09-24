@@ -56,6 +56,7 @@ const AssetCourse = () => {
   const [contentDetails, setContentDetails] = useState({});
   const [contentDetailsDocu, setContentDetailsDocu] = useState({});
   const [contentDetailsIni, setContentDetailsIni] = useState({});
+  const [contentDetailsPssr, setContentDetailsPssr] = useState({});
 
   const [isLoading, setIsLoading] = useState(true);
   // const [AssetDetails, setAssetDetails] = useState({});
@@ -795,6 +796,14 @@ const AssetCourse = () => {
             break;
           case "ImplementationApproval":
             apiAuth
+              .get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
+              )
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+                setContentDetails(resp?.data?.data);
+              });
+            apiAuth
               .get(`/ChangeRequest/Get?id=${assetEvaluationId}`)
               .then((resp) => {
                 setIsLoading(false);
@@ -811,7 +820,7 @@ const AssetCourse = () => {
             apiAuth
               .get(`/ChangeRequest/RequestDetails?id=${assetEvaluationId}`)
               .then((resp) => {
-                setContentDetails(resp.data.data);
+                setContentDetailsPssr(resp.data.data);
               });
             break;
           case "ImplementationApprovalSite":
@@ -1394,6 +1403,7 @@ const AssetCourse = () => {
                   setContent={setContent}
                   contentDetailsini={contentDetailsIni}
                   contentDetails={contentDetails}
+                  contentDetailsPssr={contentDetailsPssr}
                 />
               )}
               {currentPhase === "ImplementationApprovalSite" && (

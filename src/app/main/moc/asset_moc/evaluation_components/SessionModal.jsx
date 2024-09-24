@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
-import CountdownTimer from "../../common_components/CountdownTimer ";
+import CountdownTimer from "./CountdownTimer ";
 
 const SessionModal = ({
   open,

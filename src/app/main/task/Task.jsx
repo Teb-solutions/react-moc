@@ -41,6 +41,7 @@ import { display, minHeight } from "@mui/system";
 import { set } from "lodash";
 import dayjs from "dayjs";
 import DocumentModal from "../moc/common_modal/documentModal";
+import { format, parseISO } from "date-fns";
 
 const Task = () => {
   const style = {
@@ -294,8 +295,6 @@ const Task = () => {
     };
   }, [sidebarOpen]);
 
-
-
   const formatDate = (dateString) => {
     if (!dateString) {
       return "Invalid date";
@@ -460,7 +459,7 @@ const Task = () => {
   const handleOpenDocModal = (e, task) => {
     setviewDoc(false);
     setFileDetails(false);
-    setListDocument([]);
+    // setListDocument([]);
     setNewDocument(true);
     setSelectedFile({
       name: "",
@@ -523,8 +522,6 @@ const Task = () => {
   };
 
   const handleSubmitDocument = () => {
-    console.log(selectedFile.documentId, "seleee");
-
     const formData = new FormData();
     formData.append("name", selectedFile.name);
     formData.append("descritpion", selectedFile.description);
@@ -790,7 +787,27 @@ const Task = () => {
           </Box>
         </Fade>
       </Modal>
-      <DocumentModal step={1} open={openDocModal} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} fileDetails={fileDetails} selectedDocument={selectedDocument} setFileDetails={setFileDetails} selectedFile={selectedFile} handelFileChange={handelFileChange} handleModalClose={handleOpenDocModalClose} handelFileDiscriptionChange={handelFileDiscriptionChange} handleDownload={handleDownload} listDocument={listDocument} toggleDrawer={toggleDrawer} handelDetailDoc={handelDetailDoc} handleSubmitDocument={handleSubmitDocument} formatDate={formatDate} canExecute={!task.completed} handleDelete={handleDelete} />
+      <DocumentModal
+        step={1}
+        open={openDocModal}
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        fileDetails={fileDetails}
+        selectedDocument={selectedDocument}
+        setFileDetails={setFileDetails}
+        selectedFile={selectedFile}
+        handelFileChange={handelFileChange}
+        handleModalClose={handleOpenDocModalClose}
+        handelFileDiscriptionChange={handelFileDiscriptionChange}
+        handleDownload={handleDownload}
+        listDocument={listDocument}
+        toggleDrawer={toggleDrawer}
+        handelDetailDoc={handelDetailDoc}
+        handleSubmitDocument={handleSubmitDocument}
+        formatDate={formatDate}
+        canExecute={!task.completed}
+        handleDelete={handleDelete}
+      />
       {/* <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -2021,26 +2038,26 @@ const Task = () => {
                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                       <small>
                                         {msg.startedDate &&
-                                          !msg.workInProgressDate &&
-                                          !msg.completedDate &&
-                                          !msg.dueDate
+                                        !msg.workInProgressDate &&
+                                        !msg.completedDate &&
+                                        !msg.dueDate
                                           ? `Started on ${formatDates(msg.startedDate)}`
                                           : msg.workInProgressDate &&
-                                            !msg.completedDate &&
-                                            !msg.dueDate
+                                              !msg.completedDate &&
+                                              !msg.dueDate
                                             ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                             : msg.dueDate && !msg.completedDate
                                               ? `Due on ${formatDates(msg.dueDate)}`
                                               : msg.completedDate
                                                 ? `Completed on ${new Date(
-                                                  msg.completedDate
-                                                ).toLocaleString("en-US", {
-                                                  month: "short",
-                                                  day: "2-digit",
-                                                  hour: "numeric",
-                                                  minute: "numeric",
-                                                  hour12: true,
-                                                })}`
+                                                    msg.completedDate
+                                                  ).toLocaleString("en-US", {
+                                                    month: "short",
+                                                    day: "2-digit",
+                                                    hour: "numeric",
+                                                    minute: "numeric",
+                                                    hour12: true,
+                                                  })}`
                                                 : "Unknown"}
                                       </small>
                                     </div>

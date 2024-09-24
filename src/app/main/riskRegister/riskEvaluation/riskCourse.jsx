@@ -26,12 +26,12 @@ import FuseLoading from "@fuse/core/FuseLoading";
 
 import RiskProgress from "../riskProgressBar";
 import MocHeader from "../../moc/MocHeader";
-import OrgPhasesEnum from "../../moc/orgEvaluation/orgPhaseEnum";
 import MainComponent from "../../moc/common_components/mainContent";
 import OrgImplementation from "../../moc/organization_moc/implementation_components/OrgImplementationPage";
 import CustomStepIcon from "../../moc/homepage/CustomStepIcon";
 import CourseProgress from "../../moc/homepage/CourseProgress";
 import SwipeableViews from "react-swipeable-views";
+import OrgPhasesEnum from "../../moc/organization_moc/orgPhaseEnum";
 
 const riskCourse = () => {
   const pageLayout = useRef(null);

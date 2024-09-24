@@ -79,6 +79,7 @@ function ImplementationApproval({
   setContent,
   contentDetailsini,
   contentDetails,
+  contentDetailsPssr,
 }) {
   const steps = [
     {
@@ -846,7 +847,7 @@ function ImplementationApproval({
     apiAuth.get(`/LookupData/Lov/16`).then((resp) => {
       setParticular(resp.data.data);
     });
-    apiAuth.get(`/LookupData/Lov/11`).then((resp) => { });
+    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {});
   };
 
   const handelApproveImpl = (e, task) => {
@@ -1247,8 +1248,22 @@ function ImplementationApproval({
           </Box>
         </Fade>
       </Modal>
-      <DocumentModal open={open} handleModalClose={handleModalClose} selectedDocument={selectedDocument} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} fileDetails={fileDetails} setFileDetails={setFileDetails} selectedFile={selectedFile} listDocument={listDocument} step={1} handelFileDiscriptionChange={handelFileDiscriptionChange} handelDetailDoc={handelDetailDoc} handleDownload={handleDownload} formatDate={formatDate} />
-
+      <DocumentModal
+        open={open}
+        handleModalClose={handleModalClose}
+        selectedDocument={selectedDocument}
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        fileDetails={fileDetails}
+        setFileDetails={setFileDetails}
+        selectedFile={selectedFile}
+        listDocument={listDocument}
+        step={1}
+        handelFileDiscriptionChange={handelFileDiscriptionChange}
+        handelDetailDoc={handelDetailDoc}
+        handleDownload={handleDownload}
+        formatDate={formatDate}
+      />
 
       <Modal
         aria-labelledby="transition-modal-title"
@@ -1469,8 +1484,8 @@ function ImplementationApproval({
                           name="audit"
                           onChange={handleChangeAddTask}
                           value={taskAdd.audit}
-                        // error={!!errorsAddTask.audit}
-                        // helperText={errorsAddTask.audit}
+                          // error={!!errorsAddTask.audit}
+                          // helperText={errorsAddTask.audit}
                         />
                         <h6 className="text-grey">
                           If this task is based on Audit comments, please select
@@ -2115,7 +2130,7 @@ function ImplementationApproval({
               )}
 
               <div>
-                {contentDetails?.isPssrRequired &&
+                {contentDetailsPssr?.isPssrRequired &&
                   !isActiveSession &&
                   currentActivityForm.canEdit &&
                   !showPssrCheckList && (
@@ -2139,7 +2154,7 @@ function ImplementationApproval({
                         : "Update PSSR Team"}
                     </Button>
                   )}
-                {contentDetails?.isPssrRequired &&
+                {contentDetailsPssr?.isPssrRequired &&
                   startSessionButon &&
                   currentActivityForm.canEdit &&
                   !showPssrCheckList && (
@@ -2165,7 +2180,7 @@ function ImplementationApproval({
                       {console.log(pssrsessionStatus, "pssrsessionStatus")}
                     </Button>
                   )}
-                {contentDetails?.isPssrRequired &&
+                {contentDetailsPssr?.isPssrRequired &&
                   isActiveSession &&
                   currentActivityForm.canEdit &&
                   !showPssrCheckList && (
@@ -2329,7 +2344,7 @@ function ImplementationApproval({
                                     <div className="d-flex flex-wrap justify-between w-100 pr-10">
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div className="flex items-center">
                                           <b>Task #{detail.sourceTaskId}</b>
@@ -2338,14 +2353,14 @@ function ImplementationApproval({
 
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div
                                           className="flex items-center"
                                           style={{}}
                                         >
                                           {detail.isCompleted &&
-                                            detail.taskStatus === 3 ? (
+                                          detail.taskStatus === 3 ? (
                                             <span className="text-green">
                                               Approved
                                             </span>
@@ -2363,7 +2378,7 @@ function ImplementationApproval({
                                       </div>
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div className="flex items-center">
                                           No Risks
@@ -2371,7 +2386,7 @@ function ImplementationApproval({
                                       </div>
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div className="flex items-center">
                                           {detail.assignedStaff}
@@ -2380,7 +2395,7 @@ function ImplementationApproval({
 
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div className="flex items-center">
                                           {formatDate(detail.dueDate)}
@@ -2388,7 +2403,7 @@ function ImplementationApproval({
                                       </div>
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div className="flex items-center">
                                           <StyledBadge
@@ -2634,16 +2649,16 @@ function ImplementationApproval({
                                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                                       <small>
                                                         {msg.startedDate &&
-                                                          !msg.workInProgressDate &&
-                                                          !msg.completedDate &&
-                                                          !msg.dueDate
+                                                        !msg.workInProgressDate &&
+                                                        !msg.completedDate &&
+                                                        !msg.dueDate
                                                           ? `Started on ${formatDate(msg.startedDate)}`
                                                           : msg.workInProgressDate &&
-                                                            !msg.completedDate &&
-                                                            !msg.dueDate
+                                                              !msg.completedDate &&
+                                                              !msg.dueDate
                                                             ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
                                                             : msg.dueDate &&
-                                                              !msg.completedDate
+                                                                !msg.completedDate
                                                               ? `Due on ${formatDate(msg.dueDate)}`
                                                               : msg.completedDate
                                                                 ? `Completed on ${formatDate(msg.completedDate)}`
@@ -2653,7 +2668,7 @@ function ImplementationApproval({
                                                   </div>
                                                   {documentCounts[msg.id] ? (
                                                     documentCounts[msg.id] !=
-                                                    0 && (
+                                                      0 && (
                                                       <button
                                                         className="icon-button"
                                                         onClick={() =>
@@ -2667,7 +2682,7 @@ function ImplementationApproval({
                                                         <StyledBadge
                                                           badgeContent={
                                                             documentCounts[
-                                                            msg.id
+                                                              msg.id
                                                             ]
                                                           }
                                                         >
@@ -3160,7 +3175,7 @@ function ImplementationApproval({
                     color="secondary"
                     // style={{ marginTop: "10px" }}
                     onClick={() => handlesumbitmodal(btn.uid)}
-                  // onClick={(e) => SubmitApprovelCreate(e, btn.uid)}
+                    // onClick={(e) => SubmitApprovelCreate(e, btn.uid)}
                   >
                     {btn.name}
                   </Button>
@@ -3170,7 +3185,7 @@ function ImplementationApproval({
           )}
         </Paper>
       </SwipeableViews>
-    </div >
+    </div>
   );
 }
 
