@@ -31,6 +31,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Initiation from "../../common_components/Initiation";
 import { withStyles } from "@mui/styles";
 import DocumentModal from "../../common_modal/documentModal";
+import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
 
 const ImplementationApprovalSite = ({
   contentDetails,
@@ -241,7 +242,7 @@ const ImplementationApprovalSite = ({
           toast?.error(resp.data.message);
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   };
   const [open, setOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -259,7 +260,6 @@ const ImplementationApprovalSite = ({
     documentId: "",
     changeRequestToken: null,
   });
-
 
   const formatDate = (dateString) => {
     if (!dateString) {
@@ -629,7 +629,7 @@ const ImplementationApprovalSite = ({
                           </div>
 
                           {imptsk.implementationReviews.length > 0 ||
-                            showReview ? (
+                          showReview ? (
                             <div>
                               <Accordion
                                 className=" mt-10 pt-10"
@@ -677,10 +677,10 @@ const ImplementationApprovalSite = ({
                                       {hasAddedComment(
                                         imptsk.implementationReviews
                                       ) && (
-                                          <span className="text-green">
-                                            (You have added 1 review)
-                                          </span>
-                                        )}
+                                        <span className="text-green">
+                                          (You have added 1 review)
+                                        </span>
+                                      )}
                                     </Typography>
                                   </div>
                                 </AccordionSummary>
@@ -737,10 +737,10 @@ const ImplementationApprovalSite = ({
                                                   imptsk.id
                                                 ]?.trim()
                                                   ? {
-                                                    backgroundColor:
-                                                      "#cdcdcd",
-                                                    float: "right",
-                                                  }
+                                                      backgroundColor:
+                                                        "#cdcdcd",
+                                                      float: "right",
+                                                    }
                                                   : { float: "right" }
                                               }
                                               onClick={() =>
@@ -784,7 +784,7 @@ const ImplementationApprovalSite = ({
                                           }}
                                         />
                                         {AppActivity.canEdit &&
-                                          isMyComment(rwx) ? (
+                                        isMyComment(rwx) ? (
                                           <div
                                             className="mat-form-field-infix"
                                             style={{ position: "relative" }}
@@ -819,9 +819,9 @@ const ImplementationApprovalSite = ({
                                                   imptsk.id
                                                 ]?.trim()
                                                   ? {
-                                                    backgroundColor:
-                                                      "#cdcdcd",
-                                                  }
+                                                      backgroundColor:
+                                                        "#cdcdcd",
+                                                    }
                                                   : {}
                                               }
                                               onClick={() =>
@@ -1153,105 +1153,69 @@ const ImplementationApprovalSite = ({
           </div>
         </Paper>
       </SwipeableViews>
-      <DocumentModal step={1} open={open} handleModalClose={handleModalClose} selectedFile={selectedFile} selectedDocument={selectedDocument} handleDelete={handleDelete} handelDetailDoc={handelDetailDoc} handleDownload={handleDownload} handleSubmitDocument={handleSubmitAsset} listDocument={listDocument} CountApprove={CountApprove} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} fileDetails={fileDetails} setFileDetails={setFileDetails} handelFileChange={handelFileChange} canExecute={AppActivity?.canExecute} toggleDrawer={toggleDrawer} handelFileDiscriptionChange={handelFileDiscriptionChange} formatDate={formatDate} />
+      <DocumentModal
+        step={1}
+        open={open}
+        handleModalClose={handleModalClose}
+        selectedFile={selectedFile}
+        selectedDocument={selectedDocument}
+        handleDelete={handleDelete}
+        handelDetailDoc={handelDetailDoc}
+        handleDownload={handleDownload}
+        handleSubmitDocument={handleSubmitAsset}
+        listDocument={listDocument}
+        CountApprove={CountApprove}
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        fileDetails={fileDetails}
+        setFileDetails={setFileDetails}
+        handelFileChange={handelFileChange}
+        canExecute={AppActivity?.canExecute}
+        toggleDrawer={toggleDrawer}
+        handelFileDiscriptionChange={handelFileDiscriptionChange}
+        formatDate={formatDate}
+      />
 
-
-
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={deletes}
-        onClose={handleCloseDelete}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
+      <DeleteModal
+        openDelete={deletes}
+        handleCloseDelete={handleCloseDelete}
+        title=""
       >
-        <Fade in={deletes}>
-          <Box sx={style2}>
-            <Box>
-              <div className="flex">
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "15px",
-                    marginRight: "5px",
-                    marginTop: "5px",
-
-                    color: "red",
-                  }}
-                >
-                  <img src="/assets/images/etc/icon.png" />
-                </Typography>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "2rem",
-                  }}
-                >
-                  Confirm action
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                    style={{
-                      fontSize: "15px",
-                      fontWeight: "800px !important",
-                      color: "grey",
-                    }}
-                  >
-                    Do you want to delete ?
-                  </Typography>
-                </Typography>
-              </div>
-            </Box>
-            <div
-              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-              style={{
-                marginTop: "15px",
-                justifyContent: "end",
-                backgroundColor: " rgba(248,250,252)",
-                padding: "10px",
-              }}
-            >
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="primary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid grey",
-                }}
-                onClick={handleCloseDelete}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="secondary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "red",
-                }}
-                type="submit"
-                onClick={handleSubmitDelete}
-              >
-                Confirm
-              </Button>
-            </div>
-          </Box>
-        </Fade>
-      </Modal>
+        <div
+          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+          style={{
+            marginTop: "15px",
+            justifyContent: "end",
+            backgroundColor: " rgba(248,250,252)",
+            padding: "10px",
+          }}
+        >
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="primary"
+            style={{
+              padding: "23px",
+              backgroundColor: "white",
+              color: "black",
+              border: "1px solid grey",
+            }}
+            onClick={handleCloseDelete}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="secondary"
+            style={{ padding: "23px", backgroundColor: "red" }}
+            type="submit"
+            onClick={handleSubmitDelete}
+          >
+            Confirm
+          </Button>
+        </div>
+      </DeleteModal>
     </div>
   );
 };

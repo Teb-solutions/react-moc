@@ -22,6 +22,7 @@ import SwipeableViews from "react-swipeable-views";
 import { parseISO, format } from "date-fns";
 import { apiAuth } from "src/utils/http";
 import DocumentModal from "../common_modal/documentModal";
+import DeleteModal from "../common_modal/delete_modal/DeleteModal";
 
 const useStyles = makeStyles({
   documentList: {
@@ -208,7 +209,6 @@ function Initiation(props) {
   const handleOpen = () => {
     setOpen(true);
     ListDoc(assetEvaluationId, contentDetails?.changeRequestId);
-
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
@@ -272,11 +272,9 @@ function Initiation(props) {
     });
   };
   const handleModalClose1 = () => {
-
     setOpen1(false);
     setFileDetails1(false);
     setOpenDrawer1(false);
-
   };
 
   const handleOpen1 = () => {
@@ -317,108 +315,80 @@ function Initiation(props) {
       {/* <ModalView open={open} 1={1} handleSubmit={handleSubmit} /> */}
 
       {/* ..................DocumentHistroy  start................... */}
-      <DocumentModal step={1} handleModalClose={handleModalClose1} selectedDocument={selectedDocument1} fileDetails={fileDetails1} setFileDetails={setFileDetails1} open={open1} listDocument={listDocument1} contentDetails={contentDetailsDocu} handelDetailDoc={handelDetailDoc1} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} toggleDrawer={toggleDrawer} handleDownload={handleDownload1} formatDate={formatDate} />
-
+      <DocumentModal
+        step={1}
+        handleModalClose={handleModalClose1}
+        selectedDocument={selectedDocument1}
+        fileDetails={fileDetails1}
+        setFileDetails={setFileDetails1}
+        open={open1}
+        listDocument={listDocument1}
+        contentDetails={contentDetailsDocu}
+        handelDetailDoc={handelDetailDoc1}
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        toggleDrawer={toggleDrawer}
+        handleDownload={handleDownload1}
+        formatDate={formatDate}
+      />
 
       {/* ............................................ */}
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={deletes}
-        onClose={handleCloseDelete}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
+      <DeleteModal
+        openDelete={deletes}
+        handleCloseDelete={handleCloseDelete}
+        title=""
       >
-        <Fade in={deletes}>
-          <Box sx={style2}>
-            <Box>
-              <div className="flex">
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "15px",
-                    marginRight: "5px",
-                    marginTop: "5px",
+        <div
+          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+          style={{
+            marginTop: "15px",
+            justifyContent: "end",
+            backgroundColor: " rgba(248,250,252)",
+            padding: "10px",
+          }}
+        >
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="primary"
+            style={{
+              padding: "23px",
+              backgroundColor: "white",
+              color: "black",
+              border: "1px solid grey",
+            }}
+            onClick={handleCloseDelete}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="secondary"
+            style={{ padding: "23px", backgroundColor: "red" }}
+            type="submit"
+            onClick={handleSubmitDelete}
+          >
+            Confirm
+          </Button>
+        </div>
+      </DeleteModal>
 
-                    color: "red",
-                  }}
-                >
-                  <img src="/assets/images/etc/icon.png" alt="" />
-                </Typography>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "2rem",
-                  }}
-                >
-                  Confirm action
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                    style={{
-                      fontSize: "15px",
-                      fontWeight: "800px !important",
-                      color: "grey",
-                    }}
-                  >
-                    Do you want to delete ?
-                  </Typography>
-                </Typography>
-              </div>
-            </Box>
-            <div
-              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-              style={{
-                marginTop: "15px",
-                justifyContent: "end",
-                backgroundColor: " rgba(248,250,252)",
-                padding: "10px",
-              }}
-            >
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="primary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid grey",
-                }}
-                onClick={handleCloseDelete}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="secondary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "red",
-                }}
-                type="submit"
-                onClick={handleSubmitDelete}
-              >
-                Confirm
-              </Button>
-            </div>
-          </Box>
-        </Fade>
-      </Modal>
-
-      <DocumentModal open={open} handleModalClose={handleModalClose} contentDetails={contentDetails} listDocument={listDocument} openDrawer={openDrawer} step={1} fileDetails={fileDetails} setFileDetails={setFileDetails} selectedFile={selectedFile} selectedDocument={selectedDocument} formatDate={formatDate} handleDownload={handleDownload} handelDetailDoc={handelDetailDoc} />
-
+      <DocumentModal
+        open={open}
+        handleModalClose={handleModalClose}
+        contentDetails={contentDetails}
+        listDocument={listDocument}
+        openDrawer={openDrawer}
+        step={1}
+        fileDetails={fileDetails}
+        setFileDetails={setFileDetails}
+        selectedFile={selectedFile}
+        selectedDocument={selectedDocument}
+        formatDate={formatDate}
+        handleDownload={handleDownload}
+        handelDetailDoc={handelDetailDoc}
+      />
 
       <SwipeableViews>
         <Paper className="w-full mx-auto my-8 lg:mt-16  rounded-16 shadow overflow-hidden">

@@ -51,6 +51,7 @@ import RiskAnalysisTableView from "../../common_components/RiskAnalysisTableView
 import RiskAnalysis from "../../common_components/RiskAnalysis";
 import DocumentModal from "../../common_modal/documentModal";
 import { format, parseISO } from "date-fns";
+import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -1717,7 +1718,7 @@ const EvaluationApproval = ({
                                           className="whitespace-nowrap ms-5 ml-24"
                                           variant="contained"
                                           color="secondary"
-                                        // style={{ marginTop: "10px" }}
+                                          // style={{ marginTop: "10px" }}
                                         >
                                           Mark as reviewed
                                         </Button>
@@ -1770,17 +1771,17 @@ const EvaluationApproval = ({
                                                       style={{
                                                         backgroundColor:
                                                           imptsk?.reviewd ||
-                                                            clickedTasks[
+                                                          clickedTasks[
                                                             imptsk.id
-                                                            ]
+                                                          ]
                                                             ? "rgba(220,252,231)"
                                                             : "",
                                                       }}
                                                     >
                                                       {imptsk?.reviewd ||
-                                                        clickedTasks[
+                                                      clickedTasks[
                                                         imptsk.id
-                                                        ] ? (
+                                                      ] ? (
                                                         <span className="mat-button-wrapper">
                                                           You have reviewed this
                                                           just now
@@ -1799,7 +1800,7 @@ const EvaluationApproval = ({
                                               imptsk.id &&
                                               (!imptsk.showPreviousTasks ||
                                                 imptsk.showPreviousTasks ===
-                                                null) && (
+                                                  null) && (
                                                 <span
                                                   className="text-sm text-secondary text-blue-500 font-bold cursor-pointer leading-none mt-1 ms-3"
                                                   onClick={() =>
@@ -1876,72 +1877,72 @@ const EvaluationApproval = ({
                                                     {itm
                                                       ?.changeImpactTaskReviews
                                                       ?.length != 0 && (
-                                                        <Accordion
-                                                          expanded={
-                                                            expanded === "panel2"
+                                                      <Accordion
+                                                        expanded={
+                                                          expanded === "panel2"
+                                                        }
+                                                        onChange={handleExpansionChange(
+                                                          "panel2"
+                                                        )}
+                                                        className="mt-6 m-10"
+                                                      >
+                                                        <AccordionSummary
+                                                          expandIcon={
+                                                            <ExpandMoreIcon />
                                                           }
-                                                          onChange={handleExpansionChange(
-                                                            "panel2"
-                                                          )}
-                                                          className="mt-6 m-10"
+                                                          aria-controls="panel1a-content"
+                                                          id="panel1a-header"
                                                         >
-                                                          <AccordionSummary
-                                                            expandIcon={
-                                                              <ExpandMoreIcon />
-                                                            }
-                                                            aria-controls="panel1a-content"
-                                                            id="panel1a-header"
-                                                          >
-                                                            <Typography>
-                                                              <span className="text-brown">
-                                                                {
-                                                                  itm
-                                                                    ?.changeImpactTaskReviews
-                                                                    ?.length
-                                                                }{" "}
-                                                                Reviews
-                                                              </span>{" "}
-                                                            </Typography>
-                                                          </AccordionSummary>
-                                                          {itm?.changeImpactTaskReviews?.map(
-                                                            (rivew) => (
-                                                              <AccordionDetails>
-                                                                <div className="mat-form-field-wrapper">
-                                                                  <div className="mat-form-field-flex">
-                                                                    <img
-                                                                      src="/assets/images/etc/userpic.png"
-                                                                      alt="Card cover image"
-                                                                      className="rounded-full mr-4"
+                                                          <Typography>
+                                                            <span className="text-brown">
+                                                              {
+                                                                itm
+                                                                  ?.changeImpactTaskReviews
+                                                                  ?.length
+                                                              }{" "}
+                                                              Reviews
+                                                            </span>{" "}
+                                                          </Typography>
+                                                        </AccordionSummary>
+                                                        {itm?.changeImpactTaskReviews?.map(
+                                                          (rivew) => (
+                                                            <AccordionDetails>
+                                                              <div className="mat-form-field-wrapper">
+                                                                <div className="mat-form-field-flex">
+                                                                  <img
+                                                                    src="/assets/images/etc/userpic.png"
+                                                                    alt="Card cover image"
+                                                                    className="rounded-full mr-4"
+                                                                    style={{
+                                                                      width:
+                                                                        "3rem",
+                                                                      height:
+                                                                        "3rem",
+                                                                    }}
+                                                                  />
+                                                                  <div>
+                                                                    <div className="mat-form-field-infix mt-5">
+                                                                      <span className="">
+                                                                        {
+                                                                          rivew?.createdByStaffName
+                                                                        }
+                                                                      </span>
+                                                                      -{" "}
+                                                                      <span className="text-grey">
+                                                                        {
+                                                                          rivew?.remark
+                                                                        }
+                                                                      </span>
+                                                                    </div>
+                                                                    <p
+                                                                      className="mat-form-field-infix text-grey"
                                                                       style={{
-                                                                        width:
-                                                                          "3rem",
-                                                                        height:
-                                                                          "3rem",
+                                                                        fontSize:
+                                                                          "smaller",
                                                                       }}
-                                                                    />
-                                                                    <div>
-                                                                      <div className="mat-form-field-infix mt-5">
-                                                                        <span className="">
-                                                                          {
-                                                                            rivew?.createdByStaffName
-                                                                          }
-                                                                        </span>
-                                                                        -{" "}
-                                                                        <span className="text-grey">
-                                                                          {
-                                                                            rivew?.remark
-                                                                          }
-                                                                        </span>
-                                                                      </div>
-                                                                      <p
-                                                                        className="mat-form-field-infix text-grey"
-                                                                        style={{
-                                                                          fontSize:
-                                                                            "smaller",
-                                                                        }}
-                                                                      >
-                                                                        {rivew?.updatedAt
-                                                                          ? new Date(
+                                                                    >
+                                                                      {rivew?.updatedAt
+                                                                        ? new Date(
                                                                             rivew.updatedAt
                                                                           ).toLocaleString(
                                                                             "en-US",
@@ -1960,16 +1961,16 @@ const EvaluationApproval = ({
                                                                                 "short", // e.g., "GMT+5"
                                                                             }
                                                                           )
-                                                                          : null}
-                                                                      </p>
-                                                                    </div>
+                                                                        : null}
+                                                                    </p>
                                                                   </div>
                                                                 </div>
-                                                              </AccordionDetails>
-                                                            )
-                                                          )}
-                                                        </Accordion>
-                                                      )}
+                                                              </div>
+                                                            </AccordionDetails>
+                                                          )
+                                                        )}
+                                                      </Accordion>
+                                                    )}
                                                   </div>
                                                 )
                                               )}
@@ -2152,7 +2153,7 @@ const EvaluationApproval = ({
                                                                     {sub
                                                                       .riskAnalysisHazardTypes
                                                                       ?.length ==
-                                                                      0 ? (
+                                                                    0 ? (
                                                                       <>
                                                                         <div
                                                                           _ngcontent-fyk-c288=""
@@ -2165,10 +2166,10 @@ const EvaluationApproval = ({
                                                                             sx={{
                                                                               paddingY: 2,
                                                                               paddingX:
-                                                                              {
-                                                                                xs: 2,
-                                                                                md: 1,
-                                                                              },
+                                                                                {
+                                                                                  xs: 2,
+                                                                                  md: 1,
+                                                                                },
                                                                             }}
                                                                           >
                                                                             <Grid
@@ -2193,10 +2194,10 @@ const EvaluationApproval = ({
                                                                             sx={{
                                                                               paddingY: 2,
                                                                               paddingX:
-                                                                              {
-                                                                                xs: 2,
-                                                                                md: 1,
-                                                                              },
+                                                                                {
+                                                                                  xs: 2,
+                                                                                  md: 1,
+                                                                                },
                                                                             }}
                                                                           >
                                                                             <Grid
@@ -2254,10 +2255,10 @@ const EvaluationApproval = ({
                                                                                     sx={{
                                                                                       paddingY: 2,
                                                                                       paddingX:
-                                                                                      {
-                                                                                        xs: 2,
-                                                                                        md: 3,
-                                                                                      },
+                                                                                        {
+                                                                                          xs: 2,
+                                                                                          md: 3,
+                                                                                        },
                                                                                     }}
                                                                                   >
                                                                                     <Grid
@@ -2276,16 +2277,16 @@ const EvaluationApproval = ({
                                                                                         style={{
                                                                                           backgroundColor:
                                                                                             situation.residualRiskClassificationDisplay ===
-                                                                                              "HighRisk"
+                                                                                            "HighRisk"
                                                                                               ? "red"
                                                                                               : situation.residualRiskClassificationDisplay ===
-                                                                                                "LowRisk"
+                                                                                                  "LowRisk"
                                                                                                 ? "yellow"
                                                                                                 : situation.residualRiskClassificationDisplay ===
-                                                                                                  "AverageRisk"
+                                                                                                    "AverageRisk"
                                                                                                   ? "orange"
                                                                                                   : situation.residualRiskClassificationDisplay ===
-                                                                                                    "SignificantRisk"
+                                                                                                      "SignificantRisk"
                                                                                                     ? "purple"
                                                                                                     : "green",
                                                                                           width:
@@ -2294,7 +2295,7 @@ const EvaluationApproval = ({
                                                                                             "3px",
                                                                                           color:
                                                                                             situation.residualRiskClassificationDisplay ===
-                                                                                              "LowRisk"
+                                                                                            "LowRisk"
                                                                                               ? "#000"
                                                                                               : "white",
                                                                                           borderRadius:
@@ -2305,7 +2306,7 @@ const EvaluationApproval = ({
                                                                                             "12px",
                                                                                           fontWeight:
                                                                                             situation.residualRiskClassificationDisplay ===
-                                                                                              "LowRisk"
+                                                                                            "LowRisk"
                                                                                               ? ""
                                                                                               : "bold",
                                                                                         }}
@@ -2504,11 +2505,11 @@ const EvaluationApproval = ({
                                                           {hasAddedComment(
                                                             imptsk.changeImpactTaskReviews
                                                           ) && (
-                                                              <span className="text-green">
-                                                                (You have added 1
-                                                                review)
-                                                              </span>
-                                                            )}
+                                                            <span className="text-green">
+                                                              (You have added 1
+                                                              review)
+                                                            </span>
+                                                          )}
                                                         </Typography>
                                                       </div>
                                                     </AccordionSummary>
@@ -2607,9 +2608,9 @@ const EvaluationApproval = ({
                                                                 }}
                                                               />
                                                               {AppActivity.canEdit &&
-                                                                isMyComment(
-                                                                  rwx
-                                                                ) ? (
+                                                              isMyComment(
+                                                                rwx
+                                                              ) ? (
                                                                 <div
                                                                   className="mat-form-field-infix"
                                                                   style={{
@@ -2848,198 +2849,108 @@ const EvaluationApproval = ({
           </Fade>
         </Modal>
 
-        <DocumentModal step={1} open={taskRespOpen} handleModalClose={handleRespModalClose} selectedFile={selectedRespFile} selectedDocument={selectedResDocument} handelDetailDoc={handelRespDetailDoc} listDocument={taskRespListDocument} openDrawer={openDrawerRes} setOpenDrawer={setOpenDrawerRes} handelFileDiscriptionChange={handelFileResDiscriptionChange} handleSubmitDocument={handleSubmitResponse} fileDetails={fileDetailsRes} setFileDetails={setFileDetailsRes} handleDownload={handleResDownload} handleDelete={handleResDelete} toggleDrawer={toggleDrawerRes} handelFileChange={handelRespFileChange} canExecute={AppActivity?.canExecute} formatDate={formatDate} />
-
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={Resdeletes}
-          onClose={handleCloseDelete}
-          closeAfterTransition
-          slots={{ backdrop: Backdrop }}
-          slotProps={{
-            backdrop: {
-              timeout: 500,
-            },
-          }}
+        <DocumentModal
+          step={1}
+          open={taskRespOpen}
+          handleModalClose={handleRespModalClose}
+          selectedFile={selectedRespFile}
+          selectedDocument={selectedResDocument}
+          handelDetailDoc={handelRespDetailDoc}
+          listDocument={taskRespListDocument}
+          openDrawer={openDrawerRes}
+          setOpenDrawer={setOpenDrawerRes}
+          handelFileDiscriptionChange={handelFileResDiscriptionChange}
+          handleSubmitDocument={handleSubmitResponse}
+          fileDetails={fileDetailsRes}
+          setFileDetails={setFileDetailsRes}
+          handleDownload={handleResDownload}
+          handleDelete={handleResDelete}
+          toggleDrawer={toggleDrawerRes}
+          handelFileChange={handelRespFileChange}
+          canExecute={AppActivity?.canExecute}
+          formatDate={formatDate}
+        />
+        <DeleteModal
+          openDelete={Resdeletes}
+          handleCloseDelete={handleResCloseDelete}
+          title=""
         >
-          <Fade in={Resdeletes}>
-            <Box sx={style2}>
-              <Box>
-                <div className="flex">
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                    style={{
-                      fontSize: "15px",
-                      marginRight: "5px",
-                      marginTop: "5px",
+          <div
+            className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+            style={{
+              marginTop: "15px",
+              justifyContent: "end",
+              backgroundColor: " rgba(248,250,252)",
+              padding: "10px",
+            }}
+          >
+            <Button
+              className="whitespace-nowrap"
+              variant="contained"
+              color="primary"
+              style={{
+                padding: "23px",
+                backgroundColor: "white",
+                color: "black",
+                border: "1px solid grey",
+              }}
+              onClick={handleResCloseDelete}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="whitespace-nowrap"
+              variant="contained"
+              color="secondary"
+              style={{ padding: "23px", backgroundColor: "red" }}
+              type="submit"
+              onClick={handleResSubmitDelete}
+            >
+              Confirm
+            </Button>
+          </div>
+        </DeleteModal>
 
-                      color: "red",
-                    }}
-                  >
-                    <img src="/assets/images/etc/icon.png" />
-                  </Typography>
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                    style={{
-                      fontSize: "2rem",
-                    }}
-                  >
-                    Confirm action
-                    <Typography
-                      id="transition-modal-title"
-                      variant="h6"
-                      component="h2"
-                      style={{
-                        fontSize: "15px",
-                        fontWeight: "800px !important",
-                        color: "grey",
-                      }}
-                    >
-                      Do you want to delete ?
-                    </Typography>
-                  </Typography>
-                </div>
-              </Box>
-              <div
-                className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                style={{
-                  marginTop: "15px",
-                  justifyContent: "end",
-                  backgroundColor: " rgba(248,250,252)",
-                  padding: "10px",
-                }}
-              >
-                <Button
-                  className="whitespace-nowrap"
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    padding: "23px",
-                    backgroundColor: "white",
-                    color: "black",
-                    border: "1px solid grey",
-                  }}
-                  onClick={handleResCloseDelete}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="whitespace-nowrap"
-                  variant="contained"
-                  color="secondary"
-                  style={{
-                    padding: "23px",
-                    backgroundColor: "red",
-                  }}
-                  type="submit"
-                  onClick={handleResSubmitDelete}
-                >
-                  Confirm
-                </Button>
-              </div>
-            </Box>
-          </Fade>
-        </Modal>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={deletes}
-          onClose={handleCloseDelete}
-          closeAfterTransition
-          slots={{ backdrop: Backdrop }}
-          slotProps={{
-            backdrop: {
-              timeout: 500,
-            },
-          }}
+        <DeleteModal
+          openDelete={deletes}
+          handleCloseDelete={handleCloseDelete}
+          title=""
         >
-          <Fade in={deletes}>
-            <Box sx={style2}>
-              <Box>
-                <div className="flex">
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                    style={{
-                      fontSize: "15px",
-                      marginRight: "5px",
-                      marginTop: "5px",
-
-                      color: "red",
-                    }}
-                  >
-                    <img src="/assets/images/etc/icon.png" />
-                  </Typography>
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                    style={{
-                      fontSize: "2rem",
-                    }}
-                  >
-                    Confirm action
-                    <Typography
-                      id="transition-modal-title"
-                      variant="h6"
-                      component="h2"
-                      style={{
-                        fontSize: "15px",
-                        fontWeight: "800px !important",
-                        color: "grey",
-                      }}
-                    >
-                      Do you want to delete ?
-                    </Typography>
-                  </Typography>
-                </div>
-              </Box>
-              <div
-                className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                style={{
-                  marginTop: "15px",
-                  justifyContent: "end",
-                  backgroundColor: " rgba(248,250,252)",
-                  padding: "10px",
-                }}
-              >
-                <Button
-                  className="whitespace-nowrap"
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    padding: "23px",
-                    backgroundColor: "white",
-                    color: "black",
-                    border: "1px solid grey",
-                  }}
-                  onClick={handleCloseDelete}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="whitespace-nowrap"
-                  variant="contained"
-                  color="secondary"
-                  style={{
-                    padding: "23px",
-                    backgroundColor: "red",
-                  }}
-                  type="submit"
-                  onClick={handleSubmitDelete}
-                >
-                  Confirm
-                </Button>
-              </div>
-            </Box>
-          </Fade>
-        </Modal>
+          <div
+            className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+            style={{
+              marginTop: "15px",
+              justifyContent: "end",
+              backgroundColor: " rgba(248,250,252)",
+              padding: "10px",
+            }}
+          >
+            <Button
+              className="whitespace-nowrap"
+              variant="contained"
+              color="primary"
+              style={{
+                padding: "23px",
+                backgroundColor: "white",
+                color: "black",
+                border: "1px solid grey",
+              }}
+              onClick={handleCloseDelete}
+            >
+              Cancel
+            </Button>
+            <Button
+              className="whitespace-nowrap"
+              variant="contained"
+              color="secondary"
+              style={{ padding: "23px", backgroundColor: "red" }}
+              type="submit"
+              onClick={handleSubmitDelete}
+            >
+              Confirm
+            </Button>
+          </div>
+        </DeleteModal>
 
         <Modal
           aria-labelledby="transition-modal-title"
@@ -3108,37 +3019,37 @@ const EvaluationApproval = ({
                           <TableRow key={update.id}>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {update.impact}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {update.task}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {update.how}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {update.deadline}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {update.assignedTo}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {formatDates(update.dueDate)}
                             </TableCell>
@@ -4088,13 +3999,13 @@ const EvaluationApproval = ({
                                         style={{
                                           backgroundColor:
                                             imptsk?.reviewd ||
-                                              clickedTasks[imptsk.id]
+                                            clickedTasks[imptsk.id]
                                               ? "rgba(220,252,231)"
                                               : "",
                                         }}
                                       >
                                         {imptsk?.reviewd ||
-                                          clickedTasks[imptsk.id] ? (
+                                        clickedTasks[imptsk.id] ? (
                                           <span className="mat-button-wrapper">
                                             You have reviewed this just now
                                           </span>
@@ -4181,75 +4092,75 @@ const EvaluationApproval = ({
 
                                     {itm?.changeImpactTaskReviews?.length !=
                                       0 && (
-                                        <Accordion
-                                          expanded={expanded === "panel2"}
-                                          onChange={handleExpansionChange(
-                                            "panel2"
-                                          )}
-                                          className="mt-6 m-10"
+                                      <Accordion
+                                        expanded={expanded === "panel2"}
+                                        onChange={handleExpansionChange(
+                                          "panel2"
+                                        )}
+                                        className="mt-6 m-10"
+                                      >
+                                        <AccordionSummary
+                                          expandIcon={<ExpandMoreIcon />}
+                                          aria-controls="panel1a-content"
+                                          id="panel1a-header"
                                         >
-                                          <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel1a-content"
-                                            id="panel1a-header"
-                                          >
-                                            <Typography>
-                                              <span
-                                                className="text-brown"
-                                                style={{ fontSize: "16px" }}
-                                              >
-                                                {
-                                                  itm?.changeImpactTaskReviews
-                                                    ?.length
-                                                }{" "}
-                                                Reviews
-                                              </span>{" "}
-                                            </Typography>
-                                          </AccordionSummary>
-                                          {itm?.changeImpactTaskReviews?.map(
-                                            (rivew) => (
-                                              <AccordionDetails>
-                                                <div className="mat-form-field-wrapper">
-                                                  <div className="mat-form-field-flex">
-                                                    <img
-                                                      src="/assets/images/etc/userpic.png"
-                                                      alt="Card cover image"
-                                                      className="rounded-full mr-4"
-                                                      style={{
-                                                        width: "3rem",
-                                                        height: "3rem",
-                                                      }}
-                                                    />
-                                                    <div>
-                                                      <div className="mat-form-field-infix mt-5">
-                                                        <span
-                                                          className=""
-                                                          style={{
-                                                            fontSize: "15px",
-                                                          }}
-                                                        >
-                                                          {
-                                                            rivew?.createdByStaffName
-                                                          }
-                                                        </span>
-                                                        -{" "}
-                                                        <span
-                                                          className="text-grey"
-                                                          style={{
-                                                            fontSize: "14px",
-                                                          }}
-                                                        >
-                                                          {rivew?.remark}
-                                                        </span>
-                                                      </div>
-                                                      <p
-                                                        className="mat-form-field-infix text-grey"
+                                          <Typography>
+                                            <span
+                                              className="text-brown"
+                                              style={{ fontSize: "16px" }}
+                                            >
+                                              {
+                                                itm?.changeImpactTaskReviews
+                                                  ?.length
+                                              }{" "}
+                                              Reviews
+                                            </span>{" "}
+                                          </Typography>
+                                        </AccordionSummary>
+                                        {itm?.changeImpactTaskReviews?.map(
+                                          (rivew) => (
+                                            <AccordionDetails>
+                                              <div className="mat-form-field-wrapper">
+                                                <div className="mat-form-field-flex">
+                                                  <img
+                                                    src="/assets/images/etc/userpic.png"
+                                                    alt="Card cover image"
+                                                    className="rounded-full mr-4"
+                                                    style={{
+                                                      width: "3rem",
+                                                      height: "3rem",
+                                                    }}
+                                                  />
+                                                  <div>
+                                                    <div className="mat-form-field-infix mt-5">
+                                                      <span
+                                                        className=""
                                                         style={{
-                                                          fontSize: "13px",
+                                                          fontSize: "15px",
                                                         }}
                                                       >
-                                                        {rivew?.updatedAt
-                                                          ? new Date(
+                                                        {
+                                                          rivew?.createdByStaffName
+                                                        }
+                                                      </span>
+                                                      -{" "}
+                                                      <span
+                                                        className="text-grey"
+                                                        style={{
+                                                          fontSize: "14px",
+                                                        }}
+                                                      >
+                                                        {rivew?.remark}
+                                                      </span>
+                                                    </div>
+                                                    <p
+                                                      className="mat-form-field-infix text-grey"
+                                                      style={{
+                                                        fontSize: "13px",
+                                                      }}
+                                                    >
+                                                      {rivew?.updatedAt
+                                                        ? new Date(
                                                             rivew.updatedAt
                                                           ).toLocaleString(
                                                             "en-US",
@@ -4265,16 +4176,16 @@ const EvaluationApproval = ({
                                                                 "short", // e.g., "GMT+5"
                                                             }
                                                           )
-                                                          : null}
-                                                      </p>
-                                                    </div>
+                                                        : null}
+                                                    </p>
                                                   </div>
                                                 </div>
-                                              </AccordionDetails>
-                                            )
-                                          )}
-                                        </Accordion>
-                                      )}
+                                              </div>
+                                            </AccordionDetails>
+                                          )
+                                        )}
+                                      </Accordion>
+                                    )}
                                   </div>
                                 ))}
                               <div className="task-details p-0">
@@ -4385,7 +4296,7 @@ const EvaluationApproval = ({
                                   )}
 
                                 {imptsk.changeImpactTaskReviews?.length > 0 ||
-                                  showReview ? (
+                                showReview ? (
                                   <div className="mt-12">
                                     <Accordion
                                       expanded={expanded == imptsk.id}
@@ -4436,10 +4347,10 @@ const EvaluationApproval = ({
                                             {hasAddedComment(
                                               imptsk.changeImpactTaskReviews
                                             ) && (
-                                                <span className="text-green">
-                                                  (You have added 1 review)
-                                                </span>
-                                              )}
+                                              <span className="text-green">
+                                                (You have added 1 review)
+                                              </span>
+                                            )}
                                           </Typography>
                                         </div>
                                       </AccordionSummary>
@@ -4480,7 +4391,7 @@ const EvaluationApproval = ({
                                                     }}
                                                     value={
                                                       handelCommentRemarks[
-                                                      imptsk.id
+                                                        imptsk.id
                                                       ] || ""
                                                     }
                                                     onChange={(e) =>
@@ -4497,9 +4408,9 @@ const EvaluationApproval = ({
                                                         imptsk.id
                                                       ]?.trim()
                                                         ? {
-                                                          backgroundColor:
-                                                            "#cdcdcd",
-                                                        }
+                                                            backgroundColor:
+                                                              "#cdcdcd",
+                                                          }
                                                         : {}
                                                     }
                                                     onClick={() =>
@@ -4552,7 +4463,7 @@ const EvaluationApproval = ({
                                                   }}
                                                 />
                                                 {AppActivity.canEdit &&
-                                                  isMyComment(rwx) ? (
+                                                isMyComment(rwx) ? (
                                                   <div
                                                     className="mat-form-field-infix"
                                                     style={{
@@ -4603,9 +4514,9 @@ const EvaluationApproval = ({
                                                           imptsk.id
                                                         ]?.trim()
                                                           ? {
-                                                            backgroundColor:
-                                                              "#cdcdcd",
-                                                          }
+                                                              backgroundColor:
+                                                                "#cdcdcd",
+                                                            }
                                                           : {}
                                                       }
                                                       disabled={
