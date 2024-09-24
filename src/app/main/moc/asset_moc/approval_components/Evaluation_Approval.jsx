@@ -104,7 +104,7 @@ const EvaluationApproval = ({
   const [selectedResDocument, setSelectedResDocument] = useState(null);
   const [selectedRespFile, setSelectedRespFile] = useState({
     name: "",
-    description: "",
+    descritpion: "",
     type: "",
     document: "binary",
     documentType: "ChangeRequest",
@@ -728,7 +728,7 @@ const EvaluationApproval = ({
   const handleSubmitResponse = (e) => {
     const formData = new FormData();
     formData.append("name", selectedRespFile.name);
-    formData.append("descritpion", selectedRespFile.description);
+    formData.append("descritpion", selectedRespFile.descritpion);
     formData.append("type", selectedRespFile.type);
     formData.append("document", selectedRespFile.document);
     formData.append("documentType", "ExternalCnsltn");
@@ -1717,7 +1717,7 @@ const EvaluationApproval = ({
                                           className="whitespace-nowrap ms-5 ml-24"
                                           variant="contained"
                                           color="secondary"
-                                          // style={{ marginTop: "10px" }}
+                                        // style={{ marginTop: "10px" }}
                                         >
                                           Mark as reviewed
                                         </Button>
@@ -1770,17 +1770,17 @@ const EvaluationApproval = ({
                                                       style={{
                                                         backgroundColor:
                                                           imptsk?.reviewd ||
-                                                          clickedTasks[
+                                                            clickedTasks[
                                                             imptsk.id
-                                                          ]
+                                                            ]
                                                             ? "rgba(220,252,231)"
                                                             : "",
                                                       }}
                                                     >
                                                       {imptsk?.reviewd ||
-                                                      clickedTasks[
+                                                        clickedTasks[
                                                         imptsk.id
-                                                      ] ? (
+                                                        ] ? (
                                                         <span className="mat-button-wrapper">
                                                           You have reviewed this
                                                           just now
@@ -1799,7 +1799,7 @@ const EvaluationApproval = ({
                                               imptsk.id &&
                                               (!imptsk.showPreviousTasks ||
                                                 imptsk.showPreviousTasks ===
-                                                  null) && (
+                                                null) && (
                                                 <span
                                                   className="text-sm text-secondary text-blue-500 font-bold cursor-pointer leading-none mt-1 ms-3"
                                                   onClick={() =>
@@ -1876,72 +1876,72 @@ const EvaluationApproval = ({
                                                     {itm
                                                       ?.changeImpactTaskReviews
                                                       ?.length != 0 && (
-                                                      <Accordion
-                                                        expanded={
-                                                          expanded === "panel2"
-                                                        }
-                                                        onChange={handleExpansionChange(
-                                                          "panel2"
-                                                        )}
-                                                        className="mt-6 m-10"
-                                                      >
-                                                        <AccordionSummary
-                                                          expandIcon={
-                                                            <ExpandMoreIcon />
+                                                        <Accordion
+                                                          expanded={
+                                                            expanded === "panel2"
                                                           }
-                                                          aria-controls="panel1a-content"
-                                                          id="panel1a-header"
+                                                          onChange={handleExpansionChange(
+                                                            "panel2"
+                                                          )}
+                                                          className="mt-6 m-10"
                                                         >
-                                                          <Typography>
-                                                            <span className="text-brown">
-                                                              {
-                                                                itm
-                                                                  ?.changeImpactTaskReviews
-                                                                  ?.length
-                                                              }{" "}
-                                                              Reviews
-                                                            </span>{" "}
-                                                          </Typography>
-                                                        </AccordionSummary>
-                                                        {itm?.changeImpactTaskReviews?.map(
-                                                          (rivew) => (
-                                                            <AccordionDetails>
-                                                              <div className="mat-form-field-wrapper">
-                                                                <div className="mat-form-field-flex">
-                                                                  <img
-                                                                    src="/assets/images/etc/userpic.png"
-                                                                    alt="Card cover image"
-                                                                    className="rounded-full mr-4"
-                                                                    style={{
-                                                                      width:
-                                                                        "3rem",
-                                                                      height:
-                                                                        "3rem",
-                                                                    }}
-                                                                  />
-                                                                  <div>
-                                                                    <div className="mat-form-field-infix mt-5">
-                                                                      <span className="">
-                                                                        {
-                                                                          rivew?.createdByStaffName
-                                                                        }
-                                                                      </span>
-                                                                      -{" "}
-                                                                      <span className="text-grey">
-                                                                        {
-                                                                          rivew?.remark
-                                                                        }
-                                                                      </span>
-                                                                    </div>
-                                                                    <p
-                                                                      className="mat-form-field-infix text-grey"
+                                                          <AccordionSummary
+                                                            expandIcon={
+                                                              <ExpandMoreIcon />
+                                                            }
+                                                            aria-controls="panel1a-content"
+                                                            id="panel1a-header"
+                                                          >
+                                                            <Typography>
+                                                              <span className="text-brown">
+                                                                {
+                                                                  itm
+                                                                    ?.changeImpactTaskReviews
+                                                                    ?.length
+                                                                }{" "}
+                                                                Reviews
+                                                              </span>{" "}
+                                                            </Typography>
+                                                          </AccordionSummary>
+                                                          {itm?.changeImpactTaskReviews?.map(
+                                                            (rivew) => (
+                                                              <AccordionDetails>
+                                                                <div className="mat-form-field-wrapper">
+                                                                  <div className="mat-form-field-flex">
+                                                                    <img
+                                                                      src="/assets/images/etc/userpic.png"
+                                                                      alt="Card cover image"
+                                                                      className="rounded-full mr-4"
                                                                       style={{
-                                                                        fontSize:
-                                                                          "smaller",
+                                                                        width:
+                                                                          "3rem",
+                                                                        height:
+                                                                          "3rem",
                                                                       }}
-                                                                    >
-                                                                      {rivew?.updatedAt
-                                                                        ? new Date(
+                                                                    />
+                                                                    <div>
+                                                                      <div className="mat-form-field-infix mt-5">
+                                                                        <span className="">
+                                                                          {
+                                                                            rivew?.createdByStaffName
+                                                                          }
+                                                                        </span>
+                                                                        -{" "}
+                                                                        <span className="text-grey">
+                                                                          {
+                                                                            rivew?.remark
+                                                                          }
+                                                                        </span>
+                                                                      </div>
+                                                                      <p
+                                                                        className="mat-form-field-infix text-grey"
+                                                                        style={{
+                                                                          fontSize:
+                                                                            "smaller",
+                                                                        }}
+                                                                      >
+                                                                        {rivew?.updatedAt
+                                                                          ? new Date(
                                                                             rivew.updatedAt
                                                                           ).toLocaleString(
                                                                             "en-US",
@@ -1960,16 +1960,16 @@ const EvaluationApproval = ({
                                                                                 "short", // e.g., "GMT+5"
                                                                             }
                                                                           )
-                                                                        : null}
-                                                                    </p>
+                                                                          : null}
+                                                                      </p>
+                                                                    </div>
                                                                   </div>
                                                                 </div>
-                                                              </div>
-                                                            </AccordionDetails>
-                                                          )
-                                                        )}
-                                                      </Accordion>
-                                                    )}
+                                                              </AccordionDetails>
+                                                            )
+                                                          )}
+                                                        </Accordion>
+                                                      )}
                                                   </div>
                                                 )
                                               )}
@@ -2152,7 +2152,7 @@ const EvaluationApproval = ({
                                                                     {sub
                                                                       .riskAnalysisHazardTypes
                                                                       ?.length ==
-                                                                    0 ? (
+                                                                      0 ? (
                                                                       <>
                                                                         <div
                                                                           _ngcontent-fyk-c288=""
@@ -2165,10 +2165,10 @@ const EvaluationApproval = ({
                                                                             sx={{
                                                                               paddingY: 2,
                                                                               paddingX:
-                                                                                {
-                                                                                  xs: 2,
-                                                                                  md: 1,
-                                                                                },
+                                                                              {
+                                                                                xs: 2,
+                                                                                md: 1,
+                                                                              },
                                                                             }}
                                                                           >
                                                                             <Grid
@@ -2193,10 +2193,10 @@ const EvaluationApproval = ({
                                                                             sx={{
                                                                               paddingY: 2,
                                                                               paddingX:
-                                                                                {
-                                                                                  xs: 2,
-                                                                                  md: 1,
-                                                                                },
+                                                                              {
+                                                                                xs: 2,
+                                                                                md: 1,
+                                                                              },
                                                                             }}
                                                                           >
                                                                             <Grid
@@ -2254,10 +2254,10 @@ const EvaluationApproval = ({
                                                                                     sx={{
                                                                                       paddingY: 2,
                                                                                       paddingX:
-                                                                                        {
-                                                                                          xs: 2,
-                                                                                          md: 3,
-                                                                                        },
+                                                                                      {
+                                                                                        xs: 2,
+                                                                                        md: 3,
+                                                                                      },
                                                                                     }}
                                                                                   >
                                                                                     <Grid
@@ -2276,16 +2276,16 @@ const EvaluationApproval = ({
                                                                                         style={{
                                                                                           backgroundColor:
                                                                                             situation.residualRiskClassificationDisplay ===
-                                                                                            "HighRisk"
+                                                                                              "HighRisk"
                                                                                               ? "red"
                                                                                               : situation.residualRiskClassificationDisplay ===
-                                                                                                  "LowRisk"
+                                                                                                "LowRisk"
                                                                                                 ? "yellow"
                                                                                                 : situation.residualRiskClassificationDisplay ===
-                                                                                                    "AverageRisk"
+                                                                                                  "AverageRisk"
                                                                                                   ? "orange"
                                                                                                   : situation.residualRiskClassificationDisplay ===
-                                                                                                      "SignificantRisk"
+                                                                                                    "SignificantRisk"
                                                                                                     ? "purple"
                                                                                                     : "green",
                                                                                           width:
@@ -2294,7 +2294,7 @@ const EvaluationApproval = ({
                                                                                             "3px",
                                                                                           color:
                                                                                             situation.residualRiskClassificationDisplay ===
-                                                                                            "LowRisk"
+                                                                                              "LowRisk"
                                                                                               ? "#000"
                                                                                               : "white",
                                                                                           borderRadius:
@@ -2305,7 +2305,7 @@ const EvaluationApproval = ({
                                                                                             "12px",
                                                                                           fontWeight:
                                                                                             situation.residualRiskClassificationDisplay ===
-                                                                                            "LowRisk"
+                                                                                              "LowRisk"
                                                                                               ? ""
                                                                                               : "bold",
                                                                                         }}
@@ -2504,11 +2504,11 @@ const EvaluationApproval = ({
                                                           {hasAddedComment(
                                                             imptsk.changeImpactTaskReviews
                                                           ) && (
-                                                            <span className="text-green">
-                                                              (You have added 1
-                                                              review)
-                                                            </span>
-                                                          )}
+                                                              <span className="text-green">
+                                                                (You have added 1
+                                                                review)
+                                                              </span>
+                                                            )}
                                                         </Typography>
                                                       </div>
                                                     </AccordionSummary>
@@ -2607,9 +2607,9 @@ const EvaluationApproval = ({
                                                                 }}
                                                               />
                                                               {AppActivity.canEdit &&
-                                                              isMyComment(
-                                                                rwx
-                                                              ) ? (
+                                                                isMyComment(
+                                                                  rwx
+                                                                ) ? (
                                                                 <div
                                                                   className="mat-form-field-infix"
                                                                   style={{
@@ -2847,348 +2847,9 @@ const EvaluationApproval = ({
             </Box>
           </Fade>
         </Modal>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={taskRespOpen}
-          onClose={handleRespModalClose}
-          closeAfterTransition
-          // Customize backdrop appearance
-          BackdropComponent={Backdrop}
-          // Props for backdrop customization
-          BackdropProps={{
-            timeout: 500, // Adjust as needed
-            style: {
-              // Add backdrop styles here
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            },
-          }}
-        >
-          <Fade in={taskRespOpen}>
-            <Box sx={style1}>
-              <div className="flex justify-end mx-4 sm:mx-8">
-                <Button
-                  className=""
-                  variant="contained"
-                  style={{ backgroundColor: "white" }}
-                  onClick={handleRespModalClose}
-                >
-                  <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                </Button>
-              </div>
-              <Box sx={{ flex: 1 }}>
-                <Box
-                  className="flex justify-between"
-                  style={{ margin: "20px" }}
-                >
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                    style={{ fontSize: "3rem" }}
-                  >
-                    File Manager
-                    <Typography id="transition-modal-subtitle" component="h2">
-                      {taskRespListDocument.length} Files
-                    </Typography>
-                  </Typography>
-                  {AppActivity?.canExecute && (
-                    <Box>
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={toggleDrawerRes(true)}
-                      >
-                        <FuseSvgIcon size={20}>
-                          heroicons-outline:plus
-                        </FuseSvgIcon>
-                        <span className="mx-4 sm:mx-8">Upload File</span>
-                      </Button>
-                    </Box>
-                  )}
-                </Box>
-                <Box>
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
-                    component="div"
-                    style={{
-                      backgroundColor: "#e3eeff80",
-                    }}
-                  >
-                    {taskRespListDocument.map((doc, index) => (
-                      <div className="content" key={index}>
-                        <div
-                          onClick={() => handelRespDetailDoc(doc)}
-                          style={{ textAlign: "-webkit-center" }}
-                        >
-                          <img src="/assets/images/etc/icon_N.png" />
-                          <h6 className="truncate-text">{doc?.name}</h6>
-                          <h6>by {doc?.staffName}</h6>
-                        </div>
-                      </div>
-                    ))}
-                  </Typography>
-                </Box>
-              </Box>
 
-              {openDrawerRes && !fileDetailsRes && (
-                <Box sx={drawerStyle(openDrawerRes)}>
-                  <div className="flex justify-end">
-                    <Button
-                      variant="contained"
-                      style={{ backgroundColor: "white" }}
-                      onClick={() => setOpenDrawerRes(false)}
-                    >
-                      <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                    </Button>
-                  </div>
-                  <div>&nbsp;</div>
-                  <div className="text-center">
-                    <input
-                      type="file"
-                      id="fileInput"
-                      style={{ display: "none" }}
-                      onChange={(e) => {
-                        handelRespFileChange(e);
-                      }}
-                    />
-                    <label htmlFor="fileInput">
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        style={{
-                          backgroundColor: "#24a0ed",
-                          borderRadius: "5px",
-                          paddingLeft: "50px",
-                          paddingRight: "50px",
-                        }}
-                        component="span"
-                      >
-                        <FuseSvgIcon size={20}>
-                          heroicons-outline:plus
-                        </FuseSvgIcon>
-                        <span className="mx-4 sm:mx-8">Upload File</span>
-                      </Button>
-                    </label>
-                    <Box
-                      component="form"
-                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="standard-basic"
-                        label={<BoldLabel>Information</BoldLabel>}
-                        variant="standard"
-                        disabled
-                      />
-                    </Box>
-                    <Box
-                      component="form"
-                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="selectedFileName"
-                        label="Selected File"
-                        variant="standard"
-                        disabled
-                        value={selectedRespFile.name}
-                      />
-                    </Box>
-                    <Box
-                      component="form"
-                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="standard-basic"
-                        label={<>Description</>}
-                        name="description"
-                        variant="standard"
-                        onChange={handelFileResDiscriptionChange}
-                        value={selectedRespFile.description}
-                      />
-                    </Box>
-                  </div>
-                  <div
-                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                    style={{
-                      marginTop: "15px",
-                      justifyContent: "end",
-                      backgroundColor: "rgba(248,250,252)",
-                      padding: "10px",
-                    }}
-                  >
-                    <Button
-                      className="whitespace-nowrap"
-                      variant="contained"
-                      color="primary"
-                      style={{
-                        backgroundColor: "white",
-                        color: "black",
-                        border: "1px solid grey",
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      className="whitespace-nowrap"
-                      variant="contained"
-                      color="secondary"
-                      type="submit"
-                      onClick={handleSubmitResponse}
-                    >
-                      Submit
-                    </Button>
-                  </div>
-                </Box>
-              )}
+        <DocumentModal step={1} open={taskRespOpen} handleModalClose={handleRespModalClose} selectedFile={selectedRespFile} selectedDocument={selectedResDocument} handelDetailDoc={handelRespDetailDoc} listDocument={taskRespListDocument} openDrawer={openDrawerRes} setOpenDrawer={setOpenDrawerRes} handelFileDiscriptionChange={handelFileResDiscriptionChange} handleSubmitDocument={handleSubmitResponse} fileDetails={fileDetailsRes} setFileDetails={setFileDetailsRes} handleDownload={handleResDownload} handleDelete={handleResDelete} toggleDrawer={toggleDrawerRes} handelFileChange={handelRespFileChange} canExecute={AppActivity?.canExecute} formatDate={formatDate} />
 
-              {fileDetailsRes && (
-                <Box sx={drawerStyle(fileDetailsRes)}>
-                  <div className="flex justify-end">
-                    <Button
-                      variant="contained"
-                      style={{ backgroundColor: "white" }}
-                      onClick={() => setFileDetailsRes(false)}
-                    >
-                      <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                    </Button>
-                  </div>
-                  <div>&nbsp;</div>
-                  <div className="text-center">
-                    <input
-                      type="file"
-                      id="fileInput"
-                      style={{ display: "none" }}
-                      disabled
-                    />
-                    <label htmlFor="fileInput">
-                      <div className="">
-                        <div style={{ textAlign: "-webkit-center" }}>
-                          <img src="/assets/images/etc/icon_N.png" />
-                        </div>
-                        {selectedResDocument?.name}
-                      </div>
-                    </label>
-                    <Box
-                      component="form"
-                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="standard-basic"
-                        label={<BoldLabel>Information</BoldLabel>}
-                        variant="standard"
-                        disabled
-                      />
-                    </Box>
-                    <Box
-                      component="form"
-                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="selectedFileName"
-                        label="Created By"
-                        variant="standard"
-                        disabled
-                        value={selectedResDocument?.staffName}
-                      />
-                    </Box>
-                    <Box
-                      component="form"
-                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="standard-basic"
-                        label="Created At"
-                        name="description"
-                        variant="standard"
-                        disabled
-                        value={new Date(
-                          selectedResDocument?.createdAt
-                        ).toLocaleString("en-US", {
-                          month: "short",
-                          day: "2-digit",
-                          year: "2-digit",
-                        })}
-                      />
-                    </Box>
-                    <Box
-                      component="form"
-                      sx={{ "& > :not(style)": { m: 1, width: "25ch" } }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="standard-basic"
-                        label={<>Description</>}
-                        name="descritpion"
-                        variant="standard"
-                        disabled
-                        value={
-                          selectedResDocument?.descritpion === "null"
-                            ? ""
-                            : selectedResDocument?.descritpion
-                        }
-                      />
-                    </Box>
-                  </div>
-                  <div
-                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                    style={{
-                      marginTop: "15px",
-                      justifyContent: "end",
-                      backgroundColor: "rgba(248,250,252)",
-                      padding: "10px",
-                    }}
-                  >
-                    <Button
-                      className="whitespace-nowrap"
-                      variant="contained"
-                      color="secondary"
-                      type="submit"
-                      onClick={handleResDownload}
-                    >
-                      Download
-                    </Button>
-                    {AppActivity?.canExecute && (
-                      <Button
-                        className="whitespace-nowrap"
-                        variant="contained"
-                        color="primary"
-                        style={{
-                          backgroundColor: "white",
-                          color: "black",
-                          border: "1px solid grey",
-                        }}
-                        onClick={(e) =>
-                          handleResDelete(
-                            e,
-                            selectedResDocument?.documentId,
-                            selectedResDocument?.token
-                          )
-                        }
-                      >
-                        Delete
-                      </Button>
-                    )}
-                  </div>
-                </Box>
-              )}
-            </Box>
-          </Fade>
-        </Modal>
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
@@ -3379,376 +3040,7 @@ const EvaluationApproval = ({
             </Box>
           </Fade>
         </Modal>
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={open}
-          onClose={handleModalClose1}
-          closeAfterTransition
-          // Customize backdrop appearance
-          BackdropComponent={Backdrop}
-          // Props for backdrop customization
-          BackdropProps={{
-            timeout: 500, // Adjust as needed
-            style: {
-              // Add backdrop styles here
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-            },
-          }}
-        >
-          <Fade in={open}>
-            <Box sx={style1}>
-              <Box sx={{ flex: 1 }}>
-                <Box
-                  className="flex justify-between"
-                  style={{ margin: "30px" }}
-                >
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                    style={{
-                      fontSize: "3rem",
-                    }}
-                  >
-                    File Manager
-                    <Typography id="transition-modal-subtitle" component="h2">
-                      {contentDetails.documentCount} Files
-                    </Typography>
-                  </Typography>
-                  <Box>
-                    {/* <Button
-                    className=""
-                    variant="contained"
-                    color="secondary"
-                    onClick={toggleDrawer(true)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
-                    <span className="mx-4 sm:mx-8">Upload File</span>
-                  </Button> */}
-                  </Box>
-                </Box>
-                <Box>
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
-                    component="div"
-                    style={{
-                      backgroundColor: "#e3eeff80",
-                    }}
-                  >
-                    {listDocument1.map((doc, index) => (
-                      <div className="content " key={index}>
-                        <div
-                          onClick={() => handelDetailDoc(doc)}
-                          style={{ textAlign: "-webkit-center" }}
-                        >
-                          {doc.fileType === "JPG" ? (
-                            <img
-                              src="/assets/images/etc/icon_N.png"
-                              style={{}}
-                            />
-                          ) : doc.fileType === "JPG" ? (
-                            <img
-                              src="/assets/images/etc/icon_N.png"
-                              style={{}}
-                            />
-                          ) : (
-                            <img
-                              src="/assets/images/etc/icon_N.png"
-                              style={{}}
-                            />
-                          )}
-                          <h6 className="truncate-text">{doc?.name}</h6>
-                          <h6>by {doc?.staffName}</h6>
-                        </div>
-                      </div>
-                    ))}
-                  </Typography>
-                </Box>
-              </Box>
-              {openDrawer && !fileDetails && (
-                <Box sx={drawerStyle(openDrawer)}>
-                  <div className="flex justify-end">
-                    <Button
-                      className=""
-                      variant="contained"
-                      style={{ backgroundColor: "white" }}
-                      onClick={() => setOpenDrawer(false)}
-                    >
-                      <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                    </Button>
-                  </div>
-                  <div>&nbsp;</div>
-                  <div className="text-center">
-                    <input
-                      type="file"
-                      id="fileInput"
-                      style={{ display: "none" }}
-                      onChange={(e) => {
-                        handelFileChange(e);
-                      }}
-                    />
-                    <label htmlFor="fileInput">
-                      <Button
-                        className=""
-                        variant="contained"
-                        color="secondary"
-                        style={{
-                          backgroundColor: "#24a0ed",
-                          borderRadius: "5px",
-                          paddingLeft: "50px",
-                          paddingRight: "50px",
-                        }}
-                        component="span"
-                      >
-                        <FuseSvgIcon size={20}>
-                          heroicons-outline:plus
-                        </FuseSvgIcon>
-                        <span className="mx-4 sm:mx-8">Upload File</span>
-                      </Button>
-                    </label>
-                    <Box
-                      component="form"
-                      sx={{
-                        "& > :not(style)": { m: 1, width: "25ch" },
-                      }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="standard-basic"
-                        label={<BoldLabel>Information</BoldLabel>}
-                        variant="standard"
-                        disabled
-                      />
-                    </Box>
-                    <Box
-                      component="form"
-                      sx={{
-                        "& > :not(style)": { m: 1, width: "25ch" },
-                      }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="selectedFileName"
-                        label="Select File"
-                        variant="standard"
-                        disabled
-                        value={selectedFile.name}
-                      />
-                    </Box>
-                    <Box
-                      component="form"
-                      sx={{
-                        "& > :not(style)": { m: 1, width: "25ch" },
-                      }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="standard-basic"
-                        label={<>Description</>}
-                        name="description"
-                        variant="standard"
-                        onChange={handelFileDiscriptionChange}
-                        value={selectedFile.descritpion}
-                      />
-                    </Box>
-                  </div>
 
-                  <div
-                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                    style={{
-                      marginTop: "15px",
-                      justifyContent: "end",
-                      backgroundColor: " rgba(248,250,252)",
-                      padding: "10px",
-                    }}
-                  >
-                    <Button
-                      className="whitespace-nowrap"
-                      variant="contained"
-                      color="primary"
-                      style={{
-                        backgroundColor: "white",
-                        color: "black",
-                        border: "1px solid grey",
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      className="whitespace-nowrap"
-                      variant="contained"
-                      color="secondary"
-                      type="submit"
-                      onClick={handleSubmitAsset}
-                    >
-                      Submit
-                    </Button>
-                  </div>
-                </Box>
-              )}
-
-              {fileDetails && (
-                <Box sx={drawerStyle(fileDetails)}>
-                  <div className="flex justify-end">
-                    <Button
-                      className=""
-                      variant="contained"
-                      style={{ backgroundColor: "white" }}
-                      onClick={() => setFileDetails(false)}
-                    >
-                      <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                    </Button>
-                  </div>
-                  <div>&nbsp;</div>
-                  <div className="text-center">
-                    <input
-                      type="file"
-                      id="fileInput"
-                      style={{ display: "none" }}
-                      // onChange={(e) => {
-                      //   handelFileChange(e);
-                      // }}
-                      disabled
-                    />
-                    <label htmlFor="fileInput">
-                      <div className=" ">
-                        <div
-                          // onClick={handelDetailDoc}
-                          style={{
-                            textAlign: "-webkit-center",
-                          }}
-                        >
-                          <img src="/assets/images/etc/icon_N.png" />
-                        </div>
-                        {selectedDocument?.name}
-                      </div>
-                    </label>
-                    <Box
-                      component="form"
-                      sx={{
-                        "& > :not(style)": { m: 1, width: "25ch" },
-                      }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="standard-basic"
-                        label={<BoldLabel>Information</BoldLabel>}
-                        variant="standard"
-                        disabled
-                      />
-                    </Box>
-                    <Box
-                      component="form"
-                      sx={{
-                        "& > :not(style)": { m: 1, width: "25ch" },
-                      }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="selectedFileName"
-                        label="Created By"
-                        variant="standard"
-                        disabled
-                        value={selectedDocument.staffName}
-                      />
-                    </Box>
-                    <Box
-                      component="form"
-                      sx={{
-                        "& > :not(style)": { m: 1, width: "25ch" },
-                      }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="standard-basic"
-                        label=" Created At"
-                        name="description"
-                        variant="standard"
-                        disabled
-                        value={new Date(
-                          selectedDocument.createdAt
-                        ).toLocaleDateString("en-US", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })}
-                      />
-                    </Box>
-                    <Box
-                      component="form"
-                      sx={{
-                        "& > :not(style)": { m: 1, width: "25ch" },
-                      }}
-                      noValidate
-                      autoComplete="off"
-                    >
-                      <TextField
-                        id="standard-basic"
-                        label={<>Description</>}
-                        name="Description"
-                        variant="standard"
-                        disabled
-                        value={
-                          selectedDocument?.description === null
-                            ? ""
-                            : selectedDocument?.descritpion
-                        }
-                      />
-                    </Box>
-                  </div>
-
-                  <div
-                    className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                    style={{
-                      marginTop: "15px",
-                      justifyContent: "center",
-                      backgroundColor: " rgba(248,250,252)",
-                      padding: "10px",
-                    }}
-                  >
-                    <Button
-                      className="whitespace-nowrap"
-                      variant="contained"
-                      color="secondary"
-                      type="submit"
-                      onClick={handleDownload}
-                    >
-                      Download
-                    </Button>
-                    {/* <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                    onClick={(e) =>
-                      handleDelete(
-                        e,
-                        selectedDocument?.documentId,
-                        selectedDocument?.token
-                      )
-                    }
-                  >
-                    Delete
-                  </Button> */}
-                  </div>
-                </Box>
-              )}
-            </Box>
-          </Fade>
-        </Modal>
         <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
@@ -3816,37 +3108,37 @@ const EvaluationApproval = ({
                           <TableRow key={update.id}>
                             <TableCell
                               className="text-left"
-                              // sx={{ border: "1px solid silver" }}
+                            // sx={{ border: "1px solid silver" }}
                             >
                               {update.impact}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                              // sx={{ border: "1px solid silver" }}
+                            // sx={{ border: "1px solid silver" }}
                             >
                               {update.task}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                              // sx={{ border: "1px solid silver" }}
+                            // sx={{ border: "1px solid silver" }}
                             >
                               {update.how}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                              // sx={{ border: "1px solid silver" }}
+                            // sx={{ border: "1px solid silver" }}
                             >
                               {update.deadline}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                              // sx={{ border: "1px solid silver" }}
+                            // sx={{ border: "1px solid silver" }}
                             >
                               {update.assignedTo}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                              // sx={{ border: "1px solid silver" }}
+                            // sx={{ border: "1px solid silver" }}
                             >
                               {formatDates(update.dueDate)}
                             </TableCell>
@@ -4796,13 +4088,13 @@ const EvaluationApproval = ({
                                         style={{
                                           backgroundColor:
                                             imptsk?.reviewd ||
-                                            clickedTasks[imptsk.id]
+                                              clickedTasks[imptsk.id]
                                               ? "rgba(220,252,231)"
                                               : "",
                                         }}
                                       >
                                         {imptsk?.reviewd ||
-                                        clickedTasks[imptsk.id] ? (
+                                          clickedTasks[imptsk.id] ? (
                                           <span className="mat-button-wrapper">
                                             You have reviewed this just now
                                           </span>
@@ -4889,75 +4181,75 @@ const EvaluationApproval = ({
 
                                     {itm?.changeImpactTaskReviews?.length !=
                                       0 && (
-                                      <Accordion
-                                        expanded={expanded === "panel2"}
-                                        onChange={handleExpansionChange(
-                                          "panel2"
-                                        )}
-                                        className="mt-6 m-10"
-                                      >
-                                        <AccordionSummary
-                                          expandIcon={<ExpandMoreIcon />}
-                                          aria-controls="panel1a-content"
-                                          id="panel1a-header"
+                                        <Accordion
+                                          expanded={expanded === "panel2"}
+                                          onChange={handleExpansionChange(
+                                            "panel2"
+                                          )}
+                                          className="mt-6 m-10"
                                         >
-                                          <Typography>
-                                            <span
-                                              className="text-brown"
-                                              style={{ fontSize: "16px" }}
-                                            >
-                                              {
-                                                itm?.changeImpactTaskReviews
-                                                  ?.length
-                                              }{" "}
-                                              Reviews
-                                            </span>{" "}
-                                          </Typography>
-                                        </AccordionSummary>
-                                        {itm?.changeImpactTaskReviews?.map(
-                                          (rivew) => (
-                                            <AccordionDetails>
-                                              <div className="mat-form-field-wrapper">
-                                                <div className="mat-form-field-flex">
-                                                  <img
-                                                    src="/assets/images/etc/userpic.png"
-                                                    alt="Card cover image"
-                                                    className="rounded-full mr-4"
-                                                    style={{
-                                                      width: "3rem",
-                                                      height: "3rem",
-                                                    }}
-                                                  />
-                                                  <div>
-                                                    <div className="mat-form-field-infix mt-5">
-                                                      <span
-                                                        className=""
-                                                        style={{
-                                                          fontSize: "15px",
-                                                        }}
-                                                      >
-                                                        {
-                                                          rivew?.createdByStaffName
-                                                        }
-                                                      </span>
-                                                      -{" "}
-                                                      <span
-                                                        className="text-grey"
-                                                        style={{
-                                                          fontSize: "14px",
-                                                        }}
-                                                      >
-                                                        {rivew?.remark}
-                                                      </span>
-                                                    </div>
-                                                    <p
-                                                      className="mat-form-field-infix text-grey"
+                                          <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon />}
+                                            aria-controls="panel1a-content"
+                                            id="panel1a-header"
+                                          >
+                                            <Typography>
+                                              <span
+                                                className="text-brown"
+                                                style={{ fontSize: "16px" }}
+                                              >
+                                                {
+                                                  itm?.changeImpactTaskReviews
+                                                    ?.length
+                                                }{" "}
+                                                Reviews
+                                              </span>{" "}
+                                            </Typography>
+                                          </AccordionSummary>
+                                          {itm?.changeImpactTaskReviews?.map(
+                                            (rivew) => (
+                                              <AccordionDetails>
+                                                <div className="mat-form-field-wrapper">
+                                                  <div className="mat-form-field-flex">
+                                                    <img
+                                                      src="/assets/images/etc/userpic.png"
+                                                      alt="Card cover image"
+                                                      className="rounded-full mr-4"
                                                       style={{
-                                                        fontSize: "13px",
+                                                        width: "3rem",
+                                                        height: "3rem",
                                                       }}
-                                                    >
-                                                      {rivew?.updatedAt
-                                                        ? new Date(
+                                                    />
+                                                    <div>
+                                                      <div className="mat-form-field-infix mt-5">
+                                                        <span
+                                                          className=""
+                                                          style={{
+                                                            fontSize: "15px",
+                                                          }}
+                                                        >
+                                                          {
+                                                            rivew?.createdByStaffName
+                                                          }
+                                                        </span>
+                                                        -{" "}
+                                                        <span
+                                                          className="text-grey"
+                                                          style={{
+                                                            fontSize: "14px",
+                                                          }}
+                                                        >
+                                                          {rivew?.remark}
+                                                        </span>
+                                                      </div>
+                                                      <p
+                                                        className="mat-form-field-infix text-grey"
+                                                        style={{
+                                                          fontSize: "13px",
+                                                        }}
+                                                      >
+                                                        {rivew?.updatedAt
+                                                          ? new Date(
                                                             rivew.updatedAt
                                                           ).toLocaleString(
                                                             "en-US",
@@ -4973,16 +4265,16 @@ const EvaluationApproval = ({
                                                                 "short", // e.g., "GMT+5"
                                                             }
                                                           )
-                                                        : null}
-                                                    </p>
+                                                          : null}
+                                                      </p>
+                                                    </div>
                                                   </div>
                                                 </div>
-                                              </div>
-                                            </AccordionDetails>
-                                          )
-                                        )}
-                                      </Accordion>
-                                    )}
+                                              </AccordionDetails>
+                                            )
+                                          )}
+                                        </Accordion>
+                                      )}
                                   </div>
                                 ))}
                               <div className="task-details p-0">
@@ -5093,7 +4385,7 @@ const EvaluationApproval = ({
                                   )}
 
                                 {imptsk.changeImpactTaskReviews?.length > 0 ||
-                                showReview ? (
+                                  showReview ? (
                                   <div className="mt-12">
                                     <Accordion
                                       expanded={expanded == imptsk.id}
@@ -5144,10 +4436,10 @@ const EvaluationApproval = ({
                                             {hasAddedComment(
                                               imptsk.changeImpactTaskReviews
                                             ) && (
-                                              <span className="text-green">
-                                                (You have added 1 review)
-                                              </span>
-                                            )}
+                                                <span className="text-green">
+                                                  (You have added 1 review)
+                                                </span>
+                                              )}
                                           </Typography>
                                         </div>
                                       </AccordionSummary>
@@ -5188,7 +4480,7 @@ const EvaluationApproval = ({
                                                     }}
                                                     value={
                                                       handelCommentRemarks[
-                                                        imptsk.id
+                                                      imptsk.id
                                                       ] || ""
                                                     }
                                                     onChange={(e) =>
@@ -5205,9 +4497,9 @@ const EvaluationApproval = ({
                                                         imptsk.id
                                                       ]?.trim()
                                                         ? {
-                                                            backgroundColor:
-                                                              "#cdcdcd",
-                                                          }
+                                                          backgroundColor:
+                                                            "#cdcdcd",
+                                                        }
                                                         : {}
                                                     }
                                                     onClick={() =>
@@ -5260,7 +4552,7 @@ const EvaluationApproval = ({
                                                   }}
                                                 />
                                                 {AppActivity.canEdit &&
-                                                isMyComment(rwx) ? (
+                                                  isMyComment(rwx) ? (
                                                   <div
                                                     className="mat-form-field-infix"
                                                     style={{
@@ -5311,9 +4603,9 @@ const EvaluationApproval = ({
                                                           imptsk.id
                                                         ]?.trim()
                                                           ? {
-                                                              backgroundColor:
-                                                                "#cdcdcd",
-                                                            }
+                                                            backgroundColor:
+                                                              "#cdcdcd",
+                                                          }
                                                           : {}
                                                       }
                                                       disabled={
