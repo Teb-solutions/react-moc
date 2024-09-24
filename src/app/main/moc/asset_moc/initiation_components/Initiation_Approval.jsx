@@ -25,6 +25,7 @@ import { v4 as uuidv4 } from "uuid";
 import Initiation from "../../common_components/Initiation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import DocumentModal from "../../common_modal/documentModal";
 function InitiationApproval(props) {
   const {
     ApprovalDetails,
@@ -174,12 +175,13 @@ function InitiationApproval(props) {
   const handleModalClose = () => {
     setOpen(false);
     setOpenDrawer(false);
-    fileDetails(false);
+    setFileDetails(false);
   };
   const handleModalClose1 = () => {
     setOpen1(false);
     setOpenDrawer1(false);
-    fileDetails1(false);
+    setFileDetails1(false)
+
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer1(open);
@@ -959,8 +961,9 @@ function InitiationApproval(props) {
           </Box>
         </Fade>
       </Modal>
+      <DocumentModal open={open1} step={1} formatDate={formatDate} handleDownload={handleDownload} handleModalClose={handleModalClose1} listDocument={listDocument1} selectedDocument={selectedDocument1} toggleDrawer={toggleDrawer} openDrawer={openDrawer1} setOpenDrawer={setOpenDrawer1} fileDetails={fileDetails1} setFileDetails={setFileDetails1} selectedFile={selectedFile1} handelDetailDoc={handelDetailDoc1} handelFileChange={handelFileChange1} handelFileDiscriptionChange={handelFileDiscriptionChange1} canExecute={currentActivityForm?.canExecute} handleSubmitDocument={handleSubmitAsset} handleDelete={handleDelete} />
 
-      <Modal
+      {/* <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={open1}
@@ -1334,7 +1337,7 @@ function InitiationApproval(props) {
             )}
           </Box>
         </Fade>
-      </Modal>
+      </Modal> */}
       <Initiation
         contentDetails={contentDetails}
         assetEvaluationId={assetEvaluationId}

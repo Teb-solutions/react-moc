@@ -22,9 +22,10 @@ import {
   Badge,
   Typography,
   Fade,
+  Button,
 } from "@mui/material";
 import MocHeader from "../../MocHeader";
-import { Button } from "@mui/material";
+
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -39,6 +40,9 @@ import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
+import DocumentModal from "../../common_modal/documentModal";
+
+
 
 function AssetRequest() {
   const style = {
@@ -210,7 +214,7 @@ function AssetRequest() {
     }
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => {});
+      .then((response) => { });
   };
 
   const handelDetailDoc = (doc) => {
@@ -479,7 +483,7 @@ function AssetRequest() {
     }
   }, [docContent]);
 
-  console.log(documentState, "documentState");
+  // console.log(documentState, "documentState");
 
   if (isLoading) {
     return <FuseLoading />;
@@ -1122,8 +1126,11 @@ function AssetRequest() {
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                     style={{ marginTop: "15px" }}
                   >
+
+
+                    <DocumentModal open={openDocModal} selectedDocument={selectedDocument} selectedFile={selectedFile} fileDetails={fileDetails} setFileDetails={setFileDetails} openDrawer={openDrawer} handleModalClose={handleOpenDocModalClose} listDocument={listDocument} toggleDrawer={toggleDrawer} handelDetailDoc={handelDetailDoc} handelFileDiscriptionChange={handelFileDiscriptionChange} handelFileChange={handelFileChange} handleSubmitDocument={handleSubmitDocument} formatDate={formatDate} handleDownload={handleDownload} handleDelete={handleDelete} />
                     {/* <div> */}
-                    <Modal
+                    {/* <Modal
                       aria-labelledby="transition-modal-title"
                       aria-describedby="transition-modal-description"
                       open={openDocModal}
@@ -1527,7 +1534,7 @@ function AssetRequest() {
                           )}
                         </Box>
                       </Fade>
-                    </Modal>
+                    </Modal> */}
                     {/* </div> */}
                     <Button
                       className="whitespace-nowrap"

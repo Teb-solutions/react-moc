@@ -613,11 +613,11 @@ const Implementation = ({
 
   const taskFormControlStyles = viewrisk
     ? {
-        borderColor: "white",
-        m: 1,
-        maxWidth: "100%",
-        border: "1px solid white",
-      }
+      borderColor: "white",
+      m: 1,
+      maxWidth: "100%",
+      border: "1px solid white",
+    }
     : { m: 1, maxWidth: "100%" };
 
   const styleImp = {
@@ -1643,7 +1643,10 @@ const Implementation = ({
           </Box>
         </Fade>
       </Modal>
-      <Modal
+
+
+      <documentModal open={openMoc} handleModalClose={handleModalClose} Backdrop={Backdrop} listDocument={listDocument1} currentActivityForm={currentActivityForm} handelDetailDoc={handelDetailDoc} openDrawer={openDrawer} handleSubmitAsset={handleSubmitAsset} />
+      {/* <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
         open={openMoc}
@@ -2038,7 +2041,7 @@ const Implementation = ({
             )}
           </Box>
         </Fade>
-      </Modal>
+      </Modal> */}
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -2375,9 +2378,9 @@ const Implementation = ({
                           display: "none",
                         },
                         "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                          {
-                            padding: "0px",
-                          },
+                        {
+                          padding: "0px",
+                        },
                       }}
                     >
                       <MenuItem value="" disabled>
@@ -2629,9 +2632,9 @@ const Implementation = ({
                                   border: "none",
                                 },
                                 "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
+                                {
+                                  border: "none",
+                                },
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
@@ -2639,9 +2642,9 @@ const Implementation = ({
                                   display: "none",
                                 },
                                 "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
+                                {
+                                  padding: "0px",
+                                },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -2733,9 +2736,9 @@ const Implementation = ({
                                   border: "none",
                                 },
                                 "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
+                                {
+                                  border: "none",
+                                },
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
@@ -2743,9 +2746,9 @@ const Implementation = ({
                                   display: "none",
                                 },
                                 "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
+                                {
+                                  padding: "0px",
+                                },
                               }}
                             >
                               {potentialFrequencyDetails.map((option) => (
@@ -2881,9 +2884,9 @@ const Implementation = ({
                                   border: "none",
                                 },
                                 "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
+                                {
+                                  border: "none",
+                                },
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
@@ -2891,9 +2894,9 @@ const Implementation = ({
                                   display: "none",
                                 },
                                 "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
+                                {
+                                  padding: "0px",
+                                },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -2975,9 +2978,9 @@ const Implementation = ({
                                   border: "none",
                                 },
                                 "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
+                                {
+                                  border: "none",
+                                },
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
@@ -2985,9 +2988,9 @@ const Implementation = ({
                                   display: "none",
                                 },
                                 "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
+                                {
+                                  padding: "0px",
+                                },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -3269,9 +3272,9 @@ const Implementation = ({
                                   border: "none",
                                 },
                                 "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
+                                {
+                                  border: "none",
+                                },
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
@@ -3279,9 +3282,9 @@ const Implementation = ({
                                   display: "none",
                                 },
                                 "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
+                                {
+                                  padding: "0px",
+                                },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -3380,9 +3383,9 @@ const Implementation = ({
                                   border: "none",
                                 },
                                 "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
+                                {
+                                  border: "none",
+                                },
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
@@ -3390,9 +3393,9 @@ const Implementation = ({
                                   display: "none",
                                 },
                                 "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
+                                {
+                                  padding: "0px",
+                                },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -3544,9 +3547,9 @@ const Implementation = ({
                                   border: "none",
                                 },
                                 "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
+                                {
+                                  border: "none",
+                                },
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
@@ -3554,9 +3557,9 @@ const Implementation = ({
                                   display: "none",
                                 },
                                 "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
+                                {
+                                  padding: "0px",
+                                },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -3649,9 +3652,9 @@ const Implementation = ({
                                   border: "none",
                                 },
                                 "&.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                  {
-                                    border: "none",
-                                  },
+                                {
+                                  border: "none",
+                                },
                                 "&:hover .MuiOutlinedInput-notchedOutline": {
                                   border: "none",
                                 },
@@ -3659,9 +3662,9 @@ const Implementation = ({
                                   display: "none",
                                 },
                                 "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                                  {
-                                    padding: "0px",
-                                  },
+                                {
+                                  padding: "0px",
+                                },
                               }}
                             >
                               <MenuItem value="" disabled>
@@ -4265,7 +4268,7 @@ const Implementation = ({
                           </div>
                           <div
                             className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                            // style={{ width: "17%" }}
+                          // style={{ width: "17%" }}
                           >
                             <div className="flex items-center">
                               <StyledBadge badgeContent={task?.audits?.length}>
@@ -4442,16 +4445,16 @@ const Implementation = ({
                                         <div className="my-0.5 text-xs font-medium text-secondary">
                                           <small>
                                             {msg.startedDate &&
-                                            !msg.workInProgressDate &&
-                                            !msg.completedDate &&
-                                            !msg.dueDate
+                                              !msg.workInProgressDate &&
+                                              !msg.completedDate &&
+                                              !msg.dueDate
                                               ? `Started on ${formatDates(msg.startedDate)}`
                                               : msg.workInProgressDate &&
-                                                  !msg.completedDate &&
-                                                  !msg.dueDate
+                                                !msg.completedDate &&
+                                                !msg.dueDate
                                                 ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                                 : msg.dueDate &&
-                                                    !msg.completedDate
+                                                  !msg.completedDate
                                                   ? `Due on ${formatDates(msg.dueDate)}`
                                                   : msg.completedDate
                                                     ? `Completed on ${formatDates(msg.completedDate)}`
@@ -4742,16 +4745,16 @@ const Implementation = ({
                                                                   style={{
                                                                     backgroundColor:
                                                                       situation.residualRiskClassificationDisplay ===
-                                                                      "HighRisk"
+                                                                        "HighRisk"
                                                                         ? "red"
                                                                         : situation.residualRiskClassificationDisplay ===
-                                                                            "LowRisk"
+                                                                          "LowRisk"
                                                                           ? "yellow"
                                                                           : situation.residualRiskClassificationDisplay ===
-                                                                              "AverageRisk"
+                                                                            "AverageRisk"
                                                                             ? "orange"
                                                                             : situation.residualRiskClassificationDisplay ===
-                                                                                "SignificantRisk"
+                                                                              "SignificantRisk"
                                                                               ? "purple"
                                                                               : "green",
                                                                     width:
@@ -4760,7 +4763,7 @@ const Implementation = ({
                                                                       "3px",
                                                                     color:
                                                                       situation.residualRiskClassificationDisplay ===
-                                                                      "LowRisk"
+                                                                        "LowRisk"
                                                                         ? "#000"
                                                                         : "white",
                                                                     borderRadius:
@@ -4773,7 +4776,7 @@ const Implementation = ({
                                                                       "12px",
                                                                     fontWeight:
                                                                       situation.residualRiskClassificationDisplay ===
-                                                                      "LowRisk"
+                                                                        "LowRisk"
                                                                         ? ""
                                                                         : "bold",
                                                                   }}
@@ -5358,8 +5361,8 @@ const Implementation = ({
                           name="audit"
                           onChange={handleChangeAddTask}
                           value={taskAdd.audit}
-                          // error={!!errorsAddTask.audit}
-                          // helperText={errorsAddTask.audit}
+                        // error={!!errorsAddTask.audit}
+                        // helperText={errorsAddTask.audit}
                         />
                       </Box>
                     </div>
