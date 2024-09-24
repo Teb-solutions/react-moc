@@ -1548,6 +1548,8 @@ const Implementation = ({
           </Box>
         </Fade>
       </Modal>
+
+
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
@@ -2222,8 +2224,8 @@ const Implementation = ({
                   )}
                 </Box>
               </Fade>
-            </Modal>
-          </div>
+            </Modal >
+          </div >
 
           <Box sx={{ width: "100%" }} className="p-30 pt-24 pb-24">
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -2393,7 +2395,7 @@ const Implementation = ({
                           </div>
                           <div
                             className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                            // style={{ width: "17%" }}
+                          // style={{ width: "17%" }}
                           >
                             <div className="flex items-center">
                               <StyledBadge badgeContent={task?.audits?.length}>
@@ -2570,16 +2572,16 @@ const Implementation = ({
                                         <div className="my-0.5 text-xs font-medium text-secondary">
                                           <small>
                                             {msg.startedDate &&
-                                            !msg.workInProgressDate &&
-                                            !msg.completedDate &&
-                                            !msg.dueDate
+                                              !msg.workInProgressDate &&
+                                              !msg.completedDate &&
+                                              !msg.dueDate
                                               ? `Started on ${formatDates(msg.startedDate)}`
                                               : msg.workInProgressDate &&
-                                                  !msg.completedDate &&
-                                                  !msg.dueDate
+                                                !msg.completedDate &&
+                                                !msg.dueDate
                                                 ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                                 : msg.dueDate &&
-                                                    !msg.completedDate
+                                                  !msg.completedDate
                                                   ? `Due on ${formatDates(msg.dueDate)}`
                                                   : msg.completedDate
                                                     ? `Completed on ${formatDates(msg.completedDate)}`
@@ -2843,7 +2845,7 @@ const Implementation = ({
                 </div>
               )}
           </Box>
-        </Paper>
+        </Paper >
       )}
       <Modal
         aria-labelledby="transition-modal-title"
@@ -3164,8 +3166,8 @@ const Implementation = ({
                           name="audit"
                           onChange={handleChangeAddTask}
                           value={taskAdd.audit}
-                          // error={!!errorsAddTask.audit}
-                          // helperText={errorsAddTask.audit}
+                        // error={!!errorsAddTask.audit}
+                        // helperText={errorsAddTask.audit}
                         />
                       </Box>
                     </div>

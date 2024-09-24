@@ -22,6 +22,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import SwipeableViews from "react-swipeable-views";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
+import { parseISO, format } from "date-fns";
 import { apiAuth } from "src/utils/http.js";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon/FuseSvgIcon.jsx";
 import { styled } from "@mui/material/styles";
@@ -29,6 +30,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Initiation from "../../common_components/Initiation";
 import { withStyles } from "@mui/styles";
+import DocumentModal from "../../common_modal/documentModal";
 
 const ImplementationApprovalSite = ({
   contentDetails,
@@ -239,7 +241,7 @@ const ImplementationApprovalSite = ({
           toast?.error(resp.data.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   const [open, setOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -249,7 +251,8 @@ const ImplementationApprovalSite = ({
 
   const [selectedFile, setSelectedFile] = useState({
     name: "",
-    description: "",
+
+    descritpion: "",
     type: "",
     document: "binary",
     documentType: "ChangeRequest",
@@ -257,6 +260,20 @@ const ImplementationApprovalSite = ({
     changeRequestToken: null,
   });
 
+
+  const formatDate = (dateString) => {
+    if (!dateString) {
+      return "Invalid date";
+    }
+
+    try {
+      const date = parseISO(dateString);
+      return format(date, "MMMM dd, yyyy");
+    } catch (error) {
+      console.error("Error parsing date:", error);
+      return "Invalid date";
+    }
+  };
   const handleModalClose = () => {
     setOpen(false);
     setOpenDrawer(false);
@@ -317,7 +334,7 @@ const ImplementationApprovalSite = ({
   const handleSubmitAsset = (e) => {
     const formData = new FormData();
     formData.append("name", selectedFile.name);
-    formData.append("descritpion", selectedFile.description);
+    formData.append("descritpion", selectedFile.descritpion);
     formData.append("type", selectedFile.type);
     formData.append("document", selectedFile.document);
     formData.append("documentType", selectedFile.documentType);
@@ -401,6 +418,7 @@ const ImplementationApprovalSite = ({
   const handleCloseDelete = () => {
     setDeletes(false);
   };
+
   const handleDelete = (e, id, token) => {
     e.preventDefault();
     setDocId(id);
@@ -412,7 +430,7 @@ const ImplementationApprovalSite = ({
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(
-          `/DocumentManager/DocList/${docId}/ChangeRequest?changeRequestToken=${selectedDocument?.changeRequestToken}`
+          `/DocumentManager/DocList/${docId}/Approval?changeRequestToken=${assetEvaluationId}`
         )
         .then((response) => {
           setOpenDrawer(false);
@@ -611,7 +629,7 @@ const ImplementationApprovalSite = ({
                           </div>
 
                           {imptsk.implementationReviews.length > 0 ||
-                          showReview ? (
+                            showReview ? (
                             <div>
                               <Accordion
                                 className=" mt-10 pt-10"
@@ -659,10 +677,10 @@ const ImplementationApprovalSite = ({
                                       {hasAddedComment(
                                         imptsk.implementationReviews
                                       ) && (
-                                        <span className="text-green">
-                                          (You have added 1 review)
-                                        </span>
-                                      )}
+                                          <span className="text-green">
+                                            (You have added 1 review)
+                                          </span>
+                                        )}
                                     </Typography>
                                   </div>
                                 </AccordionSummary>
@@ -719,10 +737,10 @@ const ImplementationApprovalSite = ({
                                                   imptsk.id
                                                 ]?.trim()
                                                   ? {
-                                                      backgroundColor:
-                                                        "#cdcdcd",
-                                                      float: "right",
-                                                    }
+                                                    backgroundColor:
+                                                      "#cdcdcd",
+                                                    float: "right",
+                                                  }
                                                   : { float: "right" }
                                               }
                                               onClick={() =>
@@ -766,7 +784,7 @@ const ImplementationApprovalSite = ({
                                           }}
                                         />
                                         {AppActivity.canEdit &&
-                                        isMyComment(rwx) ? (
+                                          isMyComment(rwx) ? (
                                           <div
                                             className="mat-form-field-infix"
                                             style={{ position: "relative" }}
@@ -801,9 +819,9 @@ const ImplementationApprovalSite = ({
                                                   imptsk.id
                                                 ]?.trim()
                                                   ? {
-                                                      backgroundColor:
-                                                        "#cdcdcd",
-                                                    }
+                                                    backgroundColor:
+                                                      "#cdcdcd",
+                                                  }
                                                   : {}
                                               }
                                               onClick={() =>
@@ -1135,378 +1153,9 @@ const ImplementationApprovalSite = ({
           </div>
         </Paper>
       </SwipeableViews>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={open}
-        onClose={handleModalClose}
-        closeAfterTransition
-        // Customize backdrop appearance
-        BackdropComponent={Backdrop}
-        // Props for backdrop customization
-        BackdropProps={{
-          timeout: 500, // Adjust as needed
-          style: {
-            // Add backdrop styles here
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          },
-        }}
-      >
-        <Fade in={open}>
-          <Box sx={style1}>
-            <div
-              className="flex justify-end mx-4 sm:mx-8"
-              style={{
-                marginTop: "-32px",
-                marginRight: "-29px",
-                padding: "0 0 -24px ",
-              }}
-            >
-              <Button
-                className=""
-                variant="contained"
-                style={{ backgroundColor: "white" }}
-                onClick={handleModalClose}
-              >
-                <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-              </Button>
-            </div>
-            <Box sx={{ flex: 1 }}>
-              <Box
-                className="flex justify-between"
-                style={{ margin: "0", paddingTop: "0" }}
-              >
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "3rem",
-                  }}
-                >
-                  File Manager
-                  <Typography id="transition-modal-subtitle" component="h2">
-                    {listDocument.length ? listDocument.length : CountApprove}{" "}
-                    Files
-                  </Typography>
-                </Typography>
-                {AppActivity?.canExecute && (
-                  <Box>
-                    <Button
-                      className=""
-                      variant="contained"
-                      color="secondary"
-                      onClick={toggleDrawer(true)}
-                    >
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                      <span className="mx-4 sm:mx-8">Upload File</span>
-                    </Button>
-                  </Box>
-                )}
-              </Box>
-              <Box>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
-                  component="div"
-                  style={{
-                    backgroundColor: "#e3eeff80",
-                  }}
-                >
-                  {listDocument.map((doc, index) => (
-                    <div className="content " key={index}>
-                      <div
-                        onClick={() => handelDetailDoc(doc)}
-                        style={{ textAlign: "-webkit-center" }}
-                      >
-                        <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        <h6 className="truncate-text">{doc?.name}</h6>
-                        <h6>by {doc?.staffName}</h6>
-                      </div>
-                    </div>
-                  ))}
-                </Typography>
-              </Box>
-            </Box>
-            {openDrawer && !fileDetails && (
-              <Box sx={drawerStyle(openDrawer)}>
-                <div className="flex justify-end">
-                  <Button
-                    className=""
-                    variant="contained"
-                    style={{ backgroundColor: "white" }}
-                    onClick={() => setOpenDrawer(false)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                  </Button>
-                </div>
-                <div>&nbsp;</div>
+      <DocumentModal step={1} open={open} handleModalClose={handleModalClose} selectedFile={selectedFile} selectedDocument={selectedDocument} handleDelete={handleDelete} handelDetailDoc={handelDetailDoc} handleDownload={handleDownload} handleSubmitDocument={handleSubmitAsset} listDocument={listDocument} CountApprove={CountApprove} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} fileDetails={fileDetails} setFileDetails={setFileDetails} handelFileChange={handelFileChange} canExecute={AppActivity?.canExecute} toggleDrawer={toggleDrawer} handelFileDiscriptionChange={handelFileDiscriptionChange} formatDate={formatDate} />
 
-                <div className="text-center">
-                  <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
-                  />
-                  <label htmlFor="fileInput">
-                    <Button
-                      className=""
-                      variant="contained"
-                      color="secondary"
-                      style={{
-                        backgroundColor: "#24a0ed",
-                        borderRadius: "5px",
-                        paddingLeft: "50px",
-                        paddingRight: "50px",
-                      }}
-                      component="span"
-                    >
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                      <span className="mx-4 sm:mx-8">Upload File</span>
-                    </Button>
-                  </label>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<BoldLabel>Information</BoldLabel>}
-                      variant="standard"
-                      disabled
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="selectedFileName"
-                      label="Select File"
-                      variant="standard"
-                      disabled
-                      value={selectedFile.name}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<>Description</>}
-                      name="description"
-                      variant="standard"
-                      onChange={handelFileDiscriptionChange}
-                      value={selectedFile?.description}
-                    />
-                  </Box>
-                </div>
 
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    marginTop: "15px",
-                    justifyContent: "end",
-                    backgroundColor: " rgba(248,250,252)",
-                    padding: "10px",
-                  }}
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    onClick={handleSubmitAsset}
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </Box>
-            )}
-
-            {fileDetails && (
-              <Box sx={drawerStyle(fileDetails)}>
-                <div className="flex justify-end">
-                  <Button
-                    className=""
-                    variant="contained"
-                    style={{ backgroundColor: "white" }}
-                    onClick={() => setFileDetails(false)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                  </Button>
-                </div>
-                <div>&nbsp;</div>
-                <div className="text-center">
-                  <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                  />
-                  <label htmlFor="fileInput">
-                    <div className=" ">
-                      <div
-                        onClick={handelDetailDoc}
-                        style={{ textAlign: "-webkit-center" }}
-                      >
-                        <img src="/assets/images/etc/icon_N.png" />
-                      </div>
-                      <h6>{selectedDocument?.name}</h6>
-                    </div>
-                  </label>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<BoldLabel>Information</BoldLabel>}
-                      variant="standard"
-                      disabled
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="selectedFileName"
-                      label="Created By"
-                      variant="standard"
-                      disabled
-                      value={selectedDocument.staffName}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label=" Created At"
-                      name="description"
-                      variant="standard"
-                      disabled
-                      value={new Date(
-                        selectedDocument.createdAt
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": { m: 1, width: "25ch" },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<>Description</>}
-                      name="description"
-                      variant="standard"
-                      disabled
-                      value={
-                        selectedDocument?.descritpion === null
-                          ? ""
-                          : selectedDocument?.descritpion
-                      }
-                    />
-                  </Box>
-                </div>
-
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    marginTop: "15px",
-                    justifyContent: "end",
-                    backgroundColor: " rgba(248,250,252)",
-                    padding: "10px",
-                  }}
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    onClick={handleDownload}
-                  >
-                    Download
-                  </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                    onClick={(e) =>
-                      handleDelete(
-                        e,
-                        selectedDocument?.documentId,
-                        selectedDocument?.token
-                      )
-                    }
-                  >
-                    Delete
-                  </Button>
-                </div>
-              </Box>
-            )}
-          </Box>
-        </Fade>
-      </Modal>
 
       <Modal
         aria-labelledby="transition-modal-title"
