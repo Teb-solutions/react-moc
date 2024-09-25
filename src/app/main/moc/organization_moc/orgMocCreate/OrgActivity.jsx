@@ -145,14 +145,17 @@ function OrgActivity() {
     apiAuth
       .post("/OrgMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
-        if (response.data.statusCode == 400) {
+        if (docContent.siteInChargeName == null) {
           setOpen(false);
           setIsLoading(false);
 
-          toast?.error(response.data.message);
+          toast.error("Site in charge is not assigned for this site.");
+        } else if (response.data.statusCode != 200) {
+          setOpen(false);
+          setIsLoading(false);
+          toast.error(response.data.message);
         } else {
           setIsLoading(false);
-
           toast?.success("Successfully Created");
           setTimeout(() => {
             navigate("/moc");

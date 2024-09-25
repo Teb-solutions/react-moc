@@ -409,12 +409,24 @@ function AssetRequest() {
     apiAuth
       .post("/ChangeRequest/Create", updatedDocumentState)
       .then((response) => {
-        toast?.success("Successfully Created");
-        setIsLoading(false);
-        setTimeout(() => {
-          navigate("/moc");
-        }, 1000);
-        setOpen(false);
+        if (docContent.siteInChargeName == null) {
+          setOpen(false);
+          setIsLoading(false);
+
+          toast.error("Site in charge is not assigned for this site.");
+        } else if (response.data.statusCode != 200) {
+          setOpen(false);
+          setIsLoading(false);
+
+          toast.error(response.data.message);
+        } else {
+          toast?.success("Successfully Created");
+          setIsLoading(false);
+          setTimeout(() => {
+            navigate("/moc");
+          }, 1000);
+          setOpen(false);
+        }
       })
       .catch((error) => {
         setIsLoading(false);
@@ -444,6 +456,7 @@ function AssetRequest() {
       setDocController(staffResponse.data.data);
 
       const changeRequestResponse = await apiAuth.get(`/ChangeRequest/Create`);
+
       setIsLoading(false);
       setDocContent(changeRequestResponse.data.data);
       setMockType(changeRequestResponse.data.data.mocType);
@@ -1572,7 +1585,7 @@ function AssetRequest() {
                       style={{ padding: "15px" }}
                       onClick={handleOpen}
                     >
-                      Submit for Approvel
+                      Submit for Approval
                     </Button>
 
                     <ConfirmationModal

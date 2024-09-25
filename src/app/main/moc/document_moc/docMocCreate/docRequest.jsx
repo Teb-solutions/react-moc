@@ -354,15 +354,28 @@ function DocRequest() {
     apiAuth
       .post("/DocMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
-        setIsLoading(false);
+        if (docContent.siteInChargeName == null) {
+          setOpen(false);
+          setIsLoading(false);
 
-        toast?.success("Successfully Created");
+          toast.error("Site in charge is not assigned for this site.");
+        } else if (response.data.statusCode != 200) {
+          setOpen(false);
+          setIsLoading(false);
 
-        setTimeout(() => {
-          navigate("/moc");
-        }, 1000);
-        setOpen(false);
+          toast.error(response.data.message);
+        } else {
+          setIsLoading(false);
+
+          toast?.success("Successfully Created");
+
+          setTimeout(() => {
+            navigate("/moc");
+          }, 1000);
+          setOpen(false);
+        }
       })
+
       .catch((error) => {
         setIsLoading(false);
 

@@ -1196,7 +1196,7 @@ function TransportApp() {
                     style={{ padding: "15px" }}
                     onClick={handleOpen}
                   >
-                    Submit for Approvel
+                    Submit for Approval
                   </Button>
 
                   <ConfirmationModal

@@ -32,6 +32,7 @@ import MocHeader from "../../moc/MocHeader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DeleteModal from "../../moc/common_modal/delete_modal/DeleteModal";
+import MasterAddEditModal from "../../moc/common_modal/master_modal/MasterAddEditModal";
 function createData(
   index,
   code,
@@ -379,174 +380,17 @@ export default function StickyHeadTable() {
       <MocHeader master={"Master"} type={"Particular Sub Category"} />
       <ToastContainer className="toast-container" />
 
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
+      <MasterAddEditModal
         open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={open}>
-          <Box
-            sx={{
-              width: 400,
-              bgcolor: "background.paper",
-              borderRadius: "16px",
-              boxShadow: 24,
-              p: 0,
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-          >
-            <Box
-              style={{
-                padding: "20px",
-                backgroundColor: "#4f46e5",
-                borderTopLeftRadius: "16px",
-                borderTopRightRadius: "16px",
-                color: "white",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span className="text-popup font-medium">
-                {lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}
-              </span>
-              <span onClick={handleClose} style={{ cursor: "pointer" }}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  fit=""
-                  height="24"
-                  width="24"
-                  preserveAspectRatio="xMidYMid meet"
-                  focusable="false"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  ></path>
-                </svg>
-              </span>
-            </Box>
-            <Box sx={{ p: 4 }}>
-              <Box sx={{ mb: 3 }}>
-                <FormControl sx={{ m: 1 }}>
-                  <InputLabel id="functionName-label" className="custom_label">
-                    Particular *
-                  </InputLabel>
-
-                  <Select
-                    labelId="functionName-label"
-                    id="parentId"
-                    name="parentId"
-                    value={lookupAdd.parentId}
-                    onChange={handleAdd}
-                    label="Particular"
-                    fullWidth
-                    error={!!errors.parentId}
-                  >
-                    {particularList.map((option) => (
-                      <MenuItem key={option.id} value={option.value}>
-                        {option.text}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {errors.parentId && (
-                    <span style={{ color: "red" }}>{errors.parentId}</span>
-                  )}
-                </FormControl>
-              </Box>
-              <Box sx={{ mb: 3 }}>
-                <TextField
-                  id="code"
-                  fullWidth
-                  label="Code *"
-                  inputProps={{
-                    maxLength: 5, // Limit to 30 characters, which approximates 5 words
-                  }}
-                  name="code"
-                  value={lookupAdd.code}
-                  variant="outlined"
-                  onChange={handleAdd}
-                  error={!!errors.code}
-                  helperText={errors.code}
-                />
-              </Box>
-              <Box>
-                <TextField
-                  id="description"
-                  fullWidth
-                  label="Description *"
-                  name="description"
-                  value={lookupAdd.description}
-                  variant="outlined"
-                  onChange={handleAdd}
-                  error={!!errors.description}
-                  helperText={errors.description}
-                />
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                // backgroundColor: "rgba(248, 250, 252)",
-                // p: 2,
-                borderBottomLeftRadius: "16px",
-                borderBottomRightRadius: "16px",
-                marginTop: "0",
-                marginBottom: "0",
-                justifyContent: "end",
-                // backgroundColor: " rgba(248,250,252)",
-                padding: "30px",
-                paddingTop: "0",
-                paddingBottom: "30px",
-              }}
-            >
-              <Button
-                variant="contained"
-                style={{
-                  marginRight: "8px",
-                  padding: "10px 20px",
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid grey",
-                }}
-                onClick={handleClose}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{
-                  padding: "10px 20px",
-                  backgroundColor: "#4f46e5",
-                  color: "white",
-                }}
-                type="submit"
-                onClick={handleSubmit}
-              >
-                {lookupAdd.crudMode === "UPDATE" ? "Update" : "Add"}
-              </Button>
-            </Box>
-          </Box>
-        </Fade>
-      </Modal>
+        handleClose={handleClose}
+        lookupAdd={lookupAdd}
+        handleAdd={handleAdd}
+        errors={errors}
+        handleSubmit={handleSubmit}
+        particularShow={true}
+        particularList={particularList}
+        title={"Particular"}
+      />
       <DeleteModal
         openDelete={deletes}
         handleCloseDelete={handleCloseDelete}

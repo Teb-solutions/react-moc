@@ -31,7 +31,6 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import MocHeader from "../../moc/MocHeader";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import DeleteModal from "../../moc/common_modal/delete_modal/DeleteModal";
 function createData(
   index,
   designation,
@@ -566,46 +565,98 @@ export default function StickyHeadTable() {
           </Box>
         </Fade>
       </Modal>
-      <DeleteModal
-        openDelete={deletes}
-        handleCloseDelete={handleCloseDelete}
-        title=""
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        open={deletes}
+        onClose={handleCloseDelete}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{
+          backdrop: {
+            timeout: 500,
+          },
+        }}
       >
-        <div
-          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-          style={{
-            marginTop: "15px",
-            justifyContent: "end",
-            backgroundColor: " rgba(248,250,252)",
-            padding: "10px",
-          }}
-        >
-          <Button
-            className="whitespace-nowrap"
-            variant="contained"
-            color="primary"
-            style={{
-              padding: "23px",
-              backgroundColor: "white",
-              color: "black",
-              border: "1px solid grey",
-            }}
-            onClick={handleCloseDelete}
-          >
-            Cancel
-          </Button>
-          <Button
-            className="whitespace-nowrap"
-            variant="contained"
-            color="secondary"
-            style={{ padding: "23px", backgroundColor: "red" }}
-            type="submit"
-            onClick={handleSubmitDelete}
-          >
-            Confirm
-          </Button>
-        </div>
-      </DeleteModal>
+        <Fade in={deletes}>
+          <Box sx={style1}>
+            <Box>
+              <div className="flex">
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "15px",
+                    marginRight: "5px",
+                    marginTop: "5px",
+
+                    color: "red",
+                  }}
+                >
+                  <img src="/assets/images/etc/icon.png" />
+                </Typography>
+                <Typography
+                  id="transition-modal-title"
+                  variant="h6"
+                  component="h2"
+                  style={{
+                    fontSize: "2rem",
+                  }}
+                >
+                  Confirm action
+                  <Typography
+                    id="transition-modal-title"
+                    variant="h6"
+                    component="h2"
+                    style={{
+                      fontSize: "15px",
+                      fontWeight: "800px !important",
+                      color: "grey",
+                    }}
+                  >
+                    Do you want to delete ?
+                  </Typography>
+                </Typography>
+              </div>
+            </Box>
+            <div
+              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+              style={{
+                marginTop: "15px",
+                justifyContent: "end",
+                backgroundColor: " rgba(248,250,252)",
+                padding: "10px",
+              }}
+            >
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="primary"
+                style={{
+                  padding: "23px",
+                  backgroundColor: "white",
+                  color: "black",
+                  border: "1px solid grey",
+                }}
+                onClick={handleCloseDelete}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="whitespace-nowrap"
+                variant="contained"
+                color="secondary"
+                style={{ padding: "23px", backgroundColor: "red" }}
+                type="submit"
+                onClick={handleSubmitDelete}
+              >
+                Confirm
+              </Button>
+            </div>
+          </Box>
+        </Fade>
+      </Modal>
       <div>
         <div className="flex d-flex flex-col p-30 pt-24 pb-24 justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel
