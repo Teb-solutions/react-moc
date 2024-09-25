@@ -1397,6 +1397,7 @@ function ImplementationApproval({
                               <DatePicker
                                 name="dueDate"
                                 value={taskAdd.dueDate}
+                                minDate={new Date()} // Prevents selection of past dates
                                 onChange={(date) => handleChangeTaskDate(date)}
                                 renderInput={(params) => (
                                   <TextField fullWidth {...params} />
@@ -1704,6 +1705,7 @@ function ImplementationApproval({
                         <DatePicker
                           label="Request Date*"
                           value={reqDate}
+                          minDate={new Date()} // Prevents selection of past dates
                           onChange={(newValue) => {
                             setReqDate(newValue);
                             setDueDateValidation(null);
@@ -1716,7 +1718,6 @@ function ImplementationApproval({
                               required
                             />
                           )}
-                          minDate={new Date("2023-11-15")}
                         />
                       </LocalizationProvider>
                       <div>

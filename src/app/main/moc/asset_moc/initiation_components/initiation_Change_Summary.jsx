@@ -1009,6 +1009,7 @@ const InitiationComplete = ({
                       <DatePicker
                         value={IniComp?.TerminationDate}
                         onChange={handleChanges}
+                        minDate={new Date()} // Prevents selection of past dates
                         renderInput={(params) => (
                           <TextField fullWidth {...params} />
                         )}

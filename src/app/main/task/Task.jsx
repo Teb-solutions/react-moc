@@ -1660,6 +1660,7 @@ const Task = () => {
                       <DatePicker
                         label="Request Date*"
                         value={reqDate}
+                        minDate={new Date()} // Prevents selection of past dates
                         onChange={(newValue) => {
                           setReqDate(newValue);
                           setDueDateValidation(null);
@@ -1672,7 +1673,6 @@ const Task = () => {
                             required
                           />
                         )}
-                        minDate={new Date("2023-11-15")}
                       />
                     </LocalizationProvider>
                     <div>

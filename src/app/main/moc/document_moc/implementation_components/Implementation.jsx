@@ -3074,6 +3074,7 @@ const Implementation = ({
                             <DatePicker
                               name="dueDate"
                               value={taskAdd.dueDate}
+                              minDate={new Date()} // Prevents selection of past dates
                               onChange={(date) => handleChangeTaskDate(date)}
                               renderInput={(params) => (
                                 <TextField fullWidth {...params} />

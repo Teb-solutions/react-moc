@@ -716,6 +716,7 @@ function DocRequest() {
                               label="Validity Expires On *"
                               value={documentState.docOldValidityDate}
                               onChange={handleChanges}
+                              minDate={new Date()} // Prevents selection of past dates
                               renderInput={(params) => (
                                 <TextField fullWidth {...params} />
                               )}
