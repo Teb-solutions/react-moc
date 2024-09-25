@@ -371,7 +371,8 @@ const EvaluationApproval = ({
     );
 
     setHandelCommentRemark("");
-    setContentDetails(response.data.data);
+    await setContentDetails(response?.data?.data);
+    setExpanded(false);
   }
 
   const setHandelCommentRemark = (id, value) => {
@@ -3814,7 +3815,7 @@ const EvaluationApproval = ({
                                     rows="2"
                                     className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
                                     placeholder="Write a comment..."
-                                    id="ImpTaskReview265"
+                                    id={`ImpTaskReview${index[itm.id]}`}
                                     data-placeholder="Write a comment..."
                                     aria-invalid="false"
                                     aria-required="false"
@@ -3824,11 +3825,7 @@ const EvaluationApproval = ({
                                       paddingRight: "100px",
                                       fontSize: "13px",
                                     }}
-                                    defaultValue={
-                                      index[0]
-                                        ? handelCommentRemarks
-                                        : rwv?.remark
-                                    }
+                                    value={handelCommentRemarks[itm.id] ? index[handelCommentRemarks[itm.id]] : rwv?.remark || ""}
                                     onChange={(e) =>
                                       setHandelCommentRemark(
                                         itm.id,
@@ -4059,7 +4056,7 @@ const EvaluationApproval = ({
                   </thead>
                   <tbody className="task-table-body">
                     {contentDetails?.tasklist ? (
-                      contentDetails?.tasklist.map((imptsk) => (
+                      contentDetails?.tasklist?.map((imptsk) => (
                         <div key={imptsk.id} className="mt-24 border-b pb-24">
                           <div className="task-table-row mat-row">
                             <div className="task-table-cell mat-cell">
@@ -4375,7 +4372,7 @@ const EvaluationApproval = ({
                                   </div>
                                 </div>
                                 {imptsk?.riskAnalysisList?.length !== 0 &&
-                                  imptsk.particularid === 78 && (
+                                  imptsk?.particularid === 78 && (
                                     <RiskAnalysisTableView
                                       Paper={Paper}
                                       matchingRisks={imptsk?.riskAnalysisList}
@@ -4564,7 +4561,7 @@ const EvaluationApproval = ({
                                                       rows="2"
                                                       className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
                                                       placeholder="Write a comment..."
-                                                      id="ImpTaskReview265"
+                                                      id={`ImpTaskReview${index[imptsk.id]}`}
                                                       data-placeholder="Write a comment..."
                                                       aria-invalid="false"
                                                       aria-required="false"
@@ -4574,7 +4571,7 @@ const EvaluationApproval = ({
                                                         paddingRight: "100px",
                                                         fontSize: "13px",
                                                       }}
-                                                      defaultValue={rwx?.remark}
+                                                      value={handelCommentRemarks[imptsk.id] ? index[handelCommentRemarks[imptsk.id]] : rwx?.remark || ""}
                                                       onChange={(e) =>
                                                         setHandelCommentRemark(
                                                           imptsk.id,

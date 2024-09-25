@@ -519,17 +519,17 @@ const ImplementationApprovalSite = ({
                                   imptsk?.reviewd || clickedTasks[imptsk.id]
                                 }
                                 style={
-                                  reviewed[imptsk.id] ||
-                                  imptsk.implementationReviewStatus.length
+                                  imptsk?.reviewd ||
+                                    clickedTasks[imptsk.id]
                                     ? {
-                                        backgroundColor:
-                                          "rgb(181 253 210 / 50%)",
-                                      }
+                                      backgroundColor:
+                                        "rgb(181 253 210 / 50%)",
+                                    }
                                     : {}
                                 }
                               >
                                 {imptsk?.reviewd ||
-                                imptsk.implementationReviewStatus.length ? (
+                                  clickedTasks[imptsk.id] ? (
                                   <span className="mat-button-wrapper">
                                     You have reviewed this just now
                                   </span>
@@ -771,8 +771,8 @@ const ImplementationApprovalSite = ({
                                         </div>
                                       </div>
                                     )}
-                                  {imptsk.implementationReviews?.map((rwx) => (
-                                    <div className="mat-form-field-wrapper">
+                                  {imptsk.implementationReviews?.map((rwx, index) => (
+                                    <div className="mat-form-field-wrapper" key={index}>
                                       <div className="mat-form-field-flex">
                                         <img
                                           src="/assets/images/etc/userpic.png"
@@ -793,7 +793,7 @@ const ImplementationApprovalSite = ({
                                               rows="2"
                                               className="mat-input-element mat-form-field-autofill-control cdk-textarea-autosize mat-autosize"
                                               placeholder="Write a comment..."
-                                              id="ImpTaskReview265"
+                                              id={`ImpTaskReview${index[imptsk.id]}`}
                                               data-placeholder="Write a comment..."
                                               aria-invalid="false"
                                               aria-required="false"
@@ -803,7 +803,7 @@ const ImplementationApprovalSite = ({
                                                 paddingRight: "100px",
                                                 fontSize: "13px",
                                               }}
-                                              defaultValue={rwx?.remark}
+                                              value={handelCommentRemark[imptsk.id] ? index[handelCommentRemark[imptsk.id]] : rwx?.remark || ""}
                                               onChange={(e) =>
                                                 setHandelCommentRemarks(
                                                   imptsk.id,

@@ -75,7 +75,7 @@ const RiskAnalysisTableView = ({
                               }}
                               className="text-sm"
                             >
-                              {subItm.subTaskName}
+                              {subItm?.subTaskName}
                             </Typography>
                           </Grid>
                         </Grid>
@@ -129,23 +129,23 @@ const RiskAnalysisTableView = ({
                                     style={{
                                       backgroundColor:
                                         situation.residualRiskClassificationDisplay ===
-                                        "HighRisk"
+                                          "HighRisk"
                                           ? "red"
                                           : situation.residualRiskClassificationDisplay ===
-                                              "LowRisk"
+                                            "LowRisk"
                                             ? "yellow"
                                             : situation.residualRiskClassificationDisplay ===
-                                                "AverageRisk"
+                                              "AverageRisk"
                                               ? "orange"
                                               : situation.residualRiskClassificationDisplay ===
-                                                  "SignificantRisk"
+                                                "SignificantRisk"
                                                 ? "purple"
                                                 : "green",
                                       width: "auto",
                                       padding: "3px",
                                       color:
                                         situation.residualRiskClassificationDisplay ===
-                                        "LowRisk"
+                                          "LowRisk"
                                           ? "#000"
                                           : "white",
                                       borderRadius: "5px",
@@ -154,7 +154,7 @@ const RiskAnalysisTableView = ({
                                       fontSize: "12px",
                                       fontWeight:
                                         situation.residualRiskClassificationDisplay ===
-                                        "LowRisk"
+                                          "LowRisk"
                                           ? ""
                                           : "bold",
                                     }}
