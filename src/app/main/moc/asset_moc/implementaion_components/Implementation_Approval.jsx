@@ -1214,15 +1214,32 @@ function ImplementationApproval({
       });
   };
 
+  const handleDelete = (e, id, token) => {
+    e.preventDefault();
+    setDocId(id);
+    setDocToken(token);
+    setDeletes(true);
+  };
+
+  const handleDeletePssR = (e, id, token) => {
+    e.preventDefault();
+    setDocId(id);
+    setDocToken(token);
+    setDeletesPssR(true);
+  };
+
   const handleCloseDelete = () => {
     setDeletes(false);
+  };
+  const handleCloseDeletePssR = () => {
+    setDeletesPssR(false);
   };
 
   const handleSubmitDeletePssR = () => {
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
 
-        .get(`/DocumentManager/DocList/${docuPssR}/ImplPSSR?changeRequestToken=${assetEvaluationId}`)
+        .get(`/DocumentManager/DocList/${docId}/ImplPSSR?changeRequestToken=${assetEvaluationId}`)
 
 
         .then((response) => {
@@ -1231,6 +1248,17 @@ function ImplementationApproval({
           setDeletesPssR(false);
           setFileDetailsPssR(false);
           setSelectedDocumentPssR("");
+
+
+          apiAuth.get(
+            `DocumentManager/DocumentCount?id=${docuPssR}&documentType=ImplPSSR`
+          ).then((response) => {
+
+            setDocumentCountsImp({
+              ...documentCountsImp,
+              [docuPssR]: response.data.data
+            });
+          })
         });
     });
   };
@@ -1247,6 +1275,7 @@ function ImplementationApproval({
           setDeletes(false);
           setFileDetails(false);
           setSelectedDocument("");
+
         });
     });
   };
@@ -1374,6 +1403,49 @@ function ImplementationApproval({
           </Button>
         </div>
       </DeleteModal>
+
+      <DeleteModal
+        openDelete={deletesPssR}
+        handleCloseDelete={handleCloseDeletePssR}
+        title=""
+      >
+        <div
+          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+          style={{
+            marginTop: "15px",
+            justifyContent: "end",
+            backgroundColor: " rgba(248,250,252)",
+            padding: "10px",
+          }}
+        >
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="primary"
+            style={{
+              padding: "23px",
+              backgroundColor: "white",
+              color: "black",
+              border: "1px solid grey",
+            }}
+            onClick={handleCloseDeletePssR}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="secondary"
+            style={{ padding: "23px", backgroundColor: "red" }}
+            type="submit"
+            onClick={handleSubmitDeletePssR}
+          >
+            Confirm
+          </Button>
+        </div>
+      </DeleteModal>
+
+
       <DocumentModal
         open={open}
         handleModalClose={handleModalClose}
@@ -1410,6 +1482,7 @@ function ImplementationApproval({
         handleDownload={handleDownload}
         formatDate={formatDate}
         canExecute={lastActCode?.canExecute}
+        handleDelete={handleDeletePssR}
       />
 
       <Modal
