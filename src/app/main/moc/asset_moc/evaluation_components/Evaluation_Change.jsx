@@ -2060,6 +2060,7 @@ function EvaluationChange({
                                       }
                                     />
                                   )}
+                                  minDate={new Date()} // Prevents selection of past dates
                                   value={form.consultedDate}
                                   onChange={(newValue) =>
                                     handleInputChange(
@@ -2155,6 +2156,7 @@ function EvaluationChange({
                           <Box sx={{}}>
                             <DatePicker
                               name="consultedDate"
+                              minDate={new Date()} // Prevents selection of past dates
                               renderInput={(params) => (
                                 <TextField fullWidth {...params} />
                               )}
@@ -3586,6 +3588,7 @@ function EvaluationChange({
                                               ? new Date(task.dueDate)
                                               : null
                                           }
+                                          minDate={new Date()} // Prevents selection of past dates
                                           onChange={(newValue) =>
                                             handleDateChange(index, newValue)
                                           }

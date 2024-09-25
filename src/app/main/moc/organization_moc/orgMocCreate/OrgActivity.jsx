@@ -145,14 +145,17 @@ function OrgActivity() {
     apiAuth
       .post("/OrgMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
-        if (response.data.statusCode == 400) {
+        if (docContent.siteInChargeName == null) {
           setOpen(false);
           setIsLoading(false);
 
-          toast?.error(response.data.message);
+          toast.error("Site in charge is not assigned for this site.");
+        } else if (response.data.statusCode != 200) {
+          setOpen(false);
+          setIsLoading(false);
+          toast.error(response.data.message);
         } else {
           setIsLoading(false);
-
           toast?.success("Successfully Created");
           setTimeout(() => {
             navigate("/moc");
@@ -472,6 +475,10 @@ function OrgActivity() {
                           ) || null
                         }
                         onChange={(event, newValue) => {
+                          // Prevent selection of read-only options
+                          if (newValue && newValue.isReadOnly) {
+                            return; // Do nothing if it's a read-only option
+                          }
                           handleChange({
                             target: {
                               name: "changeStaffDesignationId",
@@ -479,6 +486,19 @@ function OrgActivity() {
                             },
                           });
                         }}
+                        renderOption={(props, option) => (
+                          <li
+                            {...props}
+                            style={{
+                              opacity: option.isReadOnly ? 0.5 : 1,
+                              pointerEvents: option.isReadOnly
+                                ? "none"
+                                : "auto", // Disable pointer events if the option is read-only
+                            }}
+                          >
+                            {option.text}
+                          </li>
+                        )}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -486,6 +506,9 @@ function OrgActivity() {
                             helperText={errors.changeStaffDesignationId}
                           />
                         )}
+                        isOptionEqualToValue={(option, value) =>
+                          option.value === value.value
+                        }
                       />
                     </FormControl>
                   </Box>
@@ -509,6 +532,7 @@ function OrgActivity() {
                         <DatePicker
                           label="Program Completion Date *"
                           value={documentState.programCompletionDate}
+                          minDate={new Date()} // Prevents selection of past dates
                           onChange={handleChanges}
                           renderInput={(params) => (
                             <TextField fullWidth {...params} />

@@ -39,6 +39,7 @@ import { withStyles } from "@mui/styles";
 import { display } from "@mui/system";
 import AuditModal from "../../common_modal/audit_modals/AddAudit";
 import AuditListModal from "../../common_modal/audit_modals/AuditList";
+import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
 function createData(index, Task, Audit, date, staff) {
   return { index, Task, Audit, date, staff };
 }
@@ -391,101 +392,46 @@ const OrgImplementation = ({
         pauseOnHover
         theme="light"
       />
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={deletes}
-        onClose={handleCloseDelete}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
+      <DeleteModal
+        openDelete={deletes}
+        handleCloseDelete={handleCloseDelete}
+        title=""
       >
-        <Fade in={deletes}>
-          <Box sx={style2}>
-            <Box>
-              <div className="flex">
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "15px",
-                    marginRight: "5px",
-                    marginTop: "5px",
-
-                    color: "red",
-                  }}
-                >
-                  <img src="/assets/images/etc/icon.png" />
-                </Typography>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "2rem",
-                  }}
-                >
-                  Confirm action
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                    style={{
-                      fontSize: "15px",
-                      fontWeight: "800px !important",
-                      color: "grey",
-                    }}
-                  >
-                    Do you want to delete ?
-                  </Typography>
-                </Typography>
-              </div>
-            </Box>
-            <div
-              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-              style={{
-                marginTop: "15px",
-                justifyContent: "end",
-                backgroundColor: " rgba(248,250,252)",
-                padding: "10px",
-              }}
-            >
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="primary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid grey",
-                }}
-                onClick={handleCloseDelete}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="secondary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "red",
-                }}
-                type="submit"
-                onClick={handleSubmitDelete}
-              >
-                Confirm
-              </Button>
-            </div>
-          </Box>
-        </Fade>
-      </Modal>
+        <div
+          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+          style={{
+            marginTop: "15px",
+            justifyContent: "end",
+            backgroundColor: " rgba(248,250,252)",
+            padding: "10px",
+          }}
+        >
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="primary"
+            style={{
+              padding: "23px",
+              backgroundColor: "white",
+              color: "black",
+              border: "1px solid grey",
+            }}
+            onClick={handleCloseDelete}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="secondary"
+            style={{ padding: "23px", backgroundColor: "red" }}
+            type="submit"
+            onClick={handleSubmitDelete}
+          >
+            Confirm
+          </Button>
+        </div>
+      </DeleteModal>
       <AuditModal
         open={openAuditComment}
         handleClose={() => setOpenAuditComment(false)}

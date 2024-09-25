@@ -30,6 +30,8 @@ import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import FuseLoading from "@fuse/core/FuseLoading";
 import MocHeader from "../../moc/MocHeader";
 import { ToastContainer, toast } from "react-toastify";
+import DeleteModal from "../../moc/common_modal/delete_modal/DeleteModal";
+import MasterAddEditModal from "../../moc/common_modal/master_modal/MasterAddEditModal";
 function createData(
   index,
   code,
@@ -380,265 +382,58 @@ export default function StickyHeadTable() {
       <MocHeader master={"Master"} type={"Change Impact Hazards"} />
 
       <ToastContainer className="toast-container" />
-
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
+      <MasterAddEditModal
         open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
+        handleClose={handleClose}
+        lookupAdd={lookupAdd}
+        handleAdd={handleAdd}
+        errors={errors}
+        handleSubmit={handleSubmit}
+        particularShow={true}
+        particularList={particularList}
+        title={"Particular"}
+      />
+
+      <DeleteModal
+        openDelete={deletes}
+        handleCloseDelete={handleCloseDelete}
+        title=""
       >
-        <Fade in={open}>
-          <Box
-            sx={{
-              width: 400,
-              bgcolor: "background.paper",
-              borderRadius: "16px",
-              boxShadow: 24,
-              p: 0,
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
+        <div
+          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+          style={{
+            marginTop: "15px",
+            justifyContent: "end",
+            backgroundColor: " rgba(248,250,252)",
+            padding: "10px",
+          }}
+        >
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="primary"
+            style={{
+              padding: "23px",
+              backgroundColor: "white",
+              color: "black",
+              border: "1px solid grey",
             }}
+            onClick={handleCloseDelete}
           >
-            <Box
-              style={{
-                padding: "20px",
-                backgroundColor: "#4f46e5",
-                borderTopLeftRadius: "16px",
-                borderTopRightRadius: "16px",
-                color: "white",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <span className="text-popup font-medium">
-                {lookupAdd.crudMode === "INSERT" ? "Add" : "Edit"}
-              </span>
-              <span onClick={handleClose} style={{ cursor: "pointer" }}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  fit=""
-                  height="24"
-                  width="24"
-                  preserveAspectRatio="xMidYMid meet"
-                  focusable="false"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  ></path>
-                </svg>
-              </span>
-            </Box>
-            <Box sx={{ p: 4 }}>
-              <Box sx={{ mb: 3 }}>
-                <FormControl sx={{ m: 1 }}>
-                  <InputLabel id="functionName-label" className="custom_label">
-                    Particular *
-                  </InputLabel>
-
-                  <Select
-                    labelId="functionName-label"
-                    id="parentId"
-                    name="parentId"
-                    value={lookupAdd.parentId}
-                    onChange={handleAdd}
-                    label="Particular"
-                    fullWidth
-                    error={!!errors.parentId}
-                  >
-                    {particularList.map((option) => (
-                      <MenuItem key={option.id} value={option.value}>
-                        {option.text}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {errors.parentId && (
-                    <span style={{ color: "red" }}>{errors.parentId}</span>
-                  )}
-                </FormControl>
-              </Box>
-              <Box sx={{ mb: 3 }}>
-                <TextField
-                  id="code"
-                  fullWidth
-                  label="Code *"
-                  name="code"
-                  inputProps={{
-                    maxLength: 5, // Limit to 30 characters, which approximates 5 words
-                  }}
-                  value={lookupAdd.code}
-                  variant="outlined"
-                  onChange={handleAdd}
-                  error={!!errors.code}
-                  helperText={errors.code}
-                />
-              </Box>
-              <Box>
-                <TextField
-                  id="description"
-                  fullWidth
-                  label="Description *"
-                  name="description"
-                  value={lookupAdd.description}
-                  variant="outlined"
-                  onChange={handleAdd}
-                  error={!!errors.description}
-                  helperText={errors.description}
-                />
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-end",
-                // backgroundColor: "rgba(248, 250, 252)",
-                p: 2,
-                borderBottomLeftRadius: "16px",
-                borderBottomRightRadius: "16px",
-                marginTop: "0",
-                marginBottom: "0",
-                padding: "30px",
-                paddingBottom: "30px",
-                paddingTop: "0",
-              }}
-            >
-              <Button
-                variant="contained"
-                style={{
-                  marginRight: "8px",
-                  padding: "10px 20px",
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid grey",
-                }}
-                onClick={handleClose}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{
-                  padding: "10px 20px",
-                  backgroundColor: "#4f46e5",
-                  color: "white",
-                }}
-                type="submit"
-                onClick={handleSubmit}
-              >
-                {lookupAdd.crudMode === "UPDATE" ? "Update" : "Add"}
-              </Button>
-            </Box>
-          </Box>
-        </Fade>
-      </Modal>
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={deletes}
-        onClose={handleCloseDelete}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={deletes}>
-          <Box sx={style1}>
-            <Box>
-              <div className="flex">
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "15px",
-                    marginRight: "5px",
-                    marginTop: "5px",
-
-                    color: "red",
-                  }}
-                >
-                  <img src="/assets/images/etc/icon.png" />
-                </Typography>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "2rem",
-                  }}
-                >
-                  Confirm action
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                    style={{
-                      fontSize: "15px",
-                      fontWeight: "800px !important",
-                      color: "grey",
-                    }}
-                  >
-                    Do you want to delete ?
-                  </Typography>
-                </Typography>
-              </div>
-            </Box>
-            <div
-              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-              style={{
-                marginTop: "15px",
-                justifyContent: "end",
-                backgroundColor: " rgba(248,250,252)",
-                padding: "10px",
-              }}
-            >
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="primary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid grey",
-                }}
-                onClick={handleCloseDelete}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="secondary"
-                style={{ padding: "23px", backgroundColor: "red" }}
-                type="submit"
-                onClick={handleSubmitDelete}
-              >
-                Confirm
-              </Button>
-            </div>
-          </Box>
-        </Fade>
-      </Modal>
+            Cancel
+          </Button>
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="secondary"
+            style={{ padding: "23px", backgroundColor: "red" }}
+            type="submit"
+            onClick={handleSubmitDelete}
+          >
+            Confirm
+          </Button>
+        </div>
+      </DeleteModal>
       <div>
         <div className="flex d-flex flex-col p-30 pt-24 pb-24 justify-between flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
           <InputLabel

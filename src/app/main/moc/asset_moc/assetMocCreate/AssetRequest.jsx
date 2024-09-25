@@ -42,8 +42,7 @@ import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
 import ConfirmationModal from "../../common_modal/confirmation_modal/ConfirmationModal";
 import DocumentModal from "../../common_modal/documentModal";
-
-
+import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
 
 function AssetRequest() {
   const style = {
@@ -215,7 +214,7 @@ function AssetRequest() {
     }
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => { });
+      .then((response) => {});
   };
 
   const handelDetailDoc = (doc) => {
@@ -410,12 +409,24 @@ function AssetRequest() {
     apiAuth
       .post("/ChangeRequest/Create", updatedDocumentState)
       .then((response) => {
-        toast?.success("Successfully Created");
-        setIsLoading(false);
-        setTimeout(() => {
-          navigate("/moc");
-        }, 1000);
-        setOpen(false);
+        if (docContent.siteInChargeName == null) {
+          setOpen(false);
+          setIsLoading(false);
+
+          toast.error("Site in charge is not assigned for this site.");
+        } else if (response.data.statusCode != 200) {
+          setOpen(false);
+          setIsLoading(false);
+
+          toast.error(response.data.message);
+        } else {
+          toast?.success("Successfully Created");
+          setIsLoading(false);
+          setTimeout(() => {
+            navigate("/moc");
+          }, 1000);
+          setOpen(false);
+        }
       })
       .catch((error) => {
         setIsLoading(false);
@@ -445,6 +456,7 @@ function AssetRequest() {
       setDocController(staffResponse.data.data);
 
       const changeRequestResponse = await apiAuth.get(`/ChangeRequest/Create`);
+
       setIsLoading(false);
       setDocContent(changeRequestResponse.data.data);
       setMockType(changeRequestResponse.data.data.mocType);
@@ -1127,9 +1139,24 @@ function AssetRequest() {
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                     style={{ marginTop: "15px" }}
                   >
-
-
-                    <DocumentModal open={openDocModal} selectedDocument={selectedDocument} selectedFile={selectedFile} fileDetails={fileDetails} setFileDetails={setFileDetails} openDrawer={openDrawer} handleModalClose={handleOpenDocModalClose} listDocument={listDocument} toggleDrawer={toggleDrawer} handelDetailDoc={handelDetailDoc} handelFileDiscriptionChange={handelFileDiscriptionChange} handelFileChange={handelFileChange} handleSubmitDocument={handleSubmitDocument} formatDate={formatDate} handleDownload={handleDownload} handleDelete={handleDelete} />
+                    <DocumentModal
+                      open={openDocModal}
+                      selectedDocument={selectedDocument}
+                      selectedFile={selectedFile}
+                      fileDetails={fileDetails}
+                      setFileDetails={setFileDetails}
+                      openDrawer={openDrawer}
+                      handleModalClose={handleOpenDocModalClose}
+                      listDocument={listDocument}
+                      toggleDrawer={toggleDrawer}
+                      handelDetailDoc={handelDetailDoc}
+                      handelFileDiscriptionChange={handelFileDiscriptionChange}
+                      handelFileChange={handelFileChange}
+                      handleSubmitDocument={handleSubmitDocument}
+                      formatDate={formatDate}
+                      handleDownload={handleDownload}
+                      handleDelete={handleDelete}
+                    />
                     {/* <div> */}
                     {/* <Modal
                       aria-labelledby="transition-modal-title"
@@ -1558,7 +1585,7 @@ function AssetRequest() {
                       style={{ padding: "15px" }}
                       onClick={handleOpen}
                     >
-                      Submit for Approvel
+                      Submit for Approval
                     </Button>
 
                     <ConfirmationModal
@@ -1605,101 +1632,46 @@ function AssetRequest() {
                       </div>
                     </ConfirmationModal>
 
-                    <Modal
-                      aria-labelledby="transition-modal-title"
-                      aria-describedby="transition-modal-description"
-                      open={deletes}
-                      onClose={handleCloseDelete}
-                      closeAfterTransition
-                      slots={{ backdrop: Backdrop }}
-                      slotProps={{
-                        backdrop: {
-                          timeout: 500,
-                        },
-                      }}
+                    <DeleteModal
+                      openDelete={deletes}
+                      handleCloseDelete={handleCloseDelete}
+                      title=""
                     >
-                      <Fade in={deletes}>
-                        <Box sx={style2}>
-                          <Box>
-                            <div className="flex">
-                              <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                                style={{
-                                  fontSize: "15px",
-                                  marginRight: "5px",
-                                  marginTop: "5px",
-
-                                  color: "red",
-                                }}
-                              >
-                                <img src="/assets/images/etc/icon.png" />
-                              </Typography>
-                              <Typography
-                                id="transition-modal-title"
-                                variant="h6"
-                                component="h2"
-                                style={{
-                                  fontSize: "2rem",
-                                }}
-                              >
-                                Confirm action
-                                <Typography
-                                  id="transition-modal-title"
-                                  variant="h6"
-                                  component="h2"
-                                  style={{
-                                    fontSize: "15px",
-                                    fontWeight: "800px !important",
-                                    color: "grey",
-                                  }}
-                                >
-                                  Do you want to delete ?
-                                </Typography>
-                              </Typography>
-                            </div>
-                          </Box>
-                          <div
-                            className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                            style={{
-                              marginTop: "15px",
-                              justifyContent: "end",
-                              backgroundColor: " rgba(248,250,252)",
-                              padding: "10px",
-                            }}
-                          >
-                            <Button
-                              className="whitespace-nowrap"
-                              variant="contained"
-                              color="primary"
-                              style={{
-                                padding: "23px",
-                                backgroundColor: "white",
-                                color: "black",
-                                border: "1px solid grey",
-                              }}
-                              onClick={handleCloseDelete}
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              className="whitespace-nowrap"
-                              variant="contained"
-                              color="secondary"
-                              style={{
-                                padding: "23px",
-                                backgroundColor: "red",
-                              }}
-                              type="submit"
-                              onClick={handleSubmitDelete}
-                            >
-                              Confirm
-                            </Button>
-                          </div>
-                        </Box>
-                      </Fade>
-                    </Modal>
+                      <div
+                        className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                        style={{
+                          marginTop: "15px",
+                          justifyContent: "end",
+                          backgroundColor: " rgba(248,250,252)",
+                          padding: "10px",
+                        }}
+                      >
+                        <Button
+                          className="whitespace-nowrap"
+                          variant="contained"
+                          color="primary"
+                          style={{
+                            padding: "23px",
+                            backgroundColor: "white",
+                            color: "black",
+                            border: "1px solid grey",
+                          }}
+                          onClick={handleCloseDelete}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          className="whitespace-nowrap"
+                          variant="contained"
+                          color="secondary"
+                          style={{ padding: "23px", backgroundColor: "red" }}
+                          type="submit"
+                          onClick={handleSubmitDelete}
+                        >
+                          Confirm
+                        </Button>
+                      </div>
+                    </DeleteModal>
                   </div>
                 </div>
               </div>

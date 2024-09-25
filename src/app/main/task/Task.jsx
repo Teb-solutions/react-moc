@@ -42,6 +42,7 @@ import { set } from "lodash";
 import dayjs from "dayjs";
 import DocumentModal from "../moc/common_modal/documentModal";
 import { format, parseISO } from "date-fns";
+import DeleteModal from "../moc/common_modal/delete_modal/DeleteModal";
 
 const Task = () => {
   const style = {
@@ -692,101 +693,47 @@ const Task = () => {
         pauseOnHover
         theme="light"
       />
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={deletes}
-        onClose={handleCloseDelete}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
+      <DeleteModal
+        openDelete={deletes}
+        handleCloseDelete={handleCloseDelete}
+        title=""
       >
-        <Fade in={deletes}>
-          <Box sx={style2}>
-            <Box>
-              <div className="flex">
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "15px",
-                    marginRight: "5px",
-                    marginTop: "5px",
+        <div
+          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+          style={{
+            marginTop: "15px",
+            justifyContent: "end",
+            backgroundColor: " rgba(248,250,252)",
+            padding: "10px",
+          }}
+        >
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="primary"
+            style={{
+              padding: "23px",
+              backgroundColor: "white",
+              color: "black",
+              border: "1px solid grey",
+            }}
+            onClick={handleCloseDelete}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="secondary"
+            style={{ padding: "23px", backgroundColor: "red" }}
+            type="submit"
+            onClick={handleSubmitDelete}
+          >
+            Confirm
+          </Button>
+        </div>
+      </DeleteModal>
 
-                    color: "red",
-                  }}
-                >
-                  <img src="/assets/images/etc/icon.png" />
-                </Typography>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "2rem",
-                  }}
-                >
-                  Confirm action
-                  <Typography
-                    id="transition-modal-title"
-                    variant="h6"
-                    component="h2"
-                    style={{
-                      fontSize: "15px",
-                      fontWeight: "800px !important",
-                      color: "grey",
-                    }}
-                  >
-                    Do you want to delete ?
-                  </Typography>
-                </Typography>
-              </div>
-            </Box>
-            <div
-              className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-              style={{
-                marginTop: "15px",
-                justifyContent: "end",
-                backgroundColor: " rgba(248,250,252)",
-                padding: "10px",
-              }}
-            >
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="primary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "white",
-                  color: "black",
-                  border: "1px solid grey",
-                }}
-                onClick={handleCloseDelete}
-              >
-                Cancel
-              </Button>
-              <Button
-                className="whitespace-nowrap"
-                variant="contained"
-                color="secondary"
-                style={{
-                  padding: "23px",
-                  backgroundColor: "red",
-                }}
-                type="submit"
-                onClick={handleSubmitDelete}
-              >
-                Confirm
-              </Button>
-            </div>
-          </Box>
-        </Fade>
-      </Modal>
       <DocumentModal
         step={1}
         open={openDocModal}
@@ -1713,6 +1660,7 @@ const Task = () => {
                       <DatePicker
                         label="Request Date*"
                         value={reqDate}
+                        minDate={new Date()} // Prevents selection of past dates
                         onChange={(newValue) => {
                           setReqDate(newValue);
                           setDueDateValidation(null);
@@ -1725,7 +1673,6 @@ const Task = () => {
                             required
                           />
                         )}
-                        minDate={new Date("2023-11-15")}
                       />
                     </LocalizationProvider>
                     <div>
@@ -2038,26 +1985,26 @@ const Task = () => {
                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                       <small>
                                         {msg.startedDate &&
-                                          !msg.workInProgressDate &&
-                                          !msg.completedDate &&
-                                          !msg.dueDate
+                                        !msg.workInProgressDate &&
+                                        !msg.completedDate &&
+                                        !msg.dueDate
                                           ? `Started on ${formatDates(msg.startedDate)}`
                                           : msg.workInProgressDate &&
-                                            !msg.completedDate &&
-                                            !msg.dueDate
+                                              !msg.completedDate &&
+                                              !msg.dueDate
                                             ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                             : msg.dueDate && !msg.completedDate
                                               ? `Due on ${formatDates(msg.dueDate)}`
                                               : msg.completedDate
                                                 ? `Completed on ${new Date(
-                                                  msg.completedDate
-                                                ).toLocaleString("en-US", {
-                                                  month: "short",
-                                                  day: "2-digit",
-                                                  hour: "numeric",
-                                                  minute: "numeric",
-                                                  hour12: true,
-                                                })}`
+                                                    msg.completedDate
+                                                  ).toLocaleString("en-US", {
+                                                    month: "short",
+                                                    day: "2-digit",
+                                                    hour: "numeric",
+                                                    minute: "numeric",
+                                                    hour12: true,
+                                                  })}`
                                                 : "Unknown"}
                                       </small>
                                     </div>

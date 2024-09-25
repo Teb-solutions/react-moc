@@ -547,6 +547,7 @@ const Evaluation = ({
                         label="Consulted On *"
                         name="consultedDate"
                         value={form.data.consultedDate}
+                        minDate={new Date()} // Prevents selection of past dates
                         onChange={(date) =>
                           handleChangeStaffDate(form.id, date)
                         }
