@@ -475,6 +475,10 @@ function OrgActivity() {
                           ) || null
                         }
                         onChange={(event, newValue) => {
+                          // Prevent selection of read-only options
+                          if (newValue && newValue.isReadOnly) {
+                            return; // Do nothing if it's a read-only option
+                          }
                           handleChange({
                             target: {
                               name: "changeStaffDesignationId",
@@ -482,6 +486,19 @@ function OrgActivity() {
                             },
                           });
                         }}
+                        renderOption={(props, option) => (
+                          <li
+                            {...props}
+                            style={{
+                              opacity: option.isReadOnly ? 0.5 : 1,
+                              pointerEvents: option.isReadOnly
+                                ? "none"
+                                : "auto", // Disable pointer events if the option is read-only
+                            }}
+                          >
+                            {option.text}
+                          </li>
+                        )}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -489,6 +506,9 @@ function OrgActivity() {
                             helperText={errors.changeStaffDesignationId}
                           />
                         )}
+                        isOptionEqualToValue={(option, value) =>
+                          option.value === value.value
+                        }
                       />
                     </FormControl>
                   </Box>
