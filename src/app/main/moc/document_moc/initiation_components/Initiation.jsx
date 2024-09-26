@@ -1029,65 +1029,7 @@ const Initiation = ({
                     </Box>
                   </Fade>
                 </Modal>
-                {/* <Modal
-                  aria-labelledby="transition-modal-title"
-                  aria-describedby="transition-modal-description"
-                  open={open}
-                  onClose={handleClose}
-                  closeAfterTransition
-                  slots={{ backdrop: Backdrop }}
-                  slotProps={{
-                    backdrop: {
-                      timeout: 500,
-                    },
-                  }}
-                >
-                  <Fade in={open}>
-                    <Box sx={style1}>
-                      <Box sx={{ flex: 1 }}>
-                        <Box
-                          className="flex justify-between"
-                          style={{ margin: "30px" }}
-                        >
-                          <Typography
-                            id="transition-modal-title"
-                            variant="h6"
-                            component="h2"
-                            style={{
-                              fontSize: "3rem",
-                            }}
-                          >
-                            File Manager
-                          </Typography>
-                        </Box>
-                        <Box>
-  <Typography
-    id="transition-modal-title"
-    variant="h6"
-    className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
-    component="div"
-    style={{
-      backgroundColor: "#e3eeff80",
-    }}
-  >
-    {listDocument.map((doc, index) => (
-      <div className="content " key={index}>
-        <div
-          onClick={() => handelDetailDoc(doc)}
-          style={{ textAlign: "-webkit-center" }}
-        >
-          <img src="/assets/images/etc/icon_N.png" style={{}} />
-          <h6 className="truncate-text">{doc?.name}</h6>
-          <h6>by {doc?.staffName}</h6>
-        </div>
-      </div>
-    ))}
-  </Typography>
-   </Box>
-                      </Box>
-                    </Box>
-                  </Fade>
-                </Modal> */}
+
               </span>
             </button>
           </div>
