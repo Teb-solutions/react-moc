@@ -50,6 +50,8 @@ import AuditListModal from "../../common_modal/audit_modals/AuditList";
 import RiskAnalysis from "../../common_components/RiskAnalysis";
 import RiskAnalysisTableView from "../../common_components/RiskAnalysisTableView";
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
+import DocumentModal from "../../common_modal/documentModal";
+
 
 function createData(
   index,
@@ -138,6 +140,11 @@ const Implementation = ({
     setOpenMoc(false);
     setOpenDrawer(false);
     setFileDetails(false);
+    setSelectedFile({
+      ...selectedFile,
+      name: "",
+      description: "",
+    });
   };
   const handelFileDiscriptionChange = (event) => {
     const { name, value } = event.target;
@@ -185,7 +192,7 @@ const Implementation = ({
     setSelectedFile({
       ...selectedFile,
       name: fileNameWithoutExtension,
-
+      descritpion: "",
       type: fileType,
       document: e.target.files[0],
       documentType: "DocImplTrSheet",
@@ -194,7 +201,41 @@ const Implementation = ({
     });
   };
 
+
+
+
   const handleSubmitAsset = (e) => {
+    // Validation: If file-related fields are empty
+
+    if (
+      !selectedFile.name.trim() ||
+      !selectedFile.type.trim() ||
+      !selectedFile.document ||
+      !selectedFile.documentType.trim() ||
+      !selectedFile.documentId.trim()
+    ) {
+      toast.error("Please select your file.");
+      handleModalClose()
+      setSelectedFile({
+        ...selectedFile,
+        name: "",
+        description: "",
+      });
+      return;
+    }
+
+    // Validation: If description field is empty
+    if (!selectedFile.descritpion.trim()) {
+      toast.error("Please add a description.");
+      handleModalClose()
+      setSelectedFile({
+        ...selectedFile,
+        name: "",
+        description: "",
+      });
+      return;
+    }
+
     const formData = new FormData();
     formData.append("name", selectedFile.name);
     formData.append("descritpion", selectedFile.descritpion);
@@ -217,8 +258,8 @@ const Implementation = ({
               `/DocumentManager/DocList/${evaluationId}/DocImplTrSheet?changeRequestToken=${evaluationId}`
             )
             .then((response) => {
-              setOpenDrawer(false);
               setListDocument1(response?.data?.data);
+              setOpenDrawer(false);
               setSelectedFile({
                 ...selectedFile,
                 name: "",
@@ -227,13 +268,7 @@ const Implementation = ({
             });
         } else {
           toast.error(response.data.message);
-          setOpenMoc(false);
-          setOpenDrawer(false);
-          setSelectedFile({
-            ...selectedFile,
-            name: "",
-            description: "",
-          });
+          handleModalClose()
         }
       })
       .catch((error) => {
@@ -1435,7 +1470,7 @@ const Implementation = ({
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
         .get(
-          `/DocumentManager/DocList/${docId}/ChangeRequest?changeRequestToken=${selectedDocument?.changeRequestToken}`
+          `/DocumentManager/DocList/${docId}/DocImplTrSheet?changeRequestToken=${selectedDocument?.changeRequestToken}`
         )
         .then((response) => {
           setOpenDrawer(false);
@@ -1494,403 +1529,11 @@ const Implementation = ({
           </Button>
         </div>
       </DeleteModal>
+      []
+      <DocumentModal open={openMoc} handleModalClose={handleModalClose} selectedDocument={selectedDocument} listDocument={listDocument1} selectedFile={selectedFile} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} fileDetails={fileDetails} setFileDetails={setFileDetails} toggleDrawer={toggleDrawer} handelDetailDoc={handelDetailDoc} handelFileDiscriptionChange={handelFileDiscriptionChange} handelFileChange={handelFileChange} handleSubmitDocument={handleSubmitAsset} handleDownload={handleDownload} handleDelete={handleDelete} canExecute={currentActivityForm.canExecute} formatDate={formatDate} />
 
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
-        open={openMoc}
-        onClose={handleModalClose}
-        closeAfterTransition
-        // Customize backdrop appearance
-        BackdropComponent={Backdrop}
-        // Props for backdrop customization
-        BackdropProps={{
-          timeout: 500, // Adjust as needed
-          style: {
-            // Add backdrop styles here
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-          },
-        }}
-      >
-        <Fade in={openMoc}>
-          <Box sx={styleDoc}>
-            <Box sx={{ flex: 1 }}>
-              <div
-                className="flex justify-end "
-                style={{
-                  marginTop: "-16px",
-                  marginRight: "-16px",
-                }}
-              >
-                <Button
-                  className=""
-                  variant="contained"
-                  style={{ backgroundColor: "white" }}
-                  onClick={handleModalClose}
-                >
-                  <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                </Button>
-              </div>
-              <Box
-                className="flex justify-between"
-                style={{ margin: "0", padddingTop: "0" }}
-              >
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "3rem",
-                  }}
-                >
-                  File Manager
-                  <Typography id="transition-modal-subtitle" component="h2">
-                    {listDocument1.length} Files
-                  </Typography>
-                </Typography>
 
-                {currentActivityForm.canExecute && (
-                  <Box>
-                    <Button
-                      className=""
-                      variant="contained"
-                      color="secondary"
-                      onClick={toggleDrawer(true)}
-                    >
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                      <span className="mx-4 sm:mx-8">Upload File</span>
-                    </Button>
-                  </Box>
-                )}
-              </Box>
-              <Box>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
-                  component="div"
-                  style={{
-                    backgroundColor: "#e3eeff80",
-                  }}
-                >
-                  {listDocument1.map((doc, index) => (
-                    <div className="content " key={index}>
-                      <div
-                        onClick={() => handelDetailDoc(doc)}
-                        style={{
-                          textAlign: "-webkit-center",
-                        }}
-                      >
-                        <img src="/assets/images/etc/icon_N.png" style={{}} />
-                        <h6 className="truncate-text">{doc?.name}</h6>
-                        <h6>by {doc?.staffName}</h6>
-                      </div>
-                    </div>
-                  ))}
-                </Typography>
-              </Box>
-            </Box>
-            {openDrawer && !fileDetails && (
-              <Box sx={drawerStyle(openDrawer)}>
-                <div className="flex justify-end">
-                  <Button
-                    className=""
-                    variant="contained"
-                    style={{ backgroundColor: "white" }}
-                    onClick={() => setOpenDrawer(false)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                  </Button>
-                </div>
-                <div>&nbsp;</div>
 
-                <div className="text-center">
-                  <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
-                  />
-                  <label htmlFor="fileInput">
-                    <Button
-                      className=""
-                      variant="contained"
-                      color="secondary"
-                      style={{
-                        backgroundColor: "#24a0ed",
-                        borderRadius: "5px",
-                        paddingLeft: "50px",
-                        paddingRight: "50px",
-                      }}
-                      component="span"
-                    >
-                      <FuseSvgIcon size={20}>
-                        heroicons-outline:plus
-                      </FuseSvgIcon>
-                      <span className="mx-4 sm:mx-8">Upload File</span>
-                    </Button>
-                  </label>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": {
-                        m: 1,
-                        width: "25ch",
-                      },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<BoldLabel>Information</BoldLabel>}
-                      variant="standard"
-                      disabled
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": {
-                        m: 1,
-                        width: "25ch",
-                      },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="selectedFileName"
-                      label="Select File"
-                      variant="standard"
-                      name="name"
-                      disabled
-                      value={selectedFile.name}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": {
-                        m: 1,
-                        width: "25ch",
-                      },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<>Description</>}
-                      name="descritpion"
-                      variant="standard"
-                      onChange={handelFileDiscriptionChange}
-                      value={selectedFile.descritpion}
-                    />
-                  </Box>
-                </div>
-
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    marginTop: "15px",
-                    justifyContent: "end",
-                    backgroundColor: " rgba(248,250,252)",
-                    padding: "10px",
-                  }}
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    onClick={handleSubmitAsset}
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </Box>
-            )}
-
-            {fileDetails && (
-              <Box sx={drawerStyle(fileDetails)}>
-                <div className="flex justify-end">
-                  <Button
-                    className=""
-                    variant="contained"
-                    style={{ backgroundColor: "white" }}
-                    onClick={() => setFileDetails(false)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                  </Button>
-                </div>
-                <div>&nbsp;</div>
-                <div className="text-center">
-                  <input
-                    type="file"
-                    id="fileInput"
-                    style={{ display: "none" }}
-                    onChange={(e) => {
-                      handelFileChange(e);
-                    }}
-                  />
-                  <label htmlFor="fileInput">
-                    <div className=" ">
-                      <div
-                        onClick={handelDetailDoc}
-                        style={{
-                          textAlign: "-webkit-center",
-                        }}
-                      >
-                        <img src="/assets/images/etc/icon_N.png" />
-                      </div>
-                      <h6>{selectedDocument?.name}</h6>
-                    </div>
-                  </label>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": {
-                        m: 1,
-                        width: "25ch",
-                      },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<BoldLabel>Information</BoldLabel>}
-                      variant="standard"
-                      disabled
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": {
-                        m: 1,
-                        width: "25ch",
-                      },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="selectedFileName"
-                      label="Created By"
-                      variant="standard"
-                      disabled
-                      value={selectedDocument.staffName}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": {
-                        m: 1,
-                        width: "25ch",
-                      },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label=" Created At"
-                      name="description"
-                      variant="standard"
-                      disabled
-                      value={formatDate(selectedDocument.createdAt)}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": {
-                        m: 1,
-                        width: "25ch",
-                      },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<>Description</>}
-                      name="description"
-                      variant="standard"
-                      disabled
-                      value={
-                        selectedDocument?.description === null
-                          ? ""
-                          : selectedDocument?.descritpion
-                      }
-                    />
-                  </Box>
-                </div>
-
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    marginTop: "15px",
-                    justifyContent: "end",
-                    backgroundColor: " rgba(248,250,252)",
-                    padding: "10px",
-                  }}
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    onClick={handleDownload}
-                  >
-                    Download
-                  </Button>
-                  {currentActivityForm.canExecute && (
-                    <Button
-                      className="whitespace-nowrap"
-                      variant="contained"
-                      color="primary"
-                      style={{
-                        backgroundColor: "white",
-                        color: "black",
-                        border: "1px solid grey",
-                      }}
-                      onClick={(e) =>
-                        handleDelete(
-                          e,
-                          selectedDocument?.documentId,
-                          selectedDocument?.token
-                        )
-                      }
-                    >
-                      Delete
-                    </Button>
-                  )}
-                </div>
-              </Box>
-            )}
-          </Box>
-        </Fade>
-      </Modal>
       <AuditModal
         open={openAuditComment}
         handleClose={() => setOpenAuditComment(false)}
@@ -1963,6 +1606,7 @@ const Implementation = ({
                 Training Attendence Sheet
               </Button>
             </StyledBadge>
+            {/* <DocumentModal open={open} handleModalClose={handleClose} listDocument={listDocument} selectedDocument={selectedDocument} fileDetails={fileDetails} setFileDetails={setFileDetails} /> */}
             <Modal
               aria-labelledby="transition-modal-title"
               aria-describedby="transition-modal-description"
@@ -2340,7 +1984,7 @@ const Implementation = ({
                           </div>
                           <div
                             className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                            // style={{ width: "17%" }}
+                          // style={{ width: "17%" }}
                           >
                             <div className="flex items-center">
                               <StyledBadge badgeContent={task?.audits?.length}>
@@ -2517,16 +2161,16 @@ const Implementation = ({
                                         <div className="my-0.5 text-xs font-medium text-secondary">
                                           <small>
                                             {msg.startedDate &&
-                                            !msg.workInProgressDate &&
-                                            !msg.completedDate &&
-                                            !msg.dueDate
+                                              !msg.workInProgressDate &&
+                                              !msg.completedDate &&
+                                              !msg.dueDate
                                               ? `Started on ${formatDates(msg.startedDate)}`
                                               : msg.workInProgressDate &&
-                                                  !msg.completedDate &&
-                                                  !msg.dueDate
+                                                !msg.completedDate &&
+                                                !msg.dueDate
                                                 ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                                 : msg.dueDate &&
-                                                    !msg.completedDate
+                                                  !msg.completedDate
                                                   ? `Due on ${formatDates(msg.dueDate)}`
                                                   : msg.completedDate
                                                     ? `Completed on ${formatDates(msg.completedDate)}`
@@ -3112,8 +2756,8 @@ const Implementation = ({
                           name="audit"
                           onChange={handleChangeAddTask}
                           value={taskAdd.audit}
-                          // error={!!errorsAddTask.audit}
-                          // helperText={errorsAddTask.audit}
+                        // error={!!errorsAddTask.audit}
+                        // helperText={errorsAddTask.audit}
                         />
                       </Box>
                     </div>

@@ -40,6 +40,7 @@ import { display } from "@mui/system";
 import AuditModal from "../../common_modal/audit_modals/AddAudit";
 import AuditListModal from "../../common_modal/audit_modals/AuditList";
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
+import DocumentModal from "../../common_modal/documentModal";
 function createData(index, Task, Audit, date, staff) {
   return { index, Task, Audit, date, staff };
 }
@@ -448,216 +449,19 @@ const OrgImplementation = ({
         onAddAudit={openAudit}
       />
 
-      <Modal
-        aria-labelledby="transition-modal-title"
-        aria-describedby="transition-modal-description"
+      <DocumentModal
+        step={1}
         open={open}
-        onClose={handleClose}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{
-          backdrop: {
-            timeout: 500,
-          },
-        }}
-      >
-        <Fade in={open}>
-          <Box sx={style1}>
-            <Box>
-              <Box className="flex justify-between" style={{ margin: "30px" }}>
-                <Typography
-                  id="transition-modal-title"
-                  variant="h6"
-                  component="h2"
-                  style={{
-                    fontSize: "4rem",
-                    fontWeight: "800px !important",
-                  }}
-                >
-                  File Manager
-                </Typography>
-                <Button onClick={handleClose}>
-                  <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                </Button>
-              </Box>
-            </Box>
-            <Box>
-              <Typography
-                id="transition-modal-title"
-                variant="h6"
-                className="d-flex flex-wrap p-6 md:p-8 md:py-6 min-h-[415px] max-h-120 space-y-8 overflow-y-auto custom_height"
-                component="div"
-                style={{
-                  backgroundColor: "#e3eeff80",
-                }}
-              >
-                {listDocument.map((doc, index) => (
-                  <div className="content " key={index}>
-                    <div
-                      onClick={() => handelDetailDoc(doc)}
-                      style={{ textAlign: "-webkit-center" }}
-                    >
-                      <img src="/assets/images/etc/icon_N.png" style={{}} />
-                      <h6 className="truncate-text">{doc?.name}</h6>
-                      <h6>by {doc?.staffName}</h6>
-                    </div>
-                  </div>
-                ))}
-              </Typography>
-            </Box>
-            {fileDetails && (
-              <Box sx={drawerStyle(fileDetails)}>
-                <div className="flex justify-end">
-                  <Button
-                    className=""
-                    variant="contained"
-                    style={{ backgroundColor: "white" }}
-                    onClick={() => setFileDetails(false)}
-                  >
-                    <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
-                  </Button>
-                </div>
+        handleModalClose={handleClose}
+        listDocument={listDocument}
+        handelDetailDoc={handelDetailDoc}
+        fileDetails={fileDetails}
+        setFileDetails={setFileDetails}
+        selectedDocument={selectedDocument}
+        formatDate={formatDate}
+        handleDownload={handleDownload}
+      />
 
-                <div className="text-center">
-                  <label htmlFor="fileInput">
-                    <div className=" ">
-                      <div
-                        disabled
-                        // onClick={handelDetailDoc}
-                        style={{
-                          textAlign: "-webkit-center",
-                        }}
-                      >
-                        <img src="/assets/images/etc/icon_N.png" />
-                      </div>
-                      {selectedDocument?.name}
-                    </div>
-                  </label>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": {
-                        m: 1,
-                        width: "25ch",
-                      },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<BoldLabel>Information</BoldLabel>}
-                      variant="standard"
-                      disabled
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": {
-                        m: 1,
-                        width: "25ch",
-                      },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="selectedFileName"
-                      label="Created By"
-                      variant="standard"
-                      disabled
-                      value={selectedDocument.staffName}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": {
-                        m: 1,
-                        width: "25ch",
-                      },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label=" Created At"
-                      name="description"
-                      variant="standard"
-                      disabled
-                      value={formatDate(selectedDocument.createdAt)}
-                    />
-                  </Box>
-                  <Box
-                    component="form"
-                    sx={{
-                      "& > :not(style)": {
-                        m: 1,
-                        width: "25ch",
-                      },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                  >
-                    <TextField
-                      id="standard-basic"
-                      label={<>Description</>}
-                      name="descritpion"
-                      variant="standard"
-                      disabled
-                      value={
-                        selectedDocument?.description === null
-                          ? ""
-                          : selectedDocument?.descritpion
-                      }
-                    />
-                  </Box>
-                </div>
-
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    marginTop: "15px",
-                    justifyContent: "center",
-                    backgroundColor: " rgba(248,250,252)",
-                  }}
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    type="submit"
-                    onClick={handleDownload}
-                  >
-                    Download
-                  </Button>
-                  {/* <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                    onClick={(e) =>
-                      handleDelete(
-                        e,
-                        selectedDocument?.documentId,
-                        selectedDocument?.token
-                      )
-                    }
-                  >
-                    Deleteeee
-                  </Button> */}
-                </div>
-              </Box>
-            )}
-          </Box>
-        </Fade>
-      </Modal>
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
           <div className="flex items-center w-full p-30 pt-24 pb-24 justify-between">
@@ -732,7 +536,7 @@ const OrgImplementation = ({
                     <div className="flex flex-wrap justify-between w-100 pr-10">
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           Task #{detail.id}
@@ -740,7 +544,7 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center" style={{}}>
                           {detail.isCompleted && detail.taskStatus === 3 ? (
@@ -754,13 +558,13 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">No Risks</div>
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           {detail.assignedStaff}
@@ -768,7 +572,7 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           {formatDate(detail.dueDate)}
@@ -776,7 +580,7 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "17%" }}
+                      // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           <StyledBadge badgeContent={detail?.audits?.length}>
@@ -932,13 +736,13 @@ const OrgImplementation = ({
                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                       <small>
                                         {msg.startedDate &&
-                                        !msg.workInProgressDate &&
-                                        !msg.completedDate &&
-                                        !msg.dueDate
+                                          !msg.workInProgressDate &&
+                                          !msg.completedDate &&
+                                          !msg.dueDate
                                           ? `Started on ${formatDate(msg.startedDate)}`
                                           : msg.workInProgressDate &&
-                                              !msg.completedDate &&
-                                              !msg.dueDate
+                                            !msg.completedDate &&
+                                            !msg.dueDate
                                             ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
                                             : msg.dueDate && !msg.completedDate
                                               ? `Due on ${formatDate(msg.dueDate)}`
@@ -948,22 +752,36 @@ const OrgImplementation = ({
                                       </small>
                                     </div>
                                   </div>
-
-                                  <StyledBadge
-                                    badgeContent={documentCounts[msg.id]}
-                                  >
-                                    <button
-                                      className="icon-button"
-                                      onClick={() => handleOpen(msg.id)}
-                                      style={{
-                                        top: "20px",
-                                      }}
-                                    >
-                                      <FuseSvgIcon size={20}>
-                                        heroicons-solid:document
-                                      </FuseSvgIcon>
-                                    </button>
-                                  </StyledBadge>
+                                  {documentCounts[msg.id] ? (
+                                    documentCounts[msg.id] != 0 && (
+                                      <button
+                                        className="icon-button"
+                                        onClick={
+                                          () => handleOpen(msg.id)
+                                        }
+                                        style={{
+                                          top: "-6px",
+                                          right: "0px",
+                                        }}
+                                      >
+                                        <FuseSvgIcon size={20}>
+                                          heroicons-solid:document
+                                        </FuseSvgIcon>
+                                        {documentCounts[msg.id] != 0 && (
+                                          <span
+                                            className="count"
+                                            style={{
+                                              backgroundColor: "black",
+                                            }}
+                                          >
+                                            {documentCounts[msg.id]}
+                                          </span>
+                                        )}
+                                      </button>
+                                    )
+                                  ) : (
+                                    <></>
+                                  )}
                                 </div>
                               )}
                               {msg.comments && (

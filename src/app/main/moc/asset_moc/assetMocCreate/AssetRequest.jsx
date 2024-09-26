@@ -214,7 +214,7 @@ function AssetRequest() {
     }
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => {});
+      .then((response) => { });
   };
 
   const handelDetailDoc = (doc) => {
@@ -334,6 +334,36 @@ function AssetRequest() {
     navigate("/moc");
   };
   const handleSubmitDocument = () => {
+    // Validation: If file-related fields are empty
+
+    if (
+      !selectedFile.name.trim() ||
+      !selectedFile.type.trim() ||
+      !selectedFile.document ||
+      !selectedFile.documentType.trim() ||
+      !selectedFile.documentId.trim()
+    ) {
+      toast.error("Please select your file.");
+      handleOpenDocModalClose()
+      setSelectedFile({
+        ...selectedFile,
+        name: "",
+        descritpion: "",
+      });
+      return;
+    }
+
+    // Validation: If description field is empty
+    if (!selectedFile.descritpion.trim()) {
+      toast.error("Please add a description.");
+      handleOpenDocModalClose()
+      setSelectedFile({
+        ...selectedFile,
+        name: "",
+        descritpion: "",
+      });
+      return;
+    }
     const formData = new FormData();
     formData.append("name", selectedFile.name);
     formData.append("descritpion", selectedFile.descritpion);

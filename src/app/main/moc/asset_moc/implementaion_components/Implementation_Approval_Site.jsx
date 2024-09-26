@@ -242,7 +242,7 @@ const ImplementationApprovalSite = ({
           toast?.error(resp.data.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   const [open, setOpen] = useState(false);
   const [openDrawer, setOpenDrawer] = useState(false);
@@ -332,6 +332,34 @@ const ImplementationApprovalSite = ({
   };
 
   const handleSubmitAsset = (e) => {
+    if (
+      !selectedFile.name.trim() ||
+      !selectedFile.type.trim() ||
+      !selectedFile.document ||
+      !selectedFile.documentType.trim() ||
+      !selectedFile.documentId.trim()
+    ) {
+      toast.error("Please select your file.");
+      handleModalClose()
+      setSelectedFile({
+        ...selectedFile,
+        name: "",
+        description: "",
+      });
+      return;
+    }
+
+    // Validation: If description field is empty
+    if (!selectedFile?.descritpion?.trim()) {
+      toast.error("Please add a description.");
+      handleModalClose()
+      setSelectedFile({
+        ...selectedFile,
+        name: "",
+        description: "",
+      });
+      return;
+    }
     const formData = new FormData();
     formData.append("name", selectedFile.name);
     formData.append("descritpion", selectedFile.descritpion);
@@ -629,7 +657,7 @@ const ImplementationApprovalSite = ({
                           </div>
 
                           {imptsk.implementationReviews.length > 0 ||
-                          showReview ? (
+                            showReview ? (
                             <div>
                               <Accordion
                                 className=" mt-10 pt-10"
@@ -677,10 +705,10 @@ const ImplementationApprovalSite = ({
                                       {hasAddedComment(
                                         imptsk.implementationReviews
                                       ) && (
-                                        <span className="text-green">
-                                          (You have added 1 review)
-                                        </span>
-                                      )}
+                                          <span className="text-green">
+                                            (You have added 1 review)
+                                          </span>
+                                        )}
                                     </Typography>
                                   </div>
                                 </AccordionSummary>
@@ -737,10 +765,10 @@ const ImplementationApprovalSite = ({
                                                   imptsk.id
                                                 ]?.trim()
                                                   ? {
-                                                      backgroundColor:
-                                                        "#cdcdcd",
-                                                      float: "right",
-                                                    }
+                                                    backgroundColor:
+                                                      "#cdcdcd",
+                                                    float: "right",
+                                                  }
                                                   : { float: "right" }
                                               }
                                               onClick={() =>
@@ -784,7 +812,7 @@ const ImplementationApprovalSite = ({
                                           }}
                                         />
                                         {AppActivity.canEdit &&
-                                        isMyComment(rwx) ? (
+                                          isMyComment(rwx) ? (
                                           <div
                                             className="mat-form-field-infix"
                                             style={{ position: "relative" }}
@@ -819,9 +847,9 @@ const ImplementationApprovalSite = ({
                                                   imptsk.id
                                                 ]?.trim()
                                                   ? {
-                                                      backgroundColor:
-                                                        "#cdcdcd",
-                                                    }
+                                                    backgroundColor:
+                                                      "#cdcdcd",
+                                                  }
                                                   : {}
                                               }
                                               onClick={() =>

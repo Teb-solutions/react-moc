@@ -146,7 +146,7 @@ function DocRequest() {
     }
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => {});
+      .then((response) => { });
   };
 
   const handelDetailDoc = (doc) => {
@@ -273,6 +273,7 @@ function DocRequest() {
     navigate("/moc");
   };
   const handleSubmitDocument = () => {
+
     const formData = new FormData();
     formData.append("name", selectedFile.name);
     formData.append("description", selectedFile.description);

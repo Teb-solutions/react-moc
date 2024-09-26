@@ -264,6 +264,34 @@ function InitiationApproval(props) {
   };
 
   const handleSubmitAsset = (e) => {
+    if (
+      !selectedFile.name.trim() ||
+      !selectedFile.type.trim() ||
+      !selectedFile.document ||
+      !selectedFile.documentType.trim() ||
+      !selectedFile.documentId.trim()
+    ) {
+      toast.error("Please select your file.");
+      handleModalClose()
+      setSelectedFile({
+        ...selectedFile,
+        name: "",
+        description: "",
+      });
+      return;
+    }
+
+    // Validation: If description field is empty
+    if (!selectedFile?.descritpion?.trim()) {
+      toast.error("Please add a description.");
+      handleModalClose()
+      setSelectedFile({
+        ...selectedFile,
+        name: "",
+        description: "",
+      });
+      return;
+    }
     const formData = new FormData();
     formData.append("name", selectedFile1.name);
     formData.append("descritpion", selectedFile1.descritpion);

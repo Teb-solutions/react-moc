@@ -223,6 +223,7 @@ function Initiation(props) {
   };
 
   const handleSubmitAsset = (e) => {
+
     const formData = new FormData();
     formData.append("name", selectedFile.name);
     formData.append("descritpion", selectedFile.description);
