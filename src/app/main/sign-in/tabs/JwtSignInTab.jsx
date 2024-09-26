@@ -93,7 +93,7 @@ const JwtSignInTab = () => {
       apiAuth.post("/Account/Login", params).then(async (resp) => {
         if (resp.data.statusCode === 202) {
           console.log("Setting showMFA to true", resp);
-          toast?.success("Otp Required");
+          toast?.success("OTP Required");
           setShowMFA(true);
           setLoading(false);
           return;

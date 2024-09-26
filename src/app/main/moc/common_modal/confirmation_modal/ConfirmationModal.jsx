@@ -72,7 +72,7 @@ const ConfirmationModal = ({
                     color: "grey",
                   }}
                 >
-                  Once submited you will not be able to revert ! Are you sure
+                  Once submitted you will not be able to revert ! Are you sure
                   you want to continue ?
                 </Typography>
               </Typography>
