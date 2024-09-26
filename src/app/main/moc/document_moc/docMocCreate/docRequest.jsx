@@ -146,7 +146,7 @@ function DocRequest() {
     }
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => { });
+      .then((response) => {});
   };
 
   const handelDetailDoc = (doc) => {
@@ -174,13 +174,19 @@ function DocRequest() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+
+    // Skip trimming if the name is 'docControllerId' (or any other Autocomplete field)
+    const newValue = name === "docControllerId" ? value : value.trimStart();
+
     setDocumentState({
       ...documentState,
-      [name]: value.trimStart(),
+      [name]: newValue,
     });
-    if (event.target.name == "reasonForNewDocument") {
+
+    if (name === "reasonForNewDocument") {
       setFormValid(true);
     }
+
     if (!!errors[name]) {
       setErrors({ ...errors, [name]: "" });
     }
@@ -275,7 +281,6 @@ function DocRequest() {
     navigate("/moc");
   };
   const handleSubmitDocument = () => {
-
     const formData = new FormData();
     formData.append("name", selectedFile.name);
     formData.append("description", selectedFile.description);
