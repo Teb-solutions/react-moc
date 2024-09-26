@@ -568,27 +568,28 @@ function Initiation(props) {
                 </div>
               </div>
               <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full">
-                {contentDetailsT && (
-                  <>
-                    <div className="my-3">
-                      <div className="mt-3 leading-6 text-secondary">
-                        Location of change
+                {contentDetailsT &&
+                  contentDetailsT?.changeLocationString != null && (
+                    <>
+                      <div className="my-3">
+                        <div className="mt-3 leading-6 text-secondary">
+                          Location of change
+                        </div>
+                        <div className="text-lg leading-6 font-medium">
+                          {contentDetailsT?.changeLocationString}
+                        </div>
                       </div>
-                      <div className="text-lg leading-6 font-medium">
-                        {contentDetailsT?.changeLocationString}
-                      </div>
-                    </div>
 
-                    <div className="my-3">
-                      <div className="mt-3 leading-6 text-secondary">
-                        Date of termination of change
+                      <div className="my-3">
+                        <div className="mt-3 leading-6 text-secondary">
+                          Date of termination of change
+                        </div>
+                        <div className="text-lg leading-6 font-medium">
+                          {formatDates(contentDetailsT?.changeTerminationDate)}
+                        </div>
                       </div>
-                      <div className="text-lg leading-6 font-medium">
-                        {formatDates(contentDetailsT?.changeTerminationDate)}
-                      </div>
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
               </div>
               <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-1 lg:grid-cols-1 lg:gap-16 w-full">
                 <div className="my-3">

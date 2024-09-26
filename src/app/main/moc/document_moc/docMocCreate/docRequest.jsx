@@ -117,7 +117,7 @@ function DocRequest() {
     projectName: "",
     documentUrl: "",
     reasonForNewDocument: "",
-    docOldValidityDate: null,
+    docOldValidityDate: new Date(),
   });
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
@@ -176,7 +176,7 @@ function DocRequest() {
     const { name, value } = event.target;
     setDocumentState({
       ...documentState,
-      [name]: value,
+      [name]: value.trimStart(),
     });
     if (event.target.name == "reasonForNewDocument") {
       setFormValid(true);
@@ -226,6 +226,8 @@ function DocRequest() {
 
     if (!documentState.projectName)
       tempErrors.projectName = "Document Name is required";
+    if (!documentState.projectDescription)
+      tempErrors.projectDescription = "Document Description is required";
     if (!documentState.documentUrl)
       tempErrors.documentUrl = "Document Url is required";
 
@@ -607,7 +609,11 @@ function DocRequest() {
                       marginTop: "25px",
                     }}
                   >
-                    <FormControl fullWidth sx={{ m: 1 }}>
+                    <FormControl
+                      fullWidth
+                      sx={{ m: 1 }}
+                      error={!!errors.projectDescription}
+                    >
                       <InputLabel htmlFor="projectDescription">
                         Document Description *
                       </InputLabel>
@@ -618,6 +624,11 @@ function DocRequest() {
                         onChange={handleChange}
                         label="Document Description *"
                       />
+                      {!!errors.projectDescription && (
+                        <FormHelperText>
+                          {errors.projectDescription}
+                        </FormHelperText>
+                      )}
                     </FormControl>
                   </Box>
                   <Box
