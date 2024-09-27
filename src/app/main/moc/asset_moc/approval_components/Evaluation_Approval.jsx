@@ -52,6 +52,7 @@ import RiskAnalysis from "../../common_components/RiskAnalysis";
 import DocumentModal from "../../common_modal/documentModal";
 import { format, parseISO } from "date-fns";
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
+
 const EvaluationApproval = ({
   contentDetails,
   showRiskAnalysisChart,
@@ -728,6 +729,37 @@ const EvaluationApproval = ({
   };
 
   const handleSubmitResponse = (e) => {
+
+    if (
+      !selectedRespFile.name.trim() ||
+      !selectedRespFile.type.trim() ||
+      !selectedRespFile.document ||
+      !selectedRespFile.documentType.trim()
+
+    ) {
+      toast.error("Please select your file.");
+      handleRespModalClose()
+      setSelectedFile({
+        ...selectedRespFile,
+        name: "",
+        description: "",
+      });
+      return;
+    }
+
+    // Validation: If description field is empty
+    if (!selectedRespFile?.descritpion?.trim()) {
+      toast.error("Please add a description.");
+      handleRespModalClose()
+      setSelectedFile({
+        ...selectedRespFile,
+        name: "",
+        description: "",
+      });
+      return;
+    }
+
+
     const formData = new FormData();
     formData.append("name", selectedRespFile.name);
     formData.append("descritpion", selectedRespFile.descritpion);
@@ -856,7 +888,14 @@ const EvaluationApproval = ({
                 name: "",
                 descritpion: "",
               });
+              apiAuth.get(
+                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+              );
+
+
+              setContentDetails(response?.data?.data);
             });
+
         } else {
           toast.error(response.data.message);
           setOpen(false);
@@ -961,6 +1000,13 @@ const EvaluationApproval = ({
   };
   const handleRespModalClose = () => {
     setTaskRespOpen(false);
+    setFileDetailsRes(false)
+    setOpenDrawerRes(false)
+    setSelectedFile({
+      ...selectedRespFile,
+      name: "",
+      description: "",
+    });
   };
   const TaskDocuHandle = (id) => {
     apiAuth
@@ -2174,13 +2220,9 @@ const EvaluationApproval = ({
                                                                       subIndex
                                                                     }
                                                                   >
-                                                                    {console.log(
-                                                                      subs.riskAnalysisSubTasks,
-                                                                      "vvvvvvvvvvv"
-                                                                    )}
 
                                                                     {sub
-                                                                      .riskAnalysisHazardTypes
+                                                                      ?.riskAnalysisHazardTypes
                                                                       ?.length ==
                                                                       0 ? (
                                                                       <>
@@ -2212,7 +2254,7 @@ const EvaluationApproval = ({
                                                                             >
                                                                               <h6>
                                                                                 {
-                                                                                  sub.subTaskName
+                                                                                  sub?.subTaskName
                                                                                 }
                                                                               </h6>
                                                                             </Grid>
@@ -2266,7 +2308,7 @@ const EvaluationApproval = ({
                                                                               hazardType.id
                                                                             }
                                                                           >
-                                                                            {hazardType.riskAnalysisHazardSituation?.map(
+                                                                            {hazardType?.riskAnalysisHazardSituation?.map(
                                                                               (
                                                                                 situation
                                                                               ) => (
@@ -2305,16 +2347,16 @@ const EvaluationApproval = ({
                                                                                         fontWeight="fontWeightRegular"
                                                                                         style={{
                                                                                           backgroundColor:
-                                                                                            situation.residualRiskClassificationDisplay ===
+                                                                                            situation?.residualRiskClassificationDisplay ===
                                                                                               "HighRisk"
                                                                                               ? "red"
-                                                                                              : situation.residualRiskClassificationDisplay ===
+                                                                                              : situation?.residualRiskClassificationDisplay ===
                                                                                                 "LowRisk"
                                                                                                 ? "yellow"
-                                                                                                : situation.residualRiskClassificationDisplay ===
+                                                                                                : situation?.residualRiskClassificationDisplay ===
                                                                                                   "AverageRisk"
                                                                                                   ? "orange"
-                                                                                                  : situation.residualRiskClassificationDisplay ===
+                                                                                                  : situation?.residualRiskClassificationDisplay ===
                                                                                                     "SignificantRisk"
                                                                                                     ? "purple"
                                                                                                     : "green",
@@ -2323,7 +2365,7 @@ const EvaluationApproval = ({
                                                                                           padding:
                                                                                             "3px",
                                                                                           color:
-                                                                                            situation.residualRiskClassificationDisplay ===
+                                                                                            situation?.residualRiskClassificationDisplay ===
                                                                                               "LowRisk"
                                                                                               ? "#000"
                                                                                               : "white",
@@ -2334,14 +2376,14 @@ const EvaluationApproval = ({
                                                                                           fontSize:
                                                                                             "12px",
                                                                                           fontWeight:
-                                                                                            situation.residualRiskClassificationDisplay ===
+                                                                                            situation?.residualRiskClassificationDisplay ===
                                                                                               "LowRisk"
                                                                                               ? ""
                                                                                               : "bold",
                                                                                         }}
                                                                                       >
                                                                                         {
-                                                                                          situation.residualRiskClassificationDisplay
+                                                                                          situation?.residualRiskClassificationDisplay
                                                                                         }
                                                                                       </Typography>
                                                                                     </Grid>
@@ -2366,7 +2408,7 @@ const EvaluationApproval = ({
                                                                                         }}
                                                                                       >
                                                                                         {
-                                                                                          situation.humanControlMeasure
+                                                                                          situation?.humanControlMeasure
                                                                                         }
                                                                                       </Typography>
                                                                                     </Grid>
@@ -2391,7 +2433,7 @@ const EvaluationApproval = ({
                                                                                         }}
                                                                                       >
                                                                                         {
-                                                                                          situation.technicalControlMeasure
+                                                                                          situation?.technicalControlMeasure
                                                                                         }
                                                                                       </Typography>
                                                                                     </Grid>
@@ -3241,251 +3283,7 @@ const EvaluationApproval = ({
           </Button>
         </div>
 
-        {/* <SwipeableViews style={{ overflow: "hidden" }}>
-        <Paper className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
-          <div>
-            <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
-              <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold ">
-                Summary Details
-              </h2>
-              <div>
-                <StyledBadge
-                  badgeContent={
-                    listDocument1.length
-                      ? listDocument1.length
-                      : contentDetails.documentCount
-                  }
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    style={{
-                      border: "1px solid",
-                      backgroundColor: "transparent",
-                      color: "black",
-                      borderColor: "rgba(203,213,225)",
-                    }}
-                    variant="contained"
-                    color="warning"
-                    startIcon={
-                      <FuseSvgIcon size={20}>
-                        heroicons-solid:upload
-                      </FuseSvgIcon>
-                    }
-                    onClick={handleOpen}
-                  >
-                    Document History
-                  </Button>
-                </StyledBadge>
-              </div>
-            </div>
-            <div
-              _ngcontent-fyk-c288=""
-              class="p-30 pt-24 pb-24 ng-star-inserted"
-            >
-              <div
-                _ngcontent-fyk-c288=""
-                class="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-              >
-                <div _ngcontent-fyk-c288="" className="mt-10">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Request No{" "}
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {contentDetails?.requestNo}
-                  </div>
-                </div>
-                <div _ngcontent-fyk-c288="" className="mt-10">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Initiator
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {contentDetails?.initiatorName}
-                  </div>
-                </div>
-                <div _ngcontent-fyk-c288="" className="mt-10">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Initiated On
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {formatDates(contentDetails?.requestDate)}
-                  </div>
-                </div>
-              </div>
 
-              <div
-                _ngcontent-fyk-c288=""
-                class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-              >
-                <div _ngcontent-fyk-c288="" className="mt-10">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Type{" "}
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {contentDetails?.requestTypeName}
-                  </div>
-                </div>
-                <div _ngcontent-fyk-c288="" className="mt-10">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Expense Nature
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {contentDetails?.expenseNature}
-                  </div>
-                </div>
-                <div _ngcontent-fyk-c288="" className="mt-10">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Expense Type
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {contentDetails?.expenseType}
-                  </div>
-                </div>
-              </div>
-
-              <div
-                _ngcontent-fyk-c288=""
-                class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-              >
-                <div _ngcontent-fyk-c288="" className="mt-10">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Change Type
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {contentDetails?.changeType}
-                  </div>
-                </div>
-                <div _ngcontent-fyk-c288="" className="mt-10">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Project Value
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {contentDetails?.projectValue}
-                  </div>
-                </div>
-                <div _ngcontent-fyk-c288="" className="mt-10">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Date of termination of change
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {formatDates(contentDetails?.changeTerminationDate)}
-                  </div>
-                </div>
-              </div>
-
-              <div
-                _ngcontent-fyk-c288=""
-                class="grid grid-cols-1 gap-x-6 gap-y-6  sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 w-full"
-              >
-                <div _ngcontent-fyk-c288="" className="mt-10">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Project Description
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {contentDetails?.projectDescription}
-                  </div>
-                </div>
-                <div className="mt-10">
-                  <div _ngcontent-fyk-c288="" class="leading-6 text-secondary">
-                    Location of change
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {contentDetails?.changeLocationString}
-                  </div>
-                </div>
-                <div _ngcontent-fyk-c288="" className="mt-10">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Change Benefits
-                  </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {contentDetails?.changeBenefits}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Paper>
-      </SwipeableViews> */}
         <SwipeableViews style={{ overflow: "hidden" }}>
           <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
             <div className="flex items-center w-full border-b justify-between p-30 pt-14 pb-14">

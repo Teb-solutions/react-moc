@@ -131,7 +131,7 @@ const DocumentModal = (props) => {
                   fontSize: "3rem",
                 }}
               >
-                File Manager
+                File Manager88
                 <Typography id="transition-modal-subtitle" component="h2">
                   {contentDetails?.length > 0
                     ? contentDetails?.documentCount
@@ -199,7 +199,7 @@ const DocumentModal = (props) => {
               <div className="flex justify-end">
                 <Button
                   className=""
-                  // style={{ backgroundColor: "white" }}
+
                   onClick={() => setOpenDrawer(false)}
                 >
                   <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>

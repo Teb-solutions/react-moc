@@ -954,6 +954,7 @@ function AssetRequest() {
                       fileDetails={fileDetails}
                       setFileDetails={setFileDetails}
                       openDrawer={openDrawer}
+                      setOpenDrawer={setOpenDrawer}
                       handleModalClose={handleOpenDocModalClose}
                       listDocument={listDocument}
                       toggleDrawer={toggleDrawer}

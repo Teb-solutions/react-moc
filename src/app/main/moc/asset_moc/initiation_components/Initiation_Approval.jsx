@@ -264,17 +264,18 @@ function InitiationApproval(props) {
   };
 
   const handleSubmitAsset = (e) => {
+
     if (
-      !selectedFile.name.trim() ||
-      !selectedFile.type.trim() ||
-      !selectedFile.document ||
-      !selectedFile.documentType.trim() ||
-      !selectedFile.documentId.trim()
+      !selectedFile1.name.trim() ||
+      !selectedFile1.type.trim() ||
+      !selectedFile1.document ||
+      !selectedFile1.documentType.trim()
+
     ) {
       toast.error("Please select your file.");
-      handleModalClose()
+      handleModalClose1()
       setSelectedFile({
-        ...selectedFile,
+        ...selectedFile1,
         name: "",
         description: "",
       });
@@ -282,11 +283,11 @@ function InitiationApproval(props) {
     }
 
     // Validation: If description field is empty
-    if (!selectedFile?.descritpion?.trim()) {
+    if (!selectedFile1?.descritpion?.trim()) {
       toast.error("Please add a description.");
-      handleModalClose()
+      handleModalClose1()
       setSelectedFile({
-        ...selectedFile,
+        ...selectedFile1,
         name: "",
         description: "",
       });
