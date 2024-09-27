@@ -131,7 +131,7 @@ const DocumentModal = (props) => {
                   fontSize: "3rem",
                 }}
               >
-                File Manager88
+                File Manager
                 <Typography id="transition-modal-subtitle" component="h2">
                   {contentDetails?.length > 0
                     ? contentDetails?.documentCount
