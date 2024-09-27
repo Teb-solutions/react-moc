@@ -3404,7 +3404,7 @@ function EvaluationChange({
                                       className="font-medium text-14"
                                       component="legend"
                                     >
-                                      What is the Task
+                                      What is the Task *
                                     </FormLabel>
                                     <TextField
                                       fullWidth
@@ -3432,7 +3432,7 @@ function EvaluationChange({
                                       className="font-medium text-14"
                                       component="legend"
                                     >
-                                      How is the task done
+                                      How is the task done *
                                     </FormLabel>
                                     <TextField
                                       fullWidth
