@@ -355,9 +355,10 @@ function EvaluationChange({
   };
 
   const handleRemoveForm = (id) => {
-    const newForms = forms.filter((form) => form.id !== id);
-    setForms(newForms);
-    setAddConsultation(false);
+    setForms((prevForms) => prevForms.filter((form) => form.id !== id));
+    if (forms.length <= 1) {
+      setAddConsultation(false);
+    }
   };
 
   const handleAddConsultation = () => {
@@ -3403,7 +3404,7 @@ function EvaluationChange({
                                       className="font-medium text-14"
                                       component="legend"
                                     >
-                                      What is the Task
+                                      What is the Task *
                                     </FormLabel>
                                     <TextField
                                       fullWidth
@@ -3431,7 +3432,7 @@ function EvaluationChange({
                                       className="font-medium text-14"
                                       component="legend"
                                     >
-                                      How is the task done
+                                      How is the task done *
                                     </FormLabel>
                                     <TextField
                                       fullWidth

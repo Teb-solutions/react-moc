@@ -132,9 +132,11 @@ const InitiationComplete = ({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const newValue = name === "changeLeaderId" ? value : value.trimStart();
+
     setIniComp((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: newValue,
     }));
     setErrors((prevErrors) => ({
       ...prevErrors,
