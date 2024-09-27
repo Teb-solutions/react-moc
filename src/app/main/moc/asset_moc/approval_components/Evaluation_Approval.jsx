@@ -833,7 +833,7 @@ const EvaluationApproval = ({
   const handleSubmitAsset = (e) => {
     if (
       !selectedFile.name.trim() ||
-      !selectedFile.type.trim() ||
+      // !selectedFile.type.trim() ||
       !selectedFile.document ||
       !selectedFile.documentType.trim() ||
       !selectedFile.documentId.trim()

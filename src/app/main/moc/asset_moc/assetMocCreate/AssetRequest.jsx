@@ -268,7 +268,7 @@ function AssetRequest() {
     const fileType = e.target.files[0].type.startsWith("image/")
       ? e.target.files[0].type?.split("/")[1]
       : e.target.files[0].type.type;
-
+    debugger
     setSelectedFile({
       ...selectedFile,
       name: fileNameWithoutExtension,
@@ -338,7 +338,7 @@ function AssetRequest() {
 
     if (
       !selectedFile.name.trim() ||
-      !selectedFile.type.trim() ||
+      // !selectedFile.type.trim() ||
       !selectedFile.document ||
       !selectedFile.documentType.trim() ||
       !selectedFile.documentId.trim()
