@@ -191,7 +191,9 @@ const SessionModal = ({
                         </TableHead>
                         <TableBody>
                           {groupedData[role].map((item) => {
-                            const isAlwaysChecked = selectedItems.some(
+                            const isAlwaysChecked =
+                              item.teamType === 1 || item.teamType === 2; // Change Leader (teamType 1) or HSEQ (teamType 2)
+                            const isChecked = selectedItems.some(
                               (selectedItem) =>
                                 selectedItem.teamType === item.teamType &&
                                 selectedItem.staffId === item.staffId
@@ -199,21 +201,21 @@ const SessionModal = ({
 
                             return (
                               <div
-                                key={item.value}
+                                key={item.staffId}
                                 style={{ marginTop: "10px" }}
                               >
                                 <label>
                                   <Checkbox
-                                    checked={isAlwaysChecked}
+                                    checked={isAlwaysChecked || isChecked} // Always checked for Change Leader and HSEQ
                                     onChange={() =>
-                                      !isAlwaysChecked &&
+                                      !isAlwaysChecked && // Only allow change for "OTHERS"
                                       handleCheckboxChange(
                                         item.teamType,
                                         item.staffId,
                                         item.staffName
                                       )
                                     }
-                                    disabled={isAlwaysChecked} // Disable checkbox if it's always checked
+                                    disabled={isAlwaysChecked} // Disable checkbox for Change Leader and HSEQ
                                   />
                                   <span>{item.staffName}</span>
                                 </label>

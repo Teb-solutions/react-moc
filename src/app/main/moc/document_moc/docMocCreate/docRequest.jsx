@@ -38,6 +38,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
 import ConfirmationModal from "../../common_modal/confirmation_modal/ConfirmationModal";
+import GuideLines from "../../common_modal/GuideLines";
 
 function DocRequest() {
   const style = {
@@ -134,7 +135,13 @@ function DocRequest() {
   const [documenDowToken, setDocumenDowToken] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [fileName, setFileName] = useState("");
-
+  const [openGuide, SetOpenGuide] = useState(false);
+  const handelGuideOpen = () => {
+    SetOpenGuide(true);
+  };
+  const handelGuideClose = () => {
+    SetOpenGuide(false);
+  };
   const handleDownload = () => {
     if (fileUrl) {
       const link = document.createElement("a");
@@ -454,7 +461,10 @@ function DocRequest() {
       content={
         <>
           <ToastContainer className="toast-container" />
-
+          <GuideLines
+            handelGuideOpen={openGuide}
+            handelGuideClose={handelGuideClose}
+          />
           <form onSubmit={handleSubmit}>
             <div className="p-24">
               <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-24 white_box rounded-2xl shadow">
@@ -466,6 +476,25 @@ function DocRequest() {
                     <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                       New Document MOC Request
                     </h2>
+                    <Button
+                      className="whitespace-nowrap "
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "#0000",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                      }}
+                      variant="contained"
+                      color="warning"
+                      startIcon={
+                        <FuseSvgIcon size={20}>
+                          heroicons-solid:document
+                        </FuseSvgIcon>
+                      }
+                      onClick={handelGuideOpen}
+                    >
+                      Guide
+                    </Button>
                   </div>
                 </div>
                 <div

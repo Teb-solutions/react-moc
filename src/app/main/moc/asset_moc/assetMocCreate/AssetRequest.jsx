@@ -43,6 +43,7 @@ import FuseLoading from "@fuse/core/FuseLoading";
 import ConfirmationModal from "../../common_modal/confirmation_modal/ConfirmationModal";
 import DocumentModal from "../../common_modal/documentModal";
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
+import GuideLines from "../../common_modal/GuideLines";
 
 function AssetRequest() {
   const style = {
@@ -268,7 +269,6 @@ function AssetRequest() {
     const fileType = e.target.files[0].type.startsWith("image/")
       ? e.target.files[0].type?.split("/")[1]
       : e.target.files[0].type.type;
-
     setSelectedFile({
       ...selectedFile,
       name: fileNameWithoutExtension,
@@ -344,7 +344,7 @@ function AssetRequest() {
       !selectedFile.documentId.trim()
     ) {
       toast.error("Please select your file.");
-      handleOpenDocModalClose()
+      handleOpenDocModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -356,7 +356,7 @@ function AssetRequest() {
     // Validation: If description field is empty
     if (!selectedFile.descritpion.trim()) {
       toast.error("Please add a description.");
-      handleOpenDocModalClose()
+      handleOpenDocModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -526,7 +526,13 @@ function AssetRequest() {
     }
   }, [docContent]);
 
-  // console.log(documentState, "documentState");
+  const [openGuide, SetOpenGuide] = useState(false);
+  const handelGuideOpen = () => {
+    SetOpenGuide(true);
+  };
+  const handelGuideClose = () => {
+    SetOpenGuide(false);
+  };
 
   if (isLoading) {
     return <FuseLoading />;
@@ -550,6 +556,29 @@ function AssetRequest() {
             pauseOnHover
             theme="light"
           />
+          <DocumentModal
+            open={openDocModal}
+            selectedDocument={selectedDocument}
+            selectedFile={selectedFile}
+            fileDetails={fileDetails}
+            setFileDetails={setFileDetails}
+            openDrawer={openDrawer}
+            setOpenDrawer={setOpenDrawer}
+            handleModalClose={handleOpenDocModalClose}
+            listDocument={listDocument}
+            toggleDrawer={toggleDrawer}
+            handelDetailDoc={handelDetailDoc}
+            handelFileDiscriptionChange={handelFileDiscriptionChange}
+            handelFileChange={handelFileChange}
+            handleSubmitDocument={handleSubmitDocument}
+            formatDate={formatDate}
+            handleDownload={handleDownload}
+            handleDelete={handleDelete}
+          />
+          <GuideLines
+            handelGuideOpen={openGuide}
+            handelGuideClose={handelGuideClose}
+          />
 
           <form onSubmit={handleSubmit}>
             <div className="p-24">
@@ -562,6 +591,25 @@ function AssetRequest() {
                     <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                       New Technical MOC Request
                     </h2>
+                    <Button
+                      className="whitespace-nowrap "
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "#0000",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                      }}
+                      variant="contained"
+                      color="warning"
+                      startIcon={
+                        <FuseSvgIcon size={20}>
+                          heroicons-solid:document
+                        </FuseSvgIcon>
+                      }
+                      onClick={handelGuideOpen}
+                    >
+                      Guide
+                    </Button>
                   </div>
                 </div>
                 <div
@@ -947,26 +995,6 @@ function AssetRequest() {
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                     style={{ marginTop: "15px" }}
                   >
-                    <DocumentModal
-                      open={openDocModal}
-                      selectedDocument={selectedDocument}
-                      selectedFile={selectedFile}
-                      fileDetails={fileDetails}
-                      setFileDetails={setFileDetails}
-                      openDrawer={openDrawer}
-                      setOpenDrawer={setOpenDrawer}
-                      handleModalClose={handleOpenDocModalClose}
-                      listDocument={listDocument}
-                      toggleDrawer={toggleDrawer}
-                      handelDetailDoc={handelDetailDoc}
-                      handelFileDiscriptionChange={handelFileDiscriptionChange}
-                      handelFileChange={handelFileChange}
-                      handleSubmitDocument={handleSubmitDocument}
-                      formatDate={formatDate}
-                      handleDownload={handleDownload}
-                      handleDelete={handleDelete}
-                    />
-
                     <Button
                       className="whitespace-nowrap"
                       variant="contained"

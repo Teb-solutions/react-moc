@@ -731,16 +731,14 @@ const EvaluationApproval = ({
   };
 
   const handleSubmitResponse = (e) => {
-
     if (
       !selectedRespFile.name.trim() ||
       !selectedRespFile.type.trim() ||
       !selectedRespFile.document ||
       !selectedRespFile.documentType.trim()
-
     ) {
       toast.error("Please select your file.");
-      handleRespModalClose()
+      handleRespModalClose();
       setSelectedFile({
         ...selectedRespFile,
         name: "",
@@ -752,7 +750,7 @@ const EvaluationApproval = ({
     // Validation: If description field is empty
     if (!selectedRespFile?.descritpion?.trim()) {
       toast.error("Please add a description.");
-      handleRespModalClose()
+      handleRespModalClose();
       setSelectedFile({
         ...selectedRespFile,
         name: "",
@@ -760,7 +758,6 @@ const EvaluationApproval = ({
       });
       return;
     }
-
 
     const formData = new FormData();
     formData.append("name", selectedRespFile.name);
@@ -841,7 +838,7 @@ const EvaluationApproval = ({
       !selectedFile.documentId.trim()
     ) {
       toast.error("Please select your file.");
-      handleModalClose()
+      handleModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -853,7 +850,7 @@ const EvaluationApproval = ({
     // Validation: If description field is empty
     if (!selectedFile?.descritpion?.trim()) {
       toast.error("Please add a description.");
-      handleModalClose()
+      handleModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -894,10 +891,8 @@ const EvaluationApproval = ({
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
               );
 
-
               setContentDetails(response?.data?.data);
             });
-
         } else {
           toast.error(response.data.message);
           setOpen(false);
@@ -1002,8 +997,8 @@ const EvaluationApproval = ({
   };
   const handleRespModalClose = () => {
     setTaskRespOpen(false);
-    setFileDetailsRes(false)
-    setOpenDrawerRes(false)
+    setFileDetailsRes(false);
+    setOpenDrawerRes(false);
     setSelectedFile({
       ...selectedRespFile,
       name: "",
@@ -2222,7 +2217,6 @@ const EvaluationApproval = ({
                                                                       subIndex
                                                                     }
                                                                   >
-
                                                                     {sub
                                                                       ?.riskAnalysisHazardTypes
                                                                       ?.length ==
@@ -3285,7 +3279,6 @@ const EvaluationApproval = ({
           </Button>
         </div>
 
-
         <SwipeableViews style={{ overflow: "hidden" }}>
           <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow">
             <div className="flex items-center w-full border-b justify-between p-30 pt-14 pb-14">
@@ -3564,7 +3557,11 @@ const EvaluationApproval = ({
                                       paddingRight: "100px",
                                       fontSize: "13px",
                                     }}
-                                    value={handelCommentRemarks[itm.id] ? index[handelCommentRemarks[itm.id]] : rwv?.remark || ""}
+                                    value={
+                                      handelCommentRemarks[itm.id]
+                                        ? index[handelCommentRemarks[itm.id]]
+                                        : rwv?.remark || ""
+                                    }
                                     onChange={(e) =>
                                       setHandelCommentRemark(
                                         itm.id,
@@ -4310,7 +4307,17 @@ const EvaluationApproval = ({
                                                         paddingRight: "100px",
                                                         fontSize: "13px",
                                                       }}
-                                                      value={handelCommentRemarks[imptsk.id] ? index[handelCommentRemarks[imptsk.id]] : rwx?.remark || ""}
+                                                      value={
+                                                        handelCommentRemarks[
+                                                          imptsk.id
+                                                        ]
+                                                          ? index[
+                                                          handelCommentRemarks[
+                                                          imptsk.id
+                                                          ]
+                                                          ]
+                                                          : rwx?.remark || ""
+                                                      }
                                                       onChange={(e) =>
                                                         setHandelCommentRemark(
                                                           imptsk.id,
@@ -5169,8 +5176,6 @@ const EvaluationApproval = ({
           formatDate={formatDate}
           handleDelete={handleDelete}
         />
-
-
       </div>
     </>
   );
