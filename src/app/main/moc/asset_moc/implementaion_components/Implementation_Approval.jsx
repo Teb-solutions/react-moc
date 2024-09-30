@@ -58,6 +58,8 @@ import AuditListModal from "../../common_modal/audit_modals/AuditList";
 import ConfirmationModal from "../../common_modal/confirmation_modal/ConfirmationModal";
 import DocumentModal from "../../common_modal/documentModal";
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
+import PssrCheckListPart from "./PssrChecklistpart";
+
 
 // Adjust the path based on your project structure
 
@@ -425,7 +427,13 @@ function ImplementationApproval({
         ...entry,
         documentId: entry.documentId || generateGUID(),
       }));
-      setChecklistData(initialChecklistData);
+      PssrCheckListData.pssrData.forEach(e => {
+        if (!e.documentId) {
+          e.documentId = generateGUID();
+        }
+      })
+
+      setChecklistData(PssrCheckListData.pssrData);
 
       // Initialize radioState and remarksState from PssrCheckListData
       const radioInitialState = {};
@@ -472,7 +480,6 @@ function ImplementationApproval({
       fetchDocumentCounts();
     }
   }, [PssrCheckListData]);
-
   // Function to handle radio button change
   const handleRadioChange = (childId, value) => {
     setRadioState((prevState) => ({
@@ -498,6 +505,7 @@ function ImplementationApproval({
   // };
 
   const updateChecklistData = (childId, field, value) => {
+
     setChecklistData((prevData) => {
       const updatedData = [...prevData];
       const existingEntryIndex = updatedData.findIndex(
@@ -1041,8 +1049,11 @@ function ImplementationApproval({
   };
 
   const handleOpenPssR = (id) => {
+
     setOpenPssR(true);
-    ListDocPssR(id, assetEvaluationId);
+    if (id) {
+      ListDocPssR(id, assetEvaluationId);
+    }
     setDocuPssR(id)
   };
 
@@ -1119,6 +1130,34 @@ function ImplementationApproval({
     }));
   };
   const handleSubmitAssetPssR = async (e) => {
+    if (
+      !selectedFilePssR.name.trim() ||
+      //  !selectedFile.type.trim() || 
+      !selectedFilePssR.document ||
+      !selectedFilePssR.documentType.trim()
+      // !selectedFilePssR.documentId.trim()
+    ) {
+      toast.error("Please select your file.");
+      handleModalClosePssR()
+      setSelectedFilePssR({
+        ...selectedFilePssR,
+        name: "",
+        description: "",
+      });
+      return;
+    }
+
+    // Validation: If description field is empty
+    if (!selectedFilePssR?.descritpion?.trim()) {
+      toast.error("Please add a description.");
+      handleModalClosePssR()
+      setSelectedFilePssR({
+        ...selectedFilePssR,
+        name: "",
+        description: "",
+      });
+      return;
+    }
     const formData = new FormData();
     formData.append("name", selectedFilePssR.name);
     formData.append("descritpion", selectedFilePssR.descritpion);
@@ -1152,7 +1191,7 @@ function ImplementationApproval({
               apiAuth.get(
                 `DocumentManager/DocumentCount?id=${docuPssR}&documentType=ImplPSSR`
               ).then((response) => {
-
+                debugger
                 setDocumentCountsImp({
                   ...documentCountsImp,
                   [docuPssR]: response.data.data
@@ -2320,14 +2359,14 @@ function ImplementationApproval({
       />
       <SwipeableViews>
         <Paper className="w-full mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden">
-          <div class="border-b">
+          <div className="border-b">
             <div className="flex items-center w-full border-b justify-between p-30 pt-24 pb-24">
               {showPssrCheckList ? (
                 <div className="flex justify-between w-100">
                   <h2 className="text-2xl font-semibold pt-5">
                     PSSR Checklist
                   </h2>
-                  {PssrCheckListData?.pssrData?.length && (
+                  {PssrCheckListData?.pssrData?.length > 0 && (
                     <Button
                       className="whitespace-nowrap"
                       variant="contained"
@@ -3176,192 +3215,9 @@ function ImplementationApproval({
               </Box>
             )}
             {showPssrCheckList && (
-              <Box className="p-30 pt-24 pb-24" sx={{ width: "100%" }}>
-                {PssrCheckListData?.parentData?.map((parent) => {
-                  // Filter childData based on the matching parentId
-                  const matchingChildData =
-                    PssrCheckListData?.childData?.filter(
-                      (child) => child.parentId === parent.value
-                    );
-
-                  return (
-                    <>
-
-                      <Box key={parent.value} mb={4}>
-                        {/* Parent Section */}
-                        <Typography
-                          variant="h6"
-                          gutterBottom
-                          style={{ backgroundColor: "rgba(241,245,249, 1)" }}
-                          className="p-8"
-                        >
-                          {parent.text}
-                        </Typography>
-
-
-                        {matchingChildData.map((child) => {
-
-                          const matchingPssrData =
-                            PssrCheckListData?.pssrData?.find(
-                              (pssrItem) => pssrItem.particular === child.value
-                            );
-                          const documentCount =
-                            documentCountsImp[matchingPssrData?.id] || 0;
-
-                          return (
-                            <>
-
-                              <Box
-                                key={child.value}
-                                mb={3}
-                                p={2}
-                                border={1}
-                                borderColor="grey.300"
-                                borderRadius={2}
-                              >
-                                <Typography variant="body1" gutterBottom>
-                                  {child.text}
-                                </Typography>
-
-                                <RadioGroup
-                                  row
-                                  value={
-                                    radioState[child.value] ||
-                                    matchingPssrData?.checklistReviewStatus ||
-                                    ""
-                                  }
-                                  onChange={(e) =>
-                                    handleRadioChange(child.value, e.target.value)
-                                  }
-                                >
-                                  <FormControlLabel
-                                    value="Yes"
-                                    control={<Radio />}
-                                    label="Yes"
-                                    disabled={
-                                      radioState[child.value] === "Yes" &&
-                                      !showPssrEdit
-                                    }
-                                  />
-                                  <FormControlLabel
-                                    value="No"
-                                    control={<Radio />}
-                                    label="No"
-                                    disabled={
-                                      radioState[child.value] === "No" &&
-                                      !showPssrEdit
-                                    }
-                                  />
-                                  <FormControlLabel
-                                    value="N/A"
-                                    control={<Radio />}
-                                    label="N/A"
-                                    disabled={
-                                      radioState[child.value] === "N/A" &&
-                                      !showPssrEdit
-                                    }
-                                  />
-                                </RadioGroup>
-
-                                {matchingPssrData?.remarks && !showPssrEdit ? (
-                                  <h4 className="p-8">
-                                    {matchingPssrData?.remarks}
-                                  </h4>
-                                ) : (
-                                  <TextField
-                                    label="Add comments"
-                                    multiline
-                                    rows={3}
-                                    variant="outlined"
-                                    fullWidth
-                                    margin="normal"
-                                    defaultValue={
-                                      remarksState[child.value] ||
-                                      matchingPssrData?.remarks ||
-                                      ""
-                                    }
-                                    onChange={(e) =>
-                                      handleCommentsChange(e,
-                                        child.value,
-                                        e.target.value
-                                      )
-                                    }
-                                  />
-                                )}
-
-
-                                <StyledBadge badgeContent={documentCount}>
-                                  <Button
-                                    className="whitespace-nowrap"
-                                    style={{
-                                      border: "1px solid",
-                                      backgroundColor: "#0000",
-                                      color: "black",
-                                      borderColor: "rgba(203,213,225)",
-                                    }}
-                                    variant="contained"
-                                    color="warning"
-                                    startIcon={
-                                      <FuseSvgIcon size={20}>
-                                        heroicons-solid:upload
-                                      </FuseSvgIcon>
-                                    }
-                                    onClick={() =>
-                                      handleOpenPssR(matchingPssrData?.id)
-                                    }
-                                  >
-                                    Document
-                                  </Button>
-                                </StyledBadge>
-                              </Box>
-                            </>
-                          );
-                        })}
-                      </Box>
-                    </>
-                  );
-                })}
-
-                <div
-                  className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                  style={{
-                    display: "flex",
-                    marginTop: "15px",
-                    justifyContent: "end",
-                    padding: "10px",
-                  }}
-                >
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="primary"
-                    style={{
-                      padding: "23px",
-                      backgroundColor: "white",
-                      color: "black",
-                      border: "1px solid grey",
-                    }}
-                    onClick={() => {
-                      setShowPssrCheckList(false);
-                      setShowPssrEdit(false);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    className="whitespace-nowrap"
-                    variant="contained"
-                    color="secondary"
-                    style={{
-                      padding: "23px",
-                    }}
-                    type="submit"
-                    onClick={handleSubmitCheckList}
-                  >
-                    Save
-                  </Button>
-                </div>
-              </Box>
+              <>
+                <PssrCheckListPart PssrCheckListData={PssrCheckListData} checklistData={checklistData} documentCountsImp={documentCountsImp} radioState={radioState} handleRadioChange={handleRadioChange} showPssrEdit={showPssrEdit} remarksState={remarksState} handleCommentsChange={handleCommentsChange} handleOpenPssR={handleOpenPssR} handleSubmitCheckList={handleSubmitCheckList} setShowPssrEdit={setShowPssrEdit} setShowPssrCheckList={setShowPssrCheckList} />
+              </>
             )}
           </div>
 

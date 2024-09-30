@@ -130,6 +130,7 @@ const ImplementationApprovalSite = ({
       )
       .then((resp) => {
         setContentDetails(resp.data.data);
+        setExpanded(false);
       });
   }
 

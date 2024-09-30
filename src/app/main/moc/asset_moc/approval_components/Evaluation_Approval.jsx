@@ -368,16 +368,18 @@ const EvaluationApproval = ({
   }))(Badge);
 
   async function EvaluationApiRecall() {
+    debugger
     const response = await apiAuth.get(
       `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
     );
 
     setHandelCommentRemark("");
     await setContentDetails(response?.data?.data);
-
+    // setExpanded(false);
   }
 
   const setHandelCommentRemark = (id, value) => {
+
     setHandelCommentRemarks((prevRemarks) => ({
       ...prevRemarks,
       [id]: value,
@@ -400,7 +402,7 @@ const EvaluationApproval = ({
             ...prevRemarks,
             [id]: "", // Clear remark after saving
           }));
-          testRevEvaluationApiRecalliew();
+          EvaluationApiRecall();
         });
     } else {
       apiAuth
@@ -742,7 +744,7 @@ const EvaluationApproval = ({
       setSelectedFile({
         ...selectedRespFile,
         name: "",
-        description: "",
+        descritpion: "",
       });
       return;
     }
@@ -754,7 +756,7 @@ const EvaluationApproval = ({
       setSelectedFile({
         ...selectedRespFile,
         name: "",
-        description: "",
+        descritpion: "",
       });
       return;
     }
@@ -791,7 +793,7 @@ const EvaluationApproval = ({
             });
           apiAuth
             .get(
-              `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+              `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode?.code}&&version=${lastActCode?.version}&&refVersion=${lastActCode?.refVersion}`
             )
             .then((resp) => {
               setContentDetails(resp.data.data);
@@ -3490,7 +3492,7 @@ const EvaluationApproval = ({
                                       paddingRight: "100px",
                                       fontSize: "13px",
                                     }}
-                                    value={handelCommentRemarks[itm.id] || ""}
+                                    defaultValue={handelCommentRemarks[itm.id] || ""}
                                     onChange={(e) =>
                                       setHandelCommentRemark(
                                         itm.id,
