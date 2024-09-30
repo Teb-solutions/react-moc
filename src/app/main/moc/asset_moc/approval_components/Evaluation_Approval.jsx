@@ -68,8 +68,6 @@ const EvaluationApproval = ({
   CountApprove,
   contentDetailsini,
   currentActivityForm,
-  contentDetailsRisk,
-  setContentDetailsRisk,
   contentDetailsT,
 }) => {
   const textareaRef = useRef(null);
@@ -3790,8 +3788,8 @@ const EvaluationApproval = ({
                     {/* Empty header */}
                   </thead>
                   <tbody className="task-table-body">
-                    {contentDetailsRisk?.tasklist ? (
-                      contentDetailsRisk?.tasklist?.map((imptsk) => (
+                    {contentDetails?.tasklist ? (
+                      contentDetails?.tasklist?.map((imptsk) => (
                         <div key={imptsk.id} className="mt-24 border-b pb-24">
                           <div className="task-table-row mat-row">
                             <div className="task-table-cell mat-cell">

@@ -54,8 +54,6 @@ const AssetCourse = () => {
   const { assetEvaluationId } = routeParams;
   const [content, setContent] = useState([]);
   const [contentDetails, setContentDetails] = useState({});
-  const [contentDetailsRisk, setContentDetailsRisk] = useState({});
-
   const [contentDetailsDocu, setContentDetailsDocu] = useState({});
   const [contentDetailsIni, setContentDetailsIni] = useState({});
   const [contentDetailsPssr, setContentDetailsPssr] = useState({});
@@ -591,7 +589,6 @@ const AssetCourse = () => {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
-                setContentDetailsRisk(resp?.data?.data);
                 if (resp.data?.data) {
                   const data = resp.data?.data;
                   if (data.requestTypeName !== "Document") {
@@ -645,7 +642,6 @@ const AssetCourse = () => {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
-                setContentDetailsRisk(resp?.data?.data);
                 if (resp.data?.data) {
                   const data = resp.data?.data;
                   if (data.requestTypeName !== "Document") {
@@ -701,7 +697,6 @@ const AssetCourse = () => {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
-                setContentDetailsRisk(resp?.data?.data);
                 if (resp.data?.data) {
                   const data = resp.data?.data;
                   if (data.requestTypeName !== "Document") {
@@ -762,7 +757,6 @@ const AssetCourse = () => {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
-                setContentDetailsRisk(resp?.data?.data);
                 if (resp.data?.data) {
                   const data = resp.data?.data;
                   if (data.requestTypeName !== "Document") {
@@ -1332,7 +1326,6 @@ const AssetCourse = () => {
                   assetEvaluationId={assetEvaluationId}
                   contentDetails={contentDetails}
                   setContentDetails={setContentDetails}
-                  contentDetailsRisk={contentDetailsRisk}
                   showRiskAnalysisChart={showRiskAnalysisChart}
                   riskAnalysisChartOptions={riskAnalysisChartOptions}
                   lastActCode={lastActCode}
@@ -1351,7 +1344,6 @@ const AssetCourse = () => {
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
                   setContentDetails={setContentDetails}
-                  contentDetailsRisk={contentDetailsRisk}
                   contentDetails={contentDetails}
                   showRiskAnalysisChart={showRiskAnalysisChart}
                   riskAnalysisChartOptions={riskAnalysisChartOptions}
@@ -1371,7 +1363,6 @@ const AssetCourse = () => {
                   assetEvaluationId={assetEvaluationId}
                   contentDetails={contentDetails}
                   setContentDetails={setContentDetails}
-                  contentDetailsRisk={contentDetailsRisk}
                   showRiskAnalysisChart={showRiskAnalysisChart}
                   riskAnalysisChartOptions={riskAnalysisChartOptions}
                   lastActCode={lastActCode}
@@ -1391,7 +1382,6 @@ const AssetCourse = () => {
                   assetEvaluationId={assetEvaluationId}
                   contentDetails={contentDetails}
                   setContentDetails={setContentDetails}
-                  contentDetailsRisk={contentDetailsRisk}
                   showRiskAnalysisChart={showRiskAnalysisChart}
                   riskAnalysisChartOptions={riskAnalysisChartOptions}
                   lastActCode={lastActCode}
