@@ -368,7 +368,7 @@ const EvaluationApproval = ({
   }))(Badge);
 
   async function EvaluationApiRecall() {
-    debugger
+
     const response = await apiAuth.get(
       `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
     );

@@ -1191,7 +1191,7 @@ function ImplementationApproval({
               apiAuth.get(
                 `DocumentManager/DocumentCount?id=${docuPssR}&documentType=ImplPSSR`
               ).then((response) => {
-                debugger
+
                 setDocumentCountsImp({
                   ...documentCountsImp,
                   [docuPssR]: response.data.data
