@@ -104,7 +104,7 @@ const TicketModal = ({ open, handleClose, errors, setErrors }) => {
     if (!ticketData.message) tempErrors.message = "Description is required.";
     if (!ticketData.ticketCategory)
       tempErrors.ticketCategory = "Ticket Category is required.";
-    if (!ticketData.ticketPriority)
+    if (ticketData.ticketPriority == null)
       tempErrors.ticketPriority = "Ticket Priority is required.";
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;

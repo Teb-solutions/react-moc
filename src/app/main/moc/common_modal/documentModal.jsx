@@ -197,11 +197,7 @@ const DocumentModal = (props) => {
           {openDrawer && !fileDetails && (
             <Box sx={drawerStyle(openDrawer)}>
               <div className="flex justify-end">
-                <Button
-                  className=""
-
-                  onClick={() => setOpenDrawer(false)}
-                >
+                <Button className="" onClick={() => setOpenDrawer(false)}>
                   <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                 </Button>
               </div>
@@ -262,7 +258,7 @@ const DocumentModal = (props) => {
                 >
                   <TextField
                     id="selectedFileName"
-                    label="Select File"
+                    label="Select File *"
                     variant="standard"
                     disabled
                     value={selectedFile?.name}
@@ -281,7 +277,7 @@ const DocumentModal = (props) => {
                 >
                   <TextField
                     id="standard-basic"
-                    label={<>Description</>}
+                    label={<>Description *</>}
                     name="descritpion"
                     variant="standard"
                     onChange={handelFileDiscriptionChange}

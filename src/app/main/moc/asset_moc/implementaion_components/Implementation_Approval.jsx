@@ -231,7 +231,7 @@ function ImplementationApproval({
   const [pssrsessionStatus, setPssrsessionStatus] = useState(0); // Assuming status 0 initially
   const [activeSessiondata, setActiveSessionData] = useState(null);
   const [teamList, setteamList] = useState([]);
-  const [docuPssR, setDocuPssR] = useState(0)
+  const [docuPssR, setDocuPssR] = useState(0);
   const [selectedFilePssR, setSelectedFilePssR] = useState({
     name: "",
 
@@ -441,7 +441,6 @@ function ImplementationApproval({
 
       // Fetch document counts based on IDs
       const fetchDocumentCounts = async () => {
-
         const ids = PssrCheckListData.pssrData.map((item) => item.id);
 
         try {
@@ -614,8 +613,6 @@ function ImplementationApproval({
   const handlePssrEdit = () => {
     setShowPssrEdit(true);
   };
-
-
 
   const [dueDateCommentValidation, setDueDateCommentValidation] =
     useState(null);
@@ -851,8 +848,6 @@ function ImplementationApproval({
       });
   };
 
-
-
   const handleOpenImplemntationTask = () => {
     setTaskAdd({
       ...taskAdd,
@@ -870,7 +865,7 @@ function ImplementationApproval({
     apiAuth.get(`/LookupData/Lov/16`).then((resp) => {
       setParticular(resp.data.data);
     });
-    apiAuth.get(`/LookupData/Lov/11`).then((resp) => { });
+    apiAuth.get(`/LookupData/Lov/11`).then((resp) => {});
   };
 
   const handelApproveImpl = (e, task) => {
@@ -1024,7 +1019,6 @@ function ImplementationApproval({
     setOpenDrawerPssR(open);
   };
 
-
   const ListDoc = (docu_id, id) => {
     apiAuth
       .get(`/DocumentManager/DocList/${docu_id}/Task?changeRequestToken=${id}`)
@@ -1034,7 +1028,9 @@ function ImplementationApproval({
   };
   const ListDocPssR = (docu_id, id) => {
     apiAuth
-      .get(`/DocumentManager/DocList/${docu_id}/ImplPSSR?changeRequestToken=${id}`)
+      .get(
+        `/DocumentManager/DocList/${docu_id}/ImplPSSR?changeRequestToken=${id}`
+      )
       .then((Resp) => {
         setListDocumentPssR(Resp?.data?.data);
       });
@@ -1043,21 +1039,20 @@ function ImplementationApproval({
   const handleOpenPssR = (id) => {
     setOpenPssR(true);
     ListDocPssR(id, assetEvaluationId);
-    setDocuPssR(id)
+    setDocuPssR(id);
   };
 
   const handleOpen = (id) => {
     setOpen(true);
     ListDoc(id, assetEvaluationId);
-
   };
 
   const handleModalClosePssR = () => {
     setOpenPssR(false);
     setOpenDrawerPssR(false);
     setFileDetailsPssR(false);
-    setListDocumentPssR([])
-  }
+    setListDocumentPssR([]);
+  };
 
   const handleModalClose = () => {
     setOpen(false);
@@ -1065,7 +1060,6 @@ function ImplementationApproval({
     setFileDetails(false);
   };
   const handelDetailDocPssR = (doc) => {
-
     setSelectedDocumentPssR(doc);
     setFileDetailsPssR(true);
     setDocumenDowTokenPssR(doc.token);
@@ -1076,7 +1070,6 @@ function ImplementationApproval({
     setDocumenDowToken(doc.token);
   };
   const handelFileDiscriptionChange = (event) => {
-
     const { name, value } = event.target;
     setSelectedFile((prevState) => ({
       ...prevState,
@@ -1084,9 +1077,7 @@ function ImplementationApproval({
     }));
   };
 
-
   const handelFileChangePssR = (e) => {
-
     const file = e.target.files[0];
 
     const fileNameWithoutExtension = e.target.files[0].name
@@ -1109,9 +1100,7 @@ function ImplementationApproval({
     });
   };
 
-
   const handelFileDiscriptionChangePssR = (event) => {
-
     const { name, value } = event.target;
     setSelectedFilePssR((prevState) => ({
       ...prevState,
@@ -1135,10 +1124,11 @@ function ImplementationApproval({
       })
       .then((response) => {
         if (response.data.statusCode === 200) {
-
           apiAuth
 
-            .get(`/DocumentManager/DocList/${docuPssR}/ImplPSSR?changeRequestToken=${assetEvaluationId}`)
+            .get(
+              `/DocumentManager/DocList/${docuPssR}/ImplPSSR?changeRequestToken=${assetEvaluationId}`
+            )
 
             .then((response) => {
               setOpenDrawerPssR(false);
@@ -1149,16 +1139,16 @@ function ImplementationApproval({
                 descritpion: "",
               });
 
-              apiAuth.get(
-                `DocumentManager/DocumentCount?id=${docuPssR}&documentType=ImplPSSR`
-              ).then((response) => {
-
-                setDocumentCountsImp({
-                  ...documentCountsImp,
-                  [docuPssR]: response.data.data
+              apiAuth
+                .get(
+                  `DocumentManager/DocumentCount?id=${docuPssR}&documentType=ImplPSSR`
+                )
+                .then((response) => {
+                  setDocumentCountsImp({
+                    ...documentCountsImp,
+                    [docuPssR]: response.data.data,
+                  });
                 });
-              })
-
             });
         } else {
           toast.error(response.data.message);
@@ -1192,8 +1182,6 @@ function ImplementationApproval({
       });
   };
 
-
-
   const handleDownload = () => {
     apiAuth
       .get(`/DocumentManager/download/${documenDowTokenPssR}`, {
@@ -1204,7 +1192,12 @@ function ImplementationApproval({
         const link = document.createElement("a");
 
         link.href = url;
-        link.setAttribute("download", selectedDocument?.name ? selectedDocument?.name : selectedDocumentPssR.name); // or any other extension
+        link.setAttribute(
+          "download",
+          selectedDocument?.name
+            ? selectedDocument?.name
+            : selectedDocumentPssR.name
+        ); // or any other extension
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -1240,8 +1233,9 @@ function ImplementationApproval({
     apiAuth.delete(`DocumentManager/Delete/${docToken}`).then((response) => {
       apiAuth
 
-        .get(`/DocumentManager/DocList/${docId}/ImplPSSR?changeRequestToken=${assetEvaluationId}`)
-
+        .get(
+          `/DocumentManager/DocList/${docId}/ImplPSSR?changeRequestToken=${assetEvaluationId}`
+        )
 
         .then((response) => {
           setOpenDrawerPssR(false);
@@ -1250,16 +1244,16 @@ function ImplementationApproval({
           setFileDetailsPssR(false);
           setSelectedDocumentPssR("");
 
-
-          apiAuth.get(
-            `DocumentManager/DocumentCount?id=${docuPssR}&documentType=ImplPSSR`
-          ).then((response) => {
-
-            setDocumentCountsImp({
-              ...documentCountsImp,
-              [docuPssR]: response.data.data
+          apiAuth
+            .get(
+              `DocumentManager/DocumentCount?id=${docuPssR}&documentType=ImplPSSR`
+            )
+            .then((response) => {
+              setDocumentCountsImp({
+                ...documentCountsImp,
+                [docuPssR]: response.data.data,
+              });
             });
-          })
         });
     });
   };
@@ -1276,7 +1270,6 @@ function ImplementationApproval({
           setDeletes(false);
           setFileDetails(false);
           setSelectedDocument("");
-
         });
     });
   };
@@ -1445,7 +1438,6 @@ function ImplementationApproval({
           </Button>
         </div>
       </DeleteModal>
-
 
       <DocumentModal
         open={open}
@@ -1706,8 +1698,8 @@ function ImplementationApproval({
                           name="audit"
                           onChange={handleChangeAddTask}
                           value={taskAdd.audit}
-                        // error={!!errorsAddTask.audit}
-                        // helperText={errorsAddTask.audit}
+                          // error={!!errorsAddTask.audit}
+                          // helperText={errorsAddTask.audit}
                         />
                         <h6 className="text-grey">
                           If this task is based on Audit comments, please select
@@ -2566,7 +2558,7 @@ function ImplementationApproval({
                                     <div className="d-flex flex-wrap justify-between w-100 pr-10">
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div className="flex items-center">
                                           <b>Task #{detail.sourceTaskId}</b>
@@ -2575,14 +2567,14 @@ function ImplementationApproval({
 
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div
                                           className="flex items-center"
                                           style={{}}
                                         >
                                           {detail.isCompleted &&
-                                            detail.taskStatus === 3 ? (
+                                          detail.taskStatus === 3 ? (
                                             <span className="text-green">
                                               Approved
                                             </span>
@@ -2600,7 +2592,7 @@ function ImplementationApproval({
                                       </div>
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div className="flex items-center">
                                           No Risks
@@ -2608,7 +2600,7 @@ function ImplementationApproval({
                                       </div>
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div className="flex items-center">
                                           {detail.assignedStaff}
@@ -2617,7 +2609,7 @@ function ImplementationApproval({
 
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div className="flex items-center">
                                           {formatDate(detail.dueDate)}
@@ -2625,7 +2617,7 @@ function ImplementationApproval({
                                       </div>
                                       <div
                                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                      // style={{ width: "17%" }}
+                                        // style={{ width: "17%" }}
                                       >
                                         <div className="flex items-center">
                                           <StyledBadge
@@ -2871,16 +2863,16 @@ function ImplementationApproval({
                                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                                       <small>
                                                         {msg.startedDate &&
-                                                          !msg.workInProgressDate &&
-                                                          !msg.completedDate &&
-                                                          !msg.dueDate
+                                                        !msg.workInProgressDate &&
+                                                        !msg.completedDate &&
+                                                        !msg.dueDate
                                                           ? `Started on ${formatDate(msg.startedDate)}`
                                                           : msg.workInProgressDate &&
-                                                            !msg.completedDate &&
-                                                            !msg.dueDate
+                                                              !msg.completedDate &&
+                                                              !msg.dueDate
                                                             ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
                                                             : msg.dueDate &&
-                                                              !msg.completedDate
+                                                                !msg.completedDate
                                                               ? `Due on ${formatDate(msg.dueDate)}`
                                                               : msg.completedDate
                                                                 ? `Completed on ${formatDate(msg.completedDate)}`
@@ -2890,7 +2882,7 @@ function ImplementationApproval({
                                                   </div>
                                                   {documentCounts[msg.id] ? (
                                                     documentCounts[msg.id] !=
-                                                    0 && (
+                                                      0 && (
                                                       <button
                                                         className="icon-button"
                                                         onClick={() =>
@@ -2904,7 +2896,7 @@ function ImplementationApproval({
                                                         <StyledBadge
                                                           badgeContent={
                                                             documentCounts[
-                                                            msg.id
+                                                              msg.id
                                                             ]
                                                           }
                                                         >
@@ -3186,7 +3178,6 @@ function ImplementationApproval({
 
                   return (
                     <>
-
                       <Box key={parent.value} mb={4}>
                         {/* Parent Section */}
                         <Typography
@@ -3198,9 +3189,7 @@ function ImplementationApproval({
                           {parent.text}
                         </Typography>
 
-
                         {matchingChildData.map((child) => {
-
                           const matchingPssrData =
                             PssrCheckListData?.pssrData?.find(
                               (pssrItem) => pssrItem.particular === child.value
@@ -3210,7 +3199,6 @@ function ImplementationApproval({
 
                           return (
                             <>
-
                               <Box
                                 key={child.value}
                                 mb={3}
@@ -3231,7 +3219,10 @@ function ImplementationApproval({
                                     ""
                                   }
                                   onChange={(e) =>
-                                    handleRadioChange(child.value, e.target.value)
+                                    handleRadioChange(
+                                      child.value,
+                                      e.target.value
+                                    )
                                   }
                                 >
                                   <FormControlLabel
@@ -3281,14 +3272,14 @@ function ImplementationApproval({
                                       ""
                                     }
                                     onChange={(e) =>
-                                      handleCommentsChange(e,
+                                      handleCommentsChange(
+                                        e,
                                         child.value,
                                         e.target.value
                                       )
                                     }
                                   />
                                 )}
-
 
                                 <StyledBadge badgeContent={documentCount}>
                                   <Button
@@ -3401,7 +3392,7 @@ function ImplementationApproval({
                     color="secondary"
                     // style={{ marginTop: "10px" }}
                     onClick={() => handlesumbitmodal(btn.uid)}
-                  // onClick={(e) => SubmitApprovelCreate(e, btn.uid)}
+                    // onClick={(e) => SubmitApprovelCreate(e, btn.uid)}
                   >
                     {btn.name}
                   </Button>
