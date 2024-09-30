@@ -423,7 +423,6 @@ const InitiationComplete = ({
   };
 
   const handleSubmitAsset = (e) => {
-
     if (
       !selectedFile.name.trim() ||
       // !selectedFile.type.trim() ||
@@ -432,7 +431,7 @@ const InitiationComplete = ({
       !selectedFile.documentId.trim()
     ) {
       toast.error("Please select your file.");
-      handleModalClose()
+      handleModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -444,7 +443,7 @@ const InitiationComplete = ({
     // Validation: If description field is empty
     if (!selectedFile?.descritpion?.trim()) {
       toast.error("Please add a description.");
-      handleModalClose()
+      handleModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -723,38 +722,38 @@ const InitiationComplete = ({
                   <tbody>
                     <tr style={{ backgroundColor: "#ffebcb" }}>
                       <td></td>
-                      <td>LPG DIV</td>
-                      <td>LUBES DIV</td>
+                      <td className="p-5">LPG DIV</td>
+                      <td className="p-5">LUBES DIV</td>
                     </tr>
                     <tr style={{ backgroundColor: "#f8f0e4" }}>
-                      <td rowSpan="4" className="p-10">
+                      <td rowSpan="4" className="p-24">
                         Operations & LOG
                       </td>
-                      <td>Sakthivel</td>
-                      <td>Reginald</td>
+                      <td className="p-5">Sakthivel</td>
+                      <td className="p-5">Reginald</td>
                     </tr>
                     <tr style={{ backgroundColor: "#ffebcb" }}>
                       <td>Venkat</td>
                       <td>Nikhil</td>
                     </tr>
                     <tr style={{ backgroundColor: "#f8f0e4" }}>
-                      <td>Rajesh C</td>
-                      <td></td>
+                      <td className="p-5">Rajesh C</td>
+                      <td className="p-5"></td>
                     </tr>
                     <tr style={{ backgroundColor: "#ffebcb" }}>
-                      <td>Umashankar</td>
-                      <td></td>
+                      <td className="p-5">Umashankar</td>
+                      <td className="p-5"></td>
                     </tr>
                     <tr style={{ backgroundColor: "#f8f0e4" }}>
-                      <td rowSpan="2" className="p-10">
+                      <td rowSpan="2" className="p-24">
                         S & M
                       </td>
-                      <td>Manjunath</td>
-                      <td>Digant</td>
+                      <td className="p-5">Manjunath</td>
+                      <td className="p-5">Digant</td>
                     </tr>
                     <tr style={{ backgroundColor: "#ffebcb" }}>
-                      <td>Thiyagarajan</td>
-                      <td></td>
+                      <td className="p-5">Thiyagarajan</td>
+                      <td className="p-5"></td>
                     </tr>
                   </tbody>
                 </table>
@@ -910,7 +909,6 @@ const InitiationComplete = ({
         assetEvaluationId={assetEvaluationId}
         contentDetailsT={contentDetailsT}
         contentDetailsDocu={contentDetails}
-
       />
 
       <SwipeableViews>

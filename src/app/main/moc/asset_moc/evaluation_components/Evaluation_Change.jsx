@@ -849,6 +849,8 @@ function EvaluationChange({
   const [potentialFrequencyDetails, setPotentialFrequencyDetails] = useState(
     []
   );
+  const [potentialFrequencyRiskDetails, setPotentialFrequencyRiskDetails] =
+    useState([]);
 
   const [TaskhazardRiskApi, setSubTaskhazardRiskApi] = useState([]);
   const [TaskhazardRiskView, setSubTaskhazardRiskView] = useState(false);
@@ -1111,7 +1113,7 @@ function EvaluationChange({
 
     if (name === "modifiedTime") {
       apiAuth.get(`/LookupData/Lov/30/${value}`).then((resp) => {
-        setPotentialFrequencyDetails(resp.data.data);
+        setPotentialFrequencyRiskDetails(resp.data.data);
       });
       setFormValues((prevValues) => ({
         ...prevValues,
@@ -1124,7 +1126,7 @@ function EvaluationChange({
     }
 
     if (name === "modifiedFrequencyDetails") {
-      const selectedOption = potentialFrequencyDetails.find(
+      const selectedOption = potentialFrequencyRiskDetails.find(
         (option) => option.value === value
       );
       const frequencyScoring = selectedOption
@@ -1194,9 +1196,22 @@ function EvaluationChange({
       "hazardType",
     ];
 
+    // Fields that should not have leading whitespace
+    const fieldsToCheckForWhitespace = [
+      "hazardousSituation",
+      "consequence",
+      "humanControlMeasure",
+      "technicalControlMeasure",
+      "organisationalControlMeasure",
+    ];
+
     // Check each field and set error if empty
     requiredFields.forEach((field) => {
-      if (!formValues[field]) {
+      const value = formValues[field];
+      if (
+        !value ||
+        (fieldsToCheckForWhitespace.includes(field) && value.trim() === "")
+      ) {
         newErrors[field] = "This field is required";
       }
     });
@@ -3801,6 +3816,7 @@ function EvaluationChange({
             handelRiskInputChange={handelRiskInputChange}
             potentialTimeDetails={potentialTimeDetails}
             potentialFrequencyDetails={potentialFrequencyDetails}
+            potentialFrequencyRiskDetails={potentialFrequencyRiskDetails}
             likelihoodValues={likelihoodValues}
             handelResidualRiskInputChange={handelResidualRiskInputChange}
             Classifications={Classifications}

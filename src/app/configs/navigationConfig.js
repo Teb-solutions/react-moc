@@ -237,13 +237,13 @@ const navigationConfig1 = [
             url: "/masters/designationtask",
             feature: "MST",
           },
-          {
-            id: "masters.Recycle",
-            title: "Recycle",
-            type: "item",
-            url: "/masters/recycle",
-            // feature: "MST",
-          },
+          // {
+          //   id: "masters.Recycle",
+          //   title: "Recycle",
+          //   type: "item",
+          //   url: "/masters/recycle",
+          //   // feature: "MST",
+          // },
         ],
       },
       {

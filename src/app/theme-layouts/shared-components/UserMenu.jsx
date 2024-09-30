@@ -170,6 +170,7 @@ function UserMenu() {
           <NotificationPopup
             notification={notification}
             setNotification={setNotification}
+            setAnchorEl={setAnchorEl}
           />
         )}
       </Popover>

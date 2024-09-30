@@ -9,11 +9,16 @@ import {
   Box,
   Tooltip,
 } from "@mui/material";
-import { not } from "ajv/dist/compile/codegen";
-import { useState } from "react";
-import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiAuth } from "src/utils/http";
-const NotificationPopup = ({ notification, setNotification }) => {
+const NotificationPopup = ({ notification, setNotification, setAnchorEl }) => {
+  const navigate = useNavigate();
+
+  const handleRedirect = () => {
+    navigate(`/notification`);
+    setAnchorEl(null);
+    // If you want to pass the notification id as a dynamic route
+  };
   const handelMarkAllRead = () => {
     const payload = {
       notificationStatus: notification[0].notificationStatus,
@@ -164,6 +169,8 @@ const NotificationPopup = ({ notification, setNotification }) => {
                         <Typography
                           variant="subtitle1"
                           style={{ fontWeight: "bold" }}
+                          className="cursor-pointer"
+                          onClick={handleRedirect}
                         >
                           {notification.notificationSubject}
                         </Typography>

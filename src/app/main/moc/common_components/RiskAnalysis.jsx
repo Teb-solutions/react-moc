@@ -37,6 +37,7 @@ const RiskAnalysis = ({
   setCreateNewRisk,
   editRiskAnalysDetail,
   handelRiskSubmit,
+  potentialFrequencyRiskDetails,
 }) => {
   const taskFormControlStyles = viewrisk
     ? {
@@ -1163,7 +1164,7 @@ const RiskAnalysis = ({
                           <MenuItem value="" disabled>
                             <em>None</em>
                           </MenuItem>
-                          {potentialFrequencyDetails.map((option) => (
+                          {potentialFrequencyRiskDetails.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
                               {option.text}
                             </MenuItem>
@@ -1202,7 +1203,7 @@ const RiskAnalysis = ({
                           <MenuItem value="" disabled>
                             <em>None</em>
                           </MenuItem>
-                          {potentialFrequencyDetails.map((option) => (
+                          {potentialFrequencyRiskDetails.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
                               {option.text}
                             </MenuItem>
