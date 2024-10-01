@@ -760,7 +760,11 @@ function DocRequest() {
                           >
                             <DatePicker
                               label="Validity Expires On *"
-                              value={documentState.docOldValidityDate}
+                              value={
+                                documentState.docOldValidityDate
+                                  ? documentState.docOldValidityDate
+                                  : new Date()
+                              }
                               onChange={handleChanges}
                               minDate={new Date()} // Prevents selection of past dates
                               renderInput={(params) => (

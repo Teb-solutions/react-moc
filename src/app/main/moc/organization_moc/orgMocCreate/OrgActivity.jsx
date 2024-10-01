@@ -70,7 +70,7 @@ function OrgActivity() {
     changeStaffDesignationId: "",
     isNewDocument: null,
     staffType: "1",
-    programCompletionDate: null,
+    programCompletionDate: new Date(),
   });
   const [openGuide, SetOpenGuide] = useState(false);
   const handelGuideOpen = () => {
@@ -563,7 +563,12 @@ function OrgActivity() {
                           label="Program Completion Date *"
                           value={documentState.programCompletionDate}
                           minDate={new Date()} // Prevents selection of past dates
-                          onChange={handleChanges}
+                          onChange={(newDate) =>
+                            setDocumentState((prevState) => ({
+                              ...prevState,
+                              programCompletionDate: newDate,
+                            }))
+                          }
                           renderInput={(params) => (
                             <TextField fullWidth {...params} />
                           )}

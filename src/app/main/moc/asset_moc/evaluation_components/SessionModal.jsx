@@ -31,6 +31,8 @@ const SessionModal = ({
   selectedItems,
   handleCheckboxChange,
   handelCreateSession,
+  handleCommentChange,
+  isCommentValid,
 }) => {
   const style1 = {
     position: "absolute",
@@ -160,14 +162,21 @@ const SessionModal = ({
                   <div>
                     <textarea
                       placeholder="Comment *"
-                      onChange={(e) => setStopComment(e.target.value)}
+                      onChange={handleCommentChange}
                     />
                   </div>
                 )}
               </div>
               {Session?.activeSession?.status == 2 && (
                 <div className="flex justify-end p-30 pt-24 pb-24">
-                  <button className="stop-session" onClick={handleStopSession}>
+                  <button
+                    className="stop-session"
+                    style={
+                      !isCommentValid ? { backgroundColor: "#bebebe" } : {}
+                    }
+                    onClick={handleStopSession}
+                    disabled={!isCommentValid}
+                  >
                     Stop Session
                   </button>
                 </div>
