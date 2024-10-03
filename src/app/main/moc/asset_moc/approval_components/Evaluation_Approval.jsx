@@ -374,7 +374,19 @@ const EvaluationApproval = ({
     );
 
     setHandelCommentRemark("");
-    await setContentDetails(response?.data?.data);
+
+    const data = response.data?.data;
+    if (data.requestTypeName !== "Document") {
+      const updatedTasks = data.tasklist.map((task) => {
+        task.showPreviousTasks = false;
+        task.riskAnalysisList = data.riskAnalysisList.filter(
+          (ra) => ra.changeImapactId === task.changeImapactId
+        );
+        return task;
+      });
+      await setContentDetails(response?.data?.data);
+    }
+
     // setExpanded(false);
   }
 
@@ -3571,6 +3583,7 @@ const EvaluationApproval = ({
                                   ></textarea>
 
                                   <button
+                                    id={`ImpTaskReview1${index[itm.id]}`}
                                     className="custom-update-button"
                                     onClick={() => {
                                       if (itm.reviews?.length > 0) {
@@ -3587,11 +3600,7 @@ const EvaluationApproval = ({
                                         textareaRef.current.focus();
                                       }
                                     }}
-                                    style={
-                                      !handelCommentRemarks[itm.id]?.trim()
-                                        ? { backgroundColor: "#cdcdcd" }
-                                        : {}
-                                    }
+                                    style={{ backgroundColor: handelCommentRemarks[itm.id]?.trim() ? "" : "#cdcdcd" }}
                                     disabled={
                                       !handelCommentRemarks[itm.id]?.trim()
                                     }
