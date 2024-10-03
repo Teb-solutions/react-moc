@@ -228,23 +228,25 @@ const Approval = ({
                     {contentDetails?.docControllerName}
                   </div>
                 </div>
-                <div _ngcontent-fyk-c288="" className="my-6">
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="mt-3 leading-6 text-secondary"
-                  >
-                    Validity Expiring On
+                {contentDetails?.docOldValidityDate != null && (
+                  <div _ngcontent-fyk-c288="" className="my-6">
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="mt-3 leading-6 text-secondary"
+                    >
+                      Validity Expiring On
+                    </div>
+                    <div
+                      _ngcontent-fyk-c288=""
+                      class="text-lg leading-6 font-medium"
+                    >
+                      {" "}
+                      {new Date(
+                        contentDetails?.docOldValidityDate
+                      ).toLocaleDateString("en-GB")}
+                    </div>
                   </div>
-                  <div
-                    _ngcontent-fyk-c288=""
-                    class="text-lg leading-6 font-medium"
-                  >
-                    {" "}
-                    {new Date(
-                      contentDetails?.docOldValidityDate
-                    ).toLocaleDateString("en-GB")}
-                  </div>
-                </div>
+                )}
               </div>
 
               <div
