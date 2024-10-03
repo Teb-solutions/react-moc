@@ -262,6 +262,24 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
             padding: "10px",
           }}
         >
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            variant="outlined"
+            placeholder="Type your reason here..."
+            onChange={(e) => setReason(e.target.value)}
+            // Add any additional props or event handlers you need
+          />
+        </div>
+        <div
+          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+          style={{
+            marginTop: "15px",
+            justifyContent: "end",
+            padding: "5px",
+          }}
+        >
           <Button
             className="whitespace-nowrap"
             variant="contained"
@@ -280,14 +298,20 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
             className="whitespace-nowrap"
             variant="contained"
             color="secondary"
-            style={{ padding: "23px", backgroundColor: "red" }}
+            style={
+              reasons.trim() === ""
+                ? { padding: "23px", color: "white", backgroundColor: "grey" }
+                : { padding: "23px", backgroundColor: "red" }
+            }
             type="submit"
             onClick={handleSubmitDelete}
+            disabled={reasons.trim() === ""}
           >
             Confirm
           </Button>
         </div>
       </DeleteModal>
+
       <Paper className="flex flex-col flex-auto shadow rounded-2xl overflow-hidden">
         <div style={{ backgroundColor: "white" }}>
           <div>

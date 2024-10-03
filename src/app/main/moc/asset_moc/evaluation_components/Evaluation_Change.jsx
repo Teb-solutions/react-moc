@@ -2254,7 +2254,7 @@ function EvaluationChange({
                           htmlFor="reasonForNewDocument"
                           className="font-semibold leading-none"
                         >
-                          Tasks
+                          Tasks *
                         </FormLabel>
                         <Select
                           id="reasonForNewDocument"
@@ -2304,7 +2304,7 @@ function EvaluationChange({
                           htmlFor="reasonForNewDocument"
                           className="font-semibold leading-none"
                         >
-                          Remarks
+                          Remarks *
                         </FormLabel>
                         <OutlinedInput
                           id="reasonForNewDocument"
@@ -3829,6 +3829,7 @@ function EvaluationChange({
             Classifications={Classifications}
             editRiskAnalysDetail={editRiskAnalysDetail}
             handelRiskSubmit={handelRiskSubmit}
+            setRisk={setRisk}
           />
         )}
       </SwipeableViews>

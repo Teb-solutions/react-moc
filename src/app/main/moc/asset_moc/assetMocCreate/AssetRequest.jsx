@@ -215,7 +215,7 @@ function AssetRequest() {
     }
     apiAuth
       .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => { });
+      .then((response) => {});
   };
 
   const handelDetailDoc = (doc) => {
@@ -244,10 +244,21 @@ function AssetRequest() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setDocumentState({
-      ...documentState,
-      [name]: value.trimStart(),
-    });
+    if (
+      name == "projectValue" ||
+      name == "projectName" ||
+      name == "projectDescription"
+    ) {
+      setDocumentState({
+        ...documentState,
+        [name]: value.trimStart(),
+      });
+    } else {
+      setDocumentState({
+        ...documentState,
+        [name]: value,
+      });
+    }
 
     if (!!errors[name]) {
       setErrors({ ...errors, [name]: "" });
@@ -289,8 +300,12 @@ function AssetRequest() {
       tempErrors.projectName = "Project Name is required";
     if (!documentState.projectDescription)
       tempErrors.projectDescription = "Project Descrpition Name is required";
-    if (!documentState.projectValue)
+    if (!documentState.projectValue) {
       tempErrors.projectValue = "Project Value is required";
+    }
+    if (documentState.projectValue?.length >= 14) {
+      tempErrors.projectValue = "Project Value maximum length is 14 charcters";
+    }
     if (!documentState.type) tempErrors.type = "Type is required";
 
     if (!documentState.expenseNature)

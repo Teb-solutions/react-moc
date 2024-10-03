@@ -129,7 +129,11 @@ function InitiationApprovalProceed({
     }
 
     // Check for duplicate staff
-    if (selectedStaffs[0]?.staffId === selectedTeamType) {
+    const isDuplicate = selectedStaffs.some(
+      (staff) => staff.staffId === selectedTeamType
+    );
+
+    if (isDuplicate) {
       toast.error("Same staff cannot be added multiple times.");
       hasError = true;
     }

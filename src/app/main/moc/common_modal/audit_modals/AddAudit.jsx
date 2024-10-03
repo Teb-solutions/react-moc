@@ -29,7 +29,7 @@ const AuditModal = ({
     transform: "translate(-50%, -50%)",
     width: "800px",
     maxWidth: "80vw",
-    height: "25%",
+    height: "auto",
     borderRadius: "16px",
     bgcolor: "background.paper",
 
@@ -95,14 +95,11 @@ const AuditModal = ({
                   </div>
                 </div>{" "}
               </div>
-              <div className="flex justify-end ">
+              <div className="flex justify-end m-5">
                 <Button
-                  className="whitespace-nowrap ms-5 me-12 "
+                  className="whitespace-nowrap ms-5 me-8 "
                   variant="contained"
                   color="secondary"
-                  style={{
-                    marginTop: "5px",
-                  }}
                   onClick={handleSubmit}
                 >
                   Save

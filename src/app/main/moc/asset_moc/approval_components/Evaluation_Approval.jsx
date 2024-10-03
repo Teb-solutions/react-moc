@@ -70,8 +70,6 @@ const EvaluationApproval = ({
   currentActivityForm,
   contentDetailsT,
 }) => {
-  console.log(contentDetails, "contentDetails");
-
   const textareaRef = useRef(null);
   const [reviewed, setReviewed] = useState({});
   const [deletes, setDeletes] = useState(false);
@@ -630,7 +628,7 @@ const EvaluationApproval = ({
       .post(`/ApprovalManager/Create/${assetEvaluationId}`, payload)
       .then((response) => {
         if (response.data.statusCode != 400) {
-          toast?.success("Successfull");
+          toast?.success("Successful");
           setIsLoading(false);
 
           apiAuth

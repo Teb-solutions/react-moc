@@ -38,6 +38,7 @@ const RiskAnalysis = ({
   editRiskAnalysDetail,
   handelRiskSubmit,
   potentialFrequencyRiskDetails,
+  setRisk,
 }) => {
   const taskFormControlStyles = viewrisk
     ? {
@@ -1576,7 +1577,7 @@ const RiskAnalysis = ({
                 marginLeft: "10px",
               }}
               variant="contained"
-              onClick={() => setCreateNewRisk(false)}
+              onClick={() => setRisk(false)}
             >
               Cancel
             </Button>

@@ -523,8 +523,6 @@ const Task = () => {
   };
 
   const handleSubmitDocument = () => {
-
-
     // Validation: If file-related fields are empty
 
     if (
@@ -535,7 +533,7 @@ const Task = () => {
       !selectedFile.documentId.trim()
     ) {
       toast.error("Please select your file.");
-      handleOpenDocModalClose()
+      handleOpenDocModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -547,7 +545,7 @@ const Task = () => {
     // Validation: If description field is empty
     if (!selectedFile?.descritpion?.trim()) {
       toast.error("Please add a description.");
-      handleOpenDocModalClose()
+      handleOpenDocModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -1642,26 +1640,26 @@ const Task = () => {
                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                       <small>
                                         {msg.startedDate &&
-                                          !msg.workInProgressDate &&
-                                          !msg.completedDate &&
-                                          !msg.dueDate
+                                        !msg.workInProgressDate &&
+                                        !msg.completedDate &&
+                                        !msg.dueDate
                                           ? `Started on ${formatDates(msg.startedDate)}`
                                           : msg.workInProgressDate &&
-                                            !msg.completedDate &&
-                                            !msg.dueDate
+                                              !msg.completedDate &&
+                                              !msg.dueDate
                                             ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                             : msg.dueDate && !msg.completedDate
                                               ? `Due on ${formatDates(msg.dueDate)}`
                                               : msg.completedDate
                                                 ? `Completed on ${new Date(
-                                                  msg.completedDate
-                                                ).toLocaleString("en-US", {
-                                                  month: "short",
-                                                  day: "2-digit",
-                                                  hour: "numeric",
-                                                  minute: "numeric",
-                                                  hour12: true,
-                                                })}`
+                                                    msg.completedDate
+                                                  ).toLocaleString("en-US", {
+                                                    month: "short",
+                                                    day: "2-digit",
+                                                    hour: "numeric",
+                                                    minute: "numeric",
+                                                    hour12: true,
+                                                  })}`
                                                 : "Unknown"}
                                       </small>
                                     </div>

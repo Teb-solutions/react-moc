@@ -22,7 +22,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const TicketModal = ({ open, handleClose, errors, setErrors }) => {
+const TicketModal = ({ open, errors, setErrors, setModalOpen }) => {
   const styleImp = {
     position: "absolute",
     top: "50%",
@@ -54,6 +54,27 @@ const TicketModal = ({ open, handleClose, errors, setErrors }) => {
     status: 1,
   });
 
+  const handleModalClose = () => {
+    setTicketData({
+      projectId: "5EC94E1B-E058-4008-EC12-08DC9C361D1D",
+      customerName: "",
+      customerMobile: "string",
+      customerLocation: "string",
+      subject: "",
+      message: "",
+      ticketCategory: "",
+      ticketPriority: "",
+      referenceOrder: "string",
+      remarks: "created ticket11",
+      ticketSource: 5,
+      dueDate: "2024-08-02T06:50:53.617Z",
+      status: 1,
+    });
+    setFileName("");
+    setModalOpen(false);
+    setErrors({});
+  };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setTicketData((prevData) => ({
@@ -61,12 +82,10 @@ const TicketModal = ({ open, handleClose, errors, setErrors }) => {
       [name]: value,
     }));
 
-    if (value) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        [name]: "",
-      }));
-    }
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
 
   const handleFileChange = (event) => {
@@ -104,7 +123,7 @@ const TicketModal = ({ open, handleClose, errors, setErrors }) => {
     if (!ticketData.message) tempErrors.message = "Description is required.";
     if (!ticketData.ticketCategory)
       tempErrors.ticketCategory = "Ticket Category is required.";
-    if (ticketData.ticketPriority == null)
+    if (!ticketData.ticketPriority && ticketData.ticketPriority !== 0)
       tempErrors.ticketPriority = "Ticket Priority is required.";
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -129,8 +148,24 @@ const TicketModal = ({ open, handleClose, errors, setErrors }) => {
         }
       );
       console.log("Response:", response.data);
-      handleClose();
+      handleModalClose();
       toast.success("Successfully created");
+      setTicketData({
+        projectId: "5EC94E1B-E058-4008-EC12-08DC9C361D1D",
+        customerName: "",
+        customerMobile: "string",
+        customerLocation: "string",
+        subject: "",
+        message: "",
+        ticketCategory: "",
+        ticketPriority: "",
+        referenceOrder: "string",
+        remarks: "created ticket11",
+        ticketSource: 5,
+        dueDate: "2024-08-02T06:50:53.617Z",
+        status: 1,
+      });
+      setFileName("");
     } catch (error) {
       console.error(
         "Error:",
@@ -176,7 +211,7 @@ const TicketModal = ({ open, handleClose, errors, setErrors }) => {
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
       open={open}
-      onClose={handleClose}
+      onClose={handleModalClose}
       closeAfterTransition
       slots={{ backdrop: Backdrop }}
       slotProps={{
@@ -196,7 +231,7 @@ const TicketModal = ({ open, handleClose, errors, setErrors }) => {
             >
               Create new ticket
             </Typography>
-            <Button onClick={handleClose}>
+            <Button onClick={handleModalClose}>
               <FuseSvgIcon size={25}>heroicons-outline:x</FuseSvgIcon>
             </Button>
           </div>

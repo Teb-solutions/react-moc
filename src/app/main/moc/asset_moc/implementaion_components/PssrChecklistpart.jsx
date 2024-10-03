@@ -109,7 +109,11 @@ const PssrCheckListPart = (props) => {
                         control={<Radio />}
                         label="Yes"
                         disabled={
-                          radioState[child.value] === "Yes" && !showPssrEdit
+                          PssrCheckListData?.pssrData?.length > 0
+                            ? !showPssrEdit &&
+                              matchingPssrData.checklistReviewStatus &&
+                              !showPssrEdit
+                            : ""
                         }
                       />
                       <FormControlLabel
@@ -117,7 +121,11 @@ const PssrCheckListPart = (props) => {
                         control={<Radio />}
                         label="No"
                         disabled={
-                          radioState[child.value] === "No" && !showPssrEdit
+                          PssrCheckListData?.pssrData?.length > 0
+                            ? !showPssrEdit &&
+                              matchingPssrData.checklistReviewStatus &&
+                              !showPssrEdit
+                            : ""
                         }
                       />
                       <FormControlLabel
@@ -125,7 +133,11 @@ const PssrCheckListPart = (props) => {
                         control={<Radio />}
                         label="N/A"
                         disabled={
-                          radioState[child.value] === "N/A" && !showPssrEdit
+                          PssrCheckListData?.pssrData?.length > 0
+                            ? !showPssrEdit &&
+                              matchingPssrData.checklistReviewStatus &&
+                              !showPssrEdit
+                            : ""
                         }
                       />
                     </RadioGroup>
