@@ -573,7 +573,7 @@ function ImplementationApproval({
       return;
     }
     // Iterate over each checklist item, but skip items with parentId === 0
-    debugger;
+
     PssrCheckListData?.childData
       ?.filter((child) => child.parentId !== 0) // Filter out items where parentId is 0
       .forEach((child) => {
@@ -1342,7 +1342,7 @@ function ImplementationApproval({
     });
   };
   const handleSubmits = (task, value) => {
-    debugger
+
     if (!commentss || !reqDate) {
       if (!reqDate) setDueDateValidation("Due Date is required");
       if (!comments)
