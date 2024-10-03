@@ -368,11 +368,9 @@ const EvaluationApproval = ({
   }))(Badge);
 
   async function EvaluationApiRecall() {
-
     const response = await apiAuth.get(
       `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
     );
-
     setHandelCommentRemark("");
 
     const data = response.data?.data;
@@ -391,7 +389,6 @@ const EvaluationApproval = ({
   }
 
   const setHandelCommentRemark = (id, value) => {
-
     setHandelCommentRemarks((prevRemarks) => ({
       ...prevRemarks,
       [id]: value,
@@ -628,7 +625,7 @@ const EvaluationApproval = ({
       .post(`/ApprovalManager/Create/${assetEvaluationId}`, payload)
       .then((response) => {
         if (response.data.statusCode != 400) {
-          toast?.success("Successfull");
+          toast?.success("Successful");
           setIsLoading(false);
 
           apiAuth
@@ -3497,7 +3494,9 @@ const EvaluationApproval = ({
                                       paddingRight: "100px",
                                       fontSize: "13px",
                                     }}
-                                    defaultValue={handelCommentRemarks[itm.id] || ""}
+                                    defaultValue={
+                                      handelCommentRemarks[itm.id] || ""
+                                    }
                                     onChange={(e) =>
                                       setHandelCommentRemark(
                                         itm.id,

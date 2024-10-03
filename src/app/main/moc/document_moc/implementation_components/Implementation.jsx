@@ -52,7 +52,6 @@ import RiskAnalysisTableView from "../../common_components/RiskAnalysisTableView
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
 import DocumentModal from "../../common_modal/documentModal";
 
-
 function createData(
   index,
 
@@ -201,9 +200,6 @@ const Implementation = ({
     });
   };
 
-
-
-
   const handleSubmitAsset = (e) => {
     // Validation: If file-related fields are empty
 
@@ -215,7 +211,7 @@ const Implementation = ({
       !selectedFile.documentId.trim()
     ) {
       toast.error("Please select your file.");
-      handleModalClose()
+      handleModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -227,7 +223,7 @@ const Implementation = ({
     // Validation: If description field is empty
     if (!selectedFile.descritpion.trim()) {
       toast.error("Please add a description.");
-      handleModalClose()
+      handleModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -268,7 +264,7 @@ const Implementation = ({
             });
         } else {
           toast.error(response.data.message);
-          handleModalClose()
+          handleModalClose();
         }
       })
       .catch((error) => {
@@ -1530,10 +1526,26 @@ const Implementation = ({
         </div>
       </DeleteModal>
       []
-      <DocumentModal open={openMoc} handleModalClose={handleModalClose} selectedDocument={selectedDocument} listDocument={listDocument1} selectedFile={selectedFile} openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} fileDetails={fileDetails} setFileDetails={setFileDetails} toggleDrawer={toggleDrawer} handelDetailDoc={handelDetailDoc} handelFileDiscriptionChange={handelFileDiscriptionChange} handelFileChange={handelFileChange} handleSubmitDocument={handleSubmitAsset} handleDownload={handleDownload} handleDelete={handleDelete} canExecute={currentActivityForm.canExecute} formatDate={formatDate} />
-
-
-
+      <DocumentModal
+        open={openMoc}
+        handleModalClose={handleModalClose}
+        selectedDocument={selectedDocument}
+        listDocument={listDocument1}
+        selectedFile={selectedFile}
+        openDrawer={openDrawer}
+        setOpenDrawer={setOpenDrawer}
+        fileDetails={fileDetails}
+        setFileDetails={setFileDetails}
+        toggleDrawer={toggleDrawer}
+        handelDetailDoc={handelDetailDoc}
+        handelFileDiscriptionChange={handelFileDiscriptionChange}
+        handelFileChange={handelFileChange}
+        handleSubmitDocument={handleSubmitAsset}
+        handleDownload={handleDownload}
+        handleDelete={handleDelete}
+        canExecute={currentActivityForm.canExecute}
+        formatDate={formatDate}
+      />
       <AuditModal
         open={openAuditComment}
         handleClose={() => setOpenAuditComment(false)}
@@ -1606,8 +1618,19 @@ const Implementation = ({
                 Training Attendence Sheet
               </Button>
             </StyledBadge>
-            <DocumentModal step={1} open={open} toggleDrawer={toggleDrawer} handleModalClose={handleClose} listDocument={listDocument} selectedDocument={selectedDocument} handleDownload={handleDownload} fileDetails={fileDetails} setFileDetails={setFileDetails} handelDetailDoc={handelDetailDoc} formatDate={formatDate} />
-
+            <DocumentModal
+              step={1}
+              open={open}
+              toggleDrawer={toggleDrawer}
+              handleModalClose={handleClose}
+              listDocument={listDocument}
+              selectedDocument={selectedDocument}
+              handleDownload={handleDownload}
+              fileDetails={fileDetails}
+              setFileDetails={setFileDetails}
+              handelDetailDoc={handelDetailDoc}
+              formatDate={formatDate}
+            />
           </div>
 
           <Box sx={{ width: "100%" }} className="p-30 pt-24 pb-24">
@@ -1778,7 +1801,7 @@ const Implementation = ({
                           </div>
                           <div
                             className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                          // style={{ width: "17%" }}
+                            // style={{ width: "17%" }}
                           >
                             <div className="flex items-center">
                               <StyledBadge badgeContent={task?.audits?.length}>
@@ -1955,16 +1978,16 @@ const Implementation = ({
                                         <div className="my-0.5 text-xs font-medium text-secondary">
                                           <small>
                                             {msg.startedDate &&
-                                              !msg.workInProgressDate &&
-                                              !msg.completedDate &&
-                                              !msg.dueDate
+                                            !msg.workInProgressDate &&
+                                            !msg.completedDate &&
+                                            !msg.dueDate
                                               ? `Started on ${formatDates(msg.startedDate)}`
                                               : msg.workInProgressDate &&
-                                                !msg.completedDate &&
-                                                !msg.dueDate
+                                                  !msg.completedDate &&
+                                                  !msg.dueDate
                                                 ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                                 : msg.dueDate &&
-                                                  !msg.completedDate
+                                                    !msg.completedDate
                                                   ? `Due on ${formatDates(msg.dueDate)}`
                                                   : msg.completedDate
                                                     ? `Completed on ${formatDates(msg.completedDate)}`
@@ -2545,13 +2568,13 @@ const Implementation = ({
                       >
                         <TextField
                           fullWidth
-                          label="Audit Commnt"
+                          label="Audit Comment"
                           id="fullWidth"
                           name="audit"
                           onChange={handleChangeAddTask}
                           value={taskAdd.audit}
-                        // error={!!errorsAddTask.audit}
-                        // helperText={errorsAddTask.audit}
+                          // error={!!errorsAddTask.audit}
+                          // helperText={errorsAddTask.audit}
                         />
                       </Box>
                     </div>

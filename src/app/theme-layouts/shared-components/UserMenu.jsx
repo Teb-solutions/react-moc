@@ -328,8 +328,8 @@ function UserMenu() {
       <TicketModal
         errors={errors}
         setErrors={setErrors}
+        setModalOpen={setModalOpen}
         open={modalOpen}
-        handleClose={handleModalClose}
       />
     </>
   );

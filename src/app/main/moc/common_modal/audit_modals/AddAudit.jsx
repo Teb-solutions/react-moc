@@ -100,7 +100,6 @@ const AuditModal = ({
                   className="whitespace-nowrap ms-5 me-8 "
                   variant="contained"
                   color="secondary"
-
                   onClick={handleSubmit}
                 >
                   Save

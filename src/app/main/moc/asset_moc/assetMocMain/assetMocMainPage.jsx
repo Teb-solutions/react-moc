@@ -1321,10 +1321,10 @@ const AssetCourse = () => {
               )}
               {currentPhase === "EvaluationApproval" && (
                 <EvaluationApproval
+                  contentDetails={contentDetails}
                   AppActions={appActions}
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
-                  contentDetails={contentDetails}
                   setContentDetails={setContentDetails}
                   showRiskAnalysisChart={showRiskAnalysisChart}
                   riskAnalysisChartOptions={riskAnalysisChartOptions}

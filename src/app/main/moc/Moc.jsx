@@ -47,8 +47,14 @@ const item = {
 function MocApp() {
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const [searchText, setSearchText] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-  const [selectedCategoryType, setSelectedCategoryType] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState(() => {
+    // Retrieve stored category from localStorage if exists
+    return localStorage.getItem("selectedCategory") || "all";
+  });
+  const [selectedCategoryType, setSelectedCategoryType] = useState(() => {
+    // Retrieve stored category type from localStorage if exists
+    return localStorage.getItem("selectedCategoryType") || "all";
+  });
   const [hideCompleted, setHideCompleted] = useState(false);
   const [viewTable, setViewTable] = useState(false);
   const [originalData, setOriginalData] = useState([]);
@@ -93,13 +99,28 @@ function MocApp() {
 
     getRecords();
   }, []);
-
   const handleSelectedCategory = useCallback((event) => {
-    setSelectedCategory(event.target.value);
+    const value = event.target.value;
+    setSelectedCategory(value);
+
+    // Store selected category in localStorage
+    if (value === "all") {
+      localStorage.removeItem("selectedCategory");
+    } else {
+      localStorage.setItem("selectedCategory", value);
+    }
   }, []);
 
   const handleSelectedCategoryType = useCallback((event) => {
-    setSelectedCategoryType(event.target.value);
+    const value = event.target.value;
+    setSelectedCategoryType(value);
+
+    // Store selected category type in localStorage
+    if (value === "all") {
+      localStorage.removeItem("selectedCategoryType");
+    } else {
+      localStorage.setItem("selectedCategoryType", value);
+    }
   }, []);
 
   const filteredData = useMemo(() => {
@@ -230,12 +251,28 @@ function MocApp() {
               <b>MOC Requests count:</b> {filteredData.length}
             </Typography>
           </div>
-          {viewTable ? (
+          {viewTable && filteredData.length != 0 && (
             <CourseTable
               filteredDatas={filteredData}
               setOriginalData={setOriginalData}
             />
-          ) : (
+          )}
+          {filteredData.length == 0 && (
+            <motion.div
+              className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 gap-32 mt-32 sm:mt-20"
+              variants={container}
+              initial="hidden"
+              animate="show"
+            >
+              <div className="mt-10 p-4">
+                <Typography variant="body2" color="textSecondary">
+                  <h2 className="text-center">No Data Found</h2>
+                </Typography>
+              </div>
+            </motion.div>
+          )}
+
+          {!viewTable && filteredData.length != 0 && (
             <motion.div
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-32 mt-32 sm:mt-20"
               variants={container}

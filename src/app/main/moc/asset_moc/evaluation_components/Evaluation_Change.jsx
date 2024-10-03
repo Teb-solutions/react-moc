@@ -307,7 +307,7 @@ function EvaluationChange({
       if (!form.consultedDate)
         tempErrors[form.id] = {
           ...tempErrors[form.id],
-          consultedDate: "Expires date is required",
+          consultedDate: "Consulted Date is required",
         };
       if (!form.consultedStaffId)
         tempErrors[form.id] = {
@@ -1506,6 +1506,13 @@ function EvaluationChange({
   };
 
   const [stopComment, setStopComment] = useState("");
+  const [isCommentValid, setIsCommentValid] = useState(false);
+  const handleCommentChange = (e) => {
+    const comment = e.target.value;
+    setStopComment(comment);
+    // Check if comment is not empty or just whitespace
+    setIsCommentValid(comment.trim().length > 0);
+  };
 
   const handleStopSession = () => {
     setIsLoading(true);
@@ -2247,7 +2254,7 @@ function EvaluationChange({
                           htmlFor="reasonForNewDocument"
                           className="font-semibold leading-none"
                         >
-                          Tasks
+                          Tasks *
                         </FormLabel>
                         <Select
                           id="reasonForNewDocument"
@@ -2297,7 +2304,7 @@ function EvaluationChange({
                           htmlFor="reasonForNewDocument"
                           className="font-semibold leading-none"
                         >
-                          Remarks
+                          Remarks *
                         </FormLabel>
                         <OutlinedInput
                           id="reasonForNewDocument"
@@ -3822,6 +3829,7 @@ function EvaluationChange({
             Classifications={Classifications}
             editRiskAnalysDetail={editRiskAnalysDetail}
             handelRiskSubmit={handelRiskSubmit}
+            setRisk={setRisk}
           />
         )}
       </SwipeableViews>
@@ -3841,6 +3849,8 @@ function EvaluationChange({
         selectedItems={selectedItems}
         handleCheckboxChange={handleCheckboxChange}
         handelCreateSession={handelCreateSession}
+        handleCommentChange={handleCommentChange}
+        isCommentValid={isCommentValid}
       />
       <SessionListModal
         openSession={openSession}

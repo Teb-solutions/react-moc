@@ -107,93 +107,100 @@ const SessionListModal = ({
                     </TableRow>
                   </TableHead>
                   <TableBody sx={{ border: "1px solid black" }}>
-                    {SessionList.map((session, index) => (
-                      <TableRow key={session.id}>
-                        <TableCell
-                          className="text-left pb-3"
-                          sx={{ border: "1px solid silver" }}
-                        >
-                          {index + 1}
-                        </TableCell>
-                        <TableCell
-                          className="text-left pb-3"
-                          sx={{ border: "1px solid silver" }}
-                        >
-                          {session.isRejected === 1 && (
-                            <span className="bg-red-100 rounded px-3 py-1 text-secondary font-semibold">
-                              Rejected
-                            </span>
-                          )}
-                          {!session.isRejected && (
-                            <>
-                              {session.isExpired && (
-                                <span
-                                  className="bg-red-100 rounded px-5 py-1 text-secondary font-semibold"
-                                  style={{
-                                    backgroundColor: "rgba(254,202,202)",
-                                  }}
-                                >
-                                  Expired
-                                </span>
-                              )}
-                              {session.isActive && (
-                                <span className="bg-green-100 rounded px-5 py-1 text-secondary font-semibold">
-                                  Active
-                                </span>
-                              )}
-                              {session.isSessionEnded && (
-                                <span className="bg-red-100 rounded  px-5 py-1 text-grey font-semibold">
-                                  Ended
-                                </span>
-                              )}
-                            </>
-                          )}
-                          <div>
-                            <b>Session started by</b>{" "}
-                            {session.startedByStaffName} at{" "}
-                            {formatDate(session.startedAt)}
-                          </div>
-                          {session?.isSessionEnded && (
-                            <div class="mt-2 ">
-                              <b>Session ended at</b>{" "}
-                              {session.endedAt && formatDate(session.endedAt)}
+                    {SessionList.map((session, index) => {
+                      const isRejected = session.teamList.some(
+                        (team) => team.approvalStatus === 3
+                      );
+
+                      return (
+                        <TableRow key={session.id}>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {index + 1}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {isRejected ? (
+                              <span className="bg-red-100 rounded px-5 py-1 text-grey font-semibold">
+                                Rejected
+                              </span>
+                            ) : (
+                              <>
+                                {session.isExpired && (
+                                  <span
+                                    className="bg-red-100 rounded px-5 py-1 text-secondary font-semibold"
+                                    style={{
+                                      backgroundColor: "rgba(254,202,202)",
+                                    }}
+                                  >
+                                    Expired
+                                  </span>
+                                )}
+                                {session.isActive && (
+                                  <span className="bg-green-100 rounded px-5 py-1 text-secondary font-semibold">
+                                    Active
+                                  </span>
+                                )}
+                                {session.isSessionEnded && (
+                                  <span className="bg-red-100 rounded px-5 py-1 text-grey font-semibold">
+                                    Ended
+                                  </span>
+                                )}
+                              </>
+                            )}
+                            <div>
+                              <b>Session started by</b>{" "}
+                              {session.startedByStaffName} at{" "}
+                              {formatDate(session.startedAt)}
                             </div>
-                          )}
-                          {session.comments && <div>{session.comments}</div>}
-                        </TableCell>
-                        <TableCell
-                          className="text-left pb-3"
-                          sx={{ border: "1px solid silver" }}
-                        >
-                          {session.teamList.map((team, index) => (
-                            <div key={index}>
-                              {team.staffName}-
-                              {team.approvalStatus === 1 ? (
-                                <span style={{ color: "orangered" }}>
-                                  Acceptance Pending
-                                </span>
-                              ) : team.approvalStatus === 2 ? (
-                                <span className="text-green">
-                                  Accepted at{" "}
-                                  {team.updatedAt && formatDate(team.updatedAt)}
-                                </span>
-                              ) : (
-                                <span className="text-red">
-                                  Rejected at
-                                  {team.updatedAt && formatDate(team.updatedAt)}
-                                </span>
-                              )}
-                              {team.comments && (
-                                <div>
-                                  <b>Commented as: </b>
-                                  {team.comments}
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                            {session.isSessionEnded && (
+                              <div className="mt-2">
+                                <b>Session ended at</b>{" "}
+                                {session.endedAt && formatDate(session.endedAt)}
+                              </div>
+                            )}
+                            {session.comments && <div>{session.comments}</div>}
+                          </TableCell>
+                          <TableCell
+                            className="text-left pb-3"
+                            sx={{ border: "1px solid silver" }}
+                          >
+                            {session.teamList.map((team, index) => (
+                              <div key={index}>
+                                {team.staffName}-
+                                {team.approvalStatus === 1 ? (
+                                  <span style={{ color: "orangered" }}>
+                                    Acceptance Pending
+                                  </span>
+                                ) : team.approvalStatus === 2 ? (
+                                  <span className="text-green">
+                                    Accepted at{" "}
+                                    {team.updatedAt &&
+                                      formatDate(team.updatedAt)}
+                                  </span>
+                                ) : (
+                                  <span className="text-red">
+                                    Rejected at{" "}
+                                    {team.updatedAt &&
+                                      formatDate(team.updatedAt)}
+                                  </span>
+                                )}
+                                {team.comments && (
+                                  <div>
+                                    <b>Commented as: </b>
+                                    {team.comments}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </Grid>
