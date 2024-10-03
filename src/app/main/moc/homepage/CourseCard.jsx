@@ -76,7 +76,7 @@ function CourseCard(props) {
       </CardContent>
       {/* <CourseProgress course={course?.completionPercent} /> */}
       <CardActions
-        className="items-center justify-between py-16 px-24"
+        className="items-center justify-between py-16 "
         sx={{
           backgroundColor: (theme) =>
             theme.palette.mode === "light"
