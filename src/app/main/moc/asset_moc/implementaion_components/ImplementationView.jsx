@@ -28,7 +28,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 
 
 const ImplementationView = (props) => {
-    const { steps, ImpDetails, setActiveStep, activeStep, handleOpenImplemntationTask, handleAccordionChange, handleReset, isComplete, status, canEdit, handleBack, handleNext, ChangeDeadlineLabel, expanded, formatDate, impComments, handelComments, handelOpenAuditComment, documentCounts, handelOpenAudit, handleOpen, errorMessage, isButtonDisabled } = props;
+    const { steps, ImpDetails, setActiveStep, activeStep, handleOpenImplemntationTask, handleAccordionChange, handleReset, isComplete, status, canEdit, handleBack, handleNext, ChangeDeadlineLabel, expanded, formatDate, impComments, handelComments, setComments, handelOpenAuditComment, documentCounts, handelOpenAudit, handleOpen, errorMessage, isButtonDisabled, handledateExtendopen, handelApproveImpl, setErrorMessage } = props;
     const StyledBadge = withStyles((theme) => ({
         Badge: {
             background: "#2c3e50",
@@ -266,7 +266,7 @@ const ImplementationView = (props) => {
                                                                             Audits
                                                                         </Button>
                                                                     </StyledBadge>
-                                                                    {/* {currentActivityForm?.canEdit && ( */}
+
                                                                     <Button
                                                                         className="whitespace-nowrap ms-5"
                                                                         style={{
@@ -293,7 +293,7 @@ const ImplementationView = (props) => {
                                                                     {/* )} */}
                                                                     {detail?.taskDateUpdates.length !==
                                                                         0 &&
-                                                                        currentActivityForm?.canEdit &&
+                                                                        canEdit &&
                                                                         (!detail.taskDateUpdates[
                                                                             detail.taskDateUpdates.length - 1
                                                                         ]?.approvedComments ? (
