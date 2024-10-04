@@ -81,6 +81,7 @@ const JwtSignInTab = () => {
 
   async function onSubmit(formData) {
     const { userName, password, mFAOtp } = formData;
+    debugger
     const params = {
       userName: userName,
       password: password,
@@ -171,6 +172,7 @@ const JwtSignInTab = () => {
               label="User Name (JID)"
               autoFocus
               type="string"
+              disabled={showMFA}
               error={!!errors.userName}
               helperText={errors?.userName?.message}
               variant="outlined"
@@ -193,6 +195,7 @@ const JwtSignInTab = () => {
               helperText={errors?.password?.message}
               variant="outlined"
               required
+              disabled={showMFA}
               fullWidth
               InputProps={{
                 endAdornment: (
@@ -278,7 +281,7 @@ const JwtSignInTab = () => {
           size="large"
           disabled={loading}
         >
-          {loading ? <CircularProgress size={24} color="inherit" /> : "Sign in"}
+          {loading ? <CircularProgress size={24} color="inherit" /> : showMFA ? "Sign in " : "Get OTP"}
         </Button>
       </form>
     </div>
