@@ -172,7 +172,7 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
   function getRecords() {
     apiAuth.get(`/ChangeRequest/List`).then((resp) => {
       setIsLoading(false);
-      console.log(filteredDatas, "fillllll");
+
 
       const transformedData = filteredDatas.map((item, index) =>
         createData(
@@ -241,7 +241,7 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  console.log(siteList, "siteee");
+
 
   if (isLoading) {
     return <FuseLoading />;
@@ -269,7 +269,7 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
             variant="outlined"
             placeholder="Type your reason here..."
             onChange={(e) => setReason(e.target.value)}
-            // Add any additional props or event handlers you need
+          // Add any additional props or event handlers you need
           />
         </div>
         <div

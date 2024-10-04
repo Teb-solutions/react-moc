@@ -17,7 +17,7 @@ const ImplementationClosure = ({
   getRecords,
 }) => {
   const handleCheckboxChange = (id) => {
-    console.log(id, "CheckLists");
+
     setCheckLists((prevCheckLists) =>
       prevCheckLists.map((item) =>
         item.item === id ? { ...item, isChecked: !item.isChecked } : item
@@ -31,7 +31,7 @@ const ImplementationClosure = ({
       .then((response) => {
         toast?.success("Checklist successfully updated");
         setOpen(false);
-        console.log(response);
+
       });
   };
 

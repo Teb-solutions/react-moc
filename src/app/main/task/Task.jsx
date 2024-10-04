@@ -163,7 +163,7 @@ const Task = () => {
     changeRequestToken: "",
   });
   const [newDocument, setNewDocument] = useState(false);
-  console.log(selectedFile);
+
   // Extract the task.id from the URL
 
   const taskType = router["*"];
@@ -193,7 +193,7 @@ const Task = () => {
     const activeTaskDateUpdate = task.taskDateUpdates.filter(
       (update) => update.taskdateupdateStatus == 1
     );
-    console.log(activeTaskDateUpdate, "activeTaskDateUpdate");
+
 
     setPendingFilterdTask(activeTaskDateUpdate);
   };
@@ -231,7 +231,7 @@ const Task = () => {
     window.history.pushState({}, "", `/task/${task.id}`);
     setTask(task);
     console.clear();
-    console.log(task);
+
     setTaskCommentValidation(null);
     setComments("");
     setCommentss("");
@@ -377,11 +377,7 @@ const Task = () => {
     let formattedReqDate = dayjs(reqDate).format("YYYY-MM-DD");
     let formattedOldDate = task.dueDate;
 
-    console.log({
-      OldDate: formattedOldDate,
-      RequestComments: commentss,
-      RequestDate: formattedReqDate,
-    });
+
 
     apiAuth
       .put(
@@ -638,7 +634,7 @@ const Task = () => {
 
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);
-    console.log(doc, "doccc");
+
     setFileDetails(true);
     setDocumenDowToken(doc.token);
   };
@@ -871,7 +867,7 @@ const Task = () => {
                       <div className="mr-30">
                         Initiated by <b>{list.initiatorName}</b> on{" "}
                         <b>{formatDates(list.requestDate)}</b>
-                        {console.log(list.requestDate, "")}
+
                       </div>
                       <div className="mr-30">
                         Project Name: <b>{list.projectName}</b>

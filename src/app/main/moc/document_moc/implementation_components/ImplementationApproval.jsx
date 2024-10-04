@@ -80,7 +80,7 @@ const ImplementationApproval = ({
           ...prevReviewed,
           [id]: true,
         }));
-        console.log(response);
+
       });
   };
 
@@ -169,15 +169,15 @@ const ImplementationApproval = ({
                           }
                           style={
                             reviewed[imptsk.id] ||
-                            imptsk.implementationReviewStatus.length
+                              imptsk.implementationReviewStatus.length
                               ? {
-                                  backgroundColor: "rgb(181 253 210 / 50%)",
-                                }
+                                backgroundColor: "rgb(181 253 210 / 50%)",
+                              }
                               : {}
                           }
                         >
                           {reviewed[imptsk.id] ||
-                          imptsk.implementationReviewStatus.length ? (
+                            imptsk.implementationReviewStatus.length ? (
                             <span className="mat-button-wrapper">
                               You have reviewed this just now
                             </span>
@@ -263,7 +263,7 @@ const ImplementationApproval = ({
                     </div>
 
                     {currentActivityForm.canEdit &&
-                    !imptsk.implementationReviews.length ? (
+                      !imptsk.implementationReviews.length ? (
                       <div className="mat-form-field-wrapper">
                         <div className="mat-form-field-flex">
                           <img

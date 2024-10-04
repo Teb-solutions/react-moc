@@ -170,7 +170,7 @@ const ImplementationApprovalSite = ({
           ...prevClickedTasks,
           [id]: true,
         }));
-        console.log(response);
+
       });
   };
 

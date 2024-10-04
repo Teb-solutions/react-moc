@@ -291,7 +291,7 @@ function DocRequest() {
         },
       })
       .then((response) => {
-        console.log(response.data);
+
         if (response.data.statusCode === 200) {
           apiAuth
             .get(

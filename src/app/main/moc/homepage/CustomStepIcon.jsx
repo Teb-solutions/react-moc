@@ -6,14 +6,14 @@ import { Chip } from "@mui/material";
 const CustomStepIcon = (props) => {
   const { active, completed, className, index, canView, isComplete, status } =
     props;
-  console.log(status, "vvvccc");
+
   return (
     <div
       className={`MuiStepIcon-root ${className} ${active ? "MuiStepIcon-active" : ""}`}
     >
       {isComplete &&
-      status != "Sent back for review" &&
-      status != "Activity is send back for revision" ? (
+        status != "Sent back for review" &&
+        status != "Activity is send back for revision" ? (
         <CheckCircleIcon
           className="MuiStepIcon-completed"
           style={{ color: "#4f46e5", width: 30, height: 30 }}

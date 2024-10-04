@@ -128,7 +128,7 @@ const InitiationComplete = ({
     token: AssetDetails.token,
   });
 
-  console.log(IniComp, "IniComp");
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;

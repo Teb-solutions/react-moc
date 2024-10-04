@@ -83,7 +83,7 @@ function JwtSignInTab() {
     }));
   };
 
-  console.log(reset, "reeeee");
+
 
   const onSubmit = async (formData) => {
     // Trigger validation for all fields before proceeding
@@ -276,9 +276,9 @@ function JwtSignInTab() {
           disabled={
             otpTrue
               ? !isValid ||
-                !reset.token ||
-                !reset.password ||
-                !reset.confirmPassword
+              !reset.token ||
+              !reset.password ||
+              !reset.confirmPassword
               : _.isEmpty(dirtyFields)
           }
           type="submit"

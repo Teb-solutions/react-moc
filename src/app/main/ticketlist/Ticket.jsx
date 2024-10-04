@@ -120,12 +120,12 @@ export default function Ticket() {
           // variant="contained"
           // color="primary"
           onClick={() => handleEdit(row)}
-          // sx={{
-          //   minWidth: "5px",
-          //   minHeight: "0px",
-          //   height: "15px",
-          //   padding: "10px",
-          // }}
+        // sx={{
+        //   minWidth: "5px",
+        //   minHeight: "0px",
+        //   height: "15px",
+        //   padding: "10px",
+        // }}
         >
           <FuseSvgIcon size={25}>heroicons-solid:eye</FuseSvgIcon>
         </Button>
@@ -313,7 +313,7 @@ export default function Ticket() {
   const handleEdit = (row) => {
     setViewMode(true);
     setOpenView(row);
-    console.log(row, "rowwwww");
+
     setTicketCode(row.code);
 
     handleOpen();

@@ -56,7 +56,7 @@ function ProjectDashboardApp() {
           deviceId: "string",
         });
 
-        console.log("Ticket access token response:", ticketResp);
+
         localStorage.setItem(
           "jwt_access_ticket_token",
           ticketResp.data.accessToken
@@ -77,7 +77,7 @@ function ProjectDashboardApp() {
               item.token
             )
         );
-        apiAuth.get(`/Staff/List`).then((resp) => {});
+        apiAuth.get(`/Staff/List`).then((resp) => { });
 
         setRiskMatrixList(transformedData);
         setIsLoading(false);

@@ -52,7 +52,7 @@ const JwtSignInTab = () => {
   const [loading, setLoading] = useState(false);
   const handleResolved = (token) => {
     // Handle the resolved reCAPTCHA token here
-    console.log("ReCAPTCHA token:", token);
+
     localStorage.setItem("recap", token);
     setRecaptchaToken(token);
   };
@@ -71,13 +71,7 @@ const JwtSignInTab = () => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   console.log("reAuth state has changed: ", reAuth);
-  // }, [reAuth]);
 
-  // useEffect(() => {
-  //   console.log("showMFA state has changed: ", showMFA);
-  // }, [showMFA]);
 
   async function onSubmit(formData) {
     const { userName, password, mFAOtp } = formData;
@@ -93,7 +87,7 @@ const JwtSignInTab = () => {
     try {
       apiAuth.post("/Account/Login", params).then(async (resp) => {
         if (resp.data.statusCode === 202) {
-          console.log("Setting showMFA to true", resp);
+
           toast?.success("OTP Required");
           setShowMFA(true);
           setLoading(false);

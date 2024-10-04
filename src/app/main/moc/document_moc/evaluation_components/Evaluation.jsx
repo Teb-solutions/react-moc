@@ -92,7 +92,7 @@ const Evaluation = ({
       .then((resp) => {
         apiAuth.get(`/Staff/LOV`).then((resp) => {
           setDocStaff(resp.data.data);
-          apiAuth.get(`/LookupData/Lov/5`).then((resp) => {});
+          apiAuth.get(`/LookupData/Lov/5`).then((resp) => { });
         });
       });
   };
@@ -155,7 +155,7 @@ const Evaluation = ({
     }
   };
 
-  console.log(forms, "ppppppppppppp");
+
 
   const handleRemoveForm = (id) => {
     // setAddStake(false);

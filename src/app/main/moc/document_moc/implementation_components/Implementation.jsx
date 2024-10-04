@@ -638,7 +638,7 @@ const Implementation = ({
 
   const SubmitImpCreate = (e, uid) => {
     let taskListApproved = taskLists?.filter((x) => x.taskStatus == 3);
-    console.log(taskListApproved, "taskListApproved");
+
     if (handelApprover.approver == "" || handelApprover.approver == null) {
       toast?.error("Please Select An Approver.");
 
@@ -995,7 +995,7 @@ const Implementation = ({
         hazardType: formValues.hazardType.value,
         riskAnalysisHazardSituation: [formValues],
       };
-      console.log(payload, "payyy");
+
       let apiPath = "/RiskAnalysis/CreateAnalysis";
 
       if (value === "Update") {
@@ -1041,7 +1041,7 @@ const Implementation = ({
       apiAuth
         .delete(`/RiskAnalysis/${id}`)
         .then((resp) => {
-          console.log(resp.message, "hhh");
+
           toast?.success("Deleted");
           setIsLoading(false);
 
@@ -1277,7 +1277,7 @@ const Implementation = ({
       })
       .then((resp) => {
         setSubTaskhazardRiskApi(resp.data);
-        console.log(resp.data, "daaaa");
+
         setSubTaskhazardRiskView(true);
         setSubTaskhazardRiskViewName(option.text);
       })
@@ -2323,7 +2323,7 @@ const Implementation = ({
                           >
                             Impact Hazard*
                           </FormLabel>
-                          {console.log(hazardImp, "hazzzz")}
+
                           <Autocomplete
                             options={hazardImp}
                             getOptionLabel={(option) => option.text}

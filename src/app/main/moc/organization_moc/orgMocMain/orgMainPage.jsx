@@ -210,7 +210,7 @@ const orgCourse = () => {
       const matchingActivity = matchingPhase.activities.find(
         (activity) => activity.uid === uid
       );
-      console.log(matchingActivity, "matchingActivity");
+
       setCurrentActivityForm(matchingActivity);
       if (matchingActivity) {
         let actualPhaseName;
@@ -428,9 +428,9 @@ const orgCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                             className="pt-4"
@@ -446,9 +446,9 @@ const orgCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -461,9 +461,9 @@ const orgCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                           >

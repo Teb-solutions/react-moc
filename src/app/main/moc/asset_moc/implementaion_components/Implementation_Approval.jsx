@@ -704,7 +704,7 @@ function ImplementationApproval({
       const response = await apiAuth.get(
         `/ChangeImplementation/AuditList/${assetEvaluationId}`
       );
-      console.log(response, "ressss");
+
       const transformedData = response.data.data.map((item, index) =>
         createData(
           index + 1,
@@ -970,7 +970,7 @@ function ImplementationApproval({
         parentId: 0,
         // Assuming you have a deadline property in taskAdd
       };
-      console.log(updatedTaskAdd, "updatedTaskAdd");
+
       apiAuth
         .put(`/Task/AddNewTask/${assetEvaluationId}`, updatedTaskAdd)
         .then((resp) => {
@@ -2009,7 +2009,7 @@ function ImplementationApproval({
                       {pssrsessionStatus === 1 && "Start PSSR Session"}
                       {pssrsessionStatus === 2 && "Stop PSSR Session"}
 
-                      {console.log(pssrsessionStatus, "pssrsessionStatus")}
+
                     </Button>
                   )}
                 {contentDetailsPssr?.isPssrRequired &&

@@ -221,7 +221,7 @@ const EvaluationApproval = ({
         });
     }
 
-    console.log(payload, "payyy");
+
   };
   const handleUpdateClick = (index, id) => {
     if (!remarkRequest[index].remark) {
@@ -470,7 +470,7 @@ const EvaluationApproval = ({
   const isMyComment = (comment) => {
     return comment.isCreatedByMe;
   };
-  console.log(AppActivity, "AppActivity");
+
   const formatDatess = (date) => {
     return new Date(date).toLocaleString("en-US", {
       month: "short",
@@ -504,7 +504,7 @@ const EvaluationApproval = ({
           ...prevClickedTasks,
           [id]: true,
         }));
-        console.log(response);
+
       });
   };
 
@@ -525,7 +525,7 @@ const EvaluationApproval = ({
           ...prevClickedTasks,
           [id]: true,
         }));
-        console.log(response);
+
       });
   };
 
@@ -554,7 +554,7 @@ const EvaluationApproval = ({
 
   const sendSelectedTasks = () => {
     // Implement your logic to send selectedTasks array to an API or perform an action
-    console.log("Sending selected tasks:", selectedTasks);
+
     // Reset selectedTasks array after sending
     setSelectedTasks([]);
     // Hide send popup
@@ -904,7 +904,7 @@ const EvaluationApproval = ({
         },
       })
       .then((response) => {
-        console.log(response.data);
+
         if (response.data.statusCode === 200) {
           apiAuth
             .get(
@@ -1369,7 +1369,7 @@ const EvaluationApproval = ({
       })
       .then((resp) => {
         setSubTaskhazardRiskApi(resp.data);
-        console.log(resp.data, "daaaa");
+
         setSubTaskhazardRiskView(true);
         setSubTaskhazardRiskViewName(option.text);
       })
@@ -1571,7 +1571,7 @@ const EvaluationApproval = ({
         hazardType: formValues.hazardType.value,
         riskAnalysisHazardSituation: [formValues],
       };
-      console.log(payload, "payyy");
+
       let apiPath = "/RiskAnalysis/CreateAnalysis";
 
       if (value === "Update") {
@@ -5089,7 +5089,7 @@ const EvaluationApproval = ({
                       // style={{ marginTop: "10px" }}
 
                       onClick={(e) => {
-                        // console.log(btn, "btn");
+
                         SubmitApprovelCreate(e, btn.uid, btn.name, btn.type);
                         // alert(1);
                       }}

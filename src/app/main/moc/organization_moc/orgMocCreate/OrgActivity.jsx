@@ -151,7 +151,7 @@ function OrgActivity() {
       programCompletionDate: formattedDate ? formattedDate : new Date(),
     };
 
-    console.log(formattedDocumentState, "formattedDocumentState");
+
 
     apiAuth
       .post("/OrgMoc/CreateChangeRequest", formattedDocumentState)

@@ -124,7 +124,7 @@ const Task = () => {
       setTaskList(resp.data.data);
     });
   }
-  console.log(formData, "pppp");
+
 
   useEffect(() => {
     getRecords();
@@ -263,7 +263,7 @@ const Task = () => {
       .put(`/Task/Update?id=${taskType}`, updatedTask)
       .then((response) => {
         setOpen(false);
-        console.log(response);
+
       })
       .catch((error) => {
         setOpen(false);
@@ -283,7 +283,7 @@ const Task = () => {
       task.mobile.includes(searchTerm)
     );
   });
-  console.log(formData, "formss");
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
 
@@ -293,7 +293,7 @@ const Task = () => {
       image: event.target.files[0], // Set photoUrl to 'yes' when an image is uploaded, else ''
     }));
   };
-  console.log(formData, "pppppp");
+
 
   const validate = () => {
     let tempErrors = {};
@@ -784,8 +784,8 @@ const Task = () => {
                                 className="switch_check"
                                 checked={formData.isActive}
                                 onChange={handleToggleChange}
-                                // Reflects the isActive property of the department
-                                // Passes the index of the department
+                              // Reflects the isActive property of the department
+                              // Passes the index of the department
                               />
                             }
                           />
@@ -886,7 +886,7 @@ const Task = () => {
                       <div
                         _ngcontent-fyk-c288=""
                         class="flex items-center w-full  border-b justify-between"
-                        // style={{ margin: "18px" }}
+                      // style={{ margin: "18px" }}
                       ></div>
                       <div className="flex-auto" style={{ margin: "18px" }}>
                         <div className="flex flex-col-reverse">

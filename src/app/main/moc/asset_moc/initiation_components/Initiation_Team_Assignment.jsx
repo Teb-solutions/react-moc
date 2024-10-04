@@ -83,7 +83,7 @@ function InitiationApprovalProceed({
   });
 
   const handleTeamTypeChange = (event) => {
-    console.log(event.target.value, "pppppppp");
+
     const { value } = event.target;
     setSelectedTeamType(value);
 
@@ -105,7 +105,7 @@ function InitiationApprovalProceed({
     setErrors((prevErrors) => ({ ...prevErrors, others: "" }));
   };
 
-  console.log(AppActivity, "payloadss");
+
   const [errors, setErrors] = useState({
     hseq: "",
     others: "",
@@ -379,7 +379,7 @@ function InitiationApprovalProceed({
                 <div className="flex justify-end">
                   <div
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                    // style={{ marginTop: "15px" }}
+                  // style={{ marginTop: "15px" }}
                   >
                     <Button
                       className="whitespace-nowrap"
@@ -398,7 +398,7 @@ function InitiationApprovalProceed({
                   </div>
                   <div
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                    // style={{ marginTop: "25px" }}
+                  // style={{ marginTop: "25px" }}
                   >
                     {AppActions.map((btn) => (
                       <Button

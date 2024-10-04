@@ -334,7 +334,7 @@ const AssetCourse = () => {
     canView
   ) => {
     if (!canView) {
-      console.log("This activity cannot be viewed.");
+
       return;
     }
     setActName(activityname);
@@ -350,7 +350,7 @@ const AssetCourse = () => {
       const matchingActivity = matchingPhase.activities.find(
         (activity) => activity.uid === uid
       );
-      console.log(matchingActivity, "matchingActivity");
+
       setCurrentActivityForm(matchingActivity);
       if (matchingActivity) {
         let actualPhaseName;
@@ -1042,13 +1042,13 @@ const AssetCourse = () => {
             case 1:
               setChangeLeader(
                 staffList.find((option) => option.value === member.staffId) ||
-                  null
+                null
               );
               break;
             case 2:
               setHseq(
                 staffList.find((option) => option.value === member.staffId) ||
-                  null
+                null
               );
               break;
             case 3:
@@ -1075,7 +1075,7 @@ const AssetCourse = () => {
             case 4:
               setSiteInCharge(
                 staffList.find((option) => option.value === member.staffId) ||
-                  null
+                null
               );
               break;
             default:
@@ -1217,7 +1217,7 @@ const AssetCourse = () => {
         setSelectedOthersStaffs([]);
         // Handle the response if needed
         toast.success("Team updated successfully");
-        console.log("Team updated successfully:", resp.data);
+
       })
       .catch((error) => {
         toast.success("Error updating team");
@@ -1616,9 +1616,9 @@ const AssetCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                             className="pt-4"
@@ -1627,7 +1627,7 @@ const AssetCourse = () => {
                               <span>
                                 <b>
                                   {step.targetUsers &&
-                                  step.targetUsers.length > 0
+                                    step.targetUsers.length > 0
                                     ? "By " + step.targetUsers[0]
                                     : ""}
                                 </b>
@@ -1642,16 +1642,16 @@ const AssetCourse = () => {
                                   </FuseSvgIcon>
                                 </span>
                               )} */}
-                              {console.log(step.name, "looooooooooo")}
+
                             </div>
                           </StepContent>
                           <StepContent
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -1664,9 +1664,9 @@ const AssetCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                           >

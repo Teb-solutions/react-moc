@@ -56,7 +56,7 @@ const riskCourse = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [content, setContent] = useState([]);
 
-  console.log(content, "contenn");
+
 
   useEffect(() => {
     let lastIndex = -1;
@@ -250,7 +250,7 @@ const riskCourse = () => {
       const matchingActivity = matchingPhase.activities.find(
         (activity) => activity.uid === uid
       );
-      console.log(matchingActivity, "matchingActivity");
+
       setCurrentActivityForm(matchingActivity);
       if (matchingActivity) {
         let actualPhaseName;
@@ -484,7 +484,7 @@ const riskCourse = () => {
                       <div
                         // Assuming there's a unique id for each list item
                         className="inventory-grid grid items-center gap-4 "
-                        // style={{ width: "40%" }}
+                      // style={{ width: "40%" }}
                       >
                         <div
                           className="flex items-center"
@@ -509,7 +509,7 @@ const riskCourse = () => {
                       <div
                         // Assuming there's a unique id for each list item
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "40%" }}
+                      // style={{ width: "40%" }}
                       >
                         <div
                           className="flex items-center"
@@ -534,7 +534,7 @@ const riskCourse = () => {
                       <div
                         // Assuming there's a unique id for each list item
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                        // style={{ width: "40%" }}
+                      // style={{ width: "40%" }}
                       >
                         <div
                           className="flex items-center"
@@ -764,7 +764,7 @@ const riskCourse = () => {
                                       heroicons-outline:plus
                                     </FuseSvgIcon>
                                   }
-                                  // onClick={handleAddImpact}
+                                // onClick={handleAddImpact}
                                 >
                                   Add New Impact
                                 </Button>
@@ -843,15 +843,15 @@ const riskCourse = () => {
                         ></div> */}
                       <div
                         className="flex items-center justify-end p-30 pt-24 pb-24"
-                        // style={{ marginTop: "15px" }}
+                      // style={{ marginTop: "15px" }}
                       >
                         <Button
                           className="whitespace-nowrap"
                           variant="contained"
                           color="secondary"
                           style={{ padding: "15px" }}
-                          //   key={btn.name}
-                          // onClick={() => handleOpen(btn)}
+                        //   key={btn.name}
+                        // onClick={() => handleOpen(btn)}
                         >
                           submit for approval
                         </Button>

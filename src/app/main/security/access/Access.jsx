@@ -159,8 +159,7 @@ const Access = () => {
       }
     });
 
-    console.log("updatedList", updatedList);
-    console.log("activeShortForms", activeShortForms);
+
 
     // Encrypt and store the active short forms in cookies
     encryptFeature(activeShortForms);
@@ -184,7 +183,7 @@ const Access = () => {
         isActive: !isActive, // Send the new state to the server
       })
       .then((response) => {
-        console.log("API response:", response.data);
+
         if (response) {
           const updatedList = roleIdList.map((item) =>
             item.featureId === featureId

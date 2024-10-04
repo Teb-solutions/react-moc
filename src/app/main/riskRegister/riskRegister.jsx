@@ -177,7 +177,7 @@ const RiskApp = () => {
 
   const filteredData = useMemo(() => {
     return _.filter(originalData, (item) => {
-      console.log("Selected Category:", selectedCategory);
+
 
       if (
         selectedCategory !== "all" &&

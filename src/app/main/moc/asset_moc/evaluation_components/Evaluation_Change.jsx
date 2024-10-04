@@ -903,7 +903,7 @@ function EvaluationChange({
       setPotentialTimeDetails(resp.data.data);
     });
   };
-  console.log(TaskhazardRiskApi, "ssssss");
+
   const handleInputChangeHazard = (event, option) => {
     setFormValues((prevValues) => ({
       ...prevValues,
@@ -927,7 +927,7 @@ function EvaluationChange({
       })
       .then((resp) => {
         setSubTaskhazardRiskApi(resp.data);
-        console.log(resp.data, "daaaa");
+
         setSubTaskhazardRiskView(true);
         setSubTaskhazardRiskViewName(option.text);
       })
@@ -1142,7 +1142,7 @@ function EvaluationChange({
         hazardType: formValues.hazardType.value,
         riskAnalysisHazardSituation: [formValues],
       };
-      console.log(payload, "payyy");
+
       let apiPath = "/RiskAnalysis/CreateAnalysis";
 
       if (value === "Update") {
@@ -1291,7 +1291,7 @@ function EvaluationChange({
       apiAuth
         .delete(`/RiskAnalysis/${id}`)
         .then((resp) => {
-          console.log(resp.message, "hhh");
+
           toast?.success("Deleted");
           setIsLoading(false);
 
