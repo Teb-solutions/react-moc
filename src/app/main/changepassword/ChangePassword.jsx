@@ -219,6 +219,10 @@ function Course() {
     return () => window.removeEventListener("resize", handleResize);
   }, [handleResize]);
 
+  const handleCancel = () => {
+    navigate("/dashboards/project");
+  };
+
   const isSaveDisabled =
     passwords.currentPassword === "" ||
     passwords.newPassword === "" ||
@@ -345,7 +349,7 @@ function Course() {
               </Grid>
               <Divider sx={{ my: 3 }} />
               <Box display="flex" justifyContent="flex-end">
-                <Button variant="outlined" type="button">
+                <Button variant="outlined" type="button" onClick={handleCancel}>
                   Cancel
                 </Button>
                 <Button

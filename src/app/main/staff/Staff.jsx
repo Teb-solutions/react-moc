@@ -347,11 +347,18 @@ const Task = () => {
           apiAuth
             .post(path, formDatas)
             .then((response) => {
-              toast?.success("Staff Created");
-              setSidebarOpen(false);
-              // setTimeout(() => {
-              //   location.reload();
-              // }, 2000);
+              if (response.data.statusCode == 200) {
+                toast?.success("Staff Created");
+                setSidebarOpen(false);
+                apiAuth.get(`/Staff/List`).then((resp) => {
+                  setIsLoading(false);
+                  setTaskList(resp.data.data);
+                });
+              } else {
+                setIsLoading(false);
+
+                toast?.error(response.data.message);
+              }
             })
             .catch((error) => {
               toast?.error("Some Error Occured");
@@ -362,9 +369,10 @@ const Task = () => {
             .then((response) => {
               toast?.success("Staff Updated");
               setSidebarOpen(false);
-              setTimeout(() => {
-                location.reload();
-              }, 2000);
+              apiAuth.get(`/Staff/List`).then((resp) => {
+                setIsLoading(false);
+                setTaskList(resp.data.data);
+              });
             })
             .catch((error) => {
               toast?.error("Some Error Occured");

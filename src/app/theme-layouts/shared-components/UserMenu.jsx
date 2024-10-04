@@ -18,6 +18,7 @@ import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
 import BookmarkPopup from "./BookmarkPopup";
 import TicketModal from "src/app/main/moc/common_modal/TicketModal";
+import { ToastContainer } from "react-toastify";
 
 /**
  * The user menu.
@@ -75,6 +76,7 @@ function UserMenu() {
 
   return (
     <>
+      <ToastContainer />
       <Badge badgeContent={notification?.length} color="success">
         <Button
           className="min-h-40 min-w-40 p-0  md:py-6"
