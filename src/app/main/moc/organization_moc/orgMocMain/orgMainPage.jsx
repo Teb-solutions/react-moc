@@ -46,6 +46,7 @@ const orgCourse = () => {
   const [appActivity, setAppActivity] = useState([]);
   const [appActions, setApActions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [verName, setVerName] = useState("");
 
   const handelOpenSide = () => {
     setLeftSidebarOpen(true);
@@ -198,6 +199,7 @@ const orgCourse = () => {
       return;
     }
     setActName(activityname);
+    setVerName(version);
     setCanEdits(canedit);
 
     const matchingPhase = content.find((phase) =>
@@ -239,6 +241,11 @@ const orgCourse = () => {
             break;
           case "Implementation":
             apiAuth
+              .get(`/ChangeRequest/Get?id=${orgEvaluationId}`)
+              .then((resp) => {
+                setReqNo(resp.data.data.requestNo);
+              });
+            apiAuth
               .get(`/OrgMoc/GetImplementation/${orgEvaluationId}`)
               .then((resp) => {
                 setImpDetails(resp.data?.data?.taskList);
@@ -270,6 +277,7 @@ const orgCourse = () => {
         <MocHeader
           activity={actName}
           reqno={reqNo}
+          verName={verName}
           sidemenu={true}
           setLeftSidebarOpen={setLeftSidebarOpen}
           leftSidebarOpen={leftSidebarOpen}

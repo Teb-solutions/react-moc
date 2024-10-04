@@ -64,7 +64,6 @@ import ImplementationView from "./ImplementationView";
 import PssrSession from "./PssrSession";
 import DateExtend from "./DateExtend";
 
-
 // Adjust the path based on your project structure
 
 function createData(
@@ -1266,7 +1265,6 @@ function ImplementationApproval({
       });
   };
 
-
   const handleDownloadPssR = () => {
     apiAuth
       .get(`/DocumentManager/download/${documenDowTokenPssR}`, {
@@ -1359,7 +1357,6 @@ function ImplementationApproval({
     });
   };
   const handleSubmits = (task, value) => {
-
     if (!commentss || !reqDate) {
       if (!reqDate) setDueDateValidation("Due Date is required");
       if (!comments)
@@ -1866,7 +1863,23 @@ function ImplementationApproval({
         </div>
       </ConfirmationModal>
 
-      <DateExtend dateExtendopen={dateExtendopen} handlehandledateExtendClose={handlehandledateExtendClose} task={task} ShowTask={ShowTask} formatDates={formatDates} setCommentss={setCommentss} AdapterDateFns={AdapterDateFns} reqDate={reqDate} setReqDate={setReqDate} dueDateValidation={dueDateValidation} setDueDateValidation={setDueDateValidation} commentss={commentss} dueDateCommentValidation={dueDateCommentValidation} setDueDateCommentValidation={setDueDateCommentValidation} handleSubmits={handleSubmits} />
+      <DateExtend
+        dateExtendopen={dateExtendopen}
+        handlehandledateExtendClose={handlehandledateExtendClose}
+        task={task}
+        ShowTask={ShowTask}
+        formatDates={formatDates}
+        setCommentss={setCommentss}
+        AdapterDateFns={AdapterDateFns}
+        reqDate={reqDate}
+        setReqDate={setReqDate}
+        dueDateValidation={dueDateValidation}
+        setDueDateValidation={setDueDateValidation}
+        commentss={commentss}
+        dueDateCommentValidation={dueDateCommentValidation}
+        setDueDateCommentValidation={setDueDateCommentValidation}
+        handleSubmits={handleSubmits}
+      />
 
       <Modal
         aria-labelledby="transition-modal-title"
@@ -1943,7 +1956,19 @@ function ImplementationApproval({
           </Box>
         </Fade>
       </Modal>
-      <PssrSession pssrSessionOpen={pssrSessionOpen} setPssrSessionOpen={setPssrSessionOpen} pssrsessionStatus={pssrsessionStatus} teamList={teamList} pssrList={pssrList} checkedStaff={checkedStaff} handleCheckboxSessionChange={handleCheckboxSessionChange} handlePssrSessionSave={handlePssrSessionSave} startedAt={activeSessiondata?.startedAt} handleStopSession={handleStopSession} stopComment={stopComment} />
+      <PssrSession
+        pssrSessionOpen={pssrSessionOpen}
+        setPssrSessionOpen={setPssrSessionOpen}
+        pssrsessionStatus={pssrsessionStatus}
+        teamList={teamList}
+        pssrList={pssrList}
+        checkedStaff={checkedStaff}
+        handleCheckboxSessionChange={handleCheckboxSessionChange}
+        handlePssrSessionSave={handlePssrSessionSave}
+        startedAt={activeSessiondata?.startedAt}
+        handleStopSession={handleStopSession}
+        stopComment={stopComment}
+      />
       <Initiation
         contentDetailsT={contentDetails}
         contentDetailsini={contentDetailsini}
@@ -2061,8 +2086,36 @@ function ImplementationApproval({
 
             {!showPssrCheckList && (
               <>
-                <ImplementationView steps={steps} ImpDetails={ImpDetails} setActiveStep={setActiveStep} activeStep={activeStep} handleOpenImplemntationTask={handleOpenImplemntationTask} handleAccordionChange={handleAccordionChange} handleReset={handleReset} isComplete={currentActivityForm.isComplete} status={currentActivityForm.status} canEdit={currentActivityForm.canEdit} handleBack={handleBack} handleNext={handleNext} ChangeDeadlineLabel={ChangeDeadlineLabel} expanded={expanded} formatDate={formatDate} impComments={impComments} handelComments={handelComments} handelOpenAuditComment={handelOpenAuditComment} documentCounts={documentCounts} handelOpenAudit={handelOpenAudit} handleOpen={handleOpen} errorMessage={errorMessage} isButtonDisabled={isButtonDisabled} handledateExtendopen={handledateExtendopen} handelApproveImpl={handelApproveImpl} setComments={setComments} setErrorMessage={setErrorMessage} handelRejectImpl={handelRejectImpl} />
-
+                <ImplementationView
+                  steps={steps}
+                  ImpDetails={ImpDetails}
+                  setActiveStep={setActiveStep}
+                  activeStep={activeStep}
+                  handleOpenImplemntationTask={handleOpenImplemntationTask}
+                  handleAccordionChange={handleAccordionChange}
+                  handleReset={handleReset}
+                  isComplete={currentActivityForm.isComplete}
+                  status={currentActivityForm.status}
+                  canEdit={currentActivityForm.canEdit}
+                  handleBack={handleBack}
+                  handleNext={handleNext}
+                  ChangeDeadlineLabel={ChangeDeadlineLabel}
+                  expanded={expanded}
+                  formatDate={formatDate}
+                  impComments={impComments}
+                  handelComments={handelComments}
+                  handelOpenAuditComment={handelOpenAuditComment}
+                  documentCounts={documentCounts}
+                  handelOpenAudit={handelOpenAudit}
+                  handleOpen={handleOpen}
+                  errorMessage={errorMessage}
+                  isButtonDisabled={isButtonDisabled}
+                  handledateExtendopen={handledateExtendopen}
+                  handelApproveImpl={handelApproveImpl}
+                  setComments={setComments}
+                  setErrorMessage={setErrorMessage}
+                  handelRejectImpl={handelRejectImpl}
+                />
               </>
             )}
             {showPssrCheckList && (

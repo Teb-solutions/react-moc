@@ -303,7 +303,7 @@ function AssetRequest() {
     if (!documentState.projectValue) {
       tempErrors.projectValue = "Project Value is required";
     }
-    if (documentState.projectValue?.length >= 14) {
+    if (documentState.projectValue?.length > 14) {
       tempErrors.projectValue = "Project Value maximum length is 14 charcters";
     }
     if (!documentState.type) tempErrors.type = "Type is required";

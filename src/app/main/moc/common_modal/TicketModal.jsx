@@ -147,9 +147,9 @@ const TicketModal = ({ open, errors, setErrors, setModalOpen }) => {
           },
         }
       );
+      toast.success("Successfully created");
       console.log("Response:", response.data);
       handleModalClose();
-      toast.success("Successfully created");
       setTicketData({
         projectId: "5EC94E1B-E058-4008-EC12-08DC9C361D1D",
         customerName: "",
