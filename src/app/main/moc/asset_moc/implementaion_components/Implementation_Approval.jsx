@@ -737,6 +737,7 @@ function ImplementationApproval({
 
   const handelOpenAuditComment = (auditsid) => {
     setOpenAuditComment(true);
+
     setAuditData((prevState) => ({
       ...prevState,
       auditsid: auditsid,
@@ -1427,7 +1428,7 @@ function ImplementationApproval({
       />
       <AuditModal
         open={openAuditComment}
-        handleClose={() => setOpenAuditComment(false)}
+        handleClose={() => { setOpenAuditComment(false), setErrors({}) }}
         handleSubmit={handelAuditCommentSubmit}
         errors={errors}
         setErrors={setErrors}
