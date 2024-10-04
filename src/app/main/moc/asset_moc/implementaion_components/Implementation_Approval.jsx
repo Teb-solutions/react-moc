@@ -1240,57 +1240,7 @@ function ImplementationApproval({
         });
       });
   };
-  const handleDownload = () => {
-    apiAuth
-      .get(`/DocumentManager/download/${documenDowToken}`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
 
-        link.href = url;
-        link.setAttribute(
-          "download",
-          selectedDocument?.name
-            ? selectedDocument?.name
-            : selectedDocumentPssR.name
-        ); // or any other extension
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((error) => {
-        console.error("Download failed", error);
-      });
-  };
-
-  const handleDownloadPssR = () => {
-    apiAuth
-      .get(`/DocumentManager/download/${documenDowTokenPssR}`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-
-        link.href = url;
-        link.setAttribute(
-          "download",
-          selectedDocument?.name
-            ? selectedDocument?.name
-            : selectedDocumentPssR.name
-        ); // or any other extension
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((error) => {
-        console.error("Download failed", error);
-      });
-  };
 
   const handleDelete = (e, id, token) => {
     e.preventDefault();
@@ -1542,8 +1492,9 @@ function ImplementationApproval({
         step={1}
         handelFileDiscriptionChange={handelFileDiscriptionChange}
         handelDetailDoc={handelDetailDoc}
-        handleDownload={handleDownload}
+
         formatDate={formatDate}
+        documenDowToken={documenDowToken}
       />
 
       <DocumentModal
@@ -1562,10 +1513,10 @@ function ImplementationApproval({
         handelFileDiscriptionChange={handelFileDiscriptionChangePssR}
         handleSubmitDocument={handleSubmitAssetPssR}
         handelDetailDoc={handelDetailDocPssR}
-        handleDownload={handleDownloadPssR}
         formatDate={formatDate}
         canExecute={lastActCode?.canExecute}
         handleDelete={handleDeletePssR}
+        documenDowToken={documenDowTokenPssR}
       />
 
       <Modal
@@ -1969,6 +1920,7 @@ function ImplementationApproval({
         startedAt={activeSessiondata?.startedAt}
         handleStopSession={handleStopSession}
         stopComment={stopComment}
+        setStopComment={setStopComment}
       />
       <Initiation
         contentDetailsT={contentDetails}

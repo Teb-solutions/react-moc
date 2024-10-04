@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import { withStyles } from "@mui/styles";
 import { styled } from "@mui/material/styles";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import { HandleDownload } from "../common_components/DownloadMethod";
 
 const DocumentModal = (props) => {
   const {
@@ -30,11 +31,12 @@ const DocumentModal = (props) => {
     handelFileDiscriptionChange,
     handleSubmitDocument,
     selectedDocument,
-    handleDownload,
+
     formatDate,
     contentDetails,
     canExecute,
     handleDelete,
+    documenDowToken
   } = props;
   const StyledBadge = withStyles((theme) => ({
     Badge: {
@@ -447,7 +449,7 @@ const DocumentModal = (props) => {
                   variant="contained"
                   color="secondary"
                   type="submit"
-                  onClick={handleDownload}
+                  onClick={(e) => HandleDownload(documenDowToken, selectedDocument?.name)}
                 >
                   Download
                 </Button>

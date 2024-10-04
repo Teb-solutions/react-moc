@@ -774,26 +774,7 @@ const Implementation = ({
     setFileName(doc.name);
   };
 
-  const handleDownload = () => {
-    apiAuth
-      .get(`/DocumentManager/download/${documenDowToken}`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        setFileDetails(false);
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", fileName); // or any other extension
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((error) => {
-        console.error("Download failed", error);
-      });
-  };
+
 
   const [TaskhazardRiskViewName, setSubTaskhazardRiskViewName] = useState("");
   const [hazardTypeValue, sethazardTypeValue] = useState("");
@@ -1560,10 +1541,11 @@ const Implementation = ({
         handelFileDiscriptionChange={handelFileDiscriptionChange}
         handelFileChange={handelFileChange}
         handleSubmitDocument={handleSubmitAsset}
-        handleDownload={handleDownload}
+
         handleDelete={handleDelete}
         canExecute={currentActivityForm.canExecute}
         formatDate={formatDate}
+        documenDowToken={documenDowToken}
       />
       <AuditModal
         open={openAuditComment}
@@ -1651,11 +1633,12 @@ const Implementation = ({
               handleModalClose={handleClose}
               listDocument={listDocument}
               selectedDocument={selectedDocument}
-              handleDownload={handleDownload}
+
               fileDetails={fileDetails}
               setFileDetails={setFileDetails}
               handelDetailDoc={handelDetailDoc}
               formatDate={formatDate}
+              documenDowToken={documenDowToken}
             />
           </div>
 

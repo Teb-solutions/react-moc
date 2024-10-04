@@ -13,7 +13,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 
 
 const PssrSession = (props) => {
-    const { pssrSessionOpen, setPssrSessionOpen, pssrsessionStatus, teamList, pssrList, handlePssrSessionSave, checkedStaff, handleCheckboxSessionChange, startedAt, handleStopSession, stopComment } = props
+    const { pssrSessionOpen, setPssrSessionOpen, pssrsessionStatus, teamList, pssrList, handlePssrSessionSave, checkedStaff, handleCheckboxSessionChange, startedAt, handleStopSession, stopComment, setStopComment } = props
     const stylePssr = {
         position: "absolute",
         top: "50%",

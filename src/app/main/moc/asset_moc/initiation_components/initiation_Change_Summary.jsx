@@ -524,27 +524,7 @@ const InitiationComplete = ({
     return <FuseLoading />;
   }
 
-  const handleDownload = () => {
-    apiAuth
-      .get(`/DocumentManager/download/${documenDowToken}`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        setFileDetails(false);
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
 
-        link.href = url;
-        link.setAttribute("download", selectedDocument.name); // or any other extension
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((error) => {
-        console.error("Download failed", error);
-      });
-  };
 
   const handleCloseDelete = () => {
     setDeletes(false);
@@ -898,10 +878,10 @@ const InitiationComplete = ({
         handelDetailDoc={handelDetailDoc}
         handelFileDiscriptionChange={handelFileDiscriptionChange}
         handleSubmitDocument={handleSubmitAsset}
-        handleDownload={handleDownload}
         canExecute={currentActivityForm.canExecute}
         formatDate={formatDate}
         handleDelete={handleDelete}
+        documenDowToken={documenDowToken}
       />
 
       <Initiation

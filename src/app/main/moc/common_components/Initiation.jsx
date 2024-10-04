@@ -163,27 +163,7 @@ function Initiation(props) {
     overflow: "auto", // Smooth transition for opening/closing
   });
 
-  const handleDownload = () => {
-    apiAuth
-      .get(`/DocumentManager/download/${documenDowToken}`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        setFileDetails(false);
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
 
-        link.href = url;
-        link.setAttribute("download", selectedDocument.name); // or any other extension
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((error) => {
-        console.error("Download failed", error);
-      });
-  };
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);
     setFileDetails(true);
@@ -289,27 +269,7 @@ function Initiation(props) {
     setDocumenDowToken1(doc.token);
   };
 
-  const handleDownload1 = () => {
-    apiAuth
-      .get(`/DocumentManager/download/${documenDowToken1}`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        setFileDetails(false);
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
 
-        link.href = url;
-        link.setAttribute("download", selectedDocument1.name); // or any other extension
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((error) => {
-        console.error("Download failed", error);
-      });
-  };
 
   return (
     <div className="w-full">
@@ -329,8 +289,9 @@ function Initiation(props) {
         openDrawer={openDrawer}
         setOpenDrawer={setOpenDrawer}
         toggleDrawer={toggleDrawer}
-        handleDownload={handleDownload1}
+
         formatDate={formatDate}
+        documenDowToken={documenDowToken1}
       />
 
       {/* ............................................ */}
@@ -387,8 +348,9 @@ function Initiation(props) {
         selectedFile={selectedFile}
         selectedDocument={selectedDocument}
         formatDate={formatDate}
-        handleDownload={handleDownload}
+
         handelDetailDoc={handelDetailDoc}
+        documenDowToken={documenDowToken}
       />
 
       <SwipeableViews>

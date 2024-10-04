@@ -634,26 +634,7 @@ const Task = () => {
 
   const [documenDowToken, setDocumenDowToken] = useState("");
 
-  const handleDownload = () => {
-    apiAuth
-      .get(`/DocumentManager/download/${documenDowToken}`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        setFileDetails(false);
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute("download", selectedDocument.name); // or any other extension
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((error) => {
-        console.error("Download failed", error);
-      });
-  };
+
 
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);
@@ -776,7 +757,7 @@ const Task = () => {
         handelFileChange={handelFileChange}
         handleModalClose={handleOpenDocModalClose}
         handelFileDiscriptionChange={handelFileDiscriptionChange}
-        handleDownload={handleDownload}
+
         listDocument={listDocument}
         toggleDrawer={toggleDrawer}
         handelDetailDoc={handelDetailDoc}
@@ -784,6 +765,7 @@ const Task = () => {
         formatDate={formatDate}
         canExecute={!task.completed}
         handleDelete={handleDelete}
+        documenDowToken={documenDowToken}
       />
 
       <div className="p-30 pt-24 pb-24">
@@ -1640,26 +1622,26 @@ const Task = () => {
                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                       <small>
                                         {msg.startedDate &&
-                                        !msg.workInProgressDate &&
-                                        !msg.completedDate &&
-                                        !msg.dueDate
+                                          !msg.workInProgressDate &&
+                                          !msg.completedDate &&
+                                          !msg.dueDate
                                           ? `Started on ${formatDates(msg.startedDate)}`
                                           : msg.workInProgressDate &&
-                                              !msg.completedDate &&
-                                              !msg.dueDate
+                                            !msg.completedDate &&
+                                            !msg.dueDate
                                             ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                             : msg.dueDate && !msg.completedDate
                                               ? `Due on ${formatDates(msg.dueDate)}`
                                               : msg.completedDate
                                                 ? `Completed on ${new Date(
-                                                    msg.completedDate
-                                                  ).toLocaleString("en-US", {
-                                                    month: "short",
-                                                    day: "2-digit",
-                                                    hour: "numeric",
-                                                    minute: "numeric",
-                                                    hour12: true,
-                                                  })}`
+                                                  msg.completedDate
+                                                ).toLocaleString("en-US", {
+                                                  month: "short",
+                                                  day: "2-digit",
+                                                  hour: "numeric",
+                                                  minute: "numeric",
+                                                  hour12: true,
+                                                })}`
                                                 : "Unknown"}
                                       </small>
                                     </div>

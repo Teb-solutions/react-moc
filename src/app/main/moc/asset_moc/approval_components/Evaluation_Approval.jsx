@@ -591,13 +591,23 @@ const EvaluationApproval = ({
           .get(
             `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
           )
-          .then((resp) => {
+          .then(async (resp) => {
             setIsLoading(false);
             location.reload();
 
             setShowSendPopup(false);
+            const data = resp.data?.data;
+            if (data.requestTypeName !== "Document") {
+              const updatedTasks = data.tasklist.map((task) => {
+                task.showPreviousTasks = false;
+                task.riskAnalysisList = data.riskAnalysisList.filter(
+                  (ra) => ra.changeImapactId === task.changeImapactId
+                );
+                return task;
+              });
+              await setContentDetails(resp.data.data);
+            }
 
-            setContentDetails(resp.data.data);
           });
       })
       .catch((err) => {
@@ -801,8 +811,19 @@ const EvaluationApproval = ({
             .get(
               `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode?.code}&&version=${lastActCode?.version}&&refVersion=${lastActCode?.refVersion}`
             )
-            .then((resp) => {
-              setContentDetails(resp.data.data);
+            .then(async (resp) => {
+              const data = resp.data?.data;
+              if (data.requestTypeName !== "Document") {
+                const updatedTasks = data.tasklist.map((task) => {
+                  task.showPreviousTasks = false;
+                  task.riskAnalysisList = data.riskAnalysisList.filter(
+                    (ra) => ra.changeImapactId === task.changeImapactId
+                  );
+                  return task;
+                });
+                await setContentDetails(resp.data.data);
+              }
+
             });
         } else {
           toast.error(response.data.message);
@@ -896,11 +917,27 @@ const EvaluationApproval = ({
                 name: "",
                 descritpion: "",
               });
-              apiAuth.get(
-                `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
-              );
+              apiAuth
+                .get(
+                  `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
+                )
+                .then(async (resp) => {
 
-              setContentDetails(response?.data?.data);
+
+
+                  const data = resp.data?.data;
+                  if (data.requestTypeName !== "Document") {
+                    const updatedTasks = data.tasklist.map((task) => {
+                      task.showPreviousTasks = false;
+                      task.riskAnalysisList = data.riskAnalysisList.filter(
+                        (ra) => ra.changeImapactId === task.changeImapactId
+                      );
+                      return task;
+                    });
+                    await setContentDetails(resp.data.data);
+                  }
+
+                });
             });
         } else {
           toast.error(response.data.message);
@@ -939,27 +976,7 @@ const EvaluationApproval = ({
       });
   };
 
-  const handleDownload = () => {
-    apiAuth
-      .get(`/DocumentManager/download/${documenDowToken}`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        setOpenDrawer(false);
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
 
-        link.href = url;
-        link.setAttribute("download", selectedDocument.name); // or any other extension
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((error) => {
-        console.error("Download failed", error);
-      });
-  };
 
   const ListDoc1 = (id) => {
     apiAuth.get(`/DocumentManager/SummaryDoclist/${id}`).then((Resp) => {
@@ -1089,8 +1106,18 @@ const EvaluationApproval = ({
         .get(
           `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
         )
-        .then((resp) => {
-          setContentDetails(resp.data.data);
+        .then(async (resp) => {
+          const data = resp.data?.data;
+          if (data.requestTypeName !== "Document") {
+            const updatedTasks = data.tasklist.map((task) => {
+              task.showPreviousTasks = false;
+              task.riskAnalysisList = data.riskAnalysisList.filter(
+                (ra) => ra.changeImapactId === task.changeImapactId
+              );
+              return task;
+            });
+            await setContentDetails(resp.data.data);
+          }
         });
     });
   };
@@ -2939,12 +2966,13 @@ const EvaluationApproval = ({
           handleSubmitDocument={handleSubmitResponse}
           fileDetails={fileDetailsRes}
           setFileDetails={setFileDetailsRes}
-          handleDownload={handleResDownload}
+
           handleDelete={handleResDelete}
           toggleDrawer={toggleDrawerRes}
           handelFileChange={handelRespFileChange}
           canExecute={AppActivity?.canExecute}
           formatDate={formatDate}
+          documenDowToken={documenResDowToken}
         />
         <DeleteModal
           openDelete={Resdeletes}
@@ -5179,10 +5207,11 @@ const EvaluationApproval = ({
           handelFileChange={handelFileChange}
           handelFileDiscriptionChange={handelFileDiscriptionChange}
           handleSubmitDocument={handleSubmitAsset}
-          handleDownload={handleDownload}
+
           canExecute={AppActivity?.canExecute}
           formatDate={formatDate}
           handleDelete={handleDelete}
+          documenDowToken={documenDowToken}
         />
       </div>
     </>

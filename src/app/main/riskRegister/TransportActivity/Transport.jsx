@@ -158,19 +158,19 @@ function TransportApp() {
   const [fileUrl, setFileUrl] = useState("");
   const [fileName, setFileName] = useState("");
 
-  const handleDownload = () => {
-    if (fileUrl) {
-      const link = document.createElement("a");
-      link.href = fileUrl;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-    apiAuth
-      .get(`/DocumentManager/download/${documenDowToken}`)
-      .then((response) => {});
-  };
+  // const handleDownload = () => {
+  //   if (fileUrl) {
+  //     const link = document.createElement("a");
+  //     link.href = fileUrl;
+  //     link.download = fileName;
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     document.body.removeChild(link);
+  //   }
+  //   apiAuth
+  //     .get(`/DocumentManager/download/${documenDowToken}`)
+  //     .then((response) => {});
+  // };
 
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);
@@ -692,7 +692,7 @@ function TransportApp() {
                   <FormControl
                     fullWidth
                     sx={{ m: 1 }}
-                    // error={!!errors.projectName}
+                  // error={!!errors.projectName}
                   >
                     <InputLabel htmlFor="projectName">Title *</InputLabel>
                     <OutlinedInput
@@ -714,7 +714,7 @@ function TransportApp() {
                   <FormControl
                     fullWidth
                     sx={{ m: 1 }}
-                    // error={!!errors.projectName}
+                  // error={!!errors.projectName}
                   >
                     <InputLabel htmlFor="projectDescription">
                       Description *
@@ -1146,7 +1146,7 @@ function TransportApp() {
                                   variant="contained"
                                   color="secondary"
                                   type="submit"
-                                  onClick={handleDownload}
+                                // onClick={handleDownload}
                                 >
                                   Download
                                 </Button>
@@ -1236,7 +1236,7 @@ function TransportApp() {
                           backgroundColor: "red",
                         }}
                         type="submit"
-                        // onClick={handleSubmit}
+                      // onClick={handleSubmit}
                       >
                         Submit
                       </Button>

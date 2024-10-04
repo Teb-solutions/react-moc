@@ -422,27 +422,7 @@ const ImplementationApprovalSite = ({
       });
   };
 
-  const handleDownload = () => {
-    apiAuth
-      .get(`/DocumentManager/download/${documenDowToken}`, {
-        responseType: "blob",
-      })
-      .then((response) => {
-        setFileDetails(false);
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
 
-        link.href = url;
-        link.setAttribute("download", selectedDocument.name); // or any other extension
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
-      })
-      .catch((error) => {
-        console.error("Download failed", error);
-      });
-  };
 
   const handleCloseDelete = () => {
     setDeletes(false);
@@ -1190,7 +1170,7 @@ const ImplementationApprovalSite = ({
         selectedDocument={selectedDocument}
         handleDelete={handleDelete}
         handelDetailDoc={handelDetailDoc}
-        handleDownload={handleDownload}
+
         handleSubmitDocument={handleSubmitAsset}
         listDocument={listDocument}
         CountApprove={CountApprove}
@@ -1203,6 +1183,7 @@ const ImplementationApprovalSite = ({
         toggleDrawer={toggleDrawer}
         handelFileDiscriptionChange={handelFileDiscriptionChange}
         formatDate={formatDate}
+        documenDowToken={documenDowToken}
       />
 
       <DeleteModal
