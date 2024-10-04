@@ -40,13 +40,18 @@ const RiskAnalysis = ({
   potentialFrequencyRiskDetails,
   setRisk,
 }) => {
+
+
+
+  console.log(potentialFrequencyRiskDetails, "potentialFrequencyRiskDetails");
+
   const taskFormControlStyles = viewrisk
     ? {
-        borderColor: "white",
-        m: 1,
-        maxWidth: "100%",
-        border: "1px solid white",
-      }
+      borderColor: "white",
+      m: 1,
+      maxWidth: "100%",
+      border: "1px solid white",
+    }
     : { m: 1, maxWidth: "100%" };
 
   return (
@@ -171,9 +176,9 @@ const RiskAnalysis = ({
                       display: "none",
                     },
                     "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                      {
-                        padding: "0px",
-                      },
+                    {
+                      padding: "0px",
+                    },
                   }}
                 >
                   <MenuItem value="" disabled>
@@ -427,9 +432,9 @@ const RiskAnalysis = ({
                               display: "none",
                             },
                             "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                              {
-                                padding: "0px",
-                              },
+                            {
+                              padding: "0px",
+                            },
                           }}
                         >
                           <MenuItem value="" disabled>
@@ -525,9 +530,9 @@ const RiskAnalysis = ({
                               display: "none",
                             },
                             "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                              {
-                                padding: "0px",
-                              },
+                            {
+                              padding: "0px",
+                            },
                           }}
                         >
                           {potentialFrequencyDetails.map((option) => (
@@ -669,9 +674,9 @@ const RiskAnalysis = ({
                               display: "none",
                             },
                             "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                              {
-                                padding: "0px",
-                              },
+                            {
+                              padding: "0px",
+                            },
                           }}
                         >
                           <MenuItem value="" disabled>
@@ -762,9 +767,9 @@ const RiskAnalysis = ({
                               display: "none",
                             },
                             "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                              {
-                                padding: "0px",
-                              },
+                            {
+                              padding: "0px",
+                            },
                           }}
                         >
                           <MenuItem value="" disabled>
@@ -1055,9 +1060,9 @@ const RiskAnalysis = ({
                               display: "none",
                             },
                             "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                              {
-                                padding: "0px",
-                              },
+                            {
+                              padding: "0px",
+                            },
                           }}
                         >
                           <MenuItem value="" disabled>
@@ -1157,9 +1162,9 @@ const RiskAnalysis = ({
                               display: "none",
                             },
                             "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                              {
-                                padding: "0px",
-                              },
+                            {
+                              padding: "0px",
+                            },
                           }}
                         >
                           <MenuItem value="" disabled>
@@ -1314,9 +1319,9 @@ const RiskAnalysis = ({
                               display: "none",
                             },
                             "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                              {
-                                padding: "0px",
-                              },
+                            {
+                              padding: "0px",
+                            },
                           }}
                         >
                           <MenuItem value="" disabled>
@@ -1418,9 +1423,9 @@ const RiskAnalysis = ({
                               display: "none",
                             },
                             "& .muiltr-1t630aw-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-                              {
-                                padding: "0px",
-                              },
+                            {
+                              padding: "0px",
+                            },
                           }}
                         >
                           <MenuItem value="" disabled>
