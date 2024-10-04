@@ -22,7 +22,17 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const TicketModal = ({ open, errors, setErrors, setModalOpen }) => {
+const TicketModal = ({
+  open,
+  errors,
+  setErrors,
+  setModalOpen,
+  fileName,
+  setFileName,
+  ticketData,
+  setTicketData,
+  handleSubmit,
+}) => {
   const styleImp = {
     position: "absolute",
     top: "50%",
@@ -36,23 +46,6 @@ const TicketModal = ({ open, errors, setErrors, setModalOpen }) => {
     boxShadow: 24,
     p: 4,
   };
-
-  const [fileName, setFileName] = useState(null);
-  const [ticketData, setTicketData] = useState({
-    projectId: "5EC94E1B-E058-4008-EC12-08DC9C361D1D",
-    customerName: "",
-    customerMobile: "string",
-    customerLocation: "string",
-    subject: "",
-    message: "",
-    ticketCategory: "",
-    ticketPriority: "",
-    referenceOrder: "string",
-    remarks: "created ticket11",
-    ticketSource: 5,
-    dueDate: "2024-08-02T06:50:53.617Z",
-    status: 1,
-  });
 
   const handleModalClose = () => {
     setTicketData({
@@ -112,65 +105,6 @@ const TicketModal = ({ open, errors, setErrors, setModalOpen }) => {
       };
       reader.readAsArrayBuffer(file);
       setFileName(file.name);
-    }
-  };
-
-  const validateForm = () => {
-    let tempErrors = {};
-    if (!ticketData.subject) tempErrors.subject = "Subject is required.";
-    if (!ticketData.customerName)
-      tempErrors.customerName = "CustomerName is required.";
-    if (!ticketData.message) tempErrors.message = "Description is required.";
-    if (!ticketData.ticketCategory)
-      tempErrors.ticketCategory = "Ticket Category is required.";
-    if (!ticketData.ticketPriority && ticketData.ticketPriority !== 0)
-      tempErrors.ticketPriority = "Ticket Priority is required.";
-    setErrors(tempErrors);
-    return Object.keys(tempErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validateForm()) {
-      return;
-    }
-    console.log(ticketData, "tickettt");
-    const tokenTicket = localStorage.getItem("jwt_access_ticket_token");
-    try {
-      const response = await axios.post(
-        "https://pmcrm.tebs.co.in/api/v1/tickets",
-        ticketData,
-        {
-          headers: {
-            Authorization: `Bearer ${tokenTicket}`,
-            Tenant: "root",
-            Accept: "application/json",
-          },
-        }
-      );
-      toast.success("Successfully created");
-      console.log("Response:", response.data);
-      handleModalClose();
-      setTicketData({
-        projectId: "5EC94E1B-E058-4008-EC12-08DC9C361D1D",
-        customerName: "",
-        customerMobile: "string",
-        customerLocation: "string",
-        subject: "",
-        message: "",
-        ticketCategory: "",
-        ticketPriority: "",
-        referenceOrder: "string",
-        remarks: "created ticket11",
-        ticketSource: 5,
-        dueDate: "2024-08-02T06:50:53.617Z",
-        status: 1,
-      });
-      setFileName("");
-    } catch (error) {
-      console.error(
-        "Error:",
-        error.response ? error.response.data : error.message
-      );
     }
   };
 

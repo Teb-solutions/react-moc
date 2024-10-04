@@ -18,7 +18,8 @@ import { useEffect } from "react";
 import { apiAuth } from "src/utils/http";
 import BookmarkPopup from "./BookmarkPopup";
 import TicketModal from "src/app/main/moc/common_modal/TicketModal";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
 
 /**
  * The user menu.
@@ -70,13 +71,86 @@ function UserMenu() {
     setBookmarkAnchorEl(event.currentTarget);
   const handleBookmarkClose = () => setBookmarkAnchorEl(null);
 
+  const [fileName, setFileName] = useState(null);
+  const [ticketData, setTicketData] = useState({
+    projectId: "5EC94E1B-E058-4008-EC12-08DC9C361D1D",
+    customerName: "",
+    customerMobile: "string",
+    customerLocation: "string",
+    subject: "",
+    message: "",
+    ticketCategory: "",
+    ticketPriority: "",
+    referenceOrder: "string",
+    remarks: "created ticket11",
+    ticketSource: 5,
+    dueDate: "2024-08-02T06:50:53.617Z",
+    status: 1,
+  });
+
+  const validateForm = () => {
+    let tempErrors = {};
+    if (!ticketData.subject) tempErrors.subject = "Subject is required.";
+    if (!ticketData.customerName)
+      tempErrors.customerName = "CustomerName is required.";
+    if (!ticketData.message) tempErrors.message = "Description is required.";
+    if (!ticketData.ticketCategory)
+      tempErrors.ticketCategory = "Ticket Category is required.";
+    if (!ticketData.ticketPriority && ticketData.ticketPriority !== 0)
+      tempErrors.ticketPriority = "Ticket Priority is required.";
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+    const tokenTicket = localStorage.getItem("jwt_access_ticket_token");
+    try {
+      const response = await axios.post(
+        "https://pmcrm.tebs.co.in/api/v1/tickets",
+        ticketData,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenTicket}`,
+            Tenant: "root",
+            Accept: "application/json",
+          },
+        }
+      );
+      toast.success("Successfully created");
+      handleModalClose();
+      setTicketData({
+        projectId: "5EC94E1B-E058-4008-EC12-08DC9C361D1D",
+        customerName: "",
+        customerMobile: "string",
+        customerLocation: "string",
+        subject: "",
+        message: "",
+        ticketCategory: "",
+        ticketPriority: "",
+        referenceOrder: "string",
+        remarks: "created ticket11",
+        ticketSource: 5,
+        dueDate: "2024-08-02T06:50:53.617Z",
+        status: 1,
+      });
+      setFileName("");
+    } catch (error) {
+      console.error(
+        "Error:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
   useEffect(() => {
     getRecords();
   }, []);
 
   return (
     <>
-      <ToastContainer />
       <Badge badgeContent={notification?.length} color="success">
         <Button
           className="min-h-40 min-w-40 p-0  md:py-6"
@@ -332,6 +406,12 @@ function UserMenu() {
         setErrors={setErrors}
         setModalOpen={setModalOpen}
         open={modalOpen}
+        fileName={fileName}
+        setFileName={setFileName}
+        ticketData={ticketData}
+        setTicketData={setTicketData}
+        handleSubmit={handleSubmit}
+        validateForm={validateForm}
       />
     </>
   );
