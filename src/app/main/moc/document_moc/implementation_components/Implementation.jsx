@@ -51,6 +51,7 @@ import RiskAnalysis from "../../common_components/RiskAnalysis";
 import RiskAnalysisTableView from "../../common_components/RiskAnalysisTableView";
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
 import DocumentModal from "../../common_modal/documentModal";
+import { CalculateFrequencyScoring, CalculatePotentialRisk, CalculateRiskClassification } from "../../common_components/RiskAnalysisCalculate";
 
 function createData(
   index,
@@ -835,92 +836,7 @@ const Implementation = ({
 
   const [TaskhazardRiskApi, setSubTaskhazardRiskApi] = useState([]);
   const likelihoodValues = Array.from({ length: 15 }, (_, i) => i + 1);
-  const calculateFrequencyScoring = (text) => {
-    if (["t < 2.4min", "t < 0.2h", "t < 0.8h", "t < 8.5h"].includes(text)) {
-      return 0.5;
-    } else if (
-      [
-        "2.4 <= t < 24min",
-        "0.2 <= t < 2h",
-        "0.8 <= t < 8h",
-        "8.5 <= t < 85h",
-      ].includes(text)
-    ) {
-      return 1;
-    } else if (
-      [
-        "24min <= t < 1.6h",
-        "2 <= t < 8h",
-        "8 <= t < 32h",
-        "85 <= t < 340h",
-      ].includes(text)
-    ) {
-      return 2;
-    } else if (
-      [
-        "1.6 <= t < 4h",
-        "8 <= t < 20h",
-        "32 <= t < 80h",
-        "340 <= t < 850h",
-      ].includes(text)
-    ) {
-      return 3;
-    } else if (
-      [
-        "4 <= t < 6h",
-        "20 <= t < 30h",
-        "80 <= t < 120h",
-        "850 <= t < 1275h",
-      ].includes(text)
-    ) {
-      return 6;
-    } else {
-      return 10;
-    }
-  };
-  const calculatePotentialRisk = (
-    frequencyScoring,
-    likelihoodScoring,
-    severityScoring
-  ) => {
-    if (
-      frequencyScoring &&
-      likelihoodScoring &&
-      severityScoring &&
-      likelihoodScoring <= 15 &&
-      likelihoodScoring > 0 &&
-      severityScoring <= 15 &&
-      severityScoring > 0
-    ) {
-      return frequencyScoring * likelihoodScoring * severityScoring;
-    } else {
-      return "";
-    }
-  };
 
-  const calculateRiskClassification = (residualRisk) => {
-    let classification = "";
-    let classificationValue = "";
-
-    if (residualRisk > 400) {
-      classification = "HighRisk";
-      classificationValue = "1";
-    } else if (residualRisk > 200 && residualRisk <= 400) {
-      classification = "SignificantRisk";
-      classificationValue = "2";
-    } else if (residualRisk > 70 && residualRisk <= 200) {
-      classification = "AverageRisk";
-      classificationValue = "3";
-    } else if (residualRisk > 20 && residualRisk <= 70) {
-      classification = "LowRisk";
-      classificationValue = "4";
-    } else if (residualRisk <= 20) {
-      classification = "VeryLowRisk";
-      classificationValue = "5";
-    }
-
-    return { classification, classificationValue };
-  };
   const [formValues, setFormValues] = useState({
     task: "",
     subTask: "",
@@ -943,15 +859,7 @@ const Implementation = ({
     residualRisk: "",
     residualRiskClassification: "",
   });
-  const handleGeneralGuideClick = () => {
-    apiAuth
-      .get(`/RiskAnalysis/downloadGeneral`, {
-        responseType: "blob",
-      })
-      .then((resp) => {
-        setGeneralGuidePdf(resp.data);
-      });
-  };
+
   const handelViewDetails = (id, subid) => {
     setPotentialFrequencyDetails([]);
     setFormValues({
@@ -988,6 +896,7 @@ const Implementation = ({
     });
     apiAuth.get(`/LookupData/Lov/30/0`).then((resp) => {
       setPotentialFrequencyDetails(resp.data.data);
+      setPotentialFrequencyRiskDetails(resp.data.data);
 
     });
     apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
@@ -1019,7 +928,7 @@ const Implementation = ({
       });
 
       const { classification, classificationValue } =
-        calculateRiskClassification(data?.residualRisk);
+        CalculateRiskClassification(data?.residualRisk);
 
       setClassification(classification);
 
@@ -1175,7 +1084,7 @@ const Implementation = ({
         (option) => option.value === value
       );
       const frequencyScoring = selectedOption
-        ? calculateFrequencyScoring(selectedOption.text)
+        ? CalculateFrequencyScoring(selectedOption.text)
         : "";
       setFormValues((prevValues) => ({
         ...prevValues,
@@ -1195,7 +1104,7 @@ const Implementation = ({
         name === "likelihoodScoring" ? value : formValues.likelihoodScoring;
       const severityScoring =
         name === "severityScoring" ? value : formValues.severityScoring;
-      const potentialRisk = calculatePotentialRisk(
+      const potentialRisk = CalculatePotentialRisk(
         formValues.frequencyScoring,
         likelihoodScoring,
         severityScoring
@@ -1307,7 +1216,7 @@ const Implementation = ({
           setSubTaskhazardRiskViewName(result.text);
         });
         const { classification, classificationValue } =
-          calculateRiskClassification(data?.residualRisk);
+          CalculateRiskClassification(data?.residualRisk);
 
         setClassification(classification);
         // if (data.time) {
@@ -1409,7 +1318,7 @@ const Implementation = ({
         (option) => option.value === value
       );
       const frequencyScoring = selectedOption
-        ? calculateFrequencyScoring(selectedOption.text)
+        ? CalculateFrequencyScoring(selectedOption.text)
         : "";
       const residualFrequencyScoring =
         name === "modifiedFrequencyDetails" ? frequencyScoring : "";
@@ -1435,13 +1344,13 @@ const Implementation = ({
         name === "residualSeverityScoring"
           ? value
           : formValues.residualSeverityScoring;
-      const residualRisk = calculatePotentialRisk(
+      const residualRisk = CalculatePotentialRisk(
         formValues.residualFrequencyScoring,
         likelihoodScoring,
         severityScoring
       );
       const { classification, classificationValue } =
-        calculateRiskClassification(residualRisk);
+        CalculateRiskClassification(residualRisk);
 
       setClassification(classification);
       setFormValues((prevValues) => ({
@@ -1578,7 +1487,7 @@ const Implementation = ({
           TaskhazardRiskApi={TaskhazardRiskApi}
           TaskhazardRiskViewName={TaskhazardRiskViewName}
           generalGuidePdf={generalGuidePdf}
-          handleGeneralGuideClick={handleGeneralGuideClick}
+          setGeneralGuidePdf={setGeneralGuidePdf}
           formValues={formValues}
           hazaid={hazaid}
           subTaskhazardDetail={subTaskhazardDetail}

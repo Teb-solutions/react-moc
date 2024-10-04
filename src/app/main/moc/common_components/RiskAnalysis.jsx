@@ -12,6 +12,7 @@ import { FormHelperText, FormLabel } from "@mui/material";
 import Box from "@mui/material/Box";
 import { apiAuth } from "src/utils/http";
 import TextField from "@mui/material/TextField";
+import { HandleGeneralGuideClick } from "./RiskAnalysisCalculate";
 
 const RiskAnalysis = ({
   viewrisk,
@@ -22,7 +23,7 @@ const RiskAnalysis = ({
   TaskhazardRiskApi,
   TaskhazardRiskViewName,
   generalGuidePdf,
-  handleGeneralGuideClick,
+
   formValues,
   hazaid,
   subTaskhazardDetail,
@@ -39,11 +40,12 @@ const RiskAnalysis = ({
   handelRiskSubmit,
   potentialFrequencyRiskDetails,
   setRisk,
+  setGeneralGuidePdf,
 }) => {
 
 
 
-  console.log(potentialFrequencyRiskDetails, "potentialFrequencyRiskDetails");
+
 
   const taskFormControlStyles = viewrisk
     ? {
@@ -275,7 +277,7 @@ const RiskAnalysis = ({
                     backgroundColor: "white",
                     color: "blue",
                   }}
-                  onClick={handleGeneralGuideClick}
+                  onClick={(e) => HandleGeneralGuideClick(setGeneralGuidePdf)}
                 >
                   General Guide
                 </a>
@@ -1170,7 +1172,7 @@ const RiskAnalysis = ({
                           <MenuItem value="" disabled>
                             <em>None</em>
                           </MenuItem>
-                          {potentialFrequencyRiskDetails.map((option) => (
+                          {potentialFrequencyRiskDetails?.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
                               {option.text}
                             </MenuItem>
@@ -1209,7 +1211,7 @@ const RiskAnalysis = ({
                           <MenuItem value="" disabled>
                             <em>None</em>
                           </MenuItem>
-                          {potentialFrequencyRiskDetails.map((option) => (
+                          {potentialFrequencyRiskDetails?.map((option) => (
                             <MenuItem key={option.value} value={option.value}>
                               {option.text}
                             </MenuItem>
