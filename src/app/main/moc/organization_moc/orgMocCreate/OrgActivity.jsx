@@ -148,8 +148,11 @@ function OrgActivity() {
 
     const formattedDocumentState = {
       ...documentState,
-      programCompletionDate: formattedDate,
+      programCompletionDate: formattedDate ? formattedDate : new Date(),
     };
+
+    console.log(formattedDocumentState, "formattedDocumentState");
+
     apiAuth
       .post("/OrgMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
@@ -563,12 +566,7 @@ function OrgActivity() {
                           label="Program Completion Date *"
                           value={documentState.programCompletionDate}
                           minDate={new Date()} // Prevents selection of past dates
-                          onChange={(newDate) =>
-                            setDocumentState((prevState) => ({
-                              ...prevState,
-                              programCompletionDate: newDate,
-                            }))
-                          }
+                          onChange={handleChanges}
                           renderInput={(params) => (
                             <TextField fullWidth {...params} />
                           )}
