@@ -81,7 +81,7 @@ const JwtSignInTab = () => {
 
   async function onSubmit(formData) {
     const { userName, password, mFAOtp } = formData;
-    debugger
+
     const params = {
       userName: userName,
       password: password,

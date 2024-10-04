@@ -105,9 +105,11 @@ const Implementation = ({
   impActions,
   docStaffs,
 }) => {
+  const [errors, setErrors] = useState({});
   const [errorMessageTask, setErrorMessageTask] = useState("");
   const [expanded2, setExpanded2] = useState(false);
-
+  const [potentialFrequencyRiskDetails, setPotentialFrequencyRiskDetails] =
+    useState([]);
   const [open, setOpen] = useState(false);
   const handleOpen = (id) => {
     apiAuth
@@ -377,7 +379,23 @@ const Implementation = ({
       comments: "",
     }));
   };
+
+  const validateForm = () => {
+    let tempErrors = {};
+    const cleanedComments = auditData?.comments?.replace(/\s+/g, ' ').trim();
+
+
+    auditData.comments = cleanedComments;
+    if (!cleanedComments)
+      tempErrors.comments = "Comments is required.";
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
   const handelAuditCommentSubmit = () => {
+    if (!validateForm()) {
+      return;
+    }
     apiAuth
       .put(
         `/ChangeImplementation/Audit/?requestToken=${evaluationId}&&taskId=${auditData.auditsid}`,
@@ -989,6 +1007,7 @@ const Implementation = ({
     });
     apiAuth.get(`/LookupData/Lov/30/0`).then((resp) => {
       setPotentialFrequencyDetails(resp.data.data);
+
     });
     apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
       const data = resp.data.data.riskAnalysisHazardSituation[0];
@@ -1392,7 +1411,7 @@ const Implementation = ({
 
     if (name === "modifiedTime") {
       apiAuth.get(`/LookupData/Lov/30/${value}`).then((resp) => {
-        setPotentialFrequencyDetails(resp.data.data);
+        setPotentialFrequencyRiskDetails(resp.data.data);
       });
       setFormValues((prevValues) => ({
         ...prevValues,
@@ -1405,7 +1424,7 @@ const Implementation = ({
     }
 
     if (name === "modifiedFrequencyDetails") {
-      const selectedOption = potentialFrequencyDetails.find(
+      const selectedOption = potentialFrequencyRiskDetails.find(
         (option) => option.value === value
       );
       const frequencyScoring = selectedOption
@@ -1548,12 +1567,18 @@ const Implementation = ({
       />
       <AuditModal
         open={openAuditComment}
-        handleClose={() => setOpenAuditComment(false)}
+        handleClose={() => { setOpenAuditComment(false), setErrors({}) }}
         handleSubmit={handelAuditCommentSubmit}
+        errors={errors}
+        setErrors={setErrors}
         auditData={auditData}
-        onChange={(name, value) =>
-          setAuditData((prev) => ({ ...prev, [name]: value }))
-        }
+        onChange={(name, value) => {
+          setAuditData((prev) => ({ ...prev, [name]: value })),
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              [name]: "",
+            }));
+        }}
       />
       <AuditListModal
         open={openAudit}
@@ -1580,6 +1605,7 @@ const Implementation = ({
           handelRiskInputChange={handelRiskInputChange}
           potentialTimeDetails={potentialTimeDetails}
           potentialFrequencyDetails={potentialFrequencyDetails}
+          potentialFrequencyRiskDetails={potentialFrequencyRiskDetails}
           likelihoodValues={likelihoodValues}
           handelResidualRiskInputChange={handelResidualRiskInputChange}
           Classifications={Classifications}
@@ -1801,7 +1827,7 @@ const Implementation = ({
                           </div>
                           <div
                             className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                            // style={{ width: "17%" }}
+                          // style={{ width: "17%" }}
                           >
                             <div className="flex items-center">
                               <StyledBadge badgeContent={task?.audits?.length}>
@@ -1978,16 +2004,16 @@ const Implementation = ({
                                         <div className="my-0.5 text-xs font-medium text-secondary">
                                           <small>
                                             {msg.startedDate &&
-                                            !msg.workInProgressDate &&
-                                            !msg.completedDate &&
-                                            !msg.dueDate
+                                              !msg.workInProgressDate &&
+                                              !msg.completedDate &&
+                                              !msg.dueDate
                                               ? `Started on ${formatDates(msg.startedDate)}`
                                               : msg.workInProgressDate &&
-                                                  !msg.completedDate &&
-                                                  !msg.dueDate
+                                                !msg.completedDate &&
+                                                !msg.dueDate
                                                 ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                                 : msg.dueDate &&
-                                                    !msg.completedDate
+                                                  !msg.completedDate
                                                   ? `Due on ${formatDates(msg.dueDate)}`
                                                   : msg.completedDate
                                                     ? `Completed on ${formatDates(msg.completedDate)}`
@@ -2573,8 +2599,8 @@ const Implementation = ({
                           name="audit"
                           onChange={handleChangeAddTask}
                           value={taskAdd.audit}
-                          // error={!!errorsAddTask.audit}
-                          // helperText={errorsAddTask.audit}
+                        // error={!!errorsAddTask.audit}
+                        // helperText={errorsAddTask.audit}
                         />
                       </Box>
                     </div>
