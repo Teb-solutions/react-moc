@@ -110,6 +110,7 @@ const OrgImplementation = ({
       right: "8px",
     },
   }))(Badge);
+  const [errors, setErrors] = useState({});
   const [expanded, setExpanded] = useState(null);
   const [impComments, setImpComments] = useState([]);
   const [comments, setComments] = useState("");
@@ -149,7 +150,23 @@ const OrgImplementation = ({
     });
   }
 
+  const validateForm = () => {
+    let tempErrors = {};
+    const cleanedComments = auditData?.comments?.replace(/\s+/g, ' ').trim();
+
+
+    auditData.comments = cleanedComments;
+    if (!cleanedComments)
+      tempErrors.comments = "Comments is required.";
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const handelAuditCommentSubmit = () => {
+    if (!validateForm()) {
+      return;
+    }
     apiAuth
       .put(
         `/ChangeImplementation/Audit/?requestToken=${orgEvaluationId}&&taskId=${auditData.auditsid}`,
@@ -435,12 +452,18 @@ const OrgImplementation = ({
       </DeleteModal>
       <AuditModal
         open={openAuditComment}
-        handleClose={() => setOpenAuditComment(false)}
+        handleClose={() => { setOpenAuditComment(false), setErrors({}) }}
         handleSubmit={handelAuditCommentSubmit}
+        errors={errors}
+        setErrors={setErrors}
         auditData={auditData}
-        onChange={(name, value) =>
-          setAuditData((prev) => ({ ...prev, [name]: value }))
-        }
+        onChange={(name, value) => {
+          setAuditData((prev) => ({ ...prev, [name]: value })),
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              [name]: "",
+            }));
+        }}
       />
       <AuditListModal
         open={openAudit}

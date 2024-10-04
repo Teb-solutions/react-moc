@@ -92,8 +92,8 @@ const AuditModal = ({
                         name="comments"
                         value={auditData.comments}
                         onChange={handleInputChange}
-                        error={!!errors.comments}
-                        helperText={errors.comments}
+                        error={!!errors?.comments}
+                        helperText={errors?.comments}
                       />
                     </Box>
                   </div>
