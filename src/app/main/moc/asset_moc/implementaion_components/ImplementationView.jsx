@@ -28,7 +28,7 @@ import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 
 
 const ImplementationView = (props) => {
-    const { steps, ImpDetails, setActiveStep, activeStep, handleOpenImplemntationTask, handleAccordionChange, handleReset, isComplete, status, canEdit, handleBack, handleNext, ChangeDeadlineLabel, expanded, formatDate, impComments, handelComments, setComments, handelOpenAuditComment, documentCounts, handelOpenAudit, handleOpen, errorMessage, isButtonDisabled, handledateExtendopen, handelApproveImpl, setErrorMessage } = props;
+    const { steps, ImpDetails, setActiveStep, activeStep, handleOpenImplemntationTask, handleAccordionChange, handleReset, isComplete, status, canEdit, handleBack, handleNext, ChangeDeadlineLabel, expanded, formatDate, impComments, handelComments, setComments, handelOpenAuditComment, documentCounts, handelOpenAudit, handleOpen, errorMessage, isButtonDisabled, handledateExtendopen, handelApproveImpl, setErrorMessage, handelRejectImpl } = props;
     const StyledBadge = withStyles((theme) => ({
         Badge: {
             background: "#2c3e50",

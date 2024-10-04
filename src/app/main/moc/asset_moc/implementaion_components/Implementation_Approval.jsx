@@ -201,7 +201,7 @@ function ImplementationApproval({
   const [errorsAddTask, setErrorsAddTask] = useState({});
   const [currentAudit, setCurrentAudit] = useState([]);
   const [docStaff, setDocStaff] = useState([]);
-
+  const [errors, setErrors] = useState({});
   //modal part
   const [open, setOpen] = useState(false);
   const [openPssR, setOpenPssR] = useState(false);
@@ -980,12 +980,29 @@ function ImplementationApproval({
     }
   };
 
+  const validateForm = () => {
+    let tempErrors = {};
+    const cleanedComments = auditData?.comments?.replace(/\s+/g, ' ').trim();
+
+
+    auditData.comments = cleanedComments;
+    if (!cleanedComments)
+      tempErrors.comments = "Comments is required.";
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const handelAuditCommentSubmit = () => {
+
+    if (!validateForm()) {
+      return;
+    }
     apiAuth
       .put(
         `/ChangeImplementation/Audit/?requestToken=${assetEvaluationId}&&taskId=${auditData.auditsid}`,
         {
-          comments: auditData.comments,
+          comments: auditData?.comments?.trim(),
           isActive: auditData.isActive,
         }
       )
@@ -1415,10 +1432,16 @@ function ImplementationApproval({
         open={openAuditComment}
         handleClose={() => setOpenAuditComment(false)}
         handleSubmit={handelAuditCommentSubmit}
+        errors={errors}
+        setErrors={setErrors}
         auditData={auditData}
-        onChange={(name, value) =>
-          setAuditData((prev) => ({ ...prev, [name]: value }))
-        }
+        onChange={(name, value) => {
+          setAuditData((prev) => ({ ...prev, [name]: value })),
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              [name]: "",
+            }));
+        }}
       />
       <AuditListModal
         open={openAudit}
@@ -2038,7 +2061,7 @@ function ImplementationApproval({
 
             {!showPssrCheckList && (
               <>
-                <ImplementationView steps={steps} ImpDetails={ImpDetails} setActiveStep={setActiveStep} activeStep={activeStep} handleOpenImplemntationTask={handleOpenImplemntationTask} handleAccordionChange={handleAccordionChange} handleReset={handleReset} isComplete={currentActivityForm.isComplete} status={currentActivityForm.status} canEdit={currentActivityForm.canEdit} handleBack={handleBack} handleNext={handleNext} ChangeDeadlineLabel={ChangeDeadlineLabel} expanded={expanded} formatDate={formatDate} impComments={impComments} handelComments={handelComments} handelOpenAuditComment={handelOpenAuditComment} documentCounts={documentCounts} handelOpenAudit={handelOpenAudit} handleOpen={handleOpen} errorMessage={errorMessage} isButtonDisabled={isButtonDisabled} handledateExtendopen={handledateExtendopen} handelApproveImpl={handelApproveImpl} setComments={setComments} setErrorMessage={setErrorMessage} />
+                <ImplementationView steps={steps} ImpDetails={ImpDetails} setActiveStep={setActiveStep} activeStep={activeStep} handleOpenImplemntationTask={handleOpenImplemntationTask} handleAccordionChange={handleAccordionChange} handleReset={handleReset} isComplete={currentActivityForm.isComplete} status={currentActivityForm.status} canEdit={currentActivityForm.canEdit} handleBack={handleBack} handleNext={handleNext} ChangeDeadlineLabel={ChangeDeadlineLabel} expanded={expanded} formatDate={formatDate} impComments={impComments} handelComments={handelComments} handelOpenAuditComment={handelOpenAuditComment} documentCounts={documentCounts} handelOpenAudit={handelOpenAudit} handleOpen={handleOpen} errorMessage={errorMessage} isButtonDisabled={isButtonDisabled} handledateExtendopen={handledateExtendopen} handelApproveImpl={handelApproveImpl} setComments={setComments} setErrorMessage={setErrorMessage} handelRejectImpl={handelRejectImpl} />
 
               </>
             )}

@@ -16,6 +16,8 @@ const AuditModal = ({
   handleSubmit,
   auditData,
   onChange,
+  errors,
+  setErrors
 }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -90,6 +92,8 @@ const AuditModal = ({
                         name="comments"
                         value={auditData.comments}
                         onChange={handleInputChange}
+                        error={!!errors.comments}
+                        helperText={errors.comments}
                       />
                     </Box>
                   </div>
