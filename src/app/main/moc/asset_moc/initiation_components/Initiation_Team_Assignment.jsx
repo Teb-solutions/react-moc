@@ -29,6 +29,7 @@ import Initiation from "../../common_components/Initiation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ConfirmationModal from "../../common_modal/confirmation_modal/ConfirmationModal";
+import { useNavigate } from "react-router";
 
 function InitiationApprovalProceed({
   assetEvaluationId,
@@ -57,7 +58,7 @@ function InitiationApprovalProceed({
     boxShadow: 24,
     p: 4,
   };
-
+  const navigate = useNavigate();
   function getRecords() {
     try {
       apiAuth.get(`/TeamAssignment/Create`).then((resp) => {
@@ -391,7 +392,7 @@ function InitiationApprovalProceed({
                       }}
                       variant="contained"
                       color="warning"
-                      onClick={handleClose}
+                      onClick={() => navigate("/moc")}
                     >
                       Cancel
                     </Button>
