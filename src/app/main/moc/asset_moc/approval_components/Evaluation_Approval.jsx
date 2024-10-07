@@ -53,6 +53,7 @@ import DocumentModal from "../../common_modal/documentModal";
 import { format, parseISO } from "date-fns";
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
 import { CalculateFrequencyScoring, CalculatePotentialRisk, CalculateRiskClassification } from "../../common_components/RiskAnalysisCalculate";
+import ExternalConsultation from "./ExternalConsultation";
 
 const EvaluationApproval = ({
   contentDetails,
@@ -1370,7 +1371,7 @@ const EvaluationApproval = ({
       .then((resp) => {
         setSubTaskhazardRiskApi(resp.data);
 
-        setSubTaskhazardRiskView(true);
+        // setSubTaskhazardRiskView(true);
         setSubTaskhazardRiskViewName(option.text);
       })
       .catch((error) => {
@@ -1643,7 +1644,10 @@ const EvaluationApproval = ({
     <>
       {isLoading && <FuseLoading />}
       <div className="w-full h-full">
-        <Modal
+
+        <ExternalConsultation dateExtendopen={dateExtendopen} handlehandledateExtendClose={handlehandledateExtendClose} selectedTasks={selectedTasks} formatDates={formatDates} selectedStaff={selectedStaff} handleStaffChange={handleStaffChange} staff={staff} handleEmailChange={handleEmailChange} email={email} comments={comments} handleCommentsChange={handleCommentsChange} commentExtValidation={commentExtValidation} isLoading={isLoading} handleSubmit={handleSubmit} />
+
+        {/* <Modal
           aria-labelledby="transition-modal-title"
           aria-describedby="transition-modal-description"
           open={apiOpenModal}
@@ -1681,7 +1685,7 @@ const EvaluationApproval = ({
                       className="task-table-header"
                       style={{ display: "none" }}
                     >
-                      {/* Empty header */}
+
                     </thead>
                     <tbody className="task-table-body">
                       {contentDetails?.tasklist ? (
@@ -1737,7 +1741,7 @@ const EvaluationApproval = ({
                                           className="whitespace-nowrap ms-5 ml-24"
                                           variant="contained"
                                           color="secondary"
-                                        // style={{ marginTop: "10px" }}
+
                                         >
                                           Mark as reviewed
                                         </Button>
@@ -1747,7 +1751,7 @@ const EvaluationApproval = ({
                                 </AccordionSummary>
                                 <AccordionDetails>
                                   {tasks
-                                    // Sort tasks: not reviewed tasks first
+
                                     .sort((a, b) =>
                                       a.reviewd === b.reviewd
                                         ? 0
@@ -2809,15 +2813,7 @@ const EvaluationApproval = ({
                                                     </div>
                                                   </div>
 
-                                                  {/* <div className="mat-form-field-subscript-wrapper">
-                                <div
-                                  className="mat-form-field-hint-wrapper"
-                                  style={{
-                                    opacity: 1,
-                                    transform: "translateY(0%)",
-                                  }}
-                                ></div>
-                              </div> */}
+
                                                 </div>
                                               ) : (
                                                 <div className="ng-star-inserted">
@@ -2854,14 +2850,14 @@ const EvaluationApproval = ({
                         zIndex: 10,
                       }}
                     >
-                      {/* Empty footer */}
+
                     </tfoot>
                   </table>
                 </Box>
               </Box>
             </Box>
           </Fade>
-        </Modal>
+        </Modal> */}
 
         <DocumentModal
           step={1}

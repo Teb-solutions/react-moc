@@ -98,7 +98,7 @@ export const HandleGeneralGuideClick = (setGeneralGuidePdf) => {
         .get(`/RiskAnalysis/downloadGeneral`, {
             responseType: "blob",
         })
-        .then((resp) => {
-            setGeneralGuidePdf(resp.data);
+        .then(async (resp) => {
+            await setGeneralGuidePdf(resp?.data);
         });
 };
