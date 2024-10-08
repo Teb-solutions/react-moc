@@ -497,7 +497,7 @@ function AssetRequest() {
       setExpenseType(changeRequestResponse.data.data.mocExpenseType);
       setPurchaseCat(changeRequestResponse.data.data.mocPurchaseCategory);
     } catch (error) {
-      console.error("Error fetching records:", error);
+      console.log("Error fetching records:", error);
     }
   };
 
@@ -506,7 +506,7 @@ function AssetRequest() {
   }, []);
 
   useEffect(() => {
-    if (Object.keys(docContent).length !== 0) {
+    if (docContent && Object.keys(docContent).length !== 0) {
       setDocumentState({
         requestNo: docContent.requestNo,
         divisionName: docContent.divisionName,
@@ -631,7 +631,7 @@ function AssetRequest() {
                       fullWidth
                       label="Request No"
                       id="Request No"
-                      value={docContent.requestNo || ""}
+                      value={docContent?.requestNo || ""}
                       disabled
                     />
                   </Box>
@@ -661,7 +661,7 @@ function AssetRequest() {
                       fullWidth
                       label="Site in charge"
                       id="Site in charge"
-                      value={docContent.siteInChargeName || ""}
+                      value={docContent?.siteInChargeName || ""}
                       disabled
                     />
                   </Box>
@@ -682,7 +682,7 @@ function AssetRequest() {
                       label="Site"
                       id="Site
   "
-                      value={docContent.siteName || ""}
+                      value={docContent?.siteName || ""}
                       disabled
                     />
                   </Box>
@@ -697,7 +697,7 @@ function AssetRequest() {
                       fullWidth
                       label="Division"
                       id="Division"
-                      value={docContent.divisionName || ""}
+                      value={docContent?.divisionName || ""}
                       disabled
                     />
                   </Box>
@@ -712,7 +712,7 @@ function AssetRequest() {
                       fullWidth
                       label="Function"
                       id="Function"
-                      value={docContent.functionName || ""}
+                      value={docContent?.functionName || ""}
                       disabled
                     />
                   </Box>
@@ -744,7 +744,7 @@ function AssetRequest() {
                     <Select
                       variant="outlined"
                       name="type"
-                      value={documentState.type}
+                      value={documentState?.type}
                       onChange={handleChange}
                     >
                       {mockType
@@ -781,7 +781,7 @@ function AssetRequest() {
                       fullWidth
                       id="Division"
                       name="projectValue"
-                      value={documentState.projectValue || ""}
+                      value={documentState?.projectValue || ""}
                       onChange={(e) => {
                         const value = e.target.value;
                         if (/^\d*$/.test(value)) {
@@ -813,7 +813,7 @@ function AssetRequest() {
                       variant="outlined"
                       name="expenseNature"
                       onChange={handleChange}
-                      value={documentState.expenseNature}
+                      value={documentState?.expenseNature}
                     >
                       {expenseNature.map((option) => (
                         <MenuItem key={option.id} value={option.value}>
@@ -848,7 +848,7 @@ function AssetRequest() {
                       variant="outlined"
                       name="expenseType"
                       onChange={handleChange}
-                      value={documentState.expenseType}
+                      value={documentState?.expenseType}
                     >
                       {expenseType.map((option) => (
                         <MenuItem key={option.id} value={option.value}>
@@ -877,7 +877,7 @@ function AssetRequest() {
                     <Select
                       variant="outlined"
                       name="purchaseCategory"
-                      value={documentState.purchaseCategory}
+                      value={documentState?.purchaseCategory}
                       onChange={handleChange}
                     >
                       {purchaseCat.map((option) => (
@@ -917,7 +917,7 @@ function AssetRequest() {
                       <OutlinedInput
                         id="projectName"
                         name="projectName"
-                        value={documentState.projectName}
+                        value={documentState?.projectName}
                         onChange={handleChange}
                         label="Project Name *"
                       />
@@ -944,7 +944,7 @@ function AssetRequest() {
                       <OutlinedInput
                         id="projectDescription"
                         name="projectDescription"
-                        value={documentState.projectDescription}
+                        value={documentState?.projectDescription}
                         onChange={handleChange}
                         label="Project Description *"
                         multiline

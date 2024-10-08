@@ -215,7 +215,7 @@ function OrgActivity() {
   }, []);
 
   useEffect(() => {
-    if (Object.keys(docContent).length !== 0) {
+    if (docContent && Object.keys(docContent).length !== 0) {
       setDocumentState({
         requestNo: docContent.requestNo,
         divisionName: docContent.divisionName,
@@ -297,7 +297,7 @@ function OrgActivity() {
                       fullWidth
                       label="Request No"
                       id="Request No"
-                      value={docContent.requestNo || ""}
+                      value={docContent?.requestNo || ""}
                       disabled
                     />
                   </Box>
@@ -327,7 +327,7 @@ function OrgActivity() {
                       fullWidth
                       label="Site in charge"
                       id="Site in charge"
-                      value={docContent.siteInChargeName || ""}
+                      value={docContent?.siteInChargeName || ""}
                       disabled
                     />
                   </Box>
@@ -348,7 +348,7 @@ function OrgActivity() {
                       label="Site"
                       id="Site
   "
-                      value={docContent.siteName || ""}
+                      value={docContent?.siteName || ""}
                       disabled
                     />
                   </Box>
@@ -363,7 +363,7 @@ function OrgActivity() {
                       fullWidth
                       label="Division"
                       id="Division"
-                      value={docContent.divisionName || ""}
+                      value={docContent?.divisionName || ""}
                       disabled
                     />
                   </Box>
@@ -378,7 +378,7 @@ function OrgActivity() {
                       fullWidth
                       label="Function"
                       id="Function"
-                      value={docContent.functionName || ""}
+                      value={docContent?.functionName || ""}
                       disabled
                     />
                   </Box>
@@ -440,7 +440,7 @@ function OrgActivity() {
                     <FormControl
                       fullWidth
                       sx={{ m: 1 }}
-                      error={!!errors.changeStaffId}
+                      error={!!errors?.changeStaffId}
                     >
                       <FormLabel
                         id="documentType"
@@ -455,7 +455,7 @@ function OrgActivity() {
                         value={
                           docController.find(
                             (option) =>
-                              option.value === documentState.changeStaffId
+                              option.value === documentState?.changeStaffId
                           ) || null
                         }
                         onChange={(event, newValue) => {

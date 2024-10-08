@@ -395,7 +395,7 @@ function DocRequest() {
       const date = parseISO(dateString);
       return format(date, "M/d/yyyy");
     } catch (error) {
-      console.error("Error parsing date:", error);
+      console.log("Error parsing date:", error);
       return "Invalid date";
     }
   };
@@ -409,7 +409,7 @@ function DocRequest() {
       setDocContent(changeRequestResponse.data.data);
       setIsLoading(false);
     } catch (error) {
-      console.error("Error fetching records:", error);
+      console.log("Error fetching records:", error);
     }
   };
 
@@ -418,7 +418,7 @@ function DocRequest() {
   }, []);
 
   useEffect(() => {
-    if (Object.keys(docContent).length !== 0) {
+    if (docContent && Object.keys(docContent).length !== 0) {
       setDocumentState({
         requestNo: docContent.requestNo,
         divisionName: docContent.divisionName,
@@ -500,7 +500,7 @@ function DocRequest() {
                       fullWidth
                       label="Request No"
                       id="Request No"
-                      value={docContent.requestNo || ""}
+                      value={docContent?.requestNo || ""}
                       disabled
                     />
                   </Box>
@@ -530,7 +530,7 @@ function DocRequest() {
                       fullWidth
                       label="Site in charge"
                       id="Site in charge"
-                      value={docContent.siteInChargeName || ""}
+                      value={docContent?.siteInChargeName || ""}
                       disabled
                     />
                   </Box>
@@ -551,7 +551,7 @@ function DocRequest() {
                       label="Site"
                       id="Site
   "
-                      value={docContent.siteName || ""}
+                      value={docContent?.siteName || ""}
                       disabled
                     />
                   </Box>
@@ -566,7 +566,7 @@ function DocRequest() {
                       fullWidth
                       label="Division"
                       id="Division"
-                      value={docContent.divisionName || ""}
+                      value={docContent?.divisionName || ""}
                       disabled
                     />
                   </Box>
@@ -581,7 +581,7 @@ function DocRequest() {
                       fullWidth
                       label="Function"
                       id="Function"
-                      value={docContent.functionName || ""}
+                      value={docContent?.functionName || ""}
                       disabled
                     />
                   </Box>
@@ -607,7 +607,7 @@ function DocRequest() {
                     <FormControl
                       fullWidth
                       sx={{ m: 1 }}
-                      error={!!errors.projectName}
+                      error={!!errors?.projectName}
                     >
                       <InputLabel htmlFor="projectName">
                         Document Name *
@@ -620,7 +620,7 @@ function DocRequest() {
                         label="Document Name *"
                       />
                       {!!errors.projectName && (
-                        <FormHelperText>{errors.projectName}</FormHelperText>
+                        <FormHelperText>{errors?.projectName}</FormHelperText>
                       )}
                     </FormControl>
                   </Box>
@@ -642,7 +642,7 @@ function DocRequest() {
                       <OutlinedInput
                         id="projectDescription"
                         name="projectDescription"
-                        value={documentState.projectDescription}
+                        value={documentState?.projectDescription}
                         onChange={handleChange}
                         label="Document Description *"
                       />

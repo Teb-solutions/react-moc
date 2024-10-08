@@ -1731,7 +1731,7 @@ function ImplementationApproval({
                           className="font-medium text-14"
                           component="legend"
                         >
-                          Audit Comment*
+                          Audit Comment
                         </FormLabel>
                         <TextField
                           fullWidth
