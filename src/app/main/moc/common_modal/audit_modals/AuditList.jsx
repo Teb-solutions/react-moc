@@ -60,11 +60,14 @@ const AuditListModal = ({
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const handleSearch = (event) => {
+
+
     setSearchQuery(event.target.value);
   };
 
   const filteredDepartmentList = auditData.filter((row) =>
-    row.Audit.toString().includes(searchQuery)
+    row.Audit.toString().includes(searchQuery) ||
+    row.Task.toString().includes(searchQuery)
   );
 
   const handleChangeRowsPerPage = (event) => {
@@ -160,29 +163,32 @@ const AuditListModal = ({
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {filteredDepartmentList
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => {
-                      return (
-                        <TableRow
-                          hover
-                          role="checkbox"
-                          tabIndex={-1}
-                          key={index}
-                        >
-                          {columns.map((column) => {
-                            const value = row[column.id];
-                            return (
-                              <TableCell key={column.id} align={column.align}>
-                                {column.format && typeof value === "string"
-                                  ? column.format(value)
-                                  : value}
-                              </TableCell>
-                            );
-                          })}
-                        </TableRow>
-                      );
-                    })}
+                  {filteredDepartmentList.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={columns.length} align="center">
+                        No data to display
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredDepartmentList
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((row, index) => {
+                        return (
+                          <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                            {columns.map((column) => {
+                              const value = row[column.id];
+                              return (
+                                <TableCell key={column.id} align={column.align}>
+                                  {column.format && typeof value === "string"
+                                    ? column.format(value)
+                                    : value}
+                                </TableCell>
+                              );
+                            })}
+                          </TableRow>
+                        );
+                      })
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>

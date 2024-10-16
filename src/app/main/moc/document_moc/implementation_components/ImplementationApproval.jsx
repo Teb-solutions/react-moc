@@ -84,10 +84,18 @@ const ImplementationApproval = ({
       });
   };
 
+  const setHandelCommentRemarks = (id, value) => {
+    setHandelCommentRemark((prevRemarks) => ({
+      ...prevRemarks,
+      [id]: value,
+    }));
+  };
+
   const handelCommentImp = async (id, value) => {
+    const remark = handelCommentRemark[id];
     await apiAuth
       .put(`/Task/ImpAddReview/${id}/IMPL_APPROVAL_VP_DIV`, {
-        remark: handelCommentRemark,
+        remark: remark,
       })
       .then(async (resp) => {
         if (value == 1) {
@@ -290,6 +298,7 @@ const ImplementationApproval = ({
                               data-placeholder="Write a comment..."
                               aria-invalid="false"
                               aria-required="false"
+
                               style={{
                                 height: "40px",
                                 width: "100%",
@@ -297,13 +306,31 @@ const ImplementationApproval = ({
                                 fontSize: "13px",
                               }}
                               onChange={(e) =>
-                                setHandelCommentRemark(e.target.value)
+                                setHandelCommentRemarks(
+                                  imptsk.id,
+                                  e.target.value
+                                )
                               }
                             ></textarea>
                             <button
                               className="custom-update-button"
-                              style={{ float: "right" }}
+                              style={
+                                !handelCommentRemark[
+                                  imptsk.id
+                                ]?.trim()
+                                  ? {
+                                    backgroundColor:
+                                      "#cdcdcd",
+                                    float: "right",
+                                  }
+                                  : { float: "right" }
+                              }
                               onClick={() => handelCommentImp(imptsk.id, 1)}
+                              disabled={
+                                !handelCommentRemark[
+                                  imptsk.id
+                                ]?.trim()
+                              }
                             >
                               Save
                             </button>
