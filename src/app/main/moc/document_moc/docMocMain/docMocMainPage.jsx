@@ -40,6 +40,7 @@ function Course() {
   const [changeEvaluationId, setChangeEvaluationId] = useState();
   const [listDocument, setListDocument] = useState([]);
   const [listDocument1, setListDocument1] = useState([]);
+  const [consolidatedDocumentUrl, setConsolidatedDocumentUrl] = useState()
   const handleResize = useCallback(() => {
     if (window.innerWidth <= 768) {
       // Adjust this width as needed
@@ -307,12 +308,13 @@ function Course() {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp.data?.data);
-                localStorage.setItem(
-                  "consolidatedDocumentUrl",
-                  resp.data?.data?.consolidatedDocumentUrl
-                    ? resp.data?.data?.consolidatedDocumentUrl
-                    : ""
-                );
+                setConsolidatedDocumentUrl(resp.data?.data?.consolidatedDocumentUrl)
+                // localStorage.setItem(
+                //   "consolidatedDocumentUrl",
+                //   resp.data?.data?.consolidatedDocumentUrl
+                //     ? resp.data?.data?.consolidatedDocumentUrl
+                //     : ""
+                // );
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
@@ -438,6 +440,7 @@ function Course() {
                   currentActivityForm={currentActivityForm}
                   evaluationId={evaluationId}
                   setListDocument1={setListDocument1}
+                  consolidatedDocumentUrl={consolidatedDocumentUrl}
                 />
 
                 {currentPhase === "Evaluation" && (
@@ -653,9 +656,9 @@ function Course() {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                             className="pt-4"
@@ -671,9 +674,9 @@ function Course() {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -686,9 +689,9 @@ function Course() {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                           >

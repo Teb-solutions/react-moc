@@ -14,6 +14,7 @@ const Initiation = ({
   listDocument1,
   currentActivityForm,
   evaluationId,
+  consolidatedDocumentUrl,
   setListDocument1,
 }) => {
   const [openMoc, setOpenMoc] = useState(false);
@@ -566,7 +567,7 @@ const Initiation = ({
                     style={{ background: "none", color: "blue" }}
                     href={
                       contentDetailsIni?.documentUrl &&
-                      contentDetailsIni.documentUrl.startsWith("http")
+                        contentDetailsIni.documentUrl.startsWith("http")
                         ? contentDetailsIni.documentUrl
                         : `http://${contentDetailsIni?.documentUrl}`
                     }
@@ -576,7 +577,7 @@ const Initiation = ({
                 </div>
               </div>
             </div>
-            {localStorage.getItem("consolidatedDocumentUrl") && (
+            {consolidatedDocumentUrl && (
               <div _ngcontent-fyk-c288="" class="grid  w-full">
                 <div _ngcontent-fyk-c288="" className="my-6">
                   <div
@@ -593,18 +594,17 @@ const Initiation = ({
                     <a
                       style={{ background: "none", color: "blue" }}
                       href={
-                        localStorage.getItem("consolidatedDocumentUrl") &&
-                        localStorage
-                          .getItem("consolidatedDocumentUrl")
-                          .startsWith("http")
-                          ? localStorage.getItem("consolidatedDocumentUrl")
-                          : `http://${localStorage.getItem("consolidatedDocumentUrl")}`
+                        consolidatedDocumentUrl &&
+                          consolidatedDocumentUrl
+                            .startsWith("http")
+                          ? consolidatedDocumentUrl
+                          : `http://${consolidatedDocumentUrl}`
                       }
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue"
                     >
-                      {localStorage.getItem("consolidatedDocumentUrl")}
+                      {consolidatedDocumentUrl}
                     </a>
                   </div>
                 </div>
