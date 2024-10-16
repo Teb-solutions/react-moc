@@ -99,6 +99,7 @@ function Course() {
   const [currentPhase, setCurrentPhase] = useState("");
   const [currentPhaseName, setCurrentPhaseName] = useState("");
   const [lastActCode, setlastActCode] = useState("");
+  const [verName, setVerName] = useState("");
 
   const [handelUrlChange, setHandelUrlChange] = useState({
     urlRemarks: "",
@@ -209,6 +210,8 @@ function Course() {
       return;
     }
     setActName(activityname);
+    setVerName(version);
+
     setCanEdits(canedit);
 
     const matchingPhase = content.find((phase) =>
@@ -304,7 +307,12 @@ function Course() {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp.data?.data);
-
+                localStorage.setItem(
+                  "consolidatedDocumentUrl",
+                  resp.data?.data?.consolidatedDocumentUrl
+                    ? resp.data?.data?.consolidatedDocumentUrl
+                    : ""
+                );
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
@@ -411,6 +419,7 @@ function Course() {
         <MocHeader
           activity={actName}
           reqno={reqNo}
+          verName={verName}
           sidemenu={true}
           setLeftSidebarOpen={setLeftSidebarOpen}
           leftSidebarOpen={leftSidebarOpen}

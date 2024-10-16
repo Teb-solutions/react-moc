@@ -169,7 +169,7 @@ const Approval = ({
           </Button>
         </div>
       </ConfirmationModal>
-      {currentPhaseName == "Approval" && (
+      {/*  {currentPhaseName == "Approval" && (
         <>
           <Paper className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
             <div
@@ -482,7 +482,7 @@ const Approval = ({
             </Paper>
           </>
         </>
-      )}
+      )} */}
       <Paper
         className="w-full  mx-auto sm:my-8 lg:mt-16 rounded-16 shadow overflow-hidden"
         style={{ marginRight: "15px", width: "100%" }}

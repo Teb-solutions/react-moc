@@ -71,8 +71,6 @@ const JwtSignInTab = () => {
     });
   }, []);
 
-
-
   async function onSubmit(formData) {
     const { userName, password, mFAOtp } = formData;
 
@@ -87,7 +85,6 @@ const JwtSignInTab = () => {
     try {
       apiAuth.post("/Account/Login", params).then(async (resp) => {
         if (resp.data.statusCode === 202) {
-
           toast?.success("OTP Required");
           setShowMFA(true);
           setLoading(false);
@@ -116,7 +113,7 @@ const JwtSignInTab = () => {
           }
         } else {
           setLoading(false);
-          toast?.error("Username or Password is invalid");
+          toast?.error(resp.data.message);
         }
       });
     } catch (error) {
@@ -275,7 +272,13 @@ const JwtSignInTab = () => {
           size="large"
           disabled={loading}
         >
-          {loading ? <CircularProgress size={24} color="inherit" /> : showMFA ? "Sign in " : "Get OTP"}
+          {loading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : showMFA ? (
+            "Sign in "
+          ) : (
+            "Get OTP"
+          )}
         </Button>
       </form>
     </div>

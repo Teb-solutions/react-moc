@@ -143,7 +143,6 @@ function DocRequest() {
     SetOpenGuide(false);
   };
 
-
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);
     setFileDetails(true);
@@ -264,11 +263,20 @@ function DocRequest() {
   };
 
   const handleOpen = () => {
-    if (!validate() || documentState.isNewDocument == null) {
-      setFormValid(false);
+    if (!validate()) {
+      if (
+        documentState.reasonForNewDocument != undefined ||
+        (documentState.reasonForChange != undefined &&
+          documentState.isNewDocument != null)
+      ) {
+        setFormValid(true);
+      } else {
+        setFormValid(false);
+      }
       setOpen(false);
     } else {
       setOpen(true);
+      setFormValid(true);
     }
   };
 
@@ -291,7 +299,6 @@ function DocRequest() {
         },
       })
       .then((response) => {
-
         if (response.data.statusCode === 200) {
           apiAuth
             .get(
@@ -805,10 +812,7 @@ function DocRequest() {
                       sx={{ m: 1 }}
                       error={!!errors.documentUrl}
                     >
-                      <FormLabel
-                        id="documentType"
-                        style={{ color: formValid ? "inherit" : "red" }}
-                      >
+                      <FormLabel id="documentType">
                         Document URL (Provide the link of SharePoint File)
                         <b className="text-red">*</b>
                       </FormLabel>
@@ -842,10 +846,7 @@ function DocRequest() {
                       sx={{ m: 1 }}
                       error={!!errors.docControllerId}
                     >
-                      <FormLabel
-                        id="documentType"
-                        style={{ color: formValid ? "inherit" : "red" }}
-                      >
+                      <FormLabel id="documentType">
                         Document Controller <b className="text-red">*</b>
                       </FormLabel>
                       <Autocomplete
@@ -910,9 +911,7 @@ function DocRequest() {
                     className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
                     style={{ marginTop: "15px" }}
                   >
-                    <div>
-
-                    </div>
+                    <div></div>
                     <ConfirmationModal
                       openSubmit={open}
                       handleCloseSubmit={handleClose}

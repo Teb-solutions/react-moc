@@ -109,8 +109,6 @@ const Initiation = ({
     }));
   };
 
-
-
   const handleDelete = (e, id, token) => {
     e.preventDefault();
     setDocId(id);
@@ -153,7 +151,7 @@ const Initiation = ({
       !selectedFile.documentId.trim()
     ) {
       toast.error("Please select your file.");
-      handleModalClose()
+      handleModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -165,7 +163,7 @@ const Initiation = ({
     // Validation: If description field is empty
     if (!selectedFile?.descritpion?.trim()) {
       toast.error("Please add a description.");
-      handleModalClose()
+      handleModalClose();
       setSelectedFile({
         ...selectedFile,
         name: "",
@@ -566,13 +564,52 @@ const Initiation = ({
                     target="_blank"
                     class="text-blue-500 hover:text-blue-800"
                     style={{ background: "none", color: "blue" }}
-                    href={contentDetailsIni?.documentUrl}
+                    href={
+                      contentDetailsIni?.documentUrl &&
+                      contentDetailsIni.documentUrl.startsWith("http")
+                        ? contentDetailsIni.documentUrl
+                        : `http://${contentDetailsIni?.documentUrl}`
+                    }
                   >
                     {contentDetailsIni?.documentUrl}
                   </a>
                 </div>
               </div>
             </div>
+            {localStorage.getItem("consolidatedDocumentUrl") && (
+              <div _ngcontent-fyk-c288="" class="grid  w-full">
+                <div _ngcontent-fyk-c288="" className="my-6">
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="mt-3 leading-6 text-secondary"
+                  >
+                    Consolidated Document Url
+                  </div>
+                  <div
+                    _ngcontent-fyk-c288=""
+                    class="text-lg leading-6 font-medium"
+                  >
+                    {" "}
+                    <a
+                      style={{ background: "none", color: "blue" }}
+                      href={
+                        localStorage.getItem("consolidatedDocumentUrl") &&
+                        localStorage
+                          .getItem("consolidatedDocumentUrl")
+                          .startsWith("http")
+                          ? localStorage.getItem("consolidatedDocumentUrl")
+                          : `http://${localStorage.getItem("consolidatedDocumentUrl")}`
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue"
+                    >
+                      {localStorage.getItem("consolidatedDocumentUrl")}
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between w-full p-30 pt-24 pb-24 border-t">
@@ -598,8 +635,6 @@ const Initiation = ({
             >
               Document
             </Button> */}
-
-
               </span>
             </button>
           </div>
