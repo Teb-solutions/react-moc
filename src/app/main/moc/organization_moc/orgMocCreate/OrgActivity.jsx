@@ -37,8 +37,6 @@ import { useNavigate, useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import FuseLoading from "@fuse/core/FuseLoading";
-import ConfirmationModal from "../../common_modal/confirmation_modal/ConfirmationModal";
-import GuideLines from "../../common_modal/GuideLines";
 
 function OrgActivity() {
   const style = {
@@ -64,6 +62,7 @@ function OrgActivity() {
   const navigate = useNavigate();
   const handleClose = () => setOpen(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [formValid, setFormValid] = useState(false);
 
   const [documentState, setDocumentState] = useState({
     changeStaffId: "",
@@ -72,13 +71,6 @@ function OrgActivity() {
     staffType: "1",
     programCompletionDate: new Date(),
   });
-  const [openGuide, SetOpenGuide] = useState(false);
-  const handelGuideOpen = () => {
-    SetOpenGuide(true);
-  };
-  const handelGuideClose = () => {
-    SetOpenGuide(false);
-  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -86,6 +78,10 @@ function OrgActivity() {
       ...documentState,
       [name]: value,
     });
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
 
   const handleChanges = (date) => {
@@ -101,6 +97,7 @@ function OrgActivity() {
       ...prevState,
       staffType: value,
     }));
+    setFormValid(false);
   };
 
   const validate = () => {
@@ -124,13 +121,15 @@ function OrgActivity() {
   };
   const handleOpen = () => {
     if (!validate()) {
-      setFormValid(false);
       setOpen(false);
+      if (documentState.staffType == undefined) {
+        setFormValid(true);
+      }
     } else {
       setOpen(true);
+      setFormValid(false);
     }
   };
-  const [formValid, setFormValid] = useState(true);
 
   const handleSubmit = (event) => {
     setIsLoading(true);
@@ -148,25 +147,19 @@ function OrgActivity() {
 
     const formattedDocumentState = {
       ...documentState,
-      programCompletionDate: formattedDate ? formattedDate : new Date(),
+      programCompletionDate: formattedDate,
     };
-
-
-
     apiAuth
       .post("/OrgMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
-        if (docContent.siteInChargeName == null) {
+        if (response.data.statusCode == 400) {
           setOpen(false);
           setIsLoading(false);
 
-          toast.error("Site in charge is not assigned for this site.");
-        } else if (response.data.statusCode != 200) {
-          setOpen(false);
-          setIsLoading(false);
-          toast.error(response.data.message);
+          toast?.error(response.data.message);
         } else {
           setIsLoading(false);
+
           toast?.success("Successfully Created");
           setTimeout(() => {
             navigate("/moc");
@@ -215,7 +208,7 @@ function OrgActivity() {
   }, []);
 
   useEffect(() => {
-    if (docContent && Object.keys(docContent).length !== 0) {
+    if (Object.keys(docContent).length !== 0) {
       setDocumentState({
         requestNo: docContent.requestNo,
         divisionName: docContent.divisionName,
@@ -246,10 +239,7 @@ function OrgActivity() {
       content={
         <>
           <ToastContainer className="toast-container" />
-          <GuideLines
-            handelGuideOpen={openGuide}
-            handelGuideClose={handelGuideClose}
-          />
+
           <form onSubmit={handleSubmit}>
             <div className="p-24">
               <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-24 white_box rounded-2xl shadow">
@@ -261,25 +251,6 @@ function OrgActivity() {
                     <h2 _ngcontent-fyk-c288="" class="text-2xl font-semibold">
                       New Organisation MOC Request
                     </h2>
-                    <Button
-                      className="whitespace-nowrap "
-                      style={{
-                        border: "1px solid",
-                        backgroundColor: "#0000",
-                        color: "black",
-                        borderColor: "rgba(203,213,225)",
-                      }}
-                      variant="contained"
-                      color="warning"
-                      startIcon={
-                        <FuseSvgIcon size={20}>
-                          heroicons-solid:document
-                        </FuseSvgIcon>
-                      }
-                      onClick={handelGuideOpen}
-                    >
-                      Guide
-                    </Button>
                   </div>
                 </div>
                 <div
@@ -297,7 +268,7 @@ function OrgActivity() {
                       fullWidth
                       label="Request No"
                       id="Request No"
-                      value={docContent?.requestNo || ""}
+                      value={docContent.requestNo || ""}
                       disabled
                     />
                   </Box>
@@ -327,7 +298,7 @@ function OrgActivity() {
                       fullWidth
                       label="Site in charge"
                       id="Site in charge"
-                      value={docContent?.siteInChargeName || ""}
+                      value={docContent.siteInChargeName || ""}
                       disabled
                     />
                   </Box>
@@ -348,7 +319,7 @@ function OrgActivity() {
                       label="Site"
                       id="Site
   "
-                      value={docContent?.siteName || ""}
+                      value={docContent.siteName || ""}
                       disabled
                     />
                   </Box>
@@ -363,7 +334,7 @@ function OrgActivity() {
                       fullWidth
                       label="Division"
                       id="Division"
-                      value={docContent?.divisionName || ""}
+                      value={docContent.divisionName || ""}
                       disabled
                     />
                   </Box>
@@ -378,7 +349,7 @@ function OrgActivity() {
                       fullWidth
                       label="Function"
                       id="Function"
-                      value={docContent?.functionName || ""}
+                      value={docContent.functionName || ""}
                       disabled
                     />
                   </Box>
@@ -403,7 +374,7 @@ function OrgActivity() {
                     <FormControl>
                       <FormLabel
                         id="documentType"
-                        style={{ color: formValid ? "inherit" : "red" }}
+                        style={{ color: formValid ? "red" : "" }}
                       >
                         Employee Type *
                       </FormLabel>
@@ -440,14 +411,9 @@ function OrgActivity() {
                     <FormControl
                       fullWidth
                       sx={{ m: 1 }}
-                      error={!!errors?.changeStaffId}
+                      error={!!errors.changeStaffId}
                     >
-                      <FormLabel
-                        id="documentType"
-                        style={{ color: formValid ? "inherit" : "red" }}
-                      >
-                        Employee *
-                      </FormLabel>
+                      <FormLabel id="documentType">Employee *</FormLabel>
                       <Autocomplete
                         id="docControllerId"
                         options={docController}
@@ -455,7 +421,7 @@ function OrgActivity() {
                         value={
                           docController.find(
                             (option) =>
-                              option.value === documentState?.changeStaffId
+                              option.value === documentState.changeStaffId
                           ) || null
                         }
                         onChange={(event, newValue) => {
@@ -489,10 +455,7 @@ function OrgActivity() {
                       sx={{ m: 1 }}
                       error={!!errors.changeStaffDesignationId}
                     >
-                      <FormLabel
-                        id="documentType"
-                        style={{ color: formValid ? "inherit" : "red" }}
-                      >
+                      <FormLabel id="documentType">
                         Employee Designation *
                       </FormLabel>
 
@@ -508,10 +471,6 @@ function OrgActivity() {
                           ) || null
                         }
                         onChange={(event, newValue) => {
-                          // Prevent selection of read-only options
-                          if (newValue && newValue.isReadOnly) {
-                            return; // Do nothing if it's a read-only option
-                          }
                           handleChange({
                             target: {
                               name: "changeStaffDesignationId",
@@ -519,19 +478,6 @@ function OrgActivity() {
                             },
                           });
                         }}
-                        renderOption={(props, option) => (
-                          <li
-                            {...props}
-                            style={{
-                              opacity: option.isReadOnly ? 0.5 : 1,
-                              pointerEvents: option.isReadOnly
-                                ? "none"
-                                : "auto", // Disable pointer events if the option is read-only
-                            }}
-                          >
-                            {option.text}
-                          </li>
-                        )}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -539,9 +485,6 @@ function OrgActivity() {
                             helperText={errors.changeStaffDesignationId}
                           />
                         )}
-                        isOptionEqualToValue={(option, value) =>
-                          option.value === value.value
-                        }
                       />
                     </FormControl>
                   </Box>
@@ -565,7 +508,6 @@ function OrgActivity() {
                         <DatePicker
                           label="Program Completion Date *"
                           value={documentState.programCompletionDate}
-                          minDate={new Date()} // Prevents selection of past dates
                           onChange={handleChanges}
                           renderInput={(params) => (
                             <TextField fullWidth {...params} />
@@ -590,6 +532,103 @@ function OrgActivity() {
                     >
                       Submit
                     </Button>
+
+                    <Modal
+                      aria-labelledby="transition-modal-title"
+                      aria-describedby="transition-modal-description"
+                      open={open}
+                      onClose={handleClose}
+                      closeAfterTransition
+                      slots={{ backdrop: Backdrop }}
+                      slotProps={{
+                        backdrop: {
+                          timeout: 500,
+                        },
+                      }}
+                    >
+                      <Fade in={open}>
+                        <Box sx={style}>
+                          <Box>
+                            <div className="flex">
+                              <Typography
+                                id="transition-modal-title"
+                                variant="h6"
+                                component="h2"
+                                style={{
+                                  fontSize: "15px",
+                                  marginRight: "5px",
+                                  marginTop: "5px",
+
+                                  color: "red",
+                                }}
+                              >
+                                <img src="/assets/images/etc/icon.png" />
+                              </Typography>
+                              <Typography
+                                id="transition-modal-title"
+                                variant="h6"
+                                component="h2"
+                                style={{
+                                  fontSize: "2rem",
+                                }}
+                              >
+                                Submit request
+                                <Typography
+                                  id="transition-modal-title"
+                                  variant="h6"
+                                  component="h2"
+                                  style={{
+                                    fontSize: "15px",
+                                    fontWeight: "800px !important",
+                                    color: "grey",
+                                  }}
+                                >
+                                  Once submited you will not be able to revert !
+                                  Are you sure you want to continue ?
+                                </Typography>
+                              </Typography>
+                            </div>
+                          </Box>
+                          <div
+                            className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+                            style={{
+                              marginTop: "15px",
+                              justifyContent: "end",
+                              backgroundColor: " rgba(248,250,252)",
+                              padding: "10px",
+                            }}
+                          >
+                            <Button
+                              className="whitespace-nowrap"
+                              variant="contained"
+                              color="primary"
+                              style={{
+                                padding: "23px",
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid grey",
+                              }}
+                              onClick={handleClose}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              className="whitespace-nowrap"
+                              variant="contained"
+                              color="secondary"
+                              style={{
+                                padding: "23px",
+                                backgroundColor: "red",
+                              }}
+                              type="submit"
+                              onClick={handleSubmit}
+                            >
+                              Submit
+                            </Button>
+                          </div>
+                        </Box>
+                      </Fade>
+                    </Modal>
                     <Button
                       className="whitespace-nowrap"
                       variant="contained"
@@ -604,49 +643,6 @@ function OrgActivity() {
                     >
                       Cancel
                     </Button>
-                    <ConfirmationModal
-                      openSubmit={open}
-                      handleCloseSubmit={handleClose}
-                      title="Submit request"
-                    >
-                      <div
-                        className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
-                        style={{
-                          marginTop: "15px",
-                          justifyContent: "end",
-                          backgroundColor: " rgba(248,250,252)",
-                          padding: "10px",
-                        }}
-                      >
-                        <Button
-                          className="whitespace-nowrap"
-                          variant="contained"
-                          color="primary"
-                          style={{
-                            padding: "23px",
-                            backgroundColor: "white",
-                            color: "black",
-                            border: "1px solid grey",
-                          }}
-                          onClick={handleClose}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          className="whitespace-nowrap"
-                          variant="contained"
-                          color="secondary"
-                          style={{
-                            padding: "23px",
-                            backgroundColor: "red",
-                          }}
-                          type="submit"
-                          onClick={handleSubmit}
-                        >
-                          Submit
-                        </Button>
-                      </div>
-                    </ConfirmationModal>
                   </div>
                 </div>
               </div>

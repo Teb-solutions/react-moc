@@ -194,7 +194,6 @@ const Task = () => {
       (update) => update.taskdateupdateStatus == 1
     );
 
-
     setPendingFilterdTask(activeTaskDateUpdate);
   };
   const handlehandledateExtendClose = () => setDateExtendOpen(false);
@@ -376,8 +375,6 @@ const Task = () => {
 
     let formattedReqDate = dayjs(reqDate).format("YYYY-MM-DD");
     let formattedOldDate = task.dueDate;
-
-
 
     apiAuth
       .put(
@@ -630,8 +627,6 @@ const Task = () => {
 
   const [documenDowToken, setDocumenDowToken] = useState("");
 
-
-
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);
 
@@ -753,7 +748,6 @@ const Task = () => {
         handelFileChange={handelFileChange}
         handleModalClose={handleOpenDocModalClose}
         handelFileDiscriptionChange={handelFileDiscriptionChange}
-
         listDocument={listDocument}
         toggleDrawer={toggleDrawer}
         handelDetailDoc={handelDetailDoc}
@@ -867,7 +861,6 @@ const Task = () => {
                       <div className="mr-30">
                         Initiated by <b>{list.initiatorName}</b> on{" "}
                         <b>{formatDates(list.requestDate)}</b>
-
                       </div>
                       <div className="mr-30">
                         Project Name: <b>{list.projectName}</b>
@@ -1587,9 +1580,7 @@ const Task = () => {
                                     {
                                       month: "short",
                                       day: "2-digit",
-                                      hour: "numeric",
-                                      minute: "numeric",
-                                      hour12: true,
+                                      year: "numeric",
                                     }
                                   )}
                                 </span>
@@ -1618,26 +1609,26 @@ const Task = () => {
                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                       <small>
                                         {msg.startedDate &&
-                                          !msg.workInProgressDate &&
-                                          !msg.completedDate &&
-                                          !msg.dueDate
+                                        !msg.workInProgressDate &&
+                                        !msg.completedDate &&
+                                        !msg.dueDate
                                           ? `Started on ${formatDates(msg.startedDate)}`
                                           : msg.workInProgressDate &&
-                                            !msg.completedDate &&
-                                            !msg.dueDate
+                                              !msg.completedDate &&
+                                              !msg.dueDate
                                             ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                             : msg.dueDate && !msg.completedDate
                                               ? `Due on ${formatDates(msg.dueDate)}`
                                               : msg.completedDate
                                                 ? `Completed on ${new Date(
-                                                  msg.completedDate
-                                                ).toLocaleString("en-US", {
-                                                  month: "short",
-                                                  day: "2-digit",
-                                                  hour: "numeric",
-                                                  minute: "numeric",
-                                                  hour12: true,
-                                                })}`
+                                                    msg.completedDate
+                                                  ).toLocaleString("en-US", {
+                                                    month: "short",
+                                                    day: "2-digit",
+                                                    hour: "numeric",
+                                                    minute: "numeric",
+                                                    hour12: true,
+                                                  })}`
                                                 : "Unknown"}
                                       </small>
                                     </div>

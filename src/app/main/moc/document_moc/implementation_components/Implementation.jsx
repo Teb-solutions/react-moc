@@ -51,7 +51,11 @@ import RiskAnalysis from "../../common_components/RiskAnalysis";
 import RiskAnalysisTableView from "../../common_components/RiskAnalysisTableView";
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
 import DocumentModal from "../../common_modal/documentModal";
-import { CalculateFrequencyScoring, CalculatePotentialRisk, CalculateRiskClassification } from "../../common_components/RiskAnalysisCalculate";
+import {
+  CalculateFrequencyScoring,
+  CalculatePotentialRisk,
+  CalculateRiskClassification,
+} from "../../common_components/RiskAnalysisCalculate";
 
 function createData(
   index,
@@ -297,6 +301,7 @@ const Implementation = ({
   };
 
   const [particular, setParticular] = useState([]);
+  const [auditSelectData, setAuditSelectData] = useState([]);
   const [particularSub, setParticularSub] = useState([]);
   const [impComments, setImpComments] = useState([]);
   const [fileDetails, setFileDetails] = useState(false);
@@ -383,12 +388,10 @@ const Implementation = ({
 
   const validateForm = () => {
     let tempErrors = {};
-    const cleanedComments = auditData?.comments?.replace(/\s+/g, ' ').trim();
-
+    const cleanedComments = auditData?.comments?.replace(/\s+/g, " ").trim();
 
     auditData.comments = cleanedComments;
-    if (!cleanedComments)
-      tempErrors.comments = "Comments is required.";
+    if (!cleanedComments) tempErrors.comments = "Comments is required.";
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -436,6 +439,9 @@ const Implementation = ({
     apiAuth.get(`/LookupData/Lov/11`).then((resp) => {
       // setParticularSub(resp.data.data);
     });
+    apiAuth.get(`ChangeImplementation/Lov?id=${evaluationId}`).then((resp) => {
+      setAuditSelectData(resp.data.data);
+    });
   };
 
   const handleCloseImplemntationTask = () => setOpenImplemntationTask(false);
@@ -451,15 +457,43 @@ const Implementation = ({
   const handleChangeAddTask = (e) => {
     const { name, value } = e.target;
 
-    setTaskAdd((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    if (name === "audit") {
+      // Check if the input source is a Select or a TextField
+      if (typeof value === "string") {
+        // It's coming from the TextField, store the string
+        setTaskAdd((prevState) => ({
+          ...prevState,
+          audit: value,
+        }));
+      } else {
+        // It's coming from the Select, store the object
+        const selectedOption = auditSelectData.find(
+          (option) => option.value === value
+        );
+        setTaskAdd((prevState) => ({
+          ...prevState,
+          audit: selectedOption
+            ? {
+                text: selectedOption.text,
+                value: selectedOption.value,
+                isReadOnly: selectedOption.isReadOnly,
+              }
+            : "",
+        }));
+      }
+    } else {
+      // Handle other inputs as usual
+      setTaskAdd((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
 
-    if (name === "particular") {
-      apiAuth.get(`/LookupData/Lov/17/${value}`).then((resp) => {
-        setParticularSub(resp.data.data);
-      });
+      // Additional logic for particular field
+      if (name === "particular") {
+        apiAuth.get(`/LookupData/Lov/17/${value}`).then((resp) => {
+          setParticularSub(resp.data.data);
+        });
+      }
     }
   };
 
@@ -775,8 +809,6 @@ const Implementation = ({
     setFileName(doc.name);
   };
 
-
-
   const [TaskhazardRiskViewName, setSubTaskhazardRiskViewName] = useState("");
   const [hazardTypeValue, sethazardTypeValue] = useState("");
   const handelRisk = (id, type) => {
@@ -897,7 +929,6 @@ const Implementation = ({
     apiAuth.get(`/LookupData/Lov/30/0`).then((resp) => {
       setPotentialFrequencyDetails(resp.data.data);
       setPotentialFrequencyRiskDetails(resp.data.data);
-
     });
     apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
       const data = resp.data.data.riskAnalysisHazardSituation[0];
@@ -1041,7 +1072,6 @@ const Implementation = ({
       apiAuth
         .delete(`/RiskAnalysis/${id}`)
         .then((resp) => {
-
           toast?.success("Deleted");
           setIsLoading(false);
 
@@ -1450,7 +1480,6 @@ const Implementation = ({
         handelFileDiscriptionChange={handelFileDiscriptionChange}
         handelFileChange={handelFileChange}
         handleSubmitDocument={handleSubmitAsset}
-
         handleDelete={handleDelete}
         canExecute={currentActivityForm.canExecute}
         formatDate={formatDate}
@@ -1458,7 +1487,9 @@ const Implementation = ({
       />
       <AuditModal
         open={openAuditComment}
-        handleClose={() => { setOpenAuditComment(false), setErrors({}) }}
+        handleClose={() => {
+          setOpenAuditComment(false), setErrors({});
+        }}
         handleSubmit={handelAuditCommentSubmit}
         errors={errors}
         setErrors={setErrors}
@@ -1542,7 +1573,6 @@ const Implementation = ({
               handleModalClose={handleClose}
               listDocument={listDocument}
               selectedDocument={selectedDocument}
-
               fileDetails={fileDetails}
               setFileDetails={setFileDetails}
               handelDetailDoc={handelDetailDoc}
@@ -1719,7 +1749,7 @@ const Implementation = ({
                           </div>
                           <div
                             className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                          // style={{ width: "17%" }}
+                            // style={{ width: "17%" }}
                           >
                             <div className="flex items-center">
                               <StyledBadge badgeContent={task?.audits?.length}>
@@ -1896,16 +1926,16 @@ const Implementation = ({
                                         <div className="my-0.5 text-xs font-medium text-secondary">
                                           <small>
                                             {msg.startedDate &&
-                                              !msg.workInProgressDate &&
-                                              !msg.completedDate &&
-                                              !msg.dueDate
+                                            !msg.workInProgressDate &&
+                                            !msg.completedDate &&
+                                            !msg.dueDate
                                               ? `Started on ${formatDates(msg.startedDate)}`
                                               : msg.workInProgressDate &&
-                                                !msg.completedDate &&
-                                                !msg.dueDate
+                                                  !msg.completedDate &&
+                                                  !msg.dueDate
                                                 ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                                 : msg.dueDate &&
-                                                  !msg.completedDate
+                                                    !msg.completedDate
                                                   ? `Due on ${formatDates(msg.dueDate)}`
                                                   : msg.completedDate
                                                     ? `Completed on ${formatDates(msg.completedDate)}`
@@ -2472,7 +2502,6 @@ const Implementation = ({
                   <div className="flex flex-col-reverse">
                     <div
                       style={{
-                        marginTop: "30px",
                         justifyContent: "space-between",
                         margin: "15px",
                       }}
@@ -2484,16 +2513,45 @@ const Implementation = ({
                           maxWidth: "100%",
                         }}
                       >
-                        <TextField
-                          fullWidth
-                          label="Audit Comment"
-                          id="fullWidth"
-                          name="audit"
-                          onChange={handleChangeAddTask}
-                          value={taskAdd.audit}
-                        // error={!!errorsAddTask.audit}
-                        // helperText={errorsAddTask.audit}
-                        />
+                        {}
+                        {auditSelectData?.length ? (
+                          <FormControl fullWidth error={!!errorsAddTask.audit}>
+                            <FormLabel
+                              className="font-medium text-14"
+                              component="legend"
+                            >
+                              Audit Comment
+                            </FormLabel>
+                            <Select
+                              variant="outlined"
+                              onChange={handleChangeAddTask}
+                              value={taskAdd.audit.value}
+                              name="audit"
+                            >
+                              {auditSelectData.map((option) => (
+                                <MenuItem key={option.id} value={option.value}>
+                                  {option.text}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            {!!errorsAddTask.audit && (
+                              <FormHelperText>
+                                {errorsAddTask.audit}
+                              </FormHelperText>
+                            )}
+                          </FormControl>
+                        ) : (
+                          <TextField
+                            fullWidth
+                            label="Audit Comment"
+                            id="fullWidth"
+                            name="audit"
+                            onChange={handleChangeAddTask}
+                            value={taskAdd.audit}
+                            // error={!!errorsAddTask.audit}
+                            // helperText={errorsAddTask.audit}
+                          />
+                        )}
                       </Box>
                     </div>
                   </div>{" "}

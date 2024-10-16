@@ -120,12 +120,12 @@ export default function Ticket() {
           // variant="contained"
           // color="primary"
           onClick={() => handleEdit(row)}
-        // sx={{
-        //   minWidth: "5px",
-        //   minHeight: "0px",
-        //   height: "15px",
-        //   padding: "10px",
-        // }}
+          // sx={{
+          //   minWidth: "5px",
+          //   minHeight: "0px",
+          //   height: "15px",
+          //   padding: "10px",
+          // }}
         >
           <FuseSvgIcon size={25}>heroicons-solid:eye</FuseSvgIcon>
         </Button>
@@ -204,6 +204,18 @@ export default function Ticket() {
     alignItems: "center",
   };
   async function getRecords() {
+    if (!localStorage.getItem("jwt_access_ticket_token")) {
+      const ticketResp = await apiTicketAuth.post("/Account/access-token", {
+        userName: "MOC_CLIENT",
+        password: "M@c_3#21c_ukl",
+        deviceId: "string",
+      });
+
+      localStorage.setItem(
+        "jwt_access_ticket_token",
+        ticketResp.data.accessToken
+      );
+    }
     const tokenTicket = localStorage.getItem("jwt_access_ticket_token");
     const response = await axios.get(
       "https://pmcrm.tebs.co.in/api/v1/project/tickets/list?projectId=5EC94E1B-E058-4008-EC12-08DC9C361D1D",
