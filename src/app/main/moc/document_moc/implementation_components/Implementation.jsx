@@ -414,8 +414,29 @@ const Implementation = ({
       });
   };
 
+  const handelOpenAuditList = async () => {
+
+    apiAuth.get(`ChangeImplementation/AuditList/${evaluationId}`).then(async (resp) => {
+
+      const transformedData = await resp.data.data.map((item, index) =>
+        createData(
+          index + 1,
+          item.task,
+          item.comments,
+          formatDate(item.donebydate),
+          item.auditDoneBy
+        )
+      );
+      setCurrentAudit(transformedData);
+    });
+    setOpenAudit(true);
+
+  }
+
+
   const handelOpenAudit = async (audits, value) => {
     setOpenAudit(true);
+
     const transformedData = audits.map((item, index) =>
       createData(
         index + 1,
@@ -1626,20 +1647,23 @@ const Implementation = ({
                           Add New Task
                         </Button>
                       )}
-                    {/* <Button
-                  className="whitespace-nowrap mt-5 mb-5 ms-5"
-                  style={{
-                    border: "1px solid",
-                    backgroundColor: "#0000",
-                    color: "black",
-                    borderColor: "rgba(203,213,225)",
-                  }}
-                  variant="contained"
-                  color="warning"
-                  onClick={handleOpen}
-                >
-                  Audits Lists
-                </Button> */}
+                    <Button
+                      className="whitespace-nowrap mt-5 mb-5 ms-5"
+                      style={{
+                        border: "1px solid",
+                        backgroundColor: "#0000",
+                        color: "black",
+                        borderColor: "rgba(203,213,225)",
+                      }}
+                      variant="contained"
+                      color="warning"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handelOpenAuditList();
+                      }}
+                    >
+                      Audits Lists
+                    </Button>
                   </div>
 
                   <TextField

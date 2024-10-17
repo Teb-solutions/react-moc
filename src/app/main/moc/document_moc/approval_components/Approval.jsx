@@ -14,6 +14,7 @@ import { parseISO, format } from "date-fns";
 import { apiAuth } from "src/utils/http";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import ConfirmationModal from "../../common_modal/confirmation_modal/ConfirmationModal";
 
 const Approval = ({
   contentDetails,
@@ -29,7 +30,13 @@ const Approval = ({
 }) => {
   const [valueRemark, setValueRemark] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [open, setOpen] = useState(false);
+  const [submit, setSubmit] = useState({
+    uid: 0,
+    name: "",
+    type: ""
+  })
+  const handleClose = () => setOpen(false);
   const formatDate = (dateString) => {
     if (!dateString) {
       return "Invalid date";
@@ -50,6 +57,7 @@ const Approval = ({
     }
     setValueRemark(event.target.value);
   };
+
 
   const SubmitApprovelCreate = (e, uid, name, type) => {
     if (valueRemark.trim() === "") {
@@ -89,9 +97,79 @@ const Approval = ({
         setIsLoading(false);
       });
   };
+
+
+  const handleOpen = (e, uid, name, type) => {
+
+    if (valueRemark.trim() === "") {
+
+      setErrorMessage("Comments are required.");
+      setOpen(false);
+
+    } else {
+
+      setSubmit({
+        ...submit,
+        uid: uid,
+        name: name,
+        type: type
+      })
+
+      setOpen(true);
+    }
+  };
+
+
+
+
+
   return (
     <>
-      {/* {currentPhaseName == "Approval" && (
+      <ConfirmationModal
+        openSubmit={open}
+        handleCloseSubmit={handleClose}
+        title="Submit Approval"
+        text="Do you really want to approve? Once submitted, you will not be able to revert! Are you sure you want to continue?"
+      >
+        <div
+          className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12"
+          style={{
+            marginTop: "15px",
+            justifyContent: "end",
+            backgroundColor: " rgba(248,250,252)",
+            padding: "10px",
+          }}
+        >
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="primary"
+            style={{
+              padding: "23px",
+              backgroundColor: "white",
+              color: "black",
+              border: "1px solid grey",
+            }}
+            onClick={handleClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="whitespace-nowrap"
+            variant="contained"
+            color="secondary"
+            style={{
+              padding: "23px",
+              backgroundColor: "red",
+            }}
+            type="submit"
+            onClick={(e) => SubmitApprovelCreate(e, submit.uid, submit.name, submit.type)}
+          >
+            Submit
+          </Button>
+        </div>
+      </ConfirmationModal>
+      {/*  {currentPhaseName == "Approval" && (
         <>
           <Paper className="w-full  mx-auto sm:my-8 lg:mt-16  rounded-16 shadow overflow-hidden">
             <div
@@ -474,7 +552,7 @@ const Approval = ({
                       marginTop: "10px",
                     }}
                     onClick={(e) =>
-                      SubmitApprovelCreate(e, btn.uid, btn.name, btn.type)
+                      handleOpen(e, btn.uid, btn.name, btn.type)
                     }
                   >
                     {btn.name}

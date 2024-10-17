@@ -67,6 +67,7 @@ function Course() {
     // p: 4,
     padding: "0px",
   };
+  const [consolidatedDocumentUrl, setConsolidatedDocumentUrl] = useState();
   const handleResize = useCallback(() => {
     if (window.innerWidth <= 768) {
       // Adjust this width as needed
@@ -392,12 +393,15 @@ function Course() {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp.data?.data);
-                localStorage.setItem(
-                  "consolidatedDocumentUrl",
+                setConsolidatedDocumentUrl(
                   resp.data?.data?.consolidatedDocumentUrl
-                    ? resp.data?.data?.consolidatedDocumentUrl
-                    : ""
                 );
+                // localStorage.setItem(
+                //   "consolidatedDocumentUrl",
+                //   resp.data?.data?.consolidatedDocumentUrl
+                //     ? resp.data?.data?.consolidatedDocumentUrl
+                //     : ""
+                // );
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
                   setAppActions(resp.data.data.actions);
                   setAppActivity(resp.data.data.activity);
@@ -523,6 +527,7 @@ function Course() {
                   currentActivityForm={currentActivityForm}
                   evaluationId={evaluationId}
                   setListDocument1={setListDocument1}
+                  consolidatedDocumentUrl={consolidatedDocumentUrl}
                 />
 
                 {currentPhase === "Evaluation" && (
