@@ -33,10 +33,7 @@ const shouldIncludeRoute = (route) => {
   return true; // If no feature is specified, allow the route
 };
 
-/**
- * The routes of the application.
- * This section ensures routes are only allowed if the user has the correct feature.
- */
+// Initialize routes with feature checks
 const routes = [
   ...FuseUtils.generateRoutesFromConfigs(
     routeConfigs.filter(shouldIncludeRoute), // Filter routes based on features
@@ -64,9 +61,10 @@ const routes = [
 // Block routes if no token is available in local storage
 const token = localStorage.getItem("jwt_access_token");
 if (!token) {
+  // Redirect to sign-in if not authenticated
   routes.unshift({
     path: "*",
-    element: <Navigate to="/sign-in" />, // Redirect to sign-in if not authenticated
+    element: <Navigate to="/sign-in" replace />, // Use replace to avoid back navigation to previous page
   });
 }
 

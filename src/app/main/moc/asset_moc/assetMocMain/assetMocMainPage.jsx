@@ -45,6 +45,7 @@ import CustomStepIcon from "../../homepage/CustomStepIcon";
 import { useCallback } from "react";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HelpModal from "../../common_modal/HelpModal";
+import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 const AssetCourse = () => {
   // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const theme = useTheme();
@@ -1236,6 +1237,7 @@ const AssetCourse = () => {
   if (isLoading) {
     return <FuseLoading />;
   }
+  const feature = decryptFeature();
 
   return (
     <FusePageSimple
@@ -1630,16 +1632,17 @@ const AssetCourse = () => {
                                     : ""}
                                 </b>
                               </span>
-                              {!step?.isComplete && (
-                                <span className="cursor-pointer">
-                                  <FuseSvgIcon
-                                    size={20}
-                                    onClick={() => handleEditApprover(step)}
-                                  >
-                                    heroicons-solid:pencil
-                                  </FuseSvgIcon>
-                                </span>
-                              )}
+                              {!step?.isComplete &&
+                                feature?.includes("REQDEL") && (
+                                  <span className="cursor-pointer">
+                                    <FuseSvgIcon
+                                      size={20}
+                                      onClick={() => handleEditApprover(step)}
+                                    >
+                                      heroicons-solid:pencil
+                                    </FuseSvgIcon>
+                                  </span>
+                                )}
                             </div>
                           </StepContent>
                           <StepContent
@@ -1700,24 +1703,27 @@ const AssetCourse = () => {
               </AccordionDetails>
             </Accordion>
           ))}
-          <Accordion
-            style={{ margin: "0px" }}
-            expanded={false} // This keeps the Accordion from expanding
-          >
-            <AccordionSummary
-              style={{ minHeight: "60px" }}
-              onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
+
+          {feature?.includes("REQDEL") && (
+            <Accordion
+              style={{ margin: "0px" }}
+              expanded={false} // This keeps the Accordion from expanding
             >
-              Edit team
-              <FuseSvgIcon
-                className="ps-5 color-blue"
-                size={20}
-                onClick={() => handleEdit()}
+              <AccordionSummary
+                style={{ minHeight: "60px" }}
+                onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
               >
-                heroicons-solid:pencil
-              </FuseSvgIcon>
-            </AccordionSummary>
-          </Accordion>
+                Edit team
+                <FuseSvgIcon
+                  className="ps-5 color-blue"
+                  size={20}
+                  onClick={() => handleEdit()}
+                >
+                  heroicons-solid:pencil
+                </FuseSvgIcon>
+              </AccordionSummary>
+            </Accordion>
+          )}
 
           <HelpModal
             showHelpmodal={showHelpmodal}

@@ -3,14 +3,25 @@ import FusePageSimple from "@fuse/core/FusePageSimple";
 import Stepper from "@mui/material/Stepper";
 import { Link, useParams } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import Backdrop from "@mui/material/Backdrop";
+
 import { parseISO, format } from "date-fns";
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Autocomplete,
+  Box,
+  Button,
+  Fade,
+  FormControl,
+  ListItemText,
+  MenuItem,
+  Modal,
   Step,
   StepContent,
   StepLabel,
+  TextField,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { ToastContainer, toast } from "react-toastify";
@@ -23,6 +34,7 @@ import MainComponent from "../../common_components/mainContent";
 import OrgImplementation from "../implementation_components/OrgImplementationPage";
 import FuseLoading from "@fuse/core/FuseLoading";
 import CustomStepIcon from "../../homepage/CustomStepIcon";
+import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 
 const orgCourse = () => {
   const pageLayout = useRef(null);
@@ -47,7 +59,22 @@ const orgCourse = () => {
   const [appActions, setApActions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [verName, setVerName] = useState("");
+  const feature = decryptFeature();
 
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: "600px",
+    maxWidth: "80vw",
+    height: "auto",
+    borderRadius: "16px",
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    // p: 4,
+    padding: "0px",
+  };
   const handelOpenSide = () => {
     setLeftSidebarOpen(true);
   };
@@ -166,6 +193,7 @@ const orgCourse = () => {
       hour12: true,
     });
   };
+  const [staffList, setStaffList] = useState([]);
 
   function getRecords() {
     apiAuth
@@ -181,7 +209,63 @@ const orgCourse = () => {
             setValueRemark("");
           });
       });
+
+    apiAuth.get(`/TeamAssignment/Create`).then((resp) => {
+      setStaffList(resp.data?.data.staffData);
+    });
   }
+  const [editId, setEditId] = useState("");
+  const [openApprover, setOpenApprover] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
+  const [siteInCharge, setSiteInCharge] = useState(null);
+
+  const [siteInId, setSiteInChargeId] = useState();
+
+  const handleEditApprover = (step) => {
+    // Find the matching staff based on targetUserIds
+    const selectedApprover = staffList.find(
+      (staff) => staff.value === step.targetUserIds[0] // Assuming only one targetUserId
+    );
+
+    // Set the selected approver in the state
+    setSiteInChargeId(selectedApprover || null);
+    setEditId(step.uid);
+    // Open the modal
+    setOpenApprover(true);
+    setValidationErrors({});
+  };
+
+  const handleSiteInChargeChange = (event, newValue) => {
+    setSiteInCharge(newValue);
+    setSiteInChargeId(newValue);
+    if (newValue) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        siteInId: null,
+      }));
+    }
+  };
+
+  const updateActivityTargetUsers = () => {
+    let errors = {};
+
+    if (!siteInId) {
+      errors.siteInId = "Staff is required.";
+      setValidationErrors(errors);
+    }
+
+    apiAuth
+      .post("/Activity/UpdateActivityTargetUsers", {
+        activityUID: editId,
+        targetUserIds: [siteInId.value],
+      })
+      .then((resp) => {
+        toast.success("Successfully Updated");
+        getRecords();
+
+        setOpenApprover(false);
+      });
+  };
 
   const handleStepChange = (
     e,
@@ -312,6 +396,147 @@ const orgCourse = () => {
       leftSidebarOpen={leftSidebarOpen}
       leftSidebarContent={
         <>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={openApprover}
+            onClose={() => setOpenApprover(false)}
+            closeAfterTransition
+            slots={{ backdrop: Backdrop }}
+            slotProps={{
+              backdrop: {
+                timeout: 500,
+              },
+            }}
+          >
+            <Fade in={openApprover}>
+              <Box sx={style}>
+                <Box
+                  style={{
+                    padding: "30px",
+                    backgroundColor: "#4f46e5",
+                    borderTopLeftRadius: "16px",
+                    borderTopRightRadius: "16px",
+                  }}
+                >
+                  <div className="flex justify-between text-white">
+                    <span className="text-popup font-medium">
+                      Edit Activity Assignee{""}
+                    </span>
+                    <span
+                      onClick={() => setOpenApprover(false)}
+                      style={{ cursor: "pointer" }}
+                      className="cursor-pointer"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        fit=""
+                        height="24"
+                        width="24"
+                        preserveAspectRatio="xMidYMid meet"
+                        focusable="false"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M6 18L18 6M6 6l12 12"
+                        ></path>
+                      </svg>
+                    </span>
+                  </div>
+                </Box>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "30px",
+                    marginTop: "0",
+                    paddingBottom: "0",
+                  }}
+                >
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, marginTop: "30px" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <FormControl fullWidth>
+                      <Autocomplete
+                        id="siteInCharge"
+                        options={staffList}
+                        getOptionLabel={(option) => option.text}
+                        value={siteInId}
+                        onChange={handleSiteInChargeChange}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Staff*"
+                            error={!!validationErrors.siteInId}
+                            helperText={validationErrors.siteInId}
+                          />
+                        )}
+                        renderOption={(props, option) => (
+                          <MenuItem
+                            {...props}
+                            key={option.value}
+                            value={option.value}
+                          >
+                            <ListItemText primary={option.text} />
+                          </MenuItem>
+                        )}
+                      />
+                    </FormControl>
+                  </Box>
+                </div>
+
+                <div
+                  className="flex items-center space-x-12"
+                  style={{
+                    marginTop: "0",
+                    marginBottom: "0",
+                    justifyContent: "end",
+                    padding: "30px",
+                    paddingBottom: "30px",
+                  }}
+                >
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="primary"
+                    style={{
+                      padding: "15px",
+                      backgroundColor: "white",
+                      color: "black",
+                      border: "1px solid grey",
+                      paddingLeft: "25px",
+                      paddingRight: "25px",
+                    }}
+                    onClick={() => setOpenApprover(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    className="whitespace-nowrap"
+                    variant="contained"
+                    color="secondary"
+                    style={{
+                      padding: "15px",
+                      backgroundColor: "#4f46e5",
+                      paddingLeft: "25px",
+                      paddingRight: "25px",
+                    }}
+                    type="submit"
+                    onClick={updateActivityTargetUsers}
+                  >
+                    Update
+                  </Button>
+                </div>
+              </Box>
+            </Fade>
+          </Modal>
           <div className="desktop_hide text-end p-30 pt-24 pb-24">
             <FuseSvgIcon
               className="text-48 cursor-pointer "
@@ -428,27 +653,42 @@ const orgCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                             className="pt-4"
                           >
-                            By{" "}
-                            <b>
-                              {step.targetUsers && step.targetUsers.length > 0
-                                ? step.targetUsers[0]
-                                : ""}
-                            </b>
+                            <div className="d-flex justify-between">
+                              <span>
+                                <b>
+                                  {step.targetUsers &&
+                                  step.targetUsers.length > 0
+                                    ? "By " + step.targetUsers[0]
+                                    : ""}
+                                </b>
+                              </span>
+                              {!step?.isComplete &&
+                                feature.includes("REQDEL") && (
+                                  <span className="cursor-pointer">
+                                    <FuseSvgIcon
+                                      size={20}
+                                      onClick={() => handleEditApprover(step)}
+                                    >
+                                      heroicons-solid:pencil
+                                    </FuseSvgIcon>
+                                  </span>
+                                )}
+                            </div>
                           </StepContent>
                           <StepContent
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -461,9 +701,9 @@ const orgCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                           >

@@ -6,7 +6,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
 import { selectUser } from "src/app/auth/user/store/userSlice";
 import { useAuth } from "src/app/auth/AuthRouteProvider";
@@ -39,6 +39,7 @@ function UserMenu() {
   if (!user) {
     return null;
   }
+  const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [bookmarkAnchorEl, setBookmarkAnchorEl] = useState(null);
@@ -143,6 +144,14 @@ function UserMenu() {
         error.response ? error.response.data : error.message
       );
     }
+  };
+  const handleLogout = () => {
+    // Clear tokens from local storage
+    localStorage.removeItem("jwt_access_token");
+    localStorage.removeItem("username"); // Include other relevant keys
+
+    // Redirect to sign-in page
+    navigate("/sign-in", { replace: true }); // Use replace to prevent back navigation
   };
 
   useEffect(() => {
@@ -348,7 +357,7 @@ function UserMenu() {
             </MenuItem>
             <MenuItem
               component={Link}
-              onClick={() => localStorage.clear()}
+              onClick={handleLogout}
               to="/sign-in"
               role="button"
             >

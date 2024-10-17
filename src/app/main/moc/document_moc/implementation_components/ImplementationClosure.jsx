@@ -17,7 +17,6 @@ const ImplementationClosure = ({
   getRecords,
 }) => {
   const handleCheckboxChange = (id) => {
-
     setCheckLists((prevCheckLists) =>
       prevCheckLists.map((item) =>
         item.item === id ? { ...item, isChecked: !item.isChecked } : item
@@ -31,7 +30,6 @@ const ImplementationClosure = ({
       .then((response) => {
         toast?.success("Checklist successfully updated");
         setOpen(false);
-
       });
   };
 
@@ -46,7 +44,7 @@ const ImplementationClosure = ({
     }
     setIsLoading(true);
     apiAuth
-      .post(`/DocMoc/ImplementationSubmit/${evaluationId}/22`, {
+      .post(`/DocMoc/Close/${evaluationId}`, {
         actionUID: uid,
         activityUID: closeActivity.uid,
 

@@ -18,20 +18,20 @@ const taskListConfig = {
   // ],
   routes: [
     {
-      path: feature.includes("MST") ? "/tasklist" : "404",
-      element: feature.includes("MST") ? <TaskList /> : <Error404Page />,
+      path: feature.includes("REQDEL") ? "/tasklist" : "404",
+      element: feature.includes("REQDEL") ? <TaskList /> : <Error404Page />,
       children: [
         {
-          path: feature.includes("MST") ? "" : "404",
-          element: feature.includes("MST") ? (
+          path: feature.includes("REQDEL") ? "" : "404",
+          element: feature.includes("REQDEL") ? (
             <TaskList to="tasklist" />
           ) : (
             <Error404Page />
           ),
         },
         {
-          path: feature.includes("MST") ? "tasklist" : "404",
-          element: feature.includes("MST") ? <TaskList /> : <Error404Page />,
+          path: feature.includes("REQDEL") ? "tasklist" : "404",
+          element: feature.includes("REQDEL") ? <TaskList /> : <Error404Page />,
         },
       ],
     },

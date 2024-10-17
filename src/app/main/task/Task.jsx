@@ -1445,9 +1445,6 @@ const Task = () => {
                                   {
                                     month: "short",
                                     day: "2-digit",
-                                    hour: "numeric",
-                                    minute: "numeric",
-                                    hour12: true,
                                   }
                                 )}
                               </div>
