@@ -52,7 +52,11 @@ import RiskAnalysis from "../../common_components/RiskAnalysis";
 import DocumentModal from "../../common_modal/documentModal";
 import { format, parseISO } from "date-fns";
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
-import { CalculateFrequencyScoring, CalculatePotentialRisk, CalculateRiskClassification } from "../../common_components/RiskAnalysisCalculate";
+import {
+  CalculateFrequencyScoring,
+  CalculatePotentialRisk,
+  CalculateRiskClassification,
+} from "../../common_components/RiskAnalysisCalculate";
 import ExternalConsultation from "./ExternalConsultation";
 
 const EvaluationApproval = ({
@@ -87,7 +91,8 @@ const EvaluationApproval = ({
   const [remarkRequest, setRemarkRequest] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorMessageTask, setErrorMessageTask] = useState("");
-  const [potentialFrequencyRiskDetails, setPotentialFrequencyRiskDetails] = useState([]);
+  const [potentialFrequencyRiskDetails, setPotentialFrequencyRiskDetails] =
+    useState([]);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
     descritpion: "",
@@ -221,8 +226,6 @@ const EvaluationApproval = ({
           toast?.error("Error adding comment");
         });
     }
-
-
   };
   const handleUpdateClick = (index, id) => {
     if (!remarkRequest[index].remark) {
@@ -505,7 +508,6 @@ const EvaluationApproval = ({
           ...prevClickedTasks,
           [id]: true,
         }));
-
       });
   };
 
@@ -526,7 +528,6 @@ const EvaluationApproval = ({
           ...prevClickedTasks,
           [id]: true,
         }));
-
       });
   };
 
@@ -609,7 +610,6 @@ const EvaluationApproval = ({
               });
               await setContentDetails(resp.data.data);
             }
-
           });
       })
       .catch((err) => {
@@ -825,7 +825,6 @@ const EvaluationApproval = ({
                 });
                 await setContentDetails(resp.data.data);
               }
-
             });
         } else {
           toast.error(response.data.message);
@@ -905,7 +904,6 @@ const EvaluationApproval = ({
         },
       })
       .then((response) => {
-
         if (response.data.statusCode === 200) {
           apiAuth
             .get(
@@ -924,9 +922,6 @@ const EvaluationApproval = ({
                   `/SummaryDetails/List?id=${assetEvaluationId}&&code=${lastActCode.code}&&version=${lastActCode.version}&&refVersion=${lastActCode.refVersion}`
                 )
                 .then(async (resp) => {
-
-
-
                   const data = resp.data?.data;
                   if (data.requestTypeName !== "Document") {
                     const updatedTasks = data.tasklist.map((task) => {
@@ -938,7 +933,6 @@ const EvaluationApproval = ({
                     });
                     await setContentDetails(resp.data.data);
                   }
-
                 });
             });
         } else {
@@ -977,8 +971,6 @@ const EvaluationApproval = ({
         });
       });
   };
-
-
 
   const ListDoc1 = (id) => {
     apiAuth.get(`/DocumentManager/SummaryDoclist/${id}`).then((Resp) => {
@@ -1215,7 +1207,6 @@ const EvaluationApproval = ({
   const [subTaskDetail, setSubTaskDetail] = useState([]);
   const [Classifications, setClassification] = useState("");
 
-
   const handelViewDetails = (id, subid) => {
     setPotentialFrequencyDetails([]);
     setFormValues({
@@ -1252,10 +1243,8 @@ const EvaluationApproval = ({
       setPotentialTimeDetails(resp.data.data);
     });
     apiAuth.get(`/LookupData/Lov/30/0`).then((resp) => {
-
       setPotentialFrequencyDetails(resp.data.data);
       setPotentialFrequencyRiskDetails(resp.data.data);
-
     });
     apiAuth.get(`/RiskAnalysis/RiskAnalysisDetail?id=${id}`).then((resp) => {
       const data = resp.data.data.riskAnalysisHazardSituation[0];
@@ -1378,9 +1367,6 @@ const EvaluationApproval = ({
         console.error("Error downloading the file:", error);
       });
   };
-
-
-
 
   const handelRiskInputChange = (e) => {
     const { name, value } = e.target;
@@ -1644,8 +1630,22 @@ const EvaluationApproval = ({
     <>
       {isLoading && <FuseLoading />}
       <div className="w-full h-full">
-
-        <ExternalConsultation dateExtendopen={dateExtendopen} handlehandledateExtendClose={handlehandledateExtendClose} selectedTasks={selectedTasks} formatDates={formatDates} selectedStaff={selectedStaff} handleStaffChange={handleStaffChange} staff={staff} handleEmailChange={handleEmailChange} email={email} comments={comments} handleCommentsChange={handleCommentsChange} commentExtValidation={commentExtValidation} isLoading={isLoading} handleSubmit={handleSubmit} />
+        <ExternalConsultation
+          dateExtendopen={dateExtendopen}
+          handlehandledateExtendClose={handlehandledateExtendClose}
+          selectedTasks={selectedTasks}
+          formatDates={formatDates}
+          selectedStaff={selectedStaff}
+          handleStaffChange={handleStaffChange}
+          staff={staff}
+          handleEmailChange={handleEmailChange}
+          email={email}
+          comments={comments}
+          handleCommentsChange={handleCommentsChange}
+          commentExtValidation={commentExtValidation}
+          isLoading={isLoading}
+          handleSubmit={handleSubmit}
+        />
 
         {/* <Modal
           aria-labelledby="transition-modal-title"
@@ -2873,7 +2873,6 @@ const EvaluationApproval = ({
           handleSubmitDocument={handleSubmitResponse}
           fileDetails={fileDetailsRes}
           setFileDetails={setFileDetailsRes}
-
           handleDelete={handleResDelete}
           toggleDrawer={toggleDrawerRes}
           handelFileChange={handelRespFileChange}
@@ -3030,37 +3029,37 @@ const EvaluationApproval = ({
                           <TableRow key={update.id}>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {update.impact}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {update.task}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {update.how}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {update.deadline}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {update.assignedTo}
                             </TableCell>
                             <TableCell
                               className="text-left"
-                            // sx={{ border: "1px solid silver" }}
+                              // sx={{ border: "1px solid silver" }}
                             >
                               {formatDates(update.dueDate)}
                             </TableCell>
@@ -3534,7 +3533,13 @@ const EvaluationApproval = ({
                                         textareaRef.current.focus();
                                       }
                                     }}
-                                    style={{ backgroundColor: handelCommentRemarks[itm.id]?.trim() ? "" : "#cdcdcd" }}
+                                    style={{
+                                      backgroundColor: handelCommentRemarks[
+                                        itm.id
+                                      ]?.trim()
+                                        ? ""
+                                        : "#cdcdcd",
+                                    }}
                                     disabled={
                                       !handelCommentRemarks[itm.id]?.trim()
                                     }
@@ -3764,13 +3769,13 @@ const EvaluationApproval = ({
                                         style={{
                                           backgroundColor:
                                             imptsk?.reviewd ||
-                                              clickedTasks[imptsk.id]
+                                            clickedTasks[imptsk.id]
                                               ? "rgba(220,252,231)"
                                               : "",
                                         }}
                                       >
                                         {imptsk?.reviewd ||
-                                          clickedTasks[imptsk.id] ? (
+                                        clickedTasks[imptsk.id] ? (
                                           <span className="mat-button-wrapper">
                                             You have reviewed this just now
                                           </span>
@@ -3857,75 +3862,75 @@ const EvaluationApproval = ({
 
                                     {itm?.changeImpactTaskReviews?.length !=
                                       0 && (
-                                        <Accordion
-                                          expanded={expanded === "panel2"}
-                                          onChange={handleExpansionChange(
-                                            "panel2"
-                                          )}
-                                          className="mt-6 m-10"
+                                      <Accordion
+                                        expanded={expanded === "panel2"}
+                                        onChange={handleExpansionChange(
+                                          "panel2"
+                                        )}
+                                        className="mt-6 m-10"
+                                      >
+                                        <AccordionSummary
+                                          expandIcon={<ExpandMoreIcon />}
+                                          aria-controls="panel1a-content"
+                                          id="panel1a-header"
                                         >
-                                          <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel1a-content"
-                                            id="panel1a-header"
-                                          >
-                                            <Typography>
-                                              <span
-                                                className="text-brown"
-                                                style={{ fontSize: "16px" }}
-                                              >
-                                                {
-                                                  itm?.changeImpactTaskReviews
-                                                    ?.length
-                                                }{" "}
-                                                Reviews
-                                              </span>{" "}
-                                            </Typography>
-                                          </AccordionSummary>
-                                          {itm?.changeImpactTaskReviews?.map(
-                                            (rivew) => (
-                                              <AccordionDetails>
-                                                <div className="mat-form-field-wrapper">
-                                                  <div className="mat-form-field-flex">
-                                                    <img
-                                                      src="/assets/images/etc/userpic.png"
-                                                      alt="Card cover image"
-                                                      className="rounded-full mr-4"
-                                                      style={{
-                                                        width: "3rem",
-                                                        height: "3rem",
-                                                      }}
-                                                    />
-                                                    <div>
-                                                      <div className="mat-form-field-infix mt-5">
-                                                        <span
-                                                          className=""
-                                                          style={{
-                                                            fontSize: "15px",
-                                                          }}
-                                                        >
-                                                          {
-                                                            rivew?.createdByStaffName
-                                                          }
-                                                        </span>
-                                                        -{" "}
-                                                        <span
-                                                          className="text-grey"
-                                                          style={{
-                                                            fontSize: "14px",
-                                                          }}
-                                                        >
-                                                          {rivew?.remark}
-                                                        </span>
-                                                      </div>
-                                                      <p
-                                                        className="mat-form-field-infix text-grey"
+                                          <Typography>
+                                            <span
+                                              className="text-brown"
+                                              style={{ fontSize: "16px" }}
+                                            >
+                                              {
+                                                itm?.changeImpactTaskReviews
+                                                  ?.length
+                                              }{" "}
+                                              Reviews
+                                            </span>{" "}
+                                          </Typography>
+                                        </AccordionSummary>
+                                        {itm?.changeImpactTaskReviews?.map(
+                                          (rivew) => (
+                                            <AccordionDetails>
+                                              <div className="mat-form-field-wrapper">
+                                                <div className="mat-form-field-flex">
+                                                  <img
+                                                    src="/assets/images/etc/userpic.png"
+                                                    alt="Card cover image"
+                                                    className="rounded-full mr-4"
+                                                    style={{
+                                                      width: "3rem",
+                                                      height: "3rem",
+                                                    }}
+                                                  />
+                                                  <div>
+                                                    <div className="mat-form-field-infix mt-5">
+                                                      <span
+                                                        className=""
                                                         style={{
-                                                          fontSize: "13px",
+                                                          fontSize: "15px",
                                                         }}
                                                       >
-                                                        {rivew?.updatedAt
-                                                          ? new Date(
+                                                        {
+                                                          rivew?.createdByStaffName
+                                                        }
+                                                      </span>
+                                                      -{" "}
+                                                      <span
+                                                        className="text-grey"
+                                                        style={{
+                                                          fontSize: "14px",
+                                                        }}
+                                                      >
+                                                        {rivew?.remark}
+                                                      </span>
+                                                    </div>
+                                                    <p
+                                                      className="mat-form-field-infix text-grey"
+                                                      style={{
+                                                        fontSize: "13px",
+                                                      }}
+                                                    >
+                                                      {rivew?.updatedAt
+                                                        ? new Date(
                                                             rivew.updatedAt
                                                           ).toLocaleString(
                                                             "en-US",
@@ -3941,16 +3946,16 @@ const EvaluationApproval = ({
                                                                 "short", // e.g., "GMT+5"
                                                             }
                                                           )
-                                                          : null}
-                                                      </p>
-                                                    </div>
+                                                        : null}
+                                                    </p>
                                                   </div>
                                                 </div>
-                                              </AccordionDetails>
-                                            )
-                                          )}
-                                        </Accordion>
-                                      )}
+                                              </div>
+                                            </AccordionDetails>
+                                          )
+                                        )}
+                                      </Accordion>
+                                    )}
                                   </div>
                                 ))}
                               <div className="task-details p-0">
@@ -4061,7 +4066,7 @@ const EvaluationApproval = ({
                                   )}
 
                                 {imptsk.changeImpactTaskReviews?.length > 0 ||
-                                  showReview ? (
+                                showReview ? (
                                   <div className="mt-12">
                                     <Accordion
                                       expanded={expanded == imptsk.id}
@@ -4112,10 +4117,10 @@ const EvaluationApproval = ({
                                             {hasAddedComment(
                                               imptsk.changeImpactTaskReviews
                                             ) && (
-                                                <span className="text-green">
-                                                  (You have added 1 review)
-                                                </span>
-                                              )}
+                                              <span className="text-green">
+                                                (You have added 1 review)
+                                              </span>
+                                            )}
                                           </Typography>
                                         </div>
                                       </AccordionSummary>
@@ -4156,7 +4161,7 @@ const EvaluationApproval = ({
                                                     }}
                                                     value={
                                                       handelCommentRemarks[
-                                                      imptsk.id
+                                                        imptsk.id
                                                       ] || ""
                                                     }
                                                     onChange={(e) =>
@@ -4173,9 +4178,9 @@ const EvaluationApproval = ({
                                                         imptsk.id
                                                       ]?.trim()
                                                         ? {
-                                                          backgroundColor:
-                                                            "#cdcdcd",
-                                                        }
+                                                            backgroundColor:
+                                                              "#cdcdcd",
+                                                          }
                                                         : {}
                                                     }
                                                     onClick={() =>
@@ -4228,7 +4233,7 @@ const EvaluationApproval = ({
                                                   }}
                                                 />
                                                 {AppActivity.canEdit &&
-                                                  isMyComment(rwx) ? (
+                                                isMyComment(rwx) ? (
                                                   <div
                                                     className="mat-form-field-infix"
                                                     style={{
@@ -4255,10 +4260,10 @@ const EvaluationApproval = ({
                                                           imptsk.id
                                                         ]
                                                           ? index[
-                                                          handelCommentRemarks[
-                                                          imptsk.id
-                                                          ]
-                                                          ]
+                                                              handelCommentRemarks[
+                                                                imptsk.id
+                                                              ]
+                                                            ]
                                                           : rwx?.remark || ""
                                                       }
                                                       onChange={(e) =>
@@ -4289,9 +4294,9 @@ const EvaluationApproval = ({
                                                           imptsk.id
                                                         ]?.trim()
                                                           ? {
-                                                            backgroundColor:
-                                                              "#cdcdcd",
-                                                          }
+                                                              backgroundColor:
+                                                                "#cdcdcd",
+                                                            }
                                                           : {}
                                                       }
                                                       disabled={
@@ -4628,7 +4633,7 @@ const EvaluationApproval = ({
                               >
                                 <span className="mat-button-wrapper">
                                   {imptsk?.documents == 0
-                                    ? "No Responses"
+                                    ? "No Responses / click here to upload response"
                                     : `${imptsk?.documents} Responses`}
                                 </span>
                               </button>
@@ -5085,7 +5090,6 @@ const EvaluationApproval = ({
                       // style={{ marginTop: "10px" }}
 
                       onClick={(e) => {
-
                         SubmitApprovelCreate(e, btn.uid, btn.name, btn.type);
                         // alert(1);
                       }}
@@ -5115,7 +5119,6 @@ const EvaluationApproval = ({
           handelFileChange={handelFileChange}
           handelFileDiscriptionChange={handelFileDiscriptionChange}
           handleSubmitDocument={handleSubmitAsset}
-
           canExecute={AppActivity?.canExecute}
           formatDate={formatDate}
           handleDelete={handleDelete}

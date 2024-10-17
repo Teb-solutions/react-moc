@@ -1,8 +1,7 @@
 import ProjectDashboardAppConfig from "./project/ProjectDashboardAppConfig";
 import taskConfig from "../task/TasksConfig";
 import sessionListConfig from "../session/SessionListConfig";
-import notificationConfig from "../notification/NotificationConfig";
-import mastersConfig from "../masters/MastersConfig";
+import notificationConfig from "../notifications/NotificationConfig";
 import DesignationConfig from "../masters/designation/DesignationConfig";
 import DivisionConfig from "../masters/division/DivisionConfig";
 import FunctionConfig from "../masters/function/FunctionConfig";
@@ -34,6 +33,7 @@ import AccessConfig from "../security/access/AccessConfig";
 import SecurityConfig from "../security/SecurityConfig";
 import MocConfig from "../moc/MocConfig";
 import OrgActivityConfig from "../moc/organization_moc/orgMocCreate/OrgActivityConfig";
+import errorPageConfig from "../404/ErrorPageConfig";
 
 /**
  * Dashboards
@@ -43,11 +43,11 @@ const dashboardsConfigs = [
   MocConfig,
   RiskAppConfig,
   taskConfig,
+  errorPageConfig,
   sessionListConfig,
   TicketConfig,
   notificationConfig,
   StaffConfig,
-  mastersConfig,
   SecurityConfig,
   DesignationConfig,
   DivisionConfig,
