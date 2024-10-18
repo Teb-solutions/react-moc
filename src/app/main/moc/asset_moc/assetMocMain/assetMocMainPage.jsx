@@ -6,7 +6,7 @@ import Backdrop from "@mui/material/Backdrop";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useCallback, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import MenuItem from "@mui/material/MenuItem";
 import {
@@ -42,12 +42,13 @@ import ImplementationApproval from "../implementaion_components/Implementation_A
 import ImplementationApprovalSite from "../implementaion_components/Implementation_Approval_Site";
 import FuseLoading from "@fuse/core/FuseLoading";
 import CustomStepIcon from "../../homepage/CustomStepIcon";
-import { useCallback } from "react";
+
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HelpModal from "../../common_modal/HelpModal";
 const AssetCourse = () => {
   // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const theme = useTheme();
+
   const pageLayout = useRef(null);
   const [leftSidebarOpen, setLeftSidebarOpen] = useState(true);
   const routeParams = useParams();
@@ -243,84 +244,8 @@ const AssetCourse = () => {
   }, []);
 
   const [tasks, setTasks] = useState([]);
-  const [showRiskAnalysisChart, setShowRiskAnalysisChart] = useState(false);
-  const [riskAnalysisChartOptions, setRiskAnalysisChartOptions] = useState({
-    series: [],
-    chart: {},
-    annotations: {},
-    dataLabels: {},
-    stroke: {},
-    title: {},
-    xaxis: {},
-    yaxis: {},
-  });
-  const loadRiskAnalysisChart = (tasks) => {
-    let taskLabels = [];
-    let taskResidualRisks = [];
 
-    tasks.forEach((task) => {
-      if (task.riskAnalysisList.length > 0) {
-        taskLabels.push(task.sourceTaskId);
-        let taskResidualRisk = 0;
 
-        task.riskAnalysisList.forEach((ra) => {
-          ra.riskAnalysisSubTasks.forEach((subTask) => {
-            subTask.riskAnalysisHazardTypes.forEach((hazardType) => {
-              hazardType.riskAnalysisHazardSituation.forEach((situation) => {
-                let residualRisk = situation.residualRisk;
-                if (residualRisk > taskResidualRisk) {
-                  taskResidualRisk = residualRisk;
-                }
-              });
-            });
-          });
-        });
-
-        taskResidualRisks.push(taskResidualRisk);
-      }
-    });
-    if (taskResidualRisks.length > 0) {
-      setShowRiskAnalysisChart(true);
-    }
-    setRiskAnalysisChartOptions({
-      series: [{ name: "Residual Risk", data: taskResidualRisks }],
-      chart: {
-        height: 350,
-        type: "scatter",
-        zoom: { enabled: false },
-      },
-      annotations: {
-        yaxis: [
-          {
-            y: 400,
-            y2: 800,
-            borderColor: "#fff",
-            fillColor: "#fff",
-            opacity: 0.2,
-          },
-          {
-            y: 200,
-            y2: 400,
-            borderColor: "#fff",
-            fillColor: "#fff",
-            opacity: 0.2,
-          },
-        ],
-      },
-      dataLabels: { enabled: false },
-      stroke: { curve: "straight" },
-      title: { text: "Risk Chart", align: "left" },
-      xaxis: {
-        title: { text: "Task ID" },
-        categories: taskLabels,
-      },
-      yaxis: {
-        title: { text: "Residual Risk" },
-        min: 0,
-        max: 850,
-      },
-    });
-  };
 
   const handleStepChange = (
     e,
@@ -587,6 +512,8 @@ const AssetCourse = () => {
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
               .then((resp) => {
+
+
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
                 if (resp.data?.data) {
@@ -601,7 +528,7 @@ const AssetCourse = () => {
                     });
 
                     setTasks(updatedTasks);
-                    loadRiskAnalysisChart(updatedTasks);
+                    // loadRiskAnalysisChart(updatedTasks);
                     apiAuth
                       .get(
                         `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
@@ -640,6 +567,8 @@ const AssetCourse = () => {
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
               .then((resp) => {
+
+
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
                 if (resp.data?.data) {
@@ -654,7 +583,7 @@ const AssetCourse = () => {
                     });
 
                     setTasks(updatedTasks);
-                    loadRiskAnalysisChart(updatedTasks);
+                    // loadRiskAnalysisChart(updatedTasks);
 
                     // https://mocapi.tebs.co.in/api/DocumentManager/DocumentCount?id=99ea4bdc97ee449183b3fd50a0aee88a&documentType=Approval
                     apiAuth
@@ -695,6 +624,7 @@ const AssetCourse = () => {
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
               .then((resp) => {
+
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
                 if (resp.data?.data) {
@@ -709,7 +639,7 @@ const AssetCourse = () => {
                     });
 
                     setTasks(updatedTasks);
-                    loadRiskAnalysisChart(updatedTasks);
+                    // loadRiskAnalysisChart(updatedTasks);
                     apiAuth
                       .get(
                         `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
@@ -755,6 +685,7 @@ const AssetCourse = () => {
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
               .then((resp) => {
+
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
                 if (resp.data?.data) {
@@ -769,7 +700,8 @@ const AssetCourse = () => {
                     });
 
                     setTasks(updatedTasks);
-                    loadRiskAnalysisChart(updatedTasks);
+
+                    // loadRiskAnalysisChart(updatedTasks);
                     apiAuth
                       .get(
                         `/DocumentManager/DocumentCount?id=${uid}&documentType=Approval`
@@ -1015,7 +947,11 @@ const AssetCourse = () => {
   const handleEditApproverClose = () => {
     setOpenApprover(fasle);
   };
-
+  useEffect(() => {
+    if (tasks && contentDetails) {
+      handleStepChange();
+    }
+  }, [tasks, contentDetails]);
   const handleEditApprover = (step) => {
     // Find the matching staff based on targetUserIds
     const selectedApprover = staffList.find(
@@ -1319,15 +1255,15 @@ const AssetCourse = () => {
                   contentDetailsT={contentDetails}
                 />
               )}
-              {currentPhase === "EvaluationApproval" && (
+              {currentPhase === "EvaluationApproval" && tasks.length > 0 && (
                 <EvaluationApproval
                   contentDetails={contentDetails}
                   AppActions={appActions}
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
                   setContentDetails={setContentDetails}
-                  showRiskAnalysisChart={showRiskAnalysisChart}
-                  riskAnalysisChartOptions={riskAnalysisChartOptions}
+                  tasks={tasks}
+
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
@@ -1338,15 +1274,14 @@ const AssetCourse = () => {
                   contentDetailsT={contentDetails}
                 />
               )}
-              {currentPhase === "EvaluationApprovalCooprate" && (
+              {currentPhase === "EvaluationApprovalCooprate" && tasks.length > 0 && (
                 <EvaluationApproval
                   AppActions={appActions}
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
                   setContentDetails={setContentDetails}
                   contentDetails={contentDetails}
-                  showRiskAnalysisChart={showRiskAnalysisChart}
-                  riskAnalysisChartOptions={riskAnalysisChartOptions}
+                  tasks={tasks}
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
@@ -1356,15 +1291,14 @@ const AssetCourse = () => {
                   CountApprove={CountApprove1}
                 />
               )}
-              {currentPhase === "EvaluationApprovalVp" && (
+              {currentPhase === "EvaluationApprovalVp" && tasks.length > 0 && (
                 <EvaluationApproval
                   AppActions={appActions}
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
                   contentDetails={contentDetails}
                   setContentDetails={setContentDetails}
-                  showRiskAnalysisChart={showRiskAnalysisChart}
-                  riskAnalysisChartOptions={riskAnalysisChartOptions}
+                  tasks={tasks}
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
@@ -1375,15 +1309,14 @@ const AssetCourse = () => {
                   CountApprove={CountApprove3}
                 />
               )}
-              {currentPhase === "EvaluationApprovalVpHse" && (
+              {currentPhase === "EvaluationApprovalVpHse" && tasks.length > 0 && (
                 <EvaluationApproval
                   AppActions={appActions}
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
                   contentDetails={contentDetails}
                   setContentDetails={setContentDetails}
-                  showRiskAnalysisChart={showRiskAnalysisChart}
-                  riskAnalysisChartOptions={riskAnalysisChartOptions}
+                  tasks={tasks}
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
