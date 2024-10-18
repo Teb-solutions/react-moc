@@ -100,7 +100,7 @@ const Task = () => {
     boxShadow: 24,
     p: 4,
   };
-
+  const [errors, setErrors] = useState({});
   const drawerStyle = (open) => ({
     width: 350,
     bgcolor: "background.paper",
@@ -834,13 +834,13 @@ const Task = () => {
           </Box>
         </div>
       </div>
-      {taskList.map((list) => {
+      {taskList?.map((list) => {
         const filteredTasks = filterTasks(list);
 
-        if (filteredTasks.length > 0) {
+        if (filteredTasks?.length > 0) {
           return (
             <Paper
-              key={list.changeRequestId}
+              key={list?.changeRequestId}
               className="p-30 pt-24 pb-0  task_box"
             >
               <div className="flex flex-wrap flex-col p-24 rounded-16 white_bg shadow overflow-hidden">
@@ -851,19 +851,19 @@ const Task = () => {
                         className="py-0.5 px-3 mb-3 rounded-full text-sm font-semibold text-blue-800 bg-blue-100 dark:text-blue-50 dark:bg-blue-500"
                         style={{ padding: "5px" }}
                       >
-                        {`${list.requestTypeName} / ${list.requestNo} / ${list.statusName}`}
+                        {`${list?.requestTypeName} / ${list?.requestNo} / ${list?.statusName}`}
                       </div>
                     </div>
                     <div className="flex flex-wrap leading-5 text-md text-secondary space-y-2 my-10 lg:my-0 lg:mt-5">
                       <div className="mr-30">
-                        Initiated by <b>{list.initiatorName}</b> on{" "}
-                        <b>{formatDates(list.requestDate)}</b>
+                        Initiated by <b>{list?.initiatorName}</b> on{" "}
+                        <b>{formatDates(list?.requestDate)}</b>
                       </div>
                       <div className="mr-30">
-                        Project Name: <b>{list.projectName}</b>
+                        Project Name: <b>{list?.projectName}</b>
                       </div>
                       <div className="mr-30">
-                        Change Leader: <b>{list.changeLeaderName}</b>
+                        Change Leader: <b>{list?.changeLeaderName}</b>
                       </div>
                     </div>
                   </div>
