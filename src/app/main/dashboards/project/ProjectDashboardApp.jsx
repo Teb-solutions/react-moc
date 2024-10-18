@@ -49,6 +49,11 @@ function ProjectDashboardApp() {
 
   const fetchdataSetting = useCallback(async () => {
     try {
+      const token = localStorage.getItem("jwt_access_token");
+      if (!token) {
+        navigate("/sign-in");
+        return;
+      }
       if (!localStorage.getItem("jwt_access_ticket_token")) {
         const ticketResp = await apiTicketAuth.post("/Account/access-token", {
           userName: "MOC_CLIENT",

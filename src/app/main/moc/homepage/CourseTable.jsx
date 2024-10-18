@@ -141,8 +141,8 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
       format: (value) => value.toLocaleString("en-US"),
     },
   ];
-  // Conditionally add "Action" column if feature includes "REQDEL"
-  if (feature.includes("REQDEL")) {
+  // Conditionally add "Action" column if feature includes "REQD"
+  if (feature.includes("REQD")) {
     columns.push({
       id: "action",
       label: "Action",

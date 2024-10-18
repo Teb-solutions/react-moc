@@ -66,9 +66,13 @@ function Layout1(props) {
             {children}
           </div>
 
-          {/* {config.footer.display && (
-						<FooterLayout1 className={config.footer.style === 'fixed' ? 'sticky bottom-0' : ''} />
-					)} */}
+          {config.footer.display && (
+            <FooterLayout1
+              className={
+                config.footer.style === "fixed" ? "sticky bottom-0" : ""
+              }
+            />
+          )}
         </main>
 
         {config.navbar.display && config.navbar.position === "right" && (

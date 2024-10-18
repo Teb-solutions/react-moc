@@ -670,7 +670,7 @@ const orgCourse = () => {
                                 </b>
                               </span>
                               {!step?.isComplete &&
-                                feature.includes("REQDEL") && (
+                                feature.includes("REQD") && (
                                   <span className="cursor-pointer">
                                     <FuseSvgIcon
                                       size={20}
