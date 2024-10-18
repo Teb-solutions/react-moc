@@ -283,7 +283,7 @@ const OrgImplementation = ({
       return;
     } else {
       apiAuth
-        .post(`/OrgMoc/ImplementationSubmit/${orgEvaluationId}`, {
+        .post(`OrgMoc/ImplementationSubmit/${orgEvaluationId}`, {
           activityUID: appActivity.uid,
           actionUID: uid,
           formUID: appActivity.formUID,

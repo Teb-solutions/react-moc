@@ -55,7 +55,7 @@ const navigationConfig1 = [
         type: "item",
         icon: "heroicons-outline:clipboard-list",
         url: "/tasklist",
-        feature: "REQDEL",
+        feature: "REQD",
       },
       {
         id: "ticketlist.request",

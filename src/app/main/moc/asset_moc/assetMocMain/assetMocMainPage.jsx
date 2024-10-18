@@ -1566,7 +1566,7 @@ const AssetCourse = () => {
                                 </b>
                               </span>
                               {!step?.isComplete &&
-                                feature?.includes("REQDEL") && (
+                                feature?.includes("REQD") && (
                                   <span className="cursor-pointer">
                                     <FuseSvgIcon
                                       size={20}
@@ -1637,7 +1637,7 @@ const AssetCourse = () => {
             </Accordion>
           ))}
 
-          {feature?.includes("REQDEL") && (
+          {feature?.includes("REQD") && (
             <Accordion
               style={{ margin: "0px" }}
               expanded={false} // This keeps the Accordion from expanding
