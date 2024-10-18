@@ -415,24 +415,22 @@ const Implementation = ({
   };
 
   const handelOpenAuditList = async () => {
-
-    apiAuth.get(`ChangeImplementation/AuditList/${evaluationId}`).then(async (resp) => {
-
-      const transformedData = await resp.data.data.map((item, index) =>
-        createData(
-          index + 1,
-          item.task,
-          item.comments,
-          formatDate(item.donebydate),
-          item.auditDoneBy
-        )
-      );
-      setCurrentAudit(transformedData);
-    });
+    apiAuth
+      .get(`ChangeImplementation/AuditList/${evaluationId}`)
+      .then(async (resp) => {
+        const transformedData = await resp.data.data.map((item, index) =>
+          createData(
+            index + 1,
+            item.task,
+            item.comments,
+            formatDate(item.donebydate),
+            item.auditDoneBy
+          )
+        );
+        setCurrentAudit(transformedData);
+      });
     setOpenAudit(true);
-
-  }
-
+  };
 
   const handelOpenAudit = async (audits, value) => {
     setOpenAudit(true);
@@ -605,6 +603,33 @@ const Implementation = ({
         });
       // getRecords();
     }
+  };
+
+  const handelTaskSubmitCancel = () => {
+    handleCloseImplemntationTask();
+    setErrorsAddTask({});
+
+    setTaskAdd({
+      ...taskAdd,
+      particular: 0,
+      particularSubCategory: "",
+      impacHazards: "",
+      taskassignedto: "",
+      dueDate: new Date(),
+      actionHow: "",
+      actionWhat: "",
+      audit: "",
+      assignedStaffId: "",
+      otherDetail: "",
+      changeImpactHazard: "",
+
+      ChangeImapactId: 0,
+      changeEvaluationId: 0,
+      deadline: 1,
+      hazardDetail: "",
+      isShowDetail: "",
+      parentId: "0",
+    });
   };
 
   const handleChangeTaskDate = (date) => {
@@ -2585,6 +2610,16 @@ const Implementation = ({
                   </h6>
                 </div>
                 <div className="flex justify-end ">
+                  <Button
+                    className="whitespace-nowrap ms-5 "
+                    variant="contained"
+                    style={{
+                      marginTop: "10px",
+                    }}
+                    onClick={handelTaskSubmitCancel}
+                  >
+                    Cancel
+                  </Button>
                   <Button
                     className="whitespace-nowrap ms-5 "
                     variant="contained"
