@@ -476,6 +476,11 @@ const Task = () => {
     setOpenDocModal(false);
     setOpenDrawer(false);
     setFileDetails(false);
+    setSelectedFile({
+      ...selectedFile,
+      name: "",
+      descritpion: ""
+    })
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);

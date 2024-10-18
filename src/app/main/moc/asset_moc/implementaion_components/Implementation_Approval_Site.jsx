@@ -281,6 +281,11 @@ const ImplementationApprovalSite = ({
     setOpenDrawer(false);
     setFileDetails(false);
     setErrors({})
+    setSelectedFile({
+      ...selectedFile,
+      name: "",
+      descritpion: "",
+    })
   };
   const ListDoc = (id, activeid) => {
     apiAuth

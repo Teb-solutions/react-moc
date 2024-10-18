@@ -1084,6 +1084,11 @@ function ImplementationApproval({
     setFileDetailsPssR(false);
     setListDocumentPssR([]);
     setErrors({})
+    setSelectedFilePssR({
+      ...selectedFilePssR,
+      name: "",
+      descritpion: "",
+    });
   };
 
   const handleModalClose = () => {
@@ -1091,6 +1096,7 @@ function ImplementationApproval({
     setOpenDrawer(false);
     setFileDetails(false);
     setErrors({})
+
   };
   const handelDetailDocPssR = (doc) => {
     setSelectedDocumentPssR(doc);
@@ -1149,6 +1155,7 @@ function ImplementationApproval({
     }));
   };
   const validateFormRes = () => {
+    debugger
     let tempErrorsDoc = {};
     if (!selectedFilePssR.name)
       tempErrorsDoc.name = "File is required";
@@ -1505,6 +1512,8 @@ function ImplementationApproval({
         selectedFile={selectedFilePssR}
         listDocument={listDocumentPssR}
         toggleDrawer={toggleDrawerPssR}
+        errors={errors}
+        setErrors={setErrors}
         step={1}
         handelFileDiscriptionChange={handelFileDiscriptionChangePssR}
         handleSubmitDocument={handleSubmitAssetPssR}

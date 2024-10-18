@@ -847,6 +847,11 @@ const EvaluationApproval = ({
     setOpen1(false);
     setOpenDrawer(false);
     setErrors({})
+    setSelectedFile({
+      ...selectedFile,
+      name: "",
+      descritpion: "",
+    })
   };
 
   const handleModalClose1 = () => {
