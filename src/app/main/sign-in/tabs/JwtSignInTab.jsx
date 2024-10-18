@@ -70,6 +70,12 @@ const JwtSignInTab = () => {
       shouldDirty: true,
     });
   }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("jwt_access_token"); // Check for your token
+    if (token) {
+      navigate("/dashboards/project"); // Redirect if already logged in
+    }
+  }, [navigate]);
 
   async function onSubmit(formData) {
     const { userName, password, mFAOtp } = formData;

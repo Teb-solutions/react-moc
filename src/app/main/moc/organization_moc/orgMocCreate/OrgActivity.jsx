@@ -84,11 +84,15 @@ function OrgActivity() {
     }));
   };
 
-  const handleChanges = (date) => {
-    setDocumentState({
-      ...documentState,
-      programCompletionDate: date,
-    });
+  const handleChanges = (newValue) => {
+    // Check if newValue is valid; if not, set it to the current date
+    const selectedDate = newValue || new Date();
+
+    // Update the state with the selected or current date
+    setDocumentState((prevState) => ({
+      ...prevState,
+      programCompletionDate: selectedDate,
+    }));
   };
 
   const handleRadioChange = (event) => {
@@ -132,34 +136,37 @@ function OrgActivity() {
   };
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     setIsLoading(true);
 
-    event.preventDefault();
-    const date = new Date(documentState.programCompletionDate);
+    // Make sure programCompletionDate is not null and is a valid date
     let formattedDate = null;
+    const date = new Date(documentState.programCompletionDate);
 
-    if (!isNaN(date)) {
+    if (documentState.programCompletionDate && !isNaN(date)) {
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, "0");
       const day = String(date.getDate()).padStart(2, "0");
       formattedDate = `${year}-${month}-${day}T00:00:00.000Z`;
+    } else {
+      // Handle case where date is not valid; you may want to set a default or show an error
+      formattedDate = new Date().toISOString(); // Use current date if invalid
     }
 
     const formattedDocumentState = {
       ...documentState,
       programCompletionDate: formattedDate,
     };
+
     apiAuth
       .post("/OrgMoc/CreateChangeRequest", formattedDocumentState)
       .then((response) => {
-        if (response.data.statusCode == 400) {
+        if (response.data.statusCode === 400) {
           setOpen(false);
           setIsLoading(false);
-
           toast?.error(response.data.message);
         } else {
           setIsLoading(false);
-
           toast?.success("Successfully Created");
           setTimeout(() => {
             navigate("/moc");
@@ -169,8 +176,10 @@ function OrgActivity() {
       })
       .catch((error) => {
         setOpen(true);
+        setIsLoading(false); // Ensure loading state is reset
       });
   };
+
   const handelActClose = () => {
     navigate("/moc");
   };

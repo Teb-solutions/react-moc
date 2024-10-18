@@ -263,6 +263,7 @@ function DocRequest() {
   };
 
   const handleOpen = () => {
+    debugger;
     if (!validate()) {
       if (
         documentState.reasonForNewDocument != undefined ||
@@ -275,8 +276,14 @@ function DocRequest() {
       }
       setOpen(false);
     } else {
-      setOpen(true);
-      setFormValid(true);
+      if (documentState.isNewDocument == undefined) {
+        setOpen(false);
+
+        setFormValid(false);
+      } else {
+        setFormValid(true);
+        setOpen(true);
+      }
     }
   };
 

@@ -57,6 +57,8 @@ function createData(
 }
 
 export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
+  const feature = decryptFeature();
+  console.log(feature, "feature");
   const columns = [
     // { id: "index", label: "#", minWidth: 50 },
     // { id: "code", label: "Code", minWidth: 100 },
@@ -138,12 +140,13 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
       align: "left",
       format: (value) => value.toLocaleString("en-US"),
     },
-    {
+  ];
+  // Conditionally add "Action" column if feature includes "REQDEL"
+  if (feature.includes("REQDEL")) {
+    columns.push({
       id: "action",
       label: "Action",
-      //minWidth: 170,
       align: "left",
-      format: (value) => value.toFixed(2),
       render: (row) => (
         <div className="action_button">
           <Button
@@ -152,8 +155,9 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
           ></Button>
         </div>
       ),
-    },
-  ];
+    });
+  }
+
   const style1 = {
     position: "absolute",
     top: "50%",
@@ -172,7 +176,6 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
   function getRecords() {
     apiAuth.get(`/ChangeRequest/List`).then((resp) => {
       setIsLoading(false);
-
 
       const transformedData = filteredDatas.map((item, index) =>
         createData(
@@ -202,7 +205,7 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
         reason: reasons,
       })
       .then((resp) => {
-        if (resp.data.statusCode == "424") {
+        if (resp.data.statusCode != 200) {
           toast.error(resp.data.message);
           setDelete(false);
         } else {
@@ -242,7 +245,6 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
     setPage(0);
   };
 
-
   if (isLoading) {
     return <FuseLoading />;
   }
@@ -269,7 +271,7 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
             variant="outlined"
             placeholder="Type your reason here..."
             onChange={(e) => setReason(e.target.value)}
-          // Add any additional props or event handlers you need
+            // Add any additional props or event handlers you need
           />
         </div>
         <div

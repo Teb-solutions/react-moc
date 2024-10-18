@@ -152,12 +152,10 @@ const OrgImplementation = ({
 
   const validateForm = () => {
     let tempErrors = {};
-    const cleanedComments = auditData?.comments?.replace(/\s+/g, ' ').trim();
-
+    const cleanedComments = auditData?.comments?.replace(/\s+/g, " ").trim();
 
     auditData.comments = cleanedComments;
-    if (!cleanedComments)
-      tempErrors.comments = "Comments is required.";
+    if (!cleanedComments) tempErrors.comments = "Comments is required.";
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -349,8 +347,6 @@ const OrgImplementation = ({
     setFileName(doc.name);
   };
 
-
-
   const handleCloseDelete = () => {
     setDeletes(false);
   };
@@ -434,7 +430,9 @@ const OrgImplementation = ({
       </DeleteModal>
       <AuditModal
         open={openAuditComment}
-        handleClose={() => { setOpenAuditComment(false), setErrors({}) }}
+        handleClose={() => {
+          setOpenAuditComment(false), setErrors({});
+        }}
         handleSubmit={handelAuditCommentSubmit}
         errors={errors}
         setErrors={setErrors}
@@ -464,7 +462,6 @@ const OrgImplementation = ({
         setFileDetails={setFileDetails}
         selectedDocument={selectedDocument}
         formatDate={formatDate}
-
         documenDowToken={documenDowToken}
       />
 
@@ -542,7 +539,7 @@ const OrgImplementation = ({
                     <div className="flex flex-wrap justify-between w-100 pr-10">
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
+                        // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           Task #{detail.id}
@@ -550,7 +547,7 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
+                        // style={{ width: "17%" }}
                       >
                         <div className="flex items-center" style={{}}>
                           {detail.isCompleted && detail.taskStatus === 3 ? (
@@ -564,13 +561,13 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
+                        // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">No Risks</div>
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
+                        // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           {detail.assignedStaff}
@@ -578,7 +575,7 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
+                        // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           {formatDate(detail.dueDate)}
@@ -586,7 +583,7 @@ const OrgImplementation = ({
                       </div>
                       <div
                         className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                      // style={{ width: "17%" }}
+                        // style={{ width: "17%" }}
                       >
                         <div className="flex items-center">
                           <StyledBadge badgeContent={detail?.audits?.length}>
@@ -742,13 +739,13 @@ const OrgImplementation = ({
                                     <div className="my-0.5 text-xs font-medium text-secondary">
                                       <small>
                                         {msg.startedDate &&
-                                          !msg.workInProgressDate &&
-                                          !msg.completedDate &&
-                                          !msg.dueDate
+                                        !msg.workInProgressDate &&
+                                        !msg.completedDate &&
+                                        !msg.dueDate
                                           ? `Started on ${formatDate(msg.startedDate)}`
                                           : msg.workInProgressDate &&
-                                            !msg.completedDate &&
-                                            !msg.dueDate
+                                              !msg.completedDate &&
+                                              !msg.dueDate
                                             ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
                                             : msg.dueDate && !msg.completedDate
                                               ? `Due on ${formatDate(msg.dueDate)}`
@@ -762,9 +759,7 @@ const OrgImplementation = ({
                                     documentCounts[msg.id] != 0 && (
                                       <button
                                         className="icon-button"
-                                        onClick={
-                                          () => handleOpen(msg.id)
-                                        }
+                                        onClick={() => handleOpen(msg.id)}
                                         style={{
                                           top: "-6px",
                                           right: "0px",
@@ -826,7 +821,7 @@ const OrgImplementation = ({
                                       {" "}
                                       {msg.approvalStatusDate && (
                                         <>
-                                          {msg.approverId
+                                          {msg.approvalStatus === 3
                                             ? "Approved on"
                                             : "Rejected on"}{" "}
                                           {new Date(

@@ -15,7 +15,7 @@ const NotificationPopup = ({ notification, setNotification, setAnchorEl }) => {
   const navigate = useNavigate();
 
   const handleRedirect = () => {
-    navigate(`/notification`);
+    navigate(`/notifications`);
     setAnchorEl(null);
     // If you want to pass the notification id as a dynamic route
   };

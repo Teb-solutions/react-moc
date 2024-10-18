@@ -45,6 +45,7 @@ import CustomStepIcon from "../../homepage/CustomStepIcon";
 
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HelpModal from "../../common_modal/HelpModal";
+import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 const AssetCourse = () => {
   // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const theme = useTheme();
@@ -259,7 +260,6 @@ const AssetCourse = () => {
     canView
   ) => {
     if (!canView) {
-
       return;
     }
     setActName(activityname);
@@ -978,13 +978,13 @@ const AssetCourse = () => {
             case 1:
               setChangeLeader(
                 staffList.find((option) => option.value === member.staffId) ||
-                null
+                  null
               );
               break;
             case 2:
               setHseq(
                 staffList.find((option) => option.value === member.staffId) ||
-                null
+                  null
               );
               break;
             case 3:
@@ -1011,7 +1011,7 @@ const AssetCourse = () => {
             case 4:
               setSiteInCharge(
                 staffList.find((option) => option.value === member.staffId) ||
-                null
+                  null
               );
               break;
             default:
@@ -1153,7 +1153,6 @@ const AssetCourse = () => {
         setSelectedOthersStaffs([]);
         // Handle the response if needed
         toast.success("Team updated successfully");
-
       })
       .catch((error) => {
         toast.success("Error updating team");
@@ -1174,6 +1173,7 @@ const AssetCourse = () => {
   if (isLoading) {
     return <FuseLoading />;
   }
+  const feature = decryptFeature();
 
   return (
     <FusePageSimple
@@ -1549,9 +1549,9 @@ const AssetCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                             className="pt-4"
@@ -1560,31 +1560,31 @@ const AssetCourse = () => {
                               <span>
                                 <b>
                                   {step.targetUsers &&
-                                    step.targetUsers.length > 0
+                                  step.targetUsers.length > 0
                                     ? "By " + step.targetUsers[0]
                                     : ""}
                                 </b>
                               </span>
-                              {/* {!step?.isComplete && (
-                                <span className="cursor-pointer">
-                                  <FuseSvgIcon
-                                    size={20}
-                                    onClick={() => handleEditApprover(step)}
-                                  >
-                                    heroicons-solid:pencil
-                                  </FuseSvgIcon>
-                                </span>
-                              )} */}
-
+                              {!step?.isComplete &&
+                                feature?.includes("REQDEL") && (
+                                  <span className="cursor-pointer">
+                                    <FuseSvgIcon
+                                      size={20}
+                                      onClick={() => handleEditApprover(step)}
+                                    >
+                                      heroicons-solid:pencil
+                                    </FuseSvgIcon>
+                                  </span>
+                                )}
                             </div>
                           </StepContent>
                           <StepContent
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -1597,9 +1597,9 @@ const AssetCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -1636,19 +1636,27 @@ const AssetCourse = () => {
               </AccordionDetails>
             </Accordion>
           ))}
-          {/* <Accordion
-            style={{ margin: "0px" }}
-            expanded={false} // This keeps the Accordion from expanding
-          >
-            <AccordionSummary
-              style={{ minHeight: "60px" }}
-              onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
+
+          {feature?.includes("REQDEL") && (
+            <Accordion
+              style={{ margin: "0px" }}
+              expanded={false} // This keeps the Accordion from expanding
             >
-              <FuseSvgIcon size={20} onClick={() => handleEdit()}>
-                heroicons-solid:pencil
-              </FuseSvgIcon>
-            </AccordionSummary>
-          </Accordion> */}
+              <AccordionSummary
+                style={{ minHeight: "60px" }}
+                onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
+              >
+                Edit team
+                <FuseSvgIcon
+                  className="ps-5 color-blue"
+                  size={20}
+                  onClick={() => handleEdit()}
+                >
+                  heroicons-solid:pencil
+                </FuseSvgIcon>
+              </AccordionSummary>
+            </Accordion>
+          )}
 
           <HelpModal
             showHelpmodal={showHelpmodal}
