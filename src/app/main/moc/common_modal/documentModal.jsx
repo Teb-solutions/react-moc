@@ -200,7 +200,10 @@ const DocumentModal = (props) => {
           {openDrawer && !fileDetails && (
             <Box sx={drawerStyle(openDrawer)}>
               <div className="flex justify-end">
-                <Button className="" onClick={() => setOpenDrawer(false)}>
+                <Button className="" onClick={() => {
+                  setOpenDrawer(false)
+                  setErrors({})
+                }}>
                   <FuseSvgIcon size={20}>heroicons-outline:x</FuseSvgIcon>
                 </Button>
               </div>

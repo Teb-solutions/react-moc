@@ -1083,12 +1083,14 @@ function ImplementationApproval({
     setOpenDrawerPssR(false);
     setFileDetailsPssR(false);
     setListDocumentPssR([]);
+    setErrors({})
   };
 
   const handleModalClose = () => {
     setOpen(false);
     setOpenDrawer(false);
     setFileDetails(false);
+    setErrors({})
   };
   const handelDetailDocPssR = (doc) => {
     setSelectedDocumentPssR(doc);

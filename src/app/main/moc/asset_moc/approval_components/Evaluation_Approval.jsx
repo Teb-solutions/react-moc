@@ -846,6 +846,7 @@ const EvaluationApproval = ({
   const handleModalClose = () => {
     setOpen1(false);
     setOpenDrawer(false);
+    setErrors({})
   };
 
   const handleModalClose1 = () => {
@@ -1092,6 +1093,7 @@ const EvaluationApproval = ({
     setTaskRespOpen(false);
     setFileDetailsRes(false);
     setOpenDrawerRes(false);
+    setErrors({})
     setSelectedFile({
       ...selectedRespFile,
       name: "",

@@ -216,6 +216,7 @@ function AssetRequest() {
     setOpenDocModal(false);
     setOpenDrawer(false);
     setFileDetails(false);
+    setErrors({})
   };
 
   const toggleDrawer = (open) => () => {

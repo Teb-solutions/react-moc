@@ -102,6 +102,7 @@ const ImplementationApprovalSite = ({
     boxShadow: 24,
     p: 4,
   };
+  const [errors, setErrors] = useState({});
   const [expanded, setExpanded] = useState(false);
   const [reviewed, setReviewed] = useState({});
   const [valueRemark, setValueRemark] = useState("");
@@ -279,6 +280,7 @@ const ImplementationApprovalSite = ({
     setOpen(false);
     setOpenDrawer(false);
     setFileDetails(false);
+    setErrors({})
   };
   const ListDoc = (id, activeid) => {
     apiAuth

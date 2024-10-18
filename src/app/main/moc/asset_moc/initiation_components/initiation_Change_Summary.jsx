@@ -367,6 +367,7 @@ const InitiationComplete = ({
     setOpen1(false);
     setOpenDrawer(false);
     setFileDetails(false);
+    setErrors({})
   };
   const ListDoc1 = (id, activeid) => {
     apiAuth

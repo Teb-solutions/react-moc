@@ -182,11 +182,13 @@ function InitiationApproval(props) {
     setOpen(false);
     setOpenDrawer(false);
     setFileDetails(false);
+    setErrors({})
   };
   const handleModalClose1 = () => {
     setOpen1(false);
     setOpenDrawer1(false);
     setFileDetails1(false);
+    setErrors({})
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer1(open);
@@ -493,8 +495,7 @@ function InitiationApproval(props) {
         selectedDocument={selectedDocument1}
         toggleDrawer={toggleDrawer}
         openDrawer={openDrawer1}
-        errors={errors}
-        setErrors={setErrors}
+
         setOpenDrawer={setOpenDrawer1}
         fileDetails={fileDetails1}
         setFileDetails={setFileDetails1}
