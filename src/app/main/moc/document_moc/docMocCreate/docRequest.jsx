@@ -263,7 +263,7 @@ function DocRequest() {
   };
 
   const handleOpen = () => {
-    debugger;
+
     if (!validate()) {
       if (
         documentState.reasonForNewDocument != undefined ||
