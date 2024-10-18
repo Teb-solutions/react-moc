@@ -158,6 +158,10 @@ const Implementation = ({
       ...prevState,
       [name]: value,
     }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
   const toggleDrawer = (open) => () => {
     setOpenDrawer(open);
@@ -187,7 +191,10 @@ const Implementation = ({
 
   const handelFileChange = (e) => {
     const file = e.target.files[0];
-
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      name: "",
+    }));
     const fileNameWithoutExtension = e.target.files[0].name
       .split(".")
       .slice(0, -1)
@@ -207,35 +214,22 @@ const Implementation = ({
     });
   };
 
+  const validateFormAsset = () => {
+    let tempErrorsDoc = {};
+    if (!selectedFile.name)
+      tempErrorsDoc.name = "File is required";
+
+    if (!selectedFile.descritpion)
+      tempErrorsDoc.descritpion = "Description is required";
+
+    setErrors(tempErrorsDoc);
+    return Object.keys(tempErrorsDoc).length === 0;
+  };
+
   const handleSubmitAsset = (e) => {
     // Validation: If file-related fields are empty
 
-    if (
-      !selectedFile.name.trim() ||
-      // !selectedFile.type.trim() ||
-      !selectedFile.document ||
-      !selectedFile.documentType.trim() ||
-      !selectedFile.documentId.trim()
-    ) {
-      toast.error("Please select your file.");
-      handleModalClose();
-      setSelectedFile({
-        ...selectedFile,
-        name: "",
-        description: "",
-      });
-      return;
-    }
-
-    // Validation: If description field is empty
-    if (!selectedFile.descritpion.trim()) {
-      toast.error("Please add a description.");
-      handleModalClose();
-      setSelectedFile({
-        ...selectedFile,
-        name: "",
-        description: "",
-      });
+    if (!validateFormAsset()) {
       return;
     }
 
@@ -495,10 +489,10 @@ const Implementation = ({
           ...prevState,
           audit: selectedOption
             ? {
-                text: selectedOption.text,
-                value: selectedOption.value,
-                isReadOnly: selectedOption.isReadOnly,
-              }
+              text: selectedOption.text,
+              value: selectedOption.value,
+              isReadOnly: selectedOption.isReadOnly,
+            }
             : "",
         }));
       }
@@ -1497,6 +1491,8 @@ const Implementation = ({
         fileDetails={fileDetails}
         setFileDetails={setFileDetails}
         toggleDrawer={toggleDrawer}
+        errors={errors}
+        setErrors={setErrors}
         handelDetailDoc={handelDetailDoc}
         handelFileDiscriptionChange={handelFileDiscriptionChange}
         handelFileChange={handelFileChange}
@@ -1773,7 +1769,7 @@ const Implementation = ({
                           </div>
                           <div
                             className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                            // style={{ width: "17%" }}
+                          // style={{ width: "17%" }}
                           >
                             <div className="flex items-center">
                               <StyledBadge badgeContent={task?.audits?.length}>
@@ -1950,16 +1946,16 @@ const Implementation = ({
                                         <div className="my-0.5 text-xs font-medium text-secondary">
                                           <small>
                                             {msg.startedDate &&
-                                            !msg.workInProgressDate &&
-                                            !msg.completedDate &&
-                                            !msg.dueDate
+                                              !msg.workInProgressDate &&
+                                              !msg.completedDate &&
+                                              !msg.dueDate
                                               ? `Started on ${formatDates(msg.startedDate)}`
                                               : msg.workInProgressDate &&
-                                                  !msg.completedDate &&
-                                                  !msg.dueDate
+                                                !msg.completedDate &&
+                                                !msg.dueDate
                                                 ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                                 : msg.dueDate &&
-                                                    !msg.completedDate
+                                                  !msg.completedDate
                                                   ? `Due on ${formatDates(msg.dueDate)}`
                                                   : msg.completedDate
                                                     ? `Completed on ${formatDates(msg.completedDate)}`
@@ -2537,7 +2533,7 @@ const Implementation = ({
                           maxWidth: "100%",
                         }}
                       >
-                        {}
+                        { }
                         {auditSelectData?.length ? (
                           <FormControl fullWidth error={!!errorsAddTask.audit}>
                             <FormLabel
@@ -2572,8 +2568,8 @@ const Implementation = ({
                             name="audit"
                             onChange={handleChangeAddTask}
                             value={taskAdd.audit}
-                            // error={!!errorsAddTask.audit}
-                            // helperText={errorsAddTask.audit}
+                          // error={!!errorsAddTask.audit}
+                          // helperText={errorsAddTask.audit}
                           />
                         )}
                       </Box>

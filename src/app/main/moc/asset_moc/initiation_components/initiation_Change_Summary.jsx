@@ -303,7 +303,7 @@ const InitiationComplete = ({
   };
   const [selectedFile, setSelectedFile] = useState({
     name: "",
-    description: "",
+    descritpion: "",
     type: "",
     document: "binary",
     documentType: "ChangeRequest",
@@ -397,10 +397,17 @@ const InitiationComplete = ({
       ...selectedFile,
       [name]: value,
     });
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
   const handelFileChange = (e) => {
     const file = e.target.files[0];
-
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      name: "",
+    }));
     const fileType = e.target.files[0].type.startsWith("image/")
       ? e.target.files[0].type?.split("/")[1]
       : e.target.files[0].type;
@@ -421,34 +428,20 @@ const InitiationComplete = ({
       changeRequestToken: assetEvaluationId,
     });
   };
+  const validateFormAssest = () => {
+    let tempErrorsDoc = {};
+    if (!selectedFile.name)
+      tempErrorsDoc.name = "File is required";
+
+    if (!selectedFile.descritpion)
+      tempErrorsDoc.descritpion = "Description is required";
+
+    setErrors(tempErrorsDoc);
+    return Object.keys(tempErrorsDoc).length === 0;
+  };
 
   const handleSubmitAsset = (e) => {
-    if (
-      !selectedFile.name.trim() ||
-      // !selectedFile.type.trim() ||
-      !selectedFile.document ||
-      !selectedFile.documentType.trim() ||
-      !selectedFile.documentId.trim()
-    ) {
-      toast.error("Please select your file.");
-      handleModalClose();
-      setSelectedFile({
-        ...selectedFile,
-        name: "",
-        descritpion: "",
-      });
-      return;
-    }
-
-    // Validation: If description field is empty
-    if (!selectedFile?.descritpion?.trim()) {
-      toast.error("Please add a description.");
-      handleModalClose();
-      setSelectedFile({
-        ...selectedFile,
-        name: "",
-        descritpion: "",
-      });
+    if (!validateFormAssest()) {
       return;
     }
     const formData = new FormData();
@@ -873,6 +866,8 @@ const InitiationComplete = ({
         fileDetails={fileDetails}
         setFileDetails={setFileDetails}
         selectedFile={selectedFile}
+        errors={errors}
+        setErrors={setErrors}
         handelFileChange={handelFileChange}
         listDocument={listDocument}
         handelDetailDoc={handelDetailDoc}

@@ -31,7 +31,8 @@ const DocumentModal = (props) => {
     handelFileDiscriptionChange,
     handleSubmitDocument,
     selectedDocument,
-
+    errors,
+    setErrors,
     formatDate,
     contentDetails,
     canExecute,
@@ -261,9 +262,15 @@ const DocumentModal = (props) => {
                   <TextField
                     id="selectedFileName"
                     label="Select File *"
+                    name="name"
                     variant="standard"
+                    onChange={(e) => {
+                      handelFileChange(e);
+                    }}
                     disabled
                     value={selectedFile?.name}
+                    error={!!errors?.name}
+                    helperText={errors?.name}
                   />
                 </Box>
                 <Box
@@ -284,6 +291,8 @@ const DocumentModal = (props) => {
                     variant="standard"
                     onChange={handelFileDiscriptionChange}
                     value={selectedFile?.descritpion}
+                    error={!!errors?.descritpion}
+                    helperText={errors?.descritpion}
                   />
                 </Box>
               </div>

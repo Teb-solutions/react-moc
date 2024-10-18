@@ -42,6 +42,7 @@ function InitiationApproval(props) {
     CountApprove,
     errorMessage,
   } = props;
+  const [errors, setErrors] = useState({});
   const [deletes, setDeletes] = useState(false);
   const [deletes1, setDeletes1] = useState(false);
   const [open1, setOpen1] = useState(false);
@@ -147,6 +148,10 @@ function InitiationApproval(props) {
     color: "black",
   });
   const handelFileChange1 = (e) => {
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      name: "",
+    }));
     const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
@@ -228,6 +233,10 @@ function InitiationApproval(props) {
       ...prevState,
       [name]: value,
     }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
   const handelDetailDoc = (doc) => {
     setSelectedDocument(doc);
@@ -239,38 +248,24 @@ function InitiationApproval(props) {
     setFileDetails1(true);
     setDocumenDowToken1(doc.token);
   };
+  const validateForm = () => {
+    let tempErrorsDoc = {};
+    if (!selectedFile1.name)
+      tempErrorsDoc.name = "File is required";
+
+    if (!selectedFile1.descritpion)
+      tempErrorsDoc.descritpion = "Description is required";
+
+    setErrors(tempErrorsDoc);
+    return Object.keys(tempErrorsDoc).length === 0;
+  };
 
 
   const handleSubmitAsset = (e) => {
-
-    if (
-      !selectedFile1.name.trim() ||
-      !selectedFile1.type.trim() ||
-      !selectedFile1.document ||
-      !selectedFile1.documentType.trim()
-
-    ) {
-      toast.error("Please select your file.");
-      handleModalClose1()
-      setSelectedFile({
-        ...selectedFile1,
-        name: "",
-        description: "",
-      });
+    if (!validateForm()) {
       return;
     }
 
-    // Validation: If description field is empty
-    if (!selectedFile1?.descritpion?.trim()) {
-      toast.error("Please add a description.");
-      handleModalClose1()
-      setSelectedFile({
-        ...selectedFile1,
-        name: "",
-        description: "",
-      });
-      return;
-    }
     const formData = new FormData();
     formData.append("name", selectedFile1.name);
     formData.append("descritpion", selectedFile1.descritpion);
@@ -491,12 +486,15 @@ function InitiationApproval(props) {
         open={open1}
         step={1}
         formatDate={formatDate}
-
+        errors={errors}
+        setErrors={setErrors}
         handleModalClose={handleModalClose1}
         listDocument={listDocument1}
         selectedDocument={selectedDocument1}
         toggleDrawer={toggleDrawer}
         openDrawer={openDrawer1}
+        errors={errors}
+        setErrors={setErrors}
         setOpenDrawer={setOpenDrawer1}
         fileDetails={fileDetails1}
         setFileDetails={setFileDetails1}

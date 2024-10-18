@@ -1109,6 +1109,10 @@ function ImplementationApproval({
   };
 
   const handelFileChangePssR = (e) => {
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      name: "",
+    }));
     const file = e.target.files[0];
 
     const fileNameWithoutExtension = e.target.files[0].name
@@ -1137,34 +1141,24 @@ function ImplementationApproval({
       ...prevState,
       [name]: value,
     }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+  };
+  const validateFormRes = () => {
+    let tempErrorsDoc = {};
+    if (!selectedFilePssR.name)
+      tempErrorsDoc.name = "File is required";
+
+    if (!selectedFilePssR.descritpion)
+      tempErrorsDoc.descritpion = "Description is required";
+
+    setErrors(tempErrorsDoc);
+    return Object.keys(tempErrorsDoc).length === 0;
   };
   const handleSubmitAssetPssR = async (e) => {
-    if (
-      !selectedFilePssR.name.trim() ||
-      //  !selectedFile.type.trim() ||
-      !selectedFilePssR.document ||
-      !selectedFilePssR.documentType.trim()
-      // !selectedFilePssR.documentId.trim()
-    ) {
-      toast.error("Please select your file.");
-      handleModalClosePssR();
-      setSelectedFilePssR({
-        ...selectedFilePssR,
-        name: "",
-        description: "",
-      });
-      return;
-    }
-
-    // Validation: If description field is empty
-    if (!selectedFilePssR?.descritpion?.trim()) {
-      toast.error("Please add a description.");
-      handleModalClosePssR();
-      setSelectedFilePssR({
-        ...selectedFilePssR,
-        name: "",
-        description: "",
-      });
+    if (!validateFormRes()) {
       return;
     }
     const formData = new FormData();

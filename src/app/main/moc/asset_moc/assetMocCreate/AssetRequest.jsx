@@ -187,7 +187,7 @@ function AssetRequest() {
     projectDescription: "",
     documentId: "",
   });
-
+  const [errors, setErrors] = useState({});
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [selectedFile, setSelectedFile] = useState({
@@ -228,6 +228,10 @@ function AssetRequest() {
       ...selectedFile,
       [name]: value,
     });
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
 
   const handleChange = (event) => {
@@ -254,20 +258,29 @@ function AssetRequest() {
   };
 
   const handelFileChange = (e) => {
+
+    setErrors({
+      ...errors,
+      name: "",
+    });
     const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
       setFileUrl(url);
       setFileName(file.name);
+
     }
+
     const newGuid = uuidv4();
     const fileNameWithoutExtension = e.target.files[0].name
       .split(".")
       .slice(0, -1)
       .join(".");
+
     const fileType = e.target.files[0].type.startsWith("image/")
       ? e.target.files[0].type?.split("/")[1]
       : e.target.files[0].type.type;
+
     setSelectedFile({
       ...selectedFile,
       name: fileNameWithoutExtension,
@@ -278,8 +291,10 @@ function AssetRequest() {
       documentId: selectedFile?.documentId,
       changeRequestToken: null,
     });
+
+
   };
-  const [errors, setErrors] = useState({});
+
 
   const validate = () => {
     let tempErrors = {};
@@ -336,35 +351,23 @@ function AssetRequest() {
   const handelActClose = () => {
     navigate("/moc");
   };
+
+  const validateForm = () => {
+    let tempErrorsDoc = {};
+    if (!selectedFile.name)
+      tempErrorsDoc.name = "File is required";
+
+    if (!selectedFile.descritpion)
+      tempErrorsDoc.descritpion = "Description is required";
+
+    setErrors(tempErrorsDoc);
+    return Object.keys(tempErrorsDoc).length === 0;
+  };
   const handleSubmitDocument = () => {
+
     // Validation: If file-related fields are empty
 
-    if (
-      !selectedFile.name.trim() ||
-      // !selectedFile.type.trim() ||
-      !selectedFile.document ||
-      !selectedFile.documentType.trim() ||
-      !selectedFile.documentId.trim()
-    ) {
-      toast.error("Please select your file.");
-      handleOpenDocModalClose();
-      setSelectedFile({
-        ...selectedFile,
-        name: "",
-        descritpion: "",
-      });
-      return;
-    }
-
-    // Validation: If description field is empty
-    if (!selectedFile.descritpion.trim()) {
-      toast.error("Please add a description.");
-      handleOpenDocModalClose();
-      setSelectedFile({
-        ...selectedFile,
-        name: "",
-        descritpion: "",
-      });
+    if (!validateForm()) {
       return;
     }
     const formData = new FormData();
@@ -569,6 +572,8 @@ function AssetRequest() {
             setOpenDrawer={setOpenDrawer}
             handleModalClose={handleOpenDocModalClose}
             listDocument={listDocument}
+            errors={errors}
+            setErrors={setErrors}
             toggleDrawer={toggleDrawer}
             handelDetailDoc={handelDetailDoc}
             handelFileDiscriptionChange={handelFileDiscriptionChange}

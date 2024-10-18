@@ -303,8 +303,16 @@ const ImplementationApprovalSite = ({
       ...prevState,
       [name]: value,
     }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
   };
   const handelFileChange = (e) => {
+    setErrors({
+      ...errors,
+      name: "",
+    });
     const file = e.target.files[0];
 
     const fileNameWithoutExtension = e.target.files[0].name
@@ -332,35 +340,23 @@ const ImplementationApprovalSite = ({
     setDocumenDowToken(doc.token);
   };
 
+  const validateForm = () => {
+    let tempErrorsDoc = {};
+    if (!selectedFile.name)
+      tempErrorsDoc.name = "File is required";
+
+    if (!selectedFile.descritpion)
+      tempErrorsDoc.descritpion = "Description is required";
+
+    setErrors(tempErrorsDoc);
+    return Object.keys(tempErrorsDoc).length === 0;
+  };
+
   const handleSubmitAsset = (e) => {
-    if (
-      !selectedFile.name.trim() ||
-      //  !selectedFile.type.trim() || 
-      !selectedFile.document ||
-      !selectedFile.documentType.trim() ||
-      !selectedFile.documentId.trim()
-    ) {
-      toast.error("Please select your file.");
-      handleModalClose()
-      setSelectedFile({
-        ...selectedFile,
-        name: "",
-        description: "",
-      });
+    if (!validateForm()) {
       return;
     }
 
-    // Validation: If description field is empty
-    if (!selectedFile?.descritpion?.trim()) {
-      toast.error("Please add a description.");
-      handleModalClose()
-      setSelectedFile({
-        ...selectedFile,
-        name: "",
-        description: "",
-      });
-      return;
-    }
     const formData = new FormData();
     formData.append("name", selectedFile.name);
     formData.append("descritpion", selectedFile.descritpion);
@@ -1170,7 +1166,8 @@ const ImplementationApprovalSite = ({
         selectedDocument={selectedDocument}
         handleDelete={handleDelete}
         handelDetailDoc={handelDetailDoc}
-
+        errors={errors}
+        setErrors={setErrors}
         handleSubmitDocument={handleSubmitAsset}
         listDocument={listDocument}
         CountApprove={CountApprove}
