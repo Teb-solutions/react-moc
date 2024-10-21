@@ -33,6 +33,7 @@ const SessionModal = ({
   handelCreateSession,
   handleCommentChange,
   isCommentValid,
+  SessionCurrentActiveData
 }) => {
   const style1 = {
     position: "absolute",
@@ -81,7 +82,7 @@ const SessionModal = ({
             </FuseSvgIcon>
           </div>
 
-          {SessionList[0]?.isActive ? (
+          {Session.hasActiveSession == true ? (
             <>
               <div className="pb-0 p-30 pt-24">
                 <div
@@ -121,13 +122,27 @@ const SessionModal = ({
                     style={{ display: "flex", flexDirection: "column" }}
                   >
                     <div style={{ flex: "65%" }}>
-                      {SessionList?.map((teamMember, index) =>
-                        teamMember.teamList.map((itm) => (
+                      {SessionCurrentActiveData?.map((itm, index) => {
+                        // Extract names of CHANGE LEADER and HSEQ staff
+                        const changeLeaderNames =
+                          SessionCurrentActiveData.filter(
+                            (item) => item.teamType === 1 || item.teamType === 2
+                          ).map((item) => item.staffName);
+
+                        // Only render if the staff name is not in the CHANGE LEADER or HSEQ names
+                        if (
+                          itm.teamType === 3 &&
+                          changeLeaderNames.includes(itm.staffName)
+                        ) {
+                          return null; // Skip this item if it's OTHERS and matches any CHANGE LEADER or HSEQ
+                        }
+
+                        return (
                           <div key={index} className="ng-star-inserted">
                             <b className="ng-star-inserted">
-                              {itm.teamType == 1
+                              {itm.teamType === 1
                                 ? "CHANGE LEADER"
-                                : itm.teamType == 2
+                                : itm.teamType === 2
                                   ? "HSEQ"
                                   : "OTHERS"}
                             </b>
@@ -151,8 +166,8 @@ const SessionModal = ({
                               <div>Commented as: {itm.comments}</div>
                             )}
                           </div>
-                        ))
-                      )}
+                        );
+                      })}
                     </div>
                   </div>
 

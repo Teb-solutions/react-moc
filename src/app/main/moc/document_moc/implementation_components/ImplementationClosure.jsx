@@ -74,7 +74,7 @@ const ImplementationClosure = ({
           Closure by Doc Controller
         </h2>
       </div>
-      <Paper className="w-full box_reset">
+      {/* <Paper className="w-full box_reset">
         <div
           _ngcontent-fyk-c288=""
           class="p-30 pt-24 pb-24  mb-0 ng-star-inserted"
@@ -234,7 +234,7 @@ const ImplementationClosure = ({
             </div>
           </div>
         </div>
-      </Paper>
+      </Paper> */}
 
       <div className="flex flex-col px-4 py-3  border rounded m-24">
         <ul>

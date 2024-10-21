@@ -511,15 +511,16 @@ const AssetCourse = () => {
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
-              .then((resp) => {
+              .then(async (resp) => {
 
 
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
+
                 if (resp.data?.data) {
                   const data = resp.data?.data;
                   if (data.requestTypeName !== "Document") {
-                    const updatedTasks = data.tasklist.map((task) => {
+                    const updatedTasks = await data.tasklist.map((task) => {
                       task.showPreviousTasks = false;
                       task.riskAnalysisList = data.riskAnalysisList.filter(
                         (ra) => ra.changeImapactId === task.changeImapactId
@@ -527,7 +528,7 @@ const AssetCourse = () => {
                       return task;
                     });
 
-                    setTasks(updatedTasks);
+                    await setTasks(updatedTasks);
                     // loadRiskAnalysisChart(updatedTasks);
                     apiAuth
                       .get(
@@ -566,7 +567,7 @@ const AssetCourse = () => {
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
-              .then((resp) => {
+              .then(async (resp) => {
 
 
                 setReqNo(resp.data.data.requestNo);
@@ -582,7 +583,7 @@ const AssetCourse = () => {
                       return task;
                     });
 
-                    setTasks(updatedTasks);
+                    await setTasks(updatedTasks);
                     // loadRiskAnalysisChart(updatedTasks);
 
                     // https://mocapi.tebs.co.in/api/DocumentManager/DocumentCount?id=99ea4bdc97ee449183b3fd50a0aee88a&documentType=Approval
@@ -623,7 +624,7 @@ const AssetCourse = () => {
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
-              .then((resp) => {
+              .then(async (resp) => {
 
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
@@ -638,7 +639,7 @@ const AssetCourse = () => {
                       return task;
                     });
 
-                    setTasks(updatedTasks);
+                    await setTasks(updatedTasks);
                     // loadRiskAnalysisChart(updatedTasks);
                     apiAuth
                       .get(
@@ -684,7 +685,7 @@ const AssetCourse = () => {
               .get(
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
-              .then((resp) => {
+              .then(async (resp) => {
 
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
@@ -699,7 +700,7 @@ const AssetCourse = () => {
                       return task;
                     });
 
-                    setTasks(updatedTasks);
+                    await setTasks(updatedTasks);
 
                     // loadRiskAnalysisChart(updatedTasks);
                     apiAuth
@@ -1255,14 +1256,14 @@ const AssetCourse = () => {
                   contentDetailsT={contentDetails}
                 />
               )}
-              {currentPhase === "EvaluationApproval" && tasks.length > 0 && (
+              {currentPhase === "EvaluationApproval" && (
                 <EvaluationApproval
                   contentDetails={contentDetails}
                   AppActions={appActions}
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
                   setContentDetails={setContentDetails}
-                  tasks={tasks}
+                  {...(tasks.length > 0 && { tasks })}
 
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
@@ -1281,7 +1282,7 @@ const AssetCourse = () => {
                   assetEvaluationId={assetEvaluationId}
                   setContentDetails={setContentDetails}
                   contentDetails={contentDetails}
-                  tasks={tasks.length > 0 && tasks}
+                  {...(tasks.length > 0 && { tasks })}
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
@@ -1298,7 +1299,7 @@ const AssetCourse = () => {
                   assetEvaluationId={assetEvaluationId}
                   contentDetails={contentDetails}
                   setContentDetails={setContentDetails}
-                  tasks={tasks.length > 0 && tasks}
+                  {...(tasks.length > 0 && { tasks })}
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
@@ -1316,7 +1317,7 @@ const AssetCourse = () => {
                   assetEvaluationId={assetEvaluationId}
                   contentDetails={contentDetails}
                   setContentDetails={setContentDetails}
-                  tasks={tasks.length > 0 && tasks}
+                  {...(tasks.length > 0 && { tasks })}
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}

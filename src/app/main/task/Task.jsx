@@ -1907,8 +1907,7 @@ const Task = () => {
                     >
                       {" "}
                       <span className="text-success">
-                        Awaiting approval from
-                        {task?.changeLeaderName}
+                        Awaiting approval from {" "} {task?.changeLeaderName}
                       </span>
                     </div>
                     <div className="flex-auto border-b"></div>

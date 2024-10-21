@@ -120,17 +120,19 @@ const EvaluationApproval = ({
   const taskResidualRisks = [];
   const taskLabels = [];
   useEffect(() => {
+    if (tasks && tasks.length > 0) {
 
-    loadRiskAnalysisChart(tasks)
-
-  }, [])
-
+      loadRiskAnalysisChart(tasks)
+    } else {
+      console.log("Tasks are still empty.");
+    }
+  }, [tasks]);
   const loadRiskAnalysisChart = (tasks) => {
 
     // Get the highest Source Task ID as fallback
     const highestSourceTaskId = Math.max(...tasks.map(task => task.sourceTaskId || task.referenceTaskId || 0));
 
-    tasks.forEach((task) => {
+    tasks?.forEach((task) => {
       // Check if riskAnalysisList exists and has data
       if (task.riskAnalysisList && task.riskAnalysisList.length > 0) {
         // Use the sourceTaskId or highestSourceTaskId if not defined
@@ -195,7 +197,7 @@ const EvaluationApproval = ({
   };
 
 
-  console.log(riskAnalysisChartOptions, "8888")
+
   //ResponseTask start
   const [Resdeletes, setResDeletes] = useState(false);
   const [taskRespOpen, setTaskRespOpen] = useState(false);

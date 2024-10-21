@@ -195,7 +195,7 @@ const ImplementationView = (props) => {
                             <div className="d-flex flex-wrap justify-between w-100 pr-10">
                               <div
                                 className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                // style={{ width: "17%" }}
+                              // style={{ width: "17%" }}
                               >
                                 <div className="flex items-center">
                                   <b>Task #{detail.sourceTaskId}</b>
@@ -204,11 +204,11 @@ const ImplementationView = (props) => {
 
                               <div
                                 className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                // style={{ width: "17%" }}
+                              // style={{ width: "17%" }}
                               >
                                 <div className="flex items-center" style={{}}>
                                   {detail.isCompleted &&
-                                  detail.taskStatus === 3 ? (
+                                    detail.taskStatus === 3 ? (
                                     <span className="text-green">Approved</span>
                                   ) : detail.isCompleted &&
                                     detail.taskStatus !== 3 ? (
@@ -224,7 +224,7 @@ const ImplementationView = (props) => {
                               </div>
                               <div
                                 className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                // style={{ width: "17%" }}
+                              // style={{ width: "17%" }}
                               >
                                 <div className="flex items-center">
                                   No Risks
@@ -232,7 +232,7 @@ const ImplementationView = (props) => {
                               </div>
                               <div
                                 className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                // style={{ width: "17%" }}
+                              // style={{ width: "17%" }}
                               >
                                 <div className="flex items-center">
                                   {detail.assignedStaff}
@@ -241,7 +241,7 @@ const ImplementationView = (props) => {
 
                               <div
                                 className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                // style={{ width: "17%" }}
+                              // style={{ width: "17%" }}
                               >
                                 <div className="flex items-center">
                                   {formatDate(detail.dueDate)}
@@ -249,7 +249,7 @@ const ImplementationView = (props) => {
                               </div>
                               <div
                                 className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                                // style={{ width: "17%" }}
+                              // style={{ width: "17%" }}
                               >
                                 <div className="flex items-center">
                                   <StyledBadge
@@ -273,30 +273,32 @@ const ImplementationView = (props) => {
                                       Audits
                                     </Button>
                                   </StyledBadge>
+                                  {canEdit && (
 
-                                  <Button
-                                    className="whitespace-nowrap ms-5"
-                                    style={{
-                                      border: "1px solid",
-                                      backgroundColor: "#0000",
-                                      color: "black",
-                                      borderColor: "rgba(203,213,225)",
-                                    }}
-                                    variant="contained"
-                                    color="warning"
-                                    onClick={(e) => {
-                                      handelOpenAuditComment(detail.id);
-                                      e.stopPropagation();
-                                    }}
-                                  >
-                                    <FuseSvgIcon
-                                      className="text-48"
-                                      size={24}
-                                      color="action"
+                                    <Button
+                                      className="whitespace-nowrap ms-5"
+                                      style={{
+                                        border: "1px solid",
+                                        backgroundColor: "#0000",
+                                        color: "black",
+                                        borderColor: "rgba(203,213,225)",
+                                      }}
+                                      variant="contained"
+                                      color="warning"
+                                      onClick={(e) => {
+                                        handelOpenAuditComment(detail.id);
+                                        e.stopPropagation();
+                                      }}
                                     >
-                                      heroicons-outline:document-text
-                                    </FuseSvgIcon>
-                                  </Button>
+                                      <FuseSvgIcon
+                                        className="text-48"
+                                        size={24}
+                                        color="action"
+                                      >
+                                        heroicons-outline:document-text
+                                      </FuseSvgIcon>
+                                    </Button>
+                                  )}
                                   {/* )} */}
                                   {detail?.taskDateUpdates.length !== 0 &&
                                     canEdit &&
@@ -479,16 +481,16 @@ const ImplementationView = (props) => {
                                             <div className="my-0.5 text-xs font-medium text-secondary">
                                               <small>
                                                 {msg.startedDate &&
-                                                !msg.workInProgressDate &&
-                                                !msg.completedDate &&
-                                                !msg.dueDate
+                                                  !msg.workInProgressDate &&
+                                                  !msg.completedDate &&
+                                                  !msg.dueDate
                                                   ? `Started on ${formatDate(msg.startedDate)}`
                                                   : msg.workInProgressDate &&
-                                                      !msg.completedDate &&
-                                                      !msg.dueDate
+                                                    !msg.completedDate &&
+                                                    !msg.dueDate
                                                     ? `Work in Progress since ${formatDate(msg.workInProgressDate)}`
                                                     : msg.dueDate &&
-                                                        !msg.completedDate
+                                                      !msg.completedDate
                                                       ? `Due on ${formatDate(msg.dueDate)}`
                                                       : msg.completedDate
                                                         ? `Completed on ${formatDate(msg.completedDate)}`

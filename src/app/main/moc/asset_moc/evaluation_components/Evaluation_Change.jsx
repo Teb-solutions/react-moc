@@ -100,7 +100,7 @@ function EvaluationChange({
     setRemark(event.target.value);
     setRemarkError("");
   };
-
+  const [SessionCurrentActiveData, setSessionCurrentActiveData] = useState([]);
   const [value, setValue] = useState(0);
 
   const [timer, setTimer] = useState(null);
@@ -123,6 +123,9 @@ function EvaluationChange({
         }
         setSessionTime(activeSessions[0].timeoutMin);
       });
+    apiAuth.get(`TeamAssignment/List?id=${assetEvaluationId}`).then((resp) => {
+      setSessionCurrentActiveData(resp?.data?.data);
+    });
   };
 
   const handleOpenSession = () => {
@@ -3759,6 +3762,7 @@ function EvaluationChange({
         handelCreateSession={handelCreateSession}
         handleCommentChange={handleCommentChange}
         isCommentValid={isCommentValid}
+        SessionCurrentActiveData={SessionCurrentActiveData}
       />
       <SessionListModal
         openSession={openSession}

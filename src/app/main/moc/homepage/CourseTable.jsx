@@ -58,7 +58,7 @@ function createData(
 
 export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
   const feature = decryptFeature();
-  console.log(feature, "feature");
+
   const columns = [
     // { id: "index", label: "#", minWidth: 50 },
     // { id: "code", label: "Code", minWidth: 100 },
@@ -271,7 +271,7 @@ export default function StickyHeadTable({ filteredDatas, setOriginalData }) {
             variant="outlined"
             placeholder="Type your reason here..."
             onChange={(e) => setReason(e.target.value)}
-            // Add any additional props or event handlers you need
+          // Add any additional props or event handlers you need
           />
         </div>
         <div

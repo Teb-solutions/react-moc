@@ -22,7 +22,7 @@ function checkAndRename(file, fromExt, toExt) {
 			const newPath = path.join(path.dirname(file), path.basename(file, fromExt) + toExt);
 			fs.renameSync(file, newPath);
 			/* eslint-disable-next-line no-console */
-			console.log(`Renamed ${file} to ${newPath}`);
+			
 		}
 	} catch (error) {
 		/* eslint-disable-next-line no-console */

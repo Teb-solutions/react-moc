@@ -473,6 +473,9 @@ function Course() {
               .then((resp) => {
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp.data?.data);
+                setConsolidatedDocumentUrl(
+                  resp.data?.data?.consolidatedDocumentUrl
+                );
                 apiAuth.get(`/Activity/ActivityDetails/${uid}`).then((resp) => {
                   setCloseActions(resp.data.data.actions);
                   setCloseActivity(resp.data.data.activity);
@@ -884,9 +887,9 @@ function Course() {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                             className="pt-4"
@@ -895,7 +898,7 @@ function Course() {
                               <span>
                                 <b>
                                   {step.targetUsers &&
-                                  step.targetUsers.length > 0
+                                    step.targetUsers.length > 0
                                     ? "By " + step?.targetUsers[0]
                                     : ""}
                                 </b>
@@ -917,9 +920,9 @@ function Course() {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -932,9 +935,9 @@ function Course() {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                           >
