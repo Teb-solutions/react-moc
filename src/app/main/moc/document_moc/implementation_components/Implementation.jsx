@@ -216,8 +216,7 @@ const Implementation = ({
 
   const validateFormAsset = () => {
     let tempErrorsDoc = {};
-    if (!selectedFile.name)
-      tempErrorsDoc.name = "File is required";
+    if (!selectedFile.name) tempErrorsDoc.name = "File is required";
 
     if (!selectedFile.descritpion)
       tempErrorsDoc.descritpion = "Description is required";
@@ -487,10 +486,10 @@ const Implementation = ({
           ...prevState,
           audit: selectedOption
             ? {
-              text: selectedOption.text,
-              value: selectedOption.value,
-              isReadOnly: selectedOption.isReadOnly,
-            }
+                text: selectedOption.text,
+                value: selectedOption.value,
+                isReadOnly: selectedOption.isReadOnly,
+              }
             : "",
         }));
       }
@@ -1504,7 +1503,6 @@ const Implementation = ({
           </Button>
         </div>
       </DeleteModal>
-      []
       <DocumentModal
         open={openMoc}
         handleModalClose={handleModalClose}
@@ -1794,7 +1792,7 @@ const Implementation = ({
                           </div>
                           <div
                             className="inventory-grid grid items-center gap-4 py-3 px-2 md:px-2"
-                          // style={{ width: "17%" }}
+                            // style={{ width: "17%" }}
                           >
                             <div className="flex items-center">
                               <StyledBadge badgeContent={task?.audits?.length}>
@@ -1971,16 +1969,16 @@ const Implementation = ({
                                         <div className="my-0.5 text-xs font-medium text-secondary">
                                           <small>
                                             {msg.startedDate &&
-                                              !msg.workInProgressDate &&
-                                              !msg.completedDate &&
-                                              !msg.dueDate
+                                            !msg.workInProgressDate &&
+                                            !msg.completedDate &&
+                                            !msg.dueDate
                                               ? `Started on ${formatDates(msg.startedDate)}`
                                               : msg.workInProgressDate &&
-                                                !msg.completedDate &&
-                                                !msg.dueDate
+                                                  !msg.completedDate &&
+                                                  !msg.dueDate
                                                 ? `Work in Progress since ${formatDates(msg.workInProgressDate)}`
                                                 : msg.dueDate &&
-                                                  !msg.completedDate
+                                                    !msg.completedDate
                                                   ? `Due on ${formatDates(msg.dueDate)}`
                                                   : msg.completedDate
                                                     ? `Completed on ${formatDates(msg.completedDate)}`
@@ -2558,7 +2556,7 @@ const Implementation = ({
                           maxWidth: "100%",
                         }}
                       >
-                        { }
+                        {}
                         {auditSelectData?.length ? (
                           <FormControl fullWidth error={!!errorsAddTask.audit}>
                             <FormLabel
@@ -2593,8 +2591,8 @@ const Implementation = ({
                             name="audit"
                             onChange={handleChangeAddTask}
                             value={taskAdd.audit}
-                          // error={!!errorsAddTask.audit}
-                          // helperText={errorsAddTask.audit}
+                            // error={!!errorsAddTask.audit}
+                            // helperText={errorsAddTask.audit}
                           />
                         )}
                       </Box>

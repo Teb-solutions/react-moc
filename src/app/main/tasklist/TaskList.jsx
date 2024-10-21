@@ -173,6 +173,7 @@ export default function StickyHeadTable() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [reasons, setReason] = useState("");
+  const [hasError, setHasError] = useState(false);
 
   const handleSearch = (event) => {
     setSearchQuery(event.target.value);
@@ -328,23 +329,51 @@ export default function StickyHeadTable() {
     setDelete(true);
   };
 
-  const handleCloseDelete = () => setDelete(false);
+  const handleCloseDelete = () => {
+    setReason("");
+    setDelete(false);
+  };
 
   const handleSubmitDelete = () => {
+    if (!reasons.trim()) {
+      setHasError(true); // Show error if reason is empty
+      return;
+    }
+
     apiAuth
       .put(`/Task/RemoveTask`, {
         id: Idsss,
         reason: reasons,
       })
       .then((resp) => {
-        if (resp.data.statusCode == "424") {
-          toast.error(resp.data.message);
+        if (resp.data.statusCode !== 200) {
           setDelete(false);
+          toast.error(resp.data.message);
         } else {
           toast.success("Deleted.");
           setDelete(false);
-
           getRecords();
+        }
+      })
+      .catch((error) => {
+        if (error.errorsData) {
+          // Access the 'Reason' validation error message from the API response
+          const reasonErrors = error.errorsData.Reason[0];
+          if (reasonErrors) {
+            setDelete(false);
+            // Display the first error message
+            toast.error(reasonErrors);
+          } else {
+            setDelete(false);
+
+            // If there are no specific errors, display a generic error message
+            toast.error("An error occurred.");
+          }
+        } else {
+          setDelete(false);
+
+          // Handle other types of errors (e.g., network issues, etc.)
+          toast.error("An unexpected error occurred.");
         }
       });
   };
@@ -743,8 +772,20 @@ export default function StickyHeadTable() {
                   rows={4}
                   variant="outlined"
                   placeholder="Type your reason here..."
-                  onChange={(e) => setReason(e.target.value)}
-                  // Add any additional props or event handlers you need
+                  onChange={(e) => {
+                    setReason(e.target.value);
+                    setHasError(false); // Reset error when the user starts typing
+                  }}
+                  value={reasons}
+                  error={hasError} // Show error only if `hasError` is true
+                  helperText={hasError ? "Reason is required" : ""}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-error fieldset": {
+                        borderColor: "red", // Set the border color to red when in error state
+                      },
+                    },
+                  }}
                 />
               </Box>
 
@@ -799,7 +840,7 @@ export default function StickyHeadTable() {
                     Task Details #{openView?.index}
                   </span>
                   <span
-                    onClick={handleClose}
+                    onClick={handleCloseDelete}
                     style={{ cursor: "pointer" }}
                     className="cursor-pointer"
                   >
