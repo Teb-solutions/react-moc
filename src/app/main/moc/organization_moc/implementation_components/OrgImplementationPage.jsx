@@ -41,6 +41,9 @@ import AuditModal from "../../common_modal/audit_modals/AddAudit";
 import AuditListModal from "../../common_modal/audit_modals/AuditList";
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
 import DocumentModal from "../../common_modal/documentModal";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import dayjs from "dayjs";
+import DateExtend from "../../asset_moc/implementaion_components/DateExtend";
 function createData(index, Task, Audit, date, staff) {
   return { index, Task, Audit, date, staff };
 }
@@ -373,8 +376,111 @@ const OrgImplementation = ({
     });
   };
 
+  const formatDates = (date) => {
+    return new Date(date).toLocaleString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    });
+  };
+  const [dateExtendopen, setDateExtendOpen] = useState(false);
+  const [commentss, setCommentss] = useState("");
+  const [ShowTask, setShowTask] = useState(false);
+  const [dueDateValidation, setDueDateValidation] = useState(null);
+  const [task, setTask] = useState({});
+  const [reqDate, setReqDate] = useState(null);
+  const [dueDateCommentValidation, setDueDateCommentValidation] =
+    useState(null);
+  const handledateExtendopen = (e, task, show) => {
+    e.preventDefault();
+    if (show === "false") {
+      setShowTask(true);
+    } else {
+      setShowTask(false);
+    }
+    getRecords();
+    setTask(task);
+
+    setDateExtendOpen(true);
+  };
+
+  const handlehandledateExtendClose = () => {
+    setDueDateValidation(false);
+
+    setDueDateCommentValidation(false);
+    setDateExtendOpen(false);
+  };
+
+  const handleSubmits = (task, value) => {
+    if (!commentss || !reqDate) {
+      if (!reqDate) setDueDateValidation("Due Date is required");
+      if (!comments)
+        setDueDateCommentValidation("Please provide a reason for extension");
+
+      return;
+    }
+    let formattedReqDate = dayjs(reqDate).format("MM-DD-YYYY");
+    let formattedOldDate = dayjs(task.dueDate).format("MM-DD-YYYY");
+
+    const lastTaskDateUpdate = task.taskDateUpdates.filter(
+      (update) => update.taskdateupdateStatus === 1
+    );
+
+    apiAuth
+      .put(
+        `/Task/ApproveTaskDateUpdate/?requestToken=${orgEvaluationId}&taskId=${task?.sourceTaskId}&updatedateID=${lastTaskDateUpdate[0].id}`,
+        {
+          OldDate: formattedOldDate,
+          ApprovedComments: commentss,
+          ApprovedDate: formattedReqDate,
+          TaskdateupdateStatus: value == 2 ? "Approved" : "Rejected",
+          updatedateID: lastTaskDateUpdate[0].id,
+        }
+      )
+      .then((response) => {
+        if (response.data.statusCode == 500) {
+          getRecords();
+          setDateExtendOpen(false);
+
+          toast.error(response.data.message);
+        } else {
+          setDateExtendOpen(false);
+          toast.success(response.data.message);
+          setTimeout(() => location.reload(), 1000);
+
+          setCommentss("");
+          setReqDate(null);
+          setTask({
+            ...task,
+            activeDateUpdateRequest: 1,
+          });
+        }
+      })
+      .catch((err) => {
+        setDateExtendOpen(false);
+        toast.error("Some error occured");
+      });
+  };
+
   return (
     <div className="w-full">
+      <DateExtend
+        dateExtendopen={dateExtendopen}
+        handlehandledateExtendClose={handlehandledateExtendClose}
+        task={task}
+        ShowTask={ShowTask}
+        formatDates={formatDates}
+        setCommentss={setCommentss}
+        AdapterDateFns={AdapterDateFns}
+        reqDate={reqDate}
+        setReqDate={setReqDate}
+        dueDateValidation={dueDateValidation}
+        setDueDateValidation={setDueDateValidation}
+        commentss={commentss}
+        dueDateCommentValidation={dueDateCommentValidation}
+        setDueDateCommentValidation={setDueDateCommentValidation}
+        handleSubmits={handleSubmits}
+      />
       <ToastContainer
         className="toast-container"
         position="top-right"
@@ -627,6 +733,59 @@ const OrgImplementation = ({
                               </FuseSvgIcon>
                             </Button>
                           )}
+                          {detail?.taskDateUpdates.length !== 0 &&
+                            lastActCode?.canEdit &&
+                            (!detail.taskDateUpdates[
+                              detail.taskDateUpdates.length - 1
+                            ]?.approvedComments ? (
+                              <Button
+                                className="whitespace-nowrap ms-5 mt-5 mb-5"
+                                style={{
+                                  border: "1px solid",
+                                  backgroundColor: "#0000",
+                                  color: "black",
+                                  borderColor: "rgba(203,213,225)",
+                                }}
+                                variant="contained"
+                                color="warning"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handledateExtendopen(e, detail, "true");
+                                }}
+                              >
+                                <FuseSvgIcon
+                                  className="text-48"
+                                  size={24}
+                                  color="red"
+                                >
+                                  heroicons-outline:calendar
+                                </FuseSvgIcon>
+                              </Button>
+                            ) : (
+                              <Button
+                                className="whitespace-nowrap ms-5 mt-5 mb-5"
+                                style={{
+                                  border: "1px solid",
+                                  backgroundColor: "#0000",
+                                  color: "black",
+                                  borderColor: "rgba(203,213,225)",
+                                }}
+                                variant="contained"
+                                color="warning"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handledateExtendopen(e, detail, "false");
+                                }}
+                              >
+                                <FuseSvgIcon
+                                  className="text-48"
+                                  size={24}
+                                  color="action"
+                                >
+                                  heroicons-outline:calendar
+                                </FuseSvgIcon>
+                              </Button>
+                            ))}
                         </div>
                       </div>
                     </div>
