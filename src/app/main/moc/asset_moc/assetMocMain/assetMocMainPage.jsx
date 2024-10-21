@@ -978,13 +978,13 @@ const AssetCourse = () => {
             case 1:
               setChangeLeader(
                 staffList.find((option) => option.value === member.staffId) ||
-                  null
+                null
               );
               break;
             case 2:
               setHseq(
                 staffList.find((option) => option.value === member.staffId) ||
-                  null
+                null
               );
               break;
             case 3:
@@ -1011,7 +1011,7 @@ const AssetCourse = () => {
             case 4:
               setSiteInCharge(
                 staffList.find((option) => option.value === member.staffId) ||
-                  null
+                null
               );
               break;
             default:
@@ -1274,14 +1274,14 @@ const AssetCourse = () => {
                   contentDetailsT={contentDetails}
                 />
               )}
-              {currentPhase === "EvaluationApprovalCooprate" && tasks.length > 0 && (
+              {currentPhase === "EvaluationApprovalCooprate" && (
                 <EvaluationApproval
                   AppActions={appActions}
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
                   setContentDetails={setContentDetails}
                   contentDetails={contentDetails}
-                  tasks={tasks}
+                  tasks={tasks.length > 0 && tasks}
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
@@ -1291,14 +1291,14 @@ const AssetCourse = () => {
                   CountApprove={CountApprove1}
                 />
               )}
-              {currentPhase === "EvaluationApprovalVp" && tasks.length > 0 && (
+              {currentPhase === "EvaluationApprovalVp" && (
                 <EvaluationApproval
                   AppActions={appActions}
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
                   contentDetails={contentDetails}
                   setContentDetails={setContentDetails}
-                  tasks={tasks}
+                  tasks={tasks.length > 0 && tasks}
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
@@ -1309,14 +1309,14 @@ const AssetCourse = () => {
                   CountApprove={CountApprove3}
                 />
               )}
-              {currentPhase === "EvaluationApprovalVpHse" && tasks.length > 0 && (
+              {currentPhase === "EvaluationApprovalVpHse" && (
                 <EvaluationApproval
                   AppActions={appActions}
                   AppActivity={appActivity}
                   assetEvaluationId={assetEvaluationId}
                   contentDetails={contentDetails}
                   setContentDetails={setContentDetails}
-                  tasks={tasks}
+                  tasks={tasks.length > 0 && tasks}
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
@@ -1549,9 +1549,9 @@ const AssetCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                             className="pt-4"
@@ -1560,7 +1560,7 @@ const AssetCourse = () => {
                               <span>
                                 <b>
                                   {step.targetUsers &&
-                                  step.targetUsers.length > 0
+                                    step.targetUsers.length > 0
                                     ? "By " + step.targetUsers[0]
                                     : ""}
                                 </b>
@@ -1582,9 +1582,9 @@ const AssetCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -1597,9 +1597,9 @@ const AssetCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                    color: "rgb(79, 70, 229)",
-                                    fontSize: "10px",
-                                  }
+                                  color: "rgb(79, 70, 229)",
+                                  fontSize: "10px",
+                                }
                                 : { fontSize: "10px" }
                             }
                           >
