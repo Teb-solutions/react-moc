@@ -258,6 +258,7 @@ input:-webkit-autofill:active {
   z-index: 30;
   transition: right 0.3s ease; /* Smooth transition */
   overflow-y: auto; /* Enable scrolling within the sidebar */
+  height: calc(100% - 120px);
   /* height: 500px;
   min-height: 900px; */
 }
