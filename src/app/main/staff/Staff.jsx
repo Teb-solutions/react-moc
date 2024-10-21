@@ -125,7 +125,6 @@ const Task = () => {
     });
   }
 
-
   useEffect(() => {
     getRecords();
   }, []);
@@ -263,7 +262,6 @@ const Task = () => {
       .put(`/Task/Update?id=${taskType}`, updatedTask)
       .then((response) => {
         setOpen(false);
-
       })
       .catch((error) => {
         setOpen(false);
@@ -293,7 +291,6 @@ const Task = () => {
       image: event.target.files[0], // Set photoUrl to 'yes' when an image is uploaded, else ''
     }));
   };
-
 
   const validate = () => {
     let tempErrors = {};
@@ -367,12 +364,18 @@ const Task = () => {
           apiAuth
             .put(path, formDatas)
             .then((response) => {
-              toast?.success("Staff Updated");
-              setSidebarOpen(false);
-              apiAuth.get(`/Staff/List`).then((resp) => {
+              if (response.data.statusCode == 200) {
+                toast?.success("Staff Updated");
+                setSidebarOpen(false);
+                apiAuth.get(`/Staff/List`).then((resp) => {
+                  setIsLoading(false);
+                  setTaskList(resp.data.data);
+                });
+              } else {
                 setIsLoading(false);
-                setTaskList(resp.data.data);
-              });
+
+                toast?.error(response.data.message);
+              }
             })
             .catch((error) => {
               toast?.error("Some Error Occured");
@@ -784,8 +787,8 @@ const Task = () => {
                                 className="switch_check"
                                 checked={formData.isActive}
                                 onChange={handleToggleChange}
-                              // Reflects the isActive property of the department
-                              // Passes the index of the department
+                                // Reflects the isActive property of the department
+                                // Passes the index of the department
                               />
                             }
                           />
@@ -886,7 +889,7 @@ const Task = () => {
                       <div
                         _ngcontent-fyk-c288=""
                         class="flex items-center w-full  border-b justify-between"
-                      // style={{ margin: "18px" }}
+                        // style={{ margin: "18px" }}
                       ></div>
                       <div className="flex-auto" style={{ margin: "18px" }}>
                         <div className="flex flex-col-reverse">
