@@ -34,6 +34,7 @@ import SecurityConfig from "../security/SecurityConfig";
 import MocConfig from "../moc/MocConfig";
 import OrgActivityConfig from "../moc/organization_moc/orgMocCreate/OrgActivityConfig";
 import errorPageConfig from "../404/ErrorPageConfig";
+import DepartmentConfig from "../masters/department/DepartMentConfig";
 
 /**
  * Dashboards
@@ -49,6 +50,7 @@ const dashboardsConfigs = [
   notificationConfig,
   StaffConfig,
   SecurityConfig,
+  DepartmentConfig,
   DesignationConfig,
   DivisionConfig,
   FunctionConfig,

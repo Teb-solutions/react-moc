@@ -12,18 +12,22 @@ const StaffConfig = {
   },
   auth: authRoles.onlyGuest,
   routes: [
+    // Staff list route
     {
-      path: feature.includes("STA") ? "/staff" : "404",
+      path: feature.includes("STA") ? "/staff" : "/404",
       element: feature.includes("STA") ? <Staff /> : <Error404Page />,
     },
+    // Specific staff details route
     {
-      path: feature.includes("STAU") ? ":id/*" : "404",
+      path: feature.includes("STAU") ? "/staff/:id/*" : "/404",
       element: feature.includes("STAU") ? <Staff /> : <Error404Page />,
     },
+    // Catch-all route for 404
     {
-      path: feature.includes("STAU") ? "id" : "404",
-      element: feature.includes("STAU") ? <Staff /> : <Error404Page />,
+      path: "*", // This will match any invalid URL
+      element: <Error404Page />,
     },
   ],
 };
+
 export default StaffConfig;

@@ -100,7 +100,6 @@ const navigationConfig1 = [
             title: "Department",
             type: "item",
             url: "/masters/department",
-            end: true,
             feature: "MST",
           },
           {
