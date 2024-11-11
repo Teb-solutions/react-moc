@@ -311,7 +311,6 @@ export default function StickyHeadTable() {
   };
 
   const handleDelete = (row) => {
-
     setId(row.id);
     handleOpenDelete();
   };

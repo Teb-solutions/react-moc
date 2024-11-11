@@ -2,21 +2,20 @@ import { lazy } from "react";
 import { Navigate } from "react-router-dom";
 import { authRoles } from "src/app/auth";
 
-const AcademyApp = lazy(() => import("./riskCourse"));
-const Course = lazy(() => import("./riskCourse"));
+const RiskEvaluation = lazy(() => import("./RiskEvaluation"));
 
 /**
  * The Academy app config.
  */
-const riskCouseConfig = {
+const RiskEvaluationConfig = {
   settings: {
     layout: {},
   },
   auth: authRoles.onlyGuest,
   routes: [
     {
-      path: "moc/riskEvaluation",
-      element: <AcademyApp />,
+      path: "risk/riskEvaluation",
+      element: <RiskEvaluation />,
       children: [
         {
           path: "",
@@ -24,14 +23,14 @@ const riskCouseConfig = {
         },
         {
           path: ":riskEvaluationId/*",
-          element: <Course />,
+          element: <RiskEvaluation />,
         },
         {
           path: "riskEvaluation",
-          element: <Course />,
+          element: <RiskEvaluation />,
         },
       ],
     },
   ],
 };
-export default riskCouseConfig;
+export default RiskEvaluationConfig;

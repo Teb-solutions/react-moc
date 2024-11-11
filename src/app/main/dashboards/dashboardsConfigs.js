@@ -27,7 +27,6 @@ import taskListConfig from "../tasklist/TaskListConfig";
 import RecycleConfig from "../masters/recycle/RecycleConfig";
 import StaffRoleConfig from "../masters/staffrole/StaffRoleConfig";
 import RiskAppConfig from "../riskRegister/riskRegisterConfig";
-import TransportActivityConfig from "../riskRegister/TransportActivity/TransportConfig";
 import RoleConfig from "../security/role/RoleConfig";
 import AccessConfig from "../security/access/AccessConfig";
 import SecurityConfig from "../security/SecurityConfig";
@@ -35,6 +34,7 @@ import MocConfig from "../moc/MocConfig";
 import OrgActivityConfig from "../moc/organization_moc/orgMocCreate/OrgActivityConfig";
 import errorPageConfig from "../404/ErrorPageConfig";
 import DepartmentConfig from "../masters/department/DepartMentConfig";
+import InitiateRiskConfig from "../riskRegister/Initiation/InitiateRiskConfig";
 
 /**
  * Dashboards
@@ -75,7 +75,7 @@ const dashboardsConfigs = [
   RoleConfig,
   AccessConfig,
   OrgActivityConfig,
-  TransportActivityConfig,
+  InitiateRiskConfig,
   taskListConfig,
 ];
 export default dashboardsConfigs;

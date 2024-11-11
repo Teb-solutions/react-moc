@@ -6,8 +6,23 @@ import { Button } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
+import Test from "./Test";
 
-function MocHeader(props) {
+interface MocHeaderProps {
+  activity?: string;
+  reqno?: string;
+  risk?: string;
+  master?: string;
+  type?: string;
+  nothing?: string;
+  verName?: string;
+  name?: string;
+  sidemenu?: boolean;
+  setLeftSidebarOpen: (open: boolean) => void;
+  leftSidebarOpen: boolean;
+}
+
+function RiskHeader(props: MocHeaderProps) {
   const {
     activity,
     reqno,
@@ -27,9 +42,9 @@ function MocHeader(props) {
   const path = location.pathname;
 
   const urlContainsMocOrRisk = path === "/moc" || path === "/risk";
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const handleClick = (event) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -42,7 +57,7 @@ function MocHeader(props) {
   const handleOpenNewOrg = () => {
     navigate("/moc/orgactivity");
   };
-  const handleNavigate = (type) => {
+  const handleNavigate = (type: string) => {
     let path = "/risk/transportactivity";
     switch (type) {
       case "Transport":
@@ -66,16 +81,14 @@ function MocHeader(props) {
 
   return (
     <div
-      className="flex d-sm-block flex-1 w-full items-center justify-between py-8 sm:py-16 px-16 md:px-24"
+      className="flex d-sm-block flex-1 w-full items-center justify-between py-8 sm:px-10"
       style={{
-        backgroundColor: Object.keys(routeParams).length !== 0 ? "white" : "",
+        backgroundColor: Object.keys(routeParams).length !== 0 ? "" : "",
       }}
     >
       <div>
         <Breadcrumbs
-          separator={
-            <FuseSvgIcon size={20}>heroicons-solid:chevron-right</FuseSvgIcon>
-          }
+          separator={<FuseSvgIcon>heroicons-solid:chevron-right</FuseSvgIcon>}
           aria-label="breadcrumb"
         >
           <Link
@@ -89,14 +102,13 @@ function MocHeader(props) {
           </Link>
           {nothing !== "nothing" && (
             <Link
-              className="font-medium text-blue"
+              className="font-medium text-black"
               key="2"
-              color="text.primary"
-              to={risk === "risk" ? "/risk" : master ? "" : "/moc"}
+              to="#"
               style={{ textDecoration: "none" }}
             >
               {risk === "risk"
-                ? "Risk Requests"
+                ? "Risk Request"
                 : master
                   ? master
                   : "MOC Requests"}
@@ -159,15 +171,16 @@ function MocHeader(props) {
 
       <div className="mt-10 md:mt-0" style={{ justifyContent: "end" }}>
         {sidemenu && (
-          <FuseSvgIcon
-            className="text-48 cursor-pointer "
-            size={24}
-            style={{ display: "inline-block;" }}
-            color="action"
-            onClick={handelOpenSide}
-          >
-            heroicons-outline:menu
-          </FuseSvgIcon>
+          <></>
+          // <FuseSvgIcon
+          //   className="text-48 cursor-pointer "
+          //   size={24}
+          //   style={{ display: "inline-block;" }}
+          //   color="action"
+          //   onClick={handelOpenSide}
+          // >
+          //   heroicons-outline:menu
+          // </FuseSvgIcon>
         )}
         {urlContainsMocOrRisk && Object.keys(routeParams).length === 0 && (
           <Button
@@ -176,7 +189,7 @@ function MocHeader(props) {
             color="secondary"
             onClick={handleClick}
           >
-            <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+            {/* <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon> */}
             <span className="mx-4 sm:mx-8">
               {risk === "risk"
                 ? "Initiate New Risk Register"
@@ -189,4 +202,4 @@ function MocHeader(props) {
   );
 }
 
-export default MocHeader;
+export default RiskHeader;

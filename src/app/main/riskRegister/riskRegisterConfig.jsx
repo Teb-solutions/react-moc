@@ -3,12 +3,7 @@ import Error404Page from "../404/Error404Page";
 import RiskApp from "./riskRegister";
 import { authRoles } from "src/app/auth";
 import { decryptFeature } from "../sign-in/tabs/featureEncryption";
-import DocRequest from "../moc/document_moc/docMocCreate/docRequest";
-import AssetRequest from "../moc/asset_moc/assetMocCreate/AssetRequest";
-// const DocApp = lazy(() => import('./docevaluation/Doc'));
-/**
- * The ProjectDashboardApp configuration.
- */
+
 const storedFeature = decryptFeature();
 const feature = storedFeature ? storedFeature : [];
 const RiskAppConfig1 = {
@@ -24,14 +19,6 @@ const RiskAppConfig1 = {
       path: feature.includes("REQ") ? "risk" : "404",
       element: feature.includes("REQ") ? <RiskApp /> : <Error404Page />,
       feature: "REQ",
-    },
-    {
-      path: "/moc/activity",
-      element: <DocRequest />,
-    },
-    {
-      path: "/moc/Assetactivity",
-      element: <AssetRequest />,
     },
   ],
 };

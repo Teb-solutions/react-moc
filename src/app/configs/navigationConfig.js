@@ -33,14 +33,14 @@ const navigationConfig1 = [
         url: "/moc",
         feature: "REQ",
       },
-      // {
-      //   id: "risk.request",
-      //   title: " Risk Register",
-      //   type: "item",
-      //   icon: "heroicons-outline:briefcase",
-      //   url: "/risk",
-      //   feature: "REQ",
-      // },
+      {
+        id: "risk.request",
+        title: " Risk Register",
+        type: "item",
+        icon: "heroicons-outline:briefcase",
+        url: "/risk",
+        feature: "REQ",
+      },
       {
         id: "task.request",
         title: "My Tasks",

@@ -5,7 +5,6 @@ const ConfirmationModal = ({
   openSubmit,
   handleCloseSubmit,
   title,
-  text,
   children,
 }) => {
   const style = {
@@ -73,7 +72,8 @@ const ConfirmationModal = ({
                     color: "grey",
                   }}
                 >
-                  {text ? text : "Once submitted you will not be able to revert ! Are you sure you want to continue ?"}
+                  Once submitted you will not be able to revert ! Are you sure
+                  you want to continue ?
                 </Typography>
               </Typography>
             </div>

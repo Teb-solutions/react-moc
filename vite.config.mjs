@@ -25,6 +25,9 @@ export default defineConfig({
       },
     },
   ],
+  resolve: {
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
+  },
   build: {
     outDir: "build",
   },
@@ -67,6 +70,7 @@ export default defineConfig({
     esbuildOptions: {
       loader: {
         ".js": "jsx",
+        ".ts": "tsx",
       },
     },
   },
