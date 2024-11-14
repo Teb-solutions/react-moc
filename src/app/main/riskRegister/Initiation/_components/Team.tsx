@@ -35,10 +35,14 @@ const Team = ({ risk }: { risk: IRiskRegisterDetails }) => {
         SIC Approval
       </h2>
       <div className="flex text-lg mb-20">
-        <Icon className="text-green-500">check</Icon>
+        <Icon
+          className={`${risk.teamList.length > 0 ? "text-green-500" : "text-red-500"}`}
+        >
+          {risk.teamList.length > 0 ? "check" : "close"}
+        </Icon>
         <span className="mt-5">
-          SIC, {risk.activities[1].assignedToStaffName} has approved the request
-          at{" "}
+          SIC, {risk.activities[1].assignedToStaffName} has
+          {risk.teamList.length > 0 ? " approved" : " rejected"} the request at{" "}
           {dayjs(risk.activities[1].completedDate).format(
             "MMMM DD, YYYY HH:mm"
           )}

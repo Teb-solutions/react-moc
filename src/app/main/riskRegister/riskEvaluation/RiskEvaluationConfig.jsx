@@ -14,19 +14,11 @@ const RiskEvaluationConfig = {
   auth: authRoles.onlyGuest,
   routes: [
     {
-      path: "risk/riskEvaluation",
+      path: "risk/riskevaluation",
       element: <RiskEvaluation />,
       children: [
         {
-          path: "",
-          element: <Navigate to="/moc/riskEvaluation" />,
-        },
-        {
-          path: ":riskEvaluationId/*",
-          element: <RiskEvaluation />,
-        },
-        {
-          path: "riskEvaluation",
+          path: ":riskId/*",
           element: <RiskEvaluation />,
         },
       ],

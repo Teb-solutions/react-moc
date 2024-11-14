@@ -73,3 +73,30 @@ export enum TaskPopupType {
   Delete,
   Audit,
 }
+
+export enum HIRAStatus {
+  Initiation = "Initiation",
+  SICApproval = "Site in Charge Approval",
+  Evaluation = "Evaluation",
+}
+
+export enum SessionStatus {
+  Created = 1,
+  Started = 2,
+  Ended = 3,
+  Canceled = 4,
+}
+export const SessionStatusDisplayNames: {
+  [key in SessionStatus]: string;
+} = {
+  [SessionStatus.Created]: "Acceptance Pending",
+  [SessionStatus.Started]: "Session Running",
+  [SessionStatus.Canceled]: "Cancelled",
+  [SessionStatus.Ended]: "Ended",
+};
+
+export enum SessionRequestStatus {
+  Pending = 1,
+  Approved,
+  Rejected,
+}

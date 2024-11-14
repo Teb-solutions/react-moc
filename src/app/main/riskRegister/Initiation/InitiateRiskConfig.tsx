@@ -9,15 +9,7 @@ const InitiateRiskConfig = {
   auth: authRoles.onlyGuest,
   routes: [
     {
-      path: "/risk/transportactivity",
-      element: <InitiateRisk />,
-    },
-    {
-      path: "/risk/routineactivity",
-      element: <InitiateRisk />,
-    },
-    {
-      path: "/risk/nonroutineactivity",
+      path: "/risk/initiate",
       element: <InitiateRisk />,
     },
     {

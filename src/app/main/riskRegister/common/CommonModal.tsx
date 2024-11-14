@@ -64,8 +64,15 @@ const CommonModal: React.FC<CommonModalProps> = ({
               X
             </Button>
           </div>
-          <h2 id="transition-modal-title">{title}</h2>
-          {children}
+          <div className="border-1 border-blue-500 rounded-md">
+            <h2
+              id="transition-modal-title "
+              className="border-b-1 mb-20 bg-blue-500 p-5 text-white"
+            >
+              {title}
+            </h2>
+            <div className="px-10 pb-20">{children}</div>
+          </div>
         </Box>
       </Fade>
     </Modal>

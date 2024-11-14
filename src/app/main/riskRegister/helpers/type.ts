@@ -64,3 +64,35 @@ export interface TeamList {
   staffId: number;
   staffName: string;
 }
+
+export interface SessionList {
+  id: number;
+  riskRegisterId: number;
+  riskRegisterEvaluationId: number;
+  startedAt: string;
+  endedAt: any;
+  timeoutMin: number;
+  responsewaitTime: number;
+  startedByStaffId: number;
+  startedByStaffName: string;
+  comments: any;
+  isSessionEnded: boolean;
+  isExpired: boolean;
+  status: number;
+  teamList: SessionTeamList[];
+  isActive: boolean;
+}
+
+export interface SessionTeamList {
+  teamType: number;
+  staffId: number;
+  staffName: string;
+  approvalStatus: number;
+  updatedAt: null | string;
+  comments: null | string;
+}
+
+export interface LabelValue {
+  label: string;
+  value: string;
+}

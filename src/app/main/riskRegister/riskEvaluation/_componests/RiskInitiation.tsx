@@ -1,40 +1,58 @@
-import { Icon, Paper } from "@mui/material";
+import { Box, Icon, Paper, Popper } from "@mui/material";
 import InfoItem from "./InfoItem";
-
-import Bar from "src/app/main/documentation/third-party-components/react-apexcharts/examples/Bar";
 import Line from "src/app/main/documentation/third-party-components/react-apexcharts/examples/Line";
-const infoItems = [
-  { label: "Category", value: "Routine" },
-  { label: "Site", value: "Mumbai" },
-  { label: "Division", value: "LPG" },
-  { label: "Area", value: "Headquarters" },
-  { label: "Date", value: "10-10-2024" },
-  { label: "Initiator", value: "Shruti" },
-];
-const taskItems = [
-  { label: "Total", value: "9" },
-  { label: "High Risk", value: "5" },
-];
-const teamItems = [
-  { label: "Site HSE", value: "Vijay Sharma" },
-  { label: "Project In Charge", value: "Naveen P" },
-  { label: "Maintenance In Charge", value: "Jose Marvin" },
-  { label: "HSE In Charge", value: "Vineeth PK" },
-  { label: "SIC Approval", value: "Vineeth PK approved on 10-10-2024" },
-];
-const RiskInitiation = () => {
+import { IRiskRegisterDetails, LabelValue } from "../../helpers/type";
+import {
+  RiskCategory,
+  RiskCategoryToTeamRoleMapping,
+  RiskRegisterTeamRoleDisplayNames,
+} from "../../helpers/enum";
+import dayjs from "dayjs";
+import { DoDisturb, Info } from "@mui/icons-material";
+import { id } from "date-fns/locale";
+import { useState } from "react";
+
+const RiskInitiation = ({
+  risk,
+  taskItems,
+}: {
+  risk: IRiskRegisterDetails;
+  taskItems: LabelValue[];
+}) => {
+  const infoItems = [
+    { label: "Category", value: RiskCategory[risk.category] },
+    { label: "Site", value: risk.siteName },
+    { label: "Division", value: risk.divisionName },
+    { label: "Area", value: "??????" },
+    { label: "Date", value: dayjs(risk.date).format("MMM DD, YYYY") },
+    { label: "Initiator", value: risk.siteInChargeName + "******" }, //change this value
+  ];
+  const teamItems = [];
+  risk.teamList.forEach((team) => {
+    teamItems.push({
+      label: RiskRegisterTeamRoleDisplayNames[team.teamType],
+      value: team.staffName,
+    });
+  });
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popper" : undefined;
   return (
     <Paper className="flex flex-col p-10">
       <h3 className="self-stretch font-bold text-blue-600 mb-5 ml">Summary </h3>
       <article className="flex overflow-hidden flex-col justify-center items-start p-10 text-md bg-white rounded-lg">
         <div className="flex flex-col items-start w-full">
           <h4 className="self-stretch mb-5 font-medium text-neutral-600">
-            {"Test Title Lorem ipsum dolor sit amet consectetur"}
+            {risk.projectName}
           </h4>
           <p className="self-stretch mb-10 text-lg text-gray-500">
-            {
-              "Lorem ipsum dolor sit amet consectetur. Viverra et nec volutpat sollicitudin. Lorem ipsum dolor sit amet consectetur. Viverra et nec volutpat sollicitudin."
-            }
+            {risk.projectDescription}
           </p>
           <div className="flex mt-5  flex-col sm:flex-row w-full">
             <div className="w-full sm:w-1/3 pr-2 text-md">
@@ -58,6 +76,37 @@ const RiskInitiation = () => {
               {teamItems.map((item, index) => (
                 <InfoItem key={index} label={item.label} value={item.value} />
               ))}
+              <div className="flex flex-row mt-5">
+                <InfoItem
+                  label="SIC Approval"
+                  value={
+                    risk.siteInChargeName +
+                    " approved on " +
+                    dayjs(risk.activities[1].completedDate).format(
+                      "MMM DD, YYYY"
+                    )
+                  }
+                />
+                <Icon
+                  aria-describedby={id}
+                  onClick={handleClick}
+                  className="ml-5"
+                  fontSize="inherit"
+                >
+                  comment
+                </Icon>
+                <Popper id={id} open={open} anchorEl={anchorEl}>
+                  <Box sx={{ border: 1, p: 1, bgcolor: "background.paper" }}>
+                    <div className="flex flex-col gap-2">
+                      <h6 className="font-semibold text-gray-500">Comments</h6>
+                      <p className="text-gray-800 text-sm font-normal">
+                        {risk.activities[1].assignedToStaffName +
+                          "******comment required"}
+                      </p>
+                    </div>
+                  </Box>
+                </Popper>
+              </div>
             </div>
             <div className="w-full sm:w-1/3 mb-0">
               <Line />

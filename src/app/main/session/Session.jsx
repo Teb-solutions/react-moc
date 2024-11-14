@@ -49,11 +49,13 @@ const SessionList = () => {
       return; // Do not proceed if the comment is empty
     }
     setIsLoading(true);
-    const apiPath =
+    let apiPath =
       sessionType === "PSSR"
         ? `/PssrSession/SessionApprove/${ChangeId}/${id}/Approve`
         : `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Approve`;
-
+    apiPath =
+      sessionType === "RiskRegister" &&
+      `/RiskRegister/session/approve/${ChangeId}/${id}/Approve`;
     apiAuth
       .put(apiPath, {
         comments: Comment,
@@ -72,11 +74,14 @@ const SessionList = () => {
       return; // Do not proceed if the comment is empty
     }
     setIsLoading(true);
-    const apiPath =
+    let apiPath =
       sessionType === "PSSR"
         ? `/PssrSession/SessionApprove/${ChangeId}/${id}/Reject`
         : `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Reject`;
 
+    apiPath =
+      sessionType === "RiskRegister" &&
+      `/RiskRegister/session/approve/${ChangeId}/${id}/Reject`;
     apiAuth
       .put(apiPath, {
         comments: Comment,

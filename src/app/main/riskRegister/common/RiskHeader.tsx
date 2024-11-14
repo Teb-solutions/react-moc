@@ -131,34 +131,6 @@ function RiskHeader(props: MocHeaderProps) {
           )}
         </Breadcrumbs>
 
-        {risk == "risk" ? (
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={() => setAnchorEl(null)}
-          >
-            <MenuItem onClick={() => handleNavigate("Transport")}>
-              Transport
-            </MenuItem>
-            <MenuItem onClick={() => handleNavigate("Routine")}>
-              Routine
-            </MenuItem>
-            <MenuItem onClick={() => handleNavigate("NonRoutine")}>
-              Non Routine
-            </MenuItem>
-          </Menu>
-        ) : (
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={() => setAnchorEl(null)}
-          >
-            <MenuItem onClick={handleOpenNewAsset}>Technical </MenuItem>
-            <MenuItem onClick={handleOpenNewDoc}>Document</MenuItem>
-            <MenuItem onClick={handleOpenNewOrg}>Organisation</MenuItem>
-          </Menu>
-        )}
-
         {/* Title section */}
         {name && (
           <Typography variant="h6" className="mt-4 font-bold">
@@ -167,36 +139,6 @@ function RiskHeader(props: MocHeaderProps) {
         )}
 
         <div className="flex sm:hidden" />
-      </div>
-
-      <div className="mt-10 md:mt-0" style={{ justifyContent: "end" }}>
-        {sidemenu && (
-          <></>
-          // <FuseSvgIcon
-          //   className="text-48 cursor-pointer "
-          //   size={24}
-          //   style={{ display: "inline-block;" }}
-          //   color="action"
-          //   onClick={handelOpenSide}
-          // >
-          //   heroicons-outline:menu
-          // </FuseSvgIcon>
-        )}
-        {urlContainsMocOrRisk && Object.keys(routeParams).length === 0 && (
-          <Button
-            className=""
-            variant="contained"
-            color="secondary"
-            onClick={handleClick}
-          >
-            {/* <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon> */}
-            <span className="mx-4 sm:mx-8">
-              {risk === "risk"
-                ? "Initiate New Risk Register"
-                : "Initiate New MOC Request"}
-            </span>
-          </Button>
-        )}
       </div>
     </div>
   );

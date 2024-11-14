@@ -27,6 +27,8 @@ const SessionCard = ({
             <div className="flex flex-col leading-5 text-md text-secondary space-y-2">
               <div>
                 <b style={{ fontSize: "larger" }}>
+                  {list.sessionType == "RiskRegister" &&
+                    "New Risk Register Session started by"}{" "}
                   {list.sessionType == "Evaluation" &&
                     "New Evaluation Session started by"}{" "}
                   {list.sessionType == "Implementation" &&

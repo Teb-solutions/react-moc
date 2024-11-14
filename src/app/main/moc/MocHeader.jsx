@@ -30,6 +30,9 @@ function MocHeader(props) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleClick = (event) => {
+    if (risk === "risk") {
+      navigate("/risk/initiate");
+    }
     setAnchorEl(event.currentTarget);
   };
 
@@ -119,23 +122,7 @@ function MocHeader(props) {
           )}
         </Breadcrumbs>
 
-        {risk == "risk" ? (
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={() => setAnchorEl(null)}
-          >
-            <MenuItem onClick={() => handleNavigate("Transport")}>
-              Transport
-            </MenuItem>
-            <MenuItem onClick={() => handleNavigate("Routine")}>
-              Routine
-            </MenuItem>
-            <MenuItem onClick={() => handleNavigate("NonRoutine")}>
-              Non Routine
-            </MenuItem>
-          </Menu>
-        ) : (
+        {risk != "risk" && (
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
