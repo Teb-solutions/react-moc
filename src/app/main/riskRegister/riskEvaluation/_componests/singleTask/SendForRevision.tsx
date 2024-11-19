@@ -9,8 +9,8 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import Button from "../../common/Button";
-import CommonModal from "../../common/CommonModal";
+import Button from "../../../common/Button";
+import CommonModal from "../../../common/CommonModal";
 
 const SendForRevision = ({
   openRevision,

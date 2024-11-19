@@ -10,17 +10,23 @@ import EndSession from "./EndSession";
 import { set } from "lodash";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
-import { SessionStatus } from "../../../helpers/enum";
+import {
+  SessionStatus,
+  SessionStatusDisplayNames,
+} from "../../../helpers/enum";
+import { useGetPermenant } from "src/utils/swr";
+import { useRiskStore } from "../common/riskstore";
 
 dayjs.extend(duration);
 
-const RiskSession = ({ risk }: { risk: IRiskRegisterDetails }) => {
+const RiskSession = () => {
   const [sessionList, setSessionList] = useState<SessionList[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [sessionStartOpen, setSessionStartOpen] = useState(false);
   const [sessionEndOpen, setSessionEndOpen] = useState(false);
   const [sessionViewOpen, setSessionViewOpen] = useState(false);
   const [timeLeft, setTimeLeft] = useState<string>("");
+  const { risk, isCurrentUserPartOfTeam, setIsSessionActive } = useRiskStore();
 
   const calculateTimeLeft = (endTime: dayjs.Dayjs) => {
     const now = dayjs();
@@ -39,39 +45,42 @@ const RiskSession = ({ risk }: { risk: IRiskRegisterDetails }) => {
             session.isActive && session.status === SessionStatus.Started
         );
         if (activeSession) {
+          setIsSessionActive(true);
           const startTime = dayjs(activeSession.startedAt);
           const endTime = startTime.add(activeSession.timeoutMin, "minute");
           setTimeLeft(calculateTimeLeft(endTime));
+        } else {
+          setIsSessionActive(false);
         }
       }
     }, 1000);
 
     return () => clearInterval(interval);
   }, [sessionList]);
+
+  const {
+    data: result,
+    isLoading,
+    error,
+  } = useGetPermenant<{
+    data: SessionList[];
+    message: string;
+    statusCode: number;
+  }>(`/RiskRegister/session/list/${risk.id}`);
+
   useEffect(() => {
-    apiAuth
-      .get(`/RiskRegister/session/list/${risk.id}`)
-      .then((res) => {
-        // console.log("API Response:", res); // Log the entire response
-        if (res.data.statusCode === 200) {
-          // console.log("Response data length", res.data.data);
-          setSessionList(res.data.data as SessionList[]);
-        } else {
-          toast.error(res.data.message);
-        }
-      })
-      .catch((err) => {
-        toast.error(err.response.data.message);
-      })
-      .finally(() => {
+    if (result) {
+      if (result.statusCode == 200) {
         setLoading(false);
-      });
-  }, [risk]);
+        setSessionList(result.data);
+      } else toast.error(result.message);
+    }
+  }, [result]);
   return (
     <div className="flex flex-col sm:flex-row py-3 gap-10">
       {!loading && sessionList && (
         <>
-          <span className="w-[125px] mt-10 text-md font-semibold text-blue-500">
+          <span className="w-[125px] mt-10 text-md text-right font-semibold text-blue-500">
             {timeLeft} {timeLeft.length > 0 && " left"}
           </span>
           <Button
@@ -81,7 +90,14 @@ const RiskSession = ({ risk }: { risk: IRiskRegisterDetails }) => {
             variant="neutral"
             type="button"
           >
-            <Icon className="text-xl">visibility</Icon>View
+            <Icon className="text-xl">visibility</Icon>
+            {sessionList[sessionList.length - 1].status in
+              [SessionStatus.Started, SessionStatus.Created] &&
+            sessionList[sessionList.length - 1].isActive
+              ? SessionStatusDisplayNames[
+                  sessionList[sessionList.length - 1].status
+                ]
+              : "View Session History"}
           </Button>
 
           {sessionList.length > 0 && (
@@ -91,8 +107,7 @@ const RiskSession = ({ risk }: { risk: IRiskRegisterDetails }) => {
               sessionList={sessionList}
             />
           )}
-          {!loading &&
-            sessionList &&
+          {isCurrentUserPartOfTeam &&
             (sessionList.length == 0 ||
               !sessionList[sessionList.length - 1].isActive) && (
               <>
@@ -115,9 +130,10 @@ const RiskSession = ({ risk }: { risk: IRiskRegisterDetails }) => {
               </>
             )}
 
-          {!loading &&
-            sessionList &&
+          {isCurrentUserPartOfTeam &&
             sessionList.length > 0 &&
+            sessionList[sessionList.length - 1].status ===
+              SessionStatus.Started &&
             sessionList[sessionList.length - 1].isActive && (
               <>
                 <Button

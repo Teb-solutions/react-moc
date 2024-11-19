@@ -1,24 +1,23 @@
 import { Box, Icon, Paper, Popper } from "@mui/material";
-import InfoItem from "./InfoItem";
+
 import Line from "src/app/main/documentation/third-party-components/react-apexcharts/examples/Line";
-import { IRiskRegisterDetails, LabelValue } from "../../helpers/type";
+import { IRiskRegisterDetails, LabelValue } from "../../../helpers/type";
 import {
   RiskCategory,
   RiskCategoryToTeamRoleMapping,
   RiskRegisterTeamRoleDisplayNames,
-} from "../../helpers/enum";
+} from "../../../helpers/enum";
 import dayjs from "dayjs";
 import { DoDisturb, Info } from "@mui/icons-material";
 import { id } from "date-fns/locale";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const RiskInitiation = ({
-  risk,
-  taskItems,
-}: {
-  risk: IRiskRegisterDetails;
-  taskItems: LabelValue[];
-}) => {
+import InitationInfoItem from "./InfoItem";
+import { useRiskStore } from "../common/riskstore";
+import { useTaskStore } from "../common/taskStore";
+
+const RiskInitiation = () => {
+  const { risk } = useRiskStore();
   const infoItems = [
     { label: "Category", value: RiskCategory[risk.category] },
     { label: "Site", value: risk.siteName },
@@ -34,6 +33,19 @@ const RiskInitiation = ({
       value: team.staffName,
     });
   });
+
+  const { tasks } = useTaskStore();
+  const [highRiskTasks, setHighRiskTasks] = useState(0);
+  const [totalTasks, setTotalTasks] = useState(0);
+
+  useEffect(() => {
+    const highRiskTasks = tasks.filter(
+      (task) => Number(task.residualRiskClassification) === 1
+    );
+    const totalTasks = tasks.length;
+    setHighRiskTasks(highRiskTasks.length);
+    setTotalTasks(totalTasks);
+  }, [tasks]);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -57,14 +69,24 @@ const RiskInitiation = ({
           <div className="flex mt-5  flex-col sm:flex-row w-full">
             <div className="w-full sm:w-1/3 pr-2 text-md">
               {infoItems.map((item, index) => (
-                <InfoItem key={index} label={item.label} value={item.value} />
+                <InitationInfoItem
+                  key={index}
+                  label={item.label}
+                  value={item.value}
+                />
               ))}
               <h4 className="self-stretch text-blue-600 font-medium text-neutral-600">
                 Tasks
               </h4>
-              {taskItems.map((item, index) => (
-                <InfoItem key={index} label={item.label} value={item.value} />
-              ))}
+
+              <InitationInfoItem
+                label={"Total Tasks"}
+                value={totalTasks.toString()}
+              />
+              <InitationInfoItem
+                label={"Hish Risk Tasks"}
+                value={highRiskTasks.toString()}
+              />
             </div>
             <div className="w-full sm:w-1/3 pl-2 text-md">
               <h4 className="self-stretch text-blue-600 font-medium text-neutral-600">
@@ -74,10 +96,14 @@ const RiskInitiation = ({
                 </Icon>
               </h4>
               {teamItems.map((item, index) => (
-                <InfoItem key={index} label={item.label} value={item.value} />
+                <InitationInfoItem
+                  key={index}
+                  label={item.label}
+                  value={item.value}
+                />
               ))}
               <div className="flex flex-row mt-5">
-                <InfoItem
+                <InitationInfoItem
                   label="SIC Approval"
                   value={
                     risk.siteInChargeName +

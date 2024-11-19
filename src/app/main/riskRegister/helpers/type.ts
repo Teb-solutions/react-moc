@@ -96,3 +96,42 @@ export interface LabelValue {
   label: string;
   value: string;
 }
+
+export interface LookUpType {
+  value: number;
+  text: string;
+  isReadOnly: boolean;
+}
+
+export type ISelectedControlMeasures = {
+  id: number;
+  title: string;
+};
+
+export interface ITask {
+  riskId: number;
+  riskRegisterId?: number;
+  id?: number;
+  task: string;
+  subTask: string;
+  hazardousSituation: string;
+  consequences: string;
+  hazardType: number;
+  time: number;
+  frequencyDetails: number;
+  frequencyScoring: number;
+  likelyhoodScoring: number;
+  severityScoring: number;
+  potentialRisk: number;
+  humanControlMeasures: ISelectedControlMeasures[];
+  technicalControlMeasures: ISelectedControlMeasures[];
+  organizationalControlMeasures: ISelectedControlMeasures[];
+  residualTime: number;
+  residualFrequency: number;
+  residualFrequencyScoring: number;
+  residualLikelyhoodScoring: number;
+  residualSeverityScoring: number;
+  residualRisk: number;
+  residualRiskClassification: number;
+  residualRiskClassificationDisplay: string;
+}

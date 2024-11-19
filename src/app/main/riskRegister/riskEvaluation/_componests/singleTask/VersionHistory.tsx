@@ -4,9 +4,9 @@ import {
   AccordionSummary,
   TextField,
 } from "@mui/material";
-import Button from "../../common/Button";
-import CommonModal from "../../common/CommonModal";
-import { TaskPopupType } from "../../helpers/enum";
+import Button from "../../../common/Button";
+import CommonModal from "../../../common/CommonModal";
+import { TaskPopupType } from "../../../helpers/enum";
 import ControlMeasures from "./ControlMeasures";
 import InfoSection from "./InfoSection";
 import RiskSection from "./RiskSection";

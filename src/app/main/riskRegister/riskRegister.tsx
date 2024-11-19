@@ -19,8 +19,9 @@ import { apiAuth } from "src/utils/http";
 import FuseLoading from "@fuse/core/FuseLoading";
 import RiskCard from "./dashboard/RiskCard";
 import { use } from "i18next";
-import { IHiraList, ISite } from "./helpers/type";
+import { IHiraList, ISite, TeamList } from "./helpers/type";
 import { set } from "lodash";
+
 // import RiskCard from "./riskCard";
 
 const Root = styled(FusePageCarded)({
@@ -66,6 +67,7 @@ const RiskApp = () => {
       .then((res) => {
         setData(res.data.data);
         setIsLoading(false);
+
         console.log(res.data.data);
       })
       .catch((err) => {

@@ -3,12 +3,16 @@ import InfoSection from "./InfoSection";
 import RiskSection from "./RiskSection";
 import ControlMeasures from "./ControlMeasures";
 import TaskApprovalHistory from "./TaskAppovalHistory";
-import ButtonRisk from "../../common/Button";
+import ButtonRisk from "../../../common/Button";
 import { useState } from "react";
 import SendForRevision from "./SendForRevision";
 import AddComment from "./AddComment";
-import { TaskPopupType } from "../../helpers/enum";
+import { TaskPopupType } from "../../../helpers/enum";
 import VersionHistory from "./VersionHistory";
+import TaskButton from "../../../common/TaskButton";
+import { Task } from "@mui/icons-material";
+import { useRiskStore } from "../common/riskstore";
+import { useTaskStore } from "../common/taskStore";
 interface RiskItemProps {
   label: string;
   value: string;
@@ -30,6 +34,7 @@ const rriskItems: RiskItemProps[] = [
   { label: "Severity Scoring", value: "15" },
 ];
 const TaskDetailsCard = () => {
+  const { isCurrentUserPartOfTeam, isTaskApprover } = useRiskStore();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [openRevision, setOpenRevision] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -49,11 +54,20 @@ const TaskDetailsCard = () => {
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-
+  const { selectedTask } = useTaskStore();
   return (
     <Paper className="flex flex-col p-10 mt-10">
       <header className="flex gap-10 mb-10 justify-between items-center w-full">
-        <h2 className="text-base font-semibold text-zinc-800">
+        <h2
+          className={`text-base font-semibold text-zinc-800 px-5 py-5 rounded-md ${
+            Number(selectedTask?.residualRiskClassification) === 1 &&
+            "bg-red-500"
+          }
+              ${Number(selectedTask?.residualRiskClassification) === 2 && "bg-orange-700"}
+              ${Number(selectedTask?.residualRiskClassification) === 3 && "bg-amber-700"}
+              ${Number(selectedTask?.residualRiskClassification) === 4 && "bg-yellow-600"}
+              ${Number(selectedTask?.residualRiskClassification) === 5 && "bg-green-500"}`}
+        >
           {"CMS009327"}:
         </h2>
         <div className="flex gap-10">
@@ -76,37 +90,38 @@ const TaskDetailsCard = () => {
             }}
           >
             <Typography className="p-5">
-              <button
+              {(isCurrentUserPartOfTeam || isTaskApprover) && (
+                <TaskButton
+                  onClick={() => {
+                    setIsOpen(true);
+                    setPopupType(TaskPopupType.Audit);
+                  }}
+                  icon="add"
+                  text="Audits"
+                />
+              )}
+              {isCurrentUserPartOfTeam && (
+                <TaskButton onClick={() => {}} icon="edit" text="Edit" />
+              )}
+
+              {isCurrentUserPartOfTeam && (
+                <TaskButton
+                  onClick={() => {
+                    setIsOpen(true);
+                    setPopupType(TaskPopupType.Delete);
+                  }}
+                  icon="delete"
+                  text="Delete"
+                />
+              )}
+
+              <TaskButton
                 onClick={() => {
-                  setIsOpen(true);
-                  setPopupType(TaskPopupType.Audit);
+                  setIsVersionOpen(true);
                 }}
-                className="flex gap-2  w-full mb-4 mt-5 items-center self-stretch px-10 py-5 my-auto text-sm font-medium text-blue-700 whitespace-nowrap rounded bg-blue-700 bg-opacity-10"
-              >
-                <Icon>add</Icon>
-                <span className="ml-4 self-stretch my-auto">Audits</span>
-              </button>
-              <button className="flex gap-2 w-full items-center mb-4 self-stretch px-10 py-5 my-auto text-sm font-medium text-blue-700 whitespace-nowrap rounded bg-blue-700 bg-opacity-10">
-                <Icon>edit</Icon>
-                <span className="ml-4 self-stretch my-auto">Edit</span>
-              </button>
-              <button
-                onClick={() => {
-                  setIsOpen(true);
-                  setPopupType(TaskPopupType.Delete);
-                }}
-                className="flex gap-2 w-full items-center mb-4 self-stretch px-10 py-5 my-auto text-sm font-medium text-blue-700 whitespace-nowrap rounded bg-blue-700 bg-opacity-10"
-              >
-                <Icon>delete</Icon>
-                <span className="ml-4 self-stretch my-auto">Delete</span>
-              </button>
-              <button
-                onClick={() => setIsVersionOpen(true)}
-                className="flex gap-2 w-full items-center mb-4 self-stretch px-10 py-5 my-auto text-sm font-medium text-blue-700 whitespace-nowrap rounded bg-blue-700 bg-opacity-10"
-              >
-                <Icon>history</Icon>
-                <span className="self-stretch my-auto">Versions</span>
-              </button>
+                icon="history"
+                text="Versions"
+              />
             </Typography>
           </Popover>
           <VersionHistory isOpen={isVersionOpen} setIsOpen={setIsVersionOpen} />
@@ -121,38 +136,58 @@ const TaskDetailsCard = () => {
           <InfoSection />
           <RiskSection riskItems={priskItems} title="Potential Risk" />
           <hr className="mt-8 w-full border border-solid border-neutral-200" />
-          <RiskSection riskItems={rriskItems} title="Residual Risk" />
-          <hr className="mt-8 w-full border border-solid border-neutral-200" />
           <ControlMeasures />
-
+          <hr className="mt-8 w-full border border-solid border-neutral-200" />
+          <RiskSection riskItems={rriskItems} title="Residual Risk" />
           <hr className="mt-8 w-full border border-solid border-neutral-200" />
           <TaskApprovalHistory />
         </div>
       </article>
-      <div className="px-20 flex flex-row justify-center gap-10 mt-20">
-        <ButtonRisk onClick={handleRevision} variant="reject" type="button">
-          Send For Revision
-        </ButtonRisk>
-        <SendForRevision
-          openRevision={openRevision}
-          handleRevision={handleRevision}
-        />
-        <ButtonRisk
-          onClick={() => {
-            setIsOpen(true);
-            setPopupType(TaskPopupType.Approve);
-          }}
-          variant="approve"
-          type="button"
-        >
-          Approve
-        </ButtonRisk>
-        <AddComment
-          openComment={isOpen}
-          handleComment={() => setIsOpen(false)}
-          popupType={popupType}
-        />
-      </div>
+      {isTaskApprover && (
+        <div className="px-20 flex flex-row justify-center gap-10 mt-20">
+          <ButtonRisk onClick={handleRevision} variant="reject" type="button">
+            Send For Revision
+          </ButtonRisk>
+          <SendForRevision
+            openRevision={openRevision}
+            handleRevision={handleRevision}
+          />
+          <ButtonRisk
+            onClick={() => {
+              setIsOpen(true);
+              setPopupType(TaskPopupType.Approve);
+            }}
+            variant="approve"
+            type="button"
+          >
+            Approve
+          </ButtonRisk>
+          <AddComment
+            openComment={isOpen}
+            handleComment={() => setIsOpen(false)}
+            popupType={popupType}
+          />
+        </div>
+      )}
+      {isCurrentUserPartOfTeam && (
+        <div className="px-20 flex flex-row justify-center gap-10 mt-20">
+          <ButtonRisk
+            onClick={() => {
+              setIsOpen(true);
+              setPopupType(TaskPopupType.SubmitforApproval);
+            }}
+            variant="approve"
+            type="button"
+          >
+            Submit for Approval
+          </ButtonRisk>
+          <AddComment
+            openComment={isOpen}
+            handleComment={() => setIsOpen(false)}
+            popupType={popupType}
+          />
+        </div>
+      )}
     </Paper>
   );
 };

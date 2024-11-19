@@ -1,4 +1,5 @@
 import React from "react";
+import { useTaskStore } from "../common/taskStore";
 
 interface InfoItemProps {
   label: string;
@@ -13,25 +14,23 @@ const InfoItem: React.FC<InfoItemProps> = ({ label, value }) => (
 );
 
 const InfoSection: React.FC = () => {
+  const { selectedTask } = useTaskStore();
   const infoItems: InfoItemProps[] = [
     {
       label: "Task",
-      value:
-        "Lorem ipsum dolor sit amet consectetur. Viverra et nec volutpat sollicitudin.Lorem ipsum dolor sit amet consectetur. Viverra et nec volutpat sollicitudin. ",
+      value: selectedTask.task,
     },
-    // { label: "Subtask Title", value: "Text" },
-    { label: "Area", value: "Terminal 1" },
-    { label: "Role", value: "Project In Charge" },
-    { label: "Hazard Type", value: "Hazard Type test title" },
+    { label: "Subtask", value: selectedTask.subTask },
+    { label: "Area", value: "Terminal 1?????" },
+    { label: "Role", value: "Project In Charge?????" },
+    { label: "Hazard Type", value: selectedTask.hazardType.toString() },
     {
       label: "Hazardous Situation",
-      value:
-        "Lorem ipsum dolor sit amet consectetur. Viverra et nec volutpat sollicitudin.",
+      value: selectedTask.hazardousSituation,
     },
     {
       label: "Consequnces",
-      value:
-        "Lorem ipsum dolor sit amet consectetur. Viverra et nec volutpat sollicitudin.",
+      value: selectedTask.consequences,
     },
   ];
 

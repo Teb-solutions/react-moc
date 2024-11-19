@@ -49,13 +49,21 @@ const SessionList = () => {
       return; // Do not proceed if the comment is empty
     }
     setIsLoading(true);
-    let apiPath =
-      sessionType === "PSSR"
-        ? `/PssrSession/SessionApprove/${ChangeId}/${id}/Approve`
-        : `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Approve`;
-    apiPath =
-      sessionType === "RiskRegister" &&
-      `/RiskRegister/session/approve/${ChangeId}/${id}/Approve`;
+    let apiPath;
+    if (sessionType === "RiskRegister") {
+      apiPath = `/RiskRegister/session/approve/${ChangeId}/${id}/Approve`;
+    } else if (sessionType === "PSSR") {
+      apiPath = `/PssrSession/SessionApprove/${ChangeId}/${id}/Approve`;
+    } else {
+      apiPath = `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Approve`;
+    }
+    // let apiPath =
+    //   sessionType === "PSSR"
+    //     ? `/PssrSession/SessionApprove/${ChangeId}/${id}/Approve`
+    //     : `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Approve`;
+    // apiPath =
+    //   sessionType === "RiskRegister" &&
+    //   `/RiskRegister/session/approve/${ChangeId}/${id}/Approve`;
     apiAuth
       .put(apiPath, {
         comments: Comment,
@@ -74,14 +82,17 @@ const SessionList = () => {
       return; // Do not proceed if the comment is empty
     }
     setIsLoading(true);
-    let apiPath =
-      sessionType === "PSSR"
-        ? `/PssrSession/SessionApprove/${ChangeId}/${id}/Reject`
-        : `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Reject`;
+    let apiPath;
+    if (sessionType === "RiskRegister") {
+      apiPath = `/RiskRegister/session/approve/${ChangeId}/${id}/Reject`;
+    } else if (sessionType === "PSSR") {
+      apiPath = `/PssrSession/SessionApprove/${ChangeId}/${id}/Reject`;
+    } else {
+      apiPath = `/ChangeEvaluationSession/SessionApprove/${ChangeId}/${id}/Reject`;
+    }
 
-    apiPath =
-      sessionType === "RiskRegister" &&
-      `/RiskRegister/session/approve/${ChangeId}/${id}/Reject`;
+    console.log(apiPath);
+
     apiAuth
       .put(apiPath, {
         comments: Comment,

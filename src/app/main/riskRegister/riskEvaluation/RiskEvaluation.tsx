@@ -1,36 +1,41 @@
 import Button from "../common/Button";
-import RiskInitiation from "./_componests/RiskInitiation";
-import EvaluationTasks from "./_componests/EvaluationTasks";
+import RiskInitiation from "./_componests/summary/RiskInitiation";
+import EvaluationTasks from "./_componests/tasks/EvaluationTasks";
 import { Icon } from "@mui/material";
-import RiskSection from "./_componests/RiskSection";
+import RiskSection from "./_componests/singleTask/RiskSection";
 import RiskSession from "./_componests/session/RiskSession";
 import { useState, useEffect } from "react";
-import { IRiskRegisterDetails } from "../helpers/type";
+import { IRiskRegisterDetails, TeamList } from "../helpers/type";
 import { useParams } from "react-router";
 import { apiAuth } from "src/utils/http";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { toast } from "react-toastify";
-
-const taskItems = [
-  { label: "Total", value: "0" },
-  { label: "High Risk", value: "0" },
-];
+import { useRiskStore } from "./_componests/common/riskstore";
+import jwtDecode from "jwt-decode";
+import { getCurrentUserId } from "../helpers/commonFunctions";
 
 const RiskEvaluation = () => {
-  const [risk, setRisk] = useState<IRiskRegisterDetails | null>(null);
-  const [loading, setLoading] = useState(true);
+  // const [risk, setRisk] = useState<IRiskRegisterDetails | null>(null);
+  // const [loading, setLoading] = useState(true);
   const { riskId } = useParams<{ riskId: string }>();
+  const { risk, setRisk, loading, setLoading, setIsCurrentUserPartOfTeam } =
+    useRiskStore();
 
+  const isUserPartOfTeam = (team: TeamList[]) => {
+    const userId = Number(getCurrentUserId());
+    setIsCurrentUserPartOfTeam(
+      team.some((member) => member.staffId === userId)
+    );
+  };
   useEffect(() => {
     apiAuth
       .get(`/RiskRegister/Details/${riskId}`)
       .then((res) => {
-        console.log(res.data.data);
         setRisk(res.data.data);
+        isUserPartOfTeam(res.data.data.teamList);
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
         toast.error(err.errorsData.id[0]);
       })
       .finally(() => {
@@ -55,9 +60,9 @@ const RiskEvaluation = () => {
             <h2 className="text-2xl font-semibold text-black p-10">
               HIRA #{risk.hiranumber}
             </h2>
-            <RiskSession risk={risk} />
+            <RiskSession />
           </div>
-          <RiskInitiation risk={risk} taskItems={taskItems} />
+          <RiskInitiation />
           <EvaluationTasks />
         </div>
       )}

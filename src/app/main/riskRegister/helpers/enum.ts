@@ -72,6 +72,7 @@ export enum TaskPopupType {
   Approve = 1,
   Delete,
   Audit,
+  SubmitforApproval,
 }
 
 export enum HIRAStatus {
@@ -89,7 +90,7 @@ export enum SessionStatus {
 export const SessionStatusDisplayNames: {
   [key in SessionStatus]: string;
 } = {
-  [SessionStatus.Created]: "Acceptance Pending",
+  [SessionStatus.Created]: "Awaiting Acceptance",
   [SessionStatus.Started]: "Session Running",
   [SessionStatus.Canceled]: "Cancelled",
   [SessionStatus.Ended]: "Ended",
@@ -99,4 +100,10 @@ export enum SessionRequestStatus {
   Pending = 1,
   Approved,
   Rejected,
+}
+
+export enum ControlMeasures {
+  Human = 1,
+  Technical,
+  Organizational,
 }

@@ -1,14 +1,22 @@
 import { TextField } from "@mui/material";
-import Button from "../../common/Button";
-import CommonModal from "../../common/CommonModal";
-import { TaskPopupType } from "../../helpers/enum";
+import Button from "../../../common/Button";
+import CommonModal from "../../../common/CommonModal";
+import { TaskPopupType } from "../../../helpers/enum";
 
-const titleArray = ["Send for Approval", "Delete Task", "Add/View Audit"];
-const commentArray = [
-  "Are you sure you want to approve this task?",
-  "Are you sure you want to delete this task?",
-  "Are you sure you want to add audit?",
-];
+const titleMap: { [key in TaskPopupType]: string } = {
+  [TaskPopupType.Approve]: "Send for Approval",
+  [TaskPopupType.Delete]: "Delete Task",
+  [TaskPopupType.Audit]: "Add/View Audit",
+  [TaskPopupType.SubmitforApproval]: "Submit for Approval",
+};
+
+const messageMap: { [key in TaskPopupType]: string } = {
+  [TaskPopupType.Approve]: "Are you sure you want to approve this task?",
+  [TaskPopupType.Delete]: "Are you sure you want to delete this task?",
+  [TaskPopupType.Audit]: "Are you sure you want to add audit?",
+  [TaskPopupType.SubmitforApproval]:
+    "Are you sure you want to submit this task for approval?",
+};
 
 const AddComment = ({
   popupType,
@@ -19,15 +27,14 @@ const AddComment = ({
   openComment: boolean;
   handleComment: () => void;
 }) => {
+  const title = titleMap[popupType];
+  const message = messageMap[popupType];
+
   return (
-    <CommonModal
-      open={openComment}
-      handleClose={handleComment}
-      title={titleArray[popupType - 1]}
-    >
+    <CommonModal open={openComment} handleClose={handleComment} title={title}>
       <div className="flex flex-col">
         <div className="flex flex-col my-20">
-          <p>{commentArray[popupType - 1]}</p>
+          <p>{message}</p>
           <div className="flex flex-col my-20">
             <TextField
               className="mt-10"

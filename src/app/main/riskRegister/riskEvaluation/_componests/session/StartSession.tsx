@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import Button from "../../../common/Button";
 import { apiAuth } from "src/utils/http";
+import { mutate } from "swr";
 
 const StartSession = ({
   open,
@@ -45,6 +46,9 @@ const StartSession = ({
         console.log(res.data);
         if (res.data.statusCode == 200) {
           handleClose();
+          mutate(`/RiskRegister/session/list/${riskId}`);
+        } else {
+          console.log(res.data.message, { autoClose: 2000 });
         }
       })
       .catch((err) => {
@@ -63,9 +67,10 @@ const StartSession = ({
             >
               Select Team
             </FormLabel>
-            <p className="text-gray-500">
-              Notification will be send to the selected team members and session
-              will start once they accept it
+            <p className="text-gray-700 my-5">
+              Note:- Notification will be send to the selected team members and
+              session will start once they accept it. Once the session is
+              started you will be able to add/edit tasks.
             </p>
             <FormGroup>
               {teamList.map((team) => (

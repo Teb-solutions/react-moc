@@ -4,6 +4,7 @@ import CommonModal from "../../../common/CommonModal";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { apiAuth } from "src/utils/http";
+import { mutate } from "swr";
 
 const EndSession = ({ open, handleClose, riskId, sessionId }) => {
   const [comment, setComment] = useState<string>("");
@@ -21,15 +22,16 @@ const EndSession = ({ open, handleClose, riskId, sessionId }) => {
       })
       .then((res) => {
         if (res.data.statusCode == 200) {
-          toast.success(res.data.message);
+          toast.success(res.data.message, { autoClose: 2000 });
           handleClose();
+          mutate(`/RiskRegister/session/list/${riskId}`);
         } else {
-          toast.error(res.data.message);
+          toast.error(res.data.message, { autoClose: 2000 });
         }
       })
       .catch((err) => {
         console.log(err);
-        toast.error(err.response.data.message);
+        toast.error(err.response.data.message, { autoClose: 2000 });
       })
       .finally(() => {
         setLoading(false);

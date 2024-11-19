@@ -17,6 +17,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { SessionList } from "../../../helpers/type";
 import {
   SessionRequestStatus,
+  SessionStatus,
   SessionStatusDisplayNames,
 } from "../../../helpers/enum";
 import dayjs from "dayjs";
@@ -42,9 +43,12 @@ const ViewSessionHistory = ({
   const id = popopen ? "simple-popper" : undefined;
   return (
     <CommonModal title="Session History" open={open} handleClose={handleClose}>
-      <div>
+      <div className="max-h-[600px] overflow-y-scroll">
         {sessionListordered.map((session, index) => (
-          <Accordion defaultExpanded={index === 0}>
+          <Accordion
+            key={session.id + "_" + index}
+            defaultExpanded={index === 0}
+          >
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1-content"
@@ -55,33 +59,7 @@ const ViewSessionHistory = ({
                 <Typography className="font-medium">
                   Session {sessionLength - index}
                 </Typography>
-                {session.isActive && (
-                  <Chip
-                    size="small"
-                    className="px-10"
-                    //   variant="outlined"
-                    color="info"
-                    label={SessionStatusDisplayNames[session.status]}
-                  />
-                )}
-                {session.isExpired && (
-                  <Chip
-                    size="small"
-                    className="px-10"
-                    //   variant="outlined"
-                    color="error"
-                    label="Expired"
-                  />
-                )}
-                {session.isSessionEnded && (
-                  <Chip
-                    size="small"
-                    className="px-10"
-                    //   variant="outlined"
-                    color="success"
-                    label="Session Ended"
-                  />
-                )}
+                <GetSessionStatus session={session} />
               </div>
               <span className="font-normal text-sm">
                 Started by {session.startedByStaffName} on{" "}
@@ -91,7 +69,10 @@ const ViewSessionHistory = ({
             <AccordionDetails>
               <div className="grid grid-cols-1 sm:grid-cols-2">
                 {session.teamList.map((team, index) => (
-                  <Card className="shadow-0">
+                  <Card
+                    key={session.id + "_" + team.staffId}
+                    className="shadow-0"
+                  >
                     <CardHeader
                       avatar={
                         <Icon fontSize="large" className="text-blue-500">
@@ -179,3 +160,47 @@ const ViewSessionHistory = ({
 };
 
 export default ViewSessionHistory;
+
+const GetSessionStatus = ({ session }: { session: SessionList }) => {
+  const getColor = (status: number) => {
+    switch (status) {
+      case SessionStatus.Started:
+        return "success";
+      case SessionStatus.Canceled:
+        return "default";
+      default:
+        return "info";
+    }
+  };
+  if (session.isExpired) {
+    return (
+      <Chip
+        size="small"
+        className="px-10"
+        //   variant="outlined"
+        color="error"
+        label="Expired"
+      />
+    );
+  } else if (session.isSessionEnded) {
+    return (
+      <Chip
+        size="small"
+        className="px-10"
+        //   variant="outlined"
+        color="info"
+        label="Session Ended"
+      />
+    );
+  } else {
+    return (
+      <Chip
+        size="small"
+        className="px-10"
+        //   variant="outlined"
+        color={getColor(session.status)}
+        label={SessionStatusDisplayNames[session.status]}
+      />
+    );
+  }
+};
