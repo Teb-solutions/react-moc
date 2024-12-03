@@ -3,19 +3,21 @@ import React from "react";
 import { ITask } from "../../../helpers/type";
 import RiskClassificationDisplay from "../../../common/RiskClassificationDisplay";
 import { useTaskStore } from "../common/taskStore";
+import { riskClassificationDisplay } from "src/app/main/moc/common_components/RiskAnalysisCalculate";
+import { TaskStatusDisplayNames, TaskStatusEnum } from "../../../helpers/enum";
 
 const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
-  const { setSelectedTask } = useTaskStore();
+  const { setSelectedTask, selectedTask } = useTaskStore();
 
   return (
     <article
       onClick={() => setSelectedTask(task)}
-      className={`flex flex-col grow shrink justify-center self-stretch p-10 my-auto bg-white rounded-lg ${index == 0 ? "border-blue-700 border-solid border-[3px] shadow-[0px_0px_20px_rgba(14,65,244,0.2)]" : "border-gray-300 border-2"} min-w-[240px] w-[326px] max-md:px-5`}
+      className={`flex flex-col grow shrink justify-center self-stretch p-10 my-auto bg-white rounded-lg ${task.taskId == selectedTask.taskId ? "border-blue-700 border-solid border-[3px] shadow-[0px_0px_20px_rgba(14,65,244,0.2)]" : "border-gray-300 border-2"} min-w-[240px] w-[326px] max-md:px-5`}
     >
       <div className="flex flex-col w-full">
         <header className="flex gap-10 justify-between items-center w-full text-lg font-semibold whitespace-nowrap text-zinc-800">
           <h3 className="self-stretch my-auto">
-            {task.id ? task.id : "CMS8234297"}:
+            {task.taskId ? "TASK#" + task.taskId : "TASK"}
           </h3>
           <input
             type="checkbox"
@@ -33,17 +35,19 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
           </div>
           <RiskCard
             risk={task.residualRiskClassification.toString()}
-            riskDisplay={task.residualRiskClassificationDisplay}
+            riskDisplay={riskClassificationDisplay(
+              task.residualRiskClassification
+            )}
           />
         </div>
         <div className="flex flex-col mt-6 max-w-full w-[360px]">
           <h5 className="font-medium text-gray-600">Task Description</h5>
-          <p className="mt-3 text-neutral-400">{task.task}</p>
+          <p className="mt-3 text-neutral-400">{task.taskName}</p>
         </div>
         <div className="flex flex-col mt-6 max-w-full">
           <Chip
             sx={{ maxWidth: "fit-content", whiteSpace: "nowrap" }}
-            label="Draft"
+            label={TaskStatusDisplayNames[task.status] || "Draft"}
             color="info"
             variant="outlined"
             size="small"

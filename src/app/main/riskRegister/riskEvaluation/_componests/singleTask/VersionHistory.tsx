@@ -67,7 +67,7 @@ const VersionHistory = ({
                   <hr className="mt-8 w-full border border-solid border-neutral-200" />
                   <RiskSection riskItems={rriskItems} title="Residual Risk" />
                   <hr className="mt-8 w-full border border-solid border-neutral-200" />
-                  <ControlMeasures />
+                  {/* <ControlMeasures /> */}
 
                   <hr className="mt-8 w-full border border-solid border-neutral-200" />
                   <TaskApprovalHistory />
@@ -94,7 +94,7 @@ const VersionHistory = ({
                   <hr className="mt-8 w-full border border-solid border-neutral-200" />
                   <RiskSection riskItems={rriskItems} title="Residual Risk" />
                   <hr className="mt-8 w-full border border-solid border-neutral-200" />
-                  <ControlMeasures />
+                  {/* <ControlMeasures /> */}
 
                   <hr className="mt-8 w-full border border-solid border-neutral-200" />
                   <TaskApprovalHistory />

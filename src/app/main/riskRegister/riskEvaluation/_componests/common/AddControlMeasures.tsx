@@ -3,7 +3,7 @@ import Chip from "@mui/material/Chip";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import CircularProgress from "@mui/material/CircularProgress";
-import { ControlMeasures } from "../../../helpers/enum";
+import { ControlMeasuresType } from "../../../helpers/enum";
 import useFetchControlMeasureOptions from "./useFetchControlMeasureOptions";
 import { ISelectedControlMeasures } from "../../../helpers/type";
 
@@ -81,9 +81,9 @@ const AddControlMeasures: React.FC<AddControlMeasuresProps> = ({
               {...params}
               error={errors}
               variant="outlined"
-              label={ControlMeasures[controlMeasureType]}
+              label={ControlMeasuresType[controlMeasureType]}
               placeholder={
-                ControlMeasures[controlMeasureType] + " Control Measures"
+                ControlMeasuresType[controlMeasureType] + " Control Measures"
               }
             />
           )}

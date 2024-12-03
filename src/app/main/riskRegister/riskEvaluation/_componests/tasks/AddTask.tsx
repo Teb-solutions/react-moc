@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import useFetchLookUpData from "../common/useFetchLookUpData";
 import { likelihoodValues, severityValues } from "../common/riskAnalysisHook";
 import AddControlMeasures from "../common/AddControlMeasures";
-import { ControlMeasures } from "../../../helpers/enum";
+import { ControlMeasuresType } from "../../../helpers/enum";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -25,13 +25,15 @@ import { set } from "lodash";
 import { ISelectedControlMeasures } from "../../../helpers/type";
 import { useTaskStore } from "../common/taskStore";
 import RiskClassificationDisplay from "../../../common/RiskClassificationDisplay";
+import { apiAuth } from "src/utils/http";
+import { toast } from "react-toastify";
 
 export const AddTaskSchema = z.object({
-  riskId: z.number(),
-  task: z.string().nonempty("Task is required"),
-  subTask: z.string().nonempty("Sub task is required"),
+  riskRegisterId: z.number(),
+  taskName: z.string().nonempty("Task is required"),
+  subTaskName: z.string().nonempty("Sub task is required"),
   hazardousSituation: z.string().nonempty("Hazardous situation is required"),
-  consequences: z.string().nonempty("Consequences is required"),
+  consequence: z.string().nonempty("Consequences is required"),
   hazardType: z.number(),
   time: z.number(),
   frequencyDetails: z.number(),
@@ -41,11 +43,11 @@ export const AddTaskSchema = z.object({
   potentialRisk: z.number(),
   humanControlMeasures: z.array(z.any()),
   technicalControlMeasures: z.array(z.any()),
-  organizationalControlMeasures: z.array(z.any()),
-  residualTime: z.number(),
-  residualFrequency: z.number(),
+  organisationalControlMeasures: z.array(z.any()),
+  modifiedTime: z.number(),
+  modifiedFrequencyDetails: z.number(),
   residualFrequencyScoring: z.number(),
-  residualLikelyhoodScoring: z.number(),
+  residualLikelihoodScoring: z.number(),
   residualSeverityScoring: z.number(),
   residualRisk: z.number(),
   residualRiskClassification: z.string(),
@@ -90,7 +92,7 @@ const AddTask = ({ riskId }: { riskId: number }) => {
   } = useForm<AddTaskFormValues>({
     resolver: zodResolver(AddTaskSchema),
     defaultValues: {
-      riskId: riskId,
+      riskRegisterId: riskId,
     },
   });
 
@@ -123,13 +125,13 @@ const AddTask = ({ riskId }: { riskId: number }) => {
 
   const timeChange = watch("time");
   const frequencyChange = watch("frequencyDetails");
-  const residualTimeChange = watch("residualTime");
-  const residualFrequencyChange = watch("residualFrequency");
+  const residualTimeChange = watch("modifiedTime");
+  const residualFrequencyChange = watch("modifiedFrequencyDetails");
   const frequencyScoringWatch = watch("frequencyScoring");
   const residualFrequencyScoringWatch = watch("residualFrequencyScoring");
   const likelyhoodScoringWatch = watch("likelyhoodScoring");
   const severityScoringWatch = watch("severityScoring");
-  const residualLikelyhoodScoringWatch = watch("residualLikelyhoodScoring");
+  const residualLikelyhoodScoringWatch = watch("residualLikelihoodScoring");
   const residualSeverityScoringWatch = watch("residualSeverityScoring");
   const residualRiskWatch = watch("residualRisk");
 
@@ -217,8 +219,6 @@ const AddTask = ({ riskId }: { riskId: number }) => {
 
   //useEffect to update the control measures in the form values
   useEffect(() => {
-    console.clear();
-    console.log(selectedHumanControlMeasures);
     selectedHumanControlMeasures &&
       setValue(
         "humanControlMeasures",
@@ -235,7 +235,7 @@ const AddTask = ({ riskId }: { riskId: number }) => {
       );
     selectedOrganizationalControlMeasures &&
       setValue(
-        "organizationalControlMeasures",
+        "organisationalControlMeasures",
         selectedOrganizationalControlMeasures.length > 0
           ? selectedOrganizationalControlMeasures
           : null
@@ -250,6 +250,26 @@ const AddTask = ({ riskId }: { riskId: number }) => {
 
   const onTaskFormSubmit = (data: AddTaskFormValues) => {
     console.log(data);
+    const payload = data;
+    payload.humanControlMeasures = selectedHumanControlMeasures.map(
+      (controlMeasure) => controlMeasure.title
+    );
+    payload.technicalControlMeasures = selectedTechnicalControlMeasures.map(
+      (controlMeasure) => controlMeasure.title
+    );
+    payload.organisationalControlMeasures =
+      selectedOrganizationalControlMeasures.map(
+        (controlMeasure) => controlMeasure.title
+      );
+    apiAuth
+      .post(`/RiskRegister/task/${riskId}`, payload)
+      .then(() => {
+        toast.success("Task added successfully");
+      })
+      .catch(() => {
+        toast.error("Failed to add task");
+      });
+
     setTasks([...tasks, data as any]);
     setSelectedTask(data as any);
   };
@@ -263,28 +283,30 @@ const AddTask = ({ riskId }: { riskId: number }) => {
         <div className="col-span-2">
           <TextField
             fullWidth
-            error={!!errors.task}
+            error={!!errors.taskName}
             // helperText={errors.task?.message}
             label="Task*"
             id="task"
-            {...register("task")}
+            {...register("taskName")}
           />
-          {errors.task && (
-            <p className="text-red-500 my-2 text-sm">{errors.task.message}</p>
+          {errors.taskName && (
+            <p className="text-red-500 my-2 text-sm">
+              {errors.taskName.message}
+            </p>
           )}
         </div>
         <div className="col-span-2">
           <TextField
             fullWidth
-            error={!!errors.subTask}
+            error={!!errors.subTaskName}
             // helperText={errors.subTask?.message}
             label="Sub Task*"
             id="subTask"
-            {...register("subTask")}
+            {...register("subTaskName")}
           />
-          {errors.subTask && (
+          {errors.subTaskName && (
             <p className="text-red-500 my-2 text-sm">
-              {errors.subTask.message}
+              {errors.subTaskName.message}
             </p>
           )}
         </div>
@@ -335,12 +357,12 @@ const AddTask = ({ riskId }: { riskId: number }) => {
             rows={3}
             label="Consequences*"
             id="consequences"
-            error={!!errors.consequences}
-            {...register("consequences")}
+            error={!!errors.consequence}
+            {...register("consequence")}
           />
-          {errors.consequences && (
+          {errors.consequence && (
             <p className="text-red-500 my-2 text-sm">
-              {errors.consequences.message}
+              {errors.consequence.message}
             </p>
           )}
         </div>
@@ -469,7 +491,7 @@ const AddTask = ({ riskId }: { riskId: number }) => {
         <div>
           <AddControlMeasures
             errors={!!errors.humanControlMeasures}
-            controlMeasureType={ControlMeasures.Human}
+            controlMeasureType={ControlMeasuresType.Human}
             selectedValues={selectedHumanControlMeasures}
             setSelectedValues={setSelectedHumanControlMeasures}
           />
@@ -477,15 +499,15 @@ const AddTask = ({ riskId }: { riskId: number }) => {
         <div>
           <AddControlMeasures
             errors={!!errors.technicalControlMeasures}
-            controlMeasureType={ControlMeasures.Technical}
+            controlMeasureType={ControlMeasuresType.Technical}
             selectedValues={selectedTechnicalControlMeasures}
             setSelectedValues={setSelectedTechnicalControlMeasures}
           />
         </div>
         <div>
           <AddControlMeasures
-            errors={!!errors.organizationalControlMeasures}
-            controlMeasureType={ControlMeasures.Organizational}
+            errors={!!errors.organisationalControlMeasures}
+            controlMeasureType={ControlMeasuresType.Organizational}
             selectedValues={selectedOrganizationalControlMeasures}
             setSelectedValues={setSelectedOrganizationalControlMeasures}
           />
@@ -500,8 +522,8 @@ const AddTask = ({ riskId }: { riskId: number }) => {
             <FormControl fullWidth>
               <InputLabel>Time*</InputLabel>
               <Select
-                {...register("residualTime")}
-                error={!!errors.residualTime}
+                {...register("modifiedTime")}
+                error={!!errors.modifiedTime}
                 label="Time*"
               >
                 {timesArr.map((time) => (
@@ -510,9 +532,9 @@ const AddTask = ({ riskId }: { riskId: number }) => {
                   </MenuItem>
                 ))}
               </Select>
-              {errors.residualTime && (
+              {errors.modifiedTime && (
                 <p className="text-red-500 my-2 text-sm">
-                  {errors.residualTime.message}
+                  {errors.modifiedTime.message}
                 </p>
               )}
             </FormControl>
@@ -524,8 +546,8 @@ const AddTask = ({ riskId }: { riskId: number }) => {
             <FormControl fullWidth>
               <InputLabel>Frequency*</InputLabel>
               <Select
-                error={!!errors.residualFrequency}
-                {...register("residualFrequency")}
+                error={!!errors.modifiedFrequencyDetails}
+                {...register("modifiedFrequencyDetails")}
                 label="Frequency*"
               >
                 {residualFrequencyArr.map((frequency) => (
@@ -534,9 +556,9 @@ const AddTask = ({ riskId }: { riskId: number }) => {
                   </MenuItem>
                 ))}
               </Select>
-              {errors.residualFrequency && (
+              {errors.modifiedFrequencyDetails && (
                 <p className="text-red-500 my-2 text-sm">
-                  {errors.residualFrequency.message}
+                  {errors.modifiedFrequencyDetails.message}
                 </p>
               )}
             </FormControl>
@@ -562,8 +584,8 @@ const AddTask = ({ riskId }: { riskId: number }) => {
           <FormControl fullWidth>
             <InputLabel>Likelyhood Scoring*</InputLabel>
             <Select
-              {...register("residualLikelyhoodScoring")}
-              error={!!errors.residualLikelyhoodScoring}
+              {...register("residualLikelihoodScoring")}
+              error={!!errors.residualLikelihoodScoring}
               label="Likelyhood Scoring*"
             >
               {likelihoodValues.map((value) => (
@@ -572,9 +594,9 @@ const AddTask = ({ riskId }: { riskId: number }) => {
                 </MenuItem>
               ))}
             </Select>
-            {errors.residualLikelyhoodScoring && (
+            {errors.residualLikelihoodScoring && (
               <p className="text-red-500 my-2 text-sm">
-                {errors.residualLikelyhoodScoring.message}
+                {errors.residualLikelihoodScoring.message}
               </p>
             )}
           </FormControl>

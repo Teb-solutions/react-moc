@@ -4,7 +4,7 @@ import RiskSection from "./RiskSection";
 import ControlMeasures from "./ControlMeasures";
 import TaskApprovalHistory from "./TaskAppovalHistory";
 import ButtonRisk from "../../../common/Button";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SendForRevision from "./SendForRevision";
 import AddComment from "./AddComment";
 import { TaskPopupType } from "../../../helpers/enum";
@@ -13,26 +13,15 @@ import TaskButton from "../../../common/TaskButton";
 import { Task } from "@mui/icons-material";
 import { useRiskStore } from "../common/riskstore";
 import { useTaskStore } from "../common/taskStore";
+import { ITask } from "../../../helpers/type";
+import { toast } from "react-toastify";
+import { apiAuth } from "src/utils/http";
+import useFetchLookUpData from "../common/useFetchLookUpData";
 interface RiskItemProps {
   label: string;
   value: string;
 }
 
-const priskItems: RiskItemProps[] = [
-  { label: "Time", value: "10" },
-  { label: "Frequency", value: "<day" },
-  { label: "Frequency Scoring", value: "10" },
-  { label: "Likelyhood Scoring", value: "23" },
-  { label: "Severity Scoring", value: "12" },
-];
-
-const rriskItems: RiskItemProps[] = [
-  { label: "Time", value: "20" },
-  { label: "Frequency", value: "<week" },
-  { label: "Frequency Scoring", value: "14" },
-  { label: "Likelyhood Scoring", value: "23" },
-  { label: "Severity Scoring", value: "15" },
-];
 const TaskDetailsCard = () => {
   const { isCurrentUserPartOfTeam, isTaskApprover } = useRiskStore();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
@@ -55,6 +44,96 @@ const TaskDetailsCard = () => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const { selectedTask } = useTaskStore();
+  //task details and selectedtask contain same task, but in the taskdetails control measures and approval details will be fetched
+  const [taskDetails, setTaskDetails] = useState<ITask | null>(null);
+
+  const priskItems: RiskItemProps[] = useMemo(
+    () => [
+      {
+        label: "Time",
+        value: selectedTask.time ? selectedTask.time.toString() : "NA",
+      },
+      {
+        label: "Frequency",
+        value: selectedTask.frequencyDetails
+          ? selectedTask.frequencyDetails.toString()
+          : "0",
+      },
+      {
+        label: "Frequency Scoring",
+        value: selectedTask.frequencyScoring
+          ? selectedTask.frequencyScoring.toString()
+          : "0",
+      },
+      {
+        label: "Likelyhood Scoring",
+        value: selectedTask.likelihoodScoring
+          ? selectedTask.likelihoodScoring.toString()
+          : "0",
+      },
+      {
+        label: "Severity Scoring",
+        value: selectedTask.severityScoring
+          ? selectedTask.severityScoring.toString()
+          : "0",
+      },
+    ],
+    [selectedTask]
+  );
+
+  const rriskItems: RiskItemProps[] = useMemo(
+    () => [
+      {
+        label: "Time",
+        value: selectedTask.modifiedTime
+          ? selectedTask.modifiedTime.toString()
+          : "0",
+      },
+      {
+        label: "Frequency",
+        value: selectedTask.modifiedFrequencyDetails
+          ? selectedTask.modifiedFrequencyDetails.toString()
+          : "0",
+      },
+      {
+        label: "Frequency Scoring",
+        value: selectedTask.residualFrequencyScoring
+          ? selectedTask.residualFrequencyScoring.toString()
+          : "0",
+      },
+      {
+        label: "Likelyhood Scoring",
+        value: selectedTask.residualLikelihoodScoring
+          ? selectedTask.residualLikelihoodScoring.toString()
+          : "0",
+      },
+      {
+        label: "Severity Scoring",
+        value: selectedTask.residualSeverityScoring
+          ? selectedTask.residualSeverityScoring.toString()
+          : "0",
+      },
+    ],
+    [selectedTask]
+  );
+  useEffect(() => {
+    apiAuth
+      .get(`/RiskRegister/task/detail/${selectedTask.taskId}`)
+      .then((response) => {
+        if (response.data.statusCode == 200) {
+          setTaskDetails(response.data.data);
+        } else {
+          setTaskDetails(null);
+          toast.error(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setTaskDetails(null);
+        toast.error("Failed to fetch task");
+      });
+  }, [selectedTask]);
+
   return (
     <Paper className="flex flex-col p-10 mt-10">
       <header className="flex gap-10 mb-10 justify-between items-center w-full">
@@ -68,7 +147,7 @@ const TaskDetailsCard = () => {
               ${Number(selectedTask?.residualRiskClassification) === 4 && "bg-yellow-600"}
               ${Number(selectedTask?.residualRiskClassification) === 5 && "bg-green-500"}`}
         >
-          {"CMS009327"}:
+          TASK#{selectedTask.taskId}
         </h2>
         <div className="flex gap-10">
           <button
@@ -133,14 +212,14 @@ const TaskDetailsCard = () => {
         style={{ maxHeight: "75vh", overflowY: "auto" }}
       >
         <div className="flex flex-col mt-5">
-          <InfoSection />
+          {selectedTask && <InfoSection />}
           <RiskSection riskItems={priskItems} title="Potential Risk" />
           <hr className="mt-8 w-full border border-solid border-neutral-200" />
-          <ControlMeasures />
+          {taskDetails && <ControlMeasures taskDetails={taskDetails} />}
           <hr className="mt-8 w-full border border-solid border-neutral-200" />
           <RiskSection riskItems={rriskItems} title="Residual Risk" />
           <hr className="mt-8 w-full border border-solid border-neutral-200" />
-          <TaskApprovalHistory />
+          {taskDetails && <TaskApprovalHistory />}
         </div>
       </article>
       {isTaskApprover && (

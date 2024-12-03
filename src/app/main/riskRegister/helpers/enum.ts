@@ -102,8 +102,26 @@ export enum SessionRequestStatus {
   Rejected,
 }
 
-export enum ControlMeasures {
+export enum ControlMeasuresType {
   Human = 1,
   Technical,
   Organizational,
 }
+
+export enum TaskStatusEnum {
+  Draft = 0,
+  PendingApproval,
+  Approved,
+  RejectedPendingApproval,
+  RejectedPendingReview,
+}
+
+export const TaskStatusDisplayNames: {
+  [key in TaskStatusEnum]: string;
+} = {
+  [TaskStatusEnum.Draft]: "Draft",
+  [TaskStatusEnum.PendingApproval]: "Pending Approval",
+  [TaskStatusEnum.Approved]: "Approved",
+  [TaskStatusEnum.RejectedPendingApproval]: "Pending Approval",
+  [TaskStatusEnum.RejectedPendingReview]: "Review",
+};

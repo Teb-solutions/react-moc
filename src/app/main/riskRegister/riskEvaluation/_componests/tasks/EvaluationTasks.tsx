@@ -1,5 +1,5 @@
 import { Box, Paper, Tab, Tabs } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import TaskCardList from "./TaskCardList";
 import TaskDetailsCard from "../singleTask/TaskDetailsCard";
 import { AddTaskOutlined, Check, CheckBox } from "@mui/icons-material";
@@ -10,6 +10,9 @@ import AddTask from "./AddTask";
 import { useRiskStore } from "../common/riskstore";
 import { useParams } from "react-router";
 import { useTaskStore } from "../common/taskStore";
+import { use } from "i18next";
+import { toast } from "react-toastify";
+import { apiAuth } from "src/utils/http";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -48,7 +51,26 @@ const EvaluationTasks = () => {
     setValue(newValue);
   };
   const [isOpen, setIsOpen] = React.useState(false);
-  const { tasks } = useTaskStore();
+  const { tasks, setTasks, setSelectedTask, selectedTask } = useTaskStore();
+  useEffect(() => {
+    apiAuth
+      .get(`/RiskRegister/task/list/${riskId}`)
+      .then((response) => {
+        if (response.data.statusCode == 200) {
+          setTasks(response.data.data);
+          setSelectedTask(response.data.data[0]);
+        } else {
+          setTasks([]);
+          toast.error(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        setTasks([]);
+        toast.error("Failed to fetch task");
+      });
+  }, [riskId]);
+
   return (
     <div className="mt-10">
       {/* <Paper className="flex flex-col p-10 mt-10"> */}
@@ -132,7 +154,7 @@ const EvaluationTasks = () => {
             </CustomTabPanel>
           </div>
           <div className="w-full sm:w-1/3">
-            {tasks.length > 0 && <TaskDetailsCard />}
+            {selectedTask && <TaskDetailsCard />}
           </div>
         </div>
       </div>

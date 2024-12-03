@@ -1,10 +1,12 @@
+import { riskClassificationDisplay } from "../../moc/common_components/RiskAnalysisCalculate";
+
 const RiskClassificationDisplay = ({
   residualRiskClassification,
   residualRiskClassificationDisplay,
   classes,
 }: {
   residualRiskClassification: string;
-  residualRiskClassificationDisplay: string;
+  residualRiskClassificationDisplay?: string;
   classes?: string;
 }) => {
   return (
@@ -18,7 +20,9 @@ const RiskClassificationDisplay = ({
               ${Number(residualRiskClassification) === 5 && "bg-green-500"}
               `}
       >
-        {residualRiskClassificationDisplay}
+        {residualRiskClassificationDisplay
+          ? residualRiskClassificationDisplay
+          : riskClassificationDisplay(residualRiskClassification)}
       </button>
     </div>
   );

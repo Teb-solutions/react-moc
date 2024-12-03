@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { ControlMeasures } from "../../../helpers/enum"; // Adjust the import path as necessary
+import { ControlMeasuresType } from "../../../helpers/enum"; // Adjust the import path as necessary
 import { apiAuth } from "src/utils/http";
 import { ISelectedControlMeasures } from "../../../helpers/type";
 
@@ -56,13 +56,13 @@ const useFetchControlMeasureOptions = (
   useEffect(() => {
     let url = "";
     switch (controlMeasureType) {
-      case ControlMeasures.Human:
+      case ControlMeasuresType.Human:
         url = "https://mocapi.tebs.co.in/api/LookupData/Lov/28";
         break;
-      case ControlMeasures.Organizational:
+      case ControlMeasuresType.Organizational:
         url = "https://mocapi.tebs.co.in/api/LookupData/Lov/29";
         break;
-      case ControlMeasures.Technical:
+      case ControlMeasuresType.Technical:
         url = "https://mocapi.tebs.co.in/api/LookupData/Lov/30/82"; // Example URL, adjust as necessary
         break;
       default:

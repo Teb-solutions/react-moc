@@ -23,7 +23,7 @@ const TaskCardList: React.FC<TaskCardListProps> = ({ tasks }) => {
         <section className="flex flex-wrap gap-6 items-center text-sm">
           {tasks.map((task, index) => (
             <TaskCard
-              key={task.riskId + "_" + index}
+              key={task.riskRegisterId + "_" + index}
               task={task}
               index={index}
             />

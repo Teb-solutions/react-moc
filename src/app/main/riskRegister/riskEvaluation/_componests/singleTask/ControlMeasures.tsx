@@ -1,38 +1,55 @@
 import { Icon } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import { ITask } from "../../../helpers/type";
+import { ControlMeasuresType } from "../../../helpers/enum";
+import { useMemo } from "react";
 
-const controlMeasures = [
-  {
-    label: "Manual",
-    value: [
-      "Engineering controls are the first line of defense in protecting workers from hazards. ",
-      "Engineering controls are the first line of defense in protecting workers from hazards. ",
-    ],
-  },
-  {
-    label: "Technical",
-    value: [
-      "Engineering controls are the first line of defense in protecting workers from hazards. ",
-      "Engineering controls are the first line of defense in protecting workers from hazards. ",
-    ],
-  },
-  {
-    label: "Orgnaizational",
-    value: [
-      "Personal protective equipment (PPE) is t",
-      "Engineering controls are the first line of defense in protecting workers from hazards. ",
-    ],
-  },
-];
-const ControlMeasures = () => {
+const ControlMeasures = ({ taskDetails }: { taskDetails: ITask }) => {
+  const controlMeasuresDisplay = useMemo(() => {
+    const humanControlMeasures = taskDetails.controlMeasures.filter(
+      (measure) => measure.type === ControlMeasuresType.Human
+    );
+    const technicalControlMeasures = taskDetails.controlMeasures.filter(
+      (measure) => measure.type === ControlMeasuresType.Technical
+    );
+    const organizationalControlMeasures = taskDetails.controlMeasures.filter(
+      (measure) => measure.type === ControlMeasuresType.Organizational
+    );
+    const controlMeasuresDisplay = [
+      {
+        label: "Human",
+        value: humanControlMeasures.map((measure) => measure.controlMeasure),
+      },
+      {
+        label: "Technical",
+        value: technicalControlMeasures.map(
+          (measure) => measure.controlMeasure
+        ),
+      },
+      {
+        label: "Organizational",
+        value: organizationalControlMeasures.map(
+          (measure) => measure.controlMeasure
+        ),
+      },
+    ];
+    return controlMeasuresDisplay;
+  }, [taskDetails]);
+
   return (
     <section className="flex flex-col mt-8 w-full">
-      <h3 className="text-base font-semibold text-zinc-800">
-        {"Control Measure"}
-      </h3>
+      <div className="flex flex-row justify-between items-center w-full">
+        <h2 className="text-lg font-semibold text-zinc-800">
+          Control Measures
+        </h2>
+        <Icon className="text-lg text-blue-600 rounded-sm border-1 border-blue-600 cursor-pointer">
+          edit
+        </Icon>
+      </div>
+
       <div className="flex flex-col mt-6 w-full text-sm">
-        {controlMeasures.map((item, index) => (
+        {controlMeasuresDisplay.map((item, index) => (
           <ControlMeasureItem
             key={index}
             label={item.label}
@@ -55,9 +72,6 @@ function ControlMeasureItem({
     <div className="flex flex-col gap-5 mt-10 justify-between items-start w-full">
       <div className="text-neutral-400 font-semibold flex flex-row justify-between w-full">
         {label}
-        <Icon className="text-lg ml-5 text-blue-600 rounded-sm border-1 border-blue-600 cursor-pointer">
-          edit
-        </Icon>
       </div>
       <div className="text-neutral-600 text-sm  px-20">
         <ul>
@@ -68,22 +82,6 @@ function ControlMeasureItem({
           ))}
         </ul>
       </div>
-      {/* <div className="font-medium mb-10 text-neutral-600">
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          className="w-50"
-          size="small"
-          style={{ width: "400px", wordBreak: "break-word" }}
-          value={value}
-          label="Age"
-          //   onChange={handleChange}
-        >
-          {value.map((value) => (
-            <MenuItem value={value}>{value}</MenuItem>
-          ))}
-        </Select>
-      </div> */}
     </div>
   );
 }

@@ -109,29 +109,39 @@ export type ISelectedControlMeasures = {
 };
 
 export interface ITask {
-  riskId: number;
   riskRegisterId?: number;
-  id?: number;
-  task: string;
-  subTask: string;
+  taskId?: number;
+  taskName: string;
+  subTaskName: string;
   hazardousSituation: string;
-  consequences: string;
+  consequence: string;
   hazardType: number;
   time: number;
   frequencyDetails: number;
   frequencyScoring: number;
-  likelyhoodScoring: number;
+  likelihoodScoring: number;
   severityScoring: number;
   potentialRisk: number;
-  humanControlMeasures: ISelectedControlMeasures[];
-  technicalControlMeasures: ISelectedControlMeasures[];
-  organizationalControlMeasures: ISelectedControlMeasures[];
-  residualTime: number;
-  residualFrequency: number;
+  controlMeasures: IControlMeasures[];
+  // humanControlMeasures: ISelectedControlMeasures[];
+  // technicalControlMeasures: ISelectedControlMeasures[];
+  // organizationalControlMeasures: ISelectedControlMeasures[];
+  modifiedTime: number;
+  modifiedFrequencyDetails: number;
   residualFrequencyScoring: number;
-  residualLikelyhoodScoring: number;
+  residualLikelihoodScoring: number;
   residualSeverityScoring: number;
   residualRisk: number;
   residualRiskClassification: number;
+  status: number;
   residualRiskClassificationDisplay: string;
+}
+
+export interface IControlMeasures {
+  id: number;
+  type: number;
+  controlMeasure: string;
+  updatedAt: any;
+  updatedBy: any;
+  updatedByStaffName: any;
 }

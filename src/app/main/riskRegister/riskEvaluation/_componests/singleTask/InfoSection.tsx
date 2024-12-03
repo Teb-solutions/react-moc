@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTaskStore } from "../common/taskStore";
+import useFetchLookUpData from "../common/useFetchLookUpData";
 
 interface InfoItemProps {
   label: string;
@@ -15,24 +16,41 @@ const InfoItem: React.FC<InfoItemProps> = ({ label, value }) => (
 
 const InfoSection: React.FC = () => {
   const { selectedTask } = useTaskStore();
-  const infoItems: InfoItemProps[] = [
-    {
-      label: "Task",
-      value: selectedTask.task,
-    },
-    { label: "Subtask", value: selectedTask.subTask },
-    { label: "Area", value: "Terminal 1?????" },
-    { label: "Role", value: "Project In Charge?????" },
-    { label: "Hazard Type", value: selectedTask.hazardType.toString() },
-    {
-      label: "Hazardous Situation",
-      value: selectedTask.hazardousSituation,
-    },
-    {
-      label: "Consequnces",
-      value: selectedTask.consequences,
-    },
-  ];
+  const hazardTypeUrl = "/LookupData/Lov/28";
+  const {
+    data: hazardTypes,
+    loading: hazardLoading,
+    error: hazardError,
+  } = useFetchLookUpData(hazardTypeUrl);
+
+  const infoItems: InfoItemProps[] = useMemo(
+    () => [
+      {
+        label: "Task",
+        value: selectedTask.taskName,
+      },
+      { label: "Subtask", value: selectedTask.subTaskName },
+      { label: "Area", value: "Terminal 1?????" },
+      { label: "Role", value: "Project In Charge?????" },
+      {
+        label: "Hazard Type",
+        value:
+          hazardTypes &&
+          hazardTypes.filter(
+            (item) => item.value === selectedTask.hazardType
+          )[0]?.text,
+      },
+      {
+        label: "Hazardous Situation",
+        value: selectedTask.hazardousSituation,
+      },
+      {
+        label: "Consequnces",
+        value: selectedTask.consequence,
+      },
+    ],
+    [selectedTask, hazardTypes]
+  );
 
   return (
     <section className="flex flex-col mt-6 w-full">
