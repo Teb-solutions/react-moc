@@ -161,7 +161,7 @@ const RiskInitiation = () => {
               </div>
             </div>
             <div className="w-full sm:w-1/3 mb-0">
-              <LineChart />
+              <LineChart width="400" />
             </div>
           </div>
         </div>
@@ -177,65 +177,67 @@ const RiskInitiation = () => {
             {risk.projectDescription}
           </p>
           <div className="flex mt-5  flex-col sm:flex-row w-full">
-            <div className="w-full sm:w-1/3 pr-2 text-md">
-              <InitationInfoItem
-                label={"Total Tasks"}
-                value={totalTasks.toString()}
-              />
-              <InitationInfoItem
-                label={"High Risk Tasks"}
-                value={highRiskTasks.toString()}
-                color="text-red-500"
-              />
-              <InitationInfoItem
-                label={"Significant Risk Tasks"}
-                value={tasks
-                  .filter(
-                    (task) =>
-                      Number(task.residualRiskClassification) ===
-                      RiskClassification.SignificantRisk
-                  )
-                  .length.toString()}
-                color="text-orange-700"
-              />
-              <InitationInfoItem
-                label={"Average Risk Tasks"}
-                value={tasks
-                  .filter(
-                    (task) =>
-                      Number(task.residualRiskClassification) ===
-                      RiskClassification.AverageRisk
-                  )
-                  .length.toString()}
-                color="text-amber-700"
-              />
-              <InitationInfoItem
-                label={"Low Risk Tasks"}
-                value={tasks
-                  .filter(
-                    (task) =>
-                      Number(task.residualRiskClassification) ===
-                      RiskClassification.LowRisk
-                  )
-                  .length.toString()}
-                color="text-yellow-600"
-              />
-              <InitationInfoItem
-                label={"Very Low Risk Tasks"}
-                value={tasks
-                  .filter(
-                    (task) =>
-                      Number(task.residualRiskClassification) ===
-                      RiskClassification.VeryLowRisk
-                  )
-                  .length.toString()}
-                color="text-green-500"
-              />
+            <div className="w-full flex flex-row sm:w-1/2 pr-2 text-md">
+              <div className="w-full sm:w-1/3 pr-2 text-md">
+                <InitationInfoItem
+                  label={"Total Tasks"}
+                  value={totalTasks.toString()}
+                />
+                <InitationInfoItem
+                  label={"High Risk Tasks"}
+                  value={highRiskTasks.toString()}
+                  color="text-red-500"
+                />
+                <InitationInfoItem
+                  label={"Significant Risk Tasks"}
+                  value={tasks
+                    .filter(
+                      (task) =>
+                        Number(task.residualRiskClassification) ===
+                        RiskClassification.SignificantRisk
+                    )
+                    .length.toString()}
+                  color="text-orange-700"
+                />
+                <InitationInfoItem
+                  label={"Average Risk Tasks"}
+                  value={tasks
+                    .filter(
+                      (task) =>
+                        Number(task.residualRiskClassification) ===
+                        RiskClassification.AverageRisk
+                    )
+                    .length.toString()}
+                  color="text-amber-700"
+                />
+                <InitationInfoItem
+                  label={"Low Risk Tasks"}
+                  value={tasks
+                    .filter(
+                      (task) =>
+                        Number(task.residualRiskClassification) ===
+                        RiskClassification.LowRisk
+                    )
+                    .length.toString()}
+                  color="text-yellow-600"
+                />
+                <InitationInfoItem
+                  label={"Very Low Risk Tasks"}
+                  value={tasks
+                    .filter(
+                      (task) =>
+                        Number(task.residualRiskClassification) ===
+                        RiskClassification.VeryLowRisk
+                    )
+                    .length.toString()}
+                  color="text-green-500"
+                />
+              </div>
+              <div className="w-full sm:w-2/3 mb-0">
+                <PieChart />
+              </div>
             </div>
-            <div className="w-full sm:w-1/3 mb-0">
-              <PieChart />
-            </div>
-            <div className="w-full sm:w-1/3 mb-0">
+            <div className="w-full sm:w-1/2 mb-0">
               <LineChart />
             </div>
           </div>

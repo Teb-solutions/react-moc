@@ -55,9 +55,9 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
             </header>
             <div className="flex gap-10 justify-between items-center mt-6 w-full">
               <div className="flex flex-col justify-center self-stretch my-auto">
-                <h5 className="font-medium text-gray-600">Severity Score</h5>
+                <h5 className="font-medium text-gray-600">Residual Risk</h5>
                 <p className="mt-2 font-semibold text-zinc-800">
-                  {task.residualSeverityScoring}
+                  {task.residualRisk}
                 </p>
               </div>
               <RiskCard
@@ -105,8 +105,7 @@ const RiskCard = ({
               ${Number(risk) === 5 && "bg-green-500"}
       `}
     >
-      <span className="self-stretch my-auto">{riskDisplay}:</span>
-      <span className="self-stretch my-auto">{risk}</span>
+      <span className="self-stretch my-auto">{riskDisplay}</span>
     </div>
   );
 };

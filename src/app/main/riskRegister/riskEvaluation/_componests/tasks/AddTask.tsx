@@ -295,6 +295,8 @@ const AddTask = ({
         className="grid grid-cols-2 w-full gap-20 justify-end mx-4 sm:mx-8 py-10"
         style={{ maxHeight: "70vh", overflowY: "auto" }}
       >
+        Freqeuncy scoring for residual risk to be popluated when potential risk
+        is calculated. it is same
         <h3 className="col-span-2">Task Details</h3>
         <div className="col-span-2">
           <TextField

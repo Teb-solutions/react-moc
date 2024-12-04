@@ -3,7 +3,7 @@ import Chart from "react-apexcharts";
 import { useTaskStore } from "../common/taskStore";
 import { RiskClassification } from "../../../helpers/enum";
 import { color } from "framer-motion";
-function LineChart() {
+function LineChart({ width }: { width?: string }) {
   const { tasks } = useTaskStore();
   const labelArray = tasks.map((task) => "TASK" + task.taskId);
   const valueArray = tasks.map((task) => task.residualRiskClassification);
@@ -28,13 +28,13 @@ function LineChart() {
     },
   ];
   return (
-    <div className="line">
+    <div className="pr-5">
       {valueArray && labelArray && (
         <Chart
           options={options}
           series={series}
           type="line"
-          width="500"
+          width={width ? width : "100%"}
           height="250"
         />
       )}

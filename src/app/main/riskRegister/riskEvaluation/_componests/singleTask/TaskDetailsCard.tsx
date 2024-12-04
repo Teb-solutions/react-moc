@@ -80,6 +80,12 @@ const TaskDetailsCard = () => {
           ? selectedTask.severityScoring.toString()
           : "0",
       },
+      {
+        label: "Potential Risk",
+        value: selectedTask.potentialRisk
+          ? selectedTask.potentialRisk.toString()
+          : "0",
+      },
     ],
     [selectedTask]
   );
@@ -114,6 +120,12 @@ const TaskDetailsCard = () => {
         label: "Severity Scoring",
         value: selectedTask.residualSeverityScoring
           ? selectedTask.residualSeverityScoring.toString()
+          : "0",
+      },
+      {
+        label: "Residual Risk",
+        value: selectedTask.residualRisk
+          ? selectedTask.residualRisk.toString()
           : "0",
       },
     ],
