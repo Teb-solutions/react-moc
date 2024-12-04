@@ -135,6 +135,7 @@ export interface ITask {
   residualRiskClassification: number;
   status: number;
   residualRiskClassificationDisplay: string;
+  approvals?: IApprovals[];
 }
 
 export interface IControlMeasures {
@@ -144,4 +145,20 @@ export interface IControlMeasures {
   updatedAt: any;
   updatedBy: any;
   updatedByStaffName: any;
+}
+
+export interface IApprovals {
+  id: number;
+  riskRegisterId: number;
+  riskRegisterTaskId: number;
+  step: number;
+  role: number;
+  comments: any;
+  actionType: number;
+  approvalWorkflowVersion: number;
+  isActive: boolean;
+  staffId: number;
+  staffName: string;
+  startedAt: string;
+  completedAt: any;
 }

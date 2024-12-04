@@ -27,6 +27,7 @@ import { useTaskStore } from "../common/taskStore";
 import RiskClassificationDisplay from "../../../common/RiskClassificationDisplay";
 import { apiAuth } from "src/utils/http";
 import { toast } from "react-toastify";
+import { mutate } from "swr";
 
 export const AddTaskSchema = z.object({
   riskRegisterId: z.number(),
@@ -56,7 +57,13 @@ export const AddTaskSchema = z.object({
 
 type AddTaskFormValues = z.infer<typeof AddTaskSchema>;
 
-const AddTask = ({ riskId }: { riskId: number }) => {
+const AddTask = ({
+  riskId,
+  setIsOpen,
+}: {
+  riskId: number;
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [selectedTime, setSelectedTime] = useState<number | null>(null);
   const [selectedResidualTime, setSelectedResidualTime] = useState<
     number | null
@@ -249,7 +256,7 @@ const AddTask = ({ riskId }: { riskId: number }) => {
   const { tasks, setTasks, setSelectedTask } = useTaskStore();
 
   const onTaskFormSubmit = (data: AddTaskFormValues) => {
-    console.log(data);
+    // console.log(data);
     const payload = data;
     payload.humanControlMeasures = selectedHumanControlMeasures.map(
       (controlMeasure) => controlMeasure.title
@@ -263,15 +270,24 @@ const AddTask = ({ riskId }: { riskId: number }) => {
       );
     apiAuth
       .post(`/RiskRegister/task/${riskId}`, payload)
-      .then(() => {
-        toast.success("Task added successfully");
+      .then((response) => {
+        if (response.data.statusCode === 200) {
+          toast.success("Task added successfully");
+          mutate(`/RiskRegister/task/list/${riskId}`);
+        } else {
+          toast.error(response.data.message);
+        }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
         toast.error("Failed to add task");
+      })
+      .finally(() => {
+        setSelectedHumanControlMeasures([]);
+        setSelectedTechnicalControlMeasures([]);
+        setSelectedOrganizationalControlMeasures([]);
+        setIsOpen(false);
       });
-
-    setTasks([...tasks, data as any]);
-    setSelectedTask(data as any);
   };
   return (
     <form onSubmit={handleSubmit(onTaskFormSubmit)}>

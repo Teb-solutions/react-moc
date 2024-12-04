@@ -4,16 +4,18 @@ import Select from "@mui/material/Select";
 import { ITask } from "../../../helpers/type";
 import { ControlMeasuresType } from "../../../helpers/enum";
 import { useMemo } from "react";
+import { useTaskStore } from "../common/taskStore";
 
-const ControlMeasures = ({ taskDetails }: { taskDetails: ITask }) => {
+const ControlMeasures = () => {
+  const { selectedTask } = useTaskStore();
   const controlMeasuresDisplay = useMemo(() => {
-    const humanControlMeasures = taskDetails.controlMeasures.filter(
+    const humanControlMeasures = selectedTask.controlMeasures.filter(
       (measure) => measure.type === ControlMeasuresType.Human
     );
-    const technicalControlMeasures = taskDetails.controlMeasures.filter(
+    const technicalControlMeasures = selectedTask.controlMeasures.filter(
       (measure) => measure.type === ControlMeasuresType.Technical
     );
-    const organizationalControlMeasures = taskDetails.controlMeasures.filter(
+    const organizationalControlMeasures = selectedTask.controlMeasures.filter(
       (measure) => measure.type === ControlMeasuresType.Organizational
     );
     const controlMeasuresDisplay = [
@@ -35,7 +37,7 @@ const ControlMeasures = ({ taskDetails }: { taskDetails: ITask }) => {
       },
     ];
     return controlMeasuresDisplay;
-  }, [taskDetails]);
+  }, [selectedTask]);
 
   return (
     <section className="flex flex-col mt-8 w-full">

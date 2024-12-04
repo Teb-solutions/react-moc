@@ -125,3 +125,11 @@ export const TaskStatusDisplayNames: {
   [TaskStatusEnum.RejectedPendingApproval]: "Pending Approval",
   [TaskStatusEnum.RejectedPendingReview]: "Review",
 };
+
+export enum RiskClassification {
+  HighRisk = 1,
+  SignificantRisk,
+  AverageRisk,
+  LowRisk,
+  VeryLowRisk,
+}

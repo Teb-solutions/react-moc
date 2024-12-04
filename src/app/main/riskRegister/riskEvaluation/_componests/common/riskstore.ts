@@ -22,7 +22,7 @@ export const useRiskStore = create<RiskStore>((set) => ({
   isCurrentUserPartOfTeam: false,
   setIsCurrentUserPartOfTeam: (isCurrentUserPartOfTeam) =>
     set({ isCurrentUserPartOfTeam }),
-  isTaskApprover: false,
+  isTaskApprover: true,
   setIsTaskApprover: (isTaskApprover) => set({ isTaskApprover }),
   isSessionActive: false,
   setIsSessionActive: (isSessionActive) => set({ isSessionActive }),

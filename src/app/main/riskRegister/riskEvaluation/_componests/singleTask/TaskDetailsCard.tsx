@@ -7,7 +7,7 @@ import ButtonRisk from "../../../common/Button";
 import { useEffect, useMemo, useState } from "react";
 import SendForRevision from "./SendForRevision";
 import AddComment from "./AddComment";
-import { TaskPopupType } from "../../../helpers/enum";
+import { TaskPopupType, TaskStatusEnum } from "../../../helpers/enum";
 import VersionHistory from "./VersionHistory";
 import TaskButton from "../../../common/TaskButton";
 import { Task } from "@mui/icons-material";
@@ -17,6 +17,11 @@ import { ITask } from "../../../helpers/type";
 import { toast } from "react-toastify";
 import { apiAuth } from "src/utils/http";
 import useFetchLookUpData from "../common/useFetchLookUpData";
+import ConfirmationModal from "src/app/main/moc/common_modal/confirmation_modal/ConfirmationModal";
+import { set } from "lodash";
+import { useParams } from "react-router";
+import { mutate } from "swr";
+import { useGetPermenant } from "src/utils/swr";
 interface RiskItemProps {
   label: string;
   value: string;
@@ -44,8 +49,6 @@ const TaskDetailsCard = () => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const { selectedTask } = useTaskStore();
-  //task details and selectedtask contain same task, but in the taskdetails control measures and approval details will be fetched
-  const [taskDetails, setTaskDetails] = useState<ITask | null>(null);
 
   const priskItems: RiskItemProps[] = useMemo(
     () => [
@@ -116,23 +119,31 @@ const TaskDetailsCard = () => {
     ],
     [selectedTask]
   );
-  useEffect(() => {
+
+  const riskId = useParams<{ riskId: string }>().riskId;
+
+  const handleTaskSubmitForApproval = () => {
     apiAuth
-      .get(`/RiskRegister/task/detail/${selectedTask.taskId}`)
+      .post(
+        `/RiskRegister/task/submit/approval/${selectedTask.taskId}/${riskId}`
+      )
       .then((response) => {
         if (response.data.statusCode == 200) {
-          setTaskDetails(response.data.data);
+          toast.success(response.data.message);
+          mutate(`/RiskRegister/task/list/${riskId}`);
+          mutate(`/RiskRegister/task/detail/${selectedTask.taskId}`);
         } else {
-          setTaskDetails(null);
           toast.error(response.data.message);
         }
       })
       .catch((error) => {
         console.log(error);
-        setTaskDetails(null);
-        toast.error("Failed to fetch task");
+        toast.error("Failed to submit task for approval");
+      })
+      .finally(() => {
+        setIsOpen(false);
       });
-  }, [selectedTask]);
+  };
 
   return (
     <Paper className="flex flex-col p-10 mt-10">
@@ -215,58 +226,85 @@ const TaskDetailsCard = () => {
           {selectedTask && <InfoSection />}
           <RiskSection riskItems={priskItems} title="Potential Risk" />
           <hr className="mt-8 w-full border border-solid border-neutral-200" />
-          {taskDetails && <ControlMeasures taskDetails={taskDetails} />}
+          {selectedTask && <ControlMeasures />}
           <hr className="mt-8 w-full border border-solid border-neutral-200" />
           <RiskSection riskItems={rriskItems} title="Residual Risk" />
           <hr className="mt-8 w-full border border-solid border-neutral-200" />
-          {taskDetails && <TaskApprovalHistory />}
+          {selectedTask &&
+            selectedTask.approvals &&
+            selectedTask.approvals.length > 0 && <TaskApprovalHistory />}
         </div>
       </article>
-      {isTaskApprover && (
-        <div className="px-20 flex flex-row justify-center gap-10 mt-20">
-          <ButtonRisk onClick={handleRevision} variant="reject" type="button">
-            Send For Revision
-          </ButtonRisk>
-          <SendForRevision
-            openRevision={openRevision}
-            handleRevision={handleRevision}
-          />
-          <ButtonRisk
-            onClick={() => {
-              setIsOpen(true);
-              setPopupType(TaskPopupType.Approve);
-            }}
-            variant="approve"
-            type="button"
-          >
-            Approve
-          </ButtonRisk>
-          <AddComment
-            openComment={isOpen}
-            handleComment={() => setIsOpen(false)}
-            popupType={popupType}
-          />
-        </div>
-      )}
-      {isCurrentUserPartOfTeam && (
-        <div className="px-20 flex flex-row justify-center gap-10 mt-20">
-          <ButtonRisk
-            onClick={() => {
-              setIsOpen(true);
-              setPopupType(TaskPopupType.SubmitforApproval);
-            }}
-            variant="approve"
-            type="button"
-          >
-            Submit for Approval
-          </ButtonRisk>
-          <AddComment
-            openComment={isOpen}
-            handleComment={() => setIsOpen(false)}
-            popupType={popupType}
-          />
-        </div>
-      )}
+      {isTaskApprover &&
+        [
+          TaskStatusEnum.PendingApproval,
+          TaskStatusEnum.RejectedPendingApproval,
+        ].includes(selectedTask.status) && (
+          <div className="px-20 flex flex-row justify-center gap-10 mt-20">
+            <ButtonRisk onClick={handleRevision} variant="reject" type="button">
+              Send For Revision
+            </ButtonRisk>
+            <SendForRevision
+              openRevision={openRevision}
+              handleRevision={handleRevision}
+            />
+            <ButtonRisk
+              onClick={() => {
+                setIsOpen(true);
+                setPopupType(TaskPopupType.Approve);
+              }}
+              variant="approve"
+              type="button"
+            >
+              Approve
+            </ButtonRisk>
+            <AddComment
+              openComment={isOpen}
+              handleComment={() => setIsOpen(false)}
+              popupType={popupType}
+            />
+          </div>
+        )}
+      {isCurrentUserPartOfTeam &&
+        [TaskStatusEnum.Draft, TaskStatusEnum.RejectedPendingReview].includes(
+          selectedTask.status
+        ) && (
+          <div className="px-20 flex flex-row justify-center gap-10 mt-20">
+            <ButtonRisk
+              onClick={() => {
+                setIsOpen(true);
+                setPopupType(TaskPopupType.SubmitforApproval);
+              }}
+              variant="approve"
+              type="button"
+            >
+              Submit for Approval
+            </ButtonRisk>
+
+            <ConfirmationModal
+              openSubmit={isOpen}
+              handleCloseSubmit={() => setIsOpen(false)}
+              title="Submit Task For Approval"
+            >
+              <div className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12">
+                <ButtonRisk
+                  variant="neutral"
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Cancel
+                </ButtonRisk>
+                <ButtonRisk
+                  variant="approve"
+                  type="submit"
+                  onClick={handleTaskSubmitForApproval}
+                >
+                  Submit
+                </ButtonRisk>
+              </div>
+            </ConfirmationModal>
+          </div>
+        )}
     </Paper>
   );
 };

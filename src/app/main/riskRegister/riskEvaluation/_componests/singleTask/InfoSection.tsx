@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
 import { useTaskStore } from "../common/taskStore";
 import useFetchLookUpData from "../common/useFetchLookUpData";
+import { riskClassificationDisplay } from "src/app/main/moc/common_components/RiskAnalysisCalculate";
+import { TaskStatusDisplayNames } from "../../../helpers/enum";
 
 interface InfoItemProps {
   label: string;
@@ -47,6 +49,18 @@ const InfoSection: React.FC = () => {
       {
         label: "Consequnces",
         value: selectedTask.consequence,
+      },
+      {
+        label: "Status",
+        value: TaskStatusDisplayNames[selectedTask.status],
+      },
+      {
+        label: "Risk",
+        value:
+          riskClassificationDisplay(selectedTask.residualRiskClassification) +
+          " (" +
+          selectedTask.residualRiskClassification +
+          ")",
       },
     ],
     [selectedTask, hazardTypes]

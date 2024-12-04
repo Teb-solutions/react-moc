@@ -1,5 +1,5 @@
 import { Box, Paper, Tab, Tabs } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import TaskCardList from "./TaskCardList";
 import TaskDetailsCard from "../singleTask/TaskDetailsCard";
 import { AddTaskOutlined, Check, CheckBox } from "@mui/icons-material";
@@ -13,6 +13,9 @@ import { useTaskStore } from "../common/taskStore";
 import { use } from "i18next";
 import { toast } from "react-toastify";
 import { apiAuth } from "src/utils/http";
+import { TaskStatusEnum } from "../../../helpers/enum";
+import { useGetPermenant } from "src/utils/swr";
+import { ITask } from "../../../helpers/type";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -52,24 +55,57 @@ const EvaluationTasks = () => {
   };
   const [isOpen, setIsOpen] = React.useState(false);
   const { tasks, setTasks, setSelectedTask, selectedTask } = useTaskStore();
+  const {
+    data: result,
+    isLoading,
+    error,
+  } = useGetPermenant<{
+    data: ITask[];
+    message: string;
+    statusCode: number;
+  }>(`/RiskRegister/task/list/${riskId}`);
   useEffect(() => {
-    apiAuth
-      .get(`/RiskRegister/task/list/${riskId}`)
-      .then((response) => {
-        if (response.data.statusCode == 200) {
-          setTasks(response.data.data);
-          setSelectedTask(response.data.data[0]);
-        } else {
-          setTasks([]);
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
+    if (result) {
+      if (result.statusCode == 200) {
+        setTasks(result.data);
+        // !selectedTask && setSelectedTask(result.data[0]);
+      } else {
         setTasks([]);
-        toast.error("Failed to fetch task");
-      });
-  }, [riskId]);
+        toast.error(result.message);
+      }
+    }
+  }, [result]);
+
+  const [initialTaskId, setInitialTaskId] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (tasks.length > 0 && tasks[0].taskId) {
+      setInitialTaskId(tasks[0].taskId);
+    }
+  }, [tasks]);
+
+  const {
+    data: selectedTaskResult,
+    isLoading: isSelectedTaskLoading,
+    error: isSelectedTaskError,
+  } = useGetPermenant<{
+    data: ITask;
+    message: string;
+    statusCode: number;
+  }>(initialTaskId ? `/RiskRegister/task/detail/${initialTaskId}` : null);
+
+  useEffect(() => {
+    if (selectedTaskResult) {
+      if (selectedTaskResult.statusCode == 200) {
+        !selectedTask && setSelectedTask(selectedTaskResult.data);
+      } else {
+        toast.error(selectedTaskResult.message);
+      }
+    } else if (isSelectedTaskError) {
+      console.log(isSelectedTaskError);
+      toast.error("Failed to fetch task");
+    }
+  }, [selectedTaskResult]);
 
   return (
     <div className="mt-10">
@@ -91,9 +127,14 @@ const EvaluationTasks = () => {
         >
           <Tab className="text-lg" label="All Tasks" {...a11yProps(0)} />
           <Tab className="text-lg" label="Drafts" {...a11yProps(1)} />
-          <Tab className="text-lg" label="Need Review" {...a11yProps(2)} />
           <Tab className="text-lg" label="Approval Pending" {...a11yProps(2)} />
-          <Tab className="text-lg" label="Approved Tasks" {...a11yProps(1)} />
+          <Tab className="text-lg" label="Need Task Review" {...a11yProps(3)} />
+          <Tab
+            className="text-lg"
+            label="Need Approval Review"
+            {...a11yProps(4)}
+          />
+          <Tab className="text-lg" label="Approved Tasks" {...a11yProps(5)} />
         </Tabs>
       </Box>
       <div className="w-full flex flex-col">
@@ -132,7 +173,7 @@ const EvaluationTasks = () => {
                 }}
                 title="Add New Task"
               >
-                <AddTask riskId={Number(riskId)} />
+                <AddTask setIsOpen={setIsOpen} riskId={Number(riskId)} />
               </CommonModal>
             </div>
           )}
@@ -144,13 +185,40 @@ const EvaluationTasks = () => {
               <TaskCardList tasks={tasks} />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-              <TaskCardList tasks={tasks} />
+              <TaskCardList
+                tasks={tasks.filter(
+                  (task) => task.status === TaskStatusEnum.Draft
+                )}
+              />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-              <TaskCardList tasks={tasks} />
+              <TaskCardList
+                tasks={tasks.filter(
+                  (task) => task.status === TaskStatusEnum.PendingApproval
+                )}
+              />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
-              <TaskCardList tasks={tasks} />
+              <TaskCardList
+                tasks={tasks.filter(
+                  (task) => task.status === TaskStatusEnum.RejectedPendingReview
+                )}
+              />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={4}>
+              <TaskCardList
+                tasks={tasks.filter(
+                  (task) =>
+                    task.status === TaskStatusEnum.RejectedPendingApproval
+                )}
+              />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={5}>
+              <TaskCardList
+                tasks={tasks.filter(
+                  (task) => task.status === TaskStatusEnum.Approved
+                )}
+              />
             </CustomTabPanel>
           </div>
           <div className="w-full sm:w-1/3">
