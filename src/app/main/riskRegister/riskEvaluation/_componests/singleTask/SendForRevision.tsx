@@ -11,26 +11,79 @@ import {
 } from "@mui/material";
 import Button from "../../../common/Button";
 import CommonModal from "../../../common/CommonModal";
+import { useState } from "react";
+import { apiAuth } from "src/utils/http";
+import { useTaskStore } from "../common/taskStore";
+import { RiskActionType } from "../../../helpers/enum";
+import { toast } from "react-toastify";
+import { mutate } from "swr";
 
 const SendForRevision = ({
   openRevision,
-  handleRevision,
+  setIsOpenRevision,
+  riskId,
 }: {
   openRevision: boolean;
-  handleRevision: () => void;
+  riskId: string;
+  setIsOpenRevision: (value: boolean) => void;
 }) => {
+  const [comment, setComment] = useState<string | null>(null);
+  const [commentValidation, setCommentValidation] = useState<string | null>(
+    null
+  );
+  const [staffValidation, setStaffValidation] = useState<string | null>(null);
+  const [selectedStaff, setSelectedStaff] = useState<string | null>(null);
+  const { selectedTask } = useTaskStore();
+
+  const handleTaskRejection = () => {
+    if (!comment) {
+      !comment && setCommentValidation("Comment is required");
+      return;
+    }
+    if (!selectedStaff) {
+      !selectedStaff && setStaffValidation("Staff is required");
+      return;
+    }
+
+    apiAuth
+      .post(`/RiskRegister/task/approval/${selectedTask.taskId}/${riskId}`, {
+        taskId: selectedTask.taskId,
+        riskRegisterId: riskId,
+        comments: comment,
+        actionType: RiskActionType.SendBack,
+        sendBackToApprId: selectedStaff,
+      })
+      .then((response) => {
+        if (response.data.statusCode == 200) {
+          toast.success(response.data.message);
+          mutate(`/RiskRegister/task/list/${riskId}`);
+          mutate(`/RiskRegister/task/detail/${selectedTask.taskId}`);
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Failed to approve task");
+      })
+      .finally(() => {
+        setIsOpenRevision(false);
+        setComment(null);
+      });
+  };
   return (
     <CommonModal
       open={openRevision}
-      handleClose={handleRevision}
+      handleClose={() => setIsOpenRevision(false)}
       title="Send for Revision"
     >
       <div className="flex flex-col">
         <div className="flex flex-col my-20">
           <p>Are you sure you want to send this request for revision?</p>
           <p>
-            The request will be sent back to the selected phase for further
-            modification.
+            The request will be sent back to the Team for further revision. Once
+            the team submits the task for approval, the selected approver will
+            be notified.
           </p>
           <div className="flex flex-col my-20">
             <FormControl>
@@ -54,32 +107,48 @@ const SendForRevision = ({
                 />
               </RadioGroup>
             </FormControl>
-            <FormControl className="w-[600px] my-10">
-              <InputLabel id="demo-simple-select-label">Approver*</InputLabel>
+            <FormControl className="w-[400px] my-10">
+              <InputLabel id="demo-simple-select-label">
+                Select Approver*
+              </InputLabel>
               <Select
-                labelId="demo-simple-select-label"
+                // labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                // value={age}
+                value={selectedStaff}
                 label="Approver*"
-                // onChange={handleChange}
+                onChange={(e) => {
+                  setSelectedStaff(e.target.value as string);
+                  setStaffValidation(null);
+                }}
               >
-                <MenuItem value={10}>Approver 1</MenuItem>
-                <MenuItem value={20}>Approver 2</MenuItem>
-                <MenuItem value={30}>Approver 3</MenuItem>
+                {selectedTask.approvals?.map((item, index) => (
+                  <MenuItem value={item.staffId}>{item.staffName}</MenuItem>
+                ))}
               </Select>
+              {staffValidation && (
+                <p className="text-red-500  text-xs mt-5">{staffValidation}</p>
+              )}
             </FormControl>
             <TextField
               className="mt-10"
               id="outlined-basic"
               label="Comment*"
               variant="outlined"
+              value={comment}
+              onChange={(e) => {
+                setComment(e.target.value);
+                setCommentValidation(null);
+              }}
             />
+            {commentValidation && (
+              <p className="text-red-500 text-xs  mt-5">{commentValidation}</p>
+            )}
           </div>
         </div>
         <div className="flex my-20 flex-row gap-10 w-full text-right justify-end">
           <Button
             onClick={() => {
-              // sendForRevision();
+              setIsOpenRevision(false);
             }}
             type="button"
             variant="neutral"
@@ -88,7 +157,7 @@ const SendForRevision = ({
           </Button>
           <Button
             onClick={() => {
-              // sendForRevision();
+              handleTaskRejection();
             }}
             type="button"
             variant="approve"

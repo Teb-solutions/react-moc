@@ -1,5 +1,5 @@
 import { Chip } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
 import { ITask } from "../../../helpers/type";
 import RiskClassificationDisplay from "../../../common/RiskClassificationDisplay";
 import { useTaskStore } from "../common/taskStore";
@@ -7,10 +7,13 @@ import { riskClassificationDisplay } from "src/app/main/moc/common_components/Ri
 import { TaskStatusDisplayNames, TaskStatusEnum } from "../../../helpers/enum";
 import { useGetPermenant } from "src/utils/swr";
 import { toast } from "react-toastify";
+import { useRiskStore } from "../common/riskstore";
+import { getCurrentUserId } from "../../../helpers/commonFunctions";
 
 const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
   const { setSelectedTask, selectedTask } = useTaskStore();
-
+  const { setIsTaskApprover } = useRiskStore();
+  const [isTaskCardClicked, setIsTaskCardClicked] = useState(false);
   const {
     data: selectedTaskResult,
     isLoading,
@@ -19,13 +22,29 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
     data: ITask;
     message: string;
     statusCode: number;
-  }>(task ? `/RiskRegister/task/detail/${task.taskId}` : null);
+  }>(isTaskCardClicked ? `/RiskRegister/task/detail/${task.taskId}` : null);
 
+  // const {
+  //   data: selectedTaskResult,
+  //   isLoading,
+  //   error,
+  // } = useGetPermenant<{
+  //   data: ITask;
+  //   message: string;
+  //   statusCode: number;
+  // }>(task ? `/RiskRegister/task/detail/${task.taskId}` : null);
+  const userId = Number(getCurrentUserId());
   const handleTaskCardClick = () => {
+    setIsTaskCardClicked(true);
     if (selectedTaskResult) {
-      if (selectedTaskResult.statusCode == 200)
+      if (selectedTaskResult.statusCode == 200) {
         setSelectedTask(selectedTaskResult.data);
-      else {
+        setIsTaskApprover(
+          selectedTaskResult.data.approvals.some(
+            (approver) => approver.staffId === userId && approver.isActive
+          )
+        );
+      } else {
         toast.error(selectedTaskResult.message);
       }
     } else if (error) {
@@ -39,7 +58,7 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
       {task && selectedTask && (
         <article
           onClick={() => handleTaskCardClick()}
-          className={`flex flex-col grow shrink justify-center self-stretch p-10 my-auto bg-white rounded-lg ${task && selectedTask && task.taskId == selectedTask.taskId ? "border-blue-700 border-solid border-3 shadow-[0px_0px_20px_rgba(14,65,244,0.2)]" : "border-white shadow-[0px_0px_20px_rgba(211, 211, 211, 0.2)] border-3"} shadow min-w-[240px] w-[326px] max-md:px-5`}
+          className={`flex flex-col grow cursor-pointer shrink justify-center self-stretch p-10 my-auto bg-white rounded-lg ${task && selectedTask && task.taskId == selectedTask.taskId ? "border-blue-700 border-solid border-3 shadow-[0px_0px_20px_rgba(14,65,244,0.2)]" : "border-white shadow-[0px_0px_20px_rgba(211, 211, 211, 0.2)] border-3"} shadow min-w-[240px] w-[326px] max-md:px-5`}
         >
           <div className="flex flex-col w-full">
             <header className="flex gap-10 justify-between items-center w-full text-lg font-semibold whitespace-nowrap text-zinc-800">

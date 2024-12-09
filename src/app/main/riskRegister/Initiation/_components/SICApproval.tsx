@@ -24,6 +24,7 @@ import { apiAuth } from "src/utils/http";
 import ConfirmationModal from "src/app/main/moc/common_modal/confirmation_modal/ConfirmationModal";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import CommonModal from "../../common/CommonModal";
 
 interface Roles {
   teamType: RiskRegisterTeamRole;
@@ -41,6 +42,7 @@ const SICApproval = ({ risk }: { risk: IHiraList }) => {
   const [staff, setStaff] = useState<any[]>([]);
   const [payload, setPayload] = useState<any>(null);
   const [open, setOpen] = useState(false);
+  const [isApprove, setIsApprove] = useState(true);
   const navigate = useNavigate();
   const {
     register,
@@ -106,6 +108,7 @@ const SICApproval = ({ risk }: { risk: IHiraList }) => {
 
   const onSubmit = (data) => {
     setIsSubmit(true);
+    setIsApprove(true);
     if (validateTeamRoles(rolesEmployee)) {
       setPayload({
         riskRegisterId: risk.id,
@@ -119,6 +122,7 @@ const SICApproval = ({ risk }: { risk: IHiraList }) => {
   };
   const handleReject = async () => {
     setIsSubmit(true);
+    setIsApprove(false);
     const isFormValid = await trigger();
     if (isFormValid) {
       setPayload({
@@ -137,7 +141,9 @@ const SICApproval = ({ risk }: { risk: IHiraList }) => {
         if (res.data.statusCode == 200) {
           toast.success("Risk Approved Successfully");
           navigate("/risk");
-        } else toast.error(res.data.message);
+        } else {
+          toast.error(res.data.message);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -211,24 +217,44 @@ const SICApproval = ({ risk }: { risk: IHiraList }) => {
             Approve
           </Button>
         </div>
-        <ConfirmationModal
-          openSubmit={open}
-          handleCloseSubmit={() => {}}
-          title="Submit request"
+
+        <CommonModal
+          open={open}
+          handleClose={() => setOpen(false)}
+          title={isApprove ? "Approve Risk" : "Reject Risk"}
         >
-          <div className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12">
-            <Button
-              variant="neutral"
-              type="button"
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button variant="approve" type="submit" onClick={handleSICApprove}>
-              Submit
-            </Button>
+          <div className="flex flex-col">
+            <div className="flex flex-col my-20">
+              {isApprove ? (
+                <p>
+                  You are going to approve this request. Once submitted you will
+                  not be able to revert ! Are you sure you want to continue ?
+                </p>
+              ) : (
+                <p>
+                  You are going to reject this request. Once submitted you will
+                  not be able to revert ! Are you sure you want to continue ?
+                </p>
+              )}
+            </div>
+            <div className="flex my-20 flex-row gap-10 w-full text-right justify-end">
+              <Button
+                variant="neutral"
+                type="button"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="approve"
+                type="submit"
+                onClick={handleSICApprove}
+              >
+                Submit
+              </Button>
+            </div>
           </div>
-        </ConfirmationModal>
+        </CommonModal>
       </form>
     </section>
   );

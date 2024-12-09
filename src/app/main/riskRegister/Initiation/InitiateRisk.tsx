@@ -9,7 +9,7 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ConfirmationModal from "../../moc/common_modal/confirmation_modal/ConfirmationModal";
+
 import Button from "../common/Button";
 import RiskHeader from "../common/RiskHeader";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -17,6 +17,7 @@ import { RiskCategory } from "../helpers/enum";
 import daysjs from "dayjs";
 import { apiAuth } from "src/utils/http";
 import { set } from "lodash";
+import CommonModal from "../common/CommonModal";
 
 interface IFormInput {
   isActive: boolean;
@@ -289,28 +290,36 @@ function InitiateRisk() {
                       Submit for Approval
                     </Button>
 
-                    <ConfirmationModal
-                      openSubmit={open}
-                      handleCloseSubmit={() => {}}
+                    <CommonModal
+                      open={open}
+                      handleClose={() => setOpen(false)}
                       title="Submit request"
                     >
-                      <div className="flex items-center mt-24 sm:mt-0 sm:mx-8 space-x-12">
-                        <Button
-                          variant="neutral"
-                          type="button"
-                          onClick={() => setOpen(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          variant="approve"
-                          type="submit"
-                          onClick={handleRiskSubmit}
-                        >
-                          Submit
-                        </Button>
+                      <div className="flex flex-col">
+                        <div className="flex flex-col my-20">
+                          <p>
+                            Once submitted you will not be able to revert ! Are
+                            you sure you want to continue ?
+                          </p>
+                        </div>
+                        <div className="flex my-20 flex-row gap-10 w-full text-right justify-end">
+                          <Button
+                            variant="neutral"
+                            type="button"
+                            onClick={() => setOpen(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            variant="approve"
+                            type="submit"
+                            onClick={handleRiskSubmit}
+                          >
+                            Submit
+                          </Button>
+                        </div>
                       </div>
-                    </ConfirmationModal>
+                    </CommonModal>
                   </div>
                 </div>
               </div>

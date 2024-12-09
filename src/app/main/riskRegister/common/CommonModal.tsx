@@ -61,7 +61,6 @@ const CommonModal: React.FC<CommonModalProps> = ({
               onClick={handleClose}
             >
               {" "}
-              X
             </Button>
           </div>
           <div className="border-1 border-blue-500 rounded-md">

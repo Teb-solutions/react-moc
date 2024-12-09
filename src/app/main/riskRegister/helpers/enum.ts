@@ -5,9 +5,15 @@ export enum RiskCategory {
   Routine,
   Non_Routine,
 }
-
-export enum RiskRegisterTeamRole {
-  DivTransport = 1,
+export enum MOCTeamRole {
+  ChangeLeader = 1,
+  Hseq = 2,
+  Others = 3,
+  SiteInCharge = 4,
+  VPHSE = 5,
+  VPDIV = 6,
+  COHSE = 7,
+  DivTransport,
   TransportHse,
   TaskRepresentative,
   HODTransport,
@@ -17,12 +23,38 @@ export enum RiskRegisterTeamRole {
   SICHOF,
   ProjectInCharge,
   TransportInCharge,
-  SiteInCharge,
+}
+
+export enum RiskRegisterTeamRole {
+  ChangeLeader = 1,
+  Hseq = 2,
+  Others = 3,
+  SiteInCharge = 4,
+  VPHSE = 5,
+  VPDIV = 6,
+  COHSE = 7,
+  DivTransport,
+  TransportHse,
+  TaskRepresentative,
+  HODTransport,
+  OperationsInCharge,
+  MaintenanceInCharge,
+  HSEInCharge,
+  SICHOF,
+  ProjectInCharge,
+  TransportInCharge,
 }
 
 export const RiskRegisterTeamRoleDisplayNames: {
   [key in RiskRegisterTeamRole]: string;
 } = {
+  [RiskRegisterTeamRole.ChangeLeader]: "Change Leader",
+  [RiskRegisterTeamRole.Hseq]: "HSEQ",
+  [RiskRegisterTeamRole.Others]: "Others",
+  [RiskRegisterTeamRole.SiteInCharge]: "Site In Charge",
+  [RiskRegisterTeamRole.VPHSE]: "VP HSE",
+  [RiskRegisterTeamRole.VPDIV]: "VP DIV",
+  [RiskRegisterTeamRole.COHSE]: "CO HSE",
   [RiskRegisterTeamRole.DivTransport]: "Div Transport",
   [RiskRegisterTeamRole.TransportHse]: "Transport Hse In Charge",
   [RiskRegisterTeamRole.TaskRepresentative]: "Task Representative",
@@ -33,7 +65,6 @@ export const RiskRegisterTeamRoleDisplayNames: {
   [RiskRegisterTeamRole.SICHOF]: "SIC/HOF",
   [RiskRegisterTeamRole.ProjectInCharge]: "Project In Charge",
   [RiskRegisterTeamRole.TransportInCharge]: "Transport In Charge",
-  [RiskRegisterTeamRole.SiteInCharge]: "Site In Charge",
 };
 
 export const RiskCategoryToTeamRoleMapping: {
