@@ -36,7 +36,7 @@ const TaskCardList: React.FC<TaskCardListProps> = ({ tasks }) => {
       )}
       {tasks.length > 0 && (
         <>
-          <section className="flex flex-wrap gap-6 items-center text-sm">
+          <section className="grid grid-cols-2 gap-6 items-center text-sm">
             {currentTasks.map((task, index) => (
               <TaskCard
                 key={task.riskRegisterId + "_" + index}
@@ -46,7 +46,7 @@ const TaskCardList: React.FC<TaskCardListProps> = ({ tasks }) => {
             ))}
           </section>
           {/* Pagination controls */}
-          <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-20">
             {Array.from({ length: totalPages }, (_, index) => (
               <Button
                 key={index}

@@ -26,8 +26,8 @@ const RiskInitiation = () => {
     { label: "Site", value: risk.siteName },
     { label: "Division", value: risk.divisionName },
     { label: "Area", value: "??????" },
-    { label: "Date", value: dayjs(risk.date).format("MMM DD, YYYY") },
-    { label: "Initiator", value: risk.siteInChargeName + "******" }, //change this value
+    { label: "Date", value: dayjs(risk.createdAt).format("MMM DD, YYYY") },
+    { label: "Initiator", value: risk.initiatedbyStaffName }, //change this value
   ];
   const teamItems = [];
   risk.teamList.forEach((team) => {

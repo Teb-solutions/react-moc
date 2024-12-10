@@ -6,7 +6,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Fade from "@mui/material/Fade";
 import { useNavigate } from "react-router";
 import { IHiraList } from "../helpers/type";
-import { RiskCategory } from "../helpers/enum";
+import { RiskCategory, RiskRegisterStatus } from "../helpers/enum";
 
 const colorPicker = (text: number) => {
   switch (text) {
@@ -54,7 +54,7 @@ const RiskCard = ({ risk }: { risk: IHiraList }) => {
           <div className="flex flex-wrap gap-5 items-start w-full text-slate-500">
             <div className="text-gray-500 font-normal">Initiated by:</div>
             <div className="text-zinc-800 font-medium">
-              {risk.initiatorName || risk.siteInChargeName}
+              {risk.initiatedbyStaffName || risk.siteInChargeName}
             </div>
             <div className="text-gray-500">on</div>
             <div className=" text-zinc-700 font-medium">
@@ -74,7 +74,7 @@ const RiskCard = ({ risk }: { risk: IHiraList }) => {
               <div className="flex flex-wrap gap-5 items-start">
                 <div className="text-gray-500 font-normal">Task Count:</div>
                 <div className="text-zinc-800 font-medium">
-                  {risk.taskCount || 0}
+                  {risk?.taskCount || 0}
                 </div>
               </div>
             </div>
@@ -102,7 +102,9 @@ const RiskCard = ({ risk }: { risk: IHiraList }) => {
           </div>
           <Button
             onClick={() => {
-              navigation(`/risk/approverisk/${risk.id}`);
+              risk.status === RiskRegisterStatus.Evaluation
+                ? navigation(`/risk/riskevaluation/${risk.id}`)
+                : navigation(`/risk/approverisk/${risk.id}`);
             }}
             variant="outlined"
             size="small"

@@ -11,7 +11,8 @@ import { IHiraList, IRiskRegisterDetails } from "../helpers/type";
 import RiskHeader from "../common/RiskHeader";
 import FuseLoading from "@fuse/core/FuseLoading";
 import Team from "./_components/Team";
-import { HIRAStatus } from "../helpers/enum";
+import { HIRAStatus, RiskRegisterStatus } from "../helpers/enum";
+import { getCurrentUserId } from "../helpers/commonFunctions";
 
 const ApproveRisk = () => {
   const [risk, setRisk] = useState<IRiskRegisterDetails | null>(null);
@@ -33,6 +34,8 @@ const ApproveRisk = () => {
 
   const lastActivity = risk?.activities[risk.activities.length - 1];
 
+  const userId = Number(getCurrentUserId());
+
   return (
     <>
       {loading && <FuseLoading />}
@@ -49,11 +52,12 @@ const ApproveRisk = () => {
             {!risk && <div>Loading...</div>}
           </Paper>
           <Paper className="flex flex-col p-10 mt-10">
-            {lastActivity.activityName === HIRAStatus.SICApproval &&
-              lastActivity.isComplete === false &&
-              risk.teamList.length == 0 && <SICApproval risk={risk} />}
-            {lastActivity.activityName === HIRAStatus.Evaluation &&
-              risk.activities[1].isComplete === true && <Team risk={risk} />}
+            {risk.status === RiskRegisterStatus.SICApproval &&
+            userId == lastActivity.assignedToStaffId ? (
+              <SICApproval risk={risk} />
+            ) : (
+              <Team risk={risk} />
+            )}
           </Paper>
         </div>
       )}

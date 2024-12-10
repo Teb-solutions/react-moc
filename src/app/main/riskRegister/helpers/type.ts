@@ -12,10 +12,13 @@ export interface IHiraList {
   siteInChargeName: string;
   date: string;
   category: number;
+  status: number;
+  createdAt: string;
+  initiatedbyStaffId: number;
+  initiatedbyStaffName: string;
   isActive: boolean;
   highRiskCount?: number;
   taskCount?: number;
-  initiatorName?: string;
 }
 
 export interface ISite {
@@ -41,11 +44,16 @@ export interface IRiskRegisterDetails {
   divisionName: string;
   siteInchargeId: number;
   siteInChargeName: string;
+  intiatedByStaffId: number;
+  initiatedbyStaffName: string;
+  status: number;
   date: string;
   category: number;
   activities: Activity[];
   isActive: boolean;
   teamList: TeamList[];
+  createdAt: string;
+  closedAt: string;
 }
 
 export interface Activity {

@@ -1,9 +1,9 @@
 import { Delete } from "@mui/icons-material";
 
 export enum RiskCategory {
-  Transport = 1,
-  Routine,
+  Routine = 1,
   Non_Routine,
+  Transport,
 }
 export enum MOCTeamRole {
   ChangeLeader = 1,
@@ -104,6 +104,14 @@ export enum TaskPopupType {
   Delete,
   Audit,
   SubmitforApproval,
+}
+
+export enum RiskRegisterStatus {
+  Draft = 0,
+  SICApproval,
+  Evaluation,
+  Approved,
+  SICRejected,
 }
 
 export enum HIRAStatus {

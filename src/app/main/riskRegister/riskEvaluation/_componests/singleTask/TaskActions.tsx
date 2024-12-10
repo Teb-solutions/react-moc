@@ -79,9 +79,9 @@ const TaskActions = ({
 
   const handleTaskSubmitForApproval = () => {
     apiAuth
-      .post(
-        `/RiskRegister/task/submit/approval/${selectedTask.taskId}/${riskId}`
-      )
+      .post(`/RiskRegister/task/submit/approval/${riskId}`, [
+        selectedTask.taskId,
+      ])
       .then((response) => {
         if (response.data.statusCode == 200) {
           toast.success(response.data.message);

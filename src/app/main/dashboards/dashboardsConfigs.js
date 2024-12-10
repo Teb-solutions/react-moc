@@ -35,6 +35,9 @@ import OrgActivityConfig from "../moc/organization_moc/orgMocCreate/OrgActivityC
 import errorPageConfig from "../404/ErrorPageConfig";
 import DepartmentConfig from "../masters/department/DepartMentConfig";
 import InitiateRiskConfig from "../riskRegister/Initiation/InitiateRiskConfig";
+import HumanCSConfig from "../masters/humancontrolmeasures/HumanCSConfig";
+import TechnicalCSConfig from "../masters/techcontrolmeasures/TechnicalCSConfig";
+import OrganisationalCSConfig from "../masters/orgcontrolmeasures/OrganisationalCSConfig";
 
 /**
  * Dashboards
@@ -77,5 +80,8 @@ const dashboardsConfigs = [
   OrgActivityConfig,
   InitiateRiskConfig,
   taskListConfig,
+  HumanCSConfig,
+  TechnicalCSConfig,
+  OrganisationalCSConfig,
 ];
 export default dashboardsConfigs;

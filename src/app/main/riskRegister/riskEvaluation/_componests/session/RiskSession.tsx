@@ -40,10 +40,12 @@ const RiskSession = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       if (sessionList.length > 0) {
-        const activeSession = sessionList.find(
-          (session) =>
-            session.isActive && session.status === SessionStatus.Started
-        );
+        const activeSession =
+          sessionList &&
+          sessionList.find(
+            (session) =>
+              session.isActive && session.status === SessionStatus.Started
+          );
         if (activeSession) {
           setIsSessionActive(true);
           const startTime = dayjs(activeSession.startedAt);
@@ -91,11 +93,12 @@ const RiskSession = () => {
             type="button"
           >
             <Icon className="text-xl">visibility</Icon>
-            {sessionList[sessionList.length - 1].status in
+            {sessionList &&
+            sessionList[sessionList.length - 1]?.status in
               [SessionStatus.Started, SessionStatus.Created] &&
-            sessionList[sessionList.length - 1].isActive
+            sessionList[sessionList.length - 1]?.isActive
               ? SessionStatusDisplayNames[
-                  sessionList[sessionList.length - 1].status
+                  sessionList[sessionList.length - 1]?.status
                 ]
               : "View Session History"}
           </Button>
@@ -108,8 +111,9 @@ const RiskSession = () => {
             />
           )}
           {isCurrentUserPartOfTeam &&
+            sessionList &&
             (sessionList.length == 0 ||
-              !sessionList[sessionList.length - 1].isActive) && (
+              !sessionList[sessionList.length - 1]?.isActive) && (
               <>
                 <Button
                   onClick={() => {
@@ -131,10 +135,11 @@ const RiskSession = () => {
             )}
 
           {isCurrentUserPartOfTeam &&
+            sessionList &&
             sessionList.length > 0 &&
-            sessionList[sessionList.length - 1].status ===
+            sessionList[sessionList.length - 1]?.status ===
               SessionStatus.Started &&
-            sessionList[sessionList.length - 1].isActive && (
+            sessionList[sessionList.length - 1]?.isActive && (
               <>
                 <Button
                   onClick={() => setSessionEndOpen(true)}

@@ -3,6 +3,8 @@ import { useTaskStore } from "../common/taskStore";
 import useFetchLookUpData from "../common/useFetchLookUpData";
 import { riskClassificationDisplay } from "src/app/main/moc/common_components/RiskAnalysisCalculate";
 import { TaskStatusDisplayNames } from "../../../helpers/enum";
+import { Chip } from "@mui/material";
+import RiskDisplay from "../common/RiskDisplay";
 
 interface InfoItemProps {
   label: string;
@@ -72,6 +74,29 @@ const InfoSection: React.FC = () => {
         {infoItems.map((item, index) => (
           <InfoItem key={index} label={item.label} value={item.value} />
         ))}
+      </div>
+      <div className="flex gap-10 mt-10  text-sm  justify-between p-5 items-start w-full">
+        <div className="text-neutral-400">Status:</div>
+        <div className="font-medium text-neutral-600 text-right">
+          <Chip
+            sx={{ maxWidth: "fit-content", whiteSpace: "nowrap" }}
+            label={TaskStatusDisplayNames[selectedTask.status] || "Draft"}
+            color="info"
+            variant="outlined"
+            size="small"
+          />
+        </div>
+      </div>
+      <div className="flex gap-10 mt-10 text-sm justify-between p-5 items-start w-full">
+        <div className="text-neutral-400">Risk:</div>
+        <div className="font-medium text-neutral-600 text-right">
+          <RiskDisplay
+            risk={selectedTask.residualRiskClassification.toString()}
+            riskDisplay={riskClassificationDisplay(
+              selectedTask.residualRiskClassification
+            )}
+          />
+        </div>
       </div>
       <hr className="mt-8 w-full border border-solid border-neutral-200" />
     </section>

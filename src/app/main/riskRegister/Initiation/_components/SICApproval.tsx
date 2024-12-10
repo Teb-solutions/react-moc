@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import InputField from "./InputField";
 import Button from "../../common/Button";
-import { IHiraList } from "../../helpers/type";
+import { IHiraList, IRiskRegisterDetails } from "../../helpers/type";
 import { useForm } from "react-hook-form";
 import {
   RiskActionType,
@@ -34,7 +34,7 @@ interface Roles {
 interface approverForm {
   comment: string;
 }
-const SICApproval = ({ risk }: { risk: IHiraList }) => {
+const SICApproval = ({ risk }: { risk: IRiskRegisterDetails }) => {
   const teamRoles = RiskCategoryToTeamRoleMapping[risk.category];
   const [rolesEmployee, setRolesEmployee] = useState<Roles[]>([]);
   const [teamError, setTeamError] = useState<string>("");
@@ -134,6 +134,9 @@ const SICApproval = ({ risk }: { risk: IHiraList }) => {
       setOpen(true);
     }
   };
+  // useEffect(() => {
+  //   toast.error("Error Approving Risk");
+  // }, []);
   const handleSICApprove = () => {
     apiAuth
       .post("/RiskRegister/SicApproval/" + risk.id, payload)

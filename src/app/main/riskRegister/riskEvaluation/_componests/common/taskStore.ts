@@ -8,6 +8,8 @@ interface taskStore {
   setSelectedTask: (task: ITask) => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  selectedTasksIds: number[];
+  setSelectedTasksIds: (ids: number[]) => void;
 }
 
 export const useTaskStore = create<taskStore>((set) => ({
@@ -17,4 +19,6 @@ export const useTaskStore = create<taskStore>((set) => ({
   setSelectedTask: (task) => set({ selectedTask: task }),
   loading: true,
   setLoading: (loading) => set({ loading }),
+  selectedTasksIds: [],
+  setSelectedTasksIds: (ids) => set({ selectedTasksIds: ids }),
 }));

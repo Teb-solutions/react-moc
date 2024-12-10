@@ -9,9 +9,16 @@ import { useGetPermenant } from "src/utils/swr";
 import { toast } from "react-toastify";
 import { useRiskStore } from "../common/riskstore";
 import { getCurrentUserId } from "../../../helpers/commonFunctions";
+import RiskDisplay from "../common/RiskDisplay";
+import { set } from "lodash";
 
 const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
-  const { setSelectedTask, selectedTask } = useTaskStore();
+  const {
+    setSelectedTask,
+    selectedTask,
+    selectedTasksIds,
+    setSelectedTasksIds,
+  } = useTaskStore();
   const { setIsTaskApprover } = useRiskStore();
   const [isTaskCardClicked, setIsTaskCardClicked] = useState(false);
   const {
@@ -36,6 +43,7 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
   const userId = Number(getCurrentUserId());
   const handleTaskCardClick = () => {
     setIsTaskCardClicked(true);
+
     if (selectedTaskResult) {
       if (selectedTaskResult.statusCode == 200) {
         setSelectedTask(selectedTaskResult.data);
@@ -58,19 +66,36 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
       {task && selectedTask && (
         <article
           onClick={() => handleTaskCardClick()}
-          className={`flex flex-col grow cursor-pointer shrink justify-center self-stretch p-10 my-auto bg-white rounded-lg ${task && selectedTask && task.taskId == selectedTask.taskId ? "border-blue-700 border-solid border-3 shadow-[0px_0px_20px_rgba(14,65,244,0.2)]" : "border-white shadow-[0px_0px_20px_rgba(211, 211, 211, 0.2)] border-3"} shadow min-w-[240px] w-[326px] max-md:px-5`}
+          className={`flex flex-col w-full grow cursor-pointer shrink justify-center self-stretch p-10 my-auto bg-white rounded-lg ${task && selectedTask && task.taskId == selectedTask.taskId ? "border-blue-700 border-solid border-3 shadow-[0px_0px_20px_rgba(14,65,244,0.2)]" : "border-white shadow-[0px_0px_20px_rgba(211, 211, 211, 0.2)] border-3"} shadow min-w-[240px] w-[326px] max-md:px-5`}
         >
           <div className="flex flex-col w-full">
             <header className="flex gap-10 justify-between items-center w-full text-lg font-semibold whitespace-nowrap text-zinc-800">
               <h3 className="self-stretch my-auto">
                 {task.taskId ? "TASK#" + task.taskId : "TASK"}
               </h3>
-              <input
-                type="checkbox"
-                className="self-stretch my-auto"
-                aria-label="Select Task"
-                style={{ width: "20px", height: "20px" }}
-              />
+              {task.status === TaskStatusEnum.Draft && (
+                <input
+                  type="checkbox"
+                  checked={selectedTasksIds.includes(task.taskId)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (task.status == TaskStatusEnum.Draft) {
+                      if (selectedTasksIds.includes(task.taskId)) {
+                        setSelectedTasksIds(
+                          selectedTasksIds.filter((id) => id !== task.taskId)
+                        );
+                      } else {
+                        setSelectedTasksIds([...selectedTasksIds, task.taskId]);
+                      }
+                    } else {
+                      toast.error("You can only select tasks in Draft status");
+                    }
+                  }}
+                  className="self-stretch my-auto"
+                  aria-label="Select Task"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              )}
             </header>
             <div className="flex gap-10 justify-between items-center mt-6 w-full">
               <div className="flex flex-col justify-center self-stretch my-auto">
@@ -79,7 +104,7 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
                   {task.residualRisk}
                 </p>
               </div>
-              <RiskCard
+              <RiskDisplay
                 risk={task.residualRiskClassification.toString()}
                 riskDisplay={riskClassificationDisplay(
                   task.residualRiskClassification
@@ -103,29 +128,6 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
         </article>
       )}
     </>
-  );
-};
-
-const RiskCard = ({
-  risk,
-  riskDisplay,
-}: {
-  risk: string;
-  riskDisplay: string;
-}) => {
-  // const bgColor = risk > 50 ? "bg-red-800" : "bg-blue-500";
-  return (
-    <div
-      className={`flex gap-1 items-center text-white rounded-md self-stretch py-2 px-4 my-auto font-medium text-lime-800 whitespace-nowrap 
-        ${Number(risk) === 1 && "bg-red-500"}
-              ${Number(risk) === 2 && "bg-orange-700"}
-              ${Number(risk) === 3 && "bg-amber-700"}
-              ${Number(risk) === 4 && "bg-yellow-600"}
-              ${Number(risk) === 5 && "bg-green-500"}
-      `}
-    >
-      <span className="self-stretch my-auto">{riskDisplay}</span>
-    </div>
   );
 };
 
