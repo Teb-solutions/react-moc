@@ -22,6 +22,10 @@ import { set } from "lodash";
 import { useParams } from "react-router";
 import { mutate } from "swr";
 import { useGetPermenant } from "src/utils/swr";
+import { useControlMeasureStore } from "../common/controlMeasureStore";
+import EditTask from "./EditTask";
+import CommonModal from "../../../common/CommonModal";
+import EditTaskPage from "./EditTaskPage";
 interface RiskItemProps {
   label: string;
   value: string;
@@ -34,7 +38,9 @@ const TaskDetailsCard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isVersionOpen, setIsVersionOpen] = useState(false);
   const [popupType, setPopupType] = useState(0);
-
+  const { setIsEditControlMeasure } = useControlMeasureStore();
+  // const [isEditTask, setIsEditTask] = useState(false);
+  const { isEditTaskClicked, setIsEditTaskClicked } = useTaskStore();
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -177,7 +183,13 @@ const TaskDetailsCard = () => {
                 />
               )}
               {isCurrentUserPartOfTeam && (
-                <TaskButton onClick={() => {}} icon="edit" text="Edit" />
+                <TaskButton
+                  onClick={() => {
+                    setIsEditTaskClicked(true);
+                  }}
+                  icon="edit"
+                  text="Edit"
+                />
               )}
 
               {isCurrentUserPartOfTeam && (
@@ -201,6 +213,13 @@ const TaskDetailsCard = () => {
             </Typography>
           </Popover>
           <VersionHistory isOpen={isVersionOpen} setIsOpen={setIsVersionOpen} />
+          {/* <CommonModal
+            title="Edit Task"
+            open={isEditTask}
+            handleClose={() => setIsEditTask}
+          >
+            <EditTask setIsOpen={setIsEditTask} />
+          </CommonModal> */}
         </div>
       </header>
       <hr className="w-full border border-solid border-neutral-200" />
@@ -229,7 +248,10 @@ const TaskDetailsCard = () => {
           <div className="px-20 flex flex-row justify-center gap-10 mt-20">
             <ButtonRisk
               onClick={() => {
+                setIsEditControlMeasure(false);
+                // setTimeout(() => {
                 setOpenRevision(true);
+                // }, 1000);
               }}
               variant="reject"
               type="button"

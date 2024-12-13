@@ -57,29 +57,45 @@ export const AddTaskSchema = z.object({
 
 type AddTaskFormValues = z.infer<typeof AddTaskSchema>;
 
-const AddTask = ({
-  riskId,
+const EditTask = ({
+  // riskId,
   setIsOpen,
 }: {
-  riskId: number;
+  // riskId: number;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const [selectedTime, setSelectedTime] = useState<number | null>(null);
+  const { selectedTask } = useTaskStore();
+
+  const [selectedTime, setSelectedTime] = useState<number | null>(
+    selectedTask.time
+  );
   const [selectedResidualTime, setSelectedResidualTime] = useState<
     number | null
-  >(null);
+  >(selectedTask.modifiedTime);
 
   //storing all the control measures in an array
   const [selectedHumanControlMeasures, setSelectedHumanControlMeasures] =
-    useState<ISelectedControlMeasures[] | null>(null);
+    useState<ISelectedControlMeasures[] | null>(
+      selectedTask?.controlMeasures
+        .filter((measure) => measure.type === ControlMeasuresType.Human)
+        .map((measure) => ({ id: measure.id, title: measure.controlMeasure }))
+    );
   const [
     selectedTechnicalControlMeasures,
     setSelectedTechnicalControlMeasures,
-  ] = useState<ISelectedControlMeasures[] | null>(null);
+  ] = useState<ISelectedControlMeasures[] | null>(
+    selectedTask?.controlMeasures
+      .filter((measure) => measure.type === ControlMeasuresType.Technical)
+      .map((measure) => ({ id: measure.id, title: measure.controlMeasure }))
+  );
   const [
     selectedOrganizationalControlMeasures,
     setSelectedOrganizationalControlMeasures,
-  ] = useState<ISelectedControlMeasures[] | null>(null);
+  ] = useState<ISelectedControlMeasures[] | null>(
+    selectedTask?.controlMeasures
+      .filter((measure) => measure.type === ControlMeasuresType.Organizational)
+      .map((measure) => ({ id: measure.id, title: measure.controlMeasure }))
+  );
 
   //URLs for fetching lookup data for hazard type, time, frequency and residual frequency
   const hazardTypeUrl = "/LookupData/Lov/28";
@@ -99,7 +115,36 @@ const AddTask = ({
   } = useForm<AddTaskFormValues>({
     resolver: zodResolver(AddTaskSchema),
     defaultValues: {
-      riskRegisterId: riskId,
+      riskRegisterId: selectedTask?.riskRegisterId,
+      taskName: selectedTask?.taskName,
+      subTaskName: selectedTask?.subTaskName,
+      hazardousSituation: selectedTask?.hazardousSituation,
+      consequence: selectedTask?.consequence,
+      hazardType: selectedTask?.hazardType,
+      time: selectedTask?.time,
+      frequencyDetails: selectedTask?.frequencyDetails,
+      frequencyScoring: selectedTask?.frequencyScoring,
+      likelihoodScoring: selectedTask?.likelihoodScoring,
+      severityScoring: selectedTask?.severityScoring,
+      potentialRisk: selectedTask?.potentialRisk,
+      humanControlMeasures: selectedTask?.controlMeasures.filter(
+        (measure) => measure.type === ControlMeasuresType.Human
+      ),
+      technicalControlMeasures: selectedTask?.controlMeasures.filter(
+        (measure) => measure.type === ControlMeasuresType.Technical
+      ),
+      organisationalControlMeasures: selectedTask?.controlMeasures.filter(
+        (measure) => measure.type === ControlMeasuresType.Organizational
+      ),
+      modifiedTime: selectedTask?.modifiedTime,
+      modifiedFrequencyDetails: selectedTask?.modifiedFrequencyDetails,
+      residualFrequencyScoring: selectedTask?.residualFrequencyScoring,
+      residualLikelihoodScoring: selectedTask?.residualLikelihoodScoring,
+      residualSeverityScoring: selectedTask?.residualSeverityScoring,
+      residualRisk: selectedTask?.residualRisk,
+      // residualRiskClassification: selectedTask?.residualRiskClassification,
+      residualRiskClassificationDisplay:
+        selectedTask?.residualRiskClassificationDisplay,
     },
   });
 
@@ -138,7 +183,7 @@ const AddTask = ({
   const residualFrequencyScoringWatch = watch("residualFrequencyScoring");
   const likelihoodScoringWatch = watch("likelihoodScoring");
   const severityScoringWatch = watch("severityScoring");
-  const residualLikelihoodScoringWatch = watch("residualLikelihoodScoring");
+  const residuallikelihoodScoringWatch = watch("residualLikelihoodScoring");
   const residualSeverityScoringWatch = watch("residualSeverityScoring");
   const residualRiskWatch = watch("residualRisk");
 
@@ -148,16 +193,20 @@ const AddTask = ({
     setSelectedTime(timeChange);
     setSelectedResidualTime(residualTimeChange);
 
-    if (timeChange > 0 && frequencyChange > 0) {
+    if (timeChange > 0 && frequencyChange > 0 && frequencyArr.length > 0) {
       const selectedFrequency = frequencyArr.find(
         (frequency) => frequency.value === frequencyChange
       );
-      const frequencyScoring = CalculateFrequencyScoring(
-        selectedFrequency.text
-      );
+      const frequencyScoring =
+        selectedFrequency.text &&
+        CalculateFrequencyScoring(selectedFrequency.text);
       setValue("frequencyScoring", frequencyScoring);
     }
-    if (residualTimeChange > 0 && residualFrequencyChange > 0) {
+    if (
+      residualTimeChange > 0 &&
+      residualFrequencyChange > 0 &&
+      residualFrequencyArr.length > 0
+    ) {
       const selectedFrequency = residualFrequencyArr.find(
         (frequency) => frequency.value === residualFrequencyChange
       );
@@ -193,15 +242,15 @@ const AddTask = ({
     if (
       residualFrequencyScoringWatch &&
       residualFrequencyScoringWatch > 0 &&
-      residualLikelihoodScoringWatch &&
-      residualLikelihoodScoringWatch > 0 &&
+      residuallikelihoodScoringWatch &&
+      residuallikelihoodScoringWatch > 0 &&
       residualSeverityScoringWatch &&
       residualSeverityScoringWatch > 0
     ) {
       {
         const residualRisk = CalculatePotentialRisk(
           residualFrequencyScoringWatch,
-          residualLikelihoodScoringWatch,
+          residuallikelihoodScoringWatch,
           residualSeverityScoringWatch
         );
         residualRisk && setValue("residualRisk", residualRisk);
@@ -212,7 +261,7 @@ const AddTask = ({
     residualFrequencyScoringWatch,
     likelihoodScoringWatch,
     severityScoringWatch,
-    residualLikelihoodScoringWatch,
+    residuallikelihoodScoringWatch,
     residualSeverityScoringWatch,
   ]);
 
@@ -253,57 +302,170 @@ const AddTask = ({
     selectedTechnicalControlMeasures,
   ]);
 
+  const updateEditedControlMeasures = () => {
+    //this code is to update the deleted control measures and retain others in the task
+
+    const humanCsFiltered = selectedTask.controlMeasures.filter(
+      (measure) => measure.type === ControlMeasuresType.Human
+    );
+    const humanCSWithDeleted = humanCsFiltered.map((measure) =>
+      selectedHumanControlMeasures.find(
+        (selectedMeasure) => selectedMeasure.id === measure.controlMeasureId
+      )
+        ? {
+            isDeleted: false,
+            id: measure.id,
+            type: measure.type,
+            controlMeasure: measure.controlMeasure,
+            controlMeasureId: measure.controlMeasureId,
+          }
+        : {
+            isDeleted: true,
+            id: measure.id,
+            type: measure.type,
+            controlMeasure: measure.controlMeasure,
+            controlMeasureId: measure.controlMeasureId,
+          }
+    );
+    const technicalCsFiltered = selectedTask.controlMeasures.filter(
+      (measure) => measure.type === ControlMeasuresType.Technical
+    );
+    const technicalCSWithDeleted = technicalCsFiltered.map((measure) =>
+      measure.type === ControlMeasuresType.Technical &&
+      selectedTechnicalControlMeasures.find(
+        (selectedMeasure) => selectedMeasure.id === measure.controlMeasureId
+      )
+        ? {
+            isDeleted: false,
+            id: measure.id,
+            type: measure.type,
+            controlMeasure: measure.controlMeasure,
+            controlMeasureId: measure.controlMeasureId,
+          }
+        : {
+            isDeleted: true,
+            id: measure.id,
+            type: measure.type,
+            controlMeasure: measure.controlMeasure,
+            controlMeasureId: measure.controlMeasureId,
+          }
+    );
+    const organizationalCsFiltered = selectedTask.controlMeasures.filter(
+      (measure) => measure.type === ControlMeasuresType.Organizational
+    );
+
+    const organizationalCSWithDeleted = organizationalCsFiltered.map(
+      (measure) =>
+        measure.type === ControlMeasuresType.Organizational &&
+        selectedOrganizationalControlMeasures.find(
+          (selectedMeasure) => selectedMeasure.id === measure.controlMeasureId
+        )
+          ? {
+              isDeleted: false,
+              id: measure.id,
+              type: measure.type,
+              controlMeasure: measure.controlMeasure,
+              controlMeasureId: measure.controlMeasureId,
+            }
+          : {
+              isDeleted: true,
+              id: measure.id,
+              type: measure.type,
+              controlMeasure: measure.controlMeasure,
+              controlMeasureId: measure.controlMeasureId,
+            }
+    );
+
+    //this is to filter only new control measures added while editing to the task
+    const newHumanCS = selectedHumanControlMeasures
+      .filter(
+        (measure) =>
+          !selectedTask.controlMeasures.find(
+            (selectedMeasure) =>
+              selectedMeasure.controlMeasureId === measure.id &&
+              selectedMeasure.type === ControlMeasuresType.Human
+          )
+      )
+      .map((measure) => ({
+        id: 0,
+        type: ControlMeasuresType.Human as number,
+        controlMeasure: measure.title,
+        controlMeasureId: measure.id,
+        isDeleted: false,
+      }));
+
+    const newTechnicalCS = selectedTechnicalControlMeasures
+      .filter(
+        (measure) =>
+          !selectedTask.controlMeasures.find(
+            (selectedMeasure) =>
+              selectedMeasure.controlMeasureId === measure.id &&
+              selectedMeasure.type === ControlMeasuresType.Technical
+          )
+      )
+      .map((measure) => ({
+        id: 0,
+        type: ControlMeasuresType.Technical as number,
+        controlMeasure: measure.title,
+        controlMeasureId: measure.id,
+        isDeleted: false,
+      }));
+
+    const newOrganizationalCS = selectedOrganizationalControlMeasures
+      .filter(
+        (measure) =>
+          !selectedTask.controlMeasures.find(
+            (selectedMeasure) =>
+              selectedMeasure.controlMeasureId === measure.id &&
+              selectedMeasure.type === ControlMeasuresType.Organizational
+          )
+      )
+      .map((measure) => ({
+        id: 0,
+        type: ControlMeasuresType.Organizational as number,
+        controlMeasure: measure.title,
+        controlMeasureId: measure.id,
+        isDeleted: false,
+      }));
+
+    const humanCS = [...humanCSWithDeleted, ...newHumanCS];
+    const technicalCS = [...technicalCSWithDeleted, ...newTechnicalCS];
+    const organizationalCS = [
+      ...organizationalCSWithDeleted,
+      ...newOrganizationalCS,
+    ];
+
+    const controlMeasures = [...humanCS, ...technicalCS, ...organizationalCS];
+
+    return controlMeasures;
+  };
+
   const onTaskFormSubmit = (data: AddTaskFormValues) => {
     // console.log(data);
     const payload: any = data;
-    payload.humanControlMeasures = selectedHumanControlMeasures.map(
-      (controlMeasure) => ({
-        id: 0,
-        controlMeasureId: controlMeasure.id,
-        controlMeasure: controlMeasure.title,
-        type: ControlMeasuresType.Human,
-        isDeleted: false,
-      })
-    );
-    payload.technicalControlMeasures = selectedTechnicalControlMeasures.map(
-      (controlMeasure) => ({
-        id: 0,
-        controlMeasureId: controlMeasure.id,
-        controlMeasure: controlMeasure.title,
-        type: ControlMeasuresType.Technical,
-        isDeleted: false,
-      })
-    );
-    payload.organisationalControlMeasures =
-      selectedOrganizationalControlMeasures.map((controlMeasure) => ({
-        controlMeasureId: controlMeasure.id,
-        id: 0,
-        controlMeasure: controlMeasure.title,
-        type: ControlMeasuresType.Organizational,
-        isDeleted: false,
-      }));
-    payload.controlMeasures = [
-      ...payload.humanControlMeasures,
-      ...payload.technicalControlMeasures,
-      ...payload.organisationalControlMeasures,
-    ];
 
+    payload.controlMeasures = updateEditedControlMeasures();
     delete payload.humanControlMeasures;
     delete payload.technicalControlMeasures;
     delete payload.organisationalControlMeasures;
+
     apiAuth
-      .post(`/RiskRegister/task/${riskId}`, payload)
+      .put(
+        `/RiskRegister/task/${selectedTask.riskRegisterId}/${selectedTask.taskId}`,
+        payload
+      )
       .then((response) => {
         if (response.data.statusCode === 200) {
-          toast.success("Task added successfully");
-          mutate(`/RiskRegister/task/list/${riskId}`);
+          toast.success("Task updated successfully");
+          mutate(`/RiskRegister/task/list/${selectedTask.riskRegisterId}`);
+          mutate(`/RiskRegister/task/detail/${selectedTask.taskId}`);
         } else {
           toast.error(response.data.message);
         }
       })
       .catch((error) => {
         console.log(error);
-        toast.error("Failed to add task");
+        toast.error("Failed to update task");
       })
       .finally(() => {
         setSelectedHumanControlMeasures([]);
@@ -359,6 +521,7 @@ const AddTask = ({
               <Select
                 error={!!errors.hazardType}
                 {...register("hazardType")}
+                defaultValue={selectedTask?.hazardType}
                 label="Hazard Type*"
               >
                 {hazardTypes.map((hazard) => (
@@ -414,7 +577,12 @@ const AddTask = ({
           {!timeLoading && timesArr && (
             <FormControl fullWidth>
               <InputLabel>Time*</InputLabel>
-              <Select error={!!errors.time} {...register("time")} label="Time*">
+              <Select
+                error={!!errors.time}
+                {...register("time")}
+                defaultValue={selectedTask.time}
+                label="Time*"
+              >
                 {timesArr.map((time) => (
                   <MenuItem key={time.value} value={time.value}>
                     {time.text}
@@ -437,6 +605,7 @@ const AddTask = ({
               <Select
                 error={!!errors.frequencyDetails}
                 {...register("frequencyDetails")}
+                defaultValue={selectedTask.frequencyDetails}
                 label="Frequency*"
               >
                 {frequencyArr.map((frequency) => (
@@ -475,6 +644,7 @@ const AddTask = ({
             <Select
               error={!!errors.likelihoodScoring}
               {...register("likelihoodScoring")}
+              defaultValue={selectedTask.likelihoodScoring}
               label="Likelyhood Scoring*"
             >
               {likelihoodValues.map((value) => (
@@ -496,6 +666,7 @@ const AddTask = ({
             <Select
               error={!!errors.severityScoring}
               {...register("severityScoring")}
+              defaultValue={selectedTask.severityScoring}
               label="Severity Scoring*"
             >
               {severityValues.map((value) => (
@@ -565,6 +736,7 @@ const AddTask = ({
               <Select
                 {...register("modifiedTime")}
                 error={!!errors.modifiedTime}
+                defaultValue={selectedTask.modifiedTime}
                 label="Time*"
               >
                 {timesArr.map((time) => (
@@ -589,6 +761,7 @@ const AddTask = ({
               <Select
                 error={!!errors.modifiedFrequencyDetails}
                 {...register("modifiedFrequencyDetails")}
+                defaultValue={selectedTask.modifiedFrequencyDetails}
                 label="Frequency*"
               >
                 {residualFrequencyArr.map((frequency) => (
@@ -623,10 +796,14 @@ const AddTask = ({
         </div>
         <div>
           <FormControl fullWidth>
-            <InputLabel>Likelyhood Scoring*</InputLabel>
+            <InputLabel>
+              Likelyhood Scoring*{selectedTask.residualLikelihoodScoring}
+            </InputLabel>
+
             <Select
               {...register("residualLikelihoodScoring")}
               error={!!errors.residualLikelihoodScoring}
+              defaultValue={selectedTask.residualLikelihoodScoring}
               label="Likelyhood Scoring*"
             >
               {likelihoodValues.map((value) => (
@@ -648,6 +825,7 @@ const AddTask = ({
             <Select
               error={!!errors.residualSeverityScoring}
               {...register("residualSeverityScoring")}
+              defaultValue={selectedTask.residualSeverityScoring}
               label="Severity Scoring*"
             >
               {severityValues.map((value) => (
@@ -696,7 +874,7 @@ const AddTask = ({
             Cancel
           </Button>
           <Button variant="approve" type="submit">
-            Add Task
+            Update Task
           </Button>
         </div>
       </div>
@@ -704,4 +882,4 @@ const AddTask = ({
   );
 };
 
-export default AddTask;
+export default EditTask;

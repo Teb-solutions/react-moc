@@ -55,6 +55,7 @@ const EvaluationTasks = () => {
     setValue(newValue);
   };
   const [isOpen, setIsOpen] = React.useState(false);
+  const { isAddTaskClicked, setIsAddTaskClicked } = useTaskStore();
   const [initialTaskId, setInitialTaskId] = useState<number | null>(null);
   const [isSubmitOpen, setIsSubmitOpen] = useState(false);
   const {
@@ -169,81 +170,82 @@ const EvaluationTasks = () => {
       <div className="w-full flex flex-col">
         <div className="w-full flex flex-col sm:flex-row gap-2 justify-between">
           <div className="flex flex-row my-10">
-            {tasks.length > 0 && (
-              <div className="flex flex-col w-full sm:flex-row gap-20">
-                <div className="flex flex-wrap py-10">
-                  <input
-                    onClick={(event) => {
-                      if ((event.target as HTMLInputElement).checked) {
-                        setSelectedTasksIds(
-                          //how to check if the task status is draft and then add to the array
-                          tasks
-                            .filter(
-                              (task) => task.status === TaskStatusEnum.Draft
-                            )
-                            .map((task) => task.taskId)
-                        );
-                      } else {
-                        setSelectedTasksIds([]);
-                      }
-                    }}
-                    type="checkbox"
-                    className="ml-10"
-                    style={{ width: "25px", height: "25px" }}
-                  />
-                  <span className="mt-3 ml-5 font-semibold">Select All</span>
-                </div>
-                {selectedTasksIds.length > 0 && (
-                  <div className="p-0">
-                    <Button
-                      onClick={() => {
-                        setIsSubmitOpen(true);
+            {tasks.length > 0 &&
+              tasks.find((task) => task.status == TaskStatusEnum.Draft) && (
+                <div className="flex flex-col w-full sm:flex-row gap-20">
+                  <div className="flex flex-wrap py-10">
+                    <input
+                      onClick={(event) => {
+                        if ((event.target as HTMLInputElement).checked) {
+                          setSelectedTasksIds(
+                            //how to check if the task status is draft and then add to the array
+                            tasks
+                              .filter(
+                                (task) => task.status === TaskStatusEnum.Draft
+                              )
+                              .map((task) => task.taskId)
+                          );
+                        } else {
+                          setSelectedTasksIds([]);
+                        }
                       }}
-                      variant="approve"
-                      type="button"
-                    >
-                      Submit for Approval ({selectedTasksIds.length} tasks)
-                    </Button>
-                    <CommonModal
-                      open={isSubmitOpen}
-                      handleClose={() => {
-                        setIsSubmitOpen(false);
-                      }}
-                      title="Submit for Approval"
-                    >
-                      <div className="flex flex-col">
-                        <div className="flex flex-col my-20">
-                          <p>
-                            Are you sure you want to submit the selected{" "}
-                            {selectedTasksIds.length} tasks for approval?
-                          </p>
-                        </div>
-                        <div className="flex my-20 flex-row gap-10 w-full text-right justify-end">
-                          <Button
-                            onClick={() => {
-                              setIsSubmitOpen(false);
-                            }}
-                            type="button"
-                            variant="neutral"
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={() => {
-                              handleTaskSubmitForApproval();
-                            }}
-                            type="button"
-                            variant="approve"
-                          >
-                            Submit
-                          </Button>
-                        </div>
-                      </div>
-                    </CommonModal>
+                      type="checkbox"
+                      className="ml-10"
+                      style={{ width: "25px", height: "25px" }}
+                    />
+                    <span className="mt-3 ml-5 font-semibold">Select All</span>
                   </div>
-                )}
-              </div>
-            )}
+                  {selectedTasksIds.length > 0 && (
+                    <div className="p-0">
+                      <Button
+                        onClick={() => {
+                          setIsSubmitOpen(true);
+                        }}
+                        variant="approve"
+                        type="button"
+                      >
+                        Submit for Approval ({selectedTasksIds.length} tasks)
+                      </Button>
+                      <CommonModal
+                        open={isSubmitOpen}
+                        handleClose={() => {
+                          setIsSubmitOpen(false);
+                        }}
+                        title="Submit for Approval"
+                      >
+                        <div className="flex flex-col">
+                          <div className="flex flex-col my-20">
+                            <p>
+                              Are you sure you want to submit the selected{" "}
+                              {selectedTasksIds.length} tasks for approval?
+                            </p>
+                          </div>
+                          <div className="flex my-20 flex-row gap-10 w-full text-right justify-end">
+                            <Button
+                              onClick={() => {
+                                setIsSubmitOpen(false);
+                              }}
+                              type="button"
+                              variant="neutral"
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                handleTaskSubmitForApproval();
+                              }}
+                              type="button"
+                              variant="approve"
+                            >
+                              Submit
+                            </Button>
+                          </div>
+                        </div>
+                      </CommonModal>
+                    </div>
+                  )}
+                </div>
+              )}
           </div>
 
           {/* Uncomment this */}
@@ -252,7 +254,8 @@ const EvaluationTasks = () => {
             <div>
               <Button
                 onClick={() => {
-                  setIsOpen(true);
+                  // setIsOpen(true);
+                  setIsAddTaskClicked(true);
                 }}
                 variant="approve"
                 type="button"

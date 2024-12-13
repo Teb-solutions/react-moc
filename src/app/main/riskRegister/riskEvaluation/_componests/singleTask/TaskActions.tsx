@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { mutate } from "swr";
 import { useState } from "react";
 import ControlMeasures from "./ControlMeasures";
+import { useControlMeasureStore } from "../common/controlMeasureStore";
 
 const titleMap: { [key in TaskPopupType]: string } = {
   [TaskPopupType.Approve]: "Send for Approval",
@@ -39,6 +40,7 @@ const TaskActions = ({
   const title = titleMap[popupType];
   const message = messageMap[popupType];
   const { selectedTask } = useTaskStore();
+  const { editedControlMeasure } = useControlMeasureStore();
   const [comment, setComment] = useState<string | null>(null);
   const [commentValidation, setCommentValidation] = useState<string | null>(
     null
@@ -49,13 +51,21 @@ const TaskActions = ({
       setCommentValidation("Comment is required");
       return;
     }
+    console.log({
+      taskId: selectedTask.taskId,
+      riskRegisterId: riskId,
+      comments: comment,
+      actionType: RiskActionType.Approve,
+      controlMeasures: editedControlMeasure,
+    });
+
     apiAuth
       .post(`/RiskRegister/task/approval/${selectedTask.taskId}/${riskId}`, {
         taskId: selectedTask.taskId,
         riskRegisterId: riskId,
         comments: comment,
         actionType: RiskActionType.Approve,
-        controlMeasures: selectedTask.controlMeasures,
+        controlMeasures: editedControlMeasure,
         // sendBackToApprWfId: 0,
       })
       .then((response) => {
@@ -100,6 +110,25 @@ const TaskActions = ({
       });
   };
 
+  const handleTaskDelete = () => {
+    apiAuth
+      .delete(`/RiskRegister/task/${riskId}/${selectedTask.taskId}`)
+      .then((response) => {
+        if (response.data.statusCode == 200) {
+          toast.success(response.data.message);
+          mutate(`/RiskRegister/task/list/${riskId}`);
+        } else {
+          toast.error(response.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Failed to delete task");
+      })
+      .finally(() => {
+        setIsOpenComment(false);
+      });
+  };
   return (
     <CommonModal
       open={openComment}
@@ -109,7 +138,7 @@ const TaskActions = ({
       <div className="flex flex-col">
         <div className="flex flex-col my-20">
           <p>{message}</p>
-          {popupType != TaskPopupType.SubmitforApproval && (
+          {[TaskPopupType.Approve, TaskPopupType.Audit].includes(popupType) && (
             <div className="flex flex-col my-20">
               <TextField
                 className="mt-10"
@@ -145,6 +174,8 @@ const TaskActions = ({
                 handleTaskSubmitForApproval();
               } else if (popupType === TaskPopupType.Approve) {
                 handleTaskApproval();
+              } else if (popupType === TaskPopupType.Delete) {
+                handleTaskDelete();
               }
             }}
             type="button"

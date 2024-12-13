@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import InputField from "./InputField";
 import Button from "../../common/Button";
-import { IHiraList, IRiskRegisterDetails } from "../../helpers/type";
+import { IHiraList, IRiskRegisterDetails, Roles } from "../../helpers/type";
 import { useForm } from "react-hook-form";
 import {
   RiskActionType,
@@ -25,11 +25,6 @@ import ConfirmationModal from "src/app/main/moc/common_modal/confirmation_modal/
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import CommonModal from "../../common/CommonModal";
-
-interface Roles {
-  teamType: RiskRegisterTeamRole;
-  staffId: string;
-}
 
 interface approverForm {
   comment: string;
@@ -65,7 +60,11 @@ const SICApproval = ({ risk }: { risk: IRiskRegisterDetails }) => {
     apiAuth
       .get(`/Staff/LOV`)
       .then((res) => {
-        setStaff(res.data.data);
+        if (res.data.statusCode === 200) {
+          setStaff(res.data.data);
+        } else {
+          toast.error(res.data.message);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -96,7 +95,7 @@ const SICApproval = ({ risk }: { risk: IRiskRegisterDetails }) => {
         isValid = false;
       }
     });
-    console.log(errorMessages);
+
     if (errorMessages.length > 0) {
       setTeamError("Please select employee for " + errorMessages.join(", "));
     } else {
@@ -134,9 +133,7 @@ const SICApproval = ({ risk }: { risk: IRiskRegisterDetails }) => {
       setOpen(true);
     }
   };
-  // useEffect(() => {
-  //   toast.error("Error Approving Risk");
-  // }, []);
+
   const handleSICApprove = () => {
     apiAuth
       .post("/RiskRegister/SicApproval/" + risk.id, payload)

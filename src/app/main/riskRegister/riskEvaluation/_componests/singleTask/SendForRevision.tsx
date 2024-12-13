@@ -17,6 +17,8 @@ import { useTaskStore } from "../common/taskStore";
 import { RiskActionType } from "../../../helpers/enum";
 import { toast } from "react-toastify";
 import { mutate } from "swr";
+import ControlMeasures from "./ControlMeasures";
+import { useControlMeasureStore } from "../common/controlMeasureStore";
 
 const SendForRevision = ({
   openRevision,
@@ -34,7 +36,7 @@ const SendForRevision = ({
   const [staffValidation, setStaffValidation] = useState<string | null>(null);
   const [selectedStaff, setSelectedStaff] = useState<string | null>(null);
   const { selectedTask } = useTaskStore();
-
+  const { editedControlMeasure } = useControlMeasureStore();
   const handleTaskRejection = () => {
     if (!comment) {
       !comment && setCommentValidation("Comment is required");
@@ -52,6 +54,7 @@ const SendForRevision = ({
         comments: comment,
         actionType: RiskActionType.SendBack,
         sendBackToApprId: selectedStaff,
+        controlMeasures: editedControlMeasure,
       })
       .then((response) => {
         if (response.data.statusCode == 200) {
@@ -79,12 +82,12 @@ const SendForRevision = ({
     >
       <div className="flex flex-col">
         <div className="flex flex-col my-20">
-          <p>Are you sure you want to send this request for revision?</p>
           <p>
             The request will be sent back to the Team for further revision. Once
             the team submits the task for approval, the selected approver will
             be notified.
           </p>
+          <p>Are you sure you want to proceed?</p>
           <div className="flex flex-col my-20">
             <FormControl>
               <FormLabel id="demo-radio-buttons-group-label">
@@ -92,18 +95,18 @@ const SendForRevision = ({
               </FormLabel>
               <RadioGroup
                 aria-labelledby="demo-radio-buttons-group-label"
-                defaultValue="female"
+                defaultValue="male"
                 name="radio-buttons-group"
               >
-                <FormControlLabel
-                  value="female"
-                  control={<Radio />}
-                  label="Approval"
-                />
                 <FormControlLabel
                   value="male"
                   control={<Radio />}
                   label="Evaluation"
+                />
+                <FormControlLabel
+                  value="female"
+                  control={<Radio />}
+                  label="Approval"
                 />
               </RadioGroup>
             </FormControl>
@@ -122,7 +125,7 @@ const SendForRevision = ({
                 }}
               >
                 {selectedTask.approvals?.map((item, index) => (
-                  <MenuItem value={item.staffId}>{item.staffName}</MenuItem>
+                  <MenuItem value={item.id}>{item.staffName}</MenuItem>
                 ))}
               </Select>
               {staffValidation && (

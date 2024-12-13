@@ -2,12 +2,20 @@ import { Icon } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { ITask } from "../../../helpers/type";
-import { ControlMeasuresType } from "../../../helpers/enum";
-import { useMemo } from "react";
+import { ControlMeasuresType, TaskStatusEnum } from "../../../helpers/enum";
+import { useMemo, useState } from "react";
 import { useTaskStore } from "../common/taskStore";
+import { Edit } from "@mui/icons-material";
+import EditControlMeasures from "./EditControlMeasures";
+import { useControlMeasureStore } from "../common/controlMeasureStore";
+import { useRiskStore } from "../common/riskstore";
 
 const ControlMeasures = () => {
   const { selectedTask } = useTaskStore();
+  const { isTaskApprover } = useRiskStore();
+  const { isEditControlMeasure, setIsEditControlMeasure } =
+    useControlMeasureStore();
+
   const controlMeasuresDisplay = useMemo(() => {
     const humanControlMeasures = selectedTask.controlMeasures.filter(
       (measure) => measure.type === ControlMeasuresType.Human
@@ -45,19 +53,33 @@ const ControlMeasures = () => {
         <h2 className="text-lg font-semibold text-zinc-800">
           Control Measures
         </h2>
-        <Icon className="text-lg text-blue-600 rounded-sm border-1 border-blue-600 cursor-pointer">
-          edit
-        </Icon>
+        {isTaskApprover &&
+          [
+            TaskStatusEnum.PendingApproval,
+            TaskStatusEnum.RejectedPendingApproval,
+          ].includes(selectedTask.status) && (
+            <Icon
+              onClick={() => setIsEditControlMeasure(!isEditControlMeasure)}
+              className="text-lg text-blue-600 rounded-sm border-1 border-blue-600 cursor-pointer"
+            >
+              edit
+            </Icon>
+          )}
       </div>
 
       <div className="flex flex-col mt-6 w-full text-sm">
-        {controlMeasuresDisplay.map((item, index) => (
-          <ControlMeasureItem
-            key={index}
-            label={item.label}
-            value={item.value}
-          />
-        ))}
+        {!isEditControlMeasure &&
+          controlMeasuresDisplay.map((item, index) => (
+            <ControlMeasureItem
+              key={index}
+              label={item.label}
+              value={item.value}
+            />
+          ))}
+        {isEditControlMeasure && (
+          // <EditControlMeasures isOpen={isEditOpen} setIsOpen={setIsEditOpen} />
+          <EditControlMeasures />
+        )}
       </div>
     </section>
   );

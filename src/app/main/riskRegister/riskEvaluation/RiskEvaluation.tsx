@@ -13,6 +13,11 @@ import { toast } from "react-toastify";
 import { useRiskStore } from "./_componests/common/riskstore";
 import jwtDecode from "jwt-decode";
 import { getCurrentUserId } from "../helpers/commonFunctions";
+import { useGetPermenant } from "src/utils/swr";
+import { use } from "i18next";
+import AddTaskPage from "./_componests/tasks/AddTaskPage";
+import { useTaskStore } from "./_componests/common/taskStore";
+import EditTaskPage from "./_componests/singleTask/EditTaskPage";
 
 const RiskEvaluation = () => {
   // const [risk, setRisk] = useState<IRiskRegisterDetails | null>(null);
@@ -27,21 +32,31 @@ const RiskEvaluation = () => {
       team.some((member) => member.staffId === userId)
     );
   };
+
+  const {
+    data: result,
+    isLoading,
+    error,
+  } = useGetPermenant<{
+    data: any;
+    message: string;
+    statusCode: number;
+  }>(`/RiskRegister/Details/${riskId}`);
   useEffect(() => {
-    apiAuth
-      .get(`/RiskRegister/Details/${riskId}`)
-      .then((res) => {
-        setRisk(res.data.data);
-        isUserPartOfTeam(res.data.data.teamList);
+    if (result) {
+      if (result.statusCode == 200) {
+        setRisk(result.data);
+        isUserPartOfTeam(result.data.teamList);
         setLoading(false);
-      })
-      .catch((err) => {
-        toast.error(err.errorsData.id[0]);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+      } else {
+        toast.error(result.message);
+      }
+    } else if (error) {
+      console.log(error);
+      toast.error("Failed to get risk details");
+    }
+  }, [result, error]);
+  const { isAddTaskClicked, isEditTaskClicked } = useTaskStore();
   return (
     <>
       {loading && <FuseLoading />}
@@ -56,14 +71,23 @@ const RiskEvaluation = () => {
       )}
       {!loading && risk && (
         <div className="m-5 p-10">
-          <div className="flex flex-row w-full justify-between p-5">
-            <h2 className="text-2xl font-semibold text-black p-10">
-              HIRA #{risk.hiranumber}
-            </h2>
-            <RiskSession />
-          </div>
-          <RiskInitiation />
-          <EvaluationTasks />
+          {!isAddTaskClicked && !isEditTaskClicked && (
+            <>
+              <div className="flex flex-row w-full justify-between p-5">
+                <h2 className="text-2xl font-semibold text-black p-10">
+                  HIRA #{risk.hiranumber}
+                </h2>
+                <RiskSession />
+              </div>
+              {}
+              <RiskInitiation />
+              <EvaluationTasks />
+            </>
+          )}
+          {isAddTaskClicked && !isEditTaskClicked && (
+            <AddTaskPage riskId={Number(riskId)} />
+          )}
+          {isEditTaskClicked && !isAddTaskClicked && <EditTaskPage />}
         </div>
       )}
     </>

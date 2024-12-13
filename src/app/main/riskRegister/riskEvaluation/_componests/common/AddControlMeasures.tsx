@@ -36,10 +36,8 @@ const AddControlMeasures: React.FC<AddControlMeasuresProps> = ({
       {!loading && options && (
         <Autocomplete
           multiple
+          fullWidth
           id="tags-filled"
-          //how can i use the otpions in such a way that in setstate i can use it as an object {
-          //  title: "title",
-          //  year: "year"  }
           options={options as ISelectedControlMeasures[]}
           getOptionLabel={(option) =>
             typeof option === "string" ? option : option.title
@@ -50,16 +48,13 @@ const AddControlMeasures: React.FC<AddControlMeasuresProps> = ({
           defaultValue={selectedValues || []}
           freeSolo
           onChange={(event, newValue) => {
-            //how can i check if newvalue is an object or a string
-
             const updatedValues = newValue.map((item) => {
-              // alert(item);
               if (typeof item == "string") {
                 return { id: 0, title: item };
               }
               return item;
             });
-
+            console.log(updatedValues);
             setSelectedValues(updatedValues as ISelectedControlMeasures[]);
           }}
           renderTags={(value: readonly any[], getTagProps) =>

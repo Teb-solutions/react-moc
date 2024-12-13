@@ -1,5 +1,5 @@
 import { Chip } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ITask } from "../../../helpers/type";
 import RiskClassificationDisplay from "../../../common/RiskClassificationDisplay";
 import { useTaskStore } from "../common/taskStore";
@@ -11,6 +11,8 @@ import { useRiskStore } from "../common/riskstore";
 import { getCurrentUserId } from "../../../helpers/commonFunctions";
 import RiskDisplay from "../common/RiskDisplay";
 import { set } from "lodash";
+import { useControlMeasureStore } from "../common/controlMeasureStore";
+import { use } from "i18next";
 
 const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
   const {
@@ -41,9 +43,10 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
   //   statusCode: number;
   // }>(task ? `/RiskRegister/task/detail/${task.taskId}` : null);
   const userId = Number(getCurrentUserId());
-  const handleTaskCardClick = () => {
-    setIsTaskCardClicked(true);
+  const { setIsEditControlMeasure, setEditedControlMeasure } =
+    useControlMeasureStore();
 
+  const updateSelectedTask = () => {
     if (selectedTaskResult) {
       if (selectedTaskResult.statusCode == 200) {
         setSelectedTask(selectedTaskResult.data);
@@ -60,6 +63,16 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
       toast.error("Failed to get task details");
     }
   };
+  const handleTaskCardClick = () => {
+    setIsTaskCardClicked(true);
+    setIsEditControlMeasure(false);
+    setEditedControlMeasure([]);
+    updateSelectedTask();
+  };
+
+  useEffect(() => {
+    updateSelectedTask();
+  }, [selectedTaskResult]);
 
   return (
     <>

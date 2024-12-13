@@ -36,7 +36,6 @@ const RiskCard = ({ risk }: { risk: IHiraList }) => {
           <div className="flex gap-5 items-center">
             {/* <Badge text={risk.category} /> */}
             <h2 className="text-xl font-medium text-slate-500">
-              {risk.siteName.substring(0, 3).toUpperCase()}
               {risk.hiranumber}
             </h2>
           </div>

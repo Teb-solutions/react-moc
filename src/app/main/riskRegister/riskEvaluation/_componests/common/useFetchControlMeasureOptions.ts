@@ -57,13 +57,13 @@ const useFetchControlMeasureOptions = (
     let url = "";
     switch (controlMeasureType) {
       case ControlMeasuresType.Human:
-        url = "https://mocapi.tebs.co.in/api/LookupData/Lov/28";
+        url = "https://mocapi.tebs.co.in/api/LookupData/Lov/32";
         break;
       case ControlMeasuresType.Organizational:
-        url = "https://mocapi.tebs.co.in/api/LookupData/Lov/29";
+        url = "https://mocapi.tebs.co.in/api/LookupData/Lov/34";
         break;
       case ControlMeasuresType.Technical:
-        url = "https://mocapi.tebs.co.in/api/LookupData/Lov/30/82"; // Example URL, adjust as necessary
+        url = "https://mocapi.tebs.co.in/api/LookupData/Lov/33"; // Example URL, adjust as necessary
         break;
       default:
         setError("Invalid controlMeasureType");
@@ -74,7 +74,11 @@ const useFetchControlMeasureOptions = (
     const fetchData = async () => {
       try {
         const response = await apiAuth.get(url);
-        setOptions(response.data.data as ISelectedControlMeasures[]);
+        const data = response.data.data.map((item: any) => ({
+          title: item.text,
+          id: item.value,
+        }));
+        setOptions(data as ISelectedControlMeasures[]);
       } catch (err) {
         setError("Failed to fetch data");
       } finally {
@@ -82,7 +86,7 @@ const useFetchControlMeasureOptions = (
       }
     };
 
-    // fetchData();
+    fetchData();
   }, [controlMeasureType]);
 
   return { options, loading, error };

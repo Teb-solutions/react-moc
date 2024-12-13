@@ -18,6 +18,7 @@ import { useRiskStore } from "../common/riskstore";
 import { useTaskStore } from "../common/taskStore";
 import PieChart from "./PieChart";
 import LineChart from "./LineChart";
+import EditTeam from "./EditTeam";
 
 const RiskInitiation = () => {
   const { risk } = useRiskStore();
@@ -61,6 +62,7 @@ const RiskInitiation = () => {
   const id = open ? "simple-popper" : undefined;
 
   const [selectedHeader, setSelectedHeader] = useState("Summary");
+  const [isEditTeam, setIsEditTeam] = useState(false);
 
   return (
     <Paper className="flex flex-col">
@@ -117,7 +119,11 @@ const RiskInitiation = () => {
             <div className="w-full sm:w-1/3 pl-2 text-md">
               <h4 className="self-stretch text-blue-600 font-medium text-neutral-600">
                 HIRA Team
-                <Icon className="ml-5" fontSize="inherit">
+                <Icon
+                  onClick={() => setIsEditTeam(!isEditTeam)}
+                  className="ml-5 cursor-pointer"
+                  fontSize="inherit"
+                >
                   edit
                 </Icon>
               </h4>
@@ -128,6 +134,7 @@ const RiskInitiation = () => {
                   value={item.value}
                 />
               ))}
+              <EditTeam isOpen={isEditTeam} setIsOpen={setIsEditTeam} />
               <div className="flex flex-row mt-5">
                 <InitationInfoItem
                   label="SIC Approval"

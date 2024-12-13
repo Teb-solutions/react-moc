@@ -1,3 +1,5 @@
+import { RiskRegisterTeamRole } from "./enum";
+
 export interface IHiraList {
   id: number;
   hiranumber: string;
@@ -112,7 +114,7 @@ export interface LookUpType {
 }
 
 export type ISelectedControlMeasures = {
-  id: number;
+  id: number | string;
   title: string;
 };
 
@@ -150,9 +152,18 @@ export interface IControlMeasures {
   id: number;
   type: number;
   controlMeasure: string;
+  controlMeasureId: number | string;
   updatedAt: any;
   updatedBy: any;
   updatedByStaffName: any;
+}
+
+export interface IEditControlMeasures {
+  id: number;
+  type: number;
+  controlMeasure: string;
+  controlMeasureId: string | number;
+  isDeleted: boolean;
 }
 
 export interface IApprovals {
@@ -169,4 +180,9 @@ export interface IApprovals {
   staffName: string;
   startedAt: string;
   completedAt: any;
+}
+
+export interface Roles {
+  teamType: number;
+  staffId: string;
 }
