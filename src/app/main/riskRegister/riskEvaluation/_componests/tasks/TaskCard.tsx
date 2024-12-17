@@ -20,6 +20,8 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
     selectedTask,
     selectedTasksIds,
     setSelectedTasksIds,
+    isTaskEdited,
+    setIsTaskEdited,
   } = useTaskStore();
   const { setIsTaskApprover } = useRiskStore();
   const [isTaskCardClicked, setIsTaskCardClicked] = useState(false);
@@ -47,6 +49,7 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
     useControlMeasureStore();
 
   const updateSelectedTask = () => {
+    console.log("task edited");
     if (selectedTaskResult) {
       if (selectedTaskResult.statusCode == 200) {
         setSelectedTask(selectedTaskResult.data);
@@ -67,12 +70,13 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
     setIsTaskCardClicked(true);
     setIsEditControlMeasure(false);
     setEditedControlMeasure([]);
+    setIsTaskEdited(false);
     updateSelectedTask();
   };
 
   useEffect(() => {
     updateSelectedTask();
-  }, [selectedTaskResult]);
+  }, [selectedTaskResult, isTaskEdited]);
 
   return (
     <>

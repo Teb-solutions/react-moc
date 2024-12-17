@@ -5,7 +5,7 @@ import TaskDetailsCard from "../singleTask/TaskDetailsCard";
 import { AddTaskOutlined, Check, CheckBox } from "@mui/icons-material";
 import Button from "../../../common/Button";
 import CommonModal from "../../../common/CommonModal";
-import { set } from "lodash";
+import { get, set } from "lodash";
 import AddTask from "./AddTask";
 import { useRiskStore } from "../common/riskstore";
 import { useParams } from "react-router";
@@ -17,6 +17,7 @@ import { TaskStatusEnum } from "../../../helpers/enum";
 import { useGetPermenant } from "src/utils/swr";
 import { ITask } from "../../../helpers/type";
 import { mutate } from "swr";
+import { getCurrentUserId } from "../../../helpers/commonFunctions";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -58,6 +59,7 @@ const EvaluationTasks = () => {
   const { isAddTaskClicked, setIsAddTaskClicked } = useTaskStore();
   const [initialTaskId, setInitialTaskId] = useState<number | null>(null);
   const [isSubmitOpen, setIsSubmitOpen] = useState(false);
+  const currentUserId = getCurrentUserId();
   const {
     tasks,
     setTasks,
@@ -137,6 +139,7 @@ const EvaluationTasks = () => {
         setSelectedTasksIds([]);
       });
   };
+
   return (
     <div className="mt-10">
       {/* <Paper className="flex flex-col p-10 mt-10"> */}
@@ -159,12 +162,13 @@ const EvaluationTasks = () => {
           <Tab className="text-lg" label="Drafts" {...a11yProps(1)} />
           <Tab className="text-lg" label="Approval Pending" {...a11yProps(2)} />
           <Tab className="text-lg" label="Need Task Review" {...a11yProps(3)} />
-          <Tab
+          {/* <Tab
             className="text-lg"
             label="Need Approval Review"
             {...a11yProps(4)}
-          />
-          <Tab className="text-lg" label="Approved Tasks" {...a11yProps(5)} />
+          /> */}
+          <Tab className="text-lg" label="Approved Tasks" {...a11yProps(4)} />
+          <Tab className="text-lg" label="My Approvals" {...a11yProps(5)} />
         </Tabs>
       </Box>
       <div className="w-full flex flex-col">
@@ -249,8 +253,8 @@ const EvaluationTasks = () => {
           </div>
 
           {/* Uncomment this */}
-          {/* {isCurrentUserPartOfTeam && isSessionActive && ( */}
-          {isCurrentUserPartOfTeam && (
+          {isCurrentUserPartOfTeam && isSessionActive && (
+            // {isCurrentUserPartOfTeam && (
             <div>
               <Button
                 onClick={() => {
@@ -302,20 +306,23 @@ const EvaluationTasks = () => {
                 )}
               />
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={4}>
+            {/* <CustomTabPanel value={value} index={4}>
               <TaskCardList
                 tasks={tasks.filter(
                   (task) =>
                     task.status === TaskStatusEnum.RejectedPendingApproval
                 )}
               />
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={5}>
+            </CustomTabPanel> */}
+            <CustomTabPanel value={value} index={4}>
               <TaskCardList
                 tasks={tasks.filter(
                   (task) => task.status === TaskStatusEnum.Approved
                 )}
               />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={5}>
+              <p>Need to implement this</p>
             </CustomTabPanel>
           </div>
           <div className="w-full sm:w-1/3">

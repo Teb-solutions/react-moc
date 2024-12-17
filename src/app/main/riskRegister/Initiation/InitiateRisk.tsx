@@ -6,7 +6,7 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import { Select, MenuItem, Paper, Icon } from "@mui/material";
 import { useNavigate } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -20,6 +20,7 @@ import { set } from "lodash";
 import CommonModal from "../common/CommonModal";
 import { useGetPermenant } from "src/utils/swr";
 import FuseLoading from "@fuse/core/FuseLoading";
+import { use } from "i18next";
 
 interface IFormInput {
   isActive: boolean;
@@ -27,23 +28,12 @@ interface IFormInput {
   projectDescription: string;
   siteId: number;
   divisionId: number;
-  siteInchargeId: number;
+  siteInChargeId: number;
   date: string;
+  hiranumber: string;
   category: number;
 }
 function InitiateRisk() {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<IFormInput>({
-    defaultValues: {
-      category: RiskCategory.Transport,
-
-      date: daysjs().format("DD-MM-YYYY"),
-    },
-  });
   const [open, setOpen] = useState(false);
   const [payload, setPayload] = useState<any>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,6 +51,29 @@ function InitiateRisk() {
   }>(`/RiskRegister/DefaultForInitiate`);
   console.log(defaultValue);
 
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    formState: { errors },
+  } = useForm<IFormInput>({
+    defaultValues: {
+      category: RiskCategory.Transport,
+      date: daysjs().toISOString(),
+    },
+  });
+
+  // useEffect(() => {
+  //   alert(defaultValue.data.siteInChargeId);
+  //   reset({
+  //     siteInChargeId: defaultValue.data.siteInchargeId,
+  //     siteId: defaultValue.data.siteId,
+  //     divisionId: defaultValue.data.divisionId,
+  //     hiranumber: defaultValue.data.hiranumber,
+  //   });
+  // }, [defaultValue]);
+
   const category = watch("category");
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
@@ -73,19 +86,30 @@ function InitiateRisk() {
     setIsSubmitting(true);
     payload.siteId = defaultValue.data.siteId;
     payload.divisionId = defaultValue.data.divisionId;
-    payload.siteInchargeId = defaultValue.data.siteInchargeId;
+
     payload.hiranumber = defaultValue.data.hiranumber;
+    payload.siteInChargeId = defaultValue.data.siteInchargeId;
+    // console.log(payload);
     apiAuth
       .post("/RiskRegister/Initiate", payload)
-      .then(() => {
-        setIsSubmitting(false);
-        toast.success("Risk initiated successfully");
-        setOpen(false);
-        navigate("/risk");
+      .then((response) => {
+        if (response.data.statusCode == 200) {
+          setIsSubmitting(false);
+          toast.success(
+            <p className="text-gray-800">Risk initiated successfully</p>
+          );
+          setOpen(false);
+          navigate("/risk");
+        } else {
+          setIsSubmitting(false);
+          toast.error(<p className="text-gray-800">{response.data.message}</p>);
+        }
       })
-      .catch(() => {
+      .catch((error) => {
+        toast.error(<p className="text-gray-800">Failed to inititate risk</p>);
         setIsSubmitting(false);
-        toast.error("Failed to initiate risk");
+        console.log(error);
+        // toast.error("Failed to initiate risk");
       });
   };
   return (
@@ -188,12 +212,12 @@ function InitiateRisk() {
                       <TextField
                         fullWidth
                         label="Site in charge"
-                        id="siteInCharge"
-                        value={defaultValue.data.siteInchargeName}
-                        // {...register("siteInchargeId", { required: true })}
+                        id="Site in charge"
+                        value={defaultValue.data.siteInChargeName}
+                        // {...register("siteInChargeId", { required: true })}
                         disabled
                       />
-                      {errors.siteInchargeId?.type === "required" && (
+                      {errors.siteInChargeId?.type === "required" && (
                         <p role="alert" className="text-sm text-red-500">
                           SIC is required
                         </p>

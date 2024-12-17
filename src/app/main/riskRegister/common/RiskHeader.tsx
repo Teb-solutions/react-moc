@@ -6,7 +6,6 @@ import { Button } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
-import Test from "./Test";
 
 interface MocHeaderProps {
   activity?: string;
@@ -14,10 +13,11 @@ interface MocHeaderProps {
   risk?: string;
   master?: string;
   type?: string;
-  nothing?: string;
+  home?: boolean;
   verName?: string;
   name?: string;
   sidemenu?: boolean;
+  evaluation?: boolean;
   setLeftSidebarOpen: (open: boolean) => void;
   leftSidebarOpen: boolean;
 }
@@ -29,7 +29,8 @@ function RiskHeader(props: MocHeaderProps) {
     risk,
     master,
     type,
-    nothing,
+    home,
+    evaluation,
     verName,
     name,
     sidemenu,
@@ -41,47 +42,18 @@ function RiskHeader(props: MocHeaderProps) {
   const location = useLocation();
   const path = location.pathname;
 
+  const handleClick = (event) => {
+    navigate("/risk/initiate");
+
+    // setAnchorEl(event.currentTarget);
+  };
+
   const urlContainsMocOrRisk = path === "/moc" || path === "/risk";
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleOpenNewDoc = () => {
-    navigate("/moc/activity");
-  };
-  const handleOpenNewAsset = () => {
-    navigate("/moc/assetactivity");
-  };
-  const handleOpenNewOrg = () => {
-    navigate("/moc/orgactivity");
-  };
-  const handleNavigate = (type: string) => {
-    let path = "/risk/transportactivity";
-    switch (type) {
-      case "Transport":
-        path = "/risk/transportactivity";
-        break;
-      case "Routine":
-        path = "/risk/routineactivity";
-        break;
-      case "NonRoutine":
-        path = "/risk/nonroutineactivity";
-        break;
-      default:
-        path = "/risk/transportactivity";
-    }
-    navigate(path);
-  };
-
-  const handelOpenSide = () => {
-    setLeftSidebarOpen(!leftSidebarOpen);
-  };
-
   return (
     <div
-      className="flex d-sm-block flex-1 w-full items-center justify-between py-8 sm:px-10"
+      className={`flex d-sm-block flex-1 w-full items-center justify-between ${evaluation ? "p-0" : "pt-24 px-24"}`}
       style={{
         backgroundColor: Object.keys(routeParams).length !== 0 ? "" : "",
       }}
@@ -98,48 +70,31 @@ function RiskHeader(props: MocHeaderProps) {
             to="/risk"
             style={{ textDecoration: "none" }}
           >
-            Home
+            Risk Register
           </Link>
-          {nothing !== "nothing" && (
-            <Link
-              className="font-medium text-black"
-              key="2"
-              to="#"
-              style={{ textDecoration: "none" }}
-            >
-              {risk === "risk"
-                ? "Risk Request"
-                : master
-                  ? master
-                  : "MOC Requests"}
-            </Link>
-          )}
-          {type && (
+
+          {name && (
             <Typography className="font-medium" key="3" color="text.primary">
-              {type}
-            </Typography>
-          )}
-          {reqno && (
-            <Typography className="font-medium" key="4" color="text.primary">
-              {reqno}
-            </Typography>
-          )}
-          {activity && (
-            <Typography className="font-medium" key="5" color="text.primary">
-              {activity} (v{verName})
+              {name}
             </Typography>
           )}
         </Breadcrumbs>
 
-        {/* Title section */}
-        {name && (
-          <Typography variant="h6" className="mt-4 font-bold">
-            {name}
-          </Typography>
-        )}
-
         <div className="flex sm:hidden" />
       </div>
+      {home && (
+        <div className="mt-10 md:mt-0" style={{ justifyContent: "end" }}>
+          <Button
+            className=""
+            variant="contained"
+            color="secondary"
+            onClick={handleClick}
+          >
+            <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
+            <span className="mx-4 sm:mx-8">Initiate New Risk Register</span>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

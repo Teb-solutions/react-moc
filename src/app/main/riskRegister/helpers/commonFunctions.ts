@@ -7,6 +7,6 @@ export const getCurrentUserId = () => {
     decodedToken[
       "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
     ];
-  console.log(userId);
+  // console.log(userId);
   return userId;
 };

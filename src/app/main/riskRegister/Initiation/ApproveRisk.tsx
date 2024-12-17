@@ -43,11 +43,14 @@ const ApproveRisk = () => {
         <div className="m-5 p-10">
           <RiskHeader
             risk={"risk"}
+            evaluation={false}
+            home={false}
+            // sicapproval={true}
             setLeftSidebarOpen={() => {}}
             leftSidebarOpen={false}
           />
 
-          <Paper className="flex flex-col p-10">
+          <Paper className="flex flex-col p-10 mt-20">
             {risk && <InitiationSection risk={risk} />}
             {!risk && <div>Loading...</div>}
           </Paper>

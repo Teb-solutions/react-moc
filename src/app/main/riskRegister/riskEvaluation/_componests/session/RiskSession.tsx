@@ -100,7 +100,9 @@ const RiskSession = () => {
               ? SessionStatusDisplayNames[
                   sessionList[sessionList.length - 1]?.status
                 ]
-              : "View Session History"}
+              : sessionList.length == 0
+                ? "No Session History"
+                : "View Session History"}
           </Button>
 
           {sessionList.length > 0 && (

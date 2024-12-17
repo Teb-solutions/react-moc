@@ -44,11 +44,7 @@ function a11yProps(index: number) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-export default function TemporaryDrawer({
-  hazardType,
-}: {
-  hazardType: string;
-}) {
+export default function BiologicalRisk({ hazardType }: { hazardType: string }) {
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {

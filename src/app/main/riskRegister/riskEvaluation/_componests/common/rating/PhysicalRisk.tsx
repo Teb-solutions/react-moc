@@ -21,6 +21,7 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
 import create from "zustand";
+import TableComponent from "./TableComponent";
 
 interface SubCategoryState {
   subCategory: string;
@@ -468,141 +469,168 @@ const SeverityRatingTable = () => {
   const rows = ratingObj?.array || [];
 
   return (
-    <TableContainer component={Paper}>
-      <Table className="border-1">
-        <TableHead className="bg-blue-100 text-white">
-          <TableRow>
-            {ratingObj?.header.map((head, index) => (
-              <TableCell key={index}>{head}</TableCell>
-            ))}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, rowIndex) => (
-            <TableRow className="border-2" key={rowIndex}>
-              {row.map((cell, cellIndex) => (
-                <TableCell key={cellIndex} className="border" align="left">
-                  {cell}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    ratingObj && rows && <TableComponent ratingObj={ratingObj} rows={rows} />
   );
 };
 const potentialExposureProbabilityArray = [
   {
     type: subCatergoryList.noise,
+    header: ["Rating P", "Description"],
     array: [
-      {
-        rating: 10,
-        description: (
-          <p className="font-semibold">
-            The potential exposure probability P of exposure to noise when
-            working in or close to a noisy workplace is 10.
+      [
+        10,
+        <p>
+          The potential exposure probability P of exposure to noise when working
+          in or close to a noisy workplace is 10
+        </p>,
+      ],
+    ],
+  },
+  {
+    type: subCatergoryList.vibration,
+    header: ["Rating P", "Description"],
+    array: [
+      [
+        10,
+        "The potential exposure probability P of exposure to noise when working in or close to a noisy workplace is 10",
+      ],
+    ],
+  },
+  {
+    type: subCatergoryList.thermal,
+    header: ["Rating P", "Description"],
+    array: [
+      [
+        10,
+        "The potential exposure probability P of exposure to noise when working in or close to a noisy workplace is 10",
+      ],
+    ],
+  },
+  {
+    type: subCatergoryList.ionizingRadiation,
+    header: ["Rating P", "Description"],
+    array: [
+      [
+        10,
+        "The potential exposure probability P of exposure to noise when working in or close to a noisy workplace is 10",
+      ],
+    ],
+  },
+  {
+    type: subCatergoryList.optical,
+    header: [
+      "Rating P",
+      "Probability of potential exposure to a source of optical radiation (IR, visible, UV, laser)",
+    ],
+    array: [
+      [
+        10,
+        <>
+          <p>
+            Tasks with direct contact with the source of optical radiation (IR,
+            visible, UV, laser):
           </p>
-        ),
-      },
+          <li>Working outside (UV) </li>
+          <li>Arc welding </li>
+          <li>Use of a surgical light, etc.</li>
+        </>,
+      ],
+      [
+        6,
+        <>
+          <p>
+            Tasks with unpredictable exposure (e.g. worksite surveillance using
+            laser, UV, IR technology, arc welding), etc.
+          </p>
+        </>,
+      ],
+      [
+        3,
+        <>
+          <p>Use of laboratory equipment with laser, UV, IR technology, etc.</p>
+        </>,
+      ],
+    ],
+  },
+  {
+    type: subCatergoryList.electromagnetic,
+    header: ["Rating P", "Probability of potential exposure to an EMF source"],
+    array: [
+      [
+        10,
+        <>
+          <p>Tasks with direct contact with the EMF source</p>
+          <li>
+            Task working on electrical equipment that is switched on,
+            high-voltage cables, induction heating, telecommunication
+            equipment...
+          </li>
+          <li>Task in the computer room... </li>
+          <li>Phone without hands-free mechanism...</li>
+        </>,
+      ],
+      [
+        6,
+        <>
+          <p>
+            All other tasks performed at a distance less than 3.2x the distance
+            from the active field (see table 10)
+          </p>
+        </>,
+      ],
     ],
   },
 ];
-const PotentialProbability = () => {
-  const rows = potentialExposureProbabilityArray.find(
-    (item) => item.type === subCatergoryList.noise
-  )?.array;
 
+const PotentialProbability = () => {
+  const { subCategory } = useSubCategoryStore();
+  const ratingObj = potentialExposureProbabilityArray.find(
+    (item) => item.type === subCategory
+  );
+  const rows = ratingObj?.array || [];
   return (
-    <TableContainer component={Paper}>
-      <Table className="border-1">
-        <TableHead className="bg-blue-100 text-white">
-          <TableRow>
-            <TableCell>
-              <strong>Rating P</strong>
-            </TableCell>
-            <TableCell>
-              <strong>
-                Probability of Potential Exposure to Biological Sources
-              </strong>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, index) => (
-            <TableRow className="border-2" key={index}>
-              <TableCell className="border" align="center">
-                {row.rating}
-              </TableCell>
-              <TableCell className="border" align="left">
-                {row.description}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    ratingObj && rows && <TableComponent ratingObj={ratingObj} rows={rows} />
   );
 };
 
 const reductionOfPArray = [
   {
     type: subCatergoryList.noise,
+    header: ["Rating P'", "Description"],
     array: [
-      {
-        reductionOfP: -1,
-        preventionMeasures: [
-          "At least two procedural or organizational measures from:",
-          "See Mp-type matrix",
-          "Signage, regular audit, inspections, calls to order, etc.",
-          "Earplugs",
-        ],
-      },
-      {
-        reductionOfP: -2,
-        preventionMeasures: [
-          "Wearing appropriate PPE and training on use and maintenance, helmet and earplugs for exposure above 120 dBA, etc.",
-        ],
-      },
-      {
-        reductionOfP: -3,
-        preventionMeasures: ["Insulation and enclosure, etc."],
-      },
+      [
+        -1,
+        <ul>
+          <li>At least two procedural or organizational measures from:</li>
+          <li>See Mp-type matrix</li>
+          <li>Signage, regular audit, inspections, calls to order, etc.</li>
+          <li>Earplugs</li>
+        </ul>,
+      ],
+      [
+        -2,
+        <ul>
+          <li>
+            Wearing appropriate PPE and training on use and maintenance, helmet
+            and earplugs for exposure above 120 dBA, etc.
+          </li>
+        </ul>,
+      ],
+      [
+        -3,
+        <ul>
+          <li>Insulation and enclosure, etc.</li>
+        </ul>,
+      ],
     ],
   },
 ];
 
 const ReductionOfPTable = () => {
-  const rows = reductionOfPArray.find(
-    (item) => item.type === subCatergoryList.noise
-  )?.array;
-
+  const { subCategory } = useSubCategoryStore();
+  const ratingObj = reductionOfPArray.find((item) => item.type === subCategory);
+  const rows = ratingObj?.array || [];
   return (
-    <TableContainer component={Paper}>
-      <Table className="border">
-        <TableHead className="bg-blue-100">
-          <TableRow>
-            <TableCell>
-              <strong>Reduction of P</strong>
-            </TableCell>
-            <TableCell>
-              <strong>Means/Measures of Prevention/Protection</strong>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row, index) => (
-            <TableRow className="border-2" key={index}>
-              <TableCell className="border" align="center">
-                {row.reductionOfP}
-              </TableCell>
-              <TableCell className="border" align="left">
-                {row.preventionMeasures}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    ratingObj && rows && <TableComponent ratingObj={ratingObj} rows={rows} />
   );
 };

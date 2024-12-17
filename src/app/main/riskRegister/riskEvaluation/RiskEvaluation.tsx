@@ -18,6 +18,9 @@ import { use } from "i18next";
 import AddTaskPage from "./_componests/tasks/AddTaskPage";
 import { useTaskStore } from "./_componests/common/taskStore";
 import EditTaskPage from "./_componests/singleTask/EditTaskPage";
+import { Link } from "react-router-dom";
+import MocHeader from "../../moc/MocHeader";
+import RiskHeader from "../common/RiskHeader";
 
 const RiskEvaluation = () => {
   // const [risk, setRisk] = useState<IRiskRegisterDetails | null>(null);
@@ -73,10 +76,22 @@ const RiskEvaluation = () => {
         <div className="m-5 p-10">
           {!isAddTaskClicked && !isEditTaskClicked && (
             <>
+              <div className="flex flex-row">
+                <RiskHeader
+                  risk="risk"
+                  home={false}
+                  evaluation={true}
+                  name={"HIRA #" + risk.hiranumber}
+                  setLeftSidebarOpen={() => {}}
+                  leftSidebarOpen={false}
+                />
+              </div>
               <div className="flex flex-row w-full justify-between p-5">
-                <h2 className="text-2xl font-semibold text-black p-10">
-                  HIRA #{risk.hiranumber}
-                </h2>
+                <div className="flex flex-col">
+                  <h2 className="text-2xl font-semibold text-black p-10">
+                    HIRA #{risk.hiranumber}
+                  </h2>
+                </div>
                 <RiskSession />
               </div>
               {}

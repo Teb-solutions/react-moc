@@ -67,8 +67,12 @@ const EditTaskPage = (
     // setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   }
 ) => {
-  const { selectedTask, isEditTaskClicked, setIsEditTaskClicked } =
-    useTaskStore();
+  const {
+    selectedTask,
+    isEditTaskClicked,
+    setIsEditTaskClicked,
+    setIsTaskEdited,
+  } = useTaskStore();
   const [selectedTime, setSelectedTime] = useState<number | null>(
     selectedTask.time
   );
@@ -472,6 +476,7 @@ const EditTaskPage = (
       .then((response) => {
         if (response.data.statusCode === 200) {
           toast.success("Task updated successfully");
+          setIsTaskEdited(true);
           mutate(`/RiskRegister/task/list/${selectedTask.riskRegisterId}`);
           mutate(`/RiskRegister/task/detail/${selectedTask.taskId}`);
         } else {

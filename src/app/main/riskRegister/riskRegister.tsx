@@ -21,6 +21,7 @@ import RiskCard from "./dashboard/RiskCard";
 import { use } from "i18next";
 import { IHiraList, ISite, TeamList } from "./helpers/type";
 import { set } from "lodash";
+import RiskHeader from "./common/RiskHeader";
 
 // import RiskCard from "./riskCard";
 
@@ -94,7 +95,13 @@ const RiskApp = () => {
       {!isLoading && (
         <Root
           header={
-            <MocHeader risk="risk" nothing={"nothing"} type={"Risk Requests"} />
+            <RiskHeader
+              risk="risk"
+              home={true}
+              // type={"Risk Register"}
+              setLeftSidebarOpen={() => {}}
+              leftSidebarOpen={false}
+            />
           }
           content={
             <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-30">

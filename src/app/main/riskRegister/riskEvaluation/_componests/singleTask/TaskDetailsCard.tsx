@@ -32,7 +32,8 @@ interface RiskItemProps {
 }
 
 const TaskDetailsCard = () => {
-  const { isCurrentUserPartOfTeam, isTaskApprover } = useRiskStore();
+  const { isCurrentUserPartOfTeam, isTaskApprover, isSessionActive } =
+    useRiskStore();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const [openRevision, setOpenRevision] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -182,7 +183,7 @@ const TaskDetailsCard = () => {
                   text="Audits"
                 />
               )}
-              {isCurrentUserPartOfTeam && (
+              {isCurrentUserPartOfTeam && isSessionActive && (
                 <TaskButton
                   onClick={() => {
                     setIsEditTaskClicked(true);
@@ -192,7 +193,7 @@ const TaskDetailsCard = () => {
                 />
               )}
 
-              {isCurrentUserPartOfTeam && (
+              {isCurrentUserPartOfTeam && isSessionActive && (
                 <TaskButton
                   onClick={() => {
                     setIsOpen(true);
