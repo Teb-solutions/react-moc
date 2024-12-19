@@ -25,8 +25,10 @@ const RiskSession = () => {
   const [sessionStartOpen, setSessionStartOpen] = useState(false);
   const [sessionEndOpen, setSessionEndOpen] = useState(false);
   const [sessionViewOpen, setSessionViewOpen] = useState(false);
+
   const [timeLeft, setTimeLeft] = useState<string>("");
-  const { risk, isCurrentUserPartOfTeam, setIsSessionActive } = useRiskStore();
+  const { risk, isCurrentUserPartOfTeam, setIsSessionActive, isSessionActive } =
+    useRiskStore();
 
   const calculateTimeLeft = (endTime: dayjs.Dayjs) => {
     const now = dayjs();
@@ -82,9 +84,11 @@ const RiskSession = () => {
     <div className="flex flex-col sm:flex-row py-3 gap-10">
       {!loading && sessionList && (
         <>
-          <span className="w-[125px] mt-10 text-md text-right font-semibold text-blue-500">
-            {timeLeft} {timeLeft.length > 0 && " left"}
-          </span>
+          {isSessionActive && (
+            <span className="w-[125px] mt-10 text-md text-right font-semibold text-blue-500">
+              {timeLeft} {timeLeft.length > 0 && " left"}
+            </span>
+          )}
           <Button
             onClick={() => {
               setSessionViewOpen(true);

@@ -22,6 +22,7 @@ import { use } from "i18next";
 import { IHiraList, ISite, TeamList } from "./helpers/type";
 import { set } from "lodash";
 import RiskHeader from "./common/RiskHeader";
+import { useTaskStore } from "./riskEvaluation/_componests/common/taskStore";
 
 // import RiskCard from "./riskCard";
 
@@ -61,7 +62,8 @@ const RiskApp = () => {
   const [isSiteLoading, setIsSiteLoading] = useState(true);
   const [site, setSite] = useState<ISite[]>([]);
   const [data, setData] = useState<IHiraList[]>([]);
-
+  const { selectedTask, setSelectedTask } = useTaskStore();
+  // setSelectedTask(null);
   useEffect(() => {
     apiAuth
       .get("/RiskRegister/List")
@@ -69,7 +71,7 @@ const RiskApp = () => {
         setData(res.data.data);
         setIsLoading(false);
 
-        console.log(res.data.data);
+        // console.log(res.data.data);
       })
       .catch((err) => {
         console.error(err);

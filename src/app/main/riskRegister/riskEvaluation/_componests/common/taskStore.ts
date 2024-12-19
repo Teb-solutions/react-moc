@@ -14,15 +14,13 @@ interface taskStore {
   setIsAddTaskClicked: (isClicked: boolean) => void;
   isEditTaskClicked: boolean;
   setIsEditTaskClicked: (isClicked: boolean) => void;
-  isTaskEdited: boolean;
-  setIsTaskEdited: (isEdited: boolean) => void;
 }
 
 export const useTaskStore = create<taskStore>((set) => ({
   tasks: [],
   setTasks: (tasks) => set({ tasks }),
   selectedTask: null,
-  setSelectedTask: (task) => set({ selectedTask: task }),
+  setSelectedTask: (task) => set({ selectedTask: task || null }),
   loading: true,
   setLoading: (loading) => set({ loading }),
   selectedTasksIds: [],
@@ -31,6 +29,4 @@ export const useTaskStore = create<taskStore>((set) => ({
   setIsAddTaskClicked: (isClicked) => set({ isAddTaskClicked: isClicked }),
   isEditTaskClicked: false,
   setIsEditTaskClicked: (isClicked) => set({ isEditTaskClicked: isClicked }),
-  isTaskEdited: false,
-  setIsTaskEdited: (isEdited) => set({ isTaskEdited: isEdited }),
 }));

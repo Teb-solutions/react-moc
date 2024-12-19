@@ -136,21 +136,21 @@ const ViewSessionHistory = ({
                     />
                   </Card>
                 ))}
-                {session.isSessionEnded && (
-                  <CardContent>
-                    <div className="flex flex-row font-normal text-md mx-10">
-                      <span className="text-gray-500 mr-2 font-medium">
-                        Session ending comment:
-                      </span>
-                      {session.comments}
-                    </div>
-                    <div className="font-normal  text-sm mx-10">
-                      Session ended on{" "}
-                      {dayjs(session.endedAt).format("MMM DD, YYYY HH:mm")}
-                    </div>
-                  </CardContent>
-                )}
               </div>
+              {session.isSessionEnded && (
+                <CardContent>
+                  <div className="flex flex-row font-normal text-md mx-10">
+                    <span className="text-gray-500 mr-2 font-medium">
+                      Session ending comment:
+                    </span>
+                    {session.comments}
+                  </div>
+                  <div className="font-normal  text-sm mx-10">
+                    Session ended on{" "}
+                    {dayjs(session.endedAt).format("MMM DD, YYYY HH:mm")}
+                  </div>
+                </CardContent>
+              )}
             </AccordionDetails>
           </Accordion>
         ))}

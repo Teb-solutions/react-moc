@@ -15,6 +15,8 @@ import {
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import { array } from "prop-types";
+import { useTaskStore } from "../taskStore";
+import { useRatingStore } from "../ratingStore";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -165,7 +167,10 @@ const SeverityRatingTable = () => {
       examples: "Baker’s yeast",
     },
   ];
-
+  const { severityRating, setSeverityRating } = useRatingStore();
+  const [selectedRow, setSelectedRow] = React.useState<number | null>(
+    severityRating
+  );
   return (
     <TableContainer component={Paper}>
       <Table className="border-1">
@@ -186,7 +191,11 @@ const SeverityRatingTable = () => {
           {rows.map((row, index) => (
             <TableRow
               key={index}
-              className="border-2"
+              onClick={() => {
+                setSelectedRow(row.rating);
+                setSeverityRating(row.rating);
+              }}
+              className={`border-2 cursor-pointer ${selectedRow === row.rating ? "bg-red-200" : ""}`}
               //   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <TableCell
@@ -311,8 +320,20 @@ const PotentialProbability = () => {
         </TableHead>
         <TableBody>
           {rows.map((row, index) => (
-            <TableRow className="border-2" key={index}>
-              <TableCell className="border" align="center">
+            <TableRow
+              onClick={() => {
+                alert("clicked");
+              }}
+              className="border-2"
+              key={index}
+            >
+              <TableCell
+                onClick={() => {
+                  alert("clicked");
+                }}
+                className="border"
+                align="center"
+              >
                 {row.rating}
               </TableCell>
               <TableCell className="border" align="left">

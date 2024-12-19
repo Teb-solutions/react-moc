@@ -93,6 +93,12 @@ const EvaluationTasks = () => {
     if (tasks.length > 0 && tasks[0].taskId) {
       setInitialTaskId(tasks[0].taskId);
     }
+    if (
+      selectedTask &&
+      tasks.find((task) => task.taskId == selectedTask.taskId)
+    ) {
+      setInitialTaskId(selectedTask.taskId);
+    }
   }, [tasks]);
 
   const {
@@ -108,12 +114,14 @@ const EvaluationTasks = () => {
   useEffect(() => {
     if (selectedTaskResult) {
       if (selectedTaskResult.statusCode == 200) {
-        !selectedTask && setSelectedTask(selectedTaskResult.data);
+        setSelectedTask(selectedTaskResult.data);
       } else {
+        setSelectedTask(null);
         toast.error(selectedTaskResult.message);
       }
     } else if (isSelectedTaskError) {
       console.log(isSelectedTaskError);
+      setSelectedTask(null);
       toast.error("Failed to fetch task");
     }
   }, [selectedTaskResult]);

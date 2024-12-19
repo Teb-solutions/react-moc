@@ -21,6 +21,7 @@ import EditTaskPage from "./_componests/singleTask/EditTaskPage";
 import { Link } from "react-router-dom";
 import MocHeader from "../../moc/MocHeader";
 import RiskHeader from "../common/RiskHeader";
+import { set } from "lodash";
 
 const RiskEvaluation = () => {
   // const [risk, setRisk] = useState<IRiskRegisterDetails | null>(null);
@@ -28,7 +29,8 @@ const RiskEvaluation = () => {
   const { riskId } = useParams<{ riskId: string }>();
   const { risk, setRisk, loading, setLoading, setIsCurrentUserPartOfTeam } =
     useRiskStore();
-
+  const { isAddTaskClicked, isEditTaskClicked, selectedTask, setSelectedTask } =
+    useTaskStore();
   const isUserPartOfTeam = (team: TeamList[]) => {
     const userId = Number(getCurrentUserId());
     setIsCurrentUserPartOfTeam(
@@ -45,7 +47,10 @@ const RiskEvaluation = () => {
     message: string;
     statusCode: number;
   }>(`/RiskRegister/Details/${riskId}`);
+
   useEffect(() => {
+    setSelectedTask(null);
+
     if (result) {
       if (result.statusCode == 200) {
         setRisk(result.data);
@@ -59,7 +64,7 @@ const RiskEvaluation = () => {
       toast.error("Failed to get risk details");
     }
   }, [result, error]);
-  const { isAddTaskClicked, isEditTaskClicked } = useTaskStore();
+
   return (
     <>
       {loading && <FuseLoading />}

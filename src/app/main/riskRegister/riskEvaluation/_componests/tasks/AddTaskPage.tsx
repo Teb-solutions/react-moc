@@ -32,6 +32,7 @@ import { mutate } from "swr";
 import TemporaryDrawer from "../common/rating/BiologicalRisk";
 import PhysicalRisk from "../common/rating/PhysicalRisk";
 import BiologicalRisk from "../common/rating/BiologicalRisk";
+import { useRatingStore } from "../common/ratingStore";
 
 export const AddTaskSchema = z.object({
   riskRegisterId: z.number(),
@@ -146,6 +147,10 @@ const AddTaskPage = ({
   const residualSeverityScoringWatch = watch("residualSeverityScoring");
   const residualRiskWatch = watch("residualRisk");
   const hazardTypeWatch = watch("hazardType");
+
+  //here we are trying to update the potential frequency scoring and residual frequency scoring
+  // based on the selected frequency and residual frequency from the drawer element
+  const { severityRating } = useRatingStore();
 
   //useEffect to update the selected time and residual time,
   // potential frequency scoring and residual frequency scoring
@@ -527,6 +532,12 @@ const AddTaskPage = ({
               <InputLabel>Severity Scoring*</InputLabel>
               <Select
                 error={!!errors.severityScoring}
+                defaultValue={severityRating}
+                value={
+                  Number(severityRating)
+                    ? Number(severityRating)
+                    : watch("severityScoring")
+                }
                 {...register("severityScoring")}
                 label="Severity Scoring*"
               >
