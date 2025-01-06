@@ -14,9 +14,9 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 
 import create from "zustand";
-import { SeverityRatingTable } from "./severity/SeverityRatingTable";
-import { PotentialRatingTable } from "./severity/PotentialRating";
-import { ResidualRatingTable } from "./severity/ResidualRating";
+import { SeverityRatingTable } from "./SeverityRatingTable";
+import { PotentialRatingTable } from "./PotentialRating";
+import { ResidualRatingTable } from "./ResidualRating";
 // import Noise from "./severity/Noise";
 // import TableComponent from "./TableComponent";
 
@@ -47,25 +47,27 @@ enum hazardTypeList {
 
 export enum subCategoryList {
   "mechanical" = "mechanical",
-  "vibration" = "vibration",
-  "optical" = "optical",
-  "thermal" = "thermal",
-  "electromagnetic" = "electromagnetic",
-  "ionizingRadiation" = "ionizingRadiation",
+  "traffic" = "traffic",
+  "height" = "height",
+  "heatcold" = "heatcold",
+  "electricity" = "electricity",
+  "pressure" = "pressure",
+  "atmosphere" = "atmosphere",
 }
 
 const displaySubCategory = {
   [subCategoryList.mechanical]:
     "Assessment of risk associated with mechanical hazards",
-  [subCategoryList.vibration]: "Assessment of risk associated with vibrations",
-  [subCategoryList.optical]:
-    "Assessment of risk associated with optical radiation",
-  [subCategoryList.thermal]:
-    "Assessment of risk associated with extreme temperatures and thermal radiation",
-  [subCategoryList.electromagnetic]:
-    "Assessment of risk associated with electrical and magnetic fields (EMC)",
-  [subCategoryList.ionizingRadiation]:
-    "Assessment of risk associated with ionizing radiation",
+  [subCategoryList.traffic]:
+    "2	Assessment of risk associated with traffic and movements",
+  [subCategoryList.height]: "Assessment of risk associated with height",
+  [subCategoryList.heatcold]:
+    "Assessment of risk associated with a heat/cold source",
+  [subCategoryList.electricity]:
+    "Assessment of risk associated with electricity",
+  [subCategoryList.pressure]: "Assessment of risk associated with pressure",
+  [subCategoryList.atmosphere]:
+    "Assessment of risk associated with a confined atmosphere",
 };
 
 function CustomTabPanel(props: TabPanelProps) {

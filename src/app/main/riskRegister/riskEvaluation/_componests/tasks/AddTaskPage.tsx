@@ -30,10 +30,11 @@ import { apiAuth } from "src/utils/http";
 import { toast } from "react-toastify";
 import { mutate } from "swr";
 import TemporaryDrawer from "../common/rating/BiologicalRisk";
-import PhysicalRisk from "../common/rating/PhysicalRisk";
+
 import BiologicalRisk from "../common/rating/BiologicalRisk";
 import { useRatingStore } from "../common/ratingStore";
 import PhysicalRiskNew from "../common/rating/physicalrisk/PhysicalRiskNew";
+import PhysicalRiskShortTerm from "../common/rating/physicalriskshortterm/PhysicalRiskShortTerm";
 
 export const AddTaskSchema = z.object({
   riskRegisterId: z.number(),
@@ -441,7 +442,7 @@ const AddTaskPage = ({
               //       ?.text || ""
               //   }
               // />
-              <PhysicalRiskNew
+              <PhysicalRiskShortTerm
                 hazardType={
                   hazardTypes.find((hazard) => hazard.value == hazardTypeWatch)
                     ?.text || ""
