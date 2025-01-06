@@ -33,6 +33,7 @@ import TemporaryDrawer from "../common/rating/BiologicalRisk";
 import PhysicalRisk from "../common/rating/PhysicalRisk";
 import BiologicalRisk from "../common/rating/BiologicalRisk";
 import { useRatingStore } from "../common/ratingStore";
+import PhysicalRiskNew from "../common/rating/physicalrisk/PhysicalRiskNew";
 
 export const AddTaskSchema = z.object({
   riskRegisterId: z.number(),
@@ -434,7 +435,13 @@ const AddTaskPage = ({
               //       ?.text || ""
               //   }
               // />
-              <BiologicalRisk
+              // <BiologicalRisk
+              //   hazardType={
+              //     hazardTypes.find((hazard) => hazard.value == hazardTypeWatch)
+              //       ?.text || ""
+              //   }
+              // />
+              <PhysicalRiskNew
                 hazardType={
                   hazardTypes.find((hazard) => hazard.value == hazardTypeWatch)
                     ?.text || ""
