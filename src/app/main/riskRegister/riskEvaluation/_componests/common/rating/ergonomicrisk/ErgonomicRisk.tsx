@@ -4,13 +4,6 @@ import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 import Button from "../../../../../common/Button";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   FormControl,
   InputLabel,
   MenuItem,
@@ -33,7 +26,7 @@ interface SubCategoryState {
 }
 
 export const useSubCategoryStore = create<SubCategoryState>((set) => ({
-  subCategory: subCategoryList.noise,
+  subCategory: subCategoryList.manualloadhandlingunitmass,
   setSubCategory: (subCategory) => set({ subCategory }),
 }));
 
@@ -46,6 +39,7 @@ interface TabPanelProps {
 enum hazardTypeList {
   "ChemicalRisk" = "ChemicalRisk",
   "ChronicPhysicalRisk" = "ChronicPhysicalRisk",
+  "ShortTermPhysicalRisk" = "ShortTermPhysicalRisk",
   "BiologicalRisk" = "BiologicalRisk",
   "ErgonomicRisk" = "ErgonomicRisk",
   "PsychoSocialRisk" = "PsychoSocialRisk",
@@ -53,25 +47,25 @@ enum hazardTypeList {
 }
 
 export enum subCategoryList {
-  "noise" = "noise",
-  "vibration" = "vibration",
-  "optical" = "optical",
-  "thermal" = "thermal",
-  "electromagnetic" = "electromagnetic",
-  "ionizingRadiation" = "ionizingRadiation",
+  "manualloadhandlingunitmass" = "manualloadhandlingunitmass",
+  "manualloadhandlingpushpull" = "manualloadhandlingpushpull",
+  "posturestrain" = "posturestrain",
+  "repetitivemovement" = "repetitivemovement",
+  "static" = "static",
+  "workatmosphere" = "workatmosphere",
 }
 
 const displaySubCategory = {
-  [subCategoryList.noise]: "Assessment of risk associated with noise",
-  [subCategoryList.vibration]: "Assessment of risk associated with vibrations",
-  [subCategoryList.optical]:
-    "Assessment of risk associated with optical radiation",
-  [subCategoryList.thermal]:
-    "Assessment of risk associated with extreme temperatures and thermal radiation",
-  [subCategoryList.electromagnetic]:
-    "Assessment of risk associated with electrical and magnetic fields (EMC)",
-  [subCategoryList.ionizingRadiation]:
-    "Assessment of risk associated with ionizing radiation",
+  [subCategoryList.manualloadhandlingunitmass]:
+    "Dynamic work: Manual load handling - unit mass and tonnage",
+  [subCategoryList.manualloadhandlingpushpull]:
+    "Dynamic work: Manual load handling - pushing/pulling",
+  [subCategoryList.posturestrain]:
+    "Dynamic work: Posture strains: work postures",
+  [subCategoryList.repetitivemovement]: "Dynamic work: Repetitive movements",
+  [subCategoryList.static]:
+    "Static work (work at screen, seated work to work accurately)",
+  [subCategoryList.workatmosphere]: "Work atmosphere (inside)",
 };
 
 function CustomTabPanel(props: TabPanelProps) {

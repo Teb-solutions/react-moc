@@ -1,4 +1,4 @@
-import { subCategoryList, useSubCategoryStore } from "../PhysicalRiskNew";
+import { subCategoryList, useSubCategoryStore } from "./PhysicalRiskNew";
 import { TestTable } from "./TestTable";
 
 const Vibration = () => {

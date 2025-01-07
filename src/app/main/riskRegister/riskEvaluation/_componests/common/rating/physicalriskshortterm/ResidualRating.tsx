@@ -181,56 +181,150 @@ const Traffic = () => {
   );
 };
 
-const Thermal = () => {
+const Pressure = () => {
   return (
-    <table className="border-collapse border border-gray-400 w-full">
-      <thead>
-        <tr className="bg-blue-400 text-white">
-          <th className="border border-gray-400 p-4 py-10">Reduction of P</th>
-          <th className="border border-gray-400 p-4 py-10">
-            Means/measures of prevention/protection against extreme temperatures
-            and thermal radiation
-          </th>
-        </tr>
-      </thead>
+    <table className="w-full border-collapse border border-gray-400">
       <tbody>
-        <tr>
-          <td className="border border-gray-400 p-4 text-center">-1</td>
-          <td className="border border-gray-400 p-4">
-            <p>
-              <u>At least two procedural or organizational measures from:</u>
-            </p>
-            <p>
-              - See Mp-type matrix (generic table 4 of the method (generic
-              part))
-            </p>
-            <p>- Warm or cold water fountain</p>
-            <p>- Adapted work schedule</p>
-            <p>- Adapted breaks (number and duration)</p>
-            <p>- Provision of drinks with a high mineral content</p>
-            <p>- Technical clothing adapted to the conditions</p>
+        <tr className="bg-blue-400 text-white py-10">
+          <td className="border border-gray-400 py-10px px-4" rowSpan={2}>
+            <strong>Reduction of P</strong>
+          </td>
+          <td className="border border-gray-400 py-10px px-4" colSpan={2}>
+            <strong>
+              Means/measures of prevention/protection against pressure risk
+            </strong>
+          </td>
+        </tr>
+        <tr className="bg-blue-400 text-white py-10">
+          <td className="border border-gray-400 py-10px px-4">
+            <strong>Hydraulic</strong>
+          </td>
+          <td className="border border-gray-400 py-10px px-4">
+            <strong>Pneumatic</strong>
           </td>
         </tr>
         <tr>
-          <td className="border border-gray-400 p-4 text-center">-2</td>
-          <td className="border border-gray-400 p-4">
-            <p>
-              - Site roofing, ventilation, air-conditioned break room, curtains
-              between workshops, etc.
-            </p>
-            <p>- Technical clothing adapted to severe cold (multiple layers)</p>
-            <p>- Technical clothing adapted to thermal radiation or heat</p>
+          <td
+            className="border border-gray-400 py-4 px-4 text-center font-bold"
+            rowSpan={2}
+          >
+            -1
+          </td>
+          <td className="border border-gray-400 py-4 px-4">
+            <strong>
+              At least two procedural or organizational measures from:
+            </strong>
+            <ul>
+              <li>See Mp-type matrix</li>
+              <li>
+                Wear HP-appropriate PPE: pressure-resistant boots, watertight
+                goggles, face guard, safety helmet, rubber gloves, impermeable
+                clothing, and ear protectors
+              </li>
+              <li>Having a HP procedure in place</li>
+              <li>Use of staff trained in HP work</li>
+              <li>Putting in place specific HP signage</li>
+              <li>Checking the validity of HP hose test certificates</li>
+              <li>Adequate supervision of HP work</li>
+            </ul>
+          </td>
+          <td className="border border-gray-400 py-4 px-4" rowSpan={2}>
+            <strong>
+              At least two procedural or organizational measures from:
+            </strong>
+            <ul>
+              <li>See Mp-type matrix</li>
+              <li>Apply golden rule 7</li>
+              <li>
+                Systemizing the installation of drains on pneumatic hose
+                connections
+              </li>
+              <li>Check hoses before any use</li>
+              <li>Restrict access when raising pressure for the test</li>
+              <li>Secure the gas bottles with a chain</li>
+              <li>
+                Have the gas bottles checked annually by an agency (SCBA, etc.)
+              </li>
+              <li>
+                Wearing watertight goggles, face guard, shield, gloves, etc.
+              </li>
+              <li>
+                Having a large hose to keep an appropriate distance from the
+                tire cage, Having a quick coupling to disconnect fast, having a
+                pressure regulator, etc.
+              </li>
+            </ul>
           </td>
         </tr>
         <tr>
-          <td className="border border-gray-400 p-4 text-center">-3</td>
-          <td className="border border-gray-400 p-4">
-            <p>- Air conditioning, heating, etc.</p>
-            <p>
-              - Technical clothing adapted to very severe cold (multiple layers)
-            </p>
-            <p>- Technical cooling clothing for severe heatwaves</p>
-            <p>- Moving away or insulation from the thermal radiation source</p>
+          <td className="border border-gray-400 py-4 px-4">
+            <ul>
+              <li>
+                Periodically inspecting pressurized equipment (premature wear,
+                impacts, lower rate of flow, retest)
+              </li>
+              <li>Restricting access during tests</li>
+              <li>Having a work isolation diagram (golden rule 7).</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td className="border border-gray-400 py-4 px-4 text-center font-bold">
+            -2
+          </td>
+          <td className="border border-gray-400 py-4 px-4">
+            <ul>
+              <li>Use of staff trained and experienced in HP work</li>
+              <li>
+                Installing an anti-backlash system, covered hose
+                connections-projection accessory
+              </li>
+              <li>
+                Use an appropriate safety extension cord, snake with reservoir
+                system, etc.
+              </li>
+              <li>
+                Use physical barriers (screens in resistant materials), etc. See
+                GM-GR-SEC-008
+              </li>
+              <li>
+                Lock the process during the work (physical disconnection,
+                platinizing, insulation), etc. (Golden rule 7)
+              </li>
+            </ul>
+          </td>
+          <td className="border border-gray-400 py-4 px-4">
+            <ul>
+              <li>Use an anti-backlash system</li>
+              <li>Hang hoses at a height</li>
+              <li>Lock</li>
+              <li>
+                Use an appropriate cage to inflate a truck/bus/tractor tire
+              </li>
+              <li>etc.</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td className="border border-gray-400 py-4 px-4 text-center font-bold">
+            -3
+          </td>
+          <td className="border border-gray-400 py-4 px-4">
+            <ul>
+              <li>Use HP-trained and certified staff (e.g. SIR, S3C, WJA)</li>
+              <li>
+                Have an extra double maintenance control, an extra thrust
+                control nozzle, etc.
+              </li>
+            </ul>
+          </td>
+          <td className="border border-gray-400 py-4 px-4">
+            <ul>
+              <li>
+                Get a recognized inspection service to periodically check
+                equipment (hoses, containers, equipment).
+              </li>
+            </ul>
           </td>
         </tr>
       </tbody>
@@ -502,6 +596,79 @@ const Electricity = () => {
   );
 };
 
+const Atmosphere = () => {
+  return (
+    <table className="w-full border-collapse border border-gray-400">
+      <thead>
+        <tr className="bg-blue-400 text-white">
+          <th className="py-10 px-4 border border-gray-400">Reduction of P</th>
+          <th className="py-10 px-4 border border-gray-400">
+            Means/measures of prevention/protection
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="py-4 px-4 border border-gray-400 text-center font-bold">
+            -1
+          </td>
+          <td className="py-4 px-4 border border-gray-400">
+            <p>
+              <strong>
+                At least two procedural or organizational measures from:
+              </strong>
+            </p>
+            <p>- see Mp-type matrix;</p>
+            <p>- apply golden rule 8;</p>
+            <p>- have a permit to enter; implement an entry control process;</p>
+            <p>
+              - have a process for isolating product/pollutant arrivals;
+              spot-check O2 levels and air pollutants;
+            </p>
+            <p>
+              - Wear a cartridge mask adapted to the pollutant (except if O2
+              level &lt; 19.5%);
+            </p>
+            <p>
+              - monitor work in the vicinity of the confined space; have means
+              of communication available;
+            </p>
+            <p>- limit the duration of the intervention;</p>
+            <p>- have tested means of emergency evacuation, etc.</p>
+          </td>
+        </tr>
+        <tr>
+          <td className="py-4 px-4 border border-gray-400 text-center font-bold">
+            -2
+          </td>
+          <td className="py-4 px-4 border border-gray-400">
+            <p>- Constantly check the atmosphere</p>
+            <p>- Ensure continuous ventilation, etc.</p>
+          </td>
+        </tr>
+        <tr>
+          <td className="py-4 px-4 border border-gray-400 text-center font-bold">
+            -3
+          </td>
+          <td className="py-4 px-4 border border-gray-400">
+            <p>
+              - Constantly check and continuously ventilate and have a permit
+            </p>
+            <p>
+              - Physically disconnect the product/pollutant inlets on the
+              capacity
+            </p>
+            <p>
+              - Wear insulating breathing protection with air adduction for O2
+              &lt; 19.5% and have the PPE certificates and staff aptitude
+              certificates
+            </p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  );
+};
 const getCategoryComponent = (subCategory: string) => {
   switch (subCategory) {
     case subCategoryList.mechanical:
@@ -509,7 +676,7 @@ const getCategoryComponent = (subCategory: string) => {
     case subCategoryList.traffic:
       return Traffic;
     case subCategoryList.pressure:
-      return Thermal;
+      return Pressure;
     case subCategoryList.height:
       return Height;
     case subCategoryList.heatcold:
@@ -517,7 +684,7 @@ const getCategoryComponent = (subCategory: string) => {
     case subCategoryList.electricity:
       return Electricity;
     case subCategoryList.atmosphere:
-      return null;
+      return Atmosphere;
     // Add other categories here
     default:
       return null;

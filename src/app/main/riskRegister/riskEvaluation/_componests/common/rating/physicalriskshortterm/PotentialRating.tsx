@@ -359,51 +359,84 @@ const Height = () => {
   );
 };
 
-const Optical = () => {
+const Pressure = () => {
   return (
-    <table className="border-collapse border border-gray-400 w-full">
+    <table className="w-full border-collapse border">
       <thead>
         <tr className="bg-blue-400 text-white">
-          <th className="p-4 py-10 border border-gray-400">Rating</th>
-          <th className="p-4 py-10 border border-gray-400">
-            Probability of potential exposure to a source of optical radiation
-            (IR, visible, UV, laser)
+          <th className="border py-10 px-4" rowSpan={2}>
+            Rating P
           </th>
+          <th className="border py-10 px-4" colSpan={2}>
+            Examples of tasks by type of potential exposure probability P for a
+            pressure source
+          </th>
+        </tr>
+        <tr className="bg-blue-400 text-white">
+          <th className="border py-10 px-4">hydraulic</th>
+          <th className="border py-10 px-4">pneumatic</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td className="p-4 border border-gray-400 font-bold text-center">
-            10
+          <td className="border py-4 text-center font-bold">10</td>
+          <td className="border py-4 px-4">
+            <strong>Work in contact or in direct presence of pressure:</strong>
+            <br />
+            Working in HP in manual.
+            <br />
+            Intervene on poorly depressurized equipment, purge, etc...
           </td>
-          <td className="p-4 border border-gray-400">
-            <u>
-              Tasks with direct contact with the source of optical radiation
-              (IR, visible, UV, laser):
-            </u>
-            <ul>
-              <li>Working outside (UV)</li>
-              <li>Arc welding</li>
-              <li>Use of a surgical light, etc.</li>
-            </ul>
-          </td>
-        </tr>
-        <tr>
-          <td className="p-4 border border-gray-400 font-bold text-center">
-            6
-          </td>
-          <td className="p-4 border border-gray-400">
-            <u>Tasks with unpredictable exposure</u> (e.g. worksite surveillance
-            using laser, UV, IR technology, arc welding), etc.
+          <td className="border py-4 px-4">
+            <strong>
+              Work in contact or in the direct presence of pressure:
+            </strong>
+            <br />
+            - when inerting pressure equipment (in degraded mode);
+            <br />- during leak testing, testing, etc., (in degraded mode).
           </td>
         </tr>
         <tr>
-          <td className="p-4 border border-gray-400 font-bold text-center">
-            3
+          <td className="border py-4 text-center font-bold">6</td>
+          <td className="border py-4 px-4">
+            Working in HP manually (with a mechanism that fixes the equipment,
+            the forces are not supported by the human body) (GM-GR-HSE-412),
+            <br />
+            Working with corroded or shocked equipment, etc.
           </td>
-          <td className="p-4 border border-gray-400">
-            Use of laboratory equipment with laser, UV, IR technology, etc.
+          <td className="border py-4 px-4">
+            - Working with an old hose, an unpredictably overpressurized network
           </td>
+        </tr>
+        <tr>
+          <td className="border py-4 text-center font-bold">3</td>
+          <td className="border py-4 px-4">
+            Travailler en HP semi-automatique dans la zone d’opération
+            (GM-GR-HSE-412).
+            <br />
+            Intervenir sur un équipement vétuste ou mal entretenu, sur un
+            flexible.
+          </td>
+          <td className="border py-4 px-4">
+            - purge (with sprayed debris, knob, faucet, etc.), etc.
+          </td>
+        </tr>
+        <tr>
+          <td className="border py-4 text-center font-bold">1</td>
+          <td className="border py-4 px-4">
+            Working in semi-automatic HP out of operation area (GM-GR-HSE-412),
+            etc.
+            <br />
+            Tare valves, perform tests or re-tests, etc.
+          </td>
+          <td className="border py-4 px-4"></td>
+        </tr>
+        <tr>
+          <td className="border py-4 text-center font-bold">0.5</td>
+          <td className="border py-4 px-4">
+            Working automatically with high pressure.
+          </td>
+          <td className="border py-4 px-4"></td>
         </tr>
       </tbody>
     </table>
@@ -518,7 +551,66 @@ const Electricity = () => {
     </table>
   );
 };
-
+const Atmosphere = () => {
+  return (
+    <table className="w-full border-collapse border">
+      <thead>
+        <tr className="bg-blue-400 text-white">
+          <th className="border p-4 py-10">Rating</th>
+          <th className="border p-4 py-10">
+            Probability of potential exposure P to situations that can lead to:
+            Respiratory failure
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="border p-4 text-center font-bold">10</td>
+          <td className="border p-4">
+            - Work in an uncleaned/undegassed/unventilated enclosure or during
+            inerting.
+          </td>
+        </tr>
+        <tr>
+          <td className="border p-4 text-center font-bold">6</td>
+          <td className="border p-4">
+            - Work in inadequately cleaned/gassed/ventilated enclosure or in a
+            sewer.
+            <br />- Working in a vessel polluted by untimely arrivals of inert
+            gas or hydrocarbons, etc. from hard/flexible connections on the
+            enclosure (leakage due to a leak in the insulation device).
+          </td>
+        </tr>
+        <tr>
+          <td className="border p-4 text-center font-bold">3</td>
+          <td className="border p-4">
+            - Working in a perfectly provided/ventilated enclosure, but
+            desorption of products by heat.
+            <br />- Work in a poorly ventilated and highly corroded enclosure
+            (slow consumption of O2 by chemical reaction).
+          </td>
+        </tr>
+        <tr>
+          <td className="border p-4 text-center font-bold">1</td>
+          <td className="border p-4">
+            - Working in an open vessel with unplanned arrivals of outdoor
+            pollutants from neighbouring facilities.
+            <br />
+            - Working in pits, trenches, etc. at low points and possible arrival
+            of pollutants.
+            <br />
+            - Working in a slightly polluted enclosure with suitable but failing
+            respiratory protection.
+            <br />- Working in a well-ventilated enclosure, but where a very
+            specific type of chemical reaction can generate an oxygen-depleted
+            atmosphere (absorption of O2 by wet activated carbon, reaction with
+            oxidising catalyst remains,...).
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  );
+};
 const getCategoryComponent = (subCategory: string) => {
   switch (subCategory) {
     case subCategoryList.mechanical:
@@ -526,7 +618,7 @@ const getCategoryComponent = (subCategory: string) => {
     case subCategoryList.traffic:
       return Traffic;
     case subCategoryList.pressure:
-      return Optical;
+      return Pressure;
     case subCategoryList.height:
       return Height;
     case subCategoryList.heatcold:
@@ -534,7 +626,7 @@ const getCategoryComponent = (subCategory: string) => {
     case subCategoryList.electricity:
       return Electricity;
     case subCategoryList.atmosphere:
-      return null;
+      return Atmosphere;
     // Add other categories here
     default:
       return null;

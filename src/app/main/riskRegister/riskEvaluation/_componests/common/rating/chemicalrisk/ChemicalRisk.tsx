@@ -4,13 +4,6 @@ import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
 import Button from "../../../../../common/Button";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   FormControl,
   InputLabel,
   MenuItem,
@@ -33,7 +26,7 @@ interface SubCategoryState {
 }
 
 export const useSubCategoryStore = create<SubCategoryState>((set) => ({
-  subCategory: subCategoryList.noise,
+  subCategory: subCategoryList.health,
   setSubCategory: (subCategory) => set({ subCategory }),
 }));
 
@@ -46,6 +39,7 @@ interface TabPanelProps {
 enum hazardTypeList {
   "ChemicalRisk" = "ChemicalRisk",
   "ChronicPhysicalRisk" = "ChronicPhysicalRisk",
+  "ShortTermPhysicalRisk" = "ShortTermPhysicalRisk",
   "BiologicalRisk" = "BiologicalRisk",
   "ErgonomicRisk" = "ErgonomicRisk",
   "PsychoSocialRisk" = "PsychoSocialRisk",
@@ -53,25 +47,15 @@ enum hazardTypeList {
 }
 
 export enum subCategoryList {
-  "noise" = "noise",
-  "vibration" = "vibration",
-  "optical" = "optical",
-  "thermal" = "thermal",
-  "electromagnetic" = "electromagnetic",
-  "ionizingRadiation" = "ionizingRadiation",
+  "health" = "health",
+  "safety" = "safety",
 }
 
 const displaySubCategory = {
-  [subCategoryList.noise]: "Assessment of risk associated with noise",
-  [subCategoryList.vibration]: "Assessment of risk associated with vibrations",
-  [subCategoryList.optical]:
-    "Assessment of risk associated with optical radiation",
-  [subCategoryList.thermal]:
-    "Assessment of risk associated with extreme temperatures and thermal radiation",
-  [subCategoryList.electromagnetic]:
-    "Assessment of risk associated with electrical and magnetic fields (EMC)",
-  [subCategoryList.ionizingRadiation]:
-    "Assessment of risk associated with ionizing radiation",
+  [subCategoryList.health]:
+    "Qualitative assessment of the chemical risks to health",
+  [subCategoryList.safety]:
+    "Qualitative assessment of the chemical risks to safety",
 };
 
 function CustomTabPanel(props: TabPanelProps) {

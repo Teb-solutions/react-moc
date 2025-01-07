@@ -35,6 +35,10 @@ import BiologicalRisk from "../common/rating/BiologicalRisk";
 import { useRatingStore } from "../common/ratingStore";
 import PhysicalRiskNew from "../common/rating/physicalrisk/PhysicalRiskNew";
 import PhysicalRiskShortTerm from "../common/rating/physicalriskshortterm/PhysicalRiskShortTerm";
+import PhyscoSocialRisk from "../common/rating/PhyscoSocialRisk";
+import OccupationalRisk from "../common/rating/OccupationalRisk";
+import ErgonomicRisk from "../common/rating/ergonomicrisk/ErgonomicRisk";
+import ChemicalRisk from "../common/rating/chemicalrisk/ChemicalRisk";
 
 export const AddTaskSchema = z.object({
   riskRegisterId: z.number(),
@@ -442,7 +446,7 @@ const AddTaskPage = ({
               //       ?.text || ""
               //   }
               // />
-              <PhysicalRiskShortTerm
+              <ChemicalRisk
                 hazardType={
                   hazardTypes.find((hazard) => hazard.value == hazardTypeWatch)
                     ?.text || ""

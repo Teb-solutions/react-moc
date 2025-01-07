@@ -268,105 +268,127 @@ const Height = () => {
   );
 };
 
-const Optical = () => {
+const Pressure = () => {
   return (
-    <table className="border border-collapse w-full">
-      <thead className="bg-blue-400 text-white py-10">
-        <tr>
-          <th className="border p-2" rowSpan={2}>
-            Rating G
+    <table className="w-full border-collapse">
+      <thead>
+        <tr className="bg-blue-400 text-white">
+          <th className="py-10 px-4 border border-gray-300">Rating</th>
+          <th className="py-10 px-4 border border-gray-300">
+            Hydraulic pressure
           </th>
-          <th className="border p-2" colSpan={4}>
-            <div className="text-center">
-              <strong>Optical radiation: UV-visible-IR-laser</strong>
-              <br />
-              <strong>(EU directive 2006/25/EC and EN 12198-1)</strong>
-              <br />
-              <em>
-                Correlation between irradiance or radiance, and the radiation
-                emission category
-              </em>
-            </div>
+          <th className="py-10 px-4 border border-gray-300">
+            Pneumatic pressure
           </th>
-        </tr>
-        <tr>
-          <td className="border p-2 text-center">
-            Visible and infrared E (700nm – 1mm)
-          </td>
-          <td className="border p-2 text-center">
-            Visible Eeff (400nm – 700nm) Leff (400nm – 700nm)
-          </td>
-          <td className="border p-2 text-center">
-            Ultraviolet and visible Eeff (180 – 400nm)
-          </td>
-          <td className="border p-2 text-center">LASERS</td>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td className="border p-2 text-center">15</td>
-          <td className="border p-2 text-center">-</td>
-          <td className="border p-2 text-center">-</td>
-          <td className="border p-2">UV index 8 and higher</td>
-          <td className="border p-2">Laser source class* 4</td>
+          <td className="py-1 px-4 border border-gray-300 text-center font-bold">
+            40
+          </td>
+          <td className="py-1 px-4 border border-gray-300">-</td>
+          <td className="py-1 px-4 border border-gray-300">
+            &amp; H 280: Contains a pressurized gas; can explode under the
+            influence of heat
+            <br />- Pneumatic test, HP steam piping, capacity (LPG truck,
+            sphere...)
+          </td>
         </tr>
         <tr>
-          <td className="border p-2 text-center" rowSpan={2}>
+          <td
+            className="py-1 px-4 border border-gray-300 text-center font-bold"
+            rowSpan={3}
+          >
+            15
+          </td>
+          <td className="py-1 px-4 border border-gray-300">
+            Hydraulic pressure &gt; 25 bar <u>and</u> more than 10 kW:
+            <br />- Very high pressure industrial cleaner, etc.
+          </td>
+          <td className="py-1 px-4 border border-gray-300">
+            Pressurized pneumatic hose with gas flow
+          </td>
+        </tr>
+        <tr>
+          <td className="py-1 px-4 border border-gray-300" rowSpan={2}>
+            Hydraulic pressure &gt; 250 bar:
+            <br />
+            - Pressurized water nozzle, snake, etc.
+            <br />- Pressurized hydraulic hose with liquid flow, etc.
+          </td>
+          <td className="py-1 px-4 border border-gray-300">
+            Oversize tire inflation point (heavy vehicles/buses/tractors) at a
+            service station
+          </td>
+        </tr>
+        <tr>
+          <td className="py-1 px-4 border border-gray-300">
+            &amp; H 280: Contains a pressurized gas; can explode under the
+            influence of heat
+          </td>
+        </tr>
+        <tr>
+          <td
+            className="py-1 px-4 border border-gray-300 text-center font-bold"
+            rowSpan={3}
+          >
             7
           </td>
-          <td className="border p-2" rowSpan={2}>
-            &gt; 100 W.m-2
+          <td className="py-1 px-4 border border-gray-300">
+            Hydraulic pressure (150-250 bar) <u>and</u> less than 10 kW:
+            <br />- Industrial pressure cleaner, etc.
           </td>
-          <td className="border p-2" rowSpan={2}>
-            Eeff &gt; 10.10-3 W.m-2 Leff &gt; 100 W.m-2.sr-1
-          </td>
-          <td className="border p-2">Eeff &gt; 1,0.10-3 W.m-2</td>
-          <td className="border p-2 text-center" rowSpan={2}>
-            Laser source class* 3B (5-500 mW)
+          <td className="py-1 px-4 border border-gray-300">
+            - Sand blasting or shot-blasting
           </td>
         </tr>
         <tr>
-          <td className="border p-2 text-center">UV ~ 6-7</td>
+          <td className="py-1 px-4 border border-gray-300">
+            Pressurized hydraulic equipment:
+            <br />- Drainage for sampling or provision of equipment (water, oil,
+            HCA), etc.
+          </td>
+          <td className="py-1 px-4 border border-gray-300">
+            Pressurized pneumatic equipment:
+            <br />
+            - Drainage for sampling or provision of equipment (air, steam, gas)
+            <br />- Air compressors, blow nozzle, jacks, autoclaves, pressure
+            cookers, boilers, exchangers, compressed air bottles, etc.
+          </td>
         </tr>
         <tr>
-          <td className="border p-2 text-center" rowSpan={2}>
+          <td className="py-1 px-4 border border-gray-300">-</td>
+          <td className="py-1 px-4 border border-gray-300">
+            Underwater welding of pipes or repairs of underwater oil and gas
+            production equipment.
+            <br />
+            <u>Working</u> at a relative pressure* higher than 100 hectopascals
+            (0.1 bar) (*: absolute maximum pressure less the local atmospheric
+            pressure around the airways during the work).
+          </td>
+        </tr>
+        <tr>
+          <td className="py-1 px-4 border border-gray-300 text-center font-bold">
             3
           </td>
-          <td className="border p-2" rowSpan={2}>
-            &lt;100 W.m-2
+          <td className="py-1 px-4 border border-gray-300">
+            Re-test of LPG bottles at a filling centre, projection of objects
           </td>
-          <td className="border p-2" rowSpan={2}>
-            Eeff &lt; 10.10-3 W.m-2 Leff &lt; 100 W.m-2.sr-1
-          </td>
-          <td className="border p-2">Eeff &lt; 1,0.10-3 W.m-2</td>
-          <td className="border p-2 text-center" rowSpan={2}>
-            Laser source class* 3R (1-5 mW)
+          <td className="py-1 px-4 border border-gray-300">
+            <u>Targeted</u> pressurized air or gas jet more than 7 bar
           </td>
         </tr>
         <tr>
-          <td className="border p-2 text-center">
-            UV 200-300 J/m² (2-3 SED) UV index 3-5
-          </td>
-        </tr>
-        <tr>
-          <td className="border p-2 text-center" rowSpan={2}>
+          <td className="py-1 px-4 border border-gray-300 text-center font-bold">
             1
           </td>
-          <td className="border p-2" rowSpan={2}>
-            &lt; 33 W.m-2
+          <td className="py-1 px-4 border border-gray-300">
+            Hydraulic pressure (25-150bar) and less than 10 kW Household
+            pressure cleaner, etc.
           </td>
-          <td className="border p-2" rowSpan={2}>
-            Eeff &lt; 1,0.10-3 W.m-2 Leff &lt; 10 W.m-2.sr-1
-          </td>
-          <td className="border p-2">Eeff &lt; 0.1.10-3 W.m-2</td>
-          <td className="border p-2 text-center" rowSpan={2}>
-            Laser source class* 1, 1M, 2, 2M (&lt; 1 mW)
-          </td>
-        </tr>
-        <tr>
-          <td className="border p-2 text-center">
-            UVABC &gt; 30 J/m² (0.3 SED) (skin) UVA &gt; 10 000 J/m² (100 SED)
-            (eyes)
+          <td className="py-1 px-4 border border-gray-300">
+            Targeted pressurized air or gas jet less than 7 bar
           </td>
         </tr>
       </tbody>
@@ -588,7 +610,108 @@ const Electricity = () => {
     </table>
   );
 };
-
+const Atmosphere = () => {
+  return (
+    <table className="w-full border-collapse border">
+      <thead>
+        <tr className="bg-blue-400 text-white">
+          <th className="py-10 px-4 border">Rating</th>
+          <th className="py-10 px-4 border">Confined atmosphere</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="py-4 px-4 border text-center font-bold">40</td>
+          <td className="py-4 px-4 border">
+            Several people working in a confined space and:
+            <ul>
+              <li>
+                Presence of a non-breathable atmosphere (inert or other gases):
+                oxygen level less than 10%.
+              </li>
+              <li>
+                Presence of an explosive or oxygen-enriched atmosphere (LI
+                &gt;10 % LEL or oxygen level in the atmosphere greater than 23.5
+                %).
+              </li>
+              <li>
+                Presence in the atmosphere of a level of a gas with acute
+                toxicity higher than IDHL (Immediately Dangerous for Life or
+                Heath - threshold for irreversible effects)
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td className="py-4 px-4 border text-center font-bold">15</td>
+          <td className="py-4 px-4 border">
+            <ul>
+              <li>
+                Presence of a non-breathable atmosphere (inert or other gases):
+                oxygen level less than 10%.
+              </li>
+              <li>
+                Presence of an explosive or oxygen-enriched atmosphere (LI
+                &gt;10 % LEL or oxygen level in the atmosphere greater than 23.5
+                %).
+              </li>
+              <li>
+                Presence in the atmosphere of a level of a gas with acute
+                toxicity higher than IDHL (Immediately Dangerous for Life or
+                Heath - threshold of irreversible effects).
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td className="py-4 px-4 border text-center font-bold">7</td>
+          <td className="py-4 px-4 border">
+            <ul>
+              <li>
+                Presence of an oxygen-depleted atmosphere: oxygen level between
+                10% and 16%.
+              </li>
+              <li>
+                Presence in the atmosphere of a level of acutely toxic gases
+                between the 15-minute OEL and the IDHL.
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td className="py-4 px-4 border text-center font-bold">3</td>
+          <td className="py-4 px-4 border">
+            <ul>
+              <li>
+                Presence of an oxygen-depleted atmosphere: oxygen level between
+                16 and 19.5 %.
+              </li>
+              <li>
+                Presence in the atmosphere of a level of chronically toxic gases
+                between the 8-hour OEL and the 15-minute OEL.
+              </li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td className="py-4 px-4 border text-center font-bold">1</td>
+          <td className="py-4 px-4 border">
+            <ul>
+              <li>
+                Presence of an atmosphere around the normal: oxygen level
+                between 19.5% and 23.5%.
+              </li>
+              <li>
+                Presence in the atmosphere of a level of chronic toxic gas below
+                the 8-hour OEL.
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  );
+};
 const getCategoryComponent = (subCategory: string) => {
   switch (subCategory) {
     case subCategoryList.mechanical:
@@ -596,7 +719,7 @@ const getCategoryComponent = (subCategory: string) => {
     case subCategoryList.traffic:
       return Traffic;
     case subCategoryList.pressure:
-      return Optical;
+      return Pressure;
     case subCategoryList.height:
       return Height;
     case subCategoryList.heatcold:
@@ -604,7 +727,7 @@ const getCategoryComponent = (subCategory: string) => {
     case subCategoryList.electricity:
       return Electricity;
     case subCategoryList.atmosphere:
-      return null;
+      return Atmosphere;
     // Add other categories here
     default:
       return null;
@@ -616,6 +739,6 @@ export const SeverityRatingTable = () => {
   const CategoryComponent = getCategoryComponent(
     subCategory || subCategoryList.mechanical
   );
-  return <TestTable />;
-  //   return <div>{CategoryComponent && <CategoryComponent />}</div>;
+  // return <TestTable />;
+  return <div>{CategoryComponent && <CategoryComponent />}</div>;
 };
