@@ -17,8 +17,6 @@ import create from "zustand";
 import { SeverityRatingTable } from "./SeverityRatingTable";
 import { PotentialRatingTable } from "./PotentialRating";
 import { ResidualRatingTable } from "./ResidualRating";
-// import Noise from "./severity/Noise";
-// import TableComponent from "./TableComponent";
 
 interface SubCategoryState {
   subCategory: string;
@@ -90,12 +88,12 @@ function a11yProps(index: number) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-export default function TemporaryDrawer({
-  hazardType,
-}: {
-  hazardType: string;
-}) {
+
+export default function ErgonomicRisk({ hazardType }: { hazardType: string }) {
   const [open, setOpen] = React.useState(false);
+  const [severityRating, setSeverityRating] = React.useState<number | null>(null);
+  const [potentialRating, setPotentialRating] = React.useState<number | null>(null);
+  const [residualRating, setResidualRating] = React.useState<number | null>(null);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -107,7 +105,16 @@ export default function TemporaryDrawer({
         View Rating Calculator
       </Button>
       <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
-        <DrawerList toggleDrawer={toggleDrawer} hazardType={hazardType} />
+        <DrawerList 
+          toggleDrawer={toggleDrawer} 
+          hazardType={hazardType}
+          severityRating={severityRating}
+          setSeverityRating={setSeverityRating}
+          potentialRating={potentialRating}
+          setPotentialRating={setPotentialRating}
+          residualRating={residualRating}
+          setResidualRating={setResidualRating}
+        />
       </Drawer>
     </div>
   );
@@ -116,9 +123,21 @@ export default function TemporaryDrawer({
 const DrawerList = ({
   toggleDrawer,
   hazardType,
+  severityRating,
+  setSeverityRating,
+  potentialRating,
+  setPotentialRating,
+  residualRating,
+  setResidualRating,
 }: {
   toggleDrawer: (newOpen: boolean) => () => void;
   hazardType: string;
+  severityRating: number | null;
+  setSeverityRating: (rating: number | null) => void;
+  potentialRating: number | null;
+  setPotentialRating: (rating: number | null) => void;
+  residualRating: number | null;
+  setResidualRating: (rating: number | null) => void;
 }) => {
   const [value, setValue] = React.useState(0);
   const { subCategory, setSubCategory } = useSubCategoryStore();
@@ -127,31 +146,38 @@ const DrawerList = ({
     setValue(newValue);
   };
 
-  const handleSubCategoryChange = (event: SelectChangeEvent<string>) => {
-    setSubCategory(event.target.value as string);
+  const handleSubCategoryChange = (event: SelectChangeEvent) => {
+    setSubCategory(event.target.value);
   };
 
   return (
-    <Box sx={{ width: 800 }} className="p-10" role="presentation">
+    <Box
+      sx={{ width: 800 }}
+      className="p-10"
+      role="presentation"
+    >
       <h2 className="bg-blue-500 text-white py-10 px-5">
         Assessment of {hazardType}
       </h2>
       <Divider />
-      <FormControl fullWidth margin="normal">
-        <InputLabel id="subCategory-label">Subcategory</InputLabel>
+
+      <FormControl fullWidth className="mt-10">
+        <InputLabel id="demo-simple-select-label">Sub Category</InputLabel>
         <Select
-          labelId="subCategory-label"
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
           value={subCategory}
+          label="Sub Category"
           onChange={handleSubCategoryChange}
-          label="Subcategory"
         >
-          {Object.entries(subCategoryList).map(([key, value]) => (
+          {Object.entries(displaySubCategory).map(([key, value]) => (
             <MenuItem key={key} value={key}>
-              {displaySubCategory[value]}
+              {value}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
+
       <Tabs
         value={value}
         onChange={handleChange}
@@ -167,23 +193,21 @@ const DrawerList = ({
         }}
       >
         <Tab label="Severity rating G" {...a11yProps(0)} />
+        <Tab label="Potential exposure probability rating P" {...a11yProps(1)} />
         <Tab
-          label="Potential exposure probability rating P"
-          {...a11yProps(1)}
-        />
-        <Tab
-          label="Residual potential exposure probability rating P’"
+          label="Residual potential exposure probability rating P'"
           {...a11yProps(2)}
         />
       </Tabs>
+
       <CustomTabPanel value={value} index={0}>
-        <SeverityRatingTable />
+        <SeverityRatingTable setSeverityRating={setSeverityRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <PotentialRatingTable />
+        <PotentialRatingTable setPotentialRating={setPotentialRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <ResidualRatingTable />
+        <ResidualRatingTable setResidualRating={setResidualRating} />
       </CustomTabPanel>
     </Box>
   );

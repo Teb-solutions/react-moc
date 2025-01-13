@@ -1,8 +1,18 @@
-import { Man } from "@mui/icons-material";
+import React from "react";
 import { subCategoryList, useSubCategoryStore } from "./ErgonomicRisk";
-import { TestTable } from "./TestTable"; // Update the path to the correct location of TestTable
 
-const ManualLoadHandlingUnitMass = () => {
+interface RatingTableProps {
+  setSeverityRating: (rating: number | null) => void;
+}
+
+const ManualLoadHandlingUnitMass = ({ setSeverityRating }: RatingTableProps) => {
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+
+  const handleRowClick = (rating: number) => {
+    setSelectedRating(rating);
+    setSeverityRating(rating);
+  };
+
   return (
     <table className="w-full border-collapse border">
       <thead>
@@ -31,7 +41,10 @@ const ManualLoadHandlingUnitMass = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(15)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 15 ? 'bg-blue-100' : ''}`}
+        >
           <td className="py-4 px-4 border text-center font-bold">15</td>
           <td className="py-4 px-4 border">&gt; 25kg</td>
           <td className="py-4 px-4 border">&gt; 140kg</td>
@@ -44,7 +57,10 @@ const ManualLoadHandlingUnitMass = () => {
           <td className="py-4 px-4 border">&gt; 11t</td>
           <td className="py-4 px-4 border">&gt; 12t</td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(7)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 7 ? 'bg-blue-100' : ''}`}
+        >
           <td className="py-4 px-4 border text-center font-bold">7</td>
           <td className="py-4 px-4 border">15-25kg</td>
           <td className="py-4 px-4 border">90-140kg</td>
@@ -57,7 +73,10 @@ const ManualLoadHandlingUnitMass = () => {
           <td className="py-4 px-4 border">6.8-11t</td>
           <td className="py-4 px-4 border">7.5-12t</td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(3)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 3 ? 'bg-blue-100' : ''}`}
+        >
           <td className="py-4 px-4 border text-center font-bold">3</td>
           <td className="py-4 px-4 border">5-15kg</td>
           <td className="py-4 px-4 border">30-90kg</td>
@@ -70,7 +89,10 @@ const ManualLoadHandlingUnitMass = () => {
           <td className="py-4 px-4 border">2.8-6.8t</td>
           <td className="py-4 px-4 border">3-7.5t</td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(1)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 1 ? 'bg-blue-100' : ''}`}
+        >
           <td className="py-4 px-4 border text-center font-bold">1</td>
           <td className="py-4 px-4 border">&lt; 5kg</td>
           <td className="py-4 px-4 border">&lt; 30kg</td>
@@ -88,7 +110,14 @@ const ManualLoadHandlingUnitMass = () => {
   );
 };
 
-const ManualLoadHandlingPushPull = () => {
+const ManualLoadHandlingPushPull = ({ setSeverityRating }: RatingTableProps) => {
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+
+  const handleRowClick = (rating: number) => {
+    setSelectedRating(rating);
+    setSeverityRating(rating);
+  };
+
   return (
     <table className="w-full border-collapse">
       <thead>
@@ -100,7 +129,10 @@ const ManualLoadHandlingPushPull = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(15)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 15 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border p-4 text-center font-bold">15</td>
           <td className="border p-4">&gt; 24</td>
           <td className="border p-4">&gt; 15</td>
@@ -108,13 +140,19 @@ const ManualLoadHandlingPushPull = () => {
             Pull a hose full of fuel (&gt;35kg) over more than 20 meters
           </td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(7)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 7 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border p-4 text-center font-bold">7</td>
           <td className="border p-4">19-24</td>
           <td className="border p-4">9-15</td>
           <td className="border p-4"></td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(3)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 3 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border p-4 text-center font-bold">3</td>
           <td className="border p-4">10-19</td>
           <td className="border p-4">6-9</td>
@@ -122,7 +160,10 @@ const ManualLoadHandlingPushPull = () => {
             Pull a hose full of fuel (18kg to 27kg) over 10-15 metres
           </td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(1)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 1 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border p-4 text-center font-bold">1</td>
           <td className="border p-4">&lt; 10</td>
           <td className="border p-4">&lt; 6</td>
@@ -133,13 +174,20 @@ const ManualLoadHandlingPushPull = () => {
   );
 };
 
-const PostureStrain = () => {
+const PostureStrain = ({ setSeverityRating }: RatingTableProps) => {
   return (
     <img src={"../assets/images/pages/workposture.png"} alt="Posture Strain" />
   );
 };
 
-const RepetitiveMovement = () => {
+const RepetitiveMovement = ({ setSeverityRating }: RatingTableProps) => {
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+
+  const handleRowClick = (rating: number) => {
+    setSelectedRating(rating);
+    setSeverityRating(rating);
+  };
+
   return (
     <table className="w-full border-collapse border">
       <thead>
@@ -152,7 +200,10 @@ const RepetitiveMovement = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(15)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 15 ? 'bg-blue-100' : ''}`}
+        >
           <td className="py-4 px-4 border text-center font-bold">15</td>
           <td className="py-4 px-4 border">
             Presence of repetitive movements during the whole job. More than 6
@@ -160,7 +211,10 @@ const RepetitiveMovement = () => {
           </td>
           <td className="py-4 px-4 border"></td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(7)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 7 ? 'bg-blue-100' : ''}`}
+        >
           <td className="py-4 px-4 border text-center font-bold">7</td>
           <td className="py-4 px-4 border">
             Presence of repetitive movements with absence of regular breaks and
@@ -176,7 +230,10 @@ const RepetitiveMovement = () => {
             them off.
           </td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(3)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 3 ? 'bg-blue-100' : ''}`}
+        >
           <td className="py-4 px-4 border text-center font-bold">3</td>
           <td className="py-4 px-4 border">
             Presence of repetitive movement, but with interruption associated
@@ -190,7 +247,10 @@ const RepetitiveMovement = () => {
             placing empty bottles...). Entering date with the keyboard.
           </td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(1)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 1 ? 'bg-blue-100' : ''}`}
+        >
           <td className="py-4 px-4 border text-center font-bold">1</td>
           <td className="py-4 px-4 border">
             Everyday movements without particular strain. Less than 2 hours per
@@ -202,47 +262,58 @@ const RepetitiveMovement = () => {
     </table>
   );
 };
-const Static = () => {
+
+const Static = ({ setSeverityRating }: RatingTableProps) => {
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+
+  const handleRowClick = (rating: number) => {
+    setSelectedRating(rating);
+    setSeverityRating(rating);
+  };
+
   return (
-    <table className="w-full border-collapse">
+    <table className="w-full border-collapse border">
       <thead>
         <tr className="bg-blue-400 text-white">
-          <th className="border p-4 py-10">Rating</th>
-          <th className="border p-4 py-10">Work at screen</th>
-          <th className="border p-4 py-10">Work position (body, arms, head)</th>
+          <th className="py-10 px-4 border">Rating</th>
+          <th className="py-10 px-4 border">Static work</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className="border p-4 text-center font-bold">7</td>
-          <td className="border p-4 text-center">-</td>
-          <td className="border p-4">
-            <u>Strained body, arm or head position</u>: working on more than one
-            screen, screen too high, etc.
+        <tr 
+          onClick={() => handleRowClick(15)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 15 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="py-4 px-4 border text-center font-bold">15</td>
+          <td className="py-4 px-4 border">
+            Static work more than 6 hours per day
           </td>
         </tr>
-        <tr>
-          <td className="border p-4 text-center font-bold">3</td>
-          <td className="border p-4">
-            More than 2 h per day continuously More than 4 hours per day in
-            total
-          </td>
-          <td className="border p-4">
-            <u>Feeling of discomfort regarding the activity</u>: adjustment of
-            worktop, seat, working on two screens, etc.
-            <br />
-            Standing work more than 2 h per day continuously
+        <tr 
+          onClick={() => handleRowClick(7)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 7 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="py-4 px-4 border text-center font-bold">7</td>
+          <td className="py-4 px-4 border">
+            Static work 4 to 6 hours per day
           </td>
         </tr>
-        <tr>
-          <td className="border p-4 text-center font-bold">1</td>
-          <td className="border p-4 text-center">
-            Less than 2 hours per day continuously
-            <br />
-            Less than 4 hours per day in total
+        <tr 
+          onClick={() => handleRowClick(3)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 3 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="py-4 px-4 border text-center font-bold">3</td>
+          <td className="py-4 px-4 border">
+            Static work 2 to 4 hours per day
           </td>
-          <td className="border p-4">
-            Standing work less than 2 h per day continuously
+        </tr>
+        <tr 
+          onClick={() => handleRowClick(1)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 1 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="py-4 px-4 border text-center font-bold">1</td>
+          <td className="py-4 px-4 border">
+            Static work less than 2 hours per day
           </td>
         </tr>
       </tbody>
@@ -250,55 +321,74 @@ const Static = () => {
   );
 };
 
-const WorkAtmosphere = () => {
+const WorkAtmosphere = ({ setSeverityRating }: RatingTableProps) => {
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+
+  const handleRowClick = (rating: number) => {
+    setSelectedRating(rating);
+    setSeverityRating(rating);
+  };
+
   return (
-    <table className="w-full border-collapse">
+    <table className="w-full border-collapse border">
       <thead>
         <tr className="bg-blue-400 text-white">
-          <th className="border p-4 py-[10px]">Rating</th>
-          <th className="border p-4 py-[10px]">Temperature (NFX 35-102)</th>
-          <th className="border p-4 py-[10px]">Relative humidity (RH)</th>
-          <th className="border p-4 py-[10px]">Noise (*)</th>
-          <th className="border p-4 py-[10px]">Lighting (*) (EN 12464-1)</th>
+          <th className="py-10 px-4 border">Rating</th>
+          <th className="py-10 px-4 border">Work atmosphere</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className="border p-4 text-center font-bold">3</td>
-          <td className="border p-4">
-            <u>Temperature:</u> &lt; 20°C or &gt; 26°C, work by a window with
-            exposure to sunrays, etc. <u>Draughts</u>, etc.
-          </td>
-          <td className="border p-4">RH &lt; 30%, RH &gt; 70%</td>
-          <td className="border p-4 text-center">
-            Discomfort related to background noise level
-          </td>
-          <td className="border p-4 text-center">
-            <u>Inappropriate lighting:</u> &lt; 500 lux in office, laboratory,
-            control room, etc. <u>Dazzle</u>
+        <tr 
+          onClick={() => handleRowClick(15)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 15 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="py-4 px-4 border text-center font-bold">15</td>
+          <td className="py-4 px-4 border">
+            Extreme conditions: work in a cold room (-18°C), work in a very hot
+            environment (furnace, oven, boiler room), work in a very dusty
+            environment
           </td>
         </tr>
-        <tr>
-          <td className="border p-4 text-center font-bold">1</td>
-          <td className="border p-4">
-            <u>Thermal comfort:</u> 20-24°C in winter, 22-26°C in summer
+        <tr 
+          onClick={() => handleRowClick(7)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 7 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="py-4 px-4 border text-center font-bold">7</td>
+          <td className="py-4 px-4 border">
+            Work in a cold room (0-4°C), work in a hot environment, work in a
+            dusty environment
           </td>
-          <td className="border p-4 text-center">
-            30% &lt; RH &lt; 70% or little discomfort
+        </tr>
+        <tr 
+          onClick={() => handleRowClick(3)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 3 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="py-4 px-4 border text-center font-bold">3</td>
+          <td className="py-4 px-4 border">
+            Work in a cold environment (4-15°C), work in a warm environment
+            (25-30°C)
           </td>
-          <td className="border p-4 text-center">-</td>
-          <td className="border p-4 text-center">-</td>
+        </tr>
+        <tr 
+          onClick={() => handleRowClick(1)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 1 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="py-4 px-4 border text-center font-bold">1</td>
+          <td className="py-4 px-4 border">
+            Work in an environment with a controlled temperature (15-25°C)
+          </td>
         </tr>
       </tbody>
     </table>
   );
 };
+
 const getCategoryComponent = (subCategory: string) => {
   switch (subCategory) {
-    case subCategoryList.manualloadhandlingpushpull:
-      return ManualLoadHandlingPushPull;
     case subCategoryList.manualloadhandlingunitmass:
       return ManualLoadHandlingUnitMass;
+    case subCategoryList.manualloadhandlingpushpull:
+      return ManualLoadHandlingPushPull;
     case subCategoryList.posturestrain:
       return PostureStrain;
     case subCategoryList.repetitivemovement:
@@ -307,17 +397,14 @@ const getCategoryComponent = (subCategory: string) => {
       return Static;
     case subCategoryList.workatmosphere:
       return WorkAtmosphere;
-
     default:
       return null;
   }
 };
 
-export const SeverityRatingTable = () => {
+export const SeverityRatingTable = ({ setSeverityRating }: RatingTableProps) => {
   const { subCategory } = useSubCategoryStore();
-  const CategoryComponent = getCategoryComponent(
-    subCategory || subCategoryList.manualloadhandlingpushpull
-  );
-  // return <TestTable />;
-  return <div>{CategoryComponent && <CategoryComponent />}</div>;
+  const CategoryComponent = getCategoryComponent(subCategory);
+
+  return CategoryComponent ? <CategoryComponent setSeverityRating={setSeverityRating} /> : null;
 };

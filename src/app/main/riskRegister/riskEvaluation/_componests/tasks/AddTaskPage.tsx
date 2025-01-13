@@ -434,24 +434,62 @@ const AddTaskPage = ({
           <div className="col-span-2 flex flex-row gap-20">
             <h3>Potential Risk</h3>
             {hazardTypeWatch && (
-              // <TemporaryDrawer
-              //   hazardType={
-              //     hazardTypes.find((hazard) => hazard.value == hazardTypeWatch)
-              //       ?.text || ""
-              //   }
-              // />
-              // <BiologicalRisk
-              //   hazardType={
-              //     hazardTypes.find((hazard) => hazard.value == hazardTypeWatch)
-              //       ?.text || ""
-              //   }
-              // />
-              <ChemicalRisk
-                hazardType={
-                  hazardTypes.find((hazard) => hazard.value == hazardTypeWatch)
-                    ?.text || ""
-                }
-              />
+              <>
+                {hazardTypeWatch == 1 && (
+                  <ChemicalRisk
+                    hazardType={
+                      hazardTypes.find(
+                        (hazard) => hazard.value == hazardTypeWatch
+                      )?.text || ""
+                    }
+                  />
+                )}
+                {hazardTypeWatch == 2 && (
+                  <BiologicalRisk
+                    hazardType={
+                      hazardTypes.find(
+                        (hazard) => hazard.value == hazardTypeWatch
+                      )?.text || ""
+                    }
+                  />
+                )}
+                {hazardTypeWatch == 3 && (
+                  <ErgonomicRisk
+                    hazardType={
+                      hazardTypes.find(
+                        (hazard) => hazard.value == hazardTypeWatch
+                      )?.text || ""
+                    }
+                  />
+                )}
+                {hazardTypeWatch == 4 && (
+                  <PhysicalRiskNew
+                    hazardType={
+                      hazardTypes.find(
+                        (hazard) => hazard.value == hazardTypeWatch
+                      )?.text || ""
+                    }
+                  />
+                )}
+                {hazardTypeWatch == 5 && (
+                  <PhysicalRiskShortTerm
+                    hazardType={
+                      hazardTypes.find(
+                        (hazard) => hazard.value == hazardTypeWatch
+                      )?.text || ""
+                    }
+                  />
+                )}
+                {hazardTypeWatch == 6 && (
+                  <PhyscoSocialRisk
+                    hazardType={
+                      hazardTypes.find(
+                        (hazard) => hazard.value == hazardTypeWatch
+                      )?.text || ""
+                    }
+                  />
+                )}
+              </>
             )}
           </div>
           <div>

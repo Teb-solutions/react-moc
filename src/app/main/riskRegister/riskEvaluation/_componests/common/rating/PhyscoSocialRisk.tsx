@@ -46,6 +46,7 @@ function a11yProps(index: number) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
+
 export default function BiologicalRisk({ hazardType }: { hazardType: string }) {
   const [open, setOpen] = React.useState(false);
 
@@ -81,6 +82,9 @@ const DrawerList = ({
     "AccidentalPhysicalRisk",
   }
   const [value, setValue] = React.useState(0);
+  const [severityRating, setSeverityRating] = React.useState<number | null>(null);
+  const [potentialRating, setPotentialRating] = React.useState<number | null>(null);
+  const [residualRating, setResidualRating] = React.useState<number | null>(null);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -123,19 +127,26 @@ const DrawerList = ({
         />
       </Tabs>
       <CustomTabPanel value={value} index={0}>
-        <SeverityRatingTable />
+        <SeverityRatingTable setSeverityRating={setSeverityRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <PotentialProbability />
+        <PotentialProbability setPotentialRating={setPotentialRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <ReductionOfPTable />
+        <ReductionOfPTable setResidualRating={setResidualRating} />
       </CustomTabPanel>
     </Box>
   );
 };
 
-const SeverityRatingTable = () => {
+const SeverityRatingTable = ({ setSeverityRating }: { setSeverityRating: (rating: number | null) => void }) => {
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+
+  const handleRowClick = (rating: number) => {
+    setSelectedRating(rating);
+    setSeverityRating(rating);
+  };
+
   return (
     <table className="w-full border-collapse border">
       <thead className="bg-blue-400 text-white">
@@ -146,7 +157,10 @@ const SeverityRatingTable = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(15)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 15 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border py-2 px-4 text-center font-bold">15</td>
           <td className="border py-2 px-4">
             Extremes that could result in the stoppage of all occupational
@@ -162,7 +176,10 @@ const SeverityRatingTable = () => {
             Major accident or particularly high risk situation
           </td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(7)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 7 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border py-2 px-4 text-center font-bold">7</td>
           <td className="border py-2 px-4">
             Important not requiring a work stoppage
@@ -174,7 +191,10 @@ const SeverityRatingTable = () => {
             Major restructuring/job insecurity
           </td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(3)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 3 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border py-2 px-4 text-center font-bold">3</td>
           <td className="border py-2 px-4">Multiple and repeated</td>
           <td className="border py-2 px-4">
@@ -213,20 +233,56 @@ const SeverityRatingTable = () => {
   );
 };
 
-const PotentialProbability = () => {
+const PotentialProbability = ({ setPotentialRating }: { setPotentialRating: (rating: number | null) => void }) => {
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+
+  const handleClick = (rating: number) => {
+    setSelectedRating(rating);
+    setPotentialRating(rating);
+  };
+
   return (
-    <p className="font-semibold px-10">
-      The potential exposure probability P of exposure to psychosocial risk
-      factors when performing a task related to an organization and/or work
-      conditions are highlighted, is 10.
-      <br />
-      <br />
-      It can be reduced to 6 if the activity is seasonal
-    </p>
+    <table className="w-full border-collapse border">
+      <thead className="bg-blue-400 text-white">
+        <tr>
+          <th className="border py-10 px-4">Rating P</th>
+          <th className="border py-10 px-4">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr 
+          onClick={() => handleClick(10)}
+          className={`cursor-pointer ${selectedRating === 10 ? 'bg-blue-100' : 'hover:bg-gray-100'}`}
+        >
+          <td className="border py-2 px-4 text-center font-bold">10</td>
+          <td className="border py-2 px-4">
+            The potential exposure probability P of exposure to psychosocial risk
+            factors when performing a task related to an organization and/or work
+            conditions are highlighted, is 10.
+          </td>
+        </tr>
+        <tr 
+          onClick={() => handleClick(6)}
+          className={`cursor-pointer ${selectedRating === 6 ? 'bg-blue-100' : 'hover:bg-gray-100'}`}
+        >
+          <td className="border py-2 px-4 text-center font-bold">6</td>
+          <td className="border py-2 px-4">
+            It can be reduced to 6 if the activity is seasonal
+          </td>
+        </tr>
+      </tbody>
+    </table>
   );
 };
 
-const ReductionOfPTable = () => {
+const ReductionOfPTable = ({ setResidualRating }: { setResidualRating: (rating: number | null) => void }) => {
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+
+  const handleRowClick = (rating: number) => {
+    setSelectedRating(rating);
+    setResidualRating(rating);
+  };
+
   return (
     <table className="w-full border-collapse border">
       <thead className="bg-blue-400 text-white">
@@ -238,7 +294,10 @@ const ReductionOfPTable = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(-1)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border py-4 px-4 text-center font-bold">-1</td>
           <td className="border py-4 px-4">
             <u>Individual-based actions:</u>
@@ -255,7 +314,10 @@ const ReductionOfPTable = () => {
             situations...
           </td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(-2)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border py-4 px-4 text-center font-bold">-2</td>
           <td className="border py-4 px-4">
             <u>HEG-based actions:</u>
@@ -279,7 +341,10 @@ const ReductionOfPTable = () => {
             GM-GR-RH-005.
           </td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(-3)}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border py-4 px-4 text-center font-bold">-3</td>
           <td className="border py-4 px-4">
             <u>Long-term general actions:</u>
