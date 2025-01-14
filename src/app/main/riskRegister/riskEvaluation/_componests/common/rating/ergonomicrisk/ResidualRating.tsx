@@ -1,17 +1,28 @@
 import React from 'react';
 import { subCategoryList, useSubCategoryStore } from "./ErgonomicRisk";
+import { useRatingStore } from "../../ratingStore";
 
 interface RatingTableProps {
-  setResidualRating: (rating: number | null) => void;
+  setResidualRating?: (rating: number | null) => void;
 }
 
 const ManualLoadHandlingPushPull = ({ setResidualRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setResidualRating(rating);
+    if (setResidualRating) {
+      setResidualRating(rating);
+    }
+    setResidualProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (residualProbabilityRating !== null) {
+      setSelectedRating(residualProbabilityRating);
+    }
+  }, [residualProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border border-gray-400">
@@ -95,11 +106,21 @@ const ManualLoadHandlingPushPull = ({ setResidualRating }: RatingTableProps) => 
 
 const ManualLoadHandlingUnitMass = ({ setResidualRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setResidualRating(rating);
+    if (setResidualRating) {
+      setResidualRating(rating);
+    }
+    setResidualProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (residualProbabilityRating !== null) {
+      setSelectedRating(residualProbabilityRating);
+    }
+  }, [residualProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -178,11 +199,21 @@ const ManualLoadHandlingUnitMass = ({ setResidualRating }: RatingTableProps) => 
 
 const PostureStrain = ({ setResidualRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setResidualRating(rating);
+    if (setResidualRating) {
+      setResidualRating(rating);
+    }
+    setResidualProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (residualProbabilityRating !== null) {
+      setSelectedRating(residualProbabilityRating);
+    }
+  }, [residualProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -264,11 +295,21 @@ const PostureStrain = ({ setResidualRating }: RatingTableProps) => {
 
 const RepetitiveMovement = ({ setResidualRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setResidualRating(rating);
+    if (setResidualRating) {
+      setResidualRating(rating);
+    }
+    setResidualProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (residualProbabilityRating !== null) {
+      setSelectedRating(residualProbabilityRating);
+    }
+  }, [residualProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -350,11 +391,21 @@ const RepetitiveMovement = ({ setResidualRating }: RatingTableProps) => {
 
 const Static = ({ setResidualRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setResidualRating(rating);
+    if (setResidualRating) {
+      setResidualRating(rating);
+    }
+    setResidualProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (residualProbabilityRating !== null) {
+      setSelectedRating(residualProbabilityRating);
+    }
+  }, [residualProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -426,11 +477,21 @@ const Static = ({ setResidualRating }: RatingTableProps) => {
 
 const WorkAtmosphere = ({ setResidualRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setResidualRating(rating);
+    if (setResidualRating) {
+      setResidualRating(rating);
+    }
+    setResidualProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (residualProbabilityRating !== null) {
+      setSelectedRating(residualProbabilityRating);
+    }
+  }, [residualProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -502,10 +563,10 @@ const WorkAtmosphere = ({ setResidualRating }: RatingTableProps) => {
 
 const getCategoryComponent = (subCategory: string) => {
   switch (subCategory) {
-    case subCategoryList.manualloadhandlingpushpull:
-      return ManualLoadHandlingPushPull;
     case subCategoryList.manualloadhandlingunitmass:
       return ManualLoadHandlingUnitMass;
+    case subCategoryList.manualloadhandlingpushpull:
+      return ManualLoadHandlingPushPull;
     case subCategoryList.posturestrain:
       return PostureStrain;
     case subCategoryList.repetitivemovement:
@@ -515,13 +576,12 @@ const getCategoryComponent = (subCategory: string) => {
     case subCategoryList.workatmosphere:
       return WorkAtmosphere;
     default:
-      return null;
+      return ManualLoadHandlingUnitMass;
   }
 };
 
 export const ResidualRatingTable = ({ setResidualRating }: RatingTableProps) => {
   const { subCategory } = useSubCategoryStore();
-  const CategoryComponent = getCategoryComponent(subCategory);
-
-  return CategoryComponent ? <CategoryComponent setResidualRating={setResidualRating} /> : null;
+  const Component = getCategoryComponent(subCategory);
+  return <Component setResidualRating={setResidualRating} />;
 };

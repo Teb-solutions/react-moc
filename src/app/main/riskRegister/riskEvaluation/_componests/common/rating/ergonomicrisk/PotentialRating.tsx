@@ -1,17 +1,28 @@
 import { subCategoryList, useSubCategoryStore } from "./ErgonomicRisk";
 import React from 'react';
+import { useRatingStore } from "../../ratingStore";
 
 interface RatingTableProps {
-  setPotentialRating: (rating: number | null) => void;
+  setPotentialRating?: (rating: number | null) => void;
 }
 
 const ManualLoadHandlingPushPull = ({ setPotentialRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { potentialProbabilityRating, setPotentialProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setPotentialRating(rating);
+    if (setPotentialRating) {
+      setPotentialRating(rating);
+    }
+    setPotentialProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (potentialProbabilityRating !== null) {
+      setSelectedRating(potentialProbabilityRating);
+    }
+  }, [potentialProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -39,11 +50,21 @@ const ManualLoadHandlingPushPull = ({ setPotentialRating }: RatingTableProps) =>
 
 const ManualLoadHandlingUnitMass = ({ setPotentialRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { potentialProbabilityRating, setPotentialProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setPotentialRating(rating);
+    if (setPotentialRating) {
+      setPotentialRating(rating);
+    }
+    setPotentialProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (potentialProbabilityRating !== null) {
+      setSelectedRating(potentialProbabilityRating);
+    }
+  }, [potentialProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -71,11 +92,21 @@ const ManualLoadHandlingUnitMass = ({ setPotentialRating }: RatingTableProps) =>
 
 const PostureStrain = ({ setPotentialRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { potentialProbabilityRating, setPotentialProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setPotentialRating(rating);
+    if (setPotentialRating) {
+      setPotentialRating(rating);
+    }
+    setPotentialProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (potentialProbabilityRating !== null) {
+      setSelectedRating(potentialProbabilityRating);
+    }
+  }, [potentialProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -103,11 +134,21 @@ const PostureStrain = ({ setPotentialRating }: RatingTableProps) => {
 
 const RepetitiveMovement = ({ setPotentialRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { potentialProbabilityRating, setPotentialProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setPotentialRating(rating);
+    if (setPotentialRating) {
+      setPotentialRating(rating);
+    }
+    setPotentialProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (potentialProbabilityRating !== null) {
+      setSelectedRating(potentialProbabilityRating);
+    }
+  }, [potentialProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -135,11 +176,21 @@ const RepetitiveMovement = ({ setPotentialRating }: RatingTableProps) => {
 
 const Static = ({ setPotentialRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { potentialProbabilityRating, setPotentialProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setPotentialRating(rating);
+    if (setPotentialRating) {
+      setPotentialRating(rating);
+    }
+    setPotentialProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (potentialProbabilityRating !== null) {
+      setSelectedRating(potentialProbabilityRating);
+    }
+  }, [potentialProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -167,11 +218,21 @@ const Static = ({ setPotentialRating }: RatingTableProps) => {
 
 const WorkAtmosphere = ({ setPotentialRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { potentialProbabilityRating, setPotentialProbabilityRating } = useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
-    setPotentialRating(rating);
+    if (setPotentialRating) {
+      setPotentialRating(rating);
+    }
+    setPotentialProbabilityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (potentialProbabilityRating !== null) {
+      setSelectedRating(potentialProbabilityRating);
+    }
+  }, [potentialProbabilityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -199,10 +260,10 @@ const WorkAtmosphere = ({ setPotentialRating }: RatingTableProps) => {
 
 const getCategoryComponent = (subCategory: string) => {
   switch (subCategory) {
-    case subCategoryList.manualloadhandlingpushpull:
-      return ManualLoadHandlingPushPull;
     case subCategoryList.manualloadhandlingunitmass:
       return ManualLoadHandlingUnitMass;
+    case subCategoryList.manualloadhandlingpushpull:
+      return ManualLoadHandlingPushPull;
     case subCategoryList.posturestrain:
       return PostureStrain;
     case subCategoryList.repetitivemovement:
@@ -212,13 +273,12 @@ const getCategoryComponent = (subCategory: string) => {
     case subCategoryList.workatmosphere:
       return WorkAtmosphere;
     default:
-      return null;
+      return ManualLoadHandlingUnitMass;
   }
 };
 
 export const PotentialRatingTable = ({ setPotentialRating }: RatingTableProps) => {
   const { subCategory } = useSubCategoryStore();
-  const CategoryComponent = getCategoryComponent(subCategory);
-
-  return CategoryComponent ? <CategoryComponent setPotentialRating={setPotentialRating} /> : null;
+  const Component = getCategoryComponent(subCategory);
+  return <Component setPotentialRating={setPotentialRating} />;
 };

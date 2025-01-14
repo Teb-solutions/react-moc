@@ -1,17 +1,28 @@
 import React from "react";
 import { subCategoryList, useSubCategoryStore } from "./ErgonomicRisk";
+import { useRatingStore } from "../../ratingStore";
 
 interface RatingTableProps {
-  setSeverityRating: (rating: number | null) => void;
+  setSeverityRating?: (rating: number | null) => void;
 }
 
 const ManualLoadHandlingUnitMass = ({ setSeverityRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { severityRating, setSeverityRating: setStoreSeverityRating } = useRatingStore();
 
   const handleRowClick = (rating: number) => {
     setSelectedRating(rating);
-    setSeverityRating(rating);
+    if (setSeverityRating) {
+      setSeverityRating(rating);
+    }
+    setStoreSeverityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (severityRating !== null) {
+      setSelectedRating(severityRating);
+    }
+  }, [severityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -112,11 +123,21 @@ const ManualLoadHandlingUnitMass = ({ setSeverityRating }: RatingTableProps) => 
 
 const ManualLoadHandlingPushPull = ({ setSeverityRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { severityRating, setSeverityRating: setStoreSeverityRating } = useRatingStore();
 
   const handleRowClick = (rating: number) => {
     setSelectedRating(rating);
-    setSeverityRating(rating);
+    if (setSeverityRating) {
+      setSeverityRating(rating);
+    }
+    setStoreSeverityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (severityRating !== null) {
+      setSelectedRating(severityRating);
+    }
+  }, [severityRating]);
 
   return (
     <table className="w-full border-collapse">
@@ -175,6 +196,7 @@ const ManualLoadHandlingPushPull = ({ setSeverityRating }: RatingTableProps) => 
 };
 
 const PostureStrain = ({ setSeverityRating }: RatingTableProps) => {
+  const { setSeverityRating: setStoreSeverityRating } = useRatingStore();
   return (
     <img src={"../assets/images/pages/workposture.png"} alt="Posture Strain" />
   );
@@ -182,11 +204,21 @@ const PostureStrain = ({ setSeverityRating }: RatingTableProps) => {
 
 const RepetitiveMovement = ({ setSeverityRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { severityRating, setSeverityRating: setStoreSeverityRating } = useRatingStore();
 
   const handleRowClick = (rating: number) => {
     setSelectedRating(rating);
-    setSeverityRating(rating);
+    if (setSeverityRating) {
+      setSeverityRating(rating);
+    }
+    setStoreSeverityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (severityRating !== null) {
+      setSelectedRating(severityRating);
+    }
+  }, [severityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -265,11 +297,21 @@ const RepetitiveMovement = ({ setSeverityRating }: RatingTableProps) => {
 
 const Static = ({ setSeverityRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { severityRating, setSeverityRating: setStoreSeverityRating } = useRatingStore();
 
   const handleRowClick = (rating: number) => {
     setSelectedRating(rating);
-    setSeverityRating(rating);
+    if (setSeverityRating) {
+      setSeverityRating(rating);
+    }
+    setStoreSeverityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (severityRating !== null) {
+      setSelectedRating(severityRating);
+    }
+  }, [severityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -323,11 +365,21 @@ const Static = ({ setSeverityRating }: RatingTableProps) => {
 
 const WorkAtmosphere = ({ setSeverityRating }: RatingTableProps) => {
   const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
+  const { severityRating, setSeverityRating: setStoreSeverityRating } = useRatingStore();
 
   const handleRowClick = (rating: number) => {
     setSelectedRating(rating);
-    setSeverityRating(rating);
+    if (setSeverityRating) {
+      setSeverityRating(rating);
+    }
+    setStoreSeverityRating(rating);
   };
+
+  React.useEffect(() => {
+    if (severityRating !== null) {
+      setSelectedRating(severityRating);
+    }
+  }, [severityRating]);
 
   return (
     <table className="w-full border-collapse border">
@@ -398,13 +450,12 @@ const getCategoryComponent = (subCategory: string) => {
     case subCategoryList.workatmosphere:
       return WorkAtmosphere;
     default:
-      return null;
+      return ManualLoadHandlingUnitMass;
   }
 };
 
 export const SeverityRatingTable = ({ setSeverityRating }: RatingTableProps) => {
   const { subCategory } = useSubCategoryStore();
-  const CategoryComponent = getCategoryComponent(subCategory);
-
-  return CategoryComponent ? <CategoryComponent setSeverityRating={setSeverityRating} /> : null;
+  const Component = getCategoryComponent(subCategory);
+  return <Component setSeverityRating={setSeverityRating} />;
 };

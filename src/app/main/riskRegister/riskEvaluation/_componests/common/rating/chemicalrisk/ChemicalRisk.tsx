@@ -1,6 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import Divider from "@mui/material/Divider";
 import Button from "../../../../../common/Button";
 import {
@@ -17,8 +17,7 @@ import create from "zustand";
 import { SeverityRatingTable } from "./SeverityRatingTable";
 import { PotentialRatingTable } from "./PotentialRating";
 import { ResidualRatingTable } from "./ResidualRating";
-// import Noise from "./severity/Noise";
-// import TableComponent from "./TableComponent";
+import { useRatingStore } from "../../ratingStore";
 
 interface SubCategoryState {
   subCategory: string;
@@ -80,15 +79,10 @@ function a11yProps(index: number) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-export default function TemporaryDrawer({
-  hazardType,
-}: {
-  hazardType: string;
-}) {
+
+export default function ChemicalRisk({ hazardType }: { hazardType: string }) {
   const [open, setOpen] = React.useState(false);
-  const [severityRating, setSeverityRating] = React.useState<number | null>(null);
-  const [potentialRating, setPotentialRating] = React.useState<number | null>(null);
-  const [residualRating, setResidualRating] = React.useState<number | null>(null);
+  const { severityRating, setSeverityRating, potentialProbabilityRating, setPotentialProbabilityRating, residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -99,18 +93,23 @@ export default function TemporaryDrawer({
       <Button variant="approve" type="button" onClick={toggleDrawer(true)}>
         View Rating Calculator
       </Button>
-      <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+      <SwipeableDrawer
+        anchor="right"
+        open={open}
+        onClose={toggleDrawer(false)}
+        onOpen={toggleDrawer(true)}
+      >
         <DrawerList 
           toggleDrawer={toggleDrawer} 
           hazardType={hazardType}
           severityRating={severityRating}
           setSeverityRating={setSeverityRating}
-          potentialRating={potentialRating}
-          setPotentialRating={setPotentialRating}
-          residualRating={residualRating}
-          setResidualRating={setResidualRating}
+          potentialRating={potentialProbabilityRating}
+          setPotentialRating={setPotentialProbabilityRating}
+          residualRating={residualProbabilityRating}
+          setResidualRating={setResidualProbabilityRating}
         />
-      </Drawer>
+      </SwipeableDrawer>
     </div>
   );
 }
@@ -141,39 +140,44 @@ const DrawerList = ({
     setValue(newValue);
   };
 
-  const handleSubCategoryChange = (event: SelectChangeEvent<string>) => {
-    setSubCategory(event.target.value as string);
+  const handleSubCategoryChange = (event: SelectChangeEvent) => {
+    setSubCategory(event.target.value);
   };
 
   return (
-    <Box sx={{ width: 800 }} className="p-10" role="presentation">
+    <Box
+      sx={{ width: 800 }}
+      className="p-10"
+      role="presentation"
+    >
       <h2 className="bg-blue-500 text-white py-10 px-5">
         Assessment of {hazardType}
       </h2>
-      <Divider />
-      <FormControl fullWidth margin="normal">
-        <InputLabel id="subCategory-label">Subcategory</InputLabel>
+      <FormControl fullWidth className="mt-10">
+        <InputLabel id="demo-simple-select-label">Sub Category</InputLabel>
         <Select
-          labelId="subCategory-label"
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
           value={subCategory}
+          label="Sub Category"
           onChange={handleSubCategoryChange}
-          label="Subcategory"
         >
-          {Object.entries(subCategoryList).map(([key, value]) => (
-            <MenuItem key={key} value={key}>
-              {displaySubCategory[value]}
-            </MenuItem>
-          ))}
+          <MenuItem value={subCategoryList.health}>
+            {displaySubCategory[subCategoryList.health]}
+          </MenuItem>
+          <MenuItem value={subCategoryList.safety}>
+            {displaySubCategory[subCategoryList.safety]}
+          </MenuItem>
         </Select>
       </FormControl>
       <Tabs
         value={value}
         onChange={handleChange}
+        aria-label="basic tabs example"
         indicatorColor="secondary"
         textColor="inherit"
         variant="scrollable"
         scrollButtons={false}
-        aria-label="basic tabs example"
         className="w-full mt-10 px-10 -mx-4 min-h-40 mb-10"
         classes={{
           indicator:
@@ -181,14 +185,8 @@ const DrawerList = ({
         }}
       >
         <Tab label="Severity rating G" {...a11yProps(0)} />
-        <Tab
-          label="Potential exposure probability rating P"
-          {...a11yProps(1)}
-        />
-        <Tab
-          label="Residual potential exposure probability rating P’"
-          {...a11yProps(2)}
-        />
+        <Tab label="Potential exposure probability rating P" {...a11yProps(1)} />
+        <Tab label="Residual potential exposure probability rating P'" {...a11yProps(2)} />
       </Tabs>
       <CustomTabPanel value={value} index={0}>
         <SeverityRatingTable severityRating={severityRating} setSeverityRating={setSeverityRating} />
