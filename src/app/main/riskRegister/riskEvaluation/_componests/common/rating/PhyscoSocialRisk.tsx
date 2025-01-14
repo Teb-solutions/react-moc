@@ -47,7 +47,7 @@ function a11yProps(index: number) {
   };
 }
 
-export default function BiologicalRisk({ hazardType }: { hazardType: string }) {
+export default function PhyscoSocialRisk({ hazardType }: { hazardType: string }) {
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = (newOpen: boolean) => () => {
@@ -82,9 +82,7 @@ const DrawerList = ({
     "AccidentalPhysicalRisk",
   }
   const [value, setValue] = React.useState(0);
-  const [severityRating, setSeverityRating] = React.useState<number | null>(null);
-  const [potentialRating, setPotentialRating] = React.useState<number | null>(null);
-  const [residualRating, setResidualRating] = React.useState<number | null>(null);
+  const { severityRating, setSeverityRating, potentialProbabilityRating, setPotentialProbabilityRating, residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -127,23 +125,20 @@ const DrawerList = ({
         />
       </Tabs>
       <CustomTabPanel value={value} index={0}>
-        <SeverityRatingTable setSeverityRating={setSeverityRating} />
+        <SeverityRatingTable setSeverityRating={setSeverityRating} selectedRating={severityRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <PotentialProbability setPotentialRating={setPotentialRating} />
+        <PotentialProbability setPotentialRating={setPotentialProbabilityRating} selectedRating={potentialProbabilityRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <ReductionOfPTable setResidualRating={setResidualRating} />
+        <ReductionOfPTable setResidualRating={setResidualProbabilityRating} selectedRating={residualProbabilityRating} />
       </CustomTabPanel>
     </Box>
   );
 };
 
-const SeverityRatingTable = ({ setSeverityRating }: { setSeverityRating: (rating: number | null) => void }) => {
-  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
-
+const SeverityRatingTable = ({ setSeverityRating, selectedRating }: { setSeverityRating: (rating: number | null) => void, selectedRating: number | null }) => {
   const handleRowClick = (rating: number) => {
-    setSelectedRating(rating);
     setSeverityRating(rating);
   };
 
@@ -233,11 +228,8 @@ const SeverityRatingTable = ({ setSeverityRating }: { setSeverityRating: (rating
   );
 };
 
-const PotentialProbability = ({ setPotentialRating }: { setPotentialRating: (rating: number | null) => void }) => {
-  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
-
+const PotentialProbability = ({ setPotentialRating, selectedRating }: { setPotentialRating: (rating: number | null) => void, selectedRating: number | null }) => {
   const handleClick = (rating: number) => {
-    setSelectedRating(rating);
     setPotentialRating(rating);
   };
 
@@ -275,11 +267,8 @@ const PotentialProbability = ({ setPotentialRating }: { setPotentialRating: (rat
   );
 };
 
-const ReductionOfPTable = ({ setResidualRating }: { setResidualRating: (rating: number | null) => void }) => {
-  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
-
+const ReductionOfPTable = ({ setResidualRating, selectedRating }: { setResidualRating: (rating: number | null) => void, selectedRating: number | null }) => {
   const handleRowClick = (rating: number) => {
-    setSelectedRating(rating);
     setResidualRating(rating);
   };
 

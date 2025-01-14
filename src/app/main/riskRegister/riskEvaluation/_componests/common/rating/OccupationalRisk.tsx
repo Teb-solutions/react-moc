@@ -1,6 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import Divider from "@mui/material/Divider";
 import Button from "../../../../common/Button";
 import {
@@ -287,9 +287,14 @@ export default function OccupationalRisk({ hazardType }: { hazardType: string })
       <Button variant="approve" type="button" onClick={toggleDrawer(true)}>
         View Rating Calculator
       </Button>
-      <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
+      <SwipeableDrawer
+        anchor="right"
+        open={open}
+        onClose={toggleDrawer(false)}
+        onOpen={toggleDrawer(true)}
+      >
         <DrawerList toggleDrawer={toggleDrawer} hazardType={hazardType} />
-      </Drawer>
+      </SwipeableDrawer>
     </div>
   );
 }
@@ -302,16 +307,18 @@ const DrawerList = ({
   hazardType: string;
 }) => {
   const [value, setValue] = React.useState(0);
-  const [severityRating, setSeverityRating] = React.useState<number | null>(null);
-  const [potentialRating, setPotentialRating] = React.useState<number | null>(null);
-  const [residualRating, setResidualRating] = React.useState<number | null>(null);
+  const { severityRating, setSeverityRating, potentialProbabilityRating, setPotentialProbabilityRating, residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   return (
-    <Box sx={{ width: 800 }} className="p-10" role="presentation">
+    <Box
+      sx={{ width: 800 }}
+      className="p-10"
+      role="presentation"
+    >
       <h2 className="bg-blue-500 text-white py-10 px-5">
         Assessment of {hazardType}
       </h2>
@@ -321,7 +328,16 @@ const DrawerList = ({
         value={value}
         onChange={handleChange}
         aria-label="basic tabs example"
+        indicatorColor="secondary"
+        textColor="inherit"
+        variant="scrollable"
+        scrollButtons={false}
+        
         className="w-full mt-10 px-10 -mx-4 min-h-40 mb-10"
+        classes={{
+          indicator:
+            "flex justify-center bg-transparent border-b-3 border-red-500 w-full h-full",
+        }}
       >
         <Tab label="Severity rating G" {...a11yProps(0)} />
         <Tab label="Potential exposure probability rating P" {...a11yProps(1)} />
@@ -332,10 +348,10 @@ const DrawerList = ({
         <SeverityRatingTable severityRating={severityRating} setSeverityRating={setSeverityRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <PotentialProbability potentialRating={potentialRating} setPotentialRating={setPotentialRating} />
+        <PotentialProbability potentialRating={potentialProbabilityRating} setPotentialRating={setPotentialProbabilityRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <ReductionOfPTable residualRating={residualRating} setResidualRating={setResidualRating} />
+        <ReductionOfPTable residualRating={residualProbabilityRating} setResidualRating={setResidualProbabilityRating} />
       </CustomTabPanel>
     </Box>
   );

@@ -14,8 +14,6 @@ import {
 } from "@mui/material";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
-import { array } from "prop-types";
-import { useTaskStore } from "../taskStore";
 import { useRatingStore } from "../ratingStore";
 
 interface TabPanelProps {
@@ -47,7 +45,9 @@ function a11yProps(index: number) {
   };
 }
 
-const SeverityRatingTable = ({ severityRating, setSeverityRating }: { severityRating: number | null, setSeverityRating: (rating: number) => void }) => {
+const SeverityRatingTable = () => {
+  const { severityRating, setSeverityRating } = useRatingStore();
+
   const handleRowClick = (rating: number) => {
     setSeverityRating(rating);
   };
@@ -103,9 +103,11 @@ const SeverityRatingTable = ({ severityRating, setSeverityRating }: { severityRa
   );
 };
 
-const PotentialProbability = ({ potentialRating, setPotentialRating }: { potentialRating: number | null, setPotentialRating: (rating: number) => void }) => {
+const PotentialProbability = () => {
+  const { potentialProbabilityRating, setPotentialProbabilityRating } = useRatingStore();
+
   const handleRowClick = (rating: number) => {
-    setPotentialRating(rating);
+    setPotentialProbabilityRating(rating);
   };
 
   return (
@@ -120,35 +122,35 @@ const PotentialProbability = ({ potentialRating, setPotentialRating }: { potenti
         <TableBody>
           <TableRow 
             onClick={() => handleRowClick(0.5)}
-            className={`cursor-pointer hover:bg-gray-100 ${potentialRating === 0.5 ? 'bg-blue-100' : ''}`}
+            className={`cursor-pointer hover:bg-gray-100 ${potentialProbabilityRating === 0.5 ? 'bg-blue-100' : ''}`}
           >
             <TableCell className="border border-gray-300">0.5</TableCell>
             <TableCell className="border border-gray-300">Very unlikely exposure</TableCell>
           </TableRow>
           <TableRow 
             onClick={() => handleRowClick(1)}
-            className={`cursor-pointer hover:bg-gray-100 ${potentialRating === 1 ? 'bg-blue-100' : ''}`}
+            className={`cursor-pointer hover:bg-gray-100 ${potentialProbabilityRating === 1 ? 'bg-blue-100' : ''}`}
           >
             <TableCell className="border border-gray-300">1</TableCell>
             <TableCell className="border border-gray-300">Unlikely exposure</TableCell>
           </TableRow>
           <TableRow 
             onClick={() => handleRowClick(2)}
-            className={`cursor-pointer hover:bg-gray-100 ${potentialRating === 2 ? 'bg-blue-100' : ''}`}
+            className={`cursor-pointer hover:bg-gray-100 ${potentialProbabilityRating === 2 ? 'bg-blue-100' : ''}`}
           >
             <TableCell className="border border-gray-300">2</TableCell>
             <TableCell className="border border-gray-300">Occasional exposure</TableCell>
           </TableRow>
           <TableRow 
             onClick={() => handleRowClick(5)}
-            className={`cursor-pointer hover:bg-gray-100 ${potentialRating === 5 ? 'bg-blue-100' : ''}`}
+            className={`cursor-pointer hover:bg-gray-100 ${potentialProbabilityRating === 5 ? 'bg-blue-100' : ''}`}
           >
             <TableCell className="border border-gray-300">5</TableCell>
             <TableCell className="border border-gray-300">Frequent exposure</TableCell>
           </TableRow>
           <TableRow 
             onClick={() => handleRowClick(10)}
-            className={`cursor-pointer hover:bg-gray-100 ${potentialRating === 10 ? 'bg-blue-100' : ''}`}
+            className={`cursor-pointer hover:bg-gray-100 ${potentialProbabilityRating === 10 ? 'bg-blue-100' : ''}`}
           >
             <TableCell className="border border-gray-300">10</TableCell>
             <TableCell className="border border-gray-300">Permanent exposure</TableCell>
@@ -159,9 +161,13 @@ const PotentialProbability = ({ potentialRating, setPotentialRating }: { potenti
   );
 };
 
-const ReductionOfPTable = ({ residualRating, setResidualRating }: { residualRating: number | null, setResidualRating: (rating: number) => void }) => {
-  const handleRowClick = (rating: number) => {
-    setResidualRating(rating);
+const ReductionOfPTable = () => {
+  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
+  const [selectedReduction, setSelectedReduction] = React.useState<number | null>(residualProbabilityRating);
+
+  const handleRowClick = (reduction: number) => {
+    setSelectedReduction(reduction);
+    setResidualProbabilityRating(reduction);
   };
 
   return (
@@ -176,7 +182,7 @@ const ReductionOfPTable = ({ residualRating, setResidualRating }: { residualRati
         <TableBody>
           <TableRow 
             onClick={() => handleRowClick(-1)}
-            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+            className={`cursor-pointer hover:bg-gray-100 ${selectedReduction === -1 ? 'bg-blue-100' : ''}`}
           >
             <TableCell className="border border-gray-300">-1</TableCell>
             <TableCell className="border border-gray-300">
@@ -191,7 +197,7 @@ const ReductionOfPTable = ({ residualRating, setResidualRating }: { residualRati
           </TableRow>
           <TableRow 
             onClick={() => handleRowClick(-2)}
-            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+            className={`cursor-pointer hover:bg-gray-100 ${selectedReduction === -2 ? 'bg-blue-100' : ''}`}
           >
             <TableCell className="border border-gray-300">-2</TableCell>
             <TableCell className="border border-gray-300">
@@ -204,7 +210,7 @@ const ReductionOfPTable = ({ residualRating, setResidualRating }: { residualRati
           </TableRow>
           <TableRow 
             onClick={() => handleRowClick(-3)}
-            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+            className={`cursor-pointer hover:bg-gray-100 ${selectedReduction === -3 ? 'bg-blue-100' : ''}`}
           >
             <TableCell className="border border-gray-300">-3</TableCell>
             <TableCell className="border border-gray-300">
@@ -248,9 +254,6 @@ const DrawerList = ({
   hazardType: string;
 }) => {
   const [value, setValue] = React.useState(0);
-  const [severityRating, setSeverityRating] = React.useState<number | null>(null);
-  const [potentialRating, setPotentialRating] = React.useState<number | null>(null);
-  const [residualRating, setResidualRating] = React.useState<number | null>(null);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -282,13 +285,13 @@ const DrawerList = ({
       </Tabs>
 
       <CustomTabPanel value={value} index={0}>
-        <SeverityRatingTable severityRating={severityRating} setSeverityRating={setSeverityRating} />
+        <SeverityRatingTable />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <PotentialProbability potentialRating={potentialRating} setPotentialRating={setPotentialRating} />
+        <PotentialProbability />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <ReductionOfPTable residualRating={residualRating} setResidualRating={setResidualRating} />
+        <ReductionOfPTable />
       </CustomTabPanel>
     </Box>
   );

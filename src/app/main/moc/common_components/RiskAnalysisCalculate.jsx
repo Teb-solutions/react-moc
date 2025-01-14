@@ -53,9 +53,9 @@ export const CalculatePotentialRisk = (
     frequencyScoring &&
     likelihoodScoring &&
     severityScoring &&
-    likelihoodScoring <= 15 &&
+    likelihoodScoring <= 100 &&
     likelihoodScoring > 0 &&
-    severityScoring <= 15 &&
+    severityScoring <= 100 &&
     severityScoring > 0
   ) {
     return frequencyScoring * likelihoodScoring * severityScoring;
