@@ -1,146 +1,167 @@
 import { subCategoryList, useSubCategoryStore } from "./PhysicalRiskNew";
 
-const Noise = () => {
+interface Props {
+  residualRating: number | null;
+  setResidualRating: (rating: number | null) => void;
+}
+
+const Noise = ({ residualRating, setResidualRating }: Props) => {
+  const handleRowClick = (rating: number) => {
+    setResidualRating(rating);
+  };
+
   return (
     <table className="border-collapse w-full">
       <thead>
         <tr className="bg-blue-400 text-white">
-          <th className="py-10 px-4 border">Reduction of P</th>
-          <th className="py-10 px-4 border">
-            Means/measures of prevention/protection against noise
-          </th>
+          <th className="border p-4">Reduction of 
+P</th>
+          <th className="border p-4">Description</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className="p-2 border text-center">
-            <strong>-1</strong>
-          </td>
-          <td className="p-2 border">
-            <strong>
-              <u>At least two procedural or organizational measures from:</u>
-            </strong>
-
-            <li>See Mp-type matrix,</li>
-            <li>Signage, regular audit, inspections, calls to order, etc.</li>
+        <tr 
+          onClick={() => handleRowClick(-1)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-1</td>
+          <td className="border p-4">
+            <p>At least two procedural or organizational measures from:</p>
+            <li> See Mp-type matrix,</li>
+            <li> Signage, regular audit, inspections, calls to order, etc.</li>
             <li>Earplugs</li>
           </td>
         </tr>
-        <tr>
-          <td className="p-2 border text-center">
-            <strong>-2</strong>
-          </td>
-          <td className="p-2 border">
-            Wearing appropriate PPE and training on use and maintenance, helmet
-            and earplugs for exposure above 120 dBA, etc.
+        <tr 
+          onClick={() => handleRowClick(-2)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-2</td>
+          <td className="border p-4">
+          Wearing appropriate PPE and training on use and maintenance, helmet and earplugs for 
+          exposure above 120 dBA, etc.
           </td>
         </tr>
-        <tr>
-          <td className="p-2 border text-center p-2">
-            <strong>-3</strong>
+        <tr 
+          onClick={() => handleRowClick(-3)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-3</td>
+          <td className="border p-4">
+          Insulation and enclosure, etc.
           </td>
-          <td className="p-2 border p-2">Insulation and enclosure, etc.</td>
         </tr>
+        
       </tbody>
     </table>
   );
 };
 
-const Vibration = () => {
+const Vibration = ({ residualRating, setResidualRating }: Props) => {
+  const handleRowClick = (rating: number) => {
+    setResidualRating(rating);
+  };
+
   return (
-    <table className="border-collapse border border-gray-400 w-full">
+    <table className="border-collapse w-full">
       <thead>
         <tr className="bg-blue-400 text-white">
-          <th className="p-2 py-4 border border-gray-400">Reduction of P</th>
-          <th className="p-2 py-4 border border-gray-400">
-            Means/measures of prevention/protection against vibrations
-          </th>
+          <th className="border p-4">Reduction of 
+P</th>
+          <th className="border p-4">Description</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className="p-4 border border-gray-400 text-center">
-            <strong>-1</strong>
-          </td>
-          <td className="p-4 border border-gray-400">
-            <strong>
-              <u>At least two procedural or organizational measures from:</u>
-            </strong>
-            <p>
-              - See Mp-type matrix (generic table 4 of the method (generic
-              part)),
-            </p>
-            <p>- Servicing of the vehicle, equipment, etc.</p>
+      <tr 
+          onClick={() => handleRowClick(-1)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-1</td>
+          <td className="border p-4">
+            <p>At least two procedural or organizational measures from:</p>
+            <li> See Mp-type matrix (generic table 4 of the method (generic part)),
+            </li>
+            <li>Servicing of the vehicle, equipment, etc</li>
           </td>
         </tr>
-        <tr>
-          <td className="p-4 border border-gray-400 text-center">
-            <strong>-2</strong>
-          </td>
-          <td className="p-4 border border-gray-400">
-            <p>- Mechanical or pneumatic seat suspension</p>
-            <p>
-              - Tire pressure check, vehicle speed adapted to the surface,
-              maintenance of the road surface... for vehicles
-            </p>
-            <p>- Anti-vibration mats under vibrating machines, etc.</p>
+        <tr 
+          onClick={() => handleRowClick(-2)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-2</td>
+          <td className="border p-4">
+          <li>Mechanical or pneumatic seat suspension</li>
+          <li>Tire pressure check, vehicle speed adapted to the surface, maintenance of the road 
+          surface... for vehicles</li>
+          <li>Anti-vibration mats under vibrating machines, etc.</li>
+          
           </td>
         </tr>
+        
       </tbody>
     </table>
   );
 };
 
-const Thermal = () => {
+const Thermal = ({ residualRating, setResidualRating }: Props) => {
+  const handleRowClick = (rating: number) => {
+    setResidualRating(rating);
+  };
+
   return (
-    <table className="border-collapse border border-gray-400 w-full">
+    <table className="border-collapse w-full">
       <thead>
         <tr className="bg-blue-400 text-white">
-          <th className="border border-gray-400 p-4 py-10">Reduction of P</th>
-          <th className="border border-gray-400 p-4 py-10">
-            Means/measures of prevention/protection against extreme temperatures
-            and thermal radiation
-          </th>
+          <th className="border p-4">Reduction of 
+P</th>
+          <th className="border p-4">Description</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className="border border-gray-400 p-4 text-center">-1</td>
-          <td className="border border-gray-400 p-4">
-            <p>
-              <u>At least two procedural or organizational measures from:</u>
-            </p>
-            <p>
-              - See Mp-type matrix (generic table 4 of the method (generic
-              part))
-            </p>
-            <p>- Warm or cold water fountain</p>
-            <p>- Adapted work schedule</p>
-            <p>- Adapted breaks (number and duration)</p>
-            <p>- Provision of drinks with a high mineral content</p>
-            <p>- Technical clothing adapted to the conditions</p>
+      <tr 
+          onClick={() => handleRowClick(-1)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-1</td>
+          <td className="border p-4">
+            <p>At least two procedural or organizational measures from:</p>
+            <ul className="ml-10">
+            <li> See Mp-type matrix (generic table 4 of the method (generic part))
+            </li>
+            <li>Warm or cold water fountain</li>
+           
+              <li>Adapted work schedule</li>
+              <li>Adapted breaks (number and duration)</li>
+              <li>Provision of drinks with a high mineral content</li>
+              <li>Technical clothing adapted to the conditions</li>
+            </ul>
           </td>
         </tr>
-        <tr>
-          <td className="border border-gray-400 p-4 text-center">-2</td>
-          <td className="border border-gray-400 p-4">
-            <p>
-              - Site roofing, ventilation, air-conditioned break room, curtains
-              between workshops, etc.
-            </p>
-            <p>- Technical clothing adapted to severe cold (multiple layers)</p>
-            <p>- Technical clothing adapted to thermal radiation or heat</p>
+        <tr 
+          onClick={() => handleRowClick(-2)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-2</td>
+          <td className="border p-4">
+          <ul  className="ml-10">
+          <li>Site roofing, ventilation, air-conditioned break room, curtains between workshops, etc.</li>
+          <li>Technical clothing adapted to severe cold (multiple layers)</li>
+          <li>Technical clothing adapted to thermal radiation or heat</li>
+         </ul>
           </td>
         </tr>
-        <tr>
-          <td className="border border-gray-400 p-4 text-center">-3</td>
-          <td className="border border-gray-400 p-4">
-            <p>- Air conditioning, heating, etc.</p>
-            <p>
-              - Technical clothing adapted to very severe cold (multiple layers)
-            </p>
-            <p>- Technical cooling clothing for severe heatwaves</p>
-            <p>- Moving away or insulation from the thermal radiation source</p>
+        <tr 
+          onClick={() => handleRowClick(-3)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-3</td>
+          <td className="border p-4">
+          <ul  className="ml-10">
+            <li>Air conditioning, heating, etc.</li>
+            <li>Technical clothing adapted to very severe cold (multiple layers)</li>
+            <li>Technical cooling clothing for severe heatwaves</li>
+            <li>Moving away or insulation from the thermal radiation source</li>
+          </ul>
           </td>
         </tr>
       </tbody>
@@ -148,112 +169,103 @@ const Thermal = () => {
   );
 };
 
-const Optical = () => {
+const Optical = ({ residualRating, setResidualRating }: Props) => {
+  const handleRowClick = (rating: number) => {
+    setResidualRating(rating);
+  };
+
   return (
-    <table className="w-full border-collapse border">
+    <table className="border-collapse w-full">
       <thead>
         <tr className="bg-blue-400 text-white">
-          <th className="py-2 px-4 border">Reduction of P</th>
-          <th className="py-2 px-4 border">
-            Means/measures of prevention/protection against optical radiation
-            (IR, visible, UV, laser)
-          </th>
+          <th className="border p-4">Reduction of 
+P</th>
+          <th className="border p-4">Description</th>
         </tr>
       </thead>
       <tbody>
-        <tr className="border">
-          <td className="py-4 px-4 text-center font-bold border">-1</td>
-          <td className="py-4 px-4 border">
-            <p>
-              <strong>
-                <u>At least two procedural or organizational measures from:</u>
-              </strong>
-            </p>
-            <p>
-              See Mp-type matrix (generic table 4 of the method (generic part))
-            </p>
-            <p>
-              - <u>Laser:</u>
-            </p>
-            <p>Definition of exclusion zone, labelling (pictogram, etc.)</p>
-            <p>Only an authorized person can order the radiation emission</p>
-            <p>
-              The beam is lower than eye level in seated position, removal of
-              reflective objects (smooth, shiny surfaces) and jewelry in the
-              room
-            </p>
-            <p>
-              Wearing of appropriate protective gloves and goggles Laser
-              training, etc.
-            </p>
-            <p>
-              - <u>UV:</u>
-            </p>
-            <p>
-              Long-sleeved shirts, hat, sun cream, access to shade or indoor
-              workplace during the hottest hours of the day, etc.
-            </p>
-            <p>Welding training</p>
-            <p>Marking off of the welding workplace, etc.</p>
-            <p>
-              - <u>IR:</u>
-            </p>
-            <p>Wearing IR protective goggles</p>
+      <tr 
+          onClick={() => handleRowClick(-1)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-1</td>
+          <td className="border p-4">
+            <p>At least two procedural or organizational measures from:</p>
+            See Mp-type matrix (generic table 4 of the method (generic part))
+            <ul style={{ listStyleType: "circle" }} className="ml-10">
+              <li>Laser:</li>
+              <ul  className="ml-10">
+                <li>Definition of exclusion zone, labelling (pictogram, etc.)</li>
+                <li>Only an authorized person can order the radiation emission</li>
+                <li>The beam is lower than eye level in seated position, removal of reflective objects (smooth,
+                  shiny surfaces) and jewelry in the room</li>
+                <li>Wearing of appropriate protective gloves and goggles</li>
+                <li>Laser training, etc.</li>
+              </ul>
+              <li>UV:</li>
+              <ul  className="ml-10">
+                <li>Long-sleeved shirts, hat, sun cream, access to shade or indoor workplace during the
+                  hottest hours of the day, etc.</li>
+                <li>Welding training</li>
+                <li>Marking off of the welding workplace, etc.</li>
+              </ul>
+              <li>IR:</li>
+              <ul  className="ml-10">
+                <li>Wearing IR protective goggles</li>
+              </ul>
+            </ul>
           </td>
         </tr>
-        <tr className="border">
-          <td className="py-4 px-4 text-center font-bold border">-2</td>
-          <td className="py-4 px-4 border">
-            <p>
-              - <u>Laser:</u>
-            </p>
-            <p>
-              Special PPE: protective goggles adapted to the wavelength in
-              question; special protective gloves, etc.
-            </p>
-            <p>
-              Optical path length of a covered laser, protective screen, work
-              distance.
-            </p>
-            <p>
-              - <u>UV:</u>
-            </p>
-            <p>
-              Special PPE: welding goggles, special welding coverall and gloves,
-              welding guard, welding tent (to avoid additional exposure to solar
-              rays), etc.
-            </p>
-            <p>
-              - <u>IR:</u>
-            </p>
-            <p>
-              Use of appropriate protective screens, visors and protective
-              clothing, keeping an appropriate distance from the radiation
-              source (marked off exclusion zones), etc.
-            </p>
+        <tr 
+          onClick={() => handleRowClick(-2)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-2</td>
+          <td className="border p-4">
+          <ul style={{ listStyleType: "circle" }} className="ml-10">
+            <li>Laser:</li>
+            <ul  className="ml-10">
+              <li>Special PPE: protective goggles adapted to the wavelength in question;</li>
+              <li>special protective gloves, etc.</li>
+            </ul>
+            <li>UV:</li>
+            <ul  className="ml-10">
+              <li>Special PPE: welding goggles, special welding coverall and gloves, welding 
+                guard, welding tent (to avoid additional exposure to solar rays), etc.</li>
+            </ul>
+            <li>IR:</li>
+            <ul  className="ml-10">
+              <li>Use of appropriate protective screens, visors and protective clothing,</li>
+              <li>keeping an appropriate distance from the radiation source (marked off 
+                exclusion zones), etc.</li>
+            </ul>
+          </ul>
           </td>
         </tr>
-        <tr className="border">
-          <td className="py-4 px-4 text-center font-bold border">-3</td>
-          <td className="py-4 px-4 border">
-            <p>
-              - <u>Laser:</u>
-            </p>
-            <p>
-              Confinement of the laser beam, locking mechanism, emergency
-              shutdown, etc.
-            </p>
-            <p>
-              - <u>UV:</u>
-            </p>
-            <p>Automatic welding, etc.</p>
-            <p>
-              - <u>IR:</u>
-            </p>
-            <p>
-              Confinement of the beam, view holes for ovens, insulation of
-              equipment, etc.
-            </p>
+        <tr 
+          onClick={() => handleRowClick(-3)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-3</td>
+          <td className="border p-4">
+          <ul style={{ listStyleType: "circle" }} className="ml-10">
+            <li>Laser:</li>
+            <ul  className="ml-10">
+              <li>Confinement of the laser beam</li>
+              <li>Locking mechanism</li>
+              <li>Emergency shutdown, etc.</li>
+            </ul>
+            <li>UV:</li>
+            <ul  className="ml-10">
+              <li>Automatic welding, etc.</li>
+            </ul>
+            <li>IR:</li>
+            <ul  className="ml-10">
+              <li>Confinement of the beam</li>
+              <li>View holes for ovens</li>
+              <li>Insulation of equipment, etc.</li>
+            </ul>
+          </ul>
           </td>
         </tr>
       </tbody>
@@ -261,65 +273,64 @@ const Optical = () => {
   );
 };
 
-const Electromagnetic = () => {
+const Electromagnetic = ({ residualRating, setResidualRating }: Props) => {
+  const handleRowClick = (rating: number) => {
+    setResidualRating(rating);
+  };
+
   return (
-    <table className="w-full border-collapse">
+    <table className="border-collapse w-full">
       <thead>
         <tr className="bg-blue-400 text-white">
-          <th className="py-2 px-4 border">Reduction of P</th>
-          <th className="py-2 px-4 border">
-            Means/measures of prevention/protection against the EMF
-          </th>
+          <th className="border p-4">Reduction of 
+P</th>
+          <th className="border p-4">Description</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td className="py-4 px-4 border text-center font-bold">-1</td>
-          <td className="py-4 px-4 border">
-            <p>
-              <strong>
-                <u>At least two procedural or organizational measures from:</u>
-              </strong>
-            </p>
-            <p>- See Mp-type matrix</p>
-            <p>- Special signage for the zones exceeding the AV:</p>
-
-            <p>- Reduction in the intensity of the emission</p>
-            <p>
-              - Moving away from the source or manual reduction of the intensity
-            </p>
-            <p>
-              - Reduction of the intensity when the operator is close to the
-              emitting equipment (e.g. when the furnace is being stoked).
-            </p>
-            <p>
-              - Verification of the intensity of the E field after any change to
-              the workplace…
-            </p>
+      <tr 
+          onClick={() => handleRowClick(-1)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-1</td>
+          <td className="border p-4">
+            <p>At least two procedural or organizational measures from:</p>
+            <ul className="ml-10">
+            <li>See Mp-type matrix</li>
+            <li>Special signage for the zones exceeding the AV:</li>
+            <li>Reduction in the intensity of the emission</li>
+            <li>Moving away from the source or manual reduction of the intensity</li>
+            <li>Reduction of the intensity when the operator is close to the emitting equipment (e.g. when 
+              the furnace is being stoked).</li>
+            <li>Verification of the intensity of the E field after any change to the workplace…</li>
+            </ul>
           </td>
         </tr>
-        <tr>
-          <td className="py-4 px-4 border text-center font-bold">-2</td>
-          <td className="py-4 px-4 border">
-            <p>- Moving of the workplace (or equipment)</p>
-            <p>
-              - Device reducing the intensity of the emission when the machine
-              is being adjusted
-            </p>
-            <p>
-              - Placing of non-conductive furniture and work surfaces to avoid
-              the circulation of currents induced in metallic objects...
-            </p>
+        <tr 
+          onClick={() => handleRowClick(-2)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-2</td>
+          <td className="border p-4">
+          <ul  className="ml-10">
+            <li>Moving of the workplace (or equipment)</li>
+            <li>Device reducing the intensity of the emission when the machine is being adjusted</li>
+            <li>Placing of non-conductive furniture and work surfaces to avoid the circulation of currents 
+                induced in metallic objects...</li>
+         </ul>
           </td>
         </tr>
-        <tr>
-          <td className="py-4 px-4 border text-center font-bold">-3</td>
-          <td className="py-4 px-4 border">
-            <p>
-              - Insulation of the emission source by shielding (metallic
-              protection can serve as a Faraday cage, metal rail panels...),
-              etc.
-            </p>
+        <tr 
+          onClick={() => handleRowClick(-3)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-3</td>
+          <td className="border p-4">
+          <ul  className="ml-10">
+            <li>Insulation of the emission source by shielding (metallic protection can serve as a Faraday 
+              cage, metal rail panels...), etc.</li>
+            
+          </ul>
           </td>
         </tr>
       </tbody>
@@ -327,75 +338,103 @@ const Electromagnetic = () => {
   );
 };
 
-const IonizingRadiation = () => {
+const IonizingRadiation = ({ residualRating, setResidualRating }: Props) => {
+  const handleRowClick = (rating: number) => {
+    setResidualRating(rating);
+  };
+
   return (
-    <table className="w-full border-collapse">
-      <thead className="bg-blue-400 text-white">
-        <tr>
-          <th className="py-10 px-4 text-center border font-bold">
-            Reduction of P
-          </th>
-          <th className="py-10 px-4 text-center border font-bold">
-            Means/measures of prevention/protection against ionizing radiation
-          </th>
+    <table className="border-collapse w-full">
+      <thead>
+        <tr className="bg-blue-400 text-white">
+          <th className="border p-4">Reduction of 
+P</th>
+          <th className="border p-4">Description</th>
         </tr>
       </thead>
       <tbody>
-        <tr className="border">
-          <td className="py-4 px-4 text-center font-bold border">-1</td>
-          <td className="py-4 px-4 border">
-            <p>
-              <u>At least two procedural or organizational measures from:</u>
-            </p>
-            <p>
-              Individual dosimetry for persons performing tasks who are likely
-              to be exposed to ionizing radiation or &gt; 1 mSv. Measurement of
-              an accredited body every year (+ report). Radiometer measurements.
-            </p>
-            <p>Adapted medical surveillance. Surface contamination tests.</p>
-            <p>
-              <u>Radon:</u> regular ventilation, measurements of exposition in
-              the rooms…
-            </p>
-            <p>
-              <u>NORM:</u> indication of the location of the source with signs
-              and/or markings, moving away of the source during the work,
-              training of staff, operating mode available, etc.
-            </p>
-            <p>
-              <u>Mobile sources:</u> work performed at night or when the unit is
-              closed, storage in a special room, insulation of the operator by
-              means of a protective guard (e.g. concrete).
-            </p>
+      <tr 
+          onClick={() => handleRowClick(-1)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-1</td>
+          <td className="border p-4">
+            <p>At least two procedural or organizational measures from:</p>
+            <ul style={{ listStyleType: "circle" }} className="ml-10">
+              <li>Individual dosimetry for persons performing tasks who are likely to be exposed to ionizing 
+                radiation or greater than 1 mSv. Measurement of an accredited body every year (+ report).</li>
+              <li>Radiometer measurements.</li>
+              <li>Adapted medical surveillance.</li>
+              <li>Surface contamination tests.</li>
+              <li>
+                Radon: 
+                <ul  className="ml-10">
+                  <li>regular ventilation</li>
+                  <li>measurements of exposition in the rooms…</li>
+                </ul>
+              </li>
+              <li>
+                NORM: 
+                <ul  className="ml-10">
+                  <li>indication of the location of the source with signs and/or markings</li>
+                  <li>moving away of the source during the work</li>
+                  <li>training of staff</li>
+                  <li>operating mode available, etc.</li>
+                </ul>
+              </li>
+              <li>
+                Mobile sources: 
+                <ul  className="ml-10">
+                  <li>work performed at night or when the unit is closed</li>
+                  <li>storage in a special room</li>
+                  <li>insulation of the operator by means of a protective guard (e.g. concrete)</li>
+                </ul>
+              </li>
+            </ul>
           </td>
         </tr>
-        <tr className="border">
-          <td className="py-4 px-4 text-center font-bold border">-2</td>
-          <td className="py-4 px-4 border">
-            <p>
-              <u>Radon:</u> reinforcement of the natural ventilation or
-              installation of adapted mechanical ventilation if more than 100
-              Bq/m3, sealing of cracks and holes in and around pipes with
-              silicone glue or cement, placing of a membrane on a layer of
-              chippings covered with a concrete slab, etc.
-            </p>
-            <p>
-              <u>X-ray sources:</u> anti-radiation coverall, lead apron, etc.
-            </p>
+        <tr 
+          onClick={() => handleRowClick(-2)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-2</td>
+          <td className="border p-4">
+          <ul style={{ listStyleType: "circle" }} className="ml-10">
+            <li>
+              Radon: 
+              <ul  className="ml-10">
+                <li>reinforcement of the natural ventilation or installation of adapted mechanical 
+                  ventilation if more than 100 Bq/m3</li>
+                <li>sealing of cracks and holes in and around pipes with 
+                  silicone glue or cement</li>
+                <li>placing of a membrane on a layer of chippings covered with a 
+                  concrete slab, etc.</li>
+              </ul>
+            </li>
+            <li>
+              X-ray sources: 
+              <ul className="ml-10">
+                <li>anti-radiation coverall</li>
+                <li>lead apron, etc.</li>
+              </ul>
+            </li>
+          </ul>
           </td>
         </tr>
-        <tr className="border">
-          <td className="py-4 px-4 text-center font-bold border">-3</td>
-          <td className="py-4 px-4 border">
-            <p>
-              <u>Radon:</u> withdrawal from the inhabited space or the
-              depressurization of the lower parts of the building (any basement
-              or crawl space), or the floor itself.
-            </p>
-            <p>
-              <u>X-ray sources:</u> insulation of the operator by means of a
-              lead-lined control panel in the protection room.
-            </p>
+        <tr 
+          onClick={() => handleRowClick(-3)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4">-3</td>
+          <td className="border p-4">
+          <ul  className="ml-10">
+            <li>Radon: withdrawal from the inhabited space or the depressurization of the lower parts of the 
+            building (any basement or crawl space), or the floor itself.</li>
+            <li>X-ray sources: insulation of the operator by means of a lead-lined control panel in the 
+protection room.
+</li>
+            
+          </ul>
           </td>
         </tr>
       </tbody>
@@ -403,8 +442,8 @@ const IonizingRadiation = () => {
   );
 };
 
-const getCategoryComponent = (subCategory: string) => {
-  switch (subCategory) {
+const getCategoryComponent = (category: string) => {
+  switch (category) {
     case subCategoryList.noise:
       return Noise;
     case subCategoryList.vibration:
@@ -417,17 +456,16 @@ const getCategoryComponent = (subCategory: string) => {
       return Electromagnetic;
     case subCategoryList.ionizingRadiation:
       return IonizingRadiation;
-    // Add other categories here
     default:
       return null;
   }
 };
 
-export const ResidualRatingTable = () => {
+export const ResidualRating = ({ residualRating, setResidualRating }: Props) => {
   const { subCategory } = useSubCategoryStore();
-  const CategoryComponent = getCategoryComponent(
-    subCategory || subCategoryList.noise
-  );
+  const CategoryComponent = getCategoryComponent(subCategory || subCategoryList.noise);
 
-  return <div>{CategoryComponent && <CategoryComponent />}</div>;
+  if (!CategoryComponent) return null;
+  
+  return <CategoryComponent residualRating={residualRating} setResidualRating={setResidualRating} />;
 };

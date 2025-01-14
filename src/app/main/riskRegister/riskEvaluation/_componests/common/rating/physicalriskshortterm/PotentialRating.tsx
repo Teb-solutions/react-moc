@@ -1,6 +1,11 @@
 import { subCategoryList, useSubCategoryStore } from "./PhysicalRiskShortTerm";
 
-const Mechanical = () => {
+interface PotentialRatingProps {
+  potentialRating: number | null;
+  setPotentialRating: (rating: number) => void;
+}
+
+const Mechanical = ({ potentialRating, setPotentialRating }: PotentialRatingProps) => {
   return (
     <table className="w-full border-collapse border border-gray-400">
       <thead className="bg-blue-400 text-white">
@@ -15,7 +20,10 @@ const Mechanical = () => {
         </tr>
       </thead>
       <tbody>
-        <tr className="border border-gray-400">
+        <tr 
+          className={`border border-gray-400 cursor-pointer hover:bg-gray-100 ${potentialRating === 10 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(10)}
+        >
           <td className="py-4 px-4 text-center font-bold border border-gray-400">
             10
           </td>
@@ -25,8 +33,11 @@ const Mechanical = () => {
             intervention when the machine is not stopped, etc.
           </td>
         </tr>
-        <tr className="border border-gray-400">
-          <td className="py-4 px-4 text-center font-bold border border-gray-400"></td>
+        <tr 
+          className={`border border-gray-400 cursor-pointer hover:bg-gray-100 ${potentialRating === 6 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(6)}
+        >
+          <td className="py-4 px-4 text-center font-bold border border-gray-400">6</td>
           <td className="py-4 px-4 border border-gray-400">
             Intervening on equipment at a standstill on a "blocked movement",
             etc. Make adjustments, etc. Maintenance with co-activity: without
@@ -34,7 +45,10 @@ const Mechanical = () => {
             secured by a guard, etc.
           </td>
         </tr>
-        <tr className="border border-gray-400">
+        <tr 
+          className={`border border-gray-400 cursor-pointer hover:bg-gray-100 ${potentialRating === 3 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(3)}
+        >
           <td className="py-4 px-4 text-center font-bold border border-gray-400">
             3
           </td>
@@ -43,7 +57,10 @@ const Mechanical = () => {
             etc.
           </td>
         </tr>
-        <tr className="border border-gray-400">
+        <tr 
+          className={`border border-gray-400 cursor-pointer hover:bg-gray-100 ${potentialRating === 1 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(1)}
+        >
           <td className="py-4 px-4 text-center font-bold border border-gray-400">
             1
           </td>
@@ -52,7 +69,10 @@ const Mechanical = () => {
             access to moving parts, etc.
           </td>
         </tr>
-        <tr className="border border-gray-400">
+        <tr 
+          className={`border border-gray-400 cursor-pointer hover:bg-gray-100 ${potentialRating === 0.5 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(0.5)}
+        >
           <td className="py-4 px-4 text-center font-bold border border-gray-400">
             0.5
           </td>
@@ -66,7 +86,7 @@ const Mechanical = () => {
   );
 };
 
-const Traffic = () => {
+const Traffic = ({ potentialRating, setPotentialRating }: PotentialRatingProps) => {
   return (
     <table className="w-full border-collapse border">
       <thead>
@@ -93,7 +113,10 @@ const Traffic = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 10 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(10)}
+        >
           <td className="border py-4 px-4 text-center font-bold">10</td>
           <td className="border py-4 px-4">
             - Moving on ice, in mud, oil, etc.
@@ -104,7 +127,10 @@ const Traffic = () => {
             - Driving under the influence of psychoactive substances.
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 6 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(6)}
+        >
           <td className="border py-4 px-4 text-center font-bold">6</td>
           <td className="border py-4 px-4">
             <strong>
@@ -139,7 +165,10 @@ const Traffic = () => {
             impaired, etc.
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 3 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(3)}
+        >
           <td className="border py-4 px-4 text-center font-bold">3</td>
           <td className="border py-4 px-4">
             <strong>
@@ -167,7 +196,10 @@ const Traffic = () => {
             loaders, mechanical diggers).
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 1 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(1)}
+        >
           <td className="border py-4 px-4 text-center font-bold">1</td>
           <td className="border py-4 px-4">
             <strong>
@@ -190,7 +222,7 @@ const Traffic = () => {
   );
 };
 
-const Height = () => {
+const Height = ({ potentialRating, setPotentialRating }: PotentialRatingProps) => {
   return (
     <table className="w-full border-collapse">
       <thead>
@@ -209,7 +241,10 @@ const Height = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 10 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(10)}
+        >
           <td className="py-4 px-4 border text-center font-bold">10</td>
           <td className="py-4 px-4 border">
             <strong>Working in prohibited conditions:</strong>
@@ -237,7 +272,10 @@ const Height = () => {
           </td>
         </tr>
 
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 6 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(6)}
+        >
           <td className="py-4 px-4 border text-center font-bold">6</td>
           <td className="py-4 px-4 border">
             <strong>
@@ -279,7 +317,10 @@ const Height = () => {
             </p>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 3 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(3)}
+        >
           <td className="py-4 px-4 border text-center font-bold">3</td>
           <td className="py-4 px-4 border">
             <strong>
@@ -330,7 +371,10 @@ const Height = () => {
             </p>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 1 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(1)}
+        >
           <td className="py-4 px-4 border text-center font-bold">1</td>
           <td className="py-4 px-4 border">
             <strong>
@@ -359,7 +403,7 @@ const Height = () => {
   );
 };
 
-const Pressure = () => {
+const Pressure = ({ potentialRating, setPotentialRating }: PotentialRatingProps) => {
   return (
     <table className="w-full border-collapse border">
       <thead>
@@ -378,7 +422,10 @@ const Pressure = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 10 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(10)}
+        >
           <td className="border py-4 text-center font-bold">10</td>
           <td className="border py-4 px-4">
             <strong>Work in contact or in direct presence of pressure:</strong>
@@ -396,7 +443,10 @@ const Pressure = () => {
             <br />- during leak testing, testing, etc., (in degraded mode).
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 6 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(6)}
+        >
           <td className="border py-4 text-center font-bold">6</td>
           <td className="border py-4 px-4">
             Working in HP manually (with a mechanism that fixes the equipment,
@@ -408,7 +458,10 @@ const Pressure = () => {
             - Working with an old hose, an unpredictably overpressurized network
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 3 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(3)}
+        >
           <td className="border py-4 text-center font-bold">3</td>
           <td className="border py-4 px-4">
             Travailler en HP semi-automatique dans la zone d’opération
@@ -421,7 +474,10 @@ const Pressure = () => {
             - purge (with sprayed debris, knob, faucet, etc.), etc.
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 1 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(1)}
+        >
           <td className="border py-4 text-center font-bold">1</td>
           <td className="border py-4 px-4">
             Working in semi-automatic HP out of operation area (GM-GR-HSE-412),
@@ -431,7 +487,10 @@ const Pressure = () => {
           </td>
           <td className="border py-4 px-4"></td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 0.5 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(0.5)}
+        >
           <td className="border py-4 text-center font-bold">0.5</td>
           <td className="border py-4 px-4">
             Working automatically with high pressure.
@@ -443,7 +502,7 @@ const Pressure = () => {
   );
 };
 
-const HeatCold = () => {
+const HeatCold = ({ potentialRating, setPotentialRating }: PotentialRatingProps) => {
   return (
     <table className="w-full border-collapse border">
       <thead>
@@ -458,7 +517,10 @@ const HeatCold = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 10 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(10)}
+        >
           <td className="border py-4 px-4 text-center font-bold">10</td>
           <td className="border py-4 px-4">
             Welding, flame working, etc.; Working on steam/condensate/hot
@@ -467,18 +529,27 @@ const HeatCold = () => {
             products.
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 6 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(6)}
+        >
           <td className="border py-4 px-4 text-center font-bold">6</td>
           <td className="border py-4 px-4">Purge LPG, ethylene, propylene.</td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 3 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(3)}
+        >
           <td className="border py-4 px-4 text-center font-bold">3</td>
           <td className="border py-4 px-4">
             Utiliser une friteuse (contrôle température, filtrage et vidange) ou
             une étuve (équipement à point chaud).
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 1 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(1)}
+        >
           <td className="border py-4 px-4 text-center font-bold">1</td>
           <td className="border py-4 px-4">
             Work on a blocked steam/hot product line. Work under normal
@@ -490,7 +561,7 @@ const HeatCold = () => {
   );
 };
 
-const Electricity = () => {
+const Electricity = ({ potentialRating, setPotentialRating }: PotentialRatingProps) => {
   return (
     <table className="w-full border-collapse">
       <thead>
@@ -503,19 +574,28 @@ const Electricity = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 10 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(10)}
+        >
           <td className="border p-4 text-center font-bold">10</td>
           <td className="border p-4">
             Working in direct contact with an electricity source.
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 6 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(6)}
+        >
           <td className="border p-4 text-center font-bold">6</td>
           <td className="border p-4">
             Co-activity: indirect contact with a part accidentally switched on.
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 3 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(3)}
+        >
           <td className="border p-4 text-center font-bold">3</td>
           <td className="border p-4">
             General maintenance and repair work on circuits: looking for
@@ -526,24 +606,36 @@ const Electricity = () => {
             inappropriate provisional protective equipment.
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 1 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(1)}
+        >
           <td className="border p-4 text-center font-bold">1</td>
           <td className="border p-4">
             Switching off or on of an equipment or an installation
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 0.5 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(0.5)}
+        >
           <td className="border p-4 text-center font-bold">0.5</td>
           <td className="border p-4">
             Working on electrical equipment: replacing a light/switch/electric
             socket/bulb, etc.
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 0.2 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(0.2)}
+        >
           <td className="border p-4 text-center font-bold">0.2</td>
           <td className="border p-4">Using electrical equipment, etc.</td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 0.1 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(0.1)}
+        >
           <td className="border p-4 text-center font-bold">0.1</td>
           <td className="border p-4">No contact possible</td>
         </tr>
@@ -551,7 +643,8 @@ const Electricity = () => {
     </table>
   );
 };
-const Atmosphere = () => {
+
+const Atmosphere = ({ potentialRating, setPotentialRating }: PotentialRatingProps) => {
   return (
     <table className="w-full border-collapse border">
       <thead>
@@ -564,14 +657,20 @@ const Atmosphere = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 10 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(10)}
+        >
           <td className="border p-4 text-center font-bold">10</td>
           <td className="border p-4">
             - Work in an uncleaned/undegassed/unventilated enclosure or during
             inerting.
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 6 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(6)}
+        >
           <td className="border p-4 text-center font-bold">6</td>
           <td className="border p-4">
             - Work in inadequately cleaned/gassed/ventilated enclosure or in a
@@ -581,7 +680,10 @@ const Atmosphere = () => {
             enclosure (leakage due to a leak in the insulation device).
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 3 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(3)}
+        >
           <td className="border p-4 text-center font-bold">3</td>
           <td className="border p-4">
             - Working in a perfectly provided/ventilated enclosure, but
@@ -590,7 +692,10 @@ const Atmosphere = () => {
             (slow consumption of O2 by chemical reaction).
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`border cursor-pointer hover:bg-gray-100 ${potentialRating === 1 ? "bg-blue-100" : ""}`}
+          onClick={() => setPotentialRating(1)}
+        >
           <td className="border p-4 text-center font-bold">1</td>
           <td className="border p-4">
             - Working in an open vessel with unplanned arrivals of outdoor
@@ -611,6 +716,7 @@ const Atmosphere = () => {
     </table>
   );
 };
+
 const getCategoryComponent = (subCategory: string) => {
   switch (subCategory) {
     case subCategoryList.mechanical:
@@ -633,11 +739,11 @@ const getCategoryComponent = (subCategory: string) => {
   }
 };
 
-export const PotentialRatingTable = () => {
+const PotentialRating = ({ potentialRating, setPotentialRating }: PotentialRatingProps) => {
   const { subCategory } = useSubCategoryStore();
-  const CategoryComponent = getCategoryComponent(
-    subCategory || subCategoryList.mechanical
-  );
+  const Component = getCategoryComponent(subCategory);
 
-  return <div>{CategoryComponent && <CategoryComponent />}</div>;
+  return <Component potentialRating={potentialRating} setPotentialRating={setPotentialRating} />;
 };
+
+export default PotentialRating;

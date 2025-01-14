@@ -86,6 +86,9 @@ export default function TemporaryDrawer({
   hazardType: string;
 }) {
   const [open, setOpen] = React.useState(false);
+  const [severityRating, setSeverityRating] = React.useState<number | null>(null);
+  const [potentialRating, setPotentialRating] = React.useState<number | null>(null);
+  const [residualRating, setResidualRating] = React.useState<number | null>(null);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -97,7 +100,16 @@ export default function TemporaryDrawer({
         View Rating Calculator
       </Button>
       <Drawer anchor="right" open={open} onClose={toggleDrawer(false)}>
-        <DrawerList toggleDrawer={toggleDrawer} hazardType={hazardType} />
+        <DrawerList 
+          toggleDrawer={toggleDrawer} 
+          hazardType={hazardType}
+          severityRating={severityRating}
+          setSeverityRating={setSeverityRating}
+          potentialRating={potentialRating}
+          setPotentialRating={setPotentialRating}
+          residualRating={residualRating}
+          setResidualRating={setResidualRating}
+        />
       </Drawer>
     </div>
   );
@@ -106,9 +118,21 @@ export default function TemporaryDrawer({
 const DrawerList = ({
   toggleDrawer,
   hazardType,
+  severityRating,
+  setSeverityRating,
+  potentialRating,
+  setPotentialRating,
+  residualRating,
+  setResidualRating,
 }: {
   toggleDrawer: (newOpen: boolean) => () => void;
   hazardType: string;
+  severityRating: number | null;
+  setSeverityRating: (rating: number | null) => void;
+  potentialRating: number | null;
+  setPotentialRating: (rating: number | null) => void;
+  residualRating: number | null;
+  setResidualRating: (rating: number | null) => void;
 }) => {
   const [value, setValue] = React.useState(0);
   const { subCategory, setSubCategory } = useSubCategoryStore();
@@ -167,13 +191,13 @@ const DrawerList = ({
         />
       </Tabs>
       <CustomTabPanel value={value} index={0}>
-        <SeverityRatingTable />
+        <SeverityRatingTable severityRating={severityRating} setSeverityRating={setSeverityRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <PotentialRatingTable />
+        <PotentialRatingTable potentialRating={potentialRating} setPotentialRating={setPotentialRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <ResidualRatingTable />
+        <ResidualRatingTable residualRating={residualRating} setResidualRating={setResidualRating} />
       </CustomTabPanel>
     </Box>
   );

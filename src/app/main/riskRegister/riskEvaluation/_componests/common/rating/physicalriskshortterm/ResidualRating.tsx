@@ -1,6 +1,11 @@
 import { subCategoryList, useSubCategoryStore } from "./PhysicalRiskShortTerm";
 
-const Mechanical = () => {
+interface ResidualRatingProps {
+  residualRating: number | null;
+  setResidualRating: (rating: number) => void;
+}
+
+const Mechanical = ({ residualRating, setResidualRating }: ResidualRatingProps) => {
   return (
     <table className="w-full border-collapse">
       <thead>
@@ -12,7 +17,10 @@ const Mechanical = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-1)}
+        >
           <td className="py-4 px-4 border text-center font-bold">-1</td>
           <td className="py-4 px-4 border">
             <strong>
@@ -21,7 +29,7 @@ const Mechanical = () => {
             <ul className="list-disc list-inside">
               <li>See Mp-type matrix</li>
               <li>
-                Apply the golden rules 3, 5 and 7 the manufacturer’s
+                Apply the golden rules 3, 5 and 7 the manufacturer's
                 instructions, provide user training, etc.
               </li>
               <li>
@@ -33,7 +41,10 @@ const Mechanical = () => {
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-2)}
+        >
           <td className="py-4 px-4 border text-center font-bold">-2</td>
           <td className="py-4 px-4 border">
             Safety of installations and machinery provided for in the design and
@@ -48,7 +59,7 @@ const Mechanical = () => {
   );
 };
 
-const Traffic = () => {
+const Traffic = ({ residualRating, setResidualRating }: ResidualRatingProps) => {
   return (
     <table className="w-full border border-collapse border-gray-400">
       <thead className="bg-blue-500">
@@ -70,7 +81,10 @@ const Traffic = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-1)}
+        >
           <td className="border border-gray-400 text-center">
             <strong>-1</strong>
           </td>
@@ -124,7 +138,10 @@ const Traffic = () => {
             </p>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-2)}
+        >
           <td className="border border-gray-400 text-center">
             <strong>-2</strong>
           </td>
@@ -157,7 +174,10 @@ const Traffic = () => {
             <p>- Equip trucks with an alcohol interlock</p>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-3)}
+        >
           <td className="border border-gray-400 text-center">
             <strong>-3</strong>
           </td>
@@ -181,7 +201,7 @@ const Traffic = () => {
   );
 };
 
-const Pressure = () => {
+const Pressure = ({ residualRating, setResidualRating }: ResidualRatingProps) => {
   return (
     <table className="w-full border-collapse border border-gray-400">
       <tbody>
@@ -203,7 +223,10 @@ const Pressure = () => {
             <strong>Pneumatic</strong>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-1)}
+        >
           <td
             className="border border-gray-400 py-4 px-4 text-center font-bold"
             rowSpan={2}
@@ -256,7 +279,10 @@ const Pressure = () => {
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-1)}
+        >
           <td className="border border-gray-400 py-4 px-4">
             <ul>
               <li>
@@ -268,7 +294,10 @@ const Pressure = () => {
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-2)}
+        >
           <td className="border border-gray-400 py-4 px-4 text-center font-bold">
             -2
           </td>
@@ -305,7 +334,10 @@ const Pressure = () => {
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-3)}
+        >
           <td className="border border-gray-400 py-4 px-4 text-center font-bold">
             -3
           </td>
@@ -332,7 +364,7 @@ const Pressure = () => {
   );
 };
 
-const Height = () => {
+const Height = ({ residualRating, setResidualRating }: ResidualRatingProps) => {
   return (
     <table className="w-full border-collapse border border-gray-400">
       <thead className="bg-blue-400 text-white">
@@ -352,7 +384,10 @@ const Height = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-1)}
+        >
           <td className="py-4 px-4 border border-gray-400 text-center font-bold">
             -1
           </td>
@@ -402,7 +437,10 @@ const Height = () => {
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-2)}
+        >
           <td className="py-4 px-4 border border-gray-400 text-center font-bold">
             -2
           </td>
@@ -452,7 +490,10 @@ const Height = () => {
             </ul>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-3)}
+        >
           <td className="py-4 px-4 border border-gray-400 text-center font-bold">
             -3
           </td>
@@ -485,7 +526,7 @@ const Height = () => {
   );
 };
 
-const HeatCold = () => {
+const HeatCold = ({ residualRating, setResidualRating }: ResidualRatingProps) => {
   return (
     <table className="w-full border-collapse border">
       <thead>
@@ -497,7 +538,10 @@ const HeatCold = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-1)}
+        >
           <td className="py-4 px-4 border text-center font-bold">-1</td>
           <td className="py-4 px-4 border">
             <p>
@@ -515,7 +559,10 @@ const HeatCold = () => {
             <p>- Use showers close to the Bitumen station, etc.</p>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-2)}
+        >
           <td className="py-4 px-4 border text-center font-bold">-2</td>
           <td className="py-4 px-4 border">
             <p>- Specific PPE (soldering equipment, etc)</p>
@@ -524,7 +571,10 @@ const HeatCold = () => {
             </p>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-3)}
+        >
           <td className="py-4 px-4 border text-center font-bold">-3</td>
           <td className="py-4 px-4 border">
             <p>
@@ -538,7 +588,7 @@ const HeatCold = () => {
   );
 };
 
-const Electricity = () => {
+const Electricity = ({ residualRating, setResidualRating }: ResidualRatingProps) => {
   return (
     <table className="w-full border-collapse">
       <thead>
@@ -550,7 +600,10 @@ const Electricity = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-1)}
+        >
           <td className="border p-4 text-center font-bold">-1</td>
           <td className="border p-4">
             <p>
@@ -571,7 +624,10 @@ const Electricity = () => {
             <p>- Periodically checking electrical installations, etc.</p>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-2)}
+        >
           <td className="border p-4 text-center font-bold">-2</td>
           <td className="border p-4">
             <p>- Holding authorization covering the task to be performed</p>
@@ -581,7 +637,10 @@ const Electricity = () => {
             </p>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-3)}
+        >
           <td className="border p-4 text-center font-bold">-3</td>
           <td className="border p-4">
             <p>
@@ -596,7 +655,7 @@ const Electricity = () => {
   );
 };
 
-const Atmosphere = () => {
+const Atmosphere = ({ residualRating, setResidualRating }: ResidualRatingProps) => {
   return (
     <table className="w-full border-collapse border border-gray-400">
       <thead>
@@ -608,7 +667,10 @@ const Atmosphere = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-1)}
+        >
           <td className="py-4 px-4 border border-gray-400 text-center font-bold">
             -1
           </td>
@@ -637,7 +699,10 @@ const Atmosphere = () => {
             <p>- have tested means of emergency evacuation, etc.</p>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-2)}
+        >
           <td className="py-4 px-4 border border-gray-400 text-center font-bold">
             -2
           </td>
@@ -646,7 +711,10 @@ const Atmosphere = () => {
             <p>- Ensure continuous ventilation, etc.</p>
           </td>
         </tr>
-        <tr>
+        <tr 
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? "bg-blue-100" : ""}`}
+          onClick={() => setResidualRating(-3)}
+        >
           <td className="py-4 px-4 border border-gray-400 text-center font-bold">
             -3
           </td>
@@ -669,6 +737,7 @@ const Atmosphere = () => {
     </table>
   );
 };
+
 const getCategoryComponent = (subCategory: string) => {
   switch (subCategory) {
     case subCategoryList.mechanical:
@@ -679,23 +748,21 @@ const getCategoryComponent = (subCategory: string) => {
       return Pressure;
     case subCategoryList.height:
       return Height;
-    case subCategoryList.heatcold:
+    case subCategoryList.heatCold:
       return HeatCold;
-    case subCategoryList.electricity:
-      return Electricity;
     case subCategoryList.atmosphere:
       return Atmosphere;
-    // Add other categories here
+    case subCategoryList.electricity:
+      return Electricity;
     default:
-      return null;
+      return Mechanical;
   }
 };
 
-export const ResidualRatingTable = () => {
+const ResidualRating = ({ residualRating, setResidualRating }: ResidualRatingProps) => {
   const { subCategory } = useSubCategoryStore();
-  const CategoryComponent = getCategoryComponent(
-    subCategory || subCategoryList.mechanical
-  );
-
-  return <div>{CategoryComponent && <CategoryComponent />}</div>;
+  const Component = getCategoryComponent(subCategory);
+  return <Component residualRating={residualRating} setResidualRating={setResidualRating} />;
 };
+
+export default ResidualRating;

@@ -22,8 +22,9 @@ import Tabs from "@mui/material/Tabs";
 
 import create from "zustand";
 import { SeverityRatingTable } from "./SeverityRatingTable";
-import { PotentialRatingTable } from "./PotentialRating";
-import { ResidualRatingTable } from "./ResidualRating";
+import { PotentialRating } from "./PotentialRating";
+import { ResidualRating } from "./ResidualRating";
+
 // import Noise from "./severity/Noise";
 // import TableComponent from "./TableComponent";
 
@@ -96,7 +97,7 @@ function a11yProps(index: number) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-export default function TemporaryDrawer({
+ function PhysicalRiskNew({
   hazardType,
 }: {
   hazardType: string;
@@ -127,14 +128,17 @@ const DrawerList = ({
   hazardType: string;
 }) => {
   const [value, setValue] = React.useState(0);
+  const [severityRating, setSeverityRating] = React.useState<number | null>(null);
+  const [potentialRating, setPotentialRating] = React.useState<number | null>(null);
+  const [residualRating, setResidualRating] = React.useState<number | null>(null);
   const { subCategory, setSubCategory } = useSubCategoryStore();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  const handleSubCategoryChange = (event: SelectChangeEvent<string>) => {
-    setSubCategory(event.target.value as string);
+  const handleSubCategoryChange = (event: any) => {
+    setSubCategory(event.target.value);
   };
 
   return (
@@ -183,14 +187,15 @@ const DrawerList = ({
         />
       </Tabs>
       <CustomTabPanel value={value} index={0}>
-        <SeverityRatingTable />
+        <SeverityRatingTable severityRating={severityRating} setSeverityRating={setSeverityRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <PotentialRatingTable />
+        <PotentialRating potentialRating={potentialRating} setPotentialRating={setPotentialRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <ResidualRatingTable />
+        <ResidualRating residualRating={residualRating} setResidualRating={setResidualRating} />
       </CustomTabPanel>
     </Box>
   );
 };
+export default PhysicalRiskNew;

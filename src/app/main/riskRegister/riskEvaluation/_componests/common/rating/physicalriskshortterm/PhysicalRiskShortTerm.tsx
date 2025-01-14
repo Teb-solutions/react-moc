@@ -15,10 +15,9 @@ import Tabs from "@mui/material/Tabs";
 
 import create from "zustand";
 import { SeverityRatingTable } from "./SeverityRatingTable";
-import { PotentialRatingTable } from "./PotentialRating";
-import { ResidualRatingTable } from "./ResidualRating";
-// import Noise from "./severity/Noise";
-// import TableComponent from "./TableComponent";
+import PotentialRating from "./PotentialRating";
+import ResidualRating from "./ResidualRating";
+
 
 interface SubCategoryState {
   subCategory: string;
@@ -124,6 +123,9 @@ const DrawerList = ({
 }) => {
   const [value, setValue] = React.useState(0);
   const { subCategory, setSubCategory } = useSubCategoryStore();
+  const [severityRating, setSeverityRating] = React.useState<number | null>(null);
+  const [potentialRating, setPotentialRating] = React.useState<number | null>(null);
+  const [residualRating, setResidualRating] = React.useState<number | null>(null);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -174,18 +176,18 @@ const DrawerList = ({
           {...a11yProps(1)}
         />
         <Tab
-          label="Residual potential exposure probability rating P’"
+          label="Residual potential exposure probability rating P'"
           {...a11yProps(2)}
         />
       </Tabs>
       <CustomTabPanel value={value} index={0}>
-        <SeverityRatingTable />
+        <SeverityRatingTable severityRating={severityRating} setSeverityRating={setSeverityRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <PotentialRatingTable />
+        <PotentialRating potentialRating={potentialRating} setPotentialRating={setPotentialRating} />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <ResidualRatingTable />
+        <ResidualRating residualRating={residualRating} setResidualRating={setResidualRating} />
       </CustomTabPanel>
     </Box>
   );

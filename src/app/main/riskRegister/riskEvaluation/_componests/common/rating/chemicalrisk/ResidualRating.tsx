@@ -1,7 +1,16 @@
 import { subCategoryList, useSubCategoryStore } from "./ChemicalRisk";
-import { TestTable } from "./TestTable"; // Update the path to the correct location of TestTable
+import { TestTable } from "./TestTable";
 
-const SafetyTable = () => {
+interface Props {
+  residualRating: number | null;
+  setResidualRating: (rating: number | null) => void;
+}
+
+const SafetyTable = ({ residualRating, setResidualRating }: Props) => {
+  const handleRowClick = (rating: number) => {
+    setResidualRating(rating);
+  };
+
   return (
     <table className="w-full border-collapse border">
       <thead>
@@ -22,7 +31,10 @@ const SafetyTable = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(-1)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border py-4 px-4 text-center font-bold">-1</td>
           <td className="border py-4 px-4">
             - Blind
@@ -44,7 +56,10 @@ const SafetyTable = () => {
             <br />- Additional light, etc.
           </td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(-2)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border py-4 px-4 text-center font-bold">-2</td>
           <td className="border py-4 px-4">
             - Locations of thermal radiation sources away from employees, etc.
@@ -63,7 +78,10 @@ const SafetyTable = () => {
             <br />- Introduction of supplementary light sources, etc.
           </td>
         </tr>
-        <tr>
+        <tr 
+          onClick={() => handleRowClick(-3)}
+          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+        >
           <td className="border py-4 px-4 text-center font-bold">-3</td>
           <td className="border py-4 px-4">
             - Insulation/weather stripping, air-conditioning, enclosure,
@@ -71,7 +89,8 @@ const SafetyTable = () => {
           </td>
           <td className="border py-4 px-4">
             - Partitions
-            <br />- Enclosing noisy machines, etc.
+            <br />
+            - Enclosing noisy machines, etc.
           </td>
           <td className="border py-4 px-4"></td>
         </tr>
@@ -80,12 +99,9 @@ const SafetyTable = () => {
   );
 };
 
-const HealthTable = () => {
-  const scrollToTable = (tableId: string) => {
-    const element = document.getElementById(tableId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+const HealthTable = ({ residualRating, setResidualRating }: Props) => {
+  const handleRowClick = (rating: number) => {
+    setResidualRating(rating);
   };
 
   return (
@@ -98,7 +114,10 @@ const HealthTable = () => {
               className="text-blue-500 hover:underline font-semibold text-lg"
               onClick={(e) => {
                 e.preventDefault();
-                scrollToTable("table1");
+                const element = document.getElementById("table1");
+                if (element) {
+                  element.scrollIntoView({ behavior: "smooth" });
+                }
               }}
             >
               Inhalation
@@ -110,7 +129,10 @@ const HealthTable = () => {
               className="text-blue-500 hover:underline  font-semibold text-lg"
               onClick={(e) => {
                 e.preventDefault();
-                scrollToTable("table2");
+                const element = document.getElementById("table2");
+                if (element) {
+                  element.scrollIntoView({ behavior: "smooth" });
+                }
               }}
             >
               Contact with skin
@@ -138,7 +160,10 @@ const HealthTable = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr 
+            onClick={() => handleRowClick(-1)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+          >
             <td className="py-4 px-4 border border-gray-400 text-center font-bold">
               -1
             </td>
@@ -155,7 +180,10 @@ const HealthTable = () => {
               </ul>
             </td>
           </tr>
-          <tr>
+          <tr 
+            onClick={() => handleRowClick(-2)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+          >
             <td className="py-4 px-4 border border-gray-400 text-center font-bold">
               -2
             </td>
@@ -171,7 +199,10 @@ const HealthTable = () => {
               </ul>
             </td>
           </tr>
-          <tr>
+          <tr 
+            onClick={() => handleRowClick(-3)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+          >
             <td className="py-4 px-4 border border-gray-400 text-center font-bold">
               -3
             </td>
@@ -209,7 +240,10 @@ const HealthTable = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr 
+            onClick={() => handleRowClick(-1)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+          >
             <td className="py-4 px-4 border border-gray-400 text-center font-bold">
               -1
             </td>
@@ -217,7 +251,10 @@ const HealthTable = () => {
               - 10% OEL &lt; exposure measurements &lt; 50% OEL
             </td>
           </tr>
-          <tr>
+          <tr 
+            onClick={() => handleRowClick(-2)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+          >
             <td className="py-4 px-4 border border-gray-400 text-center font-bold">
               -2
             </td>
@@ -225,7 +262,10 @@ const HealthTable = () => {
               - Exposure measurements &lt; 10% OEL
             </td>
           </tr>
-          <tr>
+          <tr 
+            onClick={() => handleRowClick(-3)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+          >
             <td className="py-4 px-4 border border-gray-400 text-center font-bold">
               -3
             </td>
@@ -256,7 +296,10 @@ const HealthTable = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr 
+            onClick={() => handleRowClick(-1)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+          >
             <td className="py-4 px-4 border border-gray-400 text-center font-bold">
               -1
             </td>
@@ -274,7 +317,10 @@ const HealthTable = () => {
               </ul>
             </td>
           </tr>
-          <tr>
+          <tr 
+            onClick={() => handleRowClick(-2)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+          >
             <td className="py-4 px-4 border border-gray-400 text-center font-bold">
               -2
             </td>
@@ -288,7 +334,10 @@ const HealthTable = () => {
               </ul>
             </td>
           </tr>
-          <tr>
+          <tr 
+            onClick={() => handleRowClick(-3)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+          >
             <td className="py-4 px-4 border border-gray-400 text-center font-bold">
               -3
             </td>
@@ -306,23 +355,23 @@ const HealthTable = () => {
     </>
   );
 };
+
 const getCategoryComponent = (subCategory: string) => {
   switch (subCategory) {
     case subCategoryList.health:
       return HealthTable;
     case subCategoryList.safety:
-      return TestTable;
-
+      return SafetyTable;
     default:
       return null;
   }
 };
 
-export const ResidualRatingTable = () => {
+export const ResidualRatingTable = ({ residualRating, setResidualRating }: Props) => {
   const { subCategory } = useSubCategoryStore();
-  const CategoryComponent = getCategoryComponent(
-    subCategory || subCategoryList.health
-  );
-  // return <TestTable />;
-  return <div>{CategoryComponent && <CategoryComponent />}</div>;
+  const CategoryComponent = getCategoryComponent(subCategory || subCategoryList.health);
+
+  if (!CategoryComponent) return null;
+
+  return <CategoryComponent residualRating={residualRating} setResidualRating={setResidualRating} />;
 };
