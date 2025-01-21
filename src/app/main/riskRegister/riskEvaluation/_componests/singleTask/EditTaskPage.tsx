@@ -829,8 +829,7 @@ const EditTaskPage = (
                     </MenuItem>
                   ))}
                 </Select>
-                <p>{selectedTime}</p>
-                <p>{timesArr.map((time) => time.value).join(", ")}</p>
+                
                 {errors.modifiedTime && (
                   <p className="text-red-500 my-2 text-sm">
                     {errors.modifiedTime.message}

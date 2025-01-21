@@ -10,22 +10,13 @@ import TaskActions from "./TaskActions";
 import { TaskPopupType, TaskStatusEnum } from "../../../helpers/enum";
 import VersionHistory from "./VersionHistory";
 import TaskButton from "../../../common/TaskButton";
-import { Task } from "@mui/icons-material";
 import { useRiskStore } from "../common/riskstore";
 import { useTaskStore } from "../common/taskStore";
-import { ITask } from "../../../helpers/type";
-import { toast } from "react-toastify";
-import { apiAuth } from "src/utils/http";
-import useFetchLookUpData from "../common/useFetchLookUpData";
-import ConfirmationModal from "src/app/main/moc/common_modal/confirmation_modal/ConfirmationModal";
-import { set } from "lodash";
 import { useParams } from "react-router";
-import { mutate } from "swr";
-import { useGetPermenant } from "src/utils/swr";
+
 import { useControlMeasureStore } from "../common/controlMeasureStore";
-import EditTask from "./EditTask";
-import CommonModal from "../../../common/CommonModal";
-import EditTaskPage from "./EditTaskPage";
+import useFetchLookUpData from "../common/useFetchLookUpData";
+
 interface RiskItemProps {
   label: string;
   value: string;
@@ -49,22 +40,39 @@ const TaskDetailsCard = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const { selectedTask } = useTaskStore();
 
+  
+  const timeUrl = "/LookupData/Lov/29";
+  const frequencyUrl = selectedTask.time
+    ? `/LookupData/Lov/30/${selectedTask.time}`
+    : null;
+  const {
+    data: timesArr,
+    loading: timeLoading,
+    error: timeError,
+  } = useFetchLookUpData(timeUrl);
+  const {
+    data: frequencyArr,
+    loading: frequencyLoading,
+    error: frequencyError,
+  } = useFetchLookUpData(frequencyUrl);
+
+ 
   const priskItems: RiskItemProps[] = useMemo(
     () => [
       {
         label: "Time",
-        value: selectedTask.time ? selectedTask.time.toString() : "NA",
+        value: selectedTask.time && timesArr ? timesArr?.find((time) => time.value === selectedTask.time)?.text : "NA",
       },
       {
         label: "Frequency",
-        value: selectedTask.frequencyDetails
-          ? selectedTask.frequencyDetails.toString()
-          : "0",
+        value: selectedTask.frequencyDetails && frequencyArr
+          ? frequencyArr?.find((fq) => fq.value === selectedTask.frequencyDetails)?.text
+          : "NA",
       },
       {
         label: "Frequency Scoring",
@@ -91,22 +99,20 @@ const TaskDetailsCard = () => {
           : "0",
       },
     ],
-    [selectedTask]
+    [selectedTask, timesArr, frequencyArr]
   );
 
   const rriskItems: RiskItemProps[] = useMemo(
     () => [
       {
         label: "Time",
-        value: selectedTask.modifiedTime
-          ? selectedTask.modifiedTime.toString()
-          : "0",
+        value: selectedTask.modifiedTime && timesArr ? timesArr?.find((time) => time.value === selectedTask.modifiedTime)?.text : "NA",
       },
       {
         label: "Frequency",
-        value: selectedTask.modifiedFrequencyDetails
-          ? selectedTask.modifiedFrequencyDetails.toString()
-          : "0",
+        value: selectedTask.modifiedFrequencyDetails && frequencyArr
+          ? frequencyArr?.find((fq) => fq.value === selectedTask.modifiedFrequencyDetails)?.text
+          : "NA",
       },
       {
         label: "Frequency Scoring",
@@ -133,10 +139,12 @@ const TaskDetailsCard = () => {
           : "0",
       },
     ],
-    [selectedTask]
+    [selectedTask, timesArr, frequencyArr]
   );
 
   const riskId = useParams<{ riskId: string }>().riskId;
+
+  
 
   return (
     <Paper className="flex flex-col p-10 mt-10">

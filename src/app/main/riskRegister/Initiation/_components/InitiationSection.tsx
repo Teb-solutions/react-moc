@@ -43,12 +43,11 @@ const InitiationSection = ({ risk }: { risk: IRiskRegisterDetails }) => {
           <InfoItem key={index} label={item.label} value={item.value} />
         ))}
       </div>
-      <div className="flex">
+      <div className="grid grid-cols-1 gap-10">
         <InfoItem label="Title" value={risk.projectName} />
-      </div>
-      <div className="flex">
         <InfoItem label="Description" value={risk.projectDescription} />
       </div>
+      
     </section>
   );
 };

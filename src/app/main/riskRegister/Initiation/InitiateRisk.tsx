@@ -228,8 +228,10 @@ function InitiateRisk() {
                         fullWidth
                         label="Created On"
                         id="category"
+                        // type="date"
+                        // defaultValue={daysjs().format("DD-MM-YYYY")}
                         value={daysjs().format("DD-MM-YYYY")}
-                        {...register("date", { required: true })}
+                        // {...register("date", { required: true })}
                         disabled
                       />
                       {errors.date?.type === "required" && (

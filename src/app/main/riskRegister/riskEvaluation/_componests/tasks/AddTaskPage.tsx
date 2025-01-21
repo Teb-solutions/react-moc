@@ -245,12 +245,7 @@ const AddTaskPage = ({
           potentialProbabilityRating + residualProbabilityRating,
           severityRating
         );
-        console.log(
-          residualFrequencyScoringWatch,
-          severityRating,
-          potentialProbabilityRating + residualProbabilityRating
-        );
-        console.log(residualRisk, "calculated residual risk");
+       
         residualRisk && setValue("residualRisk", residualRisk);
       }
     }
@@ -264,10 +259,14 @@ const AddTaskPage = ({
 
   //useEffect to calculate the final task risk classification
   useEffect(() => {
+    if(!residualRiskWatch) return;
+    else{
+     
     const { classification, classificationValue } =
       CalculateRiskClassification(residualRiskWatch);
     setValue("residualRiskClassification", classificationValue);
     setValue("residualRiskClassificationDisplay", classification);
+    }
   }, [residualRiskWatch]);
 
   //useEffect to update the control measures in the form values
@@ -634,7 +633,7 @@ const AddTaskPage = ({
                 <InputLabel>Time*</InputLabel>
                 <Select
                   {...register("modifiedTime")}
-                  value={selectedTime}
+                  value={watch('time')}
                   error={!!errors.modifiedTime}
                   disabled
                   label="Time*"
@@ -645,8 +644,7 @@ const AddTaskPage = ({
                     </MenuItem>
                   ))}
                 </Select>
-                <p>{selectedTime}</p>
-                <p>{timesArr.map((time) => time.value).join(", ")}</p>
+                
                 {errors.modifiedTime && (
                   <p className="text-red-500 my-2 text-sm">
                     {errors.modifiedTime.message}
@@ -761,12 +759,12 @@ const AddTaskPage = ({
           </div>{" "}
         </div>
         <div className="flex flex-row justify-between gap-10 mt-10">
-          <RiskClassificationDisplay
+          {watch("residualRiskClassification") && <RiskClassificationDisplay
             residualRiskClassification={watch("residualRiskClassification")}
             residualRiskClassificationDisplay={watch(
               "residualRiskClassificationDisplay"
             )}
-          />
+          />}
           <div className="flex flex-row gap-10">
             <Button
               // onClick={() => setIsOpen(false)}
