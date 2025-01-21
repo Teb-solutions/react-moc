@@ -29,6 +29,8 @@ import RiskClassificationDisplay from "../../../common/RiskClassificationDisplay
 import { apiAuth } from "src/utils/http";
 import { toast } from "react-toastify";
 import { mutate } from "swr";
+import RatingCalculator from "../common/RatingCalculator";
+import { useRatingStore } from "../common/ratingStore";
 
 export const AddTaskSchema = z.object({
   riskRegisterId: z.number(),
@@ -70,11 +72,11 @@ const EditTaskPage = (
   const { selectedTask, isEditTaskClicked, setIsEditTaskClicked } =
     useTaskStore();
   const [selectedTime, setSelectedTime] = useState<number | null>(
-    selectedTask.time
+    selectedTask && selectedTask?.time
   );
   const [selectedResidualTime, setSelectedResidualTime] = useState<
     number | null
-  >(selectedTask.modifiedTime);
+  >(selectedTask && selectedTask?.modifiedTime);
 
   //storing all the control measures in an array
   const [selectedHumanControlMeasures, setSelectedHumanControlMeasures] =
@@ -189,94 +191,124 @@ const EditTaskPage = (
 
   const timeChange = watch("time");
   const frequencyChange = watch("frequencyDetails");
-  const residualTimeChange = watch("modifiedTime");
-  const residualFrequencyChange = watch("modifiedFrequencyDetails");
   const frequencyScoringWatch = watch("frequencyScoring");
   const residualFrequencyScoringWatch = watch("residualFrequencyScoring");
-  const likelihoodScoringWatch = watch("likelihoodScoring");
-  const severityScoringWatch = watch("severityScoring");
-  const residuallikelihoodScoringWatch = watch("residualLikelihoodScoring");
-  const residualSeverityScoringWatch = watch("residualSeverityScoring");
   const residualRiskWatch = watch("residualRisk");
+  const hazardTypeWatch = watch("hazardType");
+
+  //here we are trying to update the potential frequency scoring and residual frequency scoring
+  // based on the selected frequency and residual frequency from the drawer element
+  const {
+    severityRating,
+    potentialProbabilityRating,
+    residualProbabilityRating,
+    setPotentialProbabilityRating,
+    setSeverityRating,
+    setResidualProbabilityRating,
+  } = useRatingStore();
+
+  useEffect(() => {
+    setPotentialProbabilityRating(selectedTask?.likelihoodScoring);
+    setSeverityRating(selectedTask?.severityScoring);
+    setResidualProbabilityRating(selectedTask?.residualLikelihoodScoring);
+  }, []);
+
+  // useEffect(() => {
+  //   setPotentialProbabilityRating(null);
+  //   setSeverityRating(null);
+  //   setResidualProbabilityRating(null);
+  //   setValue("potentialRisk", null);
+  //   setValue("residualRisk", null);
+  // }, [hazardTypeWatch]);
+
+  useEffect(() => {}, [timeChange, frequencyChange]);
 
   //useEffect to update the selected time and residual time,
   // potential frequency scoring and residual frequency scoring
   useEffect(() => {
+    if (timeChange) {
+      setValue("modifiedTime", timeChange);
+    }
+    if (frequencyChange) {
+      setValue("modifiedFrequencyDetails", frequencyChange);
+    }
     setSelectedTime(timeChange);
-    setSelectedResidualTime(residualTimeChange);
+    setSelectedResidualTime(timeChange);
 
-    if (timeChange > 0 && frequencyChange > 0 && frequencyArr.length > 0) {
+    if (timeChange > 0 && frequencyChange > 0) {
       const selectedFrequency = frequencyArr.find(
         (frequency) => frequency.value === frequencyChange
       );
-      const frequencyScoring =
-        selectedFrequency.text &&
-        CalculateFrequencyScoring(selectedFrequency.text);
-      setValue("frequencyScoring", frequencyScoring);
+      if (selectedFrequency) {
+        const frequencyScoring = CalculateFrequencyScoring(
+          selectedFrequency.text
+        );
+        setValue("frequencyScoring", frequencyScoring);
+        setValue("residualFrequencyScoring", frequencyScoring);
+      }
     }
-    if (
-      residualTimeChange > 0 &&
-      residualFrequencyChange > 0 &&
-      residualFrequencyArr.length > 0
-    ) {
-      const selectedFrequency = residualFrequencyArr.find(
-        (frequency) => frequency.value === residualFrequencyChange
-      );
-      const frequencyScoring = CalculateFrequencyScoring(
-        selectedFrequency.text
-      );
-      setValue("residualFrequencyScoring", frequencyScoring);
-    }
-  }, [
-    timeChange,
-    frequencyChange,
-    residualTimeChange,
-    residualFrequencyChange,
-  ]);
+  }, [timeChange, frequencyChange]);
 
   //useEffect to calculate the potential risk and residual risk
   useEffect(() => {
+    setValue("likelihoodScoring", potentialProbabilityRating);
+    setValue("severityScoring", severityRating);
+    setValue("residualLikelihoodScoring", residualProbabilityRating);
+    setValue("residualSeverityScoring", severityRating);
     if (
       frequencyScoringWatch &&
       frequencyScoringWatch > 0 &&
-      likelihoodScoringWatch &&
-      likelihoodScoringWatch > 0 &&
-      severityScoringWatch &&
-      severityScoringWatch > 0
+      potentialProbabilityRating &&
+      potentialProbabilityRating > 0 &&
+      severityRating &&
+      severityRating > 0
     ) {
       const potentialRisk = CalculatePotentialRisk(
         frequencyScoringWatch,
-        likelihoodScoringWatch,
-        severityScoringWatch
+        potentialProbabilityRating,
+        severityRating
       );
+      console.log(
+        frequencyScoringWatch,
+        severityRating,
+        potentialProbabilityRating
+      );
+      console.log(potentialRisk, "calculated potential risk");
       potentialRisk && setValue("potentialRisk", potentialRisk);
     }
     if (
       residualFrequencyScoringWatch &&
       residualFrequencyScoringWatch > 0 &&
-      residuallikelihoodScoringWatch &&
-      residuallikelihoodScoringWatch > 0 &&
-      residualSeverityScoringWatch &&
-      residualSeverityScoringWatch > 0
+      potentialProbabilityRating &&
+      potentialProbabilityRating > 0 &&
+      residualProbabilityRating &&
+      severityRating &&
+      severityRating > 0
     ) {
       {
         const residualRisk = CalculatePotentialRisk(
           residualFrequencyScoringWatch,
-          residuallikelihoodScoringWatch,
-          residualSeverityScoringWatch
+          potentialProbabilityRating + residualProbabilityRating <= 0
+            ? 0
+            : potentialProbabilityRating + residualProbabilityRating,
+          severityRating
         );
+        console.log(
+          residualFrequencyScoringWatch,
+          severityRating,
+          potentialProbabilityRating + residualProbabilityRating
+        );
+        console.log(residualRisk, "calculated residual risk");
         residualRisk && setValue("residualRisk", residualRisk);
       }
     }
   }, [
-    frequencyScoringWatch,
+    severityRating,
+    potentialProbabilityRating,
+    residualProbabilityRating,
     residualFrequencyScoringWatch,
-    likelihoodScoringWatch,
-    severityScoringWatch,
-    residuallikelihoodScoringWatch,
-    residualSeverityScoringWatch,
+    frequencyScoringWatch,
   ]);
-
   //useEffect to calculate the final task risk classification
   useEffect(() => {
     const { classification, classificationValue } =
@@ -319,7 +351,7 @@ const EditTaskPage = (
 
     //this code is to update the deleted control measures and retain others in the task
 
-    const humanCsFiltered = selectedTask.controlMeasures.filter(
+    const humanCsFiltered = selectedTask?.controlMeasures.filter(
       (measure) => measure.type === ControlMeasuresType.Human
     );
     const humanCSWithDeleted = humanCsFiltered.map((measure) =>
@@ -341,7 +373,7 @@ const EditTaskPage = (
             controlMeasureId: measure.controlMeasureId,
           }
     );
-    const technicalCsFiltered = selectedTask.controlMeasures.filter(
+    const technicalCsFiltered = selectedTask?.controlMeasures.filter(
       (measure) => measure.type === ControlMeasuresType.Technical
     );
     const technicalCSWithDeleted = technicalCsFiltered.map((measure) =>
@@ -364,7 +396,7 @@ const EditTaskPage = (
             controlMeasureId: measure.controlMeasureId,
           }
     );
-    const organizationalCsFiltered = selectedTask.controlMeasures.filter(
+    const organizationalCsFiltered = selectedTask?.controlMeasures.filter(
       (measure) => measure.type === ControlMeasuresType.Organizational
     );
 
@@ -394,7 +426,7 @@ const EditTaskPage = (
     const newHumanCS = selectedHumanControlMeasures
       .filter(
         (measure) =>
-          !selectedTask.controlMeasures.find(
+          !selectedTask?.controlMeasures.find(
             (selectedMeasure) =>
               selectedMeasure.controlMeasureId === measure.id &&
               selectedMeasure.type === ControlMeasuresType.Human
@@ -411,7 +443,7 @@ const EditTaskPage = (
     const newTechnicalCS = selectedTechnicalControlMeasures
       .filter(
         (measure) =>
-          !selectedTask.controlMeasures.find(
+          !selectedTask?.controlMeasures.find(
             (selectedMeasure) =>
               selectedMeasure.controlMeasureId === measure.id &&
               selectedMeasure.type === ControlMeasuresType.Technical
@@ -428,7 +460,7 @@ const EditTaskPage = (
     const newOrganizationalCS = selectedOrganizationalControlMeasures
       .filter(
         (measure) =>
-          !selectedTask.controlMeasures.find(
+          !selectedTask?.controlMeasures.find(
             (selectedMeasure) =>
               selectedMeasure.controlMeasureId === measure.id &&
               selectedMeasure.type === ControlMeasuresType.Organizational
@@ -466,14 +498,14 @@ const EditTaskPage = (
     // return;
     apiAuth
       .put(
-        `/RiskRegister/task/${selectedTask.riskRegisterId}/${selectedTask.taskId}`,
+        `/RiskRegister/task/${selectedTask?.riskRegisterId}/${selectedTask?.taskId}`,
         payload
       )
       .then((response) => {
         if (response.data.statusCode === 200) {
           toast.success("Task updated successfully");
 
-          // mutate(`/RiskRegister/task/list/${selectedTask.riskRegisterId}`);
+          // mutate(`/RiskRegister/task/list/${selectedTask?.riskRegisterId}`);
         } else {
           toast.error(response.data.message);
         }
@@ -499,12 +531,11 @@ const EditTaskPage = (
         >
           {"<< "}Back
         </Button>
+
         <div
-          className="grid grid-cols-2 w-full gap-20 justify-end mx-4 sm:mx-8 py-10"
+          className="grid grid-cols-2 w-full gap-20 pr-10 justify-end mx-4 sm:mx-8 py-10"
           // style={{ maxHeight: "70vh", overflowY: "auto" }}
         >
-          Freqeuncy scoring for residual risk to be popluated when potential
-          risk is calculated. it is same
           <h3 className="col-span-2">Task Details</h3>
           <div className="col-span-2">
             <TextField
@@ -536,7 +567,7 @@ const EditTaskPage = (
               </p>
             )}
           </div>
-          <div className="col-span-2 sm:w-1/2">
+          <div className="col-span-1 ">
             {hazardLoading && <p>Loading...</p>}
             {!hazardLoading && hazardTypes && (
               <FormControl fullWidth>
@@ -561,6 +592,7 @@ const EditTaskPage = (
               </FormControl>
             )}
           </div>
+          <div></div>
           <div>
             <TextField
               fullWidth
@@ -594,7 +626,16 @@ const EditTaskPage = (
             )}
           </div>
           <hr className="col-span-2" />
-          <h3 className="col-span-2">Potential Risk</h3>
+          <div className="col-span-2 flex flex-row gap-20">
+            <h3>Potential Risk</h3>
+
+            {hazardTypeWatch && (
+              <RatingCalculator
+                hazardTypeWatch={hazardTypeWatch}
+                hazardTypes={hazardTypes}
+              />
+            )}
+          </div>
           <div>
             {timeLoading && <p>Loading...</p>}
             {!timeLoading && timesArr && (
@@ -602,8 +643,8 @@ const EditTaskPage = (
                 <InputLabel>Time*</InputLabel>
                 <Select
                   error={!!errors.time}
+                  defaultValue={selectedTask?.time}
                   {...register("time")}
-                  defaultValue={selectedTask.time}
                   label="Time*"
                 >
                   {timesArr.map((time) => (
@@ -626,9 +667,9 @@ const EditTaskPage = (
               <FormControl fullWidth>
                 <InputLabel>Frequency*</InputLabel>
                 <Select
+                  defaultValue={selectedTask?.frequencyDetails}
                   error={!!errors.frequencyDetails}
                   {...register("frequencyDetails")}
-                  defaultValue={selectedTask.frequencyDetails}
                   label="Frequency*"
                 >
                   {frequencyArr.map((frequency) => (
@@ -663,19 +704,22 @@ const EditTaskPage = (
           </div>
           <div>
             <FormControl fullWidth>
-              <InputLabel>Likelyhood Scoring*</InputLabel>
-              <Select
+              <TextField
+                fullWidth
                 error={!!errors.likelihoodScoring}
-                {...register("likelihoodScoring")}
-                defaultValue={selectedTask.likelihoodScoring}
                 label="Likelyhood Scoring*"
-              >
-                {likelihoodValues.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    {value}
-                  </MenuItem>
-                ))}
-              </Select>
+                id="likelihoodScoring"
+                value={
+                  potentialProbabilityRating || selectedTask?.likelihoodScoring
+                }
+                InputLabelProps={{
+                  shrink:
+                    potentialProbabilityRating > 0 ||
+                    selectedTask?.likelihoodScoring > 0,
+                }}
+                disabled
+                {...register("likelihoodScoring")}
+              />
               {errors.likelihoodScoring && (
                 <p className="text-red-500 my-2 text-sm">
                   {errors.likelihoodScoring.message}
@@ -685,19 +729,19 @@ const EditTaskPage = (
           </div>
           <div>
             <FormControl fullWidth>
-              <InputLabel>Severity Scoring*</InputLabel>
-              <Select
-                error={!!errors.severityScoring}
-                {...register("severityScoring")}
-                defaultValue={selectedTask.severityScoring}
+              <TextField
+                fullWidth
                 label="Severity Scoring*"
-              >
-                {severityValues.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    {value}
-                  </MenuItem>
-                ))}
-              </Select>
+                id="severityScoring"
+                error={!!errors.severityScoring}
+                InputLabelProps={{
+                  shrink:
+                    severityRating > 0 || selectedTask?.severityScoring > 0,
+                }}
+                value={severityRating || selectedTask?.severityScoring}
+                disabled
+                {...register("severityScoring")}
+              />
               {errors.severityScoring && (
                 <p className="text-red-500 my-2 text-sm">
                   {errors.severityScoring.message}
@@ -712,7 +756,15 @@ const EditTaskPage = (
               id="potentialRisk"
               error={!!errors.potentialRisk}
               {...register("potentialRisk")}
-              InputLabelProps={{ shrink: watch("potentialRisk") > 0 }}
+              value={
+                watch("potentialRisk")
+                  ? watch("potentialRisk")
+                  : selectedTask?.potentialRisk
+              }
+              InputLabelProps={{
+                shrink:
+                  watch("potentialRisk") > 0 || selectedTask?.potentialRisk > 0,
+              }}
               disabled
             />
             {errors.potentialRisk && (
@@ -748,7 +800,15 @@ const EditTaskPage = (
             />
           </div>
           <hr className="col-span-2" />
-          <h3 className="col-span-2">Residual Risk</h3>
+          <div className="col-span-2 flex flex-row gap-20">
+            <h3 className="col-span-2">Residual Risk</h3>
+            {hazardTypeWatch && (
+              <RatingCalculator
+                hazardTypeWatch={hazardTypeWatch}
+                hazardTypes={hazardTypes}
+              />
+            )}
+          </div>
           <div>
             {timeLoading && (
               <p className="text-red-500 my-2 text-sm">Loading...</p>
@@ -758,8 +818,9 @@ const EditTaskPage = (
                 <InputLabel>Time*</InputLabel>
                 <Select
                   {...register("modifiedTime")}
+                  value={selectedTime}
                   error={!!errors.modifiedTime}
-                  defaultValue={selectedTask.modifiedTime}
+                  disabled
                   label="Time*"
                 >
                   {timesArr.map((time) => (
@@ -768,6 +829,8 @@ const EditTaskPage = (
                     </MenuItem>
                   ))}
                 </Select>
+                <p>{selectedTime}</p>
+                <p>{timesArr.map((time) => time.value).join(", ")}</p>
                 {errors.modifiedTime && (
                   <p className="text-red-500 my-2 text-sm">
                     {errors.modifiedTime.message}
@@ -784,10 +847,11 @@ const EditTaskPage = (
                 <Select
                   error={!!errors.modifiedFrequencyDetails}
                   {...register("modifiedFrequencyDetails")}
-                  defaultValue={selectedTask.modifiedFrequencyDetails}
+                  value={frequencyChange}
+                  disabled
                   label="Frequency*"
                 >
-                  {residualFrequencyArr.map((frequency) => (
+                  {frequencyArr.map((frequency) => (
                     <MenuItem key={frequency.value} value={frequency.value}>
                       {frequency.text}
                     </MenuItem>
@@ -819,22 +883,29 @@ const EditTaskPage = (
           </div>
           <div>
             <FormControl fullWidth>
-              <InputLabel>
-                Likelyhood Scoring*{selectedTask.residualLikelihoodScoring}
-              </InputLabel>
-
-              <Select
-                {...register("residualLikelihoodScoring")}
-                error={!!errors.residualLikelihoodScoring}
-                defaultValue={selectedTask.residualLikelihoodScoring}
+              <TextField
+                fullWidth
                 label="Likelyhood Scoring*"
-              >
-                {likelihoodValues.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    {value}
-                  </MenuItem>
-                ))}
-              </Select>
+                id="residualLikelihoodScoring"
+                error={!!errors.residualLikelihoodScoring}
+                InputLabelProps={{
+                  shrink:
+                    residualProbabilityRating != null ||
+                    selectedTask?.residualLikelihoodScoring != null,
+                }}
+                // defaultValue={selectedTask?.residualLikelihoodScoring}
+                value={
+                  residualProbabilityRating
+                    ? potentialProbabilityRating
+                      ? potentialProbabilityRating + residualProbabilityRating
+                      : residualProbabilityRating
+                    : selectedTask?.likelihoodScoring +
+                      selectedTask?.residualLikelihoodScoring
+                }
+                disabled
+                {...register("residualLikelihoodScoring")}
+              />
+
               {errors.residualLikelihoodScoring && (
                 <p className="text-red-500 my-2 text-sm">
                   {errors.residualLikelihoodScoring.message}
@@ -844,19 +915,25 @@ const EditTaskPage = (
           </div>
           <div>
             <FormControl fullWidth>
-              <InputLabel>Severity Scoring*</InputLabel>
-              <Select
-                error={!!errors.residualSeverityScoring}
-                {...register("residualSeverityScoring")}
-                defaultValue={selectedTask.residualSeverityScoring}
+              <TextField
+                fullWidth
                 label="Severity Scoring*"
-              >
-                {severityValues.map((value) => (
-                  <MenuItem key={value} value={value}>
-                    {value}
-                  </MenuItem>
-                ))}
-              </Select>
+                id="residualSeverityScoring"
+                defaultValue={selectedTask?.residualSeverityScoring}
+                error={!!errors.residualSeverityScoring}
+                InputLabelProps={{
+                  shrink:
+                    severityRating > 0 ||
+                    selectedTask?.residualSeverityScoring > 0,
+                }}
+                value={
+                  severityRating
+                    ? severityRating
+                    : selectedTask?.residualSeverityScoring
+                }
+                disabled
+                {...register("residualSeverityScoring")}
+              />
               {errors.residualSeverityScoring && (
                 <p className="text-red-500 my-2 text-sm">
                   {errors.residualSeverityScoring.message}
@@ -865,20 +942,31 @@ const EditTaskPage = (
             </FormControl>
           </div>
           <div>
-            <TextField
-              fullWidth
-              label="Residual Risk*"
-              id="residualRisk"
-              disabled
-              error={!!errors.residualRisk}
-              InputLabelProps={{ shrink: residualRiskWatch > 0 }}
-              {...register("residualRisk")}
-            />
-            {errors.residualRisk && (
-              <p className="text-red-500 my-2 text-sm">
-                {errors.residualRisk.message}
-              </p>
-            )}
+            <FormControl fullWidth>
+              <TextField
+                fullWidth
+                label="Residual Risk*"
+                id="residualRisk"
+                value={
+                  residualRiskWatch
+                    ? residualRiskWatch
+                    : selectedTask?.residualRisk
+                }
+                disabled
+                error={!!errors.residualRisk}
+                InputLabelProps={{
+                  shrink:
+                    residualRiskWatch > 0 || selectedTask?.residualRisk > 0,
+                }}
+                {...register("residualRisk")}
+              />
+
+              {errors.residualRisk && (
+                <p className="text-red-500 my-2 text-sm">
+                  {errors.residualRisk.message}
+                </p>
+              )}
+            </FormControl>
           </div>{" "}
         </div>
         <div className="flex flex-row justify-between gap-10 mt-10">
@@ -890,14 +978,14 @@ const EditTaskPage = (
           />
           <div className="flex flex-row gap-10">
             <Button
-              onClick={() => setIsEditTaskClicked(false)}
+              // onClick={() => setIsOpen(false)}
               variant="neutral"
               type="button"
             >
               Cancel
             </Button>
             <Button variant="approve" type="submit">
-              Update Task
+              Add Task
             </Button>
           </div>
         </div>
