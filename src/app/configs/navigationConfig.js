@@ -87,6 +87,14 @@ const navigationConfig1 = [
         url: "/staff",
         feature: "STA",
       },
+      {
+        id: "dashboard.analytics",
+        title: "Analytics",
+        type: "item",
+        icon: "heroicons-outline:chart-bar",
+        url: "/mocanalytics",
+        feature: "REQ",
+      },
 
       {
         id: "masters.request",

@@ -65,24 +65,23 @@ const AnalyticsTab = ({ data }) => {
             </Tabs>
           </div>
         </div>
-        <div className="grid grid-cols-1  sm:grid-cols-2 mt-24 gap-24 px-24">
+        <div className="grid grid-cols-1  sm:grid-cols-4 mt-24 gap-24 px-24">
           <Paper className="flex flex-col flex-auto p-30 pt-24 pb-24 shadow rounded-2xl overflow-hidden bg-none w-full">
             <ClassificationChart data={monthlyData} />
           </Paper>
-          <Paper className="flex flex-col flex-auto p-30 pt-24 pb-24 shadow rounded-2xl overflow-hidden bg-none w-full">
+          <Paper className="flex flex-col col-span-2 flex-auto p-30 pt-24 pb-24 shadow rounded-2xl overflow-hidden bg-none w-full">
             <StatusChart data={monthlyData} />
           </Paper>
-        </div>
-        <div className="grid grid-cols-1  sm:grid-cols-2 my-24 gap-24 px-24">
           <Paper className="flex flex-col flex-auto p-30 pt-24 pb-24 shadow rounded-2xl overflow-hidden bg-none w-full">
             <ClassChart data={monthlyData} />
           </Paper>
+        </div>
+        <div className="grid grid-cols-1  sm:grid-cols-4 my-24 gap-24 px-24">
+          
           <Paper className="flex flex-col flex-auto p-30 pt-24 pb-24 shadow rounded-2xl overflow-hidden bg-none w-full">
             <OpenStatusChart data={monthlyData} />
           </Paper>
-        </div>
-        <div className="grid grid-cols-1 my-24 gap-24 px-24">
-          <Paper className="flex flex-col flex-auto p-30 pt-24 pb-24 shadow rounded-2xl overflow-hidden bg-none w-full">
+          <Paper className="flex flex-col col-span-3 flex-auto p-30 pt-24 pb-24 shadow rounded-2xl overflow-hidden bg-none w-full">
             {data &&
               data.mocActivitydaysCount &&
               data.mocActivitydaysCount.length > 0 && (
@@ -90,6 +89,7 @@ const AnalyticsTab = ({ data }) => {
               )}
           </Paper>
         </div>
+        
         {/* <div className="grid grid-cols-1 my-24 gap-24 px-24">
           <Paper className="flex flex-col flex-auto p-30 pt-24 pb-24 shadow rounded-2xl overflow-hidden bg-none w-full">
             {data &&
@@ -130,11 +130,11 @@ const ClassificationChart = ({ data }) => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center">
       <h3 className="text-left font-semibold"> By Classification</h3>
-      <div id="chart">
+      <div id="chart" className="mt-10">
         <ReactApexChart
-          width={500}
+          width={350}
           options={options}
           series={series}
           type="donut"
@@ -171,11 +171,11 @@ const ClassChart = ({ data }) => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center">
       <h3 className="text-left font-semibold"> By Class</h3>
-      <div id="chart">
+      <div id="chart" className="mt-10">
         <ReactApexChart
-          width={500}
+          width={350}
           options={options}
           series={series}
           type="donut"
@@ -211,11 +211,11 @@ const OpenStatusChart = ({ data }) => {
   };
 
   return (
-    <div>
-      <h3 className="text-left font-semibold"> By Classification</h3>
-      <div id="chart">
+    <div className="flex flex-col items-center justify-center">
+      <h3 className="text-left font-semibold"> By Status</h3>
+      <div id="chart" className="mt-10">
         <ReactApexChart
-          width={500}
+          width={350}
           options={options}
           series={series}
           type="donut"
@@ -387,7 +387,7 @@ const StatusChart = ({ data }) => {
           options={options}
           series={series}
           type="bar"
-          height={380}
+          height={300}
         />
       </div>
       <div id="html-dist"></div>
