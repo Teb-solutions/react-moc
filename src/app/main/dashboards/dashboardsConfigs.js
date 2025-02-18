@@ -38,6 +38,7 @@ import InitiateRiskConfig from "../riskRegister/Initiation/InitiateRiskConfig";
 import HumanCSConfig from "../masters/humancontrolmeasures/HumanCSConfig";
 import TechnicalCSConfig from "../masters/techcontrolmeasures/TechnicalCSConfig";
 import OrganisationalCSConfig from "../masters/orgcontrolmeasures/OrganisationalCSConfig";
+import MocAnalyticsConfig from "../mocAnalytics/MocAnalyticsConfig";
 
 /**
  * Dashboards
@@ -52,6 +53,7 @@ const dashboardsConfigs = [
   TicketConfig,
   notificationConfig,
   StaffConfig,
+  MocAnalyticsConfig,
   SecurityConfig,
   DepartmentConfig,
   DesignationConfig,
