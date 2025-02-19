@@ -12,15 +12,21 @@ const MocReportsConfig = {
   },
   auth: authRoles.onlyGuest,
   routes: [
-    // Staff list route
+  
     {
-      path: "/reports",
+      path: "/reports/status",
       element: <MocReports />,
     },
-    
-    // Staff list route
     {
-      path: "/reports/:id/*",
+      path: "/reports/category",
+      element: <MocReports />,
+    },
+    {
+      path: "/reports/type",
+      element: <MocReports />,
+    },
+    {
+      path: "/reports/class",
       element: <MocReports />,
     },
     
@@ -31,5 +37,4 @@ const MocReportsConfig = {
     },
   ],
 };
-
 export default MocReportsConfig;

@@ -12,15 +12,12 @@ const MocReportByDateConfig = {
   },
   auth: authRoles.onlyGuest,
   routes: [
-    // Staff list route
     {
-      path: "/reportdate",
+      path: "/reportdate/requestdate",
       element: <MocReportByDate />,
     },
-   
-    // Staff list route
     {
-      path: "/reportdate/:id/*",
+      path: "/reportdate/terminationdate",
       element: <MocReportByDate />,
     },
     // Catch-all route for 404

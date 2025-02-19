@@ -22,7 +22,7 @@ import { exportToCSV } from 'src/utils/exportToCSV';
 import { saveAs } from 'file-saver';
 import Papa from 'papaparse';
 import _, { set } from 'lodash';
-import { useParams } from "react-router";
+import { useLocation } from "react-router";
 
 /**
  * The ProjectDashboardApp page.
@@ -37,7 +37,10 @@ function MocReportByDate() {
   const [searchTerm, setSearchTerm] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const useParamsId = useParams().id;
+  // const useParamsId = useParams().id;
+  const location = useLocation();
+  const pathname = location.pathname;
+  const useParamsId = pathname.substring(pathname.lastIndexOf('/') + 1);
   const paramValues = {
     requestdate: "requestdate",
     terminationdate: "terminationdate",
@@ -97,11 +100,14 @@ function MocReportByDate() {
     });
 
     
-  }, [data, searchTerm, fromDate, toDate]);
+  }, [data, searchTerm, fromDate, toDate, useParamsId]);
 
   useEffect(() => {
     fetchdataSetting();
-  }, []);
+    setSearchTerm("");
+    setFromDate("");
+    setToDate("");
+  }, [useParamsId]);
   
   const columns = [
     {
@@ -204,6 +210,7 @@ function MocReportByDate() {
                 id="fromDate"
                 name="fromDate"
                 type="date"
+                value={fromDate}
                 label="From Date"
                 variant="outlined"
                 InputLabelProps={{
@@ -218,6 +225,7 @@ function MocReportByDate() {
                 id="toDate"
                 name="toDate"
                 type="date"
+                value={toDate}
                 label="To Date"
                 variant="outlined"
                 InputLabelProps={{
@@ -276,7 +284,7 @@ function MocReportByDate() {
                             {column.id === "requestDate"
                              || column.id ==="changeTerminationDate"
                               ? (
-                                value ? dayjs(value).format("DD/MM/YYYY"):''
+                                value ? dayjs(value).format("MMM DD, YYYY"):''
                             ) : column.render ? (
                               column.render(row)
                             ) : column.format && typeof value === "number" ? (

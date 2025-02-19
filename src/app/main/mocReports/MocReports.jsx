@@ -30,7 +30,7 @@ import { exportToCSV } from "src/utils/exportToCSV";
 import { saveAs } from "file-saver";
 import Papa from "papaparse";
 import _, { set } from "lodash";
-import { useParams } from "react-router";
+import { useLocation } from "react-router";
 
 /**
  * The ProjectDashboardApp page.
@@ -41,13 +41,16 @@ function MocReports() {
   const [rowsPerPage, setRowsPerPage] = useState(20);
   const [dense, setDense] = useState(false);
   const [data, setData] = useState({});
-  const useParamsId = useParams().id;
+  // const useParamsId = useParams().id;
+  const location = useLocation();
+    const pathname = location.pathname;
+    const useParamsId = pathname.substring(pathname.lastIndexOf('/') + 1);
 
   const paramValues = {
     category: "category",
     class: "class",
     status: "status",
-  
+    type: "type",
   }
  
   const categoriesArray = [
@@ -119,6 +122,19 @@ function MocReports() {
           }
         ]
       },
+      {
+        category: 'type',
+        values: [
+          {
+            name: "Permanent",
+            value: "Permanent",
+          },
+          {
+            name: "Temporary",
+            value: "Temporary",
+          }
+        ]
+      }
 
   ];
 
@@ -126,6 +142,7 @@ function MocReports() {
     category: "Category",
     class: "Class",
     status: "Status",
+    type: "Type",
   }
   
   const categories = categoriesArray.find((item) => item.category === useParamsId).values;
@@ -165,40 +182,21 @@ function MocReports() {
         if (useParamsId === paramValues.status && item.statusName !== selectedCategory) {
           return false;
         }
+
+        if (useParamsId === paramValues.type && item.changeType !== selectedCategory) {
+          return false;
+        }
       }
       return item.requestNo.toLowerCase().includes(searchTerm.toLowerCase());
     });
-  }, [data, selectedCategory, searchTerm]);
+  }, [data, selectedCategory, searchTerm, useParamsId]);
 
   useEffect(() => {
     fetchdataSetting();
-  }, []);
-  // const categories = [
-  //   {
-  //     name: "Asset",
-  //     value: "Asset",
-  //   },
-  //   {
-  //     name: "Engg",
-  //     value: "Engg",
-  //   },
-  //   {
-  //     name: "TransportAct",
-  //     value: "TransportAct",
-  //   },
-  //   {
-  //     name: "Document",
-  //     value: "Document",
-  //   },
-  //   {
-  //     name: "Organisation",
-  //     value: "Org",
-  //   },
-  //   {
-  //     name: "Others",
-  //     value: "Others",
-  //   },
-  // ];
+    setSearchTerm("");
+    setSelectedCategory("all");
+  }, [useParamsId]);
+  
   const columns = [
     {
       id: "requestTypeName",
@@ -366,7 +364,7 @@ function MocReports() {
                                 {column.id === "requestDate" ||
                                 column.id === "changeTerminationDate"
                                   ? value
-                                    ? dayjs(value).format("DD/MM/YYYY")
+                                    ? dayjs(value).format("MMM DD, YYYY")
                                     : ""
                                   : column.render
                                     ? column.render(row)
