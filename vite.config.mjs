@@ -30,6 +30,9 @@ export default defineConfig({
   },
   build: {
     outDir: "build",
+    rollupOptions: {
+      external: ['file-saver']
+    }
   },
   server: {
     open: true,

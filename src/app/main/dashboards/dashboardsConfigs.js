@@ -39,6 +39,8 @@ import HumanCSConfig from "../masters/humancontrolmeasures/HumanCSConfig";
 import TechnicalCSConfig from "../masters/techcontrolmeasures/TechnicalCSConfig";
 import OrganisationalCSConfig from "../masters/orgcontrolmeasures/OrganisationalCSConfig";
 import MocAnalyticsConfig from "../mocAnalytics/MocAnalyticsConfig";
+import MocReportsConfig from "../mocReports/MocReportsConfig";
+import MocReportByDateConfig from "../mocReports/class/MocReportByDateConfig";
 
 /**
  * Dashboards
@@ -54,6 +56,8 @@ const dashboardsConfigs = [
   notificationConfig,
   StaffConfig,
   MocAnalyticsConfig,
+  MocReportsConfig,
+  MocReportByDateConfig,
   SecurityConfig,
   DepartmentConfig,
   DesignationConfig,
