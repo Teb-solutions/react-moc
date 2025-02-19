@@ -19,8 +19,6 @@ import { apiAuth, apiTicketAuth } from "src/utils/http";
 import MocHeader from "../../moc/MocHeader";
 import dayjs from "dayjs";
 import { exportToCSV } from 'src/utils/exportToCSV';
-import { saveAs } from 'file-saver';
-import Papa from 'papaparse';
 import _, { set } from 'lodash';
 import { useLocation } from "react-router";
 

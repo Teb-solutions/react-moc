@@ -8,6 +8,7 @@ export default defineConfig({
     react({
       jsxImportSource: "@emotion/react",
     }),
+    
     jsconfigPaths({
       parseNative: false,
     }),
@@ -25,14 +26,13 @@ export default defineConfig({
       },
     },
   ],
+  
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
   },
   build: {
     outDir: "build",
-    rollupOptions: {
-      external: ['file-saver']
-    }
+    
   },
   server: {
     open: true,
