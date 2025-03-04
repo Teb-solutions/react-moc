@@ -99,11 +99,12 @@ function JwtSignInTab() {
       apiAuth
         .post(`/Account/ForgotPassword`, { email })
         .then((resp) => {
-          if (resp.data.statusCode === 400) {
-            toast?.error("Some error has occurred");
-          } else {
+          if (resp.data.statusCode === 200) {
+            
             toast?.success("OTP Sent Successfully");
             setOtpTrue(true);
+          } else {
+            toast?.error("Some error has occurred");
           }
         })
         .catch((err) => {

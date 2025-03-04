@@ -2,6 +2,7 @@ import { authRoles } from "src/app/auth";
 import Error404Page from "../404/Error404Page";
 import { decryptFeature } from "../sign-in/tabs/featureEncryption";
 import MocReports from "./MocReports";
+import MocReportsDeleted from "./MocReportsDeleted";
 
 const storedFeature = decryptFeature();
 const feature = storedFeature ? storedFeature : [];
@@ -28,6 +29,10 @@ const MocReportsConfig = {
     {
       path: "/reports/class",
       element: <MocReports />,
+    },
+    {
+      path: "/reports/deleted",
+      element: <MocReportsDeleted />,
     },
     
     // Catch-all route for 404
