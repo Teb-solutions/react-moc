@@ -16,6 +16,8 @@ import { useParams } from "react-router";
 
 import { useControlMeasureStore } from "../common/controlMeasureStore";
 import useFetchLookUpData from "../common/useFetchLookUpData";
+import { taskCancelled } from "node_modules/@reduxjs/toolkit/dist/listenerMiddleware/exceptions";
+import { includes } from "lodash";
 
 interface RiskItemProps {
   label: string;
@@ -144,8 +146,6 @@ const TaskDetailsCard = () => {
 
   const riskId = useParams<{ riskId: string }>().riskId;
 
-  
-
   return (
     <Paper className="flex flex-col p-10 mt-10">
       <header className="flex gap-10 mb-10 justify-between items-center w-full">
@@ -191,7 +191,7 @@ const TaskDetailsCard = () => {
                   text="Audits"
                 />
               )}
-              {isCurrentUserPartOfTeam && isSessionActive && (
+              {isCurrentUserPartOfTeam && isSessionActive && [TaskStatusEnum.Draft, TaskStatusEnum.RejectedPendingReview].includes(selectedTask.status) && (
                 <TaskButton
                   onClick={() => {
                     setIsEditTaskClicked(true);
@@ -201,7 +201,7 @@ const TaskDetailsCard = () => {
                 />
               )}
 
-              {isCurrentUserPartOfTeam && isSessionActive && (
+              {isCurrentUserPartOfTeam && isSessionActive && selectedTask.status==TaskStatusEnum.Draft && (
                 <TaskButton
                   onClick={() => {
                     setIsOpen(true);
@@ -259,7 +259,8 @@ const TaskDetailsCard = () => {
               onClick={() => {
                 setIsEditControlMeasure(false);
                 // setTimeout(() => {
-                setOpenRevision(true);
+                  setPopupType(TaskPopupType.SendBack);
+                  setIsOpen(true);
                 // }, 1000);
               }}
               variant="reject"
@@ -267,11 +268,11 @@ const TaskDetailsCard = () => {
             >
               Send For Revision
             </ButtonRisk>
-            <SendForRevision
+            {/* <SendForRevision
               openRevision={openRevision}
               riskId={riskId}
               setIsOpenRevision={setOpenRevision}
-            />
+            /> */}
             <ButtonRisk
               onClick={() => {
                 setIsOpen(true);
@@ -295,7 +296,7 @@ const TaskDetailsCard = () => {
           selectedTask.status
         ) && (
           <div className="px-20 flex flex-row justify-center gap-10 mt-20">
-            <ButtonRisk
+            {/* <ButtonRisk
               onClick={() => {
                 setIsOpen(true);
                 setPopupType(TaskPopupType.SubmitforApproval);
@@ -304,7 +305,7 @@ const TaskDetailsCard = () => {
               type="button"
             >
               Submit for Approval
-            </ButtonRisk>
+            </ButtonRisk> */}
             <TaskActions
               setIsOpenComment={setIsOpen}
               openComment={isOpen}

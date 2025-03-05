@@ -977,7 +977,7 @@ const EditTaskPage = (
           />
           <div className="flex flex-row gap-10">
             <Button
-              // onClick={() => setIsOpen(false)}
+              onClick={() => setIsEditTaskClicked(false)}
               variant="neutral"
               type="button"
             >

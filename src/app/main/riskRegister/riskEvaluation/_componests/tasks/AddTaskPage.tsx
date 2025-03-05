@@ -767,7 +767,7 @@ const AddTaskPage = ({
           />}
           <div className="flex flex-row gap-10">
             <Button
-              // onClick={() => setIsOpen(false)}
+              onClick={() => setIsAddTaskClicked(false)}
               variant="neutral"
               type="button"
             >

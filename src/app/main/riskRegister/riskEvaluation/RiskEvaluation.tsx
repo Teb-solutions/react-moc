@@ -22,6 +22,8 @@ import { Link } from "react-router-dom";
 import MocHeader from "../../moc/MocHeader";
 import RiskHeader from "../common/RiskHeader";
 import { set } from "lodash";
+import ControlMeasures from "./_componests/singleTask/ControlMeasures";
+import { ControlMeasuresList } from "./_componests/controlMeasures/ControlMeasuresList";
 
 const RiskEvaluation = () => {
   // const [risk, setRisk] = useState<IRiskRegisterDetails | null>(null);

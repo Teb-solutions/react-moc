@@ -1,0 +1,109 @@
+import { useParams } from "react-router";
+import { useGetPermenant } from "src/utils/swr";
+import { IListControlMeasures } from "../../../helpers/type";
+import { Checkbox, Icon, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { riskClassificationDisplay } from "src/app/main/moc/common_components/RiskAnalysisCalculate";
+import { apiAuth } from "src/utils/http";
+import { toast } from "react-toastify";
+
+export const ControlMeasuresList = () => {
+    const riskId = useParams<{ riskId: string }>();
+    const {data, isLoading, mutate} = useGetPermenant<{
+        data: IListControlMeasures[];
+        message: string;
+        statusCode: number;
+      }>(`/RiskRegister/controlmeasures/${riskId.riskId}`);
+     
+      const handleStatusChange = (id: number, status: boolean) => {
+        // console.log('status', status);
+        if(status){
+        apiAuth.post(`/RiskRegister/controlmeasure/mark/${riskId.riskId}`, { 
+            controlMeasures : [id]
+         }).then((res) => {
+            // console.log(res);
+            if(res.data.statusCode === 200){
+                toast.success('Marked control measure as implemented');
+                mutate();
+            }
+            else{
+                toast.error(res.data.message || 'An error occured');
+            }
+            // Handle the response here
+          })
+          .catch((error) => {
+            // console.error(error);
+            toast.error('An error occured');
+            // Handle the error here
+          });
+        }
+        // const updatedControlMeasure = data?.data.find((controlMeasure) => controlMeasure.id === id);
+        // updatedControlMeasure.status = status ? 'Active' : 'Inactive';
+        // setEditedControlMeasure(updatedControlMeasure);
+        // setIsEditControlMeasure(true);
+      };
+      const columns: GridColDef[] = [
+        { field: 'id', headerName: '#ID', width: 70 },
+        { field: 'controlMeasure', headerName: 'Control Measure', width: 500 },
+        {
+          field: 'residualRiskClassification',
+          headerName: 'Risk',
+        //   description: 'This column has a value getter and is not sortable.',
+        //   sortable: false,
+          width: 160,
+          valueGetter: (params) => `${riskClassificationDisplay(params.row.residualRiskClassification) || ''}`,
+        },
+        { field: 'taskId', headerName: 'Task ID', width: 100 },
+        { field: 'updatedByStaffName', headerName: 'Created By', width: 300 },
+
+        { 
+            field: 'status', 
+            headerName: 'Implemented', 
+            width: 230,
+            renderCell: (params: GridRenderCellParams) => (
+                params.row.status === 1 ? <Icon className="ml-5 text-green-500">check</Icon>
+                :
+                
+                params.row.canMarkImplemented?<Checkbox
+                
+                onChange={(event) => handleStatusChange(params.row.id, event.target.checked)}
+              /> : <Icon className="ml-5 text-red-500">close</Icon>
+            )
+          },
+        
+        //   field: 'fullName',
+        //   headerName: 'Full name',
+        //   description: 'This column has a value getter and is not sortable.',
+        //   sortable: false,
+        //   width: 160,
+        //   valueGetter: (params) => `${params.row.firstName || ''} ${params.row.lastName || ''}`,
+        // },
+      ];
+      
+      const paginationModel = { page: 0, pageSize: 10 };
+
+    return (
+        <div className="w-full">
+            <p className="px-24 pt-10 text-gray-500 font-semibold">Approved tasks control measures are listed here.</p>
+            <Paper
+        className="box_reset px-24 py-10 bg-white"
+        sx={{ width: "100%", overflow: "hidden" }}
+      >
+        { isLoading && <p>Loading...</p>}
+        {!isLoading && !data && <p className="py-24"> - No control measures found</p>}
+        {!isLoading && data && data?.data.length === 0 && <p className="my-24"> - No control measures found</p>}
+       {data && !isLoading && data?.data.length > 0  && <DataGrid
+        rows={data?.data}
+        columns={columns}
+        initialState={{ pagination: { paginationModel } }}
+        pageSizeOptions={[10, 25, 50]}
+        
+        sx={{ border: 0 }}
+      />}
+        
+     
+        </Paper>
+        
+        </div>
+    )
+}

@@ -63,15 +63,16 @@ const TaskApprovalItem = ({ approvalItem }: { approvalItem: IApprovals }) => {
   return (
     <div className="flex mb-5 flex-row w-full justify-between items-center">
       <div className="flex items-center">
-        <Icon className="border-0 mt-2" fontSize="large">
+        <Icon className="border-0  flex-shrink-0" style={{height:'50px'}} fontSize="large">
           {approvalItem.isActive ? (
-            <InfoTwoTone className="text-amber-800" />
+            <InfoTwoTone className="text-amber-800 mt-0" />
           ) : approvalItem.actionType == RiskActionType.Approve ? (
             <CheckCircleTwoTone className="text-green-500" />
           ) : (
             <CancelTwoTone className="text-red-500" />
           )}
         </Icon>{" "}
+        
         <div className="flex flex-row font-semibold mt-20">
           <div className="flex flex-col gap-2">
             {RiskRegisterTeamRoleDisplayNames[approvalItem.role]}

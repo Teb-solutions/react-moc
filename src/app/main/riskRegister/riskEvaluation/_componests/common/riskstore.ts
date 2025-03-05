@@ -12,6 +12,7 @@ interface RiskStore {
   setIsTaskApprover: (isTaskApprover: boolean) => void;
   isSessionActive: boolean;
   setIsSessionActive: (isSessionActive: boolean) => void;
+  
 }
 
 export const useRiskStore = create<RiskStore>((set) => ({
@@ -26,4 +27,5 @@ export const useRiskStore = create<RiskStore>((set) => ({
   setIsTaskApprover: (isTaskApprover) => set({ isTaskApprover }),
   isSessionActive: false,
   setIsSessionActive: (isSessionActive) => set({ isSessionActive }),
+  
 }));

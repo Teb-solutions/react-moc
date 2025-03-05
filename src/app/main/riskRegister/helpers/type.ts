@@ -186,3 +186,20 @@ export interface Roles {
   teamType: number;
   staffId: string;
 }
+
+
+export interface IListControlMeasures {
+  id: number
+  type: number
+  controlMeasureId: number
+  controlMeasure: string
+  status: number
+  taskId: number
+  residualRiskClassification: number
+  taskStatus: number
+  lastApprovedByStaffId: number
+  canMarkImplemented: boolean
+  updatedAt: string
+  updatedBy: number
+  updatedByStaffName: string
+}

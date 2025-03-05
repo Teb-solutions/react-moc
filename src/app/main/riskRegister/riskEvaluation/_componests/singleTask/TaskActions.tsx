@@ -16,6 +16,7 @@ const titleMap: { [key in TaskPopupType]: string } = {
   [TaskPopupType.Delete]: "Delete Task",
   [TaskPopupType.Audit]: "Add/View Audit",
   [TaskPopupType.SubmitforApproval]: "Submit for Approval",
+  [TaskPopupType.SendBack]: "Send for Revision",
 };
 
 const messageMap: { [key in TaskPopupType]: string } = {
@@ -24,6 +25,8 @@ const messageMap: { [key in TaskPopupType]: string } = {
   [TaskPopupType.Audit]: "Are you sure you want to add audit?",
   [TaskPopupType.SubmitforApproval]:
     "Are you sure you want to submit this task for approval?",
+    [TaskPopupType.SendBack]:
+    "Are you sure you want to send this task for revision?",
 };
 
 const TaskActions = ({
@@ -55,7 +58,7 @@ const TaskActions = ({
       taskId: selectedTask.taskId,
       riskRegisterId: riskId,
       comments: comment,
-      actionType: RiskActionType.Approve,
+      actionType: popupType === TaskPopupType.Approve ? RiskActionType.Approve: RiskActionType.SendBack,
       controlMeasures: editedControlMeasure,
     });
 
@@ -64,7 +67,7 @@ const TaskActions = ({
         taskId: selectedTask.taskId,
         riskRegisterId: riskId,
         comments: comment,
-        actionType: RiskActionType.Approve,
+        actionType: popupType === TaskPopupType.Approve ? RiskActionType.Approve: RiskActionType.Reject,
         controlMeasures: editedControlMeasure,
         // sendBackToApprWfId: 0,
       })
@@ -138,7 +141,7 @@ const TaskActions = ({
       <div className="flex flex-col">
         <div className="flex flex-col my-20">
           <p>{message}</p>
-          {[TaskPopupType.Approve, TaskPopupType.Audit].includes(popupType) && (
+          {[TaskPopupType.Approve,TaskPopupType.SendBack, TaskPopupType.Audit].includes(popupType) && (
             <div className="flex flex-col my-20">
               <TextField
                 className="mt-10"
@@ -176,6 +179,8 @@ const TaskActions = ({
                 handleTaskApproval();
               } else if (popupType === TaskPopupType.Delete) {
                 handleTaskDelete();
+              }else if (popupType === TaskPopupType.SendBack) {
+                handleTaskApproval();
               }
             }}
             type="button"

@@ -115,6 +115,8 @@ export enum TaskPopupType {
   Delete,
   Audit,
   SubmitforApproval,
+  SendBack,
+  
 }
 
 export enum RiskRegisterStatus {

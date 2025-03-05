@@ -19,6 +19,8 @@ import { useTaskStore } from "../common/taskStore";
 import PieChart from "./PieChart";
 import LineChart from "./LineChart";
 import EditTeam from "./EditTeam";
+import Button from "../../../common/Button";
+import { ControlMeasuresList } from "../controlMeasures/ControlMeasuresList";
 
 const RiskInitiation = () => {
   const { risk } = useRiskStore();
@@ -26,7 +28,7 @@ const RiskInitiation = () => {
     { label: "Category", value: RiskCategory[risk.category] },
     { label: "Site", value: risk.siteName },
     { label: "Division", value: risk.divisionName },
-    { label: "Area", value: "??????" },
+    // { label: "Area", value: "??????" },
     { label: "Date", value: dayjs(risk.createdAt).format("MMM DD, YYYY") },
     { label: "Initiator", value: risk.initiatedbyStaffName }, //change this value
   ];
@@ -39,6 +41,7 @@ const RiskInitiation = () => {
   });
 
   const { tasks } = useTaskStore();
+  
   const [highRiskTasks, setHighRiskTasks] = useState(0);
   const [totalTasks, setTotalTasks] = useState(0);
 
@@ -82,6 +85,12 @@ const RiskInitiation = () => {
         >
           Task Details{" "}
         </h3>
+        <h3
+          onClick={() => setSelectedHeader("ControlMeasures")}
+          className={`self-stretch font-bold ${selectedHeader == "ControlMeasures" ? "text-gray-700 bg-white rounded-t-md" : "text-white"}  cursor-pointer ml px-10 py-4`}
+        >
+          Control Measures
+        </h3>
       </div>
       <article
         className={`${selectedHeader == "Summary" ? "flex" : "hidden"} overflow-hidden flex-col justify-center items-start p-10 text-md bg-white rounded-lg`}
@@ -102,19 +111,8 @@ const RiskInitiation = () => {
                   value={item.value}
                 />
               ))}
-              {/* <h4 className="self-stretch text-blue-600 font-medium text-neutral-600">
-                Tasks
-              </h4>
-              <div className="bg-blue-50 border-1 shadow-lg p-2 rounded-md text-blue-500">
-                <InitationInfoItem
-                  label={"Total Tasks"}
-                  value={totalTasks.toString()}
-                />
-                <InitationInfoItem
-                  label={"High Risk Tasks"}
-                  value={highRiskTasks.toString()}
-                />
-              </div> */}
+             
+              
             </div>
             <div className="w-full sm:w-1/3 pl-2 text-md">
               <h4 className="self-stretch text-blue-600 font-medium text-neutral-600">
@@ -135,37 +133,7 @@ const RiskInitiation = () => {
                 />
               ))}
               <EditTeam isOpen={isEditTeam} setIsOpen={setIsEditTeam} />
-              <div className="flex flex-row mt-5">
-                <InitationInfoItem
-                  label="SIC Approval"
-                  value={
-                    risk.siteInChargeName +
-                    " approved on " +
-                    dayjs(risk.activities[1].completedDate).format(
-                      "MMM DD, YYYY"
-                    )
-                  }
-                />
-                <Icon
-                  aria-describedby={id}
-                  onClick={handleClick}
-                  className="ml-5"
-                  fontSize="inherit"
-                >
-                  comment
-                </Icon>
-                <Popper id={id} open={open} anchorEl={anchorEl}>
-                  <Box sx={{ border: 1, p: 1, bgcolor: "background.paper" }}>
-                    <div className="flex flex-col gap-2">
-                      <h6 className="font-semibold text-gray-500">Comments</h6>
-                      <p className="text-gray-800 text-sm font-normal">
-                        {risk.activities[1].assignedToStaffName +
-                          "******comment required"}
-                      </p>
-                    </div>
-                  </Box>
-                </Popper>
-              </div>
+              
             </div>
             <div className="w-full sm:w-1/3 mb-0">
               <LineChart width="400" />
@@ -249,6 +217,11 @@ const RiskInitiation = () => {
             </div>
           </div>
         </div>
+      </article>
+      <article
+        className={`${selectedHeader == "ControlMeasures" ? "flex" : "hidden"} overflow-hidden flex-col justify-center items-start p-10 text-md bg-white rounded-lg`}
+      >
+        <ControlMeasuresList />
       </article>
     </Paper>
   );
