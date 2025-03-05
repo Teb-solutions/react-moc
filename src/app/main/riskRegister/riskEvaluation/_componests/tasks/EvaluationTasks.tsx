@@ -191,7 +191,7 @@ const EvaluationTasks = () => {
         <div className="w-full flex flex-col sm:flex-row gap-2 justify-between">
           <div className="flex flex-row my-10">
             {tasks.length > 0 &&
-              tasks.find((task) => (task.status == TaskStatusEnum.Draft && task.residualRiskClassification === selectedRiskCategory)) && (
+              tasks.find((task) => ([TaskStatusEnum.Draft, TaskStatusEnum.RejectedPendingReview].includes(task.status) && task.residualRiskClassification === selectedRiskCategory && task.residualRiskClassification!= RiskClassification.HighRisk)) && (
                 <div className="flex flex-col w-full sm:flex-row gap-20">
                   <div className="flex flex-wrap py-10">
                     <input
@@ -201,7 +201,7 @@ const EvaluationTasks = () => {
                             //how to check if the task status is draft and then add to the array
                             tasks
                               .filter(
-                                (task) => task.status === TaskStatusEnum.Draft && task.residualRiskClassification === selectedRiskCategory
+                                (task) => [TaskStatusEnum.Draft, TaskStatusEnum.RejectedPendingReview].includes(task.status) && task.residualRiskClassification === selectedRiskCategory && task.residualRiskClassification!= RiskClassification.HighRisk
                               )
                               .map((task) => task.taskId)
                           );

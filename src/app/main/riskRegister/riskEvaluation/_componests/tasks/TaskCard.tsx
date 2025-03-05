@@ -4,7 +4,7 @@ import { ITask } from "../../../helpers/type";
 import RiskClassificationDisplay from "../../../common/RiskClassificationDisplay";
 import { useTaskStore } from "../common/taskStore";
 import { riskClassificationDisplay } from "src/app/main/moc/common_components/RiskAnalysisCalculate";
-import { TaskStatusDisplayNames, TaskStatusEnum } from "../../../helpers/enum";
+import { RiskClassification, TaskStatusDisplayNames, TaskStatusEnum } from "../../../helpers/enum";
 import { useGetPermenant } from "src/utils/swr";
 import { toast } from "react-toastify";
 import { useRiskStore } from "../common/riskstore";
@@ -88,13 +88,13 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
               <h3 className="self-stretch my-auto">
                 {task.taskId ? "TASK#" + task.taskId : "TASK"}
               </h3>
-              {task.status === TaskStatusEnum.Draft && (
+              {[TaskStatusEnum.Draft, TaskStatusEnum.RejectedPendingReview].includes(task.status) && task.residualRiskClassification!= RiskClassification.HighRisk && (
                 <input
                   type="checkbox"
                   checked={selectedTasksIds.includes(task.taskId)}
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (task.status == TaskStatusEnum.Draft) {
+                    if ([TaskStatusEnum.Draft, TaskStatusEnum.RejectedPendingReview].includes(task.status) && task.residualRiskClassification!= RiskClassification.HighRisk) {
                       if (selectedTasksIds.includes(task.taskId)) {
                         setSelectedTasksIds(
                           selectedTasksIds.filter((id) => id !== task.taskId)
