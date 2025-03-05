@@ -48,24 +48,24 @@ export const AddTaskSchema = z.object({
   subTaskName: z.string().nonempty("Sub task is required"),
   hazardousSituation: z.string().nonempty("Hazardous situation is required"),
   consequence: z.string().nonempty("Consequences is required"),
-  hazardType: z.number(),
-  time: z.number(),
-  frequencyDetails: z.number(),
-  frequencyScoring: z.number(),
-  likelihoodScoring: z.number(),
-  severityScoring: z.number(),
-  potentialRisk: z.number(),
+  hazardType: z.number({ required_error: "Hazard type is required" }),
+  time: z.number({ required_error: "Time is required" }),
+  frequencyDetails: z.number({ required_error: "Frequency is required" , invalid_type_error: "Frequency is required"}),
+  frequencyScoring: z.number({ required_error: "Frequency scoring is required" , invalid_type_error: "Frequency scoring is required"}),
+  likelihoodScoring: z.number({ required_error: "Likelihood scoring is required", invalid_type_error: "Likelihood scoring is required" }),
+  severityScoring: z.number({ required_error: "Severity scoring is required", invalid_type_error: "Severity scoring is required" }),
+  potentialRisk: z.number({ required_error: "Potential risk is required", invalid_type_error: "Potential risk is required" }),
   humanControlMeasures: z.array(z.any()),
   technicalControlMeasures: z.array(z.any()),
   organisationalControlMeasures: z.array(z.any()),
-  modifiedTime: z.number(),
-  modifiedFrequencyDetails: z.number(),
-  residualFrequencyScoring: z.number(),
-  residualLikelihoodScoring: z.number(),
-  residualSeverityScoring: z.number(),
-  residualRisk: z.number(),
-  residualRiskClassification: z.string(),
-  residualRiskClassificationDisplay: z.string(),
+  modifiedTime: z.number({ required_error: "Modified time is required", invalid_type_error: "Modified time is required" }),
+  modifiedFrequencyDetails: z.number({required_error: "Modified frequency is required", invalid_type_error: "Modified frequency is required" }),
+  residualFrequencyScoring: z.number({ required_error: "Modified frequency scoring is required", invalid_type_error: "Modified frequency scoring is required" }),
+  residualLikelihoodScoring: z.number({ required_error: "Modified likelihood scoring is required" , invalid_type_error: "Modified likelihood scoring is required"}),
+  residualSeverityScoring: z.number({ required_error: "Modified severity scoring is required" , invalid_type_error: "Modified severity scoring is required"}),
+  residualRisk: z.number({ required_error: "Residual risk is required", invalid_type_error: "Residual risk is required" }),
+  residualRiskClassification: z.string({ required_error: "Residual risk classification is required", invalid_type_error: "Residual risk classification is required" }),
+  residualRiskClassificationDisplay: z.string({ required_error: "Residual risk classification display is required", invalid_type_error: "Residual risk classification display is required" }),
 });
 
 type AddTaskFormValues = z.infer<typeof AddTaskSchema>;
@@ -177,13 +177,18 @@ const AddTaskPage = ({
     setValue("residualRisk", null);
   }, [hazardTypeWatch]);
 
-  useEffect(() => {}, [timeChange, frequencyChange]);
+
 
   //useEffect to update the selected time and residual time,
   // potential frequency scoring and residual frequency scoring
   useEffect(() => {
     if (timeChange) {
       setValue("modifiedTime", timeChange);
+      // setValue("modifiedFrequencyDetails", null);
+      // setValue("frequencyDetails", null);
+      
+      setValue("residualFrequencyScoring", null);
+      setValue("frequencyScoring", null);
     }
     if (frequencyChange) {
       setValue("modifiedFrequencyDetails", frequencyChange);
@@ -193,11 +198,13 @@ const AddTaskPage = ({
 
     if (timeChange > 0 && frequencyChange > 0) {
       const selectedFrequency = frequencyArr.find(
-        (frequency) => frequency.value === frequencyChange
+        (frequency) => frequency.value == frequencyChange
       );
-      const frequencyScoring = CalculateFrequencyScoring(
+      console.log(selectedFrequency);
+      const frequencyScoring = selectedFrequency && CalculateFrequencyScoring(
         selectedFrequency.text
       );
+      console.log(frequencyScoring);
       setValue("frequencyScoring", frequencyScoring);
       setValue("residualFrequencyScoring", frequencyScoring);
     }
@@ -222,12 +229,7 @@ const AddTaskPage = ({
         potentialProbabilityRating,
         severityRating
       );
-      console.log(
-        frequencyScoringWatch,
-        severityRating,
-        potentialProbabilityRating
-      );
-      console.log(potentialRisk, "calculated potential risk");
+      
       potentialRisk && setValue("potentialRisk", potentialRisk);
     }
     if (
@@ -526,6 +528,7 @@ const AddTaskPage = ({
               id="frequencyScoring"
               disabled
               InputLabelProps={{ shrink: frequencyScoringWatch > 0 }}
+              value={watch("frequencyScoring")}
               {...register("frequencyScoring")}
             />
             {errors.frequencyScoring && (
@@ -633,8 +636,8 @@ const AddTaskPage = ({
                 <InputLabel>Time*</InputLabel>
                 <Select
                   {...register("modifiedTime")}
-                  value={watch('time')}
-                  error={!!errors.modifiedTime}
+                  value={watch('modifiedTime')||''}
+                  error={!!errors.time}
                   disabled
                   label="Time*"
                 >
@@ -687,6 +690,7 @@ const AddTaskPage = ({
               error={!!errors.residualFrequencyScoring}
               InputLabelProps={{ shrink: residualFrequencyScoringWatch > 0 }}
               disabled
+              value={watch("residualFrequencyScoring")}
               {...register("residualFrequencyScoring")}
             />
             {errors.residualFrequencyScoring && (

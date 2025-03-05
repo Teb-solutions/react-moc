@@ -202,4 +202,6 @@ export interface IListControlMeasures {
   updatedAt: string
   updatedBy: number
   updatedByStaffName: string
+  implementedAt:string
+  implemenbtedByStaffName:string
 }

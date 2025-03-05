@@ -3,10 +3,7 @@ import React, { useEffect, useState } from "react";
 import TaskCardList from "./TaskCardList";
 import TaskDetailsCard from "../singleTask/TaskDetailsCard";
 import { AddTaskOutlined, Check, CheckBox } from "@mui/icons-material";
-import Button from "../../../common/Button";
-import CommonModal from "../../../common/CommonModal";
-import { get, set } from "lodash";
-import AddTask from "./AddTask";
+import Button from "../../../common/Button"; 
 import { useRiskStore } from "../common/riskstore";
 import { useParams } from "react-router";
 import { useTaskStore } from "../common/taskStore";
@@ -248,7 +245,7 @@ const EvaluationTasks = () => {
                 <AddTaskOutlined className="mr-4" />
                 Add New Task
               </Button>
-              <CommonModal
+              {/* <CommonModal
                 open={isOpen}
                 handleClose={() => {
                   setIsOpen(false);
@@ -256,7 +253,7 @@ const EvaluationTasks = () => {
                 title="Add New Task"
               >
                 <AddTask setIsOpen={setIsOpen} riskId={Number(riskId)} />
-              </CommonModal>
+              </CommonModal> */}
             </div>
           )}
         </div>

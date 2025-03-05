@@ -16,6 +16,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { riskClassificationDisplay } from "src/app/main/moc/common_components/RiskAnalysisCalculate";
 import { apiAuth } from "src/utils/http";
 import { toast } from "react-toastify";
+import dayjs from "dayjs";
 
 export const ControlMeasuresList = () => {
   const riskId = useParams<{ riskId: string }>();
@@ -71,15 +72,32 @@ export const ControlMeasuresList = () => {
         `${riskClassificationDisplay(params.row.residualRiskClassification) || ""}`,
     },
     // { field: 'taskId', headerName: 'Task ID', width: 100 },
-    { field: "updatedByStaffName", headerName: "Created By", width: 300 },
+    
+    {
+      field: "updatedByStaffName",
+      headerName: "Created By",
+      width: 300,
+      renderCell: (params: GridRenderCellParams) =>
+        <div className="flex flex-col">
+          <p className="ml-5">{params.row.updatedByStaffName}</p>
+          <p className="ml-5 text-xs">{params.row.updatedAt&&dayjs(params.row.updatedAt).format("MMM DD, YYYY HH:mm")}</p>
+          </div>,
+    },
 
     {
       field: "status",
-      headerName: "Implemented",
+      headerName: "Verified",
       width: 230,
       renderCell: (params: GridRenderCellParams) =>
         params.row.status === 1 ? (
-          <Icon className="ml-5 text-green-500">check</Icon>
+          <div className="flex flex-row">
+          <div><Icon className="ml-5 text-green-500 mt-5">check</Icon>
+          </div>
+          <div className="flex flex-col">
+          <p className="ml-5">{params.row.implementedByStaffName}</p>
+          <p className="ml-5 text-xs">{params.row.implementedAt&&dayjs(params.row.implementedAt).format("MMM DD, YYYY HH:mm")}</p>
+          </div>
+          </div>
         ) : params.row.canMarkImplemented ? (
           <Checkbox
             onChange={(event) =>
@@ -105,7 +123,7 @@ export const ControlMeasuresList = () => {
   return (
     <div className="w-full">
       <p className="px-24 pt-10 text-gray-500 font-semibold">
-        Approved tasks control measures are listed here.
+        Approved tasks control measures and their status are listed here.
       </p>
       <Paper
         className="box_reset px-24 py-10 bg-white"
