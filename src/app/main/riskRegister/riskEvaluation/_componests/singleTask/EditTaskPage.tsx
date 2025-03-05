@@ -818,7 +818,7 @@ const EditTaskPage = (
                 <InputLabel>Time*</InputLabel>
                 <Select
                   {...register("modifiedTime")}
-                  value={selectedTime}
+                  value={selectedTime || ""}
                   error={!!errors.modifiedTime}
                   disabled
                   label="Time*"
