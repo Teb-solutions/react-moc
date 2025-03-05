@@ -228,6 +228,8 @@ const EditTaskPage = (
   useEffect(() => {
     if (timeChange) {
       setValue("modifiedTime", timeChange);
+      setValue("frequencyScoring", null);
+        setValue("residualFrequencyScoring", null);
     }
     if (frequencyChange) {
       setValue("modifiedFrequencyDetails", frequencyChange);

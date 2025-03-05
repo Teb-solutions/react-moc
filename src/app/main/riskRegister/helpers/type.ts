@@ -19,7 +19,7 @@ export interface IHiraList {
   initiatedbyStaffId: number;
   initiatedbyStaffName: string;
   isActive: boolean;
-  highRiskCount?: number;
+  highRiskTaskCount?: number;
   taskCount?: number;
 }
 

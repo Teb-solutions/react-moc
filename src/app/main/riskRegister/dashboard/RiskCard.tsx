@@ -40,11 +40,11 @@ const RiskCard = ({ risk }: { risk: IHiraList }) => {
             </h2>
           </div>
           <div
-            className={`flex items-start self-stretch my-auto text-lg ${risk.highRiskCount > 0 ? "text-red-400" : "text-green-400"} `}
+            className={`flex items-start self-stretch my-auto text-lg ${risk.highRiskTaskCount > 0 ? "text-red-400" : "text-green-400"} `}
           >
             <div className="flex flex-wrap gap-5 items-start">
               <div className="font-semibold">
-                <Badge text={risk.highRiskCount || 0} />
+                <Badge text={risk.highRiskTaskCount || 0} />
               </div>
             </div>
           </div>
