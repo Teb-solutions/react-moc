@@ -16,8 +16,9 @@ import {
 } from "../../../helpers/enum";
 import { useGetPermenant } from "src/utils/swr";
 import { useRiskStore } from "../common/riskstore";
-
+import utc from 'dayjs/plugin/utc';
 dayjs.extend(duration);
+dayjs.extend(utc);
 
 const RiskSession = () => {
   const [sessionList, setSessionList] = useState<SessionList[] | null>(null);
@@ -32,7 +33,21 @@ const RiskSession = () => {
 
   const calculateTimeLeft = (endTime: dayjs.Dayjs) => {
     const now = dayjs();
+    
     const duration = dayjs.duration(endTime.diff(now));
+    const hours = duration.hours();
+    const minutes = duration.minutes();
+    const seconds = duration.seconds();
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
+
+  const calculateCounter = (startTime: dayjs.Dayjs) => {
+    const now = dayjs.utc();
+    const startTimeUTC = dayjs(startTime).utc();
+    console.log(dayjs(startTimeUTC).format('DD-MM-YYYY HH:ss'), "startTime");
+    console.log(dayjs(now).format('DD-MM-YYYY HH:ss'), "now");
+    const duration = dayjs.duration(startTimeUTC.diff(now));
+    console.log(duration, "duration");
     const hours = duration.hours();
     const minutes = duration.minutes();
     const seconds = duration.seconds();
@@ -51,6 +66,7 @@ const RiskSession = () => {
         if (activeSession) {
           setIsSessionActive(true);
           const startTime = dayjs(activeSession.startedAt);
+          
           const endTime = startTime.add(activeSession.timeoutMin, "minute");
           setTimeLeft(calculateTimeLeft(endTime));
         } else {
