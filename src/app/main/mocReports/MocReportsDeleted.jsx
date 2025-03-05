@@ -41,16 +41,16 @@ function MocReportsDeleted() {
   const [data, setData] = useState({});
   // const useParamsId = useParams().id;
   const location = useLocation();
-    const pathname = location.pathname;
-    const useParamsId = pathname.substring(pathname.lastIndexOf('/') + 1);
+  const pathname = location.pathname;
+  const useParamsId = pathname.substring(pathname.lastIndexOf("/") + 1);
 
   const paramValues = {
     category: "category",
     class: "class",
     status: "status",
     type: "type",
-  }
- 
+  };
+
   const categories = [
     {
       name: "Asset",
@@ -76,10 +76,8 @@ function MocReportsDeleted() {
       name: "Others",
       value: "Others",
     },
-  ]
+  ];
 
-  
-  
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const handleSearch = (event) => {
@@ -106,10 +104,12 @@ function MocReportsDeleted() {
   const filteredData = useMemo(() => {
     return _.filter(data, (item) => {
       if (selectedCategory !== "all") {
-        if ('category' === paramValues.category && item.requestTypeName !== selectedCategory) {
+        if (
+          "category" === paramValues.category &&
+          item.requestTypeName !== selectedCategory
+        ) {
           return false;
         }
-        
       }
       return item.requestNo.toLowerCase().includes(searchTerm.toLowerCase());
     });
@@ -119,7 +119,7 @@ function MocReportsDeleted() {
     fetchdataSetting();
     setSelectedCategory("all");
   }, [useParamsId]);
-  
+
   const columns = [
     {
       id: "requestTypeName",
@@ -142,7 +142,7 @@ function MocReportsDeleted() {
       id: "projectName",
       label: "Project Name",
     },
-    
+
     {
       id: "statusName",
       label: "Status",
@@ -155,10 +155,7 @@ function MocReportsDeleted() {
       id: "changeType",
       label: "Change Type",
     },
-    {
-      id: "deletedAt",
-      label: "Deleted Date",
-    },
+
     {
       id: "deletedByName",
       label: "Deleted By",
@@ -166,7 +163,11 @@ function MocReportsDeleted() {
     {
       id: "deletionReason",
       label: "Reason",
-    }
+    },
+    {
+      id: "deletedAt",
+      label: "Deleted Date",
+    },
   ];
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -183,11 +184,13 @@ function MocReportsDeleted() {
       "requestDate",
       "initiatorName",
       "projectName",
-      "changeLeaderName",
       "statusName",
       "classCategory",
       "changeType",
-      "changeTerminationDate",
+
+      "deletedByName",
+      "deletionReason",
+      "deletedAt",
     ];
     exportToCSV(filteredData, fields, "MOC_report_by_" + useParamsId);
   };
@@ -207,7 +210,7 @@ function MocReportsDeleted() {
         <div style={{ margin: "20px" }}>
           <div className="flex d-flex flex-col flex-wrap task_form_area sm:flex-row w-full sm:w-auto space-y-16 sm:space-y-0 sm:space-x-16">
             <InputLabel id="category-select-label" className="text-4xl">
-              <b>Deleted MOC's</b>
+              <b>Deleted MOC Requests</b>
             </InputLabel>
           </div>
 

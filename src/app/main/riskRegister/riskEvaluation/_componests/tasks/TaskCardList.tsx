@@ -35,7 +35,10 @@ const TaskCardList: React.FC<TaskCardListProps> = ({ tasks }) => {
         </div>
       )}
       {tasks.length > 0 && (
-        <>
+        <div>
+          <div className="flex justify-between items-left">
+          
+          </div>
           <section className="grid grid-cols-2 gap-6 items-center text-sm">
             {currentTasks.map((task, index) => (
               <TaskCard
@@ -63,7 +66,7 @@ const TaskCardList: React.FC<TaskCardListProps> = ({ tasks }) => {
             {endIndex > tasks.length ? tasks.length : endIndex} of{" "}
             {tasks.length} tasks
           </span>
-        </>
+        </div>
       )}
     </>
   );

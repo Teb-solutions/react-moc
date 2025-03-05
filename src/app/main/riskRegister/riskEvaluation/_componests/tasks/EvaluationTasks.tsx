@@ -13,11 +13,12 @@ import { useTaskStore } from "../common/taskStore";
 import { use } from "i18next";
 import { toast } from "react-toastify";
 import { apiAuth } from "src/utils/http";
-import { TaskStatusEnum } from "../../../helpers/enum";
+import { RiskClassification, TaskStatusEnum } from "../../../helpers/enum";
 import { useGetPermenant } from "src/utils/swr";
 import { ITask } from "../../../helpers/type";
 import { mutate } from "swr";
 import { getCurrentUserId } from "../../../helpers/commonFunctions";
+import { SubmitTasksApproval } from "./SubmitTasksApproval";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -52,8 +53,35 @@ const EvaluationTasks = () => {
   const [value, setValue] = React.useState(0);
   const { riskId } = useParams<{ riskId: string }>();
   const { isCurrentUserPartOfTeam, isSessionActive } = useRiskStore();
+  const [selectedRiskCategory, setSelectedRiskCategory] = React.useState<number | null>(RiskClassification.VeryLowRisk);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    
+      switch (newValue) {
+        case 0:
+          setSelectedRiskCategory(RiskClassification.VeryLowRisk);
+          break;
+        case 1:
+          setSelectedRiskCategory(RiskClassification.LowRisk);
+          break;
+        case 2:
+          setSelectedRiskCategory(RiskClassification.AverageRisk);
+          break;
+        case 3:
+          setSelectedRiskCategory(RiskClassification.SignificantRisk);
+          break;
+        case 4:
+          setSelectedRiskCategory(RiskClassification.HighRisk);
+          break;
+        case 5:
+          setSelectedRiskCategory(null);
+          break;
+        default:
+          setSelectedRiskCategory(null);
+          break;
+    
+  }
+
   };
   const [isOpen, setIsOpen] = React.useState(false);
   const { isAddTaskClicked, setIsAddTaskClicked } = useTaskStore();
@@ -126,28 +154,6 @@ const EvaluationTasks = () => {
     }
   }, [selectedTaskResult]);
 
-  const handleTaskSubmitForApproval = () => {
-    apiAuth
-      .post(`/RiskRegister/task/submit/approval/${riskId}`, selectedTasksIds)
-      .then((response) => {
-        if (response.data.statusCode == 200) {
-          toast.success(response.data.message);
-          mutate(`/RiskRegister/task/list/${riskId}`);
-          mutate(`/RiskRegister/task/detail/${selectedTask.taskId}`);
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("Failed to submit task for approval");
-      })
-      .finally(() => {
-        setIsSubmitOpen(false);
-        setSelectedTasksIds([]);
-      });
-  };
-
   return (
     <div className="mt-10">
       {/* <Paper className="flex flex-col p-10 mt-10"> */}
@@ -166,24 +172,26 @@ const EvaluationTasks = () => {
               "flex justify-center bg-transparent border-b-3 border-blue-500 w-full h-full",
           }}
         >
-          <Tab className="text-lg" label="All Tasks" {...a11yProps(0)} />
-          <Tab className="text-lg" label="Drafts" {...a11yProps(1)} />
+          
+          {/* <Tab className="text-lg" label="Drafts" {...a11yProps(1)} />
           <Tab className="text-lg" label="Approval Pending" {...a11yProps(2)} />
           <Tab className="text-lg" label="Need Task Review" {...a11yProps(3)} />
-          {/* <Tab
-            className="text-lg"
-            label="Need Approval Review"
-            {...a11yProps(4)}
-          /> */}
           <Tab className="text-lg" label="Approved Tasks" {...a11yProps(4)} />
-          <Tab className="text-lg" label="My Approvals" {...a11yProps(5)} />
+          <Tab className="text-lg" label="My Approvals" {...a11yProps(5)} /> */}
+          <Tab className="text-lg" label="Very Low Risk" {...a11yProps(0)} />
+          <Tab className="text-lg" label="Low Risk" {...a11yProps(1)} />
+          <Tab className="text-lg" label="Average Risk" {...a11yProps(2)} />
+          <Tab className="text-lg" label="Significant Risk" {...a11yProps(3)} />
+          <Tab className="text-lg" label="High Risk" {...a11yProps(4)} />
+          <Tab className="text-lg" label="All Tasks" {...a11yProps(5)} />
+
         </Tabs>
       </Box>
       <div className="w-full flex flex-col">
         <div className="w-full flex flex-col sm:flex-row gap-2 justify-between">
           <div className="flex flex-row my-10">
             {tasks.length > 0 &&
-              tasks.find((task) => task.status == TaskStatusEnum.Draft) && (
+              tasks.find((task) => (task.status == TaskStatusEnum.Draft && task.residualRiskClassification === selectedRiskCategory)) && (
                 <div className="flex flex-col w-full sm:flex-row gap-20">
                   <div className="flex flex-wrap py-10">
                     <input
@@ -193,7 +201,7 @@ const EvaluationTasks = () => {
                             //how to check if the task status is draft and then add to the array
                             tasks
                               .filter(
-                                (task) => task.status === TaskStatusEnum.Draft
+                                (task) => task.status === TaskStatusEnum.Draft && task.residualRiskClassification === selectedRiskCategory
                               )
                               .map((task) => task.taskId)
                           );
@@ -218,42 +226,7 @@ const EvaluationTasks = () => {
                       >
                         Submit for Approval ({selectedTasksIds.length} tasks)
                       </Button>
-                      <CommonModal
-                        open={isSubmitOpen}
-                        handleClose={() => {
-                          setIsSubmitOpen(false);
-                        }}
-                        title="Submit for Approval"
-                      >
-                        <div className="flex flex-col">
-                          <div className="flex flex-col my-20">
-                            <p>
-                              Are you sure you want to submit the selected{" "}
-                              {selectedTasksIds.length} tasks for approval?
-                            </p>
-                          </div>
-                          <div className="flex my-20 flex-row gap-10 w-full text-right justify-end">
-                            <Button
-                              onClick={() => {
-                                setIsSubmitOpen(false);
-                              }}
-                              type="button"
-                              variant="neutral"
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              onClick={() => {
-                                handleTaskSubmitForApproval();
-                              }}
-                              type="button"
-                              variant="approve"
-                            >
-                              Submit
-                            </Button>
-                          </div>
-                        </div>
-                      </CommonModal>
+                      <SubmitTasksApproval isSubmitOpen={isSubmitOpen} setIsSubmitOpen={setIsSubmitOpen} selectedRiskCategory={selectedRiskCategory} riskId={riskId} />
                     </div>
                   )}
                 </div>
@@ -290,47 +263,41 @@ const EvaluationTasks = () => {
 
         <div className="w-full flex flex-col sm:flex-row">
           <div className="w-full sm:w-2/3">
+           
+            
             <CustomTabPanel value={value} index={0}>
-              <TaskCardList tasks={tasks} />
+              <TaskCardList  tasks={tasks.filter(
+                  (task) => task.residualRiskClassification === RiskClassification.VeryLowRisk
+                )} />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-              <TaskCardList
-                tasks={tasks.filter(
-                  (task) => task.status === TaskStatusEnum.Draft
-                )}
-              />
+              <TaskCardList tasks={
+                tasks.filter(
+                  (task) => task.residualRiskClassification === RiskClassification.LowRisk
+                )} />
+            
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-              <TaskCardList
-                tasks={tasks.filter(
-                  (task) => task.status === TaskStatusEnum.PendingApproval
-                )}
-              />
+              <TaskCardList tasks={
+                tasks.filter(
+                  (task) => task.residualRiskClassification === RiskClassification.AverageRisk
+                )} />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
-              <TaskCardList
-                tasks={tasks.filter(
-                  (task) => task.status === TaskStatusEnum.RejectedPendingReview
-                )}
-              />
+              <TaskCardList tasks={
+                tasks.filter(
+                  (task) => task.residualRiskClassification === RiskClassification.SignificantRisk
+                )} />
             </CustomTabPanel>
-            {/* <CustomTabPanel value={value} index={4}>
-              <TaskCardList
-                tasks={tasks.filter(
-                  (task) =>
-                    task.status === TaskStatusEnum.RejectedPendingApproval
-                )}
-              />
-            </CustomTabPanel> */}
             <CustomTabPanel value={value} index={4}>
-              <TaskCardList
-                tasks={tasks.filter(
-                  (task) => task.status === TaskStatusEnum.Approved
-                )}
-              />
+              <TaskCardList tasks={
+                
+                tasks.filter(
+                  (task) => task.residualRiskClassification === RiskClassification.HighRisk
+                )}  />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={5}>
-              <p>Need to implement this</p>
+              <TaskCardList tasks={tasks} />
             </CustomTabPanel>
           </div>
           <div className="w-full sm:w-1/3">

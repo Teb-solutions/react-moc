@@ -309,11 +309,13 @@ const Task = () => {
     if (!formData.username) tempErrors.username = "Username is required";
     // Add other validations here
     setErrors(tempErrors);
+    console.log(tempErrors)
     return Object.keys(tempErrors).length === 0;
   };
 
   const handleSubmitProfile = (e, value) => {
     e.preventDefault();
+
     if (validate()) {
       const formDatas = new FormData();
 
@@ -334,7 +336,7 @@ const Task = () => {
       formDatas.append("documentStatus", formData.documentStatus);
 
       formDatas.append("image", formData.image ? formData.image : null);
-
+      console.log("validated")
       try {
         const path = value === "submit" ? "/Staff/Create" : `/staff/${id}`;
         if (value !== "submit") {
@@ -352,9 +354,10 @@ const Task = () => {
                   setTaskList(resp.data.data);
                 });
               } else {
+                console.log("else")
                 setIsLoading(false);
-
-                toast?.error(response.data.message);
+                console.log(response.data.message)
+                toast?.error(response.data.message || "Some error occured!",{duration: 5000}) ;
               }
             })
             .catch((error) => {

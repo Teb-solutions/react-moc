@@ -43,6 +43,10 @@ export enum RiskRegisterTeamRole {
   SICHOF,
   ProjectInCharge,
   TransportInCharge,
+  HOF,
+  HOD,
+  DPCHOF,
+  AICSIC
 }
 
 export const RiskRegisterTeamRoleDisplayNames: {
@@ -65,7 +69,14 @@ export const RiskRegisterTeamRoleDisplayNames: {
   [RiskRegisterTeamRole.SICHOF]: "SIC/HOF",
   [RiskRegisterTeamRole.ProjectInCharge]: "Project In Charge",
   [RiskRegisterTeamRole.TransportInCharge]: "Transport In Charge",
+  [RiskRegisterTeamRole.HOF]: "HOF",
+  [RiskRegisterTeamRole.HOD]: "HOD", 
+  [RiskRegisterTeamRole.DPCHOF]: "Division Project Incharge / HOF",
+  [RiskRegisterTeamRole.AICSIC]: "Area Incharge / Site Incharge",
 };
+
+
+  
 
 export const RiskCategoryToTeamRoleMapping: {
   [key in RiskCategory]: RiskRegisterTeamRole[];
@@ -172,3 +183,28 @@ export enum RiskClassification {
   LowRisk,
   VeryLowRisk,
 }
+
+
+export const approverMatrix: Record<RiskCategory, Record<RiskClassification, number>> = {
+  [RiskCategory.Routine]: {
+    [RiskClassification.HighRisk]: RiskRegisterTeamRole.HOD,
+    [RiskClassification.SignificantRisk]: RiskRegisterTeamRole.HOF,
+    [RiskClassification.AverageRisk]: RiskRegisterTeamRole.HOF,
+    [RiskClassification.LowRisk]: RiskRegisterTeamRole.AICSIC,
+    [RiskClassification.VeryLowRisk]: RiskRegisterTeamRole.AICSIC,
+  },
+  [RiskCategory.Non_Routine]: {
+    [RiskClassification.HighRisk]: RiskRegisterTeamRole.HOD,
+    [RiskClassification.SignificantRisk]: RiskRegisterTeamRole.DPCHOF,
+    [RiskClassification.AverageRisk]: RiskRegisterTeamRole.DPCHOF,
+    [RiskClassification.LowRisk]: RiskRegisterTeamRole.ProjectInCharge,
+    [RiskClassification.VeryLowRisk]: RiskRegisterTeamRole.ProjectInCharge,
+  },
+  [RiskCategory.Transport]: {
+    [RiskClassification.HighRisk]: RiskRegisterTeamRole.HOD,
+    [RiskClassification.SignificantRisk]: RiskRegisterTeamRole.HOF,
+    [RiskClassification.AverageRisk]: RiskRegisterTeamRole.HOF,
+    [RiskClassification.LowRisk]: RiskRegisterTeamRole.TransportInCharge,
+    [RiskClassification.VeryLowRisk]: RiskRegisterTeamRole.TransportInCharge,
+  },
+};

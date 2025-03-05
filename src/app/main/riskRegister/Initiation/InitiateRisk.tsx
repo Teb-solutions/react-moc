@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import { Select, MenuItem, Paper, Icon } from "@mui/material";
+import { Select, MenuItem, Paper, Icon, Autocomplete } from "@mui/material";
 import { useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
@@ -13,7 +13,11 @@ import "react-toastify/dist/ReactToastify.css";
 import Button from "../common/Button";
 import RiskHeader from "../common/RiskHeader";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { RiskCategory } from "../helpers/enum";
+import {
+  RiskCategory,
+  RiskCategoryToTeamRoleMapping,
+  RiskRegisterTeamRoleDisplayNames,
+} from "../helpers/enum";
 import daysjs from "dayjs";
 import { apiAuth } from "src/utils/http";
 import { set } from "lodash";
@@ -21,6 +25,7 @@ import CommonModal from "../common/CommonModal";
 import { useGetPermenant } from "src/utils/swr";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { use } from "i18next";
+import { Roles } from "../helpers/type";
 
 interface IFormInput {
   isActive: boolean;
@@ -37,6 +42,13 @@ function InitiateRisk() {
   const [open, setOpen] = useState(false);
   const [payload, setPayload] = useState<any>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [staff, setStaff] = useState<any[]>([]);
+  const [teamRoles, setTeamRoles] = useState<any[]>(
+    RiskCategoryToTeamRoleMapping[1]
+  );
+
+  const [rolesEmployee, setRolesEmployee] = useState<Roles[]>([]);
+  const [teamError, setTeamError] = useState<string>("");
   const riskCategories = Object.keys(RiskCategory).filter((key) =>
     isNaN(Number(key))
   );
@@ -64,53 +76,125 @@ function InitiateRisk() {
     },
   });
 
-  // useEffect(() => {
-  //   alert(defaultValue.data.siteInChargeId);
-  //   reset({
-  //     siteInChargeId: defaultValue.data.siteInchargeId,
-  //     siteId: defaultValue.data.siteId,
-  //     divisionId: defaultValue.data.divisionId,
-  //     hiranumber: defaultValue.data.hiranumber,
-  //   });
-  // }, [defaultValue]);
+  useEffect(() => {
+    console.log(teamRoles, "teamRoles");
+    console.log(rolesEmployee, "rolesEmployee");
+    setRolesEmployee([])
+      teamRoles.forEach((role) => {
+        setRolesEmployee((prev) => {
+          if (!prev.some((r) => r.teamType === role)) {
+            return [...prev, { teamType: role, staffId: "" }];
+          }
+          return prev;
+        });
+      });
+      
+    }, [teamRoles]);
+
+  useEffect(() => {
+    apiAuth
+      .get(`/Staff/LOV`)
+      .then((res) => {
+        if (res.data.statusCode === 200) {
+          setStaff(res.data.data);
+        } else {
+          toast.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+  const handleTeamRoleChange = (event, value: any, teamType) => {
+    const staffId = (value.value as string) || "";
+
+    const newRoleEmpArray = rolesEmployee.map((role) =>
+      role.teamType === teamType ? { ...role, staffId } : role
+    );
+    setRolesEmployee((prev) =>
+      prev.map((role) =>
+        role.teamType === teamType ? { ...role, staffId } : role
+      )
+    );
+    validateTeamRoles(newRoleEmpArray);
+  };
+
+  const validateTeamRoles = (newRoleEmpArray: Roles[]) => {
+    let errorMessages: string[] = [];
+    let isValid = true;
+    console.log(newRoleEmpArray)
+    newRoleEmpArray.forEach((role) => {
+      console.log(role)
+      if (!role.staffId) {
+        errorMessages.push(RiskRegisterTeamRoleDisplayNames[role.teamType]);
+        isValid = false;
+      }
+    });
+
+    if (errorMessages.length > 0) {
+      setTeamError("Please select employee for the roles: " + errorMessages.join(", "));
+    } else {
+      setTeamError("");
+    }
+    console.log(isValid);
+
+    return isValid;
+  };
 
   const category = watch("category");
+
+  useEffect(() => {
+    setTeamRoles(RiskCategoryToTeamRoleMapping[category]);
+    setTeamError("")
+  }, [category]);
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<IFormInput> = (data) => {
     //hardcoded values for site and all, this we have to get from api
-    setPayload({ ...data });
-    setOpen(true);
+    if (validateTeamRoles(rolesEmployee)) {
+      setPayload({ ...data });
+      setOpen(true);
+    }
   };
 
   const handleRiskSubmit = () => {
     setIsSubmitting(true);
-    payload.siteId = defaultValue.data.siteId;
-    payload.divisionId = defaultValue.data.divisionId;
-
-    payload.hiranumber = defaultValue.data.hiranumber;
-    payload.siteInChargeId = defaultValue.data.siteInchargeId;
-    // console.log(payload);
-    apiAuth
-      .post("/RiskRegister/Initiate", payload)
-      .then((response) => {
-        if (response.data.statusCode == 200) {
-          setIsSubmitting(false);
-          toast.success(
-            <p className="text-gray-800">Risk initiated successfully</p>
+    console.log(rolesEmployee)
+    if (validateTeamRoles(rolesEmployee)) {
+      payload.teamList = rolesEmployee;
+      payload.siteId = defaultValue.data.siteId;
+      payload.divisionId = defaultValue.data.divisionId;
+      payload.date = defaultValue.data.date;
+      payload.hiranumber = defaultValue.data.hiranumber;
+      payload.siteInChargeId = defaultValue.data.siteInchargeId;
+      // console.log(payload);
+      apiAuth
+        .post("/RiskRegister/Initiate", payload)
+        .then((response) => {
+          if (response.data.statusCode == 200) {
+            setIsSubmitting(false);
+            toast.success(
+              <p className="text-gray-800">Risk initiated successfully</p>
+            );
+            setOpen(false);
+            navigate("/risk");
+          } else {
+            setIsSubmitting(false);
+            toast.error(
+              <p className="text-gray-800">{response.data.message}</p>
+            );
+          }
+        })
+        .catch((error) => {
+          toast.error(
+            <p className="text-gray-800">Failed to inititate risk</p>
           );
-          setOpen(false);
-          navigate("/risk");
-        } else {
           setIsSubmitting(false);
-          toast.error(<p className="text-gray-800">{response.data.message}</p>);
-        }
-      })
-      .catch((error) => {
-        toast.error(<p className="text-gray-800">Failed to inititate risk</p>);
-        setIsSubmitting(false);
-        console.log(error);
-        // toast.error("Failed to initiate risk");
-      });
+          console.log(error);
+          // toast.error("Failed to initiate risk");
+        });
+    } else {
+      setIsSubmitting(false);
+    }
   };
   return (
     <FusePageCarded
@@ -314,7 +398,45 @@ function InitiateRisk() {
                       )}
                     </FormControl>
                   </div>
-
+                  <div className="flex flex-col gap-20 mt-24">
+                    <h3 className="font-bold">Select Team</h3>
+                  </div>
+                  <div className="grid mt-14 grid-cols-3 w-full gap-10">
+                    {/*  */}
+                    {staff.length > 0 &&
+                      teamRoles.map((role, index) => (
+                        <FormControl fullWidth key={index}>
+                          <Autocomplete
+                            key={"inputselect" + index}
+                            disablePortal
+                            options={staff}
+                            getOptionLabel={(option) => option.text}
+                            isOptionEqualToValue={(option, value) =>
+                              option.value === value.value
+                            }
+                            onChange={(event, value) =>
+                              handleTeamRoleChange(event, value, role)
+                            }
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label={
+                                  RiskRegisterTeamRoleDisplayNames[role] + "*"
+                                }
+                              />
+                            )}
+                          />
+                        </FormControl>
+                      ))}
+                    
+                  </div>
+                      <div className="mt-4">
+                      {teamError && (
+                      <p role="alert" className="text-sm pb-10 text-red-500">
+                        {teamError}
+                      </p>
+                    )}
+                      </div>
                   <div className="flex flex-col sm:flex-row justify-between my-20  py-30">
                     <div className="flex items-center">
                       <Button
@@ -331,7 +453,7 @@ function InitiateRisk() {
                         Cancel
                       </Button>
                       <Button variant="approve" type="submit">
-                        Submit for Approval
+                        Initiate Risk Register
                       </Button>
 
                       <CommonModal
