@@ -78,7 +78,7 @@ const RiskApp = () => {
   const [data, setData] = useState<IHiraList[]>([]);
   const { selectedTask, setSelectedTask } = useTaskStore();
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(4);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [rowData, setRowData] = useState<IHiraList[]>([]);
 
   const handleChangePage = (
@@ -225,16 +225,19 @@ const RiskApp = () => {
                       initial="hidden"
                       animate="show"
                     >
+                      
                       <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 650 }} aria-label="simple table">
                           <TableHead>
                             <TableRow className=" bg-blue-700 bg-opacity-10 ">
                               <TableCell>HIRA Number</TableCell>
-                              <TableCell align="center">Division</TableCell>
-                              <TableCell align="center">Site</TableCell>
+                              <TableCell align="left">Division</TableCell>
+                              <TableCell align="left">Site</TableCell>
                               <TableCell align="center">Project Name</TableCell>
-                              <TableCell align="center">Category</TableCell>
-                              <TableCell align="center">Created At</TableCell>
+                              <TableCell align="left">Category</TableCell>
+                              <TableCell align="left">High Risk Tasks</TableCell>
+                              <TableCell align="left">Tasks</TableCell>
+                              <TableCell align="left">Created At</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
@@ -277,14 +280,18 @@ const RiskApp = () => {
                                   {RiskCategory[row.category].replace("_", " ")}
                                 </TableCell>
                                 <TableCell align="left">
-                                  {dayjs(row.date).format("MMMM DD, YYYY")}
+                                  {row.highRiskTaskCount}
+                                </TableCell>
+                                <TableCell align="left">{row.taskCount}</TableCell>
+                                <TableCell align="left">
+                                  {dayjs(row.date).format("MMM DD, YYYY")}
                                 </TableCell>
                               </TableRow>
                             ))}
                           </TableBody>
                         </Table>
                         <TablePagination
-                          rowsPerPageOptions={[4, 8, 16]}
+                          rowsPerPageOptions={[10, 25, 50]}
                           component="div"
                           count={data.length}
                           rowsPerPage={rowsPerPage}
