@@ -16,13 +16,7 @@ import {
   FormControlLabel,
   Menu,
   Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TablePagination,
-  TableRow,
+ 
 } from "@mui/material";
 import useThemeMediaQuery from "@fuse/hooks/useThemeMediaQuery";
 
@@ -37,6 +31,7 @@ import { useTaskStore } from "./riskEvaluation/_componests/common/taskStore";
 import { RiskCategory, RiskRegisterStatus } from "./helpers/enum";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 // import RiskCard from "./riskCard";
 
@@ -125,6 +120,33 @@ const RiskApp = () => {
       });
   }, []);
 
+  const columns: GridColDef[] = useMemo(() => [
+    
+    { field: 'hiranumber', headerName: 'HIRA No', width: 150
+    ,renderCell: (params: GridRenderCellParams) => (  
+      <Link to={`/risk/riskevaluation/${params.row.id}`}>{params.row.hiranumber}</Link>
+    )
+     },
+    { field: 'divisionName', headerName: 'Division', width: 150 },
+    { field: 'siteName', headerName: 'Site', width: 150 },
+    { field: 'projectName', headerName: 'Project Name', width: 500 },
+    { field: 'category', headerName: 'Category', width: 150,
+    valueGetter: (params) =>
+    `${RiskCategory[params.row.category].replace("_", " ") || ""}`,
+     },
+    { field: 'highRiskTaskCount', headerName: 'High Risk Tasks', width: 100 },
+    { field: 'taskCount', headerName: 'Tasks', width: 100 },
+    { field: 'date', headerName: 'Created By', width: 150
+    ,renderCell: (params: GridRenderCellParams) => (  
+      <div className="flex flex-col">
+        <p className="ml-5">{params.row.initiatedbyStaffName}</p>
+        <p className="ml-5 text-xs">{params.row.createdAt&&dayjs(params.row.createdAt).format("MMM DD, YYYY HH:mm")}</p>
+        </div>
+    ) 
+     },
+
+  ], []);
+  const paginationModel = { page: 0, pageSize: 10 };
   return (
     <>
       {isLoading && <FuseLoading />}
@@ -225,85 +247,28 @@ const RiskApp = () => {
                       initial="hidden"
                       animate="show"
                     >
+                      <Paper className="flex-1 bg-white">
+                        
+                      <DataGrid
+                                  rows={data}
+                                  columns={columns}
+                                  initialState={{ pagination: { paginationModel } }}
+                                  pageSizeOptions={[10, 25, 50]}
+                                  sx={{
+                                    "& .MuiDataGrid-row": {
+                                      borderBottom: "1px solid #ccc", // Add row separators
+                                    },
+                                    "& .MuiDataGrid-columnHeaders": {
+                                      backgroundColor: "#dbeafe", // Change the background color of the table header row
+                                    },
+                                    "& .MuiDataGrid-cell": {
+                                      borderBottom: "none", // Remove the default cell border
+                                    },
+                                  }}
+                                />
+                                </Paper>
                       
-                      <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                          <TableHead>
-                            <TableRow className=" bg-blue-700 bg-opacity-10 ">
-                              <TableCell>HIRA Number</TableCell>
-                              <TableCell align="left">Division</TableCell>
-                              <TableCell align="left">Site</TableCell>
-                              <TableCell align="center">Project Name</TableCell>
-                              <TableCell align="left">Category</TableCell>
-                              <TableCell align="left">High Risk Tasks</TableCell>
-                              <TableCell align="left">Tasks</TableCell>
-                              <TableCell align="left">Created At</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {rowData.map((row) => (
-                              <TableRow
-                                key={row.hiranumber}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                  },
-                                }}
-                              >
-                                <TableCell
-                                  component="th"
-                                  scope="row"
-                                  className="text-blue-700 font-medium"
-                                >
-                                  <Link
-                                    to={
-                                      row.status ===
-                                      RiskRegisterStatus.Evaluation
-                                        ? `/risk/riskevaluation/${row.id}`
-                                        : `/risk/approverisk/${row.id}`
-                                    }
-                                  >
-                                    {row.hiranumber}
-                                  </Link>
-                                </TableCell>
-
-                                <TableCell align="left">
-                                  {row.divisionName}
-                                </TableCell>
-                                <TableCell align="left">
-                                  {row.siteName}
-                                </TableCell>
-                                <TableCell align="left">
-                                  {row.projectName}
-                                </TableCell>
-                                <TableCell align="left">
-                                  {RiskCategory[row.category].replace("_", " ")}
-                                </TableCell>
-                                <TableCell align="left">
-                                  {row.highRiskTaskCount}
-                                </TableCell>
-                                <TableCell align="left">{row.taskCount}</TableCell>
-                                <TableCell align="left">
-                                  {dayjs(row.date).format("MMM DD, YYYY")}
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                        <TablePagination
-                          rowsPerPageOptions={[10, 25, 50]}
-                          component="div"
-                          count={data.length}
-                          rowsPerPage={rowsPerPage}
-                          page={0}
-                          onPageChange={(event, newPage) => {
-                            handleChangePage(event, newPage);
-                          }}
-                          onRowsPerPageChange={(event) => {
-                            handleChangeRowsPerPage(event);
-                          }}
-                        />
-                      </TableContainer>
+                      
                     </motion.div>
                   )}
                 </>

@@ -17,6 +17,7 @@ import { riskClassificationDisplay } from "src/app/main/moc/common_components/Ri
 import { apiAuth } from "src/utils/http";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
+import { useMemo } from "react";
 
 export const ControlMeasuresList = () => {
   const riskId = useParams<{ riskId: string }>();
@@ -49,12 +50,9 @@ export const ControlMeasuresList = () => {
           // Handle the error here
         });
     }
-    // const updatedControlMeasure = data?.data.find((controlMeasure) => controlMeasure.id === id);
-    // updatedControlMeasure.status = status ? 'Active' : 'Inactive';
-    // setEditedControlMeasure(updatedControlMeasure);
-    // setIsEditControlMeasure(true);
+   
   };
-  const columns: GridColDef[] = [
+  const columns: GridColDef[] = useMemo(() => [
     // {
     //   field: 'index',
     //   headerName: 'Index',
@@ -116,7 +114,7 @@ export const ControlMeasuresList = () => {
     //   width: 160,
     //   valueGetter: (params) => `${params.row.firstName || ''} ${params.row.lastName || ''}`,
     // },
-  ];
+  ], [data]);
 
   const paginationModel = { page: 0, pageSize: 10 };
 
