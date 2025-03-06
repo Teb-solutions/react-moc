@@ -263,11 +263,15 @@ function ImplementationApproval({
 
         if (data.data && data.data?.data?.pssrSession) {
           const session = data.data?.data?.pssrSession;
+          console.log("Session data:", session);
           setActiveSessionData(session);
           setteamList(session.teamList);
-          if (session.isActive || !session.isSessionEnded) {
+          //pssr session was active and submit button was not shown, hence removed the condition || and gave &&
+          // if (session.isActive || !session.isSessionEnded) {
+          if (session.isActive && !session.isSessionEnded) {
             setPssrsessionStatus(session.status);
             setIsActiveSession(session.status === 2);
+            console.log("Session status:", session.status);
           } else {
             setIsActiveSession(false);
           }
@@ -1364,6 +1368,10 @@ function ImplementationApproval({
   if (isLoading) {
     return <FuseLoading />;
   }
+
+  // console.log(lastActCode?.canExecute, "canExecute");
+  // console.log(showPssrCheckList, "showPssrCheckList");
+  // console.log(isActiveSession, "isActiveSession");
   return (
     <div className="w-full">
       <ToastContainer

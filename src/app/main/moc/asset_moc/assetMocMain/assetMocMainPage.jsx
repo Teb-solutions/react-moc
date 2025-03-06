@@ -1052,10 +1052,14 @@ const AssetCourse = () => {
         targetUserIds: [siteInId.value],
       })
       .then((resp) => {
+        if(resp.data.statusCode === 200){
         toast.success("Successfully Updated");
         getRecords();
 
         setOpenApprover(false);
+        }else{
+          toast.error("Error Updating");
+        }
       });
   };
 
