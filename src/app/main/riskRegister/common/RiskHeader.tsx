@@ -67,6 +67,15 @@ function RiskHeader(props: MocHeaderProps) {
             className="font-medium hover:underline text-blue"
             key="1"
             color="inherit"
+            to="/dashboards/project"
+            style={{ textDecoration: "none" }}
+          >
+            Home
+          </Link>
+          <Link
+            className="font-medium hover:underline text-blue"
+            key="1"
+            color="inherit"
             to="/risk"
             style={{ textDecoration: "none" }}
           >

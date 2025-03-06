@@ -85,7 +85,7 @@ function MocHeader(props) {
             className="font-medium hover:underline text-blue"
             key="1"
             color="inherit"
-            to="/risk"
+            to="/dashboards/project"
             style={{ textDecoration: "none" }}
           >
             Home
