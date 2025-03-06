@@ -62,27 +62,27 @@ export default function StickyHeadTable() {
       align: "left",
       format: (value) => value.toFixed(2),
     },
-    {
-      id: "action",
-      label: "Action",
-      //minWidth: 170,
-      align: "left",
-      format: (value) => value.toFixed(2),
-      render: (row) => (
-        <div className="action_button">
-          <Button
-            onClick={() => handleEdit(row)}
-            endIcon={
-              <FuseSvgIcon size={20}>heroicons-solid:pencil</FuseSvgIcon>
-            }
-          ></Button>
-          <Button
-            // onClick={() => handleDelete(row)}
-            endIcon={<FuseSvgIcon size={20}>heroicons-solid:trash</FuseSvgIcon>}
-          ></Button>
-        </div>
-      ),
-    },
+    // {
+    //   id: "action",
+    //   label: "Action",
+    //   //minWidth: 170,
+    //   align: "left",
+    //   format: (value) => value.toFixed(2),
+    //   render: (row) => (
+    //     <div className="action_button">
+    //       <Button
+    //         onClick={() => handleEdit(row)}
+    //         endIcon={
+    //           <FuseSvgIcon size={20}>heroicons-solid:pencil</FuseSvgIcon>
+    //         }
+    //       ></Button>
+    //       <Button
+    //         // onClick={() => handleDelete(row)}
+    //         endIcon={<FuseSvgIcon size={20}>heroicons-solid:trash</FuseSvgIcon>}
+    //       ></Button>
+    //     </div>
+    //   ),
+    // },
   ];
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10); // Set a high number to display all rows
@@ -106,9 +106,9 @@ export default function StickyHeadTable() {
     padding: "0px",
   };
   const [lookupAdd, setLookUpAdd] = useState({
-    staff: "activity",
+    staff: "",
     role: "",
-    site: "INSERT",
+    site: "",
     division: "",
     isActive: true,
   });
@@ -441,7 +441,7 @@ export default function StickyHeadTable() {
               }}
               sx={{ width: 250 }}
             />
-            <Button
+            {/* <Button
               variant="contained"
               className="my-4"
               color="secondary"
@@ -449,7 +449,7 @@ export default function StickyHeadTable() {
             >
               <FuseSvgIcon size={20}>heroicons-outline:plus</FuseSvgIcon>
               <span className="mx-4 sm:mx-8">Add</span>
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>
