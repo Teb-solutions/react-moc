@@ -64,7 +64,7 @@ const item = {
 const RiskApp = () => {
   const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const [searchText, setSearchText] = useState("");
-  const [viewAsTable, setViewAsTable] = useState(false);
+  const [viewAsTable, setViewAsTable] = useState(localStorage.getItem("viewAsTableRisk") === 'true');
   const [originalData, setOriginalData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedSite, setSelectedSite] = useState(0);
@@ -215,6 +215,7 @@ const RiskApp = () => {
                     <Switch
                       onChange={(ev) => {
                         setViewAsTable(ev.target.checked);
+                        ev.target.checked ? localStorage.setItem("viewAsTableRisk", 'true') : localStorage.removeItem("viewAsTableRisk");
                       }}
                       checked={viewAsTable}
                       name="hideCompleted"

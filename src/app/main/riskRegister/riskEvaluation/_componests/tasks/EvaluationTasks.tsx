@@ -16,6 +16,7 @@ import { ITask } from "../../../helpers/type";
 import { mutate } from "swr";
 import { getCurrentUserId } from "../../../helpers/commonFunctions";
 import { SubmitTasksApproval } from "./SubmitTasksApproval";
+import { ImportTasks } from "./ImportTasks";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -245,6 +246,7 @@ const EvaluationTasks = () => {
                 <AddTaskOutlined className="mr-4" />
                 Add New Task
               </Button>
+              <ImportTasks />
               {/* <CommonModal
                 open={isOpen}
                 handleClose={() => {

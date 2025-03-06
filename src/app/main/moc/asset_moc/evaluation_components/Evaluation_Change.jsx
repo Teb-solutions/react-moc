@@ -1401,13 +1401,17 @@ function EvaluationChange({
       .then((resp) => {
         setOpenSubmit(false);
         setIsLoading(false);
-
+        if(resp.data.statusCode == 200){
         toast?.success("Evaluation Submitted Successfully");
         apiAuth
           .get(`/Activity/RequestLifecycle/${assetEvaluationId}`)
           .then((resp) => {
             setContent(resp.data.data.phases);
           });
+        }else{
+          setIsLoading(false);
+          toast?.error(resp.data.message || "Some Error Occured");
+        }
       })
       .catch((err) => {
         setIsLoading(false);

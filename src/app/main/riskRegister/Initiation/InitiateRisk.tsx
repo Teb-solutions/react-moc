@@ -26,6 +26,7 @@ import { useGetPermenant } from "src/utils/swr";
 import FuseLoading from "@fuse/core/FuseLoading";
 import { use } from "i18next";
 import { Roles } from "../helpers/type";
+import { fi, is } from "date-fns/locale";
 
 interface IFormInput {
   isActive: boolean;
@@ -77,8 +78,8 @@ function InitiateRisk() {
   });
 
   useEffect(() => {
-    console.log(teamRoles, "teamRoles");
-    console.log(rolesEmployee, "rolesEmployee");
+    // console.log(teamRoles, "teamRoles");
+    // console.log(rolesEmployee, "rolesEmployee");
     setRolesEmployee([])
       teamRoles.forEach((role) => {
         setRolesEmployee((prev) => {
@@ -120,24 +121,18 @@ function InitiateRisk() {
   };
 
   const validateTeamRoles = (newRoleEmpArray: Roles[]) => {
-    let errorMessages: string[] = [];
+    // let errorMessages: string[] = [];
     let isValid = true;
-    console.log(newRoleEmpArray)
-    newRoleEmpArray.forEach((role) => {
-      console.log(role)
-      if (!role.staffId) {
-        errorMessages.push(RiskRegisterTeamRoleDisplayNames[role.teamType]);
-        isValid = false;
-      }
-    });
-
-    if (errorMessages.length > 0) {
-      setTeamError("Please select employee for the roles: " + errorMessages.join(", "));
-    } else {
-      setTeamError("");
+    //to check if there are minimum 3 members in team
+    // console.log(newRoleEmpArray, "newRoleEmpArray");
+    // console.log(newRoleEmpArray.filter((r) => r.staffId).length, "length");
+    if (newRoleEmpArray.filter((r) => r.staffId).length < 3) {
+      isValid = false;
+      setTeamError("Minimum 3 team members are required to proceed");
+    }else{
+      isValid = true;
+      setTeamError("")
     }
-    console.log(isValid);
-
     return isValid;
   };
 
@@ -158,9 +153,11 @@ function InitiateRisk() {
 
   const handleRiskSubmit = () => {
     setIsSubmitting(true);
-    console.log(rolesEmployee)
+    // console.log(rolesEmployee)
+    //how to filter our the employees who are not selected
+    const filteredRolesEmployee = rolesEmployee.filter((role) => role.staffId);
     if (validateTeamRoles(rolesEmployee)) {
-      payload.teamList = rolesEmployee;
+      payload.teamList = filteredRolesEmployee;
       payload.siteId = defaultValue.data.siteId;
       payload.divisionId = defaultValue.data.divisionId;
       payload.date = defaultValue.data.date;
@@ -179,6 +176,7 @@ function InitiateRisk() {
             navigate("/risk");
           } else {
             setIsSubmitting(false);
+            setOpen(false);
             toast.error(
               <p className="text-gray-800">{response.data.message}</p>
             );
@@ -188,6 +186,7 @@ function InitiateRisk() {
           toast.error(
             <p className="text-gray-800">Failed to inititate risk</p>
           );
+          setOpen(false);
           setIsSubmitting(false);
           console.log(error);
           // toast.error("Failed to initiate risk");
