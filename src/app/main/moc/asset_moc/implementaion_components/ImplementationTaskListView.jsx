@@ -20,46 +20,28 @@ const StyledBadge = withStyles((theme) => ({
       right: "8px",
     },
   }))(Badge);
+  
 export const ImplementationTaskListView = ({
-  implementationTask,
-  currentActivityForm,
-  AppActivity,
-  showReview,
-  clickedTasks,
-  setHandelCommentRemarks,
-    handelCommentRemark,
+    handelCommentImp,
+    handelImpactreview,
+    isMyComment,
+    hasAddedComment,
+    reviewed,
+    setReviewed,
+    setClickedTasks,
+    clickedTasks,
     assetEvaluationId,
+    setHandelCommentRemarks,
+    handelCommentRemark,
+    handleExpansionChange,
+    expanded,
+    AppActivity,
+    showReview,
+    currentActivityForm,
+    implementationTask,
+    
 }) => {
     
-  const handelCommentImp = (id, value) => {
-    const remark = handelCommentRemark[id];
-    if (value == 1) {
-      apiAuth
-        .put(`/Task/ImpAddReview/${id}/${lastActCode.code}`, {
-          remark: remark,
-        })
-        .then((resp) => {
-          // setshowReview(true);
-          getRecords();
-          toast?.success("Review successfully added");
-
-          setHandelCommentRemark("");
-        });
-    } else {
-      apiAuth
-        .put(`/Task/ImpAddReview/${id}/${lastActCode.code}`, {
-          remark: remark,
-        })
-        .then((resp) => {
-          // setshowReview(true);
-          toast?.success("Review successfully Updated");
-          getRecords();
-
-          setHandelCommentRemark("");
-        });
-    }
-  };
-
   return (
     <>
       {implementationTask?.map((imptsk) => (
