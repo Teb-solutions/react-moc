@@ -32,6 +32,7 @@ import Initiation from "../../common_components/Initiation";
 import { withStyles } from "@mui/styles";
 import DocumentModal from "../../common_modal/documentModal";
 import DeleteModal from "../../common_modal/delete_modal/DeleteModal";
+import { ImplementationTaskListView } from "./ImplementationTaskListView";
 
 const ImplementationApprovalSite = ({
   contentDetails,
@@ -180,35 +181,6 @@ const ImplementationApprovalSite = ({
       ...prevRemarks,
       [id]: value,
     }));
-  };
-
-  const handelCommentImp = (id, value) => {
-    const remark = handelCommentRemark[id];
-    if (value == 1) {
-      apiAuth
-        .put(`/Task/ImpAddReview/${id}/${lastActCode.code}`, {
-          remark: remark,
-        })
-        .then((resp) => {
-          // setshowReview(true);
-          getRecords();
-          toast?.success("Review successfully added");
-
-          setHandelCommentRemark("");
-        });
-    } else {
-      apiAuth
-        .put(`/Task/ImpAddReview/${id}/${lastActCode.code}`, {
-          remark: remark,
-        })
-        .then((resp) => {
-          // setshowReview(true);
-          toast?.success("Review successfully Updated");
-          getRecords();
-
-          setHandelCommentRemark("");
-        });
-    }
   };
 
   const SubmitApprovelCreate = (e, uid, name, type) => {
@@ -454,6 +426,8 @@ const ImplementationApprovalSite = ({
     });
   };
 
+
+
   return (
     <div className="w-full">
       <ToastContainer
@@ -503,7 +477,8 @@ const ImplementationApprovalSite = ({
             />
           </div>
           <div className="p-30 pt-24 pb-24">
-            {contentDetails?.implementationTask?.map((imptsk) => (
+            <ImplementationTaskListView assetEvaluationId={assetEvaluationId} setHandelCommentRemarks={setHandelCommentRemarks} handelCommentRemark={handelCommentRemark} clickedTasks={clickedTasks} AppActivity={AppActivity} showReview={showReview} currentActivityForm={currentActivityForm} implementationTask={contentDetails?.implementationTask} />
+            {/* {contentDetails?.implementationTask?.map((imptsk) => (
               <>
                 <table className="task-table mat-table">
                   <thead
@@ -893,28 +868,7 @@ const ImplementationApprovalSite = ({
                                           </div>
                                         )}
                                       </div>
-                                      {/* <span
-                                  style={{
-                                    fontSize: "x-small",
-                                    paddingLeft: "60px",
-                                  }}
-                                >
-                                  {" "}
-                                  {imptsk.implementationReviews[0]
-                                    ?.updatedAt &&
-                                    new Date(
-                                      imptsk.implementationReviews[0]?.updatedAt
-                                    ).toLocaleString("en-US", {
-                                      month: "long",
-                                      day: "numeric",
-                                      year: "numeric",
-                                      hour: "numeric",
-                                      minute: "numeric",
-                                      second: "numeric",
-                                      hour12: true,
-                                      timeZoneName: "short",
-                                    })}
-                                </span> */}
+                                     
                                       {AppActivity.canEdit &&
                                         isMyComment(rwx) && (
                                           <p
@@ -1038,12 +992,9 @@ const ImplementationApprovalSite = ({
                     }}
                   ></tfoot>
                 </table>
-                {/* <div
-                _ngcontent-fyk-c288=""
-                class="flex items-center w-full  border-b justify-between"
-              ></div> */}
+               
               </>
-            ))}
+            ))} */}
           </div>
         </Paper>
       </SwipeableViews>
