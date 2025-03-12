@@ -2286,7 +2286,7 @@ function EvaluationChange({
 
               <CustomTabPanel value={value} index={1}>
                 <Paper>
-                  {impactList.length && !AddImpact
+                  {impactList?.length && !AddImpact
                     ? impactList.map((itms, impactindex) => (
                       <Accordion style={{ margin: "0px" }} key={impactindex}>
                         <AccordionSummary
