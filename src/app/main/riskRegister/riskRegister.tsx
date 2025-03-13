@@ -71,6 +71,7 @@ const RiskApp = () => {
   const [isSiteLoading, setIsSiteLoading] = useState(true);
   const [site, setSite] = useState<ISite[]>([]);
   const [data, setData] = useState<IHiraList[]>([]);
+  // const [originalData, setFilteredData] = useState<IHiraList[]>([]);
   const { selectedTask, setSelectedTask } = useTaskStore();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -97,6 +98,7 @@ const RiskApp = () => {
       .get("/RiskRegister/List")
       .then((res) => {
         setData(res.data.data);
+        setOriginalData(res.data.data);
         setRowData(res.data.data.slice(0, rowsPerPage));
         setIsLoading(false);
 
@@ -118,7 +120,7 @@ const RiskApp = () => {
       .catch((err) => {
         console.error(err);
       });
-  }, []);
+  }, [data]);
 
   const columns: GridColDef[] = useMemo(() => [
     
@@ -146,6 +148,33 @@ const RiskApp = () => {
      },
 
   ], []);
+
+  useEffect(() => {
+    if (selectedSite === 0 && searchText === "") {
+      setData(originalData);
+    } else if(selectedSite  > 0 && searchText !== "") {
+      const filteredData = originalData.filter(
+        (item: IHiraList) => item.siteId === selectedSite && item.hiranumber.toString().includes(searchText)
+      );
+      setData(filteredData);
+    }else if(selectedSite > 0){
+      const filteredData = originalData.filter(
+        (item: IHiraList) => item.siteId === selectedSite
+      );
+      setData(filteredData);
+    }
+    else if(searchText !== ""){
+      const filteredData = originalData.filter(
+        (item: IHiraList) => item.hiranumber.toString().includes(searchText)
+      );
+      setData(filteredData);
+    }
+    
+  }, [selectedSite, originalData, searchText]);
+
+  const handleSearchText = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(event.target.value);
+  }
   const paginationModel = { page: 0, pageSize: 10 };
   return (
     <>
@@ -201,7 +230,7 @@ const RiskApp = () => {
                     inputProps={{
                       "aria-label": "Search",
                     }}
-                    // onChange={handleSearchText}
+                    onChange={handleSearchText}
                     variant="outlined"
                     InputLabelProps={{
                       shrink: true,
