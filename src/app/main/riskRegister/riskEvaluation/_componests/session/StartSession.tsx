@@ -11,6 +11,7 @@ import {
 import Button from "../../../common/Button";
 import { apiAuth } from "src/utils/http";
 import { mutate } from "swr";
+import { toast } from "react-toastify";
 
 const StartSession = ({
   open,
@@ -24,7 +25,7 @@ const StartSession = ({
   teamList: TeamList[];
 }) => {
   const [selectedStaff, setSelectedStaff] = useState<number[]>([]);
-
+  const [error, setError] = useState<string | null>(null);
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
     setSelectedStaff((prevSelectedStaff) =>
@@ -38,6 +39,15 @@ const StartSession = ({
     const selectedTeamMembers = teamList.filter((team) =>
       selectedStaff.includes(team.staffId)
     );
+    console.log(selectedTeamMembers);
+    console.log(selectedTeamMembers.length);
+    if (selectedTeamMembers.length < 2) {
+      console.log("selectedTeamMembers.length", selectedTeamMembers.length);
+      // toast.error("minimum 2 team members required to start session");
+      setError("Note: Minimum 2 team members required to start session");
+      return;
+    }
+    setError(null);
     apiAuth
       .post(`/RiskRegister/session/create/${riskId}`, {
         teamList: selectedTeamMembers,
@@ -89,6 +99,9 @@ const StartSession = ({
               ))}
             </FormGroup>
           </FormControl>
+          {error && (
+            <p className="text-red-500 text-sm font-medium mt-2">{error}</p>
+          )}
         </div>
 
         <div className="flex justify-end gap-10">
