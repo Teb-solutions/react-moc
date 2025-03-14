@@ -86,6 +86,9 @@ const EvaluationTasks = () => {
       case 5:
         setSelectedRiskCategory(RiskClassification.HighRisk);
         break;
+      case 6:
+        setSelectedRiskCategory(null);
+        break;
       case 0:
         setSelectedRiskCategory(null);
         break;
@@ -168,6 +171,8 @@ const EvaluationTasks = () => {
   const handleChangeAge = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStatusFilter(event.target.value);
   };
+
+ 
   return (
     <div className="mt-10">
       {/* <Paper className="flex flex-col p-10 mt-10"> */}
@@ -186,17 +191,18 @@ const EvaluationTasks = () => {
               "flex justify-center bg-transparent border-b-3 border-blue-500 w-full h-full",
           }}
         >
-          {/* <Tab className="text-lg" label="Drafts" {...a11yProps(1)} />
-          <Tab className="text-lg" label="Approval Pending" {...a11yProps(2)} />
-          <Tab className="text-lg" label="Need Task Review" {...a11yProps(3)} />
-          <Tab className="text-lg" label="Approved Tasks" {...a11yProps(4)} />
-          <Tab className="text-lg" label="My Approvals" {...a11yProps(5)} /> */}
           <Tab className="text-lg" label="All Tasks" {...a11yProps(0)} />
           <Tab className="text-lg" label="Very Low Risk" {...a11yProps(1)} />
           <Tab className="text-lg" label="Low Risk" {...a11yProps(2)} />
           <Tab className="text-lg" label="Average Risk" {...a11yProps(3)} />
           <Tab className="text-lg" label="Significant Risk" {...a11yProps(4)} />
           <Tab className="text-lg" label="High Risk" {...a11yProps(5)} />
+          {tasks.find((task) =>
+                  
+                  task.status === TaskStatusEnum.PendingApproval && task.approvals?.find(approval => approval.staffId === currentUserId))&&
+              
+          <Tab className="text-lg" label="My Approvals" {...a11yProps(5)} />
+          }
         </Tabs>
       </Box>
       <div className="w-full flex flex-col">
@@ -227,6 +233,7 @@ const EvaluationTasks = () => {
                   <MenuItem value={TaskStatusEnum.Approved}>
                     {TaskStatusDisplayNames[TaskStatusEnum.Approved]}
                   </MenuItem>
+                  
                   <MenuItem value={TaskStatusEnum.RejectedPendingReview}>
                     {
                       TaskStatusDisplayNames[
@@ -414,6 +421,16 @@ const EvaluationTasks = () => {
                       : task.status === Number(statusFilter))
                 )}
               />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={6}>
+              <TaskCardList
+                isTaskSelectable={false}
+                tasks={tasks.filter((task) =>
+                  
+                    task.status === TaskStatusEnum.PendingApproval && task.approvals?.find(approval => approval.staffId === currentUserId)
+                
+  )}
+                />
             </CustomTabPanel>
           </div>
           <div className="w-full sm:w-1/3">

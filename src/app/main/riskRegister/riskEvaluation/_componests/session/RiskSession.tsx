@@ -96,7 +96,7 @@ const RiskSession = () => {
       } else toast.error(result.message);
     }
   }, [result]);
-  // console.log(sessionList, "sessionList");
+  //  console.log(sessionList, "sessionList");
   // console.log(isSessionActive, "isSessionActive");
   // console.log(isCurrentUserPartOfTeam, "isCurrentUserPartOfTeam");
   return (
