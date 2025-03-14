@@ -438,14 +438,14 @@ function InitiateRisk() {
                       </div>
                   <div className="flex flex-col sm:flex-row justify-between my-20  py-30">
                     <div className="flex items-center">
-                      <Button
+                      {/* <Button
                         variant="neutral"
                         type="button"
                         // onClick={handleOpenDocModal}
                       >
                         <Icon>upload</Icon>
                         Document
-                      </Button>
+                      </Button> */}
                     </div>
                     <div className="flex flex-row sm:justify-between items-center gap-10">
                       <Button variant="reject" type="button">
