@@ -181,7 +181,7 @@ const TaskDetailsCard = () => {
             }}
           >
             <Typography className="p-5">
-              {(isCurrentUserPartOfTeam || isTaskApprover) && (
+              {/* {(isCurrentUserPartOfTeam || isTaskApprover) && (
                 <TaskButton
                   onClick={() => {
                     setIsOpen(true);
@@ -190,7 +190,7 @@ const TaskDetailsCard = () => {
                   icon="add"
                   text="Audits"
                 />
-              )}
+              )} */}
               {isCurrentUserPartOfTeam && isSessionActive && [TaskStatusEnum.Draft, TaskStatusEnum.RejectedPendingReview].includes(selectedTask.status) && (
                 <TaskButton
                   onClick={() => {
@@ -212,16 +212,16 @@ const TaskDetailsCard = () => {
                 />
               )}
 
-              <TaskButton
+              {/* <TaskButton
                 onClick={() => {
                   setIsVersionOpen(true);
                 }}
                 icon="history"
                 text="Versions"
-              />
+              /> */}
             </Typography>
           </Popover>
-          <VersionHistory isOpen={isVersionOpen} setIsOpen={setIsVersionOpen} />
+          {/* <VersionHistory isOpen={isVersionOpen} setIsOpen={setIsVersionOpen} /> */}
           {/* <CommonModal
             title="Edit Task"
             open={isEditTask}

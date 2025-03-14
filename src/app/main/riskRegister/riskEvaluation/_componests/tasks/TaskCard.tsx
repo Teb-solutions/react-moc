@@ -14,7 +14,7 @@ import { set } from "lodash";
 import { useControlMeasureStore } from "../common/controlMeasureStore";
 import { use } from "i18next";
 
-const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
+const TaskCard = ({ task, index, isTaskSelectable }: { task: ITask; index: number, isTaskSelectable:boolean}) => {
   const {
     setSelectedTask,
     selectedTask,
@@ -88,7 +88,7 @@ const TaskCard = ({ task, index }: { task: ITask; index: number }) => {
               <h3 className="self-stretch my-auto">
                 {task.taskId ? "TASK#" + task.taskId : "TASK"}
               </h3>
-              {[TaskStatusEnum.Draft, TaskStatusEnum.RejectedPendingReview].includes(task.status) && task.residualRiskClassification!= RiskClassification.HighRisk && (
+              {[TaskStatusEnum.Draft, TaskStatusEnum.RejectedPendingReview].includes(task.status) && isTaskSelectable && (
                 <input
                   type="checkbox"
                   checked={selectedTasksIds.includes(task.taskId)}

@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import TaskCard from "./TaskCard";
 import { ITask } from "../../../helpers/type";
 import { Alert, Button } from "@mui/material";
+import { is } from "date-fns/locale";
 
 interface TaskCardListProps {
   tasks: ITask[];
+  isTaskSelectable?: boolean;
 }
 
-const TaskCardList: React.FC<TaskCardListProps> = ({ tasks }) => {
+const TaskCardList: React.FC<TaskCardListProps> = ({ tasks, isTaskSelectable }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const tasksPerPage = 8; // Number of tasks to display per page
 
@@ -42,6 +44,7 @@ const TaskCardList: React.FC<TaskCardListProps> = ({ tasks }) => {
           <section className="grid grid-cols-2 gap-6 items-center text-sm">
             {currentTasks.map((task, index) => (
               <TaskCard
+                isTaskSelectable={isTaskSelectable ? true : false}
                 key={task.riskRegisterId + "_" + index}
                 task={task}
                 index={index}

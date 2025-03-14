@@ -19,7 +19,11 @@ import { useTaskStore } from "../common/taskStore";
 import { use } from "i18next";
 import { toast } from "react-toastify";
 import { apiAuth } from "src/utils/http";
-import { RiskClassification, TaskStatusDisplayNames, TaskStatusEnum } from "../../../helpers/enum";
+import {
+  RiskClassification,
+  TaskStatusDisplayNames,
+  TaskStatusEnum,
+} from "../../../helpers/enum";
 import { useGetPermenant } from "src/utils/swr";
 import { ITask } from "../../../helpers/type";
 import { mutate } from "swr";
@@ -67,22 +71,22 @@ const EvaluationTasks = () => {
     setValue(newValue);
     setStatusFilter("");
     switch (newValue) {
-      case 0:
+      case 1:
         setSelectedRiskCategory(RiskClassification.VeryLowRisk);
         break;
-      case 1:
+      case 2:
         setSelectedRiskCategory(RiskClassification.LowRisk);
         break;
-      case 2:
+      case 3:
         setSelectedRiskCategory(RiskClassification.AverageRisk);
         break;
-      case 3:
+      case 4:
         setSelectedRiskCategory(RiskClassification.SignificantRisk);
         break;
-      case 4:
+      case 5:
         setSelectedRiskCategory(RiskClassification.HighRisk);
         break;
-      case 5:
+      case 0:
         setSelectedRiskCategory(null);
         break;
       default:
@@ -162,7 +166,7 @@ const EvaluationTasks = () => {
   }, [selectedTaskResult]);
   const [statusFilter, setStatusFilter] = React.useState("");
   const handleChangeAge = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setStatusFilter((event.target.value));
+    setStatusFilter(event.target.value);
   };
   return (
     <div className="mt-10">
@@ -193,103 +197,131 @@ const EvaluationTasks = () => {
           <Tab className="text-lg" label="Average Risk" {...a11yProps(3)} />
           <Tab className="text-lg" label="Significant Risk" {...a11yProps(4)} />
           <Tab className="text-lg" label="High Risk" {...a11yProps(5)} />
-          
         </Tabs>
       </Box>
       <div className="w-full flex flex-col">
         <div className="w-full flex flex-col sm:flex-row gap-2 justify-between">
-          <div className="flex flex-row my-10">
-            {tasks.length > 0 &&
-              tasks.find(
-                (task) =>
-                  [
-                    TaskStatusEnum.Draft,
-                    TaskStatusEnum.RejectedPendingReview,
-                  ].includes(task.status) &&
-                  task.residualRiskClassification === selectedRiskCategory &&
-                  task.residualRiskClassification != RiskClassification.HighRisk
-              ) && (
-                <div className="flex flex-col w-full sm:flex-row gap-20">
-                  <div className="flex flex-wrap py-10">
-                    <input
-                      onClick={(event) => {
-                        if ((event.target as HTMLInputElement).checked) {
-                          setSelectedTasksIds(
-                            //how to check if the task status is draft and then add to the array
-                            tasks
-                              .filter(
-                                (task) =>
-                                  [
-                                    TaskStatusEnum.Draft,
-                                    TaskStatusEnum.RejectedPendingReview,
-                                  ].includes(task.status) &&
-                                  task.residualRiskClassification ===
-                                    selectedRiskCategory &&
-                                  task.residualRiskClassification !=
-                                    RiskClassification.HighRisk
-                              )
-                              .map((task) => task.taskId)
-                          );
-                        } else {
-                          setSelectedTasksIds([]);
-                        }
-                      }}
-                      type="checkbox"
-                      className="ml-10"
-                      style={{ width: "25px", height: "25px" }}
-                    />
-                    <span className="mt-3 ml-5 font-semibold">Select All</span>
-                  </div>
-                  {selectedTasksIds.length > 0 && (
-                    <div className="p-0">
-                      <Button
-                        onClick={() => {
-                          setIsSubmitOpen(true);
+          <div className="w-full sm:w-2/3 mx-20 flex flex-col sm:flex-row justify-between">
+            <div>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">
+                  Filter by status
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={statusFilter}
+                  label="Filter by status"
+                  fullWidth
+                  size="small"
+                  style={{ width: "300px", backgroundColor: "white" }}
+                  onChange={handleChangeAge}
+                >
+                  <MenuItem value={""}>All</MenuItem>
+                  <MenuItem value={TaskStatusEnum.Draft}>
+                    {TaskStatusDisplayNames[TaskStatusEnum.Draft]}{" "}
+                  </MenuItem>
+                  <MenuItem value={TaskStatusEnum.PendingApproval}>
+                    {TaskStatusDisplayNames[TaskStatusEnum.PendingApproval]}
+                  </MenuItem>
+                  <MenuItem value={TaskStatusEnum.Approved}>
+                    {TaskStatusDisplayNames[TaskStatusEnum.Approved]}
+                  </MenuItem>
+                  <MenuItem value={TaskStatusEnum.RejectedPendingReview}>
+                    {
+                      TaskStatusDisplayNames[
+                        TaskStatusEnum.RejectedPendingReview
+                      ]
+                    }
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+            <div className="flex flex-row w-full my-10">
+              {tasks.length > 0 &&
+                tasks.find(
+                  (task) =>
+                    [
+                      TaskStatusEnum.Draft,
+                      TaskStatusEnum.RejectedPendingReview,
+                    ].includes(task.status) &&
+                    task.residualRiskClassification === selectedRiskCategory &&
+                    task.residualRiskClassification !=
+                      RiskClassification.HighRisk
+                ) && (
+                  <div className="flex flex-col w-full sm:flex-row gap-20 m-0 p-0 h-20">
+                    <div className="flex flex-row " style={{ width: "200px" }}>
+                      <input
+                        onClick={(event) => {
+                          if ((event.target as HTMLInputElement).checked) {
+                            setSelectedTasksIds(
+                              //how to check if the task status is draft and then add to the array
+                              tasks
+                                .filter(
+                                  (task) =>
+                                    [
+                                      TaskStatusEnum.Draft,
+                                      TaskStatusEnum.RejectedPendingReview,
+                                    ].includes(task.status) &&
+                                    task.residualRiskClassification ===
+                                      selectedRiskCategory &&
+                                    task.residualRiskClassification !=
+                                      RiskClassification.HighRisk
+                                )
+                                .map((task) => task.taskId)
+                            );
+                          } else {
+                            setSelectedTasksIds([]);
+                          }
                         }}
-                        variant="approve"
-                        type="button"
-                      >
-                        Submit for Approval ({selectedTasksIds.length} tasks)
-                      </Button>
-                      <SubmitTasksApproval
-                        isSubmitOpen={isSubmitOpen}
-                        setIsSubmitOpen={setIsSubmitOpen}
-                        selectedRiskCategory={selectedRiskCategory}
-                        riskId={riskId}
+                        type="checkbox"
+                        className="ml-10"
+                        style={{ width: "25px", height: "25px" }}
                       />
+                      <span className="mt-3 ml-5 font-semibold">
+                        Select All
+                      </span>
                     </div>
-                  )}
-                </div>
-              )}
+                    
+                    {selectedTasksIds.length > 0 && (
+                      <div className="p-0 m-0">
+                        {/* <Button
+                          onClick={() => {
+                            setIsSubmitOpen(true);
+                          }}
+                          variant="approve"
+                          type="button"
+                          
+                        >
+                           */}
+                           <button
+                            onClick={() => {
+                              setIsSubmitOpen(true);
+                            }}
+                            className="overflow-hidden flex flex-row  text-white self-stretch px-20 py-8 rounded-lg max-md:px-5 bg-blue-600 hover:bg-blue-800"
+                           >
+                          
+                          Submit for Approval ({selectedTasksIds.length} tasks)
+                          </button>
+                        {/* </Button> */}
+                        <SubmitTasksApproval
+                          isSubmitOpen={isSubmitOpen}
+                          setIsSubmitOpen={setIsSubmitOpen}
+                          selectedRiskCategory={selectedRiskCategory}
+                          riskId={riskId}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+            </div>
           </div>
 
           {/* Uncomment this */}
           {isCurrentUserPartOfTeam && isSessionActive && (
             // {isCurrentUserPartOfTeam && (
-            <div className="flex flex-row justify-between w-full mx-20">
-              <div >
-                <FormControl fullWidth>
-                  <InputLabel id="demo-simple-select-label">Filter by status</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={statusFilter}
-                    label="Filter by status"
-                    fullWidth
-                    size="small"
-                    style={{ width: "200px", backgroundColor: "white"}}
-                    onChange={handleChangeAge}
-                  >
-                    <MenuItem value={""}>All</MenuItem>
-                    <MenuItem value={TaskStatusEnum.Draft}>{TaskStatusDisplayNames[TaskStatusEnum.Draft]} </MenuItem>
-                    <MenuItem value={TaskStatusEnum.PendingApproval}>{TaskStatusDisplayNames[TaskStatusEnum.PendingApproval]}</MenuItem>
-                    <MenuItem value={TaskStatusEnum.Approved}>{TaskStatusDisplayNames[TaskStatusEnum.Approved]}</MenuItem>
-                    <MenuItem value={TaskStatusEnum.RejectedPendingReview}>{TaskStatusDisplayNames[TaskStatusEnum.RejectedPendingReview]}</MenuItem>
-                    
-                  </Select>
-                </FormControl>
-              </div>
-              <div>
+            <div className="flex flex-col  justify-content-right mx-20">
+                
                 <Button
                   onClick={() => {
                     // setIsOpen(true);
@@ -301,72 +333,88 @@ const EvaluationTasks = () => {
                   <AddTaskOutlined className="mr-4" />
                   Add New Task
                 </Button>
-              </div>
-              {/* <ImportTasks /> */}
-              {/* <CommonModal
-                open={isOpen}
-                handleClose={() => {
-                  setIsOpen(false);
-                }}
-                title="Add New Task"
-              >
-                <AddTask setIsOpen={setIsOpen} riskId={Number(riskId)} />
-              </CommonModal> */}
+             
             </div>
           )}
         </div>
 
         <div className="w-full flex flex-col sm:flex-row">
           <div className="w-full sm:w-2/3">
-          <CustomTabPanel value={value} index={0}>
-              <TaskCardList tasks={tasks.filter((task)=>(statusFilter === "" ? true : task.status === Number(statusFilter)))} />
+            <CustomTabPanel value={value} index={0}>
+              <TaskCardList
+                isTaskSelectable={false}
+                tasks={tasks.filter((task) =>
+                  statusFilter === ""
+                    ? true
+                    : task.status === Number(statusFilter)
+                )}
+              />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
               <TaskCardList
+                isTaskSelectable={true}
                 tasks={tasks.filter(
                   (task) =>
                     task.residualRiskClassification ===
-                    RiskClassification.VeryLowRisk && (statusFilter === "" ? true : task.status === Number(statusFilter))
+                      RiskClassification.VeryLowRisk &&
+                    (statusFilter === ""
+                      ? true
+                      : task.status === Number(statusFilter))
                 )}
               />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
               <TaskCardList
+                isTaskSelectable={true}
                 tasks={tasks.filter(
                   (task) =>
                     task.residualRiskClassification ===
-                    RiskClassification.LowRisk && (statusFilter === "" ? true : task.status === Number(statusFilter))
+                      RiskClassification.LowRisk &&
+                    (statusFilter === ""
+                      ? true
+                      : task.status === Number(statusFilter))
                 )}
               />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
               <TaskCardList
+                isTaskSelectable={true}
                 tasks={tasks.filter(
                   (task) =>
                     task.residualRiskClassification ===
-                    RiskClassification.AverageRisk && (statusFilter === "" ? true : task.status === Number(statusFilter))
+                      RiskClassification.AverageRisk &&
+                    (statusFilter === ""
+                      ? true
+                      : task.status === Number(statusFilter))
                 )}
               />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={4}>
               <TaskCardList
+                isTaskSelectable={true}
                 tasks={tasks.filter(
                   (task) =>
                     task.residualRiskClassification ===
-                    RiskClassification.SignificantRisk && (statusFilter === "" ? true : task.status === Number(statusFilter))
+                      RiskClassification.SignificantRisk &&
+                    (statusFilter === ""
+                      ? true
+                      : task.status === Number(statusFilter))
                 )}
               />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={5}>
               <TaskCardList
+                isTaskSelectable={false}
                 tasks={tasks.filter(
                   (task) =>
                     task.residualRiskClassification ===
-                    RiskClassification.HighRisk && (statusFilter === "" ? true : task.status === Number(statusFilter))
+                      RiskClassification.HighRisk &&
+                    (statusFilter === ""
+                      ? true
+                      : task.status === Number(statusFilter))
                 )}
               />
             </CustomTabPanel>
-            
           </div>
           <div className="w-full sm:w-1/3">
             {selectedTask && <TaskDetailsCard />}
