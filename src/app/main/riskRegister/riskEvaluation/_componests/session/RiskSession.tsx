@@ -96,6 +96,9 @@ const RiskSession = () => {
       } else toast.error(result.message);
     }
   }, [result]);
+  // console.log(sessionList, "sessionList");
+  // console.log(isSessionActive, "isSessionActive");
+  // console.log(isCurrentUserPartOfTeam, "isCurrentUserPartOfTeam");
   return (
     <div className="flex flex-col sm:flex-row py-3 gap-10">
       {!loading && sessionList && (

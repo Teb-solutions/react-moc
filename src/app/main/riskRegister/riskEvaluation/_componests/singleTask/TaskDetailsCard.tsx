@@ -42,12 +42,11 @@ const TaskDetailsCard = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const { selectedTask } = useTaskStore();
 
-  
   const timeUrl = "/LookupData/Lov/29";
   const frequencyUrl = selectedTask.time
     ? `/LookupData/Lov/30/${selectedTask.time}`
@@ -63,18 +62,23 @@ const TaskDetailsCard = () => {
     error: frequencyError,
   } = useFetchLookUpData(frequencyUrl);
 
- 
   const priskItems: RiskItemProps[] = useMemo(
     () => [
       {
         label: "Time",
-        value: selectedTask.time && timesArr ? timesArr?.find((time) => time.value === selectedTask.time)?.text : "NA",
+        value:
+          selectedTask.time && timesArr
+            ? timesArr?.find((time) => time.value === selectedTask.time)?.text
+            : "NA",
       },
       {
         label: "Frequency",
-        value: selectedTask.frequencyDetails && frequencyArr
-          ? frequencyArr?.find((fq) => fq.value === selectedTask.frequencyDetails)?.text
-          : "NA",
+        value:
+          selectedTask.frequencyDetails && frequencyArr
+            ? frequencyArr?.find(
+                (fq) => fq.value === selectedTask.frequencyDetails
+              )?.text
+            : "NA",
       },
       {
         label: "Frequency Scoring",
@@ -108,13 +112,20 @@ const TaskDetailsCard = () => {
     () => [
       {
         label: "Time",
-        value: selectedTask.modifiedTime && timesArr ? timesArr?.find((time) => time.value === selectedTask.modifiedTime)?.text : "NA",
+        value:
+          selectedTask.modifiedTime && timesArr
+            ? timesArr?.find((time) => time.value === selectedTask.modifiedTime)
+                ?.text
+            : "NA",
       },
       {
         label: "Frequency",
-        value: selectedTask.modifiedFrequencyDetails && frequencyArr
-          ? frequencyArr?.find((fq) => fq.value === selectedTask.modifiedFrequencyDetails)?.text
-          : "NA",
+        value:
+          selectedTask.modifiedFrequencyDetails && frequencyArr
+            ? frequencyArr?.find(
+                (fq) => fq.value === selectedTask.modifiedFrequencyDetails
+              )?.text
+            : "NA",
       },
       {
         label: "Frequency Scoring",
@@ -191,37 +202,75 @@ const TaskDetailsCard = () => {
                   text="Audits"
                 />
               )} */}
-              {isCurrentUserPartOfTeam && isSessionActive && [TaskStatusEnum.Draft, TaskStatusEnum.RejectedPendingReview].includes(selectedTask.status) && (
-                <TaskButton
-                  onClick={() => {
-                    setIsEditTaskClicked(true);
-                  }}
-                  icon="edit"
-                  text="Edit"
-                />
-              )}
+              {isCurrentUserPartOfTeam &&
+                isSessionActive &&
+                [
+                  TaskStatusEnum.Draft,
+                  TaskStatusEnum.RejectedPendingReview,
+                ].includes(selectedTask.status) && (
+                  <TaskButton
+                    onClick={() => {
+                      setIsEditTaskClicked(true);
+                    }}
+                    icon="edit"
+                    text="Edit"
+                  />
+                )}
 
-              {isCurrentUserPartOfTeam && isSessionActive && selectedTask.status==TaskStatusEnum.Draft && (
-                <TaskButton
-                  onClick={() => {
-                    setIsOpen(true);
-                    setPopupType(TaskPopupType.Delete);
-                  }}
-                  icon="delete"
-                  text="Delete"
-                />
-              )}
+              {isCurrentUserPartOfTeam &&
+                isSessionActive &&
+                selectedTask.status == TaskStatusEnum.Draft && (
+                  <TaskButton
+                    onClick={() => {
+                      setIsOpen(true);
+                      setPopupType(TaskPopupType.Delete);
+                    }}
+                    icon="delete"
+                    text="Delete"
+                  />
+                )}
+              {isTaskApprover &&
+                [
+                  TaskStatusEnum.PendingApproval,
+                  TaskStatusEnum.RejectedPendingApproval,
+                ].includes(selectedTask.status) && (
+                  <TaskButton
+                    onClick={() => {
+                      setIsEditControlMeasure(false);
 
-              {/* <TaskButton
+                      setPopupType(TaskPopupType.SendBack);
+                      setIsOpen(true);
+                    }}
+                    icon="thumb_down"
+                    text="Send Back"
+                  />
+                )}
+              {isTaskApprover &&
+                [
+                  TaskStatusEnum.PendingApproval,
+                  TaskStatusEnum.RejectedPendingApproval,
+                ].includes(selectedTask.status) && (
+                  <TaskButton
+                    onClick={() => {
+                      setIsOpen(true);
+                      setPopupType(TaskPopupType.Approve);
+                    }}
+                    icon="thumb_up"
+                    text="Approve"
+                  />
+                )}
+                
+
+              <TaskButton
                 onClick={() => {
                   setIsVersionOpen(true);
                 }}
-                icon="history"
-                text="Versions"
-              /> */}
+                icon="visibility"
+                text="View"
+              />
             </Typography>
           </Popover>
-          {/* <VersionHistory isOpen={isVersionOpen} setIsOpen={setIsVersionOpen} /> */}
+          <VersionHistory isOpen={isVersionOpen} setIsOpen={setIsVersionOpen} />
           {/* <CommonModal
             title="Edit Task"
             open={isEditTask}
@@ -259,8 +308,8 @@ const TaskDetailsCard = () => {
               onClick={() => {
                 setIsEditControlMeasure(false);
                 // setTimeout(() => {
-                  setPopupType(TaskPopupType.SendBack);
-                  setIsOpen(true);
+                setPopupType(TaskPopupType.SendBack);
+                setIsOpen(true);
                 // }, 1000);
               }}
               variant="reject"
