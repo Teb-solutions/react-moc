@@ -467,9 +467,11 @@ function AssetRequest() {
       })
       .catch((error) => {
         setIsLoading(false);
+        const errors = Object.values(error.errorsData).flat();
+        const errorlist = (errors.join(". ")); // Combine all error messages
 
-        setOpen(true);
-        toast?.success("Some Error Occured");
+        setOpen(false);
+        toast?.error(errorlist || "Some Error Occured");
       });
   };
 
