@@ -218,7 +218,7 @@ const orgCourse = () => {
   const [openApprover, setOpenApprover] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [siteInCharge, setSiteInCharge] = useState(null);
-
+  const [editName, setEditName] = useState("");
   const [siteInId, setSiteInChargeId] = useState();
 
   const handleEditApprover = (step) => {
@@ -230,6 +230,7 @@ const orgCourse = () => {
     // Set the selected approver in the state
     setSiteInChargeId(selectedApprover || null);
     setEditId(step.uid);
+    setEditName(step.name);
     // Open the modal
     setOpenApprover(true);
     setValidationErrors({});
@@ -257,6 +258,8 @@ const orgCourse = () => {
     apiAuth
       .post("/Activity/UpdateActivityTargetUsers", {
         activityUID: editId,
+        activityName: editName,
+        changeRequestToken: assetEvaluationId,
         targetUserIds: [siteInId.value],
       })
       .then((resp) => {

@@ -943,6 +943,7 @@ const AssetCourse = () => {
   const [hseq, setHseq] = useState(null);
   const [siteInId, setSiteInChargeId] = useState();
   const [editId, setEditId] = useState("");
+  const [editName, setEditName] = useState("");
   const [openApprover, setOpenApprover] = useState(false);
 
   const handleEditApproverClose = () => {
@@ -962,6 +963,8 @@ const AssetCourse = () => {
     // Set the selected approver in the state
     setSiteInChargeId(selectedApprover || null);
     setEditId(step.uid);
+    console.log("step", step)
+    setEditName(step.name);
     // Open the modal
     setOpenApprover(true);
     setValidationErrors({});
@@ -1049,6 +1052,8 @@ const AssetCourse = () => {
     apiAuth
       .post("/Activity/UpdateActivityTargetUsers", {
         activityUID: editId,
+        activityName: editName,
+        changeRequestToken: assetEvaluationId,
         targetUserIds: [siteInId.value],
       })
       .then((resp) => {
