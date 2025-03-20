@@ -97,13 +97,13 @@ export const ControlMeasuresList = () => {
           </div>
           </div>
         ) : params.row.canMarkImplemented ? (
-          <Checkbox
+          <div className="flex flex-row text-sm"><Checkbox
             onChange={(event) =>
               handleStatusChange(params.row.id, event.target.checked)
             }
-          />
+          /> <span className="mt-14">Click here to mark as verified</span></div>
         ) : (
-          <Icon className="ml-5 text-red-500">close</Icon>
+          <div className="flex flex-rox"><Icon className=" mx-5 text-amber-500">error</Icon> Pending</div>
         ),
     },
 
@@ -134,7 +134,7 @@ export const ControlMeasuresList = () => {
         {!isLoading && data && data?.data.length === 0 && (
           <p className="my-24"> - No control measures found</p>
         )}
-        {data && !isLoading && data?.data.length > 0 && (
+        {data && !isLoading && data?.data?.length > 0 && (
           <DataGrid
             rows={data?.data}
             columns={columns}

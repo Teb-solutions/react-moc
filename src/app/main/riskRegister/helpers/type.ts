@@ -205,3 +205,15 @@ export interface IListControlMeasures {
   implementedAt:string
   implemenbtedByStaffName:string
 }
+
+
+export interface  ITaskSummaryList {
+  residualRiskClassification: number
+  totalTasks: number
+  draftTasks: number
+  approvedTasks: number
+  pendingApprovalTasks: number
+  rejectedPendingReviewTasks: number
+  approverId: number
+  approverName: string
+}

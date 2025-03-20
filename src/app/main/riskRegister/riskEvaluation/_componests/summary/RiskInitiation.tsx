@@ -21,6 +21,7 @@ import LineChart from "./LineChart";
 import EditTeam from "./EditTeam";
 import Button from "../../../common/Button";
 import { ControlMeasuresList } from "../controlMeasures/ControlMeasuresList";
+import { TaskSummary } from "./TaskSummary";
 
 const RiskInitiation = () => {
   const { risk } = useRiskStore();
@@ -84,6 +85,12 @@ const RiskInitiation = () => {
           className={`self-stretch font-bold ${selectedHeader == "TaskDetails" ? "text-gray-700 bg-white rounded-t-md" : "text-white"}  cursor-pointer ml px-10 py-4`}
         >
           Task Details{" "}
+        </h3>
+        <h3
+          onClick={() => setSelectedHeader("TaskSummary")}
+          className={`self-stretch font-bold ${selectedHeader == "TaskSummary" ? "text-gray-700 bg-white rounded-t-md" : "text-white"}  cursor-pointer ml px-10 py-4`}
+        >
+          Task Summary{" "}
         </h3>
         <h3
           onClick={() => setSelectedHeader("ControlMeasures")}
@@ -219,10 +226,16 @@ const RiskInitiation = () => {
         </div>
       </article>
       <article
+        className={`${selectedHeader == "TaskSummary" ? "flex" : "hidden"} overflow-hidden flex-col justify-center items-start p-10 text-md bg-white rounded-lg`}
+      >
+        <TaskSummary />
+      </article>
+      <article
         className={`${selectedHeader == "ControlMeasures" ? "flex" : "hidden"} overflow-hidden flex-col justify-center items-start p-10 text-md bg-white rounded-lg`}
       >
         <ControlMeasuresList />
       </article>
+      
     </Paper>
   );
 };
