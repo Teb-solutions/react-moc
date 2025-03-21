@@ -30,22 +30,22 @@ export const TaskSummary = () => {
   
   const columns: GridColDef[] = useMemo(() => [
    
-   
+    
     {
       field: "residualRiskClassification",
       headerName: "Risk",
       //   description: 'This column has a value getter and is not sortable.',
       //   sortable: false,
-      width: 160,
+      width: 300,
       valueGetter: (params) =>
         `${riskClassificationDisplay(params.row.residualRiskClassification) || ""}`,
     },
     { field: 'totalTasks', headerName: 'Total', width: 100 },
     { field: 'draftTasks', headerName: 'Draft', width: 100 },
     { field: 'approvedTasks', headerName: 'Approved', width: 100 },
-    { field: 'pendingApprovalTasks', headerName: 'Pending Approval', width: 100 },
+    { field: 'pendingApprovalTasks', headerName: 'Pending Approval', width: 150 },
     { field: 'rejectedPendingReviewTasks', headerName: 'Rejected', width: 100 },
-    { field: 'approverName', headerName: 'Approver', width: 100 },
+    { field: 'approverName', headerName: 'Approver', width: 300 },
    
   ], [data]);
 
@@ -76,6 +76,7 @@ export const TaskSummary = () => {
             columns={columns}
             initialState={{ pagination: { paginationModel } }}
             pageSizeOptions={[10, 25, 50]}
+            getRowId={(row) => `${row.residualRiskClassification}_${row.totalTasks}`} 
             sx={{
               "& .MuiDataGrid-row": {
                 borderBottom: "1px solid #ccc", // Add row separators
