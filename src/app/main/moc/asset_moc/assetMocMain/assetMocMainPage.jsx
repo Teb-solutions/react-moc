@@ -48,6 +48,7 @@ import CustomStepIcon from "../../homepage/CustomStepIcon";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HelpModal from "../../common_modal/HelpModal";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
+import { ViewTeamAssignmentHistory } from "./_components/ViewTeamAssignmentHistory";
 const AssetCourse = () => {
   // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const theme = useTheme();
@@ -940,6 +941,8 @@ const AssetCourse = () => {
   const [editName, setEditName] = useState("");
   const [openApprover, setOpenApprover] = useState(false);
 
+  const [isOpenTeamHistory, setIsOpenTeamHistory] = useState(false);
+
   const handleEditApproverClose = () => {
     setOpenApprover(fasle);
   };
@@ -958,7 +961,7 @@ const AssetCourse = () => {
     setSiteInChargeId(selectedApprover || null);
     setEditId(step.uid);
     console.log("step", step);
-    setEditName(step.name);
+    setEditName(step.name+' V'+step.version);
     // Open the modal
     setOpenApprover(true);
     setValidationErrors({});
@@ -1040,11 +1043,16 @@ const AssetCourse = () => {
 
     if (!siteInId) {
       errors.siteInId = "Staff is required.";
-      setValidationErrors(errors);
+       setValidationErrors(errors);
+       return;
     }
-    if (!remarkTeamRequest) {
+    if (remarkTeamRequest.length === 0) {
       errors.remarkTeamRequest = "Remark is required.";
+      setValidationErrors(errors);
+      return;
     }
+
+   
 
     apiAuth
       .post("/Activity/UpdateActivityTargetUsers", {
@@ -1110,19 +1118,23 @@ const AssetCourse = () => {
 
     if (!siteInCharge) {
       errors.siteInCharge = "Site In Charge is required.";
+      
     }
-    if (!changeLeader) {
-      errors.changeLeader = "Change Leader is required.";
-    }
-    if (!hseq) {
-      errors.hseq = "HSEQ is required.";
-    }
-    if (others.length === 0) {
-      errors.others = "At least one 'Others' selection is required.";
-    }
-    if (!remarkTeamRequest) {
+    // if (!changeLeader) {
+    //   errors.changeLeader = "Change Leader is required.";
+    // }
+    // if (!hseq) {
+    //   errors.hseq = "HSEQ is required.";
+    // }
+    // if (others.length === 0) {
+    //   errors.others = "At least one 'Others' selection is required.";
+    // }
+    if (remarkTeamRequest.length === 0) {
       errors.remarkTeamRequest = "Remark is required.";
+      
     }
+
+    console.log("errors", errors)
 
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
@@ -1689,7 +1701,7 @@ const AssetCourse = () => {
                 <FuseSvgIcon
                   className="ps-5 color-blue"
                   size={20}
-                  onClick={() => handleEdit()}
+                  onClick={() => setIsOpenTeamHistory(true)}
                 >
                   heroicons-solid:eye
                 </FuseSvgIcon>
@@ -1699,6 +1711,7 @@ const AssetCourse = () => {
               </AccordionSummary>
             </Accordion>
           )}
+          <ViewTeamAssignmentHistory  isOpen={isOpenTeamHistory} setIsOpen={setIsOpenTeamHistory} assetEvaluationId={assetEvaluationId} />
 
           <HelpModal
             showHelpmodal={showHelpmodal}
@@ -1786,7 +1799,7 @@ const AssetCourse = () => {
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            label="Site In Charge"
+                            label="Site In Charge*"
                             error={!!validationErrors.siteInCharge}
                             helperText={validationErrors.siteInCharge}
                           />
@@ -1930,7 +1943,7 @@ const AssetCourse = () => {
                   <FormControl  fullWidth>
                     <TextField
                       id="outlined-multiline-static"
-                      label="Remarks"
+                      label="Remarks*"
                       multiline
                       error={!!validationErrors.remarkTeamRequest}
                       rows={4}
@@ -2091,7 +2104,7 @@ const AssetCourse = () => {
                   <FormControl  fullWidth>
                     <TextField
                       id="outlined-multiline-static"
-                      label="Remarks"
+                      label="Remarks*"
                       multiline
                       error={!!validationErrors.remarkTeamRequest}
                       rows={4}
