@@ -263,6 +263,7 @@ function Course() {
     }
   };
   const [remarkTeamRequest, setRemarkTeamRequest] = useState("");
+  const [isSubmittingUpdateActivityTargetUsers, setIsSubmittingUpdateActivityTargetUsers] = useState(false);
   const handleRemarkTeamChange = (e) => {
     setRemarkTeamRequest(e.target.value);
   };
@@ -281,6 +282,7 @@ function Course() {
     } else {
       setValidationErrors({});
     }
+    setIsSubmittingUpdateActivityTargetUsers(true);
 
     apiAuth
       .post("/Activity/UpdateActivityTargetUsers", {
@@ -303,7 +305,10 @@ function Course() {
       })
       .catch((error) => {
         toast.error(error.response.data.message || "Error Updating");
-      });
+      }).finally(() => {
+        setIsSubmittingUpdateActivityTargetUsers(false);
+      }
+      );
   };
 
   const handleStepChange = (
@@ -809,6 +814,7 @@ function Course() {
                       paddingRight: "25px",
                     }}
                     type="submit"
+                    disabled={isSubmittingUpdateActivityTargetUsers}
                     onClick={updateActivityTargetUsers}
                   >
                     Update
