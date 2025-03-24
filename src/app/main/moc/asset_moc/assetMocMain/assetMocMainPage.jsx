@@ -1038,10 +1038,11 @@ const AssetCourse = () => {
       }));
     }
   };
+  const [isSubmittingUpdateActivity, setIsSubmittingUpdateActivity] = useState(false)
 
   const updateActivityTargetUsers = () => {
     let errors = {};
-
+   
     if (!siteInId) {
       errors.siteInId = "Staff is required.";
        setValidationErrors(errors);
@@ -1055,7 +1056,7 @@ const AssetCourse = () => {
     else{
       setValidationErrors({});
     }
-   
+    setIsSubmittingUpdateActivity(true);
 
     apiAuth
       .post("/Activity/UpdateActivityTargetUsers", {
@@ -1077,7 +1078,10 @@ const AssetCourse = () => {
         }
       }).catch((error) => {
         toast.error(error.response.data.message || "Error Updating");
-      });
+      }).finally(() => {
+        setIsSubmittingUpdateActivity(false);
+      }
+      );
   };
 
   const handleChangeLeaderChange = (event, newValue) => {
@@ -1114,6 +1118,7 @@ const AssetCourse = () => {
   };
 
   const [remarkTeamRequest, setRemarkTeamRequest] = useState([]);
+  const [isSubmittingTeamUpdate, setIsSubmittingTeamUpdate] = useState(false);
 
   const handleRemarkTeamChange = (event) => {
     setRemarkTeamRequest(event.target.value);
@@ -1121,7 +1126,7 @@ const AssetCourse = () => {
 
   const handelUpdateTeam = () => {
     let errors = {};
-
+    
     if (!siteInCharge) {
       errors.siteInCharge = "Site In Charge is required.";
       
@@ -1142,6 +1147,7 @@ const AssetCourse = () => {
     else{
       errors = {};
     }
+   
 
     console.log("errors", errors)
 
@@ -1149,6 +1155,7 @@ const AssetCourse = () => {
       setValidationErrors(errors);
       return; // Stop the API call if there are validation errors
     }
+    setIsSubmittingTeamUpdate(true);
     const teamData = [];
     const addedStaffIds = new Set();
     // Collect data from Site In Charge (teamType 4)
@@ -1207,6 +1214,8 @@ const AssetCourse = () => {
       .catch((error) => {
         toast.success("Error updating team");
         console.error("Error updating team:", error);
+      }).finally(() => {
+        setIsSubmittingTeamUpdate(false);
       });
   };
   const [showHelpmodal, setShowHelpModal] = useState(false);
@@ -2002,6 +2011,7 @@ const AssetCourse = () => {
                       paddingLeft: "25px",
                       paddingRight: "25px",
                     }}
+                    disabled={isSubmittingTeamUpdate}
                     type="submit"
                     onClick={handelUpdateTeam}
                   >
@@ -2163,6 +2173,7 @@ const AssetCourse = () => {
                       paddingLeft: "25px",
                       paddingRight: "25px",
                     }}
+                    disabled={isSubmittingUpdateActivity}
                     type="submit"
                     onClick={updateActivityTargetUsers}
                   >
