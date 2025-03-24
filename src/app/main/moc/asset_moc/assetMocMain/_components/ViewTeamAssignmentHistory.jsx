@@ -15,8 +15,7 @@ import {
 } from "@mui/material";
 import { useState, useMemo, useEffect } from "react";
 import { useGetPermenant } from "src/utils/swr";
-import { t, use } from "i18next";
-import { apiAuth } from "src/utils/http";
+import dayjs from "dayjs";
 
 function a11yProps(index) {
   return {
@@ -229,7 +228,7 @@ export const ViewTeamAssignmentHistory = ({
 
                               <TableCell>{row.createdByStaffName}</TableCell>
                               <TableCell>{row.reasonForChange}</TableCell>
-                              <TableCell>{row?.changeDate || "NA"}</TableCell>
+                              <TableCell>{row?.createdAt && dayjs(row?.createdAt).format('DD-MM-YYYY') || "NA"}</TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
@@ -287,7 +286,7 @@ export const ViewTeamAssignmentHistory = ({
                               
                               <TableCell>{row?.reasonForChange || "NA"}</TableCell>
                               <TableCell>{row?.createdByStaffName || "NA"}</TableCell>
-                              <TableCell>{row?.changeDate || "NA"}</TableCell>
+                              <TableCell>{row?.createdAt && dayjs(row?.createdAt).format('DD-MM-YYYY') || "NA"}</TableCell>
                             </TableRow>
                           ))}
                         </TableBody>
