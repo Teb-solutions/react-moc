@@ -208,7 +208,7 @@ const orgCourse = () => {
             setIsLoading(false);
 
             setContent(resp.data.data.phases);
-            setValueRemark("");
+            // setValueRemark("");
           });
       });
 
@@ -232,7 +232,7 @@ const orgCourse = () => {
     // Set the selected approver in the state
     setSiteInChargeId(selectedApprover || null);
     setEditId(step.uid);
-    setEditName(step.name);
+    setEditName(step.name + " V" + step.version);
     // Open the modal
     setOpenApprover(true);
     setValidationErrors({});
@@ -277,13 +277,18 @@ const orgCourse = () => {
       })
       .then((resp) => {
         if (resp.data.statusCode === 200) {
-                  toast.success("Successfully Updated");
-                  getRecords();
-                  setOpenApprover(false);
-                } else {
-                  toast.error(resp.data.message || "Error Updating");
-                }
-      }).catch((error) => {
+        
+          setRemarkTeamRequest("");
+          // console.log(remarkTeamRequest)
+          // alert(remarkTeamRequest)
+          toast.success("Successfully Updated");
+          getRecords();
+          setOpenApprover(false);
+        } else {
+          toast.error(resp.data.message || "Error Updating");
+        }
+      })
+      .catch((error) => {
         toast.error(error.response.data.message || "Error Updating");
       });
   };
@@ -786,7 +791,10 @@ const orgCourse = () => {
               style={{ minHeight: "60px" }}
               onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
             >
-              <div className="flex justify-between">
+              <div
+                onClick={() => setIsOpenTeamHistory(true)}
+                className="flex justify-between"
+              >
                 View Team Assignment History
                 <FuseSvgIcon
                   className="ps-5 color-blue"
@@ -796,8 +804,12 @@ const orgCourse = () => {
                   heroicons-solid:eye
                 </FuseSvgIcon>
               </div>
-              <ViewTeamAssignmentHistory showTeam={false}  isOpen={isOpenTeamHistory} setIsOpen={setIsOpenTeamHistory} assetEvaluationId={orgEvaluationId} />
-              
+              <ViewTeamAssignmentHistory
+                showTeam={false}
+                isOpen={isOpenTeamHistory}
+                setIsOpen={setIsOpenTeamHistory}
+                assetEvaluationId={orgEvaluationId}
+              />
             </AccordionSummary>
           </Accordion>
         </>

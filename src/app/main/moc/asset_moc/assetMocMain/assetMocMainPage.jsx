@@ -1067,9 +1067,10 @@ const AssetCourse = () => {
       })
       .then((resp) => {
         if (resp.data.statusCode === 200) {
+          setRemarkTeamRequest("");
           toast.success("Successfully Updated");
           getRecords();
-
+          
           setOpenApprover(false);
         } else {
           toast.error(resp.data.message || "Error Updating");
@@ -1192,6 +1193,7 @@ const AssetCourse = () => {
       .put(`/ChangeRequest/EditTeam?id=${assetEvaluationId}`, payload)
       .then((resp) => {
         if(resp.data.statusCode === 200){
+          setRemarkTeamRequest("");
         setOpenTeamAssignment(false);
         setSelectedOthersStaffs([]);
         // Handle the response if needed
@@ -1694,7 +1696,7 @@ const AssetCourse = () => {
                 onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
               >
                 <div className="flex flex-col justify-between">
-                <div className="flex justify-left">
+                <div  onClick={() => handleEdit()} className="flex justify-left">
                 Edit team
                 <FuseSvgIcon
                   className="ps-5 color-blue"
@@ -1704,7 +1706,7 @@ const AssetCourse = () => {
                   heroicons-solid:pencil
                 </FuseSvgIcon>
                 </div>
-                <div className="flex justify-between">
+                <div  onClick={() => setIsOpenTeamHistory(true)} className="mt-10 flex justify-between">
                 View Team Assignment History
                 <FuseSvgIcon
                   className="ps-5 color-blue"

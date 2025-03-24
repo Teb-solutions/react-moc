@@ -246,7 +246,7 @@ function Course() {
     // Set the selected approver in the state
     setSiteInChargeId(selectedApprover || null);
     setEditId(step.uid);
-    setEditName(step.name);
+    setEditName(step.name+" V"+step.version);
     // Open the modal
     setOpenApprover(true);
     setValidationErrors({});
@@ -292,9 +292,11 @@ function Course() {
       })
       .then((resp) => {
         if (resp.data.statusCode === 200) {
+          setRemarkTeamRequest("");
           toast.success("Successfully Updated");
           getRecords();
           setOpenApprover(false);
+          
         } else {
           toast.error(resp.data.message || "Error Updating");
         }
@@ -1023,7 +1025,7 @@ function Course() {
               style={{ minHeight: "60px" }}
               onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
             >
-              <div className="flex justify-between">
+              <div onClick={() => setIsOpenTeamHistory(true)} className="flex justify-between">
                 View Team Assignment History
                 <FuseSvgIcon
                   className="ps-5 color-blue"
