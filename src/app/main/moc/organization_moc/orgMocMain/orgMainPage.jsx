@@ -249,6 +249,7 @@ const orgCourse = () => {
     }
   };
   const [remarkTeamRequest, setRemarkTeamRequest] = useState("");
+  const [isSubmittingUpdateActivityTargetUsers, setIsSubmittingUpdateActivityTargetUsers] = useState(false);
   const handleRemarkTeamChange = (e) => {
     setRemarkTeamRequest(e.target.value);
   };
@@ -266,7 +267,7 @@ const orgCourse = () => {
     } else {
       setValidationErrors({});
     }
-
+    setIsSubmittingUpdateActivityTargetUsers(true);
     apiAuth
       .post("/Activity/UpdateActivityTargetUsers", {
         activityUID: editId,
@@ -290,7 +291,10 @@ const orgCourse = () => {
       })
       .catch((error) => {
         toast.error(error.response.data.message || "Error Updating");
-      });
+      }).finally(() => {
+        setIsSubmittingUpdateActivityTargetUsers(false);
+      }
+      );
   };
 
   const handleStepChange = (
@@ -575,6 +579,7 @@ const orgCourse = () => {
                       paddingRight: "25px",
                     }}
                     type="submit"
+                    disabled={isSubmittingUpdateActivityTargetUsers}
                     onClick={updateActivityTargetUsers}
                   >
                     Update
