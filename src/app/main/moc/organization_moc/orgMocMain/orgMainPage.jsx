@@ -35,6 +35,7 @@ import OrgImplementation from "../implementation_components/OrgImplementationPag
 import FuseLoading from "@fuse/core/FuseLoading";
 import CustomStepIcon from "../../homepage/CustomStepIcon";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
+import { ViewTeamAssignmentHistory } from "../../asset_moc/assetMocMain/_components/ViewTeamAssignmentHistory";
 
 const orgCourse = () => {
   const pageLayout = useRef(null);
@@ -60,6 +61,7 @@ const orgCourse = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [verName, setVerName] = useState("");
   const feature = decryptFeature();
+  const [isOpenTeamHistory, setIsOpenTeamHistory] = useState(false);
 
   const style = {
     position: "absolute",
@@ -246,6 +248,10 @@ const orgCourse = () => {
       }));
     }
   };
+  const [remarkTeamRequest, setRemarkTeamRequest] = useState("");
+  const handleRemarkTeamChange = (e) => {
+    setRemarkTeamRequest(e.target.value);
+  };
 
   const updateActivityTargetUsers = () => {
     let errors = {};
@@ -253,20 +259,32 @@ const orgCourse = () => {
     if (!siteInId) {
       errors.siteInId = "Staff is required.";
       setValidationErrors(errors);
+    } else if (remarkTeamRequest.length === 0) {
+      errors.remarkTeamRequest = "Remark is required.";
+      setValidationErrors(errors);
+      return;
+    } else {
+      setValidationErrors({});
     }
 
     apiAuth
       .post("/Activity/UpdateActivityTargetUsers", {
         activityUID: editId,
         activityName: editName,
-        changeRequestToken: assetEvaluationId,
+        changeRequestToken: orgEvaluationId,
+        reasonForChange: remarkTeamRequest,
         targetUserIds: [siteInId.value],
       })
       .then((resp) => {
-        toast.success("Successfully Updated");
-        getRecords();
-
-        setOpenApprover(false);
+        if (resp.data.statusCode === 200) {
+                  toast.success("Successfully Updated");
+                  getRecords();
+                  setOpenApprover(false);
+                } else {
+                  toast.error(resp.data.message || "Error Updating");
+                }
+      }).catch((error) => {
+        toast.error(error.response.data.message || "Error Updating");
       });
   };
 
@@ -490,6 +508,26 @@ const orgCourse = () => {
                             <ListItemText primary={option.text} />
                           </MenuItem>
                         )}
+                      />
+                    </FormControl>
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, marginTop: "30px" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <FormControl fullWidth>
+                      <TextField
+                        id="outlined-multiline-static"
+                        label="Remarks*"
+                        multiline
+                        error={!!validationErrors.remarkTeamRequest}
+                        rows={4}
+                        onChange={(e) => {
+                          handleRemarkTeamChange(e);
+                        }}
+                        variant="outlined"
                       />
                     </FormControl>
                   </Box>
@@ -743,6 +781,25 @@ const orgCourse = () => {
               </AccordionDetails>
             </Accordion>
           ))}
+          <Accordion style={{ margin: "0px" }} expanded={false}>
+            <AccordionSummary
+              style={{ minHeight: "60px" }}
+              onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
+            >
+              <div className="flex justify-between">
+                View Team Assignment History
+                <FuseSvgIcon
+                  className="ps-5 color-blue"
+                  size={20}
+                  onClick={() => setIsOpenTeamHistory(true)}
+                >
+                  heroicons-solid:eye
+                </FuseSvgIcon>
+              </div>
+              <ViewTeamAssignmentHistory showTeam={false}  isOpen={isOpenTeamHistory} setIsOpen={setIsOpenTeamHistory} assetEvaluationId={orgEvaluationId} />
+              
+            </AccordionSummary>
+          </Accordion>
         </>
       }
       scroll="content"

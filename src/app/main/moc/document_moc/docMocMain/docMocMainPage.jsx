@@ -38,6 +38,7 @@ import { useParams } from "react-router";
 import ImplementationApproval from "../implementation_components/ImplementationApproval";
 import ImplementationClosure from "../implementation_components/ImplementationClosure";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
+import { ViewTeamAssignmentHistory } from "../../asset_moc/assetMocMain/_components/ViewTeamAssignmentHistory";
 
 function Course() {
   // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
@@ -128,6 +129,8 @@ function Course() {
   const [currentPhaseName, setCurrentPhaseName] = useState("");
   const [lastActCode, setlastActCode] = useState("");
   const [verName, setVerName] = useState("");
+
+  const [isOpenTeamHistory, setIsOpenTeamHistory] = useState(false);
 
   const [handelUrlChange, setHandelUrlChange] = useState({
     urlRemarks: "",
@@ -231,7 +234,7 @@ function Course() {
   const [openApprover, setOpenApprover] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [siteInCharge, setSiteInCharge] = useState(null);
-const [editName, setEditName] = useState("");
+  const [editName, setEditName] = useState("");
   const [siteInId, setSiteInChargeId] = useState();
 
   const handleEditApprover = (step) => {
@@ -259,6 +262,10 @@ const [editName, setEditName] = useState("");
       }));
     }
   };
+  const [remarkTeamRequest, setRemarkTeamRequest] = useState("");
+  const handleRemarkTeamChange = (e) => {
+    setRemarkTeamRequest(e.target.value);
+  };
 
   const updateActivityTargetUsers = () => {
     let errors = {};
@@ -266,20 +273,34 @@ const [editName, setEditName] = useState("");
     if (!siteInId) {
       errors.siteInId = "Staff is required.";
       setValidationErrors(errors);
+      return;
+    } else if (remarkTeamRequest.length === 0) {
+      errors.remarkTeamRequest = "Remark is required.";
+      setValidationErrors(errors);
+      return;
+    } else {
+      setValidationErrors({});
     }
 
     apiAuth
       .post("/Activity/UpdateActivityTargetUsers", {
         activityUID: editId,
         activityName: editName,
-        changeRequestToken: assetEvaluationId,
+        changeRequestToken: evaluationId,
+        reasonForChange: remarkTeamRequest,
         targetUserIds: [siteInId.value],
       })
       .then((resp) => {
-        toast.success("Successfully Updated");
-        getRecords();
-
-        setOpenApprover(false);
+        if (resp.data.statusCode === 200) {
+          toast.success("Successfully Updated");
+          getRecords();
+          setOpenApprover(false);
+        } else {
+          toast.error(resp.data.message || "Error Updating");
+        }
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message || "Error Updating");
       });
   };
 
@@ -727,6 +748,26 @@ const [editName, setEditName] = useState("");
                       />
                     </FormControl>
                   </Box>
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, marginTop: "30px" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <FormControl fullWidth>
+                      <TextField
+                        id="outlined-multiline-static"
+                        label="Remarks*"
+                        multiline
+                        error={!!validationErrors.remarkTeamRequest}
+                        rows={4}
+                        onChange={(e) => {
+                          handleRemarkTeamChange(e);
+                        }}
+                        variant="outlined"
+                      />
+                    </FormControl>
+                  </Box>
                 </div>
 
                 <div
@@ -890,9 +931,9 @@ const [editName, setEditName] = useState("");
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                             className="pt-4"
@@ -901,7 +942,7 @@ const [editName, setEditName] = useState("");
                               <span>
                                 <b>
                                   {step.targetUsers &&
-                                    step.targetUsers.length > 0
+                                  step.targetUsers.length > 0
                                     ? "By " + step?.targetUsers[0]
                                     : ""}
                                 </b>
@@ -923,9 +964,9 @@ const [editName, setEditName] = useState("");
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -938,9 +979,9 @@ const [editName, setEditName] = useState("");
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -977,6 +1018,25 @@ const [editName, setEditName] = useState("");
               </AccordionDetails>
             </Accordion>
           ))}
+          <Accordion style={{ margin: "0px" }} expanded={false}>
+            <AccordionSummary
+              style={{ minHeight: "60px" }}
+              onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
+            >
+              <div className="flex justify-between">
+                View Team Assignment History
+                <FuseSvgIcon
+                  className="ps-5 color-blue"
+                  size={20}
+                  onClick={() => setIsOpenTeamHistory(true)}
+                >
+                  heroicons-solid:eye
+                </FuseSvgIcon>
+              </div>
+              <ViewTeamAssignmentHistory showTeam={false}  isOpen={isOpenTeamHistory} setIsOpen={setIsOpenTeamHistory} assetEvaluationId={evaluationId} />
+              
+            </AccordionSummary>
+          </Accordion>
         </>
       }
       scroll="content"

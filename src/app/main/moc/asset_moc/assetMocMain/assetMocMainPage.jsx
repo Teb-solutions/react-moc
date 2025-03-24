@@ -49,6 +49,7 @@ import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import HelpModal from "../../common_modal/HelpModal";
 import { decryptFeature } from "src/app/main/sign-in/tabs/featureEncryption";
 import { ViewTeamAssignmentHistory } from "./_components/ViewTeamAssignmentHistory";
+import { set } from "lodash";
 const AssetCourse = () => {
   // const isMobile = useThemeMediaQuery((theme) => theme.breakpoints.down("lg"));
   const theme = useTheme();
@@ -1046,12 +1047,14 @@ const AssetCourse = () => {
        setValidationErrors(errors);
        return;
     }
-    if (remarkTeamRequest.length === 0) {
+    else if (remarkTeamRequest.length === 0) {
       errors.remarkTeamRequest = "Remark is required.";
       setValidationErrors(errors);
       return;
     }
-
+    else{
+      setValidationErrors({});
+    }
    
 
     apiAuth
@@ -1071,6 +1074,8 @@ const AssetCourse = () => {
         } else {
           toast.error(resp.data.message || "Error Updating");
         }
+      }).catch((error) => {
+        toast.error(error.response.data.message || "Error Updating");
       });
   };
 
@@ -1129,9 +1134,12 @@ const AssetCourse = () => {
     // if (others.length === 0) {
     //   errors.others = "At least one 'Others' selection is required.";
     // }
-    if (remarkTeamRequest.length === 0) {
+    else if (remarkTeamRequest.length === 0) {
       errors.remarkTeamRequest = "Remark is required.";
       
+    }
+    else{
+      errors = {};
     }
 
     console.log("errors", errors)
@@ -1711,7 +1719,7 @@ const AssetCourse = () => {
               </AccordionSummary>
             </Accordion>
           )}
-          <ViewTeamAssignmentHistory  isOpen={isOpenTeamHistory} setIsOpen={setIsOpenTeamHistory} assetEvaluationId={assetEvaluationId} />
+          <ViewTeamAssignmentHistory showTeam={true}  isOpen={isOpenTeamHistory} setIsOpen={setIsOpenTeamHistory} assetEvaluationId={assetEvaluationId} />
 
           <HelpModal
             showHelpmodal={showHelpmodal}

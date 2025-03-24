@@ -44,6 +44,7 @@ export const ViewTeamAssignmentHistory = ({
   isOpen,
   setIsOpen,
   assetEvaluationId,
+  showTeam
 }) => {
   const styleImp = {
     position: "absolute",
@@ -79,7 +80,7 @@ export const ViewTeamAssignmentHistory = ({
   };
   
   const { data, isLoading:dataLoading, error } = useGetPermenant(
-    isOpen && `ChangeRequest/TeamHistoryList?id=${assetEvaluationId}`
+    isOpen && value==1 && `ChangeRequest/TeamHistoryList?id=${assetEvaluationId}`
   );
 
   
@@ -88,7 +89,7 @@ export const ViewTeamAssignmentHistory = ({
     isLoading: approverdataLoading,
     error: approvererror,
   } = useGetPermenant(
-    isOpen && value==1 &&  `Activity/ActivityTargetUsersHistory/${assetEvaluationId}`
+    isOpen &&  `Activity/ActivityTargetUsersHistory/${assetEvaluationId}`
   );
    
 
@@ -183,69 +184,12 @@ export const ViewTeamAssignmentHistory = ({
                   aria-label="basic tabs example"
                   style={{ backgroundColor: "#ffffff" }}
                 >
-                  <Tab  label="Team Change History" {...a11yProps(0)} />
-                  <Tab label="Approver Change History" {...a11yProps(1)} />
+                 
+                  <Tab label="Approver Change History" {...a11yProps(0)} />
+                  {showTeam && <Tab  label="Team Change History" {...a11yProps(1)} />}
                 </Tabs>
               </Box>
               <CustomTabPanel value={value} index={0}>
-                {dataLoading && (
-                  <div className="text-center">Loading...</div>
-                )}
-              {data?.data?.length > 0 && (
-                  <Box sx={{ width: "100%", overflowX: "auto" }}>
-                    <TableContainer>
-                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                          <TableRow className="bg-gray-200 p-0">
-                            <TableCell>Team</TableCell>
-                           
-                            <TableCell>Reason</TableCell>
-                            <TableCell>Changed By</TableCell>
-                            <TableCell>Changed On</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {dataPaginated?.map((row) => (
-                            <TableRow
-                              key={row.activityName}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  border: 0,
-                                },
-                              }}
-                            >
-                              <TableCell component="th" scope="row">
-                                <div className="flex flex-col">
-                                <div><span className="font-semibold">Site In Charge</span> - {row?.siteInChargeName}</div>
-                                {row?.teamAssignments?.map((team) => (
-                                    <div><span className="font-semibold">{team?.roleName}</span> - {team?.staffName}</div>
-                                ))}
-                                </div>
-                              </TableCell>
-                              
-                              <TableCell>{row?.reasonForChange || "NA"}</TableCell>
-                              <TableCell>{row?.createdByStaffName || "NA"}</TableCell>
-                              <TableCell>{row?.changeDate || "NA"}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                    <TablePagination
-                      component="div"
-                      count={data?.data?.length}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      rowsPerPage={rowsPerPage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                  </Box>
-                )}
-                {data?.data?.length == 0 && (
-                  <div className="text-center">No Data Found</div>
-                )}
-              </CustomTabPanel>
-              <CustomTabPanel value={value} index={1}>
                 {approverdataLoading && (
                   <div className="text-center">Loading...</div>
                 )}
@@ -305,6 +249,65 @@ export const ViewTeamAssignmentHistory = ({
                   <div className="text-center">No Data Found</div>
                 )}
               </CustomTabPanel>
+              <CustomTabPanel value={value} index={1}>
+                {dataLoading && (
+                  <div className="text-center">Loading...</div>
+                )}
+              {data?.data?.length > 0 && (
+                  <Box sx={{ width: "100%", overflowX: "auto" }}>
+                    <TableContainer>
+                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                        <TableHead>
+                          <TableRow className="bg-gray-200 p-0">
+                            <TableCell>Team</TableCell>
+                           
+                            <TableCell>Reason</TableCell>
+                            <TableCell>Changed By</TableCell>
+                            <TableCell>Changed On</TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {dataPaginated?.map((row) => (
+                            <TableRow
+                              key={row.activityName}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                              }}
+                            >
+                              <TableCell component="th" scope="row">
+                                <div className="flex flex-col">
+                                <div><span className="font-semibold">Site In Charge</span> - {row?.siteInChargeName}</div>
+                                {row?.teamAssignments?.map((team) => (
+                                    <div><span className="font-semibold">{team?.roleName}</span> - {team?.staffName}</div>
+                                ))}
+                                </div>
+                              </TableCell>
+                              
+                              <TableCell>{row?.reasonForChange || "NA"}</TableCell>
+                              <TableCell>{row?.createdByStaffName || "NA"}</TableCell>
+                              <TableCell>{row?.changeDate || "NA"}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    <TablePagination
+                      component="div"
+                      count={data?.data?.length}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      rowsPerPage={rowsPerPage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
+                  </Box>
+                )}
+                {data?.data?.length == 0 && (
+                  <div className="text-center">No Data Found</div>
+                )}
+              </CustomTabPanel>
+              
             </Box>
           </div>
         </Box>
