@@ -15,10 +15,12 @@ import {
   AccordionSummary,
   Autocomplete,
   Checkbox,
+  Input,
   ListItemText,
   Step,
   StepContent,
   StepLabel,
+  TextareaAutosize,
   Tooltip,
 } from "@mui/material";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
@@ -245,8 +247,6 @@ const AssetCourse = () => {
   }, []);
 
   const [tasks, setTasks] = useState([]);
-
-
 
   const handleStepChange = (
     e,
@@ -512,8 +512,6 @@ const AssetCourse = () => {
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
               .then(async (resp) => {
-
-
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
 
@@ -568,8 +566,6 @@ const AssetCourse = () => {
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
               .then(async (resp) => {
-
-
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
                 if (resp.data?.data) {
@@ -625,7 +621,6 @@ const AssetCourse = () => {
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
               .then(async (resp) => {
-
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
                 if (resp.data?.data) {
@@ -686,7 +681,6 @@ const AssetCourse = () => {
                 `/SummaryDetails/List?id=${assetEvaluationId}&&code=${code}&&version=${version}&&refVersion=${refVersion}`
               )
               .then(async (resp) => {
-
                 setReqNo(resp.data.data.requestNo);
                 setContentDetails(resp?.data?.data);
                 if (resp.data?.data) {
@@ -963,7 +957,7 @@ const AssetCourse = () => {
     // Set the selected approver in the state
     setSiteInChargeId(selectedApprover || null);
     setEditId(step.uid);
-    console.log("step", step)
+    console.log("step", step);
     setEditName(step.name);
     // Open the modal
     setOpenApprover(true);
@@ -982,13 +976,13 @@ const AssetCourse = () => {
             case 1:
               setChangeLeader(
                 staffList.find((option) => option.value === member.staffId) ||
-                null
+                  null
               );
               break;
             case 2:
               setHseq(
                 staffList.find((option) => option.value === member.staffId) ||
-                null
+                  null
               );
               break;
             case 3:
@@ -1015,7 +1009,7 @@ const AssetCourse = () => {
             case 4:
               setSiteInCharge(
                 staffList.find((option) => option.value === member.staffId) ||
-                null
+                  null
               );
               break;
             default:
@@ -1048,22 +1042,26 @@ const AssetCourse = () => {
       errors.siteInId = "Staff is required.";
       setValidationErrors(errors);
     }
+    if (!remarkTeamRequest) {
+      errors.remarkTeamRequest = "Remark is required.";
+    }
 
     apiAuth
       .post("/Activity/UpdateActivityTargetUsers", {
         activityUID: editId,
         activityName: editName,
         changeRequestToken: assetEvaluationId,
+        reasonForChange: remarkTeamRequest,
         targetUserIds: [siteInId.value],
       })
       .then((resp) => {
-        if(resp.data.statusCode === 200){
-        toast.success("Successfully Updated");
-        getRecords();
+        if (resp.data.statusCode === 200) {
+          toast.success("Successfully Updated");
+          getRecords();
 
-        setOpenApprover(false);
-        }else{
-          toast.error("Error Updating");
+          setOpenApprover(false);
+        } else {
+          toast.error(resp.data.message || "Error Updating");
         }
       });
   };
@@ -1101,6 +1099,12 @@ const AssetCourse = () => {
     }
   };
 
+  const [remarkTeamRequest, setRemarkTeamRequest] = useState([]);
+
+  const handleRemarkTeamChange = (event) => {
+    setRemarkTeamRequest(event.target.value);
+  };
+
   const handelUpdateTeam = () => {
     let errors = {};
 
@@ -1115,6 +1119,9 @@ const AssetCourse = () => {
     }
     if (others.length === 0) {
       errors.others = "At least one 'Others' selection is required.";
+    }
+    if (!remarkTeamRequest) {
+      errors.remarkTeamRequest = "Remark is required.";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -1156,13 +1163,24 @@ const AssetCourse = () => {
       }
     });
 
+    const payload= {
+      teamAssignments: teamData,
+      reasonForChange: remarkTeamRequest,
+    }
+
     apiAuth
-      .put(`/ChangeRequest/EditTeam?id=${assetEvaluationId}`, teamData)
+      .put(`/ChangeRequest/EditTeam?id=${assetEvaluationId}`, payload)
       .then((resp) => {
+        if(resp.data.statusCode === 200){
         setOpenTeamAssignment(false);
         setSelectedOthersStaffs([]);
         // Handle the response if needed
         toast.success("Team updated successfully");
+        }else{
+          toast.error(resp.data.message || "Error updating team");
+       
+        }
+
       })
       .catch((error) => {
         toast.success("Error updating team");
@@ -1273,7 +1291,6 @@ const AssetCourse = () => {
                   assetEvaluationId={assetEvaluationId}
                   setContentDetails={setContentDetails}
                   {...(tasks.length > 0 && { tasks })}
-
                   lastActCode={lastActCode}
                   currentActivityForm={currentActivityForm}
                   remarkRequest={remarkRequest}
@@ -1559,9 +1576,9 @@ const AssetCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                             className="pt-4"
@@ -1570,7 +1587,7 @@ const AssetCourse = () => {
                               <span>
                                 <b>
                                   {step.targetUsers &&
-                                    step.targetUsers.length > 0
+                                  step.targetUsers.length > 0
                                     ? "By " + step.targetUsers[0]
                                     : ""}
                                 </b>
@@ -1592,9 +1609,9 @@ const AssetCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -1607,9 +1624,9 @@ const AssetCourse = () => {
                             style={
                               currentActivityForm.uid == step.uid
                                 ? {
-                                  color: "rgb(79, 70, 229)",
-                                  fontSize: "10px",
-                                }
+                                    color: "rgb(79, 70, 229)",
+                                    fontSize: "10px",
+                                  }
                                 : { fontSize: "10px" }
                             }
                           >
@@ -1656,6 +1673,8 @@ const AssetCourse = () => {
                 style={{ minHeight: "60px" }}
                 onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
               >
+                <div className="flex flex-col justify-between">
+                <div className="flex justify-left">
                 Edit team
                 <FuseSvgIcon
                   className="ps-5 color-blue"
@@ -1664,6 +1683,19 @@ const AssetCourse = () => {
                 >
                   heroicons-solid:pencil
                 </FuseSvgIcon>
+                </div>
+                <div className="flex justify-between">
+                View Team Assignment History
+                <FuseSvgIcon
+                  className="ps-5 color-blue"
+                  size={20}
+                  onClick={() => handleEdit()}
+                >
+                  heroicons-solid:eye
+                </FuseSvgIcon>
+                </div>
+                </div>
+
               </AccordionSummary>
             </Accordion>
           )}
@@ -1889,6 +1921,26 @@ const AssetCourse = () => {
                       />
                     </FormControl>
                   </Box>
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, marginTop: "30px" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                  <FormControl  fullWidth>
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Remarks"
+                      multiline
+                      error={!!validationErrors.remarkTeamRequest}
+                      rows={4}
+                      onChange={(e) => {
+                        handleRemarkTeamChange(e);
+                      }}
+                      variant="outlined"
+                    />
+                  </FormControl>
+                  </Box>
                 </div>
 
                 <div
@@ -2029,6 +2081,26 @@ const AssetCourse = () => {
                         )}
                       />
                     </FormControl>
+                  </Box>
+                  <Box
+                    component="form"
+                    sx={{ "& > :not(style)": { m: 1, marginTop: "30px" } }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                  <FormControl  fullWidth>
+                    <TextField
+                      id="outlined-multiline-static"
+                      label="Remarks"
+                      multiline
+                      error={!!validationErrors.remarkTeamRequest}
+                      rows={4}
+                      onChange={(e) => {
+                        handleRemarkTeamChange(e);
+                      }}
+                      variant="outlined"
+                    />
+                  </FormControl>
                   </Box>
                 </div>
 
