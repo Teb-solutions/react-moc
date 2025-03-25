@@ -160,18 +160,20 @@ const TaskDetailsCard = () => {
   return (
     <Paper className="flex flex-col p-10 mt-10">
       <header className="flex gap-10 mb-10 justify-between items-center w-full">
-        <h2
-          className={`text-base font-semibold text-zinc-800 px-5 py-5 rounded-md ${
-            Number(selectedTask?.residualRiskClassification) === 1 &&
-            "bg-red-500"
-          }
+        <div>
+          <h2
+            className={`text-base font-semibold text-zinc-800 px-5 py-5 rounded-md ${
+              Number(selectedTask?.residualRiskClassification) === 1 &&
+              "bg-red-500"
+            }
               ${Number(selectedTask?.residualRiskClassification) === 2 && "bg-orange-700"}
               ${Number(selectedTask?.residualRiskClassification) === 3 && "bg-amber-700"}
               ${Number(selectedTask?.residualRiskClassification) === 4 && "bg-yellow-600"}
               ${Number(selectedTask?.residualRiskClassification) === 5 && "bg-green-500"}`}
-        >
-          TASK#{selectedTask.taskId}
-        </h2>
+          >
+            TASK#{selectedTask.taskId}
+          </h2>
+        </div>
         <div className="flex gap-10">
           <button
             aria-describedby={id}
@@ -259,7 +261,6 @@ const TaskDetailsCard = () => {
                     text="Approve"
                   />
                 )}
-                
 
               <TaskButton
                 onClick={() => {

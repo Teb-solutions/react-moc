@@ -172,14 +172,8 @@ const EvaluationTasks = () => {
     setStatusFilter(event.target.value);
   };
 
-  useEffect(() => {
-    console.log(currentUserId,'currentUserId')
-    console.log(tasks[0].approvals.find(approval=>approval.staffId == currentUserId),'currentuser')
-    console.log(tasks.find((task) =>
-                  
-      task.status === TaskStatusEnum.PendingApproval && task.approvals?.find(approval => approval.staffId == currentUserId)), 'currentuser---')
-  }, [statusFilter]);
- 
+  
+
   return (
     <div className="mt-10">
       {/* <Paper className="flex flex-col p-10 mt-10"> */}
@@ -204,12 +198,15 @@ const EvaluationTasks = () => {
           <Tab className="text-lg" label="Average Risk" {...a11yProps(3)} />
           <Tab className="text-lg" label="Significant Risk" {...a11yProps(4)} />
           <Tab className="text-lg" label="High Risk" {...a11yProps(5)} />
-          {tasks.find((task) =>
-                  
-                  task.status === TaskStatusEnum.PendingApproval && task.approvals?.find(approval => approval.staffId == currentUserId))&&
-              
-          <Tab className="text-lg" label="My Approvals" {...a11yProps(6)} />
-          }
+          {tasks.find(
+            (task) =>
+              task.status === TaskStatusEnum.PendingApproval &&
+              task.approvals?.find(
+                (approval) => approval.staffId == currentUserId
+              )
+          ) && (
+            <Tab className="text-lg" label="My Approvals" {...a11yProps(6)} />
+          )}
         </Tabs>
       </Box>
       <div className="w-full flex flex-col">
@@ -240,7 +237,7 @@ const EvaluationTasks = () => {
                   <MenuItem value={TaskStatusEnum.Approved}>
                     {TaskStatusDisplayNames[TaskStatusEnum.Approved]}
                   </MenuItem>
-                  
+
                   <MenuItem value={TaskStatusEnum.RejectedPendingReview}>
                     {
                       TaskStatusDisplayNames[
@@ -296,7 +293,7 @@ const EvaluationTasks = () => {
                         Select All
                       </span>
                     </div>
-                    
+
                     {selectedTasksIds.length > 0 && (
                       <div className="p-0 m-0">
                         {/* <Button
@@ -308,15 +305,14 @@ const EvaluationTasks = () => {
                           
                         >
                            */}
-                           <button
-                            onClick={() => {
-                              setIsSubmitOpen(true);
-                            }}
-                            className="overflow-hidden flex flex-row  text-white self-stretch px-20 py-8 rounded-lg max-md:px-5 bg-blue-600 hover:bg-blue-800"
-                           >
-                          
+                        <button
+                          onClick={() => {
+                            setIsSubmitOpen(true);
+                          }}
+                          className="overflow-hidden flex flex-row  text-white self-stretch px-20 py-8 rounded-lg max-md:px-5 bg-blue-600 hover:bg-blue-800"
+                        >
                           Submit for Approval ({selectedTasksIds.length} tasks)
-                          </button>
+                        </button>
                         {/* </Button> */}
                         <SubmitTasksApproval
                           isSubmitOpen={isSubmitOpen}
@@ -335,19 +331,17 @@ const EvaluationTasks = () => {
           {isCurrentUserPartOfTeam && isSessionActive && (
             // {isCurrentUserPartOfTeam && (
             <div className="flex flex-col  justify-content-right mx-20">
-                
-                <Button
-                  onClick={() => {
-                    // setIsOpen(true);
-                    setIsAddTaskClicked(true);
-                  }}
-                  variant="approve"
-                  type="button"
-                >
-                  <AddTaskOutlined className="mr-4" />
-                  Add New Task
-                </Button>
-             
+              <Button
+                onClick={() => {
+                  // setIsOpen(true);
+                  setIsAddTaskClicked(true);
+                }}
+                variant="approve"
+                type="button"
+              >
+                <AddTaskOutlined className="mr-4" />
+                Add New Task
+              </Button>
             </div>
           )}
         </div>
@@ -432,12 +426,14 @@ const EvaluationTasks = () => {
             <CustomTabPanel value={value} index={6}>
               <TaskCardList
                 isTaskSelectable={false}
-                tasks={tasks.filter((task) =>
-                  
-                    task.status === TaskStatusEnum.PendingApproval && task.approvals?.find(approval => approval.staffId == currentUserId)
-                
-  )}
-                />
+                tasks={tasks.filter(
+                  (task) =>
+                    task.status === TaskStatusEnum.PendingApproval &&
+                    task.approvals?.find(
+                      (approval) => approval.staffId == currentUserId
+                    )
+                )}
+              />
             </CustomTabPanel>
           </div>
           <div className="w-full sm:w-1/3">

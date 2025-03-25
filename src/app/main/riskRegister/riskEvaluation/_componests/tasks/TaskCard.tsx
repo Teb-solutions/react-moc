@@ -130,7 +130,7 @@ const TaskCard = ({ task, index, isTaskSelectable }: { task: ITask; index: numbe
               <h5 className="font-medium text-gray-600">Task Description</h5>
               <p className="mt-3 text-neutral-400">{task.taskName}</p>
             </div>
-            <div className="flex flex-col mt-6 max-w-full">
+            <div className="flex flex-row mt-6 max-w-full">
               <Chip
                 sx={{ maxWidth: "fit-content", whiteSpace: "nowrap" }}
                 label={TaskStatusDisplayNames[task.status] || "Draft"}
@@ -138,6 +138,7 @@ const TaskCard = ({ task, index, isTaskSelectable }: { task: ITask; index: numbe
                 variant="outlined"
                 size="small"
               />
+              
             </div>
           </div>
         </article>
