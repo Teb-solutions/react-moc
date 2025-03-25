@@ -172,6 +172,13 @@ const EvaluationTasks = () => {
     setStatusFilter(event.target.value);
   };
 
+  useEffect(() => {
+    console.log(currentUserId,'currentUserId')
+    console.log(tasks[0].approvals.find(approval=>approval.staffId == currentUserId),'currentuser')
+    console.log(tasks.find((task) =>
+                  
+      task.status === TaskStatusEnum.PendingApproval && task.approvals?.find(approval => approval.staffId == currentUserId)), 'currentuser---')
+  }, [statusFilter]);
  
   return (
     <div className="mt-10">
@@ -199,9 +206,9 @@ const EvaluationTasks = () => {
           <Tab className="text-lg" label="High Risk" {...a11yProps(5)} />
           {tasks.find((task) =>
                   
-                  task.status === TaskStatusEnum.PendingApproval && task.approvals?.find(approval => approval.staffId === currentUserId))&&
+                  task.status === TaskStatusEnum.PendingApproval && task.approvals?.find(approval => approval.staffId == currentUserId))&&
               
-          <Tab className="text-lg" label="My Approvals" {...a11yProps(5)} />
+          <Tab className="text-lg" label="My Approvals" {...a11yProps(6)} />
           }
         </Tabs>
       </Box>
@@ -427,7 +434,7 @@ const EvaluationTasks = () => {
                 isTaskSelectable={false}
                 tasks={tasks.filter((task) =>
                   
-                    task.status === TaskStatusEnum.PendingApproval && task.approvals?.find(approval => approval.staffId === currentUserId)
+                    task.status === TaskStatusEnum.PendingApproval && task.approvals?.find(approval => approval.staffId == currentUserId)
                 
   )}
                 />
