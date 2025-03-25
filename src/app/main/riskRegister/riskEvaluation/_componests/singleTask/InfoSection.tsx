@@ -2,7 +2,11 @@ import React, { useMemo } from "react";
 import { useTaskStore } from "../common/taskStore";
 import useFetchLookUpData from "../common/useFetchLookUpData";
 import { riskClassificationDisplay } from "src/app/main/moc/common_components/RiskAnalysisCalculate";
-import { RiskActionType, TaskStatusDisplayNames, TaskStatusEnum } from "../../../helpers/enum";
+import {
+  RiskActionType,
+  TaskStatusDisplayNames,
+  TaskStatusEnum,
+} from "../../../helpers/enum";
 import { Chip } from "@mui/material";
 import RiskDisplay from "../common/RiskDisplay";
 
@@ -74,21 +78,21 @@ const InfoSection: React.FC = () => {
         {infoItems.map((item, index) => (
           <InfoItem key={index} label={item.label} value={item.value} />
         ))}
-         {
-                [TaskStatusEnum.PendingApproval, TaskStatusEnum.Approved].includes(selectedTask.status) && (
-                  <div className="flex gap-10 mt-10  justify-between p-5 items-start w-full">
-    <div className="text-neutral-400">{'Approver'}:</div>
-    <div className="font-medium text-neutral-600 text-right">{selectedTask.status == TaskStatusEnum.Approved? selectedTask.approvals?.find(
-                      (approval) =>approval.actionType === RiskActionType.Approve
-                    )?.staffName:
-                    selectedTask.approvals?.find((approval) => approval.isActive)
-                  ?.staffName
-                    }</div>
-  </div>
-                    
-                 
-                )
-              }
+        {[TaskStatusEnum.PendingApproval, TaskStatusEnum.Approved].includes(
+          selectedTask.status
+        ) && (
+          <div className="flex gap-10 mt-10  justify-between p-5 items-start w-full">
+            <div className="text-neutral-400">{"Approver"}:</div>
+            <div className="font-medium text-neutral-600 text-right">
+              {selectedTask.status == TaskStatusEnum.Approved
+                ? selectedTask.approvals?.find(
+                    (approval) => approval.actionType === RiskActionType.Approve
+                  )?.staffName
+                : selectedTask.approvals?.find((approval) => approval.isActive)
+                    ?.staffName}
+            </div>
+          </div>
+        )}
       </div>
       <div className="flex gap-10 mt-10  text-sm  justify-between p-5 items-start w-full">
         <div className="text-neutral-400">Status:</div>
@@ -100,10 +104,9 @@ const InfoSection: React.FC = () => {
             variant="outlined"
             size="small"
           />
-          
         </div>
       </div>
-     
+
       <div className="flex gap-10 mt-10 text-sm justify-between p-5 items-start w-full">
         <div className="text-neutral-400">Risk:</div>
         <div className="font-medium text-neutral-600 text-right">

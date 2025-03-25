@@ -4,7 +4,7 @@ import { ITask } from "../../../helpers/type";
 import RiskClassificationDisplay from "../../../common/RiskClassificationDisplay";
 import { useTaskStore } from "../common/taskStore";
 import { riskClassificationDisplay } from "src/app/main/moc/common_components/RiskAnalysisCalculate";
-import { RiskClassification, TaskStatusDisplayNames, TaskStatusEnum } from "../../../helpers/enum";
+import { RiskActionType, RiskClassification, TaskStatusDisplayNames, TaskStatusEnum } from "../../../helpers/enum";
 import { useGetPermenant } from "src/utils/swr";
 import { toast } from "react-toastify";
 import { useRiskStore } from "../common/riskstore";
@@ -114,7 +114,7 @@ const TaskCard = ({ task, index, isTaskSelectable }: { task: ITask; index: numbe
             </header>
             <div className="flex gap-10 justify-between items-center mt-6 w-full">
               <div className="flex flex-col justify-center self-stretch my-auto">
-                <h5 className="font-medium text-gray-600">Residual Risk</h5>
+                <h5 className="font-normal text-gray-500">Residual Risk</h5>
                 <p className="mt-2 font-semibold text-zinc-800">
                   {task.residualRisk}
                 </p>
@@ -127,17 +127,33 @@ const TaskCard = ({ task, index, isTaskSelectable }: { task: ITask; index: numbe
               />
             </div>
             <div className="flex flex-col mt-6 max-w-full w-[360px]">
-              <h5 className="font-medium text-gray-600">Task Description</h5>
+              <h5 className="font-normal text-gray-500">Task Description</h5>
               <p className="mt-3 text-neutral-400">{task.taskName}</p>
             </div>
             <div className="flex flex-row mt-6 max-w-full">
               <Chip
                 sx={{ maxWidth: "fit-content", whiteSpace: "nowrap" }}
-                label={TaskStatusDisplayNames[task.status] || "Draft"}
+                label={TaskStatusDisplayNames[task.status] 
+                  
+                  || "Draft"}
                 color="info"
                 variant="outlined"
                 size="small"
               />
+              {/* {[TaskStatusEnum.PendingApproval, TaskStatusEnum.Approved].includes(
+                        task.status
+                      ) && (
+                        
+                          <p className="font-normal text-gray-600 mt-3 ml-3 italic text-xs">
+                            {task.status == TaskStatusEnum.Approved
+                              ? task.approvals?.find(
+                                  (approval) => approval.actionType === RiskActionType.Approve
+                                )?.staffName
+                              : task.approvals?.find((approval) => approval.isActive)
+                                  ?.staffName}
+                          </p>
+                       
+                      )} */}
               
             </div>
           </div>
