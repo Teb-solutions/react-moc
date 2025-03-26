@@ -168,12 +168,12 @@ const EvaluationTasks = () => {
     }
   }, [selectedTaskResult]);
   const [statusFilter, setStatusFilter] = React.useState("");
-  const handleChangeAge = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeFilter = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStatusFilter(event.target.value);
   };
 
   
-
+  // console.log("statusFilter", statusFilter);
   return (
     <div className="mt-10">
       {/* <Paper className="flex flex-col p-10 mt-10"> */}
@@ -225,7 +225,7 @@ const EvaluationTasks = () => {
                   fullWidth
                   size="small"
                   style={{ width: "300px", backgroundColor: "white" }}
-                  onChange={handleChangeAge}
+                  onChange={handleChangeFilter}
                 >
                   <MenuItem value={""}>All</MenuItem>
                   <MenuItem value={TaskStatusEnum.Draft}>
@@ -249,7 +249,7 @@ const EvaluationTasks = () => {
               </FormControl>
             </div>
             <div className="flex flex-row w-full my-10">
-              {tasks.length > 0 &&
+              {tasks.length > 0 && value!=0 && ![TaskStatusEnum.Approved,TaskStatusEnum.PendingApproval].includes(Number(statusFilter)) &&
                 tasks.find(
                   (task) =>
                     [
