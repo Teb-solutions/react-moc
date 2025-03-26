@@ -22,6 +22,7 @@ const EditTeam = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [rolesEmployee, setRolesEmployee] = useState<Roles[]>([]);
   const [teamError, setTeamError] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   useEffect(() => {
     apiAuth
       .get(`/Staff/LOV`)
@@ -76,9 +77,10 @@ const EditTeam = ({
     return isValid;
   };
   const handleEditTeam = () => {
-    console.log(rolesEmployee);
+    // console.log(rolesEmployee);
 
     if (validateTeamRoles(rolesEmployee)) {
+      setIsSubmitting(true);
       apiAuth
         .put(`/RiskRegister/team/update/${risk.id}`, rolesEmployee)
         .then((response) => {
@@ -93,6 +95,8 @@ const EditTeam = ({
         .catch((error) => {
           console.log(error);
           toast.error("Failed to edit team");
+        }).finally(() => {
+          setIsSubmitting(false);
         });
     }
   };
@@ -150,6 +154,7 @@ const EditTeam = ({
             onClick={() => handleEditTeam()}
             variant="approve"
             type="submit"
+            disabled={isSubmitting}
           >
             Submit
           </Button>

@@ -27,6 +27,7 @@ selectedRiskCategory: number;
   const [staff, setStaff] = useState<any[]>([]);
   const [selectedStaff, setSelectedStaff] = useState<any>(null);
   const [error, setError] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { risk} =
       useRiskStore();
   const {
@@ -51,6 +52,7 @@ selectedRiskCategory: number;
         return;
     }
     setError("");
+    setIsSubmitting(true);
     const payload = {
         approverId: selectedStaff.value,
         approverRole: approverRole,
@@ -75,6 +77,7 @@ selectedRiskCategory: number;
       .finally(() => {
         setIsSubmitOpen(false);
         setSelectedTasksIds([]);
+        setIsSubmitting(false);
       });
   };
   
@@ -145,6 +148,7 @@ selectedRiskCategory: number;
             }}
             type="button"
             variant="approve"
+            disabled={isSubmitting}
           >
             Submit
           </Button>
