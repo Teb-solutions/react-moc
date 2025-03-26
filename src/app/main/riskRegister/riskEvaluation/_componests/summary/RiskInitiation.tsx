@@ -102,11 +102,17 @@ const RiskInitiation = () => {
       <article
         className={`${selectedHeader == "Summary" ? "flex" : "hidden"} overflow-hidden flex-col justify-center items-start p-10 text-md bg-white rounded-lg`}
       >
-        <div className="flex flex-col items-start w-full">
-          <h4 className="self-stretch mb-5 font-medium text-neutral-600">
+        <div className="flex flex-col p-10 items-start w-full">
+          <div className="text-gray-500">
+            Title
+          </div>
+          <h4 className="self-stretch mb-10 font-medium text-neutral-600">
             {risk.projectName}
           </h4>
-          <p className="self-stretch mb-10 text-lg text-gray-500">
+          <div className="text-gray-500">
+            Description
+          </div>
+          <p className="self-stretch mb-10 text-md">
             {risk.projectDescription}
           </p>
           <div className="flex mt-5  flex-col sm:flex-row w-full">
@@ -151,11 +157,17 @@ const RiskInitiation = () => {
       <article
         className={`${selectedHeader == "TaskDetails" ? "flex" : "hidden"} overflow-hidden flex-col justify-center items-start p-10 text-md bg-white rounded-lg`}
       >
-        <div className="flex flex-col items-start w-full">
-          <h4 className="self-stretch mb-5 font-medium text-neutral-600">
+        <div className="flex p-10 flex-col items-start w-full">
+        <div className="text-gray-500">
+            Title
+          </div>
+          <h4 className="self-stretch mb-10 font-medium text-neutral-600">
             {risk.projectName}
           </h4>
-          <p className="self-stretch mb-10 text-lg text-gray-500">
+          <div className="text-gray-500">
+            Description
+          </div>
+          <p className="self-stretch mb-10 text-md">
             {risk.projectDescription}
           </p>
           <div className="flex mt-5  flex-col sm:flex-row w-full">

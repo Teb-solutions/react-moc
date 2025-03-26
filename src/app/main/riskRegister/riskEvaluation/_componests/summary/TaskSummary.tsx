@@ -57,7 +57,7 @@ export const TaskSummary = () => {
 
   return (
     <div className="w-full">
-      <p className="px-24 pt-10 text-gray-500 font-semibold">
+      <p className="p-10 text-gray-500 font-semibold">
         Task summary and their status is displayed here.
       </p>
       <Paper
@@ -69,10 +69,10 @@ export const TaskSummary = () => {
           <p className="py-24"> - Error fetching data</p>
         )}
         {!isLoading && !data && (
-          <p className="py-24"> - No control measures found</p>
+          <p className="py-24"> - No tasks found</p>
         )}
         {!isLoading && data && data?.data?.list?.length === 0 && (
-          <p className="my-24"> - No control measures found</p>
+          <p className="my-24"> - No tasks found</p>
         )}
         {data && !isLoading && data?.data?.list?.length > 0 && (
           <DataGrid

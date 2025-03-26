@@ -124,7 +124,7 @@ export const ControlMeasuresList = () => {
 
   return (
     <div className="w-full">
-      <p className="px-24 pt-10 text-gray-500 font-semibold">
+      <p className="p-10 text-gray-500 font-semibold">
         Approved tasks control measures and their status are listed here.
       </p>
       <Paper

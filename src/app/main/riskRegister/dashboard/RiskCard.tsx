@@ -80,7 +80,7 @@ const RiskCard = ({ risk }: { risk: IHiraList }) => {
           </div>
           <div className="flex items-start mt-10 w-full">
             <div className="flex flex-wrap gap-5 items-start">
-              <div className="text-gray-500 font-normal">Project Name:</div>
+              <div className="text-gray-500 font-normal">Title:</div>
               <Tooltip
                 TransitionComponent={Fade}
                 TransitionProps={{ timeout: 1000 }}
