@@ -42,8 +42,9 @@ export const TaskSummary = () => {
     },
     { field: 'totalTasks', headerName: 'Total', width: 100 },
     { field: 'draftTasks', headerName: 'Draft', width: 100 },
-    { field: 'approvedTasks', headerName: 'Approved', width: 100 },
+    
     { field: 'pendingApprovalTasks', headerName: 'Pending Approval', width: 150 },
+    { field: 'approvedTasks', headerName: 'Approved', width: 100 },
     { field: 'rejectedPendingReviewTasks', headerName: 'Rejected', width: 100 },
     { field: 'approverName', headerName: 'Approver', width: 300,
       valueGetter: (params) =>
