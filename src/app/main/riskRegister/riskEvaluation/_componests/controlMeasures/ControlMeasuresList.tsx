@@ -17,7 +17,7 @@ import { riskClassificationDisplay } from "src/app/main/moc/common_components/Ri
 import { apiAuth } from "src/utils/http";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 export const ControlMeasuresList = () => {
   const riskId = useParams<{ riskId: string }>();
@@ -26,9 +26,11 @@ export const ControlMeasuresList = () => {
     message: string;
     statusCode: number;
   }>(`/RiskRegister/controlmeasures/${riskId.riskId}`);
-
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const handleStatusChange = (id: number, status: boolean) => {
     // console.log('status', status);
+    if(isSubmitting) return;
+    setIsSubmitting(true);
     if (status) {
       apiAuth
         .post(`/RiskRegister/controlmeasure/mark/${riskId.riskId}`, {
@@ -48,6 +50,8 @@ export const ControlMeasuresList = () => {
           // console.error(error);
           toast.error("An error occured");
           // Handle the error here
+        }).finally(() => {
+          setIsSubmitting(false);
         });
     }
    
