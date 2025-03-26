@@ -5,12 +5,14 @@ interface ButtonProps {
   type: "button" | "submit" | "reset";
   variant: "reject" | "approve" | "neutral";
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
   children,
   type,
   variant,
+  disabled = false,
   onClick,
 }) => {
   const baseClasses =
@@ -32,6 +34,7 @@ const Button: React.FC<ButtonProps> = ({
     <button
       type={type}
       onClick={onClick}
+      disabled={disabled}
       className={`${baseClasses} ${variantClasses[variant]} ${onHoverClasses[variant]}`}
     >
       {children}

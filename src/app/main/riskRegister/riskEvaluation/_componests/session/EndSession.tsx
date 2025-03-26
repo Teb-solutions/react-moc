@@ -77,6 +77,7 @@ const EndSession = ({ open, handleClose, riskId, sessionId }) => {
               handleEndSession();
             }}
             type="button"
+            disabled={loading}
             variant="approve"
           >
             End Session

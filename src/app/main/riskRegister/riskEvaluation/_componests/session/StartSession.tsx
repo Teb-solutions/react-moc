@@ -26,6 +26,7 @@ const StartSession = ({
 }) => {
   const [selectedStaff, setSelectedStaff] = useState<number[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [sessionSubmitting, setSessionSubmitting] = useState(false);
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
     setSelectedStaff((prevSelectedStaff) =>
@@ -34,6 +35,7 @@ const StartSession = ({
         : prevSelectedStaff.filter((id) => id !== Number(value))
     );
   };
+
 
   const startSessionHandler = () => {
     const selectedTeamMembers = teamList.filter((team) =>
@@ -48,6 +50,7 @@ const StartSession = ({
       return;
     }
     setError(null);
+    setSessionSubmitting(true);
     apiAuth
       .post(`/RiskRegister/session/create/${riskId}`, {
         teamList: selectedTeamMembers,
@@ -63,7 +66,10 @@ const StartSession = ({
       })
       .catch((err) => {
         console.log(err);
-      });
+      }).finally(() => {
+        setSessionSubmitting(false);
+      }
+      );
   };
 
   return (
@@ -111,6 +117,7 @@ const StartSession = ({
           <Button
             variant="approve"
             type="button"
+            disabled={sessionSubmitting}
             onClick={() => {
               startSessionHandler();
             }}

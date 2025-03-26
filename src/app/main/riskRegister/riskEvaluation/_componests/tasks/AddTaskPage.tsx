@@ -30,16 +30,9 @@ import RiskClassificationDisplay from "../../../common/RiskClassificationDisplay
 import { apiAuth } from "src/utils/http";
 import { toast } from "react-toastify";
 import { mutate } from "swr";
-import TemporaryDrawer from "../common/rating/BiologicalRisk";
 
-import BiologicalRisk from "../common/rating/BiologicalRisk";
 import { useRatingStore } from "../common/ratingStore";
-import PhysicalRiskNew from "../common/rating/physicalrisk/PhysicalRiskNew";
-import PhysicalRiskShortTerm from "../common/rating/physicalriskshortterm/PhysicalRiskShortTerm";
-import PhyscoSocialRisk from "../common/rating/PhyscoSocialRisk";
-import OccupationalRisk from "../common/rating/OccupationalRisk";
-import ErgonomicRisk from "../common/rating/ergonomicrisk/ErgonomicRisk";
-import ChemicalRisk from "../common/rating/chemicalrisk/ChemicalRisk";
+
 import RatingCalculator from "../common/RatingCalculator";
 
 export const AddTaskSchema = z.object({
@@ -140,6 +133,9 @@ const AddTaskPage = ({
   } = useFetchLookUpData(residualFrequencyUrl);
 
   console.log(residualFrequencyArr);
+
+  //check if form is submitting
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   //watching the changes in  the form values and
   // calculating the potential frequency scoring, residual frequency scoring,
@@ -302,6 +298,7 @@ const AddTaskPage = ({
 
   const onTaskFormSubmit = (data: AddTaskFormValues) => {
     // console.log(data);
+    setIsSubmitting(true);
     const payload: any = data;
     payload.humanControlMeasures = selectedHumanControlMeasures.map(
       (controlMeasure) => ({
@@ -355,6 +352,8 @@ const AddTaskPage = ({
       .catch((error) => {
         console.log(error);
         toast.error("Failed to add task");
+      }).finally(() => {
+        setIsSubmitting(false);
       });
   };
 
@@ -763,24 +762,25 @@ const AddTaskPage = ({
           </div>{" "}
         </div>
         <div className="flex flex-row justify-between gap-10 mt-10">
+          
+          <div className="flex flex-row gap-10">
+            <Button
+              onClick={() => setIsAddTaskClicked(false)}
+              variant="neutral"
+              type="button" 
+            >
+              Cancel
+            </Button>
+            <Button variant="approve" disabled={isSubmitting} type="submit">
+              Add Task
+            </Button>
+          </div>
           {watch("residualRiskClassification") && <RiskClassificationDisplay
             residualRiskClassification={watch("residualRiskClassification")}
             residualRiskClassificationDisplay={watch(
               "residualRiskClassificationDisplay"
             )}
           />}
-          <div className="flex flex-row gap-10">
-            <Button
-              onClick={() => setIsAddTaskClicked(false)}
-              variant="neutral"
-              type="button"
-            >
-              Cancel
-            </Button>
-            <Button variant="approve" type="submit">
-              Add Task
-            </Button>
-          </div>
         </div>
       </form>
     </Paper>

@@ -11,8 +11,8 @@ const RiskClassificationDisplay = ({
 }) => {
   return (
     <div>
-      <button
-        className={`btn rounded-md ${classes ? classes : "text-lg font-bold px-20 py-10 mx-20"} text-white      btn-primary border-1
+      <button type='button'
+        className={`btn rounded-md ${classes ? classes : "text-lg font-bold px-20 py-10 mx-20"} text-white cursor-default   btn-primary border-1
               ${Number(residualRiskClassification) === 1 && "bg-red-500"}
               ${Number(residualRiskClassification) === 2 && "bg-orange-700"}
               ${Number(residualRiskClassification) === 3 && "bg-amber-700"}
