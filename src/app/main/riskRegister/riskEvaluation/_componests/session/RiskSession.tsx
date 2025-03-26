@@ -7,7 +7,7 @@ import StartSession from "./StartSession";
 import ViewSessionHistory from "./ViewSessionHistory";
 import { toast } from "react-toastify";
 import EndSession from "./EndSession";
-import { set } from "lodash";
+import { now, set } from "lodash";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import {
@@ -17,8 +17,11 @@ import {
 import { useGetPermenant } from "src/utils/swr";
 import { useRiskStore } from "../common/riskstore";
 import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
 dayjs.extend(duration);
 dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const RiskSession = () => {
   const [sessionList, setSessionList] = useState<SessionList[] | null>(null);
@@ -41,17 +44,25 @@ const RiskSession = () => {
     return `${hours}h ${minutes}m ${seconds}s`;
   };
 
-  const calculateCounter = (startTime: dayjs.Dayjs) => {
-    const now = dayjs.utc();
-    const startTimeUTC = dayjs(startTime).utc();
-    console.log(dayjs(startTimeUTC).format('DD-MM-YYYY HH:ss'), "startTime");
-    console.log(dayjs(now).format('DD-MM-YYYY HH:ss'), "now");
-    const duration = dayjs.duration(startTimeUTC.diff(now));
-    console.log(duration, "duration");
-    const hours = duration.hours();
-    const minutes = duration.minutes();
-    const seconds = duration.seconds();
-    return `${hours}h ${minutes}m ${seconds}s`;
+
+  const calculateDuration = (startTime: string | Date) => {
+    try {
+       // First, parse both times as IST
+    const startIST = dayjs.tz(startTime, 'Asia/Kolkata');
+    const nowIST = dayjs().tz('Asia/Kolkata');
+    
+    // Calculate duration directly using IST times
+    const duration = dayjs.duration(nowIST.diff(startIST));
+      
+      const hours = Math.floor(duration.asHours());
+      const minutes = duration.minutes();
+      const seconds = duration.seconds();
+      
+      return `${hours}h ${minutes}m ${seconds}s`;
+    } catch (error) {
+      console.error('Error calculating duration:', error);
+      return '0h 0m 0s';
+    }
   };
 
   useEffect(() => {
@@ -68,7 +79,8 @@ const RiskSession = () => {
           const startTime = dayjs(activeSession.startedAt);
           
           const endTime = startTime.add(activeSession.timeoutMin, "minute");
-          setTimeLeft(calculateTimeLeft(endTime));
+          // setTimeLeft(calculateTimeLeft(endTime));
+          setTimeLeft(calculateDuration(activeSession.startedAt));
         } else {
           setIsSessionActive(false);
         }
@@ -105,7 +117,7 @@ const RiskSession = () => {
         <>
           {isSessionActive && (
             <span className="w-[125px] mt-10 text-md text-right font-semibold text-blue-500">
-              {timeLeft} {timeLeft.length > 0 && " left"}
+              {timeLeft} 
             </span>
           )}
           <Button
