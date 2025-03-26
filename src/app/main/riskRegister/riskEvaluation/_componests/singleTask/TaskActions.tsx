@@ -48,19 +48,14 @@ const TaskActions = ({
   const [commentValidation, setCommentValidation] = useState<string | null>(
     null
   );
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const handleTaskApproval = () => {
     if (!comment) {
       setCommentValidation("Comment is required");
       return;
     }
-    console.log({
-      taskId: selectedTask.taskId,
-      riskRegisterId: riskId,
-      comments: comment,
-      actionType: popupType === TaskPopupType.Approve ? RiskActionType.Approve: RiskActionType.SendBack,
-      controlMeasures: editedControlMeasure,
-    });
+    setIsSubmitting(true);
 
     apiAuth
       .post(`/RiskRegister/task/approval/${selectedTask.taskId}/${riskId}`, {
@@ -87,10 +82,12 @@ const TaskActions = ({
       .finally(() => {
         setIsOpenComment(false);
         setComment(null);
+        setIsSubmitting(false);
       });
   };
 
   const handleTaskSubmitForApproval = () => {
+    setIsSubmitting(true);
     apiAuth
       .post(`/RiskRegister/task/submit/approval/${riskId}`, [
         selectedTask.taskId,
@@ -110,10 +107,12 @@ const TaskActions = ({
       })
       .finally(() => {
         setIsOpenComment(false);
+        setIsSubmitting(false);
       });
   };
 
   const handleTaskDelete = () => {
+    setIsSubmitting(true);
     apiAuth
       .delete(`/RiskRegister/task/${riskId}/${selectedTask.taskId}`)
       .then((response) => {
@@ -130,6 +129,7 @@ const TaskActions = ({
       })
       .finally(() => {
         setIsOpenComment(false);
+        setIsSubmitting(false);
       });
   };
   return (
@@ -185,6 +185,7 @@ const TaskActions = ({
             }}
             type="button"
             variant="approve"
+            disabled={isSubmitting}
           >
             Submit
           </Button>
