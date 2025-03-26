@@ -478,6 +478,7 @@ function InitiateRisk() {
                             <Button
                               variant="approve"
                               type="submit"
+                              disabled={isSubmitting}
                               onClick={handleRiskSubmit}
                             >
                               Submit
