@@ -120,6 +120,7 @@ const EditTaskPage = (
   const residualFrequencyUrl = selectedResidualTime
     ? `/LookupData/Lov/30/${selectedResidualTime}`
     : null;
+    console.log(selectedTask, "selected task");
   const {
     register,
     handleSubmit,
@@ -226,7 +227,6 @@ const EditTaskPage = (
   //   setValue("residualRisk", null);
   // }, [hazardTypeWatch]);
 
-  useEffect(() => {}, [timeChange, frequencyChange]);
 
   //useEffect to update the selected time and residual time,
   // potential frequency scoring and residual frequency scoring
@@ -235,17 +235,21 @@ const EditTaskPage = (
       setValue("modifiedTime", timeChange);
       setValue("frequencyScoring", null);
         setValue("residualFrequencyScoring", null);
+      
     }
     if (frequencyChange) {
       setValue("modifiedFrequencyDetails", frequencyChange);
+      
     }
     setSelectedTime(timeChange);
     setSelectedResidualTime(timeChange);
 
-    if (timeChange > 0 && frequencyChange > 0) {
+    if (timeChange > 0 && frequencyChange > 0 && frequencyArr) {
+      
       const selectedFrequency = frequencyArr.find(
         (frequency) => frequency.value === frequencyChange
       );
+      
       if (selectedFrequency) {
         const frequencyScoring = CalculateFrequencyScoring(
           selectedFrequency.text
@@ -254,7 +258,7 @@ const EditTaskPage = (
         setValue("residualFrequencyScoring", frequencyScoring);
       }
     }
-  }, [timeChange, frequencyChange]);
+  }, [timeChange, frequencyChange, frequencyArr]);
 
   //useEffect to calculate the potential risk and residual risk
   useEffect(() => {
