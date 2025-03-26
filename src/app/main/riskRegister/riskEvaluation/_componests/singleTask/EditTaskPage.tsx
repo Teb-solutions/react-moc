@@ -185,6 +185,11 @@ const EditTaskPage = (
     error: residualFrequencyError,
   } = useFetchLookUpData(residualFrequencyUrl);
 
+
+  //form submit checking
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+
   //watching the changes in  the form values and
   // calculating the potential frequency scoring, residual frequency scoring,
   // potential risk and residual risk
@@ -491,6 +496,7 @@ const EditTaskPage = (
   const onTaskFormSubmit = (data: AddTaskFormValues) => {
     // console.log(data);
     const payload: any = data;
+    setIsSubmitting(true);
 
     payload.controlMeasures = updateEditedControlMeasures();
     delete payload.humanControlMeasures;
@@ -521,6 +527,7 @@ const EditTaskPage = (
         // setSelectedTechnicalControlMeasures([]);
         // setSelectedOrganizationalControlMeasures([]);
         setIsEditTaskClicked(false);
+        setIsSubmitting(false);
       });
   };
   return (
@@ -985,8 +992,8 @@ const EditTaskPage = (
             >
               Cancel
             </Button>
-            <Button variant="approve" type="submit">
-              Add Task
+            <Button disabled={isSubmitting} variant="approve" type="submit">
+              Save Changes
             </Button>
           </div>
         </div>
