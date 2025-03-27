@@ -61,13 +61,17 @@ export const ViewTeamAssignmentHistory = ({
   console.log("isOpen", isOpen);
   const [value, setValue] = useState(0);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(4);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    setApproverDataPagNew([])
+    setTeamDataPagNew([])
   };
 
   const handleChangeRowsPerPage = (event) => {
+    setApproverDataPagNew([])
+    setTeamDataPagNew([])
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
@@ -75,7 +79,9 @@ export const ViewTeamAssignmentHistory = ({
   const handleChange = (event, newValue) => {
     setValue(newValue);
     setPage(0);
-    setRowsPerPage(4);
+    setRowsPerPage(3);
+    setTeamDataPagNew([])
+    setApproverDataPagNew([])
   };
   
   const { data, isLoading:dataLoading, error } = useGetPermenant(
@@ -91,22 +97,33 @@ export const ViewTeamAssignmentHistory = ({
     isOpen &&  `Activity/ActivityTargetUsersHistory/${assetEvaluationId}`
   );
    
-
-  const approverdataPaginated = useMemo(() => {
-    return approverdata?.data?.slice(
-      page * rowsPerPage,
-      page * rowsPerPage + rowsPerPage
-    );
+  const [approverDataPagNew, setApproverDataPagNew] = useState([]);
+  useEffect(() => {
+    if (approverdata) {
+      
+      const startIndex = page * rowsPerPage;
+      const endIndex = page * rowsPerPage + rowsPerPage;
+      const newdataPag = approverdata?.data?.slice(startIndex, endIndex);
+      setApproverDataPagNew(newdataPag);
+    }else{
+      setApproverDataPagNew([])
+    }
   }, [page, rowsPerPage, approverdata]);
 
-  const dataPaginated = useMemo(() => {
-    // const newdata = data?.data?.slice(0,-1)
-    console.log(data?.data);
-    return data?.data?.slice(
-      page * rowsPerPage,
-      page * rowsPerPage + rowsPerPage
-    );
+  const [teamDataPagNew, setTeamDataPagNew] = useState([]);
+  useEffect(() => {
+    if (approverdata) {
+      
+      const startIndex = page * rowsPerPage;
+      const endIndex = page * rowsPerPage + rowsPerPage;
+      const newdataPag = data?.data?.slice(startIndex, endIndex);
+      setTeamDataPagNew(newdataPag);
+    }else{
+      setTeamDataPagNew([])
+    }
   }, [page, rowsPerPage, data]);
+
+  
 
   return (
     <Modal
@@ -199,6 +216,7 @@ export const ViewTeamAssignmentHistory = ({
                         <TableHead>
                           <TableRow className="bg-gray-200 p-0">
                             <TableCell>Activity Name</TableCell>
+                            <TableCell>Length</TableCell>
                             <TableCell>Old User</TableCell>
                             <TableCell>New User</TableCell>
                             <TableCell>Changed By</TableCell>
@@ -207,7 +225,7 @@ export const ViewTeamAssignmentHistory = ({
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {approverdataPaginated?.map((row) => (
+                          {approverDataPagNew?.map((row) => (
                             <TableRow
                               key={row.activityName}
                               sx={{
@@ -218,6 +236,9 @@ export const ViewTeamAssignmentHistory = ({
                             >
                               <TableCell component="th" scope="row">
                                 {row.activityName}
+                              </TableCell>
+                              <TableCell component="th" scope="row">
+                                {approverDataPagNew.length}
                               </TableCell>
                               <TableCell align="left">
                                 {row.oldStaffName}
@@ -266,7 +287,7 @@ export const ViewTeamAssignmentHistory = ({
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {dataPaginated?.map((row) => (
+                          {teamDataPagNew?.map((row) => (
                             <TableRow
                               key={row.activityName}
                               sx={{
