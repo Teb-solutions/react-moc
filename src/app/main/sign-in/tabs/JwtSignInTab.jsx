@@ -72,6 +72,8 @@ const JwtSignInTab = () => {
   }, []);
   useEffect(() => {
     const token = localStorage.getItem("jwt_access_token"); // Check for your token
+    //code for ticketing, removing the ticketing token
+  localStorage.removeItem("jwt_access_ticket_token");
     if (token) {
       navigate("/dashboards/project"); // Redirect if already logged in
     }

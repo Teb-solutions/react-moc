@@ -148,6 +148,7 @@ function UserMenu() {
   const handleLogout = () => {
     // Clear tokens from local storage
     localStorage.removeItem("jwt_access_token");
+    localStorage.removeItem("jwt_access_ticket_token");
     localStorage.removeItem("username"); // Include other relevant keys
 
     // Redirect to sign-in page
