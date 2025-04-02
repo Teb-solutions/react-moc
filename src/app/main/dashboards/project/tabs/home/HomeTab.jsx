@@ -50,11 +50,11 @@ function HomeTab({ data, setRiskMatrixList, riskMatrixList }) {
           <Link
             className="text-blue"
             to={
-              item.type === "Asset"
-                ? `/moc/assetEvaluation/${item.token}`
+              item.type === "Org"
+                ? `/moc/orgEvaluation/${item.token}`
                 : item.type === "Document"
                   ? `/moc/evaluation/${item.token}`
-                  : `/moc/orgEvaluation/${item.token}`
+                  : `/moc/assetEvaluation/${item.token}`
             }
           >
             {item.activity}
