@@ -540,26 +540,7 @@ const AddTaskPage = ({
             <FormControl fullWidth>
               <TextField
                 fullWidth
-                error={!!errors.likelihoodScoring}
-                label="Likelyhood Scoring*"
-                id="likelihoodScoring"
-                value={potentialProbabilityRating}
-                InputLabelProps={{ shrink: potentialProbabilityRating > 0 }}
-                disabled
-                {...register("likelihoodScoring")}
-              />
-              {errors.likelihoodScoring && (
-                <p className="text-red-500 my-2 text-sm">
-                  {errors.likelihoodScoring.message}
-                </p>
-              )}
-            </FormControl>
-          </div>
-          <div>
-            <FormControl fullWidth>
-              <TextField
-                fullWidth
-                label="Severity Scoring*"
+                label="Severity Scoring (G)*"
                 id="severityScoring"
                 error={!!errors.severityScoring}
                 InputLabelProps={{ shrink: severityRating > 0 }}
@@ -574,6 +555,26 @@ const AddTaskPage = ({
               )}
             </FormControl>
           </div>
+          <div>
+            <FormControl fullWidth>
+              <TextField
+                fullWidth
+                error={!!errors.likelihoodScoring}
+                label="Likelyhood Scoring (P)*"
+                id="likelihoodScoring "
+                value={potentialProbabilityRating}
+                InputLabelProps={{ shrink: potentialProbabilityRating > 0 }}
+                disabled
+                {...register("likelihoodScoring")}
+              />
+              {errors.likelihoodScoring && (
+                <p className="text-red-500 my-2 text-sm">
+                  {errors.likelihoodScoring.message}
+                </p>
+              )}
+            </FormControl>
+          </div>
+          
           <div>
             <TextField
               fullWidth
@@ -698,11 +699,31 @@ const AddTaskPage = ({
               </p>
             )}
           </div>
+          
           <div>
             <FormControl fullWidth>
               <TextField
                 fullWidth
-                label="Likelyhood Scoring*"
+                label="Severity Scoring (G)*"
+                id="residualSeverityScoring"
+                error={!!errors.residualSeverityScoring}
+                InputLabelProps={{ shrink: severityRating > 0 }}
+                value={severityRating}
+                disabled
+                {...register("residualSeverityScoring")}
+              />
+              {errors.residualSeverityScoring && (
+                <p className="text-red-500 my-2 text-sm">
+                  {errors.residualSeverityScoring.message}
+                </p>
+              )}
+            </FormControl>
+          </div>
+          <div>
+            <FormControl fullWidth>
+              <TextField
+                fullWidth
+                label="Likelyhood Scoring (P')*"
                 id="residualLikelihoodScoring"
                 error={!!errors.residualLikelihoodScoring}
                 InputLabelProps={{ shrink: residualProbabilityRating != null }}
@@ -718,25 +739,6 @@ const AddTaskPage = ({
               {errors.residualLikelihoodScoring && (
                 <p className="text-red-500 my-2 text-sm">
                   {errors.residualLikelihoodScoring.message}
-                </p>
-              )}
-            </FormControl>
-          </div>
-          <div>
-            <FormControl fullWidth>
-              <TextField
-                fullWidth
-                label="Severity Scoring*"
-                id="residualSeverityScoring"
-                error={!!errors.residualSeverityScoring}
-                InputLabelProps={{ shrink: severityRating > 0 }}
-                value={severityRating}
-                disabled
-                {...register("residualSeverityScoring")}
-              />
-              {errors.residualSeverityScoring && (
-                <p className="text-red-500 my-2 text-sm">
-                  {errors.residualSeverityScoring.message}
                 </p>
               )}
             </FormControl>

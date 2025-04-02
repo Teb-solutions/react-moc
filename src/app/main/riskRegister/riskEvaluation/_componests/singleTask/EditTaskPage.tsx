@@ -719,8 +719,30 @@ const EditTaskPage = (
             <FormControl fullWidth>
               <TextField
                 fullWidth
+                label="Severity Scoring (G)*"
+                id="severityScoring"
+                error={!!errors.severityScoring}
+                InputLabelProps={{
+                  shrink:
+                    severityRating > 0 || selectedTask?.severityScoring > 0,
+                }}
+                value={severityRating || selectedTask?.severityScoring}
+                disabled
+                {...register("severityScoring")}
+              />
+              {errors.severityScoring && (
+                <p className="text-red-500 my-2 text-sm">
+                  {errors.severityScoring.message}
+                </p>
+              )}
+            </FormControl>
+          </div>
+          <div>
+            <FormControl fullWidth>
+              <TextField
+                fullWidth
                 error={!!errors.likelihoodScoring}
-                label="Likelyhood Scoring*"
+                label="Likelyhood Scoring (P)*"
                 id="likelihoodScoring"
                 value={
                   potentialProbabilityRating || selectedTask?.likelihoodScoring
@@ -740,28 +762,7 @@ const EditTaskPage = (
               )}
             </FormControl>
           </div>
-          <div>
-            <FormControl fullWidth>
-              <TextField
-                fullWidth
-                label="Severity Scoring*"
-                id="severityScoring"
-                error={!!errors.severityScoring}
-                InputLabelProps={{
-                  shrink:
-                    severityRating > 0 || selectedTask?.severityScoring > 0,
-                }}
-                value={severityRating || selectedTask?.severityScoring}
-                disabled
-                {...register("severityScoring")}
-              />
-              {errors.severityScoring && (
-                <p className="text-red-500 my-2 text-sm">
-                  {errors.severityScoring.message}
-                </p>
-              )}
-            </FormControl>
-          </div>
+          
           <div>
             <TextField
               fullWidth
@@ -897,7 +898,35 @@ const EditTaskPage = (
             <FormControl fullWidth>
               <TextField
                 fullWidth
-                label="Likelyhood Scoring*"
+                label="Severity Scoring (G)*"
+                id="residualSeverityScoring"
+                defaultValue={selectedTask?.residualSeverityScoring}
+                error={!!errors.residualSeverityScoring}
+                InputLabelProps={{
+                  shrink:
+                    severityRating > 0 ||
+                    selectedTask?.residualSeverityScoring > 0,
+                }}
+                value={
+                  severityRating
+                    ? severityRating
+                    : selectedTask?.residualSeverityScoring
+                }
+                disabled
+                {...register("residualSeverityScoring")}
+              />
+              {errors.residualSeverityScoring && (
+                <p className="text-red-500 my-2 text-sm">
+                  {errors.residualSeverityScoring.message}
+                </p>
+              )}
+            </FormControl>
+          </div>
+          <div>
+            <FormControl fullWidth>
+              <TextField
+                fullWidth
+                label="Likelyhood Scoring (P')*"
                 id="residualLikelihoodScoring"
                 error={!!errors.residualLikelihoodScoring}
                 InputLabelProps={{
@@ -925,34 +954,7 @@ const EditTaskPage = (
               )}
             </FormControl>
           </div>
-          <div>
-            <FormControl fullWidth>
-              <TextField
-                fullWidth
-                label="Severity Scoring*"
-                id="residualSeverityScoring"
-                defaultValue={selectedTask?.residualSeverityScoring}
-                error={!!errors.residualSeverityScoring}
-                InputLabelProps={{
-                  shrink:
-                    severityRating > 0 ||
-                    selectedTask?.residualSeverityScoring > 0,
-                }}
-                value={
-                  severityRating
-                    ? severityRating
-                    : selectedTask?.residualSeverityScoring
-                }
-                disabled
-                {...register("residualSeverityScoring")}
-              />
-              {errors.residualSeverityScoring && (
-                <p className="text-red-500 my-2 text-sm">
-                  {errors.residualSeverityScoring.message}
-                </p>
-              )}
-            </FormControl>
-          </div>
+          
           <div>
             <FormControl fullWidth>
               <TextField
