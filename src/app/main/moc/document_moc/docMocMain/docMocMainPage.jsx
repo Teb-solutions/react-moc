@@ -1032,7 +1032,7 @@ function Course() {
               onClick={(event) => event.stopPropagation()} // Prevents the default expand behavior
             >
               <div onClick={() => setIsOpenTeamHistory(true)} className="flex justify-between">
-                View Team Assignment History
+              Team/Activity Changes
                 <FuseSvgIcon
                   className="ps-5 color-blue"
                   size={20}

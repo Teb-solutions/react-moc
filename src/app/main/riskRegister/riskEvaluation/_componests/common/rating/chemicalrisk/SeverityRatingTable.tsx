@@ -24,7 +24,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(40)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 40 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">40</td>
+          <td className="border p-4 text-center text-red-500 font-bold">40</td>
           <td className="border p-4">Explosives cat. 1.1 to 1.5</td>
           <td className="border p-4">
             <strong>H200</strong> Unstable explosive,
@@ -44,7 +44,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(40)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 40 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">40</td>
+          <td className="border p-4 text-center text-red-500 font-bold">40</td>
           <td className="border p-4">Flammable gas cat. 1 & 2 (e.g. LPG)</td>
           <td className="border p-4">
             <strong>H220</strong> Extremely flammable liquids,
@@ -56,7 +56,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(40)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 40 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">40</td>
+          <td className="border p-4 text-center text-red-500 font-bold">40</td>
           <td className="border p-4">Flammable aerosol cat. 1</td>
           <td className="border p-4">
             <strong>H222</strong> Extremely flammable aerosol
@@ -66,7 +66,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(40)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 40 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">40</td>
+          <td className="border p-4 text-center text-red-500 font-bold">40</td>
           <td className="border p-4">
             Flammable liquids cat. 1 (ex. : High octane gasoline SP)
           </td>
@@ -78,7 +78,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(40)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 40 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">40</td>
+          <td className="border p-4 text-center text-red-500 font-bold">40</td>
           <td className="border p-4">Flammable gases</td>
           <td className="border p-4">
             <strong>H280</strong> Contains a pressurized gas; can explode under the influence of heat
@@ -88,7 +88,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(40)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 40 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">40</td>
+          <td className="border p-4 text-center text-red-500 font-bold">40</td>
           <td className="border p-4">
             Self-reactive substances and mixtures cat. A/B
           </td>
@@ -102,7 +102,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(40)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 40 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">40</td>
+          <td className="border p-4 text-center text-red-500 font-bold">40</td>
           <td className="border p-4">Organic peroxides cat. A/B</td>
           <td className="border p-4"></td>
         </tr>
@@ -110,7 +110,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(40)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 40 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">40</td>
+          <td className="border p-4 text-center text-red-500 font-bold">40</td>
           <td className="border p-4 text-center">
             Combustible powder substances suspended in the air (dust) cat. 1
           </td>
@@ -120,7 +120,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4">Oxidizing gases cat. 1</td>
           <td className="border p-4">
             <strong>H270</strong> Can cause or aggravate a fire; oxidizer
@@ -130,7 +130,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4">Oxidizing liquids cat. 1, 2 & 3</td>
           <td className="border p-4">
             <strong>H271</strong> Can cause a fire or an explosion; powerful oxidizer,
@@ -142,7 +142,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4">Flammable liquids cat. 2</td>
           <td className="border p-4">
             <strong>H225</strong> Highly flammable liquid and vapor
@@ -152,7 +152,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4">Flammable aerosol cat. 2</td>
           <td className="border p-4">
             <strong>H223</strong> Flammable aerosol
@@ -162,7 +162,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4">Flammable solids cat. 1 & 2</td>
           <td className="border p-4">
             <strong>H228</strong> Flammable solid cat.
@@ -172,7 +172,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4">Oxidizing solids cat. 1, 2 & 3</td>
           <td className="border p-4"></td>
         </tr>
@@ -180,7 +180,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4">
             Self-reactive substances and mixtures cat. C, D, E & F
           </td>
@@ -192,7 +192,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4">Pyrophoric liquids and solids</td>
           <td className="border p-4">
             <strong>H250</strong> Ignites spontaneously in contact with the air
@@ -202,7 +202,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4">Self-heating substances and mixtures</td>
           <td className="border p-4">
             <strong>H251</strong> Self-heating matter; can ignite,
@@ -214,7 +214,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4">
             Substances/mixtures that can release, in contact with water,
             flammable gases cat. 1, 2 & 3
@@ -229,7 +229,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4 text-center">
             Organic peroxides cat. C, D, E & F
           </td>
@@ -239,7 +239,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 font-bold">15</td>
           <td className="border p-4">Combustible dust cat. 2</td>
           <td className="border p-4">
             Diameter: 50-300µm
@@ -251,7 +251,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(7)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 7 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">7</td>
+          <td className="border p-4 text-amber-500 text-center font-bold">7</td>
           <td className="border p-4 text-center">-</td>
           <td className="border p-4">-</td>
         </tr>
@@ -259,7 +259,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(3)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 3 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">
+          <td className="border p-4 text-yellow-500 text-center font-bold">
             3
           </td>
           <td className="border p-4">
@@ -273,7 +273,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(3)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 3 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold">
+          <td className="border text-yellow-500 p-4 text-center font-bold">
             3
           </td>
           <td className="border p-4">Combustible dust cat. 3</td>
@@ -287,7 +287,7 @@ const SafetyTable = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(1)} 
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 1 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center font-bold" rowSpan={2}>
+          <td className="border p-4 text-center text-green-400 font-bold" rowSpan={2}>
             1
           </td>
           <td className="border p-4">Liquids not subject to labeling</td>

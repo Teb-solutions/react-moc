@@ -151,7 +151,7 @@ export const ViewTeamAssignmentHistory = ({
           >
             <div className="flex justify-between text-white">
               <span className="text-popup font-medium">
-                View Team Assignment History {""}
+              Team/Activity Changes {""}
               </span>
               <span
                 onClick={() => setIsOpen(false)}
@@ -201,7 +201,7 @@ export const ViewTeamAssignmentHistory = ({
                   style={{ backgroundColor: "#ffffff" }}
                 >
                  
-                  <Tab label="Approver Change History" {...a11yProps(0)} />
+                  <Tab label="Activity Assignee Change History" {...a11yProps(0)} />
                   {showTeam && <Tab  label="Team Change History" {...a11yProps(1)} />}
                 </Tabs>
               </Box>

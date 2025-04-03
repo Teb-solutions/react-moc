@@ -1716,7 +1716,7 @@ const AssetCourse = () => {
                 </FuseSvgIcon>
                 </div>
                 <div  onClick={() => setIsOpenTeamHistory(true)} className="mt-10 flex justify-between">
-                View Team Assignment History
+                Team/Activity Changes
                 <FuseSvgIcon
                   className="ps-5 color-blue"
                   size={20}
