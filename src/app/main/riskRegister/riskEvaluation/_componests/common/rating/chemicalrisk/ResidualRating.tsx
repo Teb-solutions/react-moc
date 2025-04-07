@@ -12,90 +12,169 @@ const SafetyTable = ({ residualRating, setResidualRating }: Props) => {
   };
 
   return (
-    <table className="w-full border-collapse border">
-      <thead>
-        <tr className="bg-blue-400 text-white">
-          <th className="border py-2 px-4" rowSpan={2}>
-            Reduction of P
-          </th>
-          <th className="border py-2 px-4" colSpan={3}>
-            Means/measures of prevention/protection
-          </th>
-        </tr>
-        <tr className="bg-blue-400 text-white">
-          <th className="border py-2 px-4">
-            Ambient temperature and relative humidity
-          </th>
-          <th className="border py-2 px-4">Noise</th>
-          <th className="border py-2 px-4">Lighting</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr 
-          onClick={() => handleRowClick(-1)}
-          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
-        >
-          <td className="border py-4 px-4 text-center font-bold">-1</td>
-          <td className="border py-4 px-4">
-            - Blind
-            <br />
-            - Hot/cold water fountain
-            <br />
-            - Ventilator
-            <br />- Adjustable heating for the offices, etc.
-          </td>
-          <td className="border py-4 px-4">
-            - Noise-cancelling headphones
-            <br />
-            - Have the occupants set the rules in an open-plan office
-            <br />- Make spaces available for phoning, meetings in an open-plan
-            office, etc.
-          </td>
-          <td className="border py-4 px-4">
-            - Blind
-            <br />- Additional light, etc.
-          </td>
-        </tr>
-        <tr 
-          onClick={() => handleRowClick(-2)}
-          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
-        >
-          <td className="border py-4 px-4 text-center font-bold">-2</td>
-          <td className="border py-4 px-4">
-            - Locations of thermal radiation sources away from employees, etc.
-          </td>
-          <td className="border py-4 px-4">
-            - Acoustic partition in open-plan office
-            <br />
-            - Spacing of workspaces
-            <br />- Remoteness of noisy machines, etc.
-          </td>
-          <td className="border py-4 px-4">
-            - Restriction of radiating surfaces (screens, surface treatment,
-            blinds, appropriate colours, etc.)
-            <br />
-            - Moving disturbing sources of light
-            <br />- Introduction of supplementary light sources, etc.
-          </td>
-        </tr>
-        <tr 
-          onClick={() => handleRowClick(-3)}
-          className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
-        >
-          <td className="border py-4 px-4 text-center font-bold">-3</td>
-          <td className="border py-4 px-4">
-            - Insulation/weather stripping, air-conditioning, enclosure,
-            elimination of leaks that can create humidity, etc.
-          </td>
-          <td className="border py-4 px-4">
-            - Partitions
-            <br />
-            - Enclosing noisy machines, etc.
-          </td>
-          <td className="border py-4 px-4"></td>
-        </tr>
-      </tbody>
-    </table>
+    // <table className="w-full border-collapse border">
+    //   <thead>
+    //     <tr className="bg-blue-400 text-white">
+    //       <th className="border py-2 px-4" rowSpan={2}>
+    //         Reduction of P
+    //       </th>
+    //       <th className="border py-2 px-4" colSpan={3}>
+    //         Means/measures of prevention/protection
+    //       </th>
+    //     </tr>
+    //     <tr className="bg-blue-400 text-white">
+    //       <th className="border py-2 px-4">
+    //         Ambient temperature and relative humidity
+    //       </th>
+    //       <th className="border py-2 px-4">Noise</th>
+    //       <th className="border py-2 px-4">Lighting</th>
+    //     </tr>
+    //   </thead>
+    //   <tbody>
+    //     <tr 
+    //       onClick={() => handleRowClick(-1)}
+    //       className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+    //     >
+    //       <td className="border py-4 px-4 text-center font-bold">-1</td>
+    //       <td className="border py-4 px-4">
+    //         - Blind
+    //         <br />
+    //         - Hot/cold water fountain
+    //         <br />
+    //         - Ventilator
+    //         <br />- Adjustable heating for the offices, etc.
+    //       </td>
+    //       <td className="border py-4 px-4">
+    //         - Noise-cancelling headphones
+    //         <br />
+    //         - Have the occupants set the rules in an open-plan office
+    //         <br />- Make spaces available for phoning, meetings in an open-plan
+    //         office, etc.
+    //       </td>
+    //       <td className="border py-4 px-4">
+    //         - Blind
+    //         <br />- Additional light, etc.
+    //       </td>
+    //     </tr>
+    //     <tr 
+    //       onClick={() => handleRowClick(-2)}
+    //       className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+    //     >
+    //       <td className="border py-4 px-4 text-center font-bold">-2</td>
+    //       <td className="border py-4 px-4">
+    //         - Locations of thermal radiation sources away from employees, etc.
+    //       </td>
+    //       <td className="border py-4 px-4">
+    //         - Acoustic partition in open-plan office
+    //         <br />
+    //         - Spacing of workspaces
+    //         <br />- Remoteness of noisy machines, etc.
+    //       </td>
+    //       <td className="border py-4 px-4">
+    //         - Restriction of radiating surfaces (screens, surface treatment,
+    //         blinds, appropriate colours, etc.)
+    //         <br />
+    //         - Moving disturbing sources of light
+    //         <br />- Introduction of supplementary light sources, etc.
+    //       </td>
+    //     </tr>
+    //     <tr 
+    //       onClick={() => handleRowClick(-3)}
+    //       className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+    //     >
+    //       <td className="border py-4 px-4 text-center font-bold">-3</td>
+    //       <td className="border py-4 px-4">
+    //         - Insulation/weather stripping, air-conditioning, enclosure,
+    //         elimination of leaks that can create humidity, etc.
+    //       </td>
+    //       <td className="border py-4 px-4">
+    //         - Partitions
+    //         <br />
+    //         - Enclosing noisy machines, etc.
+    //       </td>
+    //       <td className="border py-4 px-4"></td>
+    //     </tr>
+    //   </tbody>
+    // </table>
+
+    <table
+        id="table1"
+        className="w-full border-collapse border border-gray-400"
+      >
+        <thead className="bg-blue-400 text-white">
+          <tr>
+            <th className="py-10 px-4 border border-gray-400">
+              Reduction of P
+            </th>
+            <th className="py-10 px-4 border border-gray-400">
+              Means/measures of prevention/protection against fire or explosion
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr 
+            onClick={() => handleRowClick(-1)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -1 ? 'bg-blue-100' : ''}`}
+          >
+            <td className="py-4 px-4 border border-gray-400 text-center font-bold">
+              -1
+            </td>
+            <td className="py-4 px-4 border border-gray-400">
+              <strong>
+                At least two procedural or organizational measures from:
+              </strong>
+              <ul>
+                <li>See Mp-type matrix,</li>
+                <li>grounding, limitation of quantities at the workplace, inertness, humidification</li>
+                <li>ATEX training,</li>
+                <li>use of PPE that provide good cover, is anitstatic and fire resistant,</li>
+                <li>extraction at the workplace to limt dust</li>
+                <li>rentention, storage procedure</li>
+                <li>presence of detection and alert systems etc.</li>
+                <li>extinguishers, fire blankets, fire fighting and evacuation drill</li>
+              </ul>
+            </td>
+          </tr>
+          <tr 
+            onClick={() => handleRowClick(-2)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -2 ? 'bg-blue-100' : ''}`}
+          >
+            <td className="py-4 px-4 border border-gray-400 text-center font-bold">
+              -2
+            </td>
+            <td className="py-4 px-4 border border-gray-400">
+              <ul>
+                <li>Remote, demarcated and signed workplace</li>
+                <li>extraction of vapor/dust at source</li>
+                <li>use of ATEX material adapated to the area</li>
+                <li>vent at height</li>
+              </ul>
+            </td>
+          </tr>
+          <tr 
+            onClick={() => handleRowClick(-3)}
+            className={`cursor-pointer hover:bg-gray-100 ${residualRating === -3 ? 'bg-blue-100' : ''}`}
+          >
+            <td className="py-4 px-4 border border-gray-400 text-center font-bold">
+              -3
+            </td>
+            <td className="py-4 px-4 border border-gray-400">
+              <ul>
+                <li>
+                 Products stored in a specific mechanically ventilated room
+                </li>
+                <li>
+                 firewall
+                </li>
+                <li>
+                 removal of flammable products away from energry sources
+                </li>
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
   );
 };
 
