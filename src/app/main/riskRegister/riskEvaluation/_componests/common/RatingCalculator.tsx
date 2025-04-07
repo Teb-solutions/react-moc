@@ -2,9 +2,10 @@ import BiologicalRisk from "./rating/BiologicalRisk";
 import ChemicalRisk from "./rating/chemicalrisk/ChemicalRisk";
 import ErgonomicRisk from "./rating/ergonomicrisk/ErgonomicRisk";
 import OccupationalRisk from "./rating/OccupationalRisk";
+import PhyscoSocialRisk from "./rating/PhyscoSocialRisk";
 import PhysicalRiskNew from "./rating/physicalrisk/PhysicalRiskNew";
 import PhysicalRiskShortTerm from "./rating/physicalriskshortterm/PhysicalRiskShortTerm";
-
+ // add occupational risk later after checking with jayadev, its not implemented in moc
 const RatingCalculator = ({
   hazardTypeWatch,
   hazardTypes,
@@ -55,7 +56,7 @@ const RatingCalculator = ({
         />
       )}
       {hazardTypeWatch == 6 && (
-        <OccupationalRisk
+        <PhyscoSocialRisk
           hazardType={
             hazardTypes.find((hazard) => hazard.value == hazardTypeWatch)
               ?.text || ""

@@ -156,7 +156,7 @@ const SeverityRatingTable = ({ setSeverityRating, selectedRating }: { setSeverit
           onClick={() => handleRowClick(15)}
           className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border py-2 px-4 text-center font-bold">15</td>
+          <td className="border py-2 text-orange-500 px-4 text-center font-bold">15</td>
           <td className="border py-2 px-4">
             Extremes that could result in the stoppage of all occupational
             activity
@@ -175,7 +175,7 @@ const SeverityRatingTable = ({ setSeverityRating, selectedRating }: { setSeverit
           onClick={() => handleRowClick(7)}
           className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 7 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border py-2 px-4 text-center font-bold">7</td>
+          <td className="border  text-amber-500 py-2 px-4 text-center font-bold">7</td>
           <td className="border py-2 px-4">
             Important not requiring a work stoppage
           </td>
@@ -190,7 +190,7 @@ const SeverityRatingTable = ({ setSeverityRating, selectedRating }: { setSeverit
           onClick={() => handleRowClick(3)}
           className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 3 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border py-2 px-4 text-center font-bold">3</td>
+          <td className="border  text-yellow-500 py-2 px-4 text-center font-bold">3</td>
           <td className="border py-2 px-4">Multiple and repeated</td>
           <td className="border py-2 px-4">
             <u>Demands of the work:</u>
