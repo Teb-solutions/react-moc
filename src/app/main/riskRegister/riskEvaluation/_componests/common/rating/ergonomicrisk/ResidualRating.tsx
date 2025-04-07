@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { subCategoryList, useSubCategoryStore } from "./ErgonomicRisk";
 import { useRatingStore } from "../../ratingStore";
 
@@ -6,9 +6,14 @@ interface RatingTableProps {
   setResidualRating?: (rating: number | null) => void;
 }
 
-const ManualLoadHandlingPushPull = ({ setResidualRating }: RatingTableProps) => {
-  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
-  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
+const ManualLoadHandlingPushPull = ({
+  setResidualRating,
+}: RatingTableProps) => {
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(
+    null
+  );
+  const { residualProbabilityRating, setResidualProbabilityRating } =
+    useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
@@ -37,7 +42,7 @@ const ManualLoadHandlingPushPull = ({ setResidualRating }: RatingTableProps) => 
       <tbody>
         <tr
           onClick={() => handleClick(-1)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border border-gray-400 text-center font-bold">
             -1
@@ -60,7 +65,7 @@ const ManualLoadHandlingPushPull = ({ setResidualRating }: RatingTableProps) => 
         </tr>
         <tr
           onClick={() => handleClick(-2)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border border-gray-400 text-center font-bold">
             -2
@@ -80,7 +85,7 @@ const ManualLoadHandlingPushPull = ({ setResidualRating }: RatingTableProps) => 
         </tr>
         <tr
           onClick={() => handleClick(-3)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border border-gray-400 text-center font-bold">
             -3
@@ -104,9 +109,14 @@ const ManualLoadHandlingPushPull = ({ setResidualRating }: RatingTableProps) => 
   );
 };
 
-const ManualLoadHandlingUnitMass = ({ setResidualRating }: RatingTableProps) => {
-  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
-  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
+const ManualLoadHandlingUnitMass = ({
+  setResidualRating,
+}: RatingTableProps) => {
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(
+    null
+  );
+  const { residualProbabilityRating, setResidualProbabilityRating } =
+    useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
@@ -135,7 +145,7 @@ const ManualLoadHandlingUnitMass = ({ setResidualRating }: RatingTableProps) => 
       <tbody>
         <tr
           onClick={() => handleClick(-1)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-1</td>
           <td className="py-4 px-4 border">
@@ -152,7 +162,7 @@ const ManualLoadHandlingUnitMass = ({ setResidualRating }: RatingTableProps) => 
         </tr>
         <tr
           onClick={() => handleClick(-2)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-2</td>
           <td className="py-4 px-4 border">
@@ -174,7 +184,7 @@ const ManualLoadHandlingUnitMass = ({ setResidualRating }: RatingTableProps) => 
         </tr>
         <tr
           onClick={() => handleClick(-3)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-3</td>
           <td className="py-4 px-4 border">
@@ -198,8 +208,11 @@ const ManualLoadHandlingUnitMass = ({ setResidualRating }: RatingTableProps) => 
 };
 
 const PostureStrain = ({ setResidualRating }: RatingTableProps) => {
-  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
-  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(
+    null
+  );
+  const { residualProbabilityRating, setResidualProbabilityRating } =
+    useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
@@ -228,7 +241,7 @@ const PostureStrain = ({ setResidualRating }: RatingTableProps) => {
       <tbody>
         <tr
           onClick={() => handleClick(-1)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-1</td>
           <td className="py-4 px-4 border">
@@ -249,7 +262,7 @@ const PostureStrain = ({ setResidualRating }: RatingTableProps) => {
         </tr>
         <tr
           onClick={() => handleClick(-2)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-2</td>
           <td className="py-4 px-4 border">
@@ -272,7 +285,7 @@ const PostureStrain = ({ setResidualRating }: RatingTableProps) => {
         </tr>
         <tr
           onClick={() => handleClick(-3)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-3</td>
           <td className="py-4 px-4 border">
@@ -283,8 +296,8 @@ const PostureStrain = ({ setResidualRating }: RatingTableProps) => {
               </u>
             </strong>
             <p>
-              - Mechanical assistance systems (e.g. height-adjustable table,
-              etc.)
+              - Mechanical assistance systems to relieve the operator
+              significantly, etc.
             </p>
           </td>
         </tr>
@@ -294,8 +307,11 @@ const PostureStrain = ({ setResidualRating }: RatingTableProps) => {
 };
 
 const RepetitiveMovement = ({ setResidualRating }: RatingTableProps) => {
-  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
-  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(
+    null
+  );
+  const { residualProbabilityRating, setResidualProbabilityRating } =
+    useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
@@ -324,28 +340,25 @@ const RepetitiveMovement = ({ setResidualRating }: RatingTableProps) => {
       <tbody>
         <tr
           onClick={() => handleClick(-1)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-1</td>
           <td className="py-4 px-4 border">
             <strong>
               <u>At least two procedural or organizational measures from:</u>
             </strong>
-            <p>- Alternate tasks, take regular breaks to relax muscles, etc.</p>
             <p>
-              - Warm-up and warm-down exercises, good acts and postures training
+              - Organizational measures: adjusting the workplace, warming up
+              before any physical task, taking regular breaks to relax the
+              muscles, alternating tasks, limiting useless movements, etc.
             </p>
-            <p>
-              - Avoid twisting by arranging the workplace (e.g. multiple
-              screens, desk at an angle when the screen is lateral (due to the
-              lighting), cash register with equipment not positioned
-              practically/logically, etc.
-            </p>
+            <p>- Good acts and postures training</p>
+            <p>- Improving grip, tools, etc.</p>
           </td>
         </tr>
         <tr
           onClick={() => handleClick(-2)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-2</td>
           <td className="py-4 px-4 border">
@@ -355,20 +368,13 @@ const RepetitiveMovement = ({ setResidualRating }: RatingTableProps) => {
                 the ergonomic strains:
               </u>
             </strong>
-            <p>
-              - Improve the workplace so that the arms are not raised above the
-              chest and the trunk is straighter: improve the height at which
-              work is done, gripping distances, provide adapted tools, etc.
-            </p>
-            <p>
-              - Arrange the workspace: avoid differences in level, ladders,
-              stairs, movements, handling, etc.
-            </p>
+            <p>- Reduce the rate, etc.</p>
+            <p>- Simplifying the operations, etc.</p>
           </td>
         </tr>
         <tr
           onClick={() => handleClick(-3)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-3</td>
           <td className="py-4 px-4 border">
@@ -378,10 +384,7 @@ const RepetitiveMovement = ({ setResidualRating }: RatingTableProps) => {
                 ergonomic strains:
               </u>
             </strong>
-            <p>
-              - Mechanical assistance systems (e.g. height-adjustable table,
-              etc.)
-            </p>
+            <p>-Automating, etc.</p>
           </td>
         </tr>
       </tbody>
@@ -390,8 +393,11 @@ const RepetitiveMovement = ({ setResidualRating }: RatingTableProps) => {
 };
 
 const Static = ({ setResidualRating }: RatingTableProps) => {
-  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
-  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(
+    null
+  );
+  const { residualProbabilityRating, setResidualProbabilityRating } =
+    useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
@@ -420,22 +426,24 @@ const Static = ({ setResidualRating }: RatingTableProps) => {
       <tbody>
         <tr
           onClick={() => handleClick(-1)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-1</td>
           <td className="py-4 px-4 border">
             <strong>
               <u>At least two procedural or organizational measures from:</u>
             </strong>
-            <p>- Alternate tasks, take regular breaks to relax muscles, etc.</p>
             <p>
-              - Warm-up and warm-down exercises, good acts and postures training
+              -Footrest, wrist rest, etc.
+              <br />
+              - Regular breaks to relax muscles, alternate tasks
+              <br />- Workplace adjustment training, etc.
             </p>
           </td>
         </tr>
         <tr
           onClick={() => handleClick(-2)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-2</td>
           <td className="py-4 px-4 border">
@@ -446,28 +454,22 @@ const Static = ({ setResidualRating }: RatingTableProps) => {
               </u>
             </strong>
             <p>
-              - Improve the workplace so that the arms are not raised above the
-              chest and the trunk is straighter: improve the height at which
-              work is done, gripping distances, provide adapted tools, etc.
+              - Ergonomic seat, sitting/standing seat, height-adjustable desk
+              etc. AND workplace adjustment (seat, desk and screen), etc.
+              <br />
+              - Screen, desk orientation according to GM-GR-HSE-404
+              <br />- Rationalization of the workplace based on the task to be
+              performed, etc. (PRPA training).
             </p>
           </td>
         </tr>
         <tr
           onClick={() => handleClick(-3)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? "bg-blue-100" : ""}`}
         >
           <td className="py-4 px-4 border text-center font-bold">-3</td>
           <td className="py-4 px-4 border">
-            <strong>
-              <u>
-                Technical adaptation of the workplace to drastically reduce the
-                ergonomic strains:
-              </u>
-            </strong>
-            <p>
-              - Mechanical assistance systems (e.g. height-adjustable table,
-              etc.)
-            </p>
+            <p>-</p>
           </td>
         </tr>
       </tbody>
@@ -476,8 +478,11 @@ const Static = ({ setResidualRating }: RatingTableProps) => {
 };
 
 const WorkAtmosphere = ({ setResidualRating }: RatingTableProps) => {
-  const [selectedRating, setSelectedRating] = React.useState<number | null>(null);
-  const { residualProbabilityRating, setResidualProbabilityRating } = useRatingStore();
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(
+    null
+  );
+  const { residualProbabilityRating, setResidualProbabilityRating } =
+    useRatingStore();
 
   const handleClick = (rating: number) => {
     setSelectedRating(rating);
@@ -497,64 +502,84 @@ const WorkAtmosphere = ({ setResidualRating }: RatingTableProps) => {
     <table className="w-full border-collapse border">
       <thead>
         <tr className="bg-blue-400 text-white">
-          <th className="py-2 px-4 border">Reduction of P</th>
-          <th className="py-2 px-4 border">
-            Means/measures of prevention/protection (work atmosphere)
+          <th className="border py-2 px-4" rowSpan={2}>
+            Reduction of P
           </th>
+          <th className="border py-2 px-4" colSpan={3}>
+            Means/measures of prevention/protection
+          </th>
+        </tr>
+        <tr className="bg-blue-400 text-white">
+          <th className="border py-2 px-4">
+            Ambient temperature and relative humidity
+          </th>
+          <th className="border py-2 px-4">Noise</th>
+          <th className="border py-2 px-4">Lighting</th>
         </tr>
       </thead>
       <tbody>
-        <tr
+        <tr 
           onClick={() => handleClick(-1)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -1 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${residualProbabilityRating === -1 ? 'bg-blue-100' : ''}`}
         >
-          <td className="py-4 px-4 border text-center font-bold">-1</td>
-          <td className="py-4 px-4 border">
-            <strong>
-              <u>At least two procedural or organizational measures from:</u>
-            </strong>
-            <p>- Alternate tasks, take regular breaks to relax muscles, etc.</p>
-            <p>
-              - Warm-up and warm-down exercises, good acts and postures training
-            </p>
+          <td className="border py-4 px-4 text-center font-bold">-1</td>
+          <td className="border py-4 px-4">
+            - Blind
+            <br />
+            - Hot/cold water fountain
+            <br />
+            - Ventilator
+            <br />- Adjustable heating for the offices, etc.
+          </td>
+          <td className="border py-4 px-4">
+            - Noise-cancelling headphones
+            <br />
+            - Have the occupants set the rules in an open-plan office
+            <br />- Make spaces available for phoning, meetings in an open-plan
+            office, etc.
+          </td>
+          <td className="border py-4 px-4">
+            - Blind
+            <br />- Additional light, etc.
           </td>
         </tr>
-        <tr
+        <tr 
           onClick={() => handleClick(-2)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -2 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${residualProbabilityRating === -2 ? 'bg-blue-100' : ''}`}
         >
-          <td className="py-4 px-4 border text-center font-bold">-2</td>
-          <td className="py-4 px-4 border">
-            <strong>
-              <u>
-                Technical adaptation of the workplace to significantly reduce
-                the ergonomic strains:
-              </u>
-            </strong>
-            <p>
-              - Improve the workplace so that the arms are not raised above the
-              chest and the trunk is straighter: improve the height at which
-              work is done, gripping distances, provide adapted tools, etc.
-            </p>
+          <td className="border py-4 px-4 text-center font-bold">-2</td>
+          <td className="border py-4 px-4">
+            - Locations of thermal radiation sources away from employees, etc.
+          </td>
+          <td className="border py-4 px-4">
+            - Acoustic partition in open-plan office
+            <br />
+            - Spacing of workspaces
+            <br />- Remoteness of noisy machines, etc.
+          </td>
+          <td className="border py-4 px-4">
+            - Restriction of radiating surfaces (screens, surface treatment,
+            blinds, appropriate colours, etc.)
+            <br />
+            - Moving disturbing sources of light
+            <br />- Introduction of supplementary light sources, etc.
           </td>
         </tr>
-        <tr
+        <tr 
           onClick={() => handleClick(-3)}
-          className={`cursor-pointer hover:bg-gray-100 ${selectedRating === -3 ? 'bg-blue-100' : ''}`}
+          className={`cursor-pointer hover:bg-gray-100 ${residualProbabilityRating === -3 ? 'bg-blue-100' : ''}`}
         >
-          <td className="py-4 px-4 border text-center font-bold">-3</td>
-          <td className="py-4 px-4 border">
-            <strong>
-              <u>
-                Technical adaptation of the workplace to drastically reduce the
-                ergonomic strains:
-              </u>
-            </strong>
-            <p>
-              - Mechanical assistance systems (e.g. height-adjustable table,
-              etc.)
-            </p>
+          <td className="border py-4 px-4 text-center font-bold">-3</td>
+          <td className="border py-4 px-4">
+            - Insulation/weather stripping, air-conditioning, enclosure,
+            elimination of leaks that can create humidity, etc.
           </td>
+          <td className="border py-4 px-4">
+            - Partitions
+            <br />
+            - Enclosing noisy machines, etc.
+          </td>
+          <td className="border py-4 px-4"></td>
         </tr>
       </tbody>
     </table>
@@ -580,7 +605,9 @@ const getCategoryComponent = (subCategory: string) => {
   }
 };
 
-export const ResidualRatingTable = ({ setResidualRating }: RatingTableProps) => {
+export const ResidualRatingTable = ({
+  setResidualRating,
+}: RatingTableProps) => {
   const { subCategory } = useSubCategoryStore();
   const Component = getCategoryComponent(subCategory);
   return <Component setResidualRating={setResidualRating} />;

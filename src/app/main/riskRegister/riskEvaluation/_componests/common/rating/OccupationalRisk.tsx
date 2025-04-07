@@ -84,7 +84,7 @@ const SeverityRatingTable = ({ severityRating, setSeverityRating }: { severityRa
           <td className="border py-4 px-4 text-center font-bold">
             Catastrophic
           </td>
-          <td className="border py-4 px-4 font-bold text-center">40*</td>
+          <td className="border py-4 px-4 text-red-500 font-bold text-center">40*</td>
           <td className="border py-4 px-4">Several fatalities</td>
           <td className="border py-4 px-4"></td>
           <td className="border py-4 px-4">Several fatalities</td>
@@ -95,7 +95,7 @@ const SeverityRatingTable = ({ severityRating, setSeverityRating }: { severityRa
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
           <td className="border py-4 px-4 font-bold text-center">Major</td>
-          <td className="border py-4 px-4 font-bold text-center">15</td>
+          <td className="border py-4 px-4 text-orange-500 font-bold text-center">15</td>
           <td className="border py-4 px-4">Fatality or permanent disability</td>
           <td className="border py-4 px-4">Cancer, profound deafness</td>
           <td className="border py-4 px-4">Fatality or permanent disability</td>
@@ -106,7 +106,7 @@ const SeverityRatingTable = ({ severityRating, setSeverityRating }: { severityRa
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 7 ? 'bg-blue-100' : ''}`}
         >
           <td className="border py-4 px-4 font-bold text-center">Serious</td>
-          <td className="border py-4 px-4 font-bold text-center">7</td>
+          <td className="border py-4 px-4 text-amber-500 font-bold text-center">7</td>
           <td className="border py-4 px-4">
             Illness requiring a work stoppage permanent
           </td>
@@ -119,7 +119,7 @@ const SeverityRatingTable = ({ severityRating, setSeverityRating }: { severityRa
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 3 ? 'bg-blue-100' : ''}`}
         >
           <td className="border py-4 px-4 text-center font-bold">Moderate</td>
-          <td className="border py-4 px-4 font-bold text-center">3</td>
+          <td className="border py-4 px-4 text-yellow-500 font-bold text-center">3</td>
           <td className="border py-4 px-4">
             Illness not requiring a work stoppage
           </td>
@@ -134,7 +134,7 @@ const SeverityRatingTable = ({ severityRating, setSeverityRating }: { severityRa
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 1 ? 'bg-blue-100' : ''}`}
         >
           <td className="border py-4 px-4 text-center font-bold">Minor</td>
-          <td className="border py-4 px-4 font-bold text-center">1</td>
+          <td className="border py-4 px-4 text-green-500 font-bold text-center">1</td>
           <td className="border py-4 px-4">No effect on health</td>
           <td className="border py-4 px-4"></td>
           <td className="border py-4 px-4">No injury</td>
