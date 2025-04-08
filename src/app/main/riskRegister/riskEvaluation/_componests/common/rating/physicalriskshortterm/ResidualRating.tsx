@@ -748,7 +748,7 @@ const getCategoryComponent = (subCategory: string) => {
       return Pressure;
     case subCategoryList.height:
       return Height;
-    case subCategoryList.heatCold:
+    case subCategoryList.heatcold:
       return HeatCold;
     case subCategoryList.atmosphere:
       return Atmosphere;

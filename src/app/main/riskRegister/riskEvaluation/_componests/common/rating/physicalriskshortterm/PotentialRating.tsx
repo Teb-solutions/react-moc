@@ -39,9 +39,11 @@ const Mechanical = ({ potentialRating, setPotentialRating }: PotentialRatingProp
         >
           <td className="py-4 px-4 text-center font-bold border border-gray-400">6</td>
           <td className="py-4 px-4 border border-gray-400">
-            Intervening on equipment at a standstill on a "blocked movement",
-            etc. Make adjustments, etc. Maintenance with co-activity: without
-            disconnecting all energy sources, etc. Use a machine that is not
+            -Intervening on equipment at a standstill on a "blocked movement",
+            etc. Make adjustments, etc. <br/>
+            -Maintenance with co-activity: without
+            disconnecting all energy sources, etc. 
+            <br/> -Use a machine that is not
             secured by a guard, etc.
           </td>
         </tr>
