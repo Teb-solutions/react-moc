@@ -31,7 +31,7 @@ function AreaChart({ width }: { width?: string }) {
 
   // Calculate max y-axis value with 10% padding
   const maxRiskValue = Math.max(...sortedTasks.map(task => task.residualRisk));
-  const yAxisMax = Math.ceil(maxRiskValue * 1.1);
+  const yAxisMax = Math.ceil(maxRiskValue * 1.1)>500? Math.ceil(maxRiskValue * 1.1) : 500;
 
   const options: ApexOptions = {
     chart: {
