@@ -22,6 +22,7 @@ import EditTeam from "./EditTeam";
 import Button from "../../../common/Button";
 import { ControlMeasuresList } from "../controlMeasures/ControlMeasuresList";
 import { TaskSummary } from "./TaskSummary";
+import AreaChart from "./AreaChart";
 
 const RiskInitiation = () => {
   const { risk } = useRiskStore();
@@ -232,7 +233,7 @@ const RiskInitiation = () => {
               </div>
             </div>
             <div className="w-full sm:w-1/2 mb-0">
-              <LineChart />
+              <AreaChart />
             </div>
           </div>
         </div>

@@ -34,6 +34,8 @@ import { mutate } from "swr";
 import { useRatingStore } from "../common/ratingStore";
 
 import RatingCalculator from "../common/RatingCalculator";
+import { DownloadDoneOutlined } from "@mui/icons-material";
+import { DownloadPdf } from "./DownloadPdf";
 
 export const AddTaskSchema = z.object({
   riskRegisterId: z.number(),
@@ -427,7 +429,9 @@ const AddTaskPage = ({
               </FormControl>
             )}
           </div>
-          <div></div>
+          <div>
+            {hazardTypeWatch>0 && <DownloadPdf  hazardTypeWatch={hazardTypeWatch} hazardTypes={hazardTypes} />}
+          </div>
           <div>
             <TextField
               fullWidth
