@@ -14,7 +14,7 @@ const Vibration = ({ severityRating, setSeverityRating }: Props) => {
   return (
     <table className="w-full border border-black border-collapse">
       <thead>
-        <tr>
+        <tr className="bg-blue-400 text-white">
           <th className="p-4 border border-black">G</th>
           <th className="p-4 border border-black">Category</th>
           <th className="p-4 border border-black">Description</th>
@@ -26,10 +26,10 @@ const Vibration = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(7)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 7 ? 'bg-blue-100' : ''}`}
         >
-          <td className="p-4 border border-black text-center font-bold" rowSpan={2}>7</td>
+          <td className="p-4 border border-black  text-amber-500 text-center font-bold" rowSpan={2}>7</td>
           <td className="p-4 border border-black" rowSpan={2}>Whole body vibration</td>
-          <td className="p-4 border border-black">Whole body &gt; 1.15 m/s2</td>
-          <td className="p-4 border border-black">Loader, etc.</td>
+          <td className="p-4 border border-black">Arm-hand {'>'} 5 m/s2</td>
+          <td className="p-4 border border-black">Hammers, jackhammers, perforators, brush cutters, power saws, etc.</td>
         </tr>
         <tr>
           <td className="p-4 border border-black">Whole body &gt; 1.15 m/s2</td>
@@ -39,10 +39,10 @@ const Vibration = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(3)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 3 ? 'bg-blue-100' : ''}`}
         >
-          <td className="p-4 border border-black text-center font-bold" rowSpan={2}>3</td>
+          <td className="p-4 border border-black text-yellow-500 text-center font-bold" rowSpan={2}>3</td>
           <td className="p-4 border border-black" rowSpan={2}>Hand-arm vibration</td>
           <td className="p-4 border border-black">Hand-arm &gt; 2.5 m/s2</td>
-          <td className="p-4 border border-black">Pneumatic tools, electric tools, etc.</td>
+          <td className="p-4 border border-black">Rotating machines (drills, grinders), etc.</td>
         </tr>
         <tr>
           <td className="p-4 border border-black">Whole body 0.5-1.15 m/s2</td>
@@ -52,10 +52,10 @@ const Vibration = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(1)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 1 ? 'bg-blue-100' : ''}`}
         >
-          <td className="p-4 border border-black text-center font-bold" rowSpan={2}>1</td>
+          <td className="p-4 border border-black text-center text-green-500 font-bold" rowSpan={2}>1</td>
           <td className="p-4 border border-black" rowSpan={2}>Low vibration</td>
           <td className="p-4 border border-black">Hand-arm &lt; 2.5 m/s2</td>
-          <td className="p-4 border border-black">Manual tools, etc.</td>
+          <td className="p-4 border border-black">Electric screwdrivers, etc.</td>
         </tr>
         <tr>
           <td className="p-4 border border-black">Whole body &lt; 0.5 m/s2</td>
@@ -105,7 +105,7 @@ const Noise = ({ severityRating, setSeverityRating }: Props) => {
             width="76"
             valign="top"
             style={{ border: "1px solid black" }}
-            className="text-center"
+            className="text-center text-orange-500"
           >
             <strong>15</strong>
           </td>
@@ -127,7 +127,7 @@ const Noise = ({ severityRating, setSeverityRating }: Props) => {
             width="76"
             valign="top"
             style={{ border: "1px solid black" }}
-            className="text-center"
+            className="text-center text-amber-500"
           >
             <strong>7</strong>
           </td>
@@ -151,7 +151,7 @@ const Noise = ({ severityRating, setSeverityRating }: Props) => {
             width="76"
             valign="top"
             style={{ border: "1px solid black" }}
-            className="text-center"
+            className="text-center  text-yellow-500"
           >
             <strong>3</strong>
           </td>
@@ -174,7 +174,7 @@ const Noise = ({ severityRating, setSeverityRating }: Props) => {
             width="76"
             valign="top"
             style={{ border: "1px solid black" }}
-            className="text-center"
+            className="text-center  text-green-500"
           >
             <strong>1</strong>
           </td>
@@ -215,7 +215,7 @@ const Thermal = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center">15</td>
+          <td className="border p-4 text-orange-500 font-bold text-center">15</td>
           <td className="border p-4">
             <p>
               The thermal environment and ambient environment make the task
@@ -243,7 +243,7 @@ const Thermal = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(7)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 7 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center">7</td>
+          <td className="border p-4  text-amber-500 font-bold text-center">7</td>
           <td className="border p-4">
             <p>
               The thermal environment and ambient environment make the task
@@ -278,7 +278,7 @@ const Thermal = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(3)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 3 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center">3</td>
+          <td className="border p-4  text-yellow-500 font-bold text-center">3</td>
           <td className="border p-4">
             <p>
               The thermal environment and ambient environment make the task more
@@ -307,6 +307,24 @@ const Thermal = ({ severityRating, setSeverityRating }: Props) => {
                 heat source (catering, etc.), temperature variation, etc.
               </li>
             </ul>
+          </td>
+        </tr>
+        <tr 
+          onClick={() => handleRowClick(1)}
+          className={`cursor-pointer hover:bg-gray-100 ${severityRating === 1 ? 'bg-blue-100' : ''}`}
+        >
+          <td className="border p-4  text-green-500 font-bold text-center">1</td>
+          <td className="border p-4">
+          The thermal environment and ambient environment are comfortable when wearing standard workwear:<br/>
+▪ 18°C-25°C<br/>
+▪ Relative humidity 30%-70% or little discomfort<br/>
+▪ No draught.<br/>
+Thermal radiation: appreciable but no effect.<br/>
+Thermal flow* {'<'} 1.6 kW/m²<br/>
+            
+          </td>
+          <td className="border p-4">
+            -
           </td>
         </tr>
       </tbody>
@@ -357,7 +375,7 @@ const Optical = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-2 text-center">15</td>
+          <td className="border p-2  font-bold text-orange-500 text-center">15</td>
           <td className="border p-2 text-center">-</td>
           <td className="border p-2 text-center">-</td>
           <td className="border p-2">UV index 8 and higher</td>
@@ -367,7 +385,7 @@ const Optical = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(7)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 7 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-2 text-center" rowSpan={2}>
+          <td className="border p-2 font-bold text-amber-500 text-center" rowSpan={2}>
             7
           </td>
           <td className="border p-2" rowSpan={2}>
@@ -388,7 +406,7 @@ const Optical = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(3)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 3 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-2 text-center" rowSpan={2}>
+          <td className="border p-2 font-bold  text-yellow-500 text-center" rowSpan={2}>
             3
           </td>
           <td className="border p-2" rowSpan={2}>
@@ -411,7 +429,7 @@ const Optical = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(1)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 1 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-2 text-center" rowSpan={2}>
+          <td className="border p-2 font-bold text-green-500 text-center" rowSpan={2}>
             1
           </td>
           <td className="border p-2" rowSpan={2}>
@@ -454,7 +472,7 @@ const Electromagnetic = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center align-middle font-bold">15</td>
+          <td className="border p-4 text-orange-500 text-center align-middle font-bold">15</td>
           <td className="border p-4">
             EMF at values considerably higher than the health impact values*.
           </td>
@@ -464,7 +482,7 @@ const Electromagnetic = ({ severityRating, setSeverityRating }: Props) => {
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 7 ? 'bg-blue-100' : ''}`}
         >
           <td
-            className="border p-4 text-center align-middle font-bold"
+            className="border  text-amber-500 p-4 text-center align-middle font-bold"
             rowSpan={5}
           >
             7
@@ -495,7 +513,7 @@ const Electromagnetic = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(3)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 3 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center align-middle font-bold">3</td>
+          <td className="border p-4 text-center text-yellow-500 align-middle font-bold">3</td>
           <td className="border p-4">
             EMF at values higher than the values that trigger action (AV**).
           </td>
@@ -504,7 +522,7 @@ const Electromagnetic = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(1)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 1 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center align-middle font-bold">1</td>
+          <td className="border text-green-500 p-4 text-center align-middle font-bold">1</td>
           <td className="border p-4">
             EMF at values lower than the impact values and the values that
             trigger action (AV**). Values set for the exposure of the general
@@ -534,7 +552,7 @@ const IonizingRadiation = ({ severityRating, setSeverityRating }: Props) => {
           onClick={() => handleRowClick(15)}
           className={`cursor-pointer hover:bg-gray-100 ${severityRating === 15 ? 'bg-blue-100' : ''}`}
         >
-          <td className="border p-4 text-center align-middle font-bold">15</td>
+          <td className="border p-4 text-center text-orange-500 align-middle font-bold">15</td>
           <td className="border p-4">
             All radioelements are carcinogenic, G = 15.
           </td>

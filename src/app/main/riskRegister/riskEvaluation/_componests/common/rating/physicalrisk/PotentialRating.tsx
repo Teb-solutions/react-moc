@@ -244,7 +244,7 @@ const IonizingRadiation = ({ potentialRating, setPotentialRating }: Props) => {
             <p>
               The potential exposure probability of exposure to
               <strong className="mx-2">ionizing radiation</strong>
-              when working with an unprotected/poorly protected radioactive source is
+              when working with an unprotected/poorly protected radioactive source is 10
             </p>
             <p className="ml-10">
               ▪ Living in a granite region where exposure is more than 100 Bq/m³/life
@@ -265,28 +265,6 @@ const IonizingRadiation = ({ potentialRating, setPotentialRating }: Props) => {
           </td>
         </tr>
         <tr 
-          onClick={() => handleClick(1)}
-          className={`cursor-pointer hover:bg-gray-100 ${potentialRating === 1 ? 'bg-blue-100' : ''} border`}
-        >
-         
-          <td className="py-4 px-4 text-center font-bold border">
-            <strong className="mx-2">1</strong>
-          </td>
-          <td className="py-4 px-4 border">
-            <p>
-              The potential probability of exposure to a{" "}
-              <strong className="mx-2">sealed source</strong>inside a container in
-              perfect condition is
-            </p>
-            <p>
-              because the source is plated and shielded from the equipment, and the
-              regulatory provisions also impose an obligation to indicate the
-              location of the source with signs and/or markings, to train staff and
-              to have a set operating mode, so the rating is reduced by 3 levels.
-            </p>
-          </td>
-        </tr>
-        <tr 
           onClick={() => handleClick(3)}
           className={`cursor-pointer hover:bg-gray-100 ${potentialRating === 3 ? 'bg-blue-100' : ''} border`}
         >
@@ -298,7 +276,7 @@ const IonizingRadiation = ({ potentialRating, setPotentialRating }: Props) => {
             <p>
               The potential probability of exposure to a{" "}
               <strong className="mx-2">mobile source</strong>with a container, a
-              collimator and insulation in perfect condition is{" "}
+              collimator and insulation in perfect condition is{" "}3
             </p>
             <p>
               because the source is shielded, the regulatory provisions impose an
@@ -310,6 +288,29 @@ const IonizingRadiation = ({ potentialRating, setPotentialRating }: Props) => {
             </p>
           </td>
         </tr>
+        <tr 
+          onClick={() => handleClick(1)}
+          className={`cursor-pointer hover:bg-gray-100 ${potentialRating === 1 ? 'bg-blue-100' : ''} border`}
+        >
+         
+          <td className="py-4 px-4 text-center font-bold border">
+            <strong className="mx-2">1</strong>
+          </td>
+          <td className="py-4 px-4 border">
+            <p>
+              The potential probability of exposure to a{" "}
+              <strong className="mx-2">sealed source</strong>inside a container in
+              perfect condition is 1
+            </p>
+            <p>
+              because the source is plated and shielded from the equipment, and the
+              regulatory provisions also impose an obligation to indicate the
+              location of the source with signs and/or markings, to train staff and
+              to have a set operating mode, so the rating is reduced by 3 levels.
+            </p>
+          </td>
+        </tr>
+        
       </tbody>
     </table>
   );
