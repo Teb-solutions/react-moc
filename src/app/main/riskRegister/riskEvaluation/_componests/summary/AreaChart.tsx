@@ -12,27 +12,21 @@ function AreaChart({ width }: { width?: string }) {
   // Sort tasks by taskId
   const sortedTasks = [...tasks].sort((a, b) => a.taskId - b.taskId);
   
-  // Separate data points based on threshold
-  const highRiskValues = sortedTasks
-    .filter(task => task.residualRisk > threshold)
-    .map(task => ({
-      x: task.taskId,
-      y: task.residualRisk
-    }));
+  // Create arrays with null values for all positions
+  const highRiskValues = new Array(sortedTasks.length).fill(null);
+  const lowRiskValues = new Array(sortedTasks.length).fill(null);
 
-  const lowRiskValues = sortedTasks
-    .filter(task => task.residualRisk <= threshold)
-    .map(task => ({
-      x: task.taskId,
-      y: task.residualRisk
-    }));
+  // Fill in values at their correct positions
+  sortedTasks.forEach((task, index) => {
+    if (task.residualRisk > threshold) {
+      highRiskValues[index] = task.residualRisk;
+    } else {
+      lowRiskValues[index] = task.residualRisk;
+    }
+  });
 
-  // Create area data with x values matching task IDs
-  const areaData = sortedTasks.map(task => ({
-    x: task.taskId,
-    y: threshold
-  }));
-
+  // Create area data
+  const areaData = sortedTasks.map(() => threshold);
   const taskIds = sortedTasks.map(task => task.taskId);
 
   // Calculate max y-axis value with 10% padding
@@ -78,7 +72,7 @@ function AreaChart({ width }: { width?: string }) {
       enabled: true,
       shared: false,
       intersect: true,
-      followCursor: true,
+      followCursor: false,
       custom: function({ series, seriesIndex, dataPointIndex, w }) {
         if (seriesIndex === 2) { // Threshold series
           return `
@@ -87,14 +81,14 @@ function AreaChart({ width }: { width?: string }) {
             </div>
           `;
         } else {
-          const point = seriesIndex === 0 ? highRiskValues[dataPointIndex] : lowRiskValues[dataPointIndex];
-          if (!point) return '';
+          const value = w.globals.series[seriesIndex][dataPointIndex];
+          const taskId = taskIds[dataPointIndex];
+          if (value === null || value === undefined) return '';
           
           return `
             <div class="apexcharts-tooltip-box" style="padding: 5px;">
-              <span>Task ID: ${point.x}</span><br/>
-              <span>Risk Level: ${seriesIndex === 0 ? 'Critical' : 'Non Critical'}</span><br/>
-              <span>Risk Value: ${point.y}</span>
+              <span>Task ID: ${taskId}</span><br/>
+              <span>Risk Value: ${value}</span>
             </div>
           `;
         }
