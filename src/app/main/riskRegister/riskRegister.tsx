@@ -28,6 +28,7 @@ import { Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { left } from "@popperjs/core";
+import ChatWindow from "./common/ChatWindow";
 
 // import RiskCard from "./riskCard";
 
@@ -220,6 +221,7 @@ const RiskApp = () => {
             />
           }
           content={
+            <div>
             <div className="flex flex-col flex-1 w-full mx-auto px-24 pt-24 sm:p-30">
               <div className="flex flex-col shrink-0 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                 <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center space-y-16 sm:space-y-0 sm:space-x-16">
@@ -350,6 +352,8 @@ const RiskApp = () => {
                   </Typography>
                 </div>
               )}
+            </div>
+            <ChatWindow />
             </div>
           }
         />

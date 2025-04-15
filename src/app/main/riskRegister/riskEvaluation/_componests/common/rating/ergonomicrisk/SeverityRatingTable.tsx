@@ -218,9 +218,61 @@ const ManualLoadHandlingPushPull = ({
 };
 
 const PostureStrain = ({ setSeverityRating }: RatingTableProps) => {
-  const { setSeverityRating: setStoreSeverityRating } = useRatingStore();
+  const [selectedRating, setSelectedRating] = React.useState<number | null>(
+    null
+  );
+  const { severityRating, setSeverityRating: setStoreSeverityRating } =
+    useRatingStore();
+
+  const handleRowClick = (rating: number) => {
+    setSelectedRating(rating);
+    if (setSeverityRating) {
+      setSeverityRating(rating);
+    }
+    setStoreSeverityRating(rating);
+  };
+
+  React.useEffect(() => {
+    if (severityRating !== null) {
+      setSelectedRating(severityRating);
+    }
+  }, [severityRating]);
   return (
-    <img src={"../assets/images/pages/workposture.png"} alt="Posture Strain" />
+    <table className="w-full border-collapse">
+      <thead>
+        <tr className="bg-blue-400 text-white">
+          <th className="border py-10 px-4">Rating</th>
+          <th className="border py-10 px-4">Posture</th>
+          
+        </tr>
+      </thead>
+      <tbody>
+        <tr  onClick={() => handleRowClick(15)}>
+          <td className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 15 ? "bg-blue-100" : ""} border py-4 px-10 text-orange-500 text-center font-bold`} onClick={() => handleRowClick(15)}>15</td>
+          <td rowSpan={4} className="border p-4"> <img src={"../assets/images/pages/workposture.png"} alt="Posture Strain" /></td>
+          
+        </tr>
+        <tr className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 7 ? "bg-blue-100" : ""}`} onClick={() => handleRowClick(7)}>
+          <td className="border py-4 px-10 text-amber-500 text-center font-bold" onClick={() => handleRowClick(7)}>7</td>
+          {/* <td> <img src={"../assets/images/pages/workposture.png"} alt="Posture Strain" /></td> */}
+          
+        </tr>
+        
+        <tr className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 3 ? "bg-blue-100" : ""}`} onClick={() => handleRowClick(3)}>
+          <td className="border py-4 px-10 text-yellow-500 text-center font-bold" onClick={() => handleRowClick(3)}>3</td>
+          {/* <td> <img src={"../assets/images/pages/workposture.png"} alt="Posture Strain" /></td> */}
+          
+        </tr>
+        
+        <tr className={`cursor-pointer hover:bg-gray-100 ${selectedRating === 1 ? "bg-blue-100" : ""}`} onClick={() => handleRowClick(1)}>
+          <td className="border py-4 px-10 text-green-500 text-center font-bold" onClick={() => handleRowClick(1)}>1</td>
+          {/* <td> <img src={"../assets/images/pages/workposture.png"} alt="Posture Strain" /></td> */}
+          
+        </tr>
+      </tbody>
+    </table>
+   
+
   );
 };
 
