@@ -375,19 +375,20 @@ const navigationConfig1 = [
         feature: "STA",
         
         children: [
-          {
-            id: "hira.controlmeasures",
-            title: "Control Measures",
-            type: "item",
-            url: "/hira/controlmeasures",
-            end: true,
-            feature: "STA",
-          },
+         
           {
             id: "hira.tasks",
             title: "Tasks",
             type: "item",
             url: "/hira/tasks",
+            end: true,
+            feature: "STA",
+          },
+          {
+            id: "hira.controlmeasures",
+            title: "Control Measures",
+            type: "item",
+            url: "/hira/controlmeasures",
             end: true,
             feature: "STA",
           },
