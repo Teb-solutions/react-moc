@@ -145,6 +145,7 @@ function TasksReport() {
   const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState<ITasksReport[]>([]);
   const [siteWiseRiskCounts, setSiteWiseRiskCounts] = useState([]);
+  const [divisionWiseRiskCounts, setDivisionWiseRiskCounts] = useState([]);
   // const useParamsId = useParams().id;
   const location = useLocation();
   const pathname = location.pathname;
@@ -173,9 +174,12 @@ function TasksReport() {
   }, []);
 
   useEffect(() => {
-    const test = getSiteWiseRiskCount(data);
-    console.log(test);
-    setSiteWiseRiskCounts(test);
+    const sitedata = getSiteWiseRiskCount(data);
+    console.log(sitedata);
+    setSiteWiseRiskCounts(sitedata);
+    const divisionData = getDivisionWiseRiskCount(data);
+    console.log(divisionData);
+    setDivisionWiseRiskCounts(divisionData);
   }, [data]);
 
   const getSiteWiseRiskCount = (data) => {
@@ -191,7 +195,7 @@ function TasksReport() {
           low: 0,
           average: 0,
           significant: 0,
-          high:0,
+          high: 0,
           total: 0,
         };
       }
@@ -225,6 +229,55 @@ function TasksReport() {
 
     // Convert the object to array format for DataGrid
     return Object.values(siteWiseData);
+  };
+
+  const getDivisionWiseRiskCount = (data) => {
+    // First group by siteName
+    const divisionWiseData = data.reduce((acc, item) => {
+      const divisionName = item.divisionName;
+
+      if (!acc[divisionName]) {
+        // Initialize site data with risk classifications count
+        acc[divisionName] = {
+          siteName: divisionName,
+          verylow: 0,
+          low: 0,
+          average: 0,
+          significant: 0,
+          high: 0,
+          total: 0,
+        };
+      }
+
+      // Increment counts based on residualRiskClassification
+      switch (item.residualRiskClassification) {
+        case 1: // Assuming 1 is very low
+          acc[divisionName].verylow += 1;
+          break;
+        case 2: // Assuming 2 is low
+          acc[divisionName].low += 1;
+          break;
+        case 3: // Assuming 3 is avg
+          acc[divisionName].average += 1;
+          break;
+        case 4: // Assuming 4 is significant
+          acc[divisionName].significant += 1;
+          break;
+        case 5: // Assuming 5 is high
+          acc[divisionName].high += 1;
+          break;
+        default:
+          break;
+      }
+
+      // Increment total count for the site
+      acc[divisionName].total += 1;
+
+      return acc;
+    }, {});
+
+    // Convert the object to array format for DataGrid
+    return Object.values(divisionWiseData);
   };
 
   const columns: GridColDef[] = useMemo(
@@ -339,6 +392,15 @@ function TasksReport() {
     { field: "total", headerName: "Total Tasks", width: 130 },
   ];
 
+  const columnsDivisionWise = [
+    { field: "divisionName", headerName: "Division Name", flex: 1 },
+    { field: "verylow", headerName: "Very Low Risk", width: 130 },
+    { field: "low", headerName: "Low Risk", width: 130 },
+    { field: "average", headerName: "Average Risk", width: 130 },
+    { field: "significant", headerName: "Significant Risk", width: 130 },
+    { field: "high", headerName: "High Risk", width: 130 },
+    { field: "total", headerName: "Total Tasks", width: 130 },
+  ];
   return (
     <div className="flex flex-col w-full h-full white_bg">
       <div className="">
@@ -365,7 +427,7 @@ function TasksReport() {
             sx={{ width: "100%", overflow: "hidden", backgroundColor: "none" }}
           >
             <InputLabel id="category-select-label" className="text-2xl">
-              <b>Sitewise Tasks Count</b>
+              <b>Site-wise Tasks Count</b>
             </InputLabel>
             <DataGrid
               rows={siteWiseRiskCounts}
@@ -391,9 +453,39 @@ function TasksReport() {
               }}
             />
             <Typography variant="h6" className="mb-16">
-          Site-wise Task/Risk Distribution
-        </Typography>
-        <SiteWiseRiskChart data={siteWiseRiskCounts} />
+              Site-wise Task/Risk Distribution
+            </Typography>
+            <SiteWiseRiskChart data={siteWiseRiskCounts} />
+            <InputLabel id="category-select-label" className="text-2xl mt-20">
+              <b>Division-wise Tasks Count</b>
+            </InputLabel>
+            <DataGrid
+              rows={divisionWiseRiskCounts}
+              columns={columnsDivisionWise}
+              getRowId={(row) => row.siteName}
+              autoHeight
+              pageSizeOptions={[10, 25, 50]}
+              initialState={{ pagination: { paginationModel } }}
+              style={{
+                minWidth: "60%", // Ensure grid takes full width
+                height: "100%",
+              }}
+              sx={{
+                "& .MuiDataGrid-row": {
+                  borderBottom: "1px solid #ccc",
+                },
+                "& .MuiDataGrid-columnHeaders": {
+                  backgroundColor: "#dbeafe",
+                },
+                "& .MuiDataGrid-cell": {
+                  borderBottom: "none",
+                },
+              }}
+            />
+            <Typography variant="h6" className="mb-16">
+              Division-wise Task/Risk Distribution
+            </Typography>
+            <SiteWiseRiskChart data={divisionWiseRiskCounts} />
             <br />
             <br />
             <InputLabel id="category-select-label" className="text-2xl">
@@ -430,48 +522,47 @@ function TasksReport() {
 
 export default TasksReport;
 
-
 function SiteWiseRiskChart({ data }) {
   // Process data for the chart
   const processChartData = (data) => {
-    const sites = data.map(item => item.siteName);
-    
+    const sites = data.map((item) => item.siteName);
+
     // Create series data for each risk level
-    const lowRisk = data.map(item => item.low);
-    const verylowRisk = data.map(item => item.verylow);
-    const avergaeRisk = data.map(item => item.average);
-    const highRisk = data.map(item => item.high);
-    const significantRisk = data.map(item => item.significant);
+    const lowRisk = data.map((item) => item.low);
+    const verylowRisk = data.map((item) => item.verylow);
+    const avergaeRisk = data.map((item) => item.average);
+    const highRisk = data.map((item) => item.high);
+    const significantRisk = data.map((item) => item.significant);
 
     return {
       sites,
       series: [
         {
-          name: 'Very Low Risk',
+          name: "Very Low Risk",
           data: verylowRisk,
-          color: '#00E396' // Green
+          color: "#00E396", // Green
         },
         {
-          name: 'Low Risk',
+          name: "Low Risk",
           data: lowRisk,
-          color: '#FFEB3B' // Yellow
+          color: "#FFEB3B", // Yellow
         },
         {
-          name: 'Average Risk',
+          name: "Average Risk",
           data: avergaeRisk,
-          color: '#FFD740' // Amber/Orange
+          color: "#FFD740", // Amber/Orange
         },
         {
-          name: 'Significant Risk',
+          name: "Significant Risk",
           data: significantRisk,
-          color: '#FFA000' // Red-Orange
+          color: "#FFA000", // Red-Orange
         },
         {
-          name: 'High Risk',
+          name: "High Risk",
           data: highRisk,
-          color: '#DC2626' // Deep Red
-        }
-      ]
+          color: "#DC2626", // Deep Red
+        },
+      ],
     };
   };
 
@@ -479,26 +570,28 @@ function SiteWiseRiskChart({ data }) {
 
   const options: ApexOptions = {
     chart: {
-      type: 'bar' as const, // Type assertion here
+      type: "bar" as const, // Type assertion here
       height: 350,
       stacked: true,
       toolbar: {
-        show: true
+        show: true,
       },
       zoom: {
-        enabled: true
-      }
+        enabled: true,
+      },
     },
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        legend: {
-          position: 'bottom',
-          offsetX: -10,
-          offsetY: 0
-        }
-      }
-    }],
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          legend: {
+            position: "bottom",
+            offsetX: -10,
+            offsetY: 0,
+          },
+        },
+      },
+    ],
     plotOptions: {
       bar: {
         horizontal: false,
@@ -507,35 +600,35 @@ function SiteWiseRiskChart({ data }) {
           total: {
             enabled: true,
             style: {
-              fontSize: '13px',
-              fontWeight: 900
-            }
-          }
-        }
+              fontSize: "13px",
+              fontWeight: 900,
+            },
+          },
+        },
       },
     },
     xaxis: {
-      type: 'category',
+      type: "category",
       categories: chartData.sites,
       labels: {
         rotate: -45,
         rotateAlways: false,
         style: {
-          fontSize: '12px'
-        }
-      }
+          fontSize: "12px",
+        },
+      },
     },
     yaxis: {
       title: {
-        text: 'Number of Tasks'
+        text: "Number of Tasks",
       },
     },
     legend: {
-      position: 'right',
-      offsetY: 40
+      position: "right",
+      offsetY: 40,
     },
     fill: {
-      opacity: 1
+      opacity: 1,
     },
     dataLabels: {
       enabled: true,
@@ -543,17 +636,17 @@ function SiteWiseRiskChart({ data }) {
       //   return val || ''; // Don't show 0 values
       // },
       style: {
-        fontSize: '12px',
-        colors: ['#fff']
-      }
+        fontSize: "12px",
+        colors: ["#fff"],
+      },
     },
     tooltip: {
       y: {
         formatter: function (val) {
-          return val + " tasks"
-        }
-      }
-    }
+          return val + " tasks";
+        },
+      },
+    },
   };
 
   return (
