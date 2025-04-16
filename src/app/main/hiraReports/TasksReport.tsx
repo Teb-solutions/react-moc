@@ -219,7 +219,7 @@ function TasksReport() {
         headerName: "Risk",
         renderCell: (params: GridRenderCellParams) => {
           const { classification, classificationValue } =
-            CalculateRiskClassification(params.row.residualRiskClassification);
+            CalculateRiskClassification(params.row.residualRisk);
           return (
             <div className="flex flex-col">
               <p className="ml-5">
@@ -260,17 +260,18 @@ function TasksReport() {
   );
   const handleExportToCSV = () => {
     const fields = [
-      "controlMeasureId",
-      "divisionName", 
+      "taskId",
+      "divisionName",
       "siteName",
-      "controlMeasure",
+      "taskName",
+      "subTaskName",
+      "hazardousSituation",
+      "residualRisk",
       "hiraNumber",
       "residualRiskClassification",
-      "statusUpdatedByStaffName",
-      "statusUpdatedAt",
       "status",
     ];
-    exportToCSV(data, fields, "ControlMeasuresReport");
+    exportToCSV(data, fields, "TasksReport");
   };
 
   if (isLoading) {

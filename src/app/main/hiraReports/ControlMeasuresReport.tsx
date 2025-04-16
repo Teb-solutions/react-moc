@@ -19,9 +19,10 @@ import { useLocation, useNavigate } from "react-router";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { use } from "i18next";
-import { CalculateRiskClassification } from "../moc/common_components/RiskAnalysisCalculate";
+import { CalculateRiskClassification, riskClassificationDisplay } from "../moc/common_components/RiskAnalysisCalculate";
 import RiskClassificationDisplay from "../riskRegister/common/RiskClassificationDisplay";
 import { RiskAnalysisHazardSituationControlMeasureStatus } from "../riskRegister/helpers/enum";
+import { propsToClassKey } from "@mui/styles";
 
 // export const exportToCSV = (data, fields, filename) => {
 //   // Ensure fields is an array
@@ -208,15 +209,16 @@ function ControlMeasuresReport() {
         field: "residualRiskClassification",
         headerName: "Risk",
         renderCell: (params: GridRenderCellParams) => {
-          const { classification, classificationValue } =
-            CalculateRiskClassification(params.row.residualRiskClassification);
+          const riskClassificationDisplayName =
+          riskClassificationDisplay(params.row.residualRiskClassification);
           return (
             <div className="flex flex-col">
               <p className="ml-5">
                 <RiskClassificationDisplay
-                  residualRiskClassification={classificationValue}
-                  residualRiskClassificationDisplay={classification}
+                  residualRiskClassification={params.row.residualRiskClassification}
+                  residualRiskClassificationDisplay={riskClassificationDisplayName}
                 />
+                {/* {params.row.residualRisk} */}
               </p>
             </div>
           );
@@ -226,7 +228,7 @@ function ControlMeasuresReport() {
       {
         field: "statusUpdatedByStaffName",
         headerName: "Status Updated By",
-        // width: 200,
+        width: 200,
         renderCell: (params: GridRenderCellParams) => (
           <div className="flex flex-col">
             <p className="ml-5">{params.row.statusUpdatedByStaffName}</p>
