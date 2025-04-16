@@ -41,6 +41,7 @@ import OrganisationalCSConfig from "../masters/orgcontrolmeasures/Organisational
 import MocAnalyticsConfig from "../mocAnalytics/MocAnalyticsConfig";
 import MocReportsConfig from "../mocReports/MocReportsConfig";
 import MocReportByDateConfig from "../mocReports/class/MocReportByDateConfig";
+import HiraReportsConfig from "../hiraReports/HiraReportsConfig";
 
 /**
  * Dashboards
@@ -57,6 +58,7 @@ const dashboardsConfigs = [
   StaffConfig,
   MocAnalyticsConfig,
   MocReportsConfig,
+  HiraReportsConfig,
   MocReportByDateConfig,
   SecurityConfig,
   DepartmentConfig,

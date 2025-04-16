@@ -295,7 +295,7 @@ const navigationConfig1 = [
       },
       {
         id: "reports.request",
-        title: "Reports",
+        title: "MOC Reports",
         type: "collapse",
         icon: "heroicons-outline:document-report",
         feature: "STA",
@@ -357,7 +357,40 @@ const navigationConfig1 = [
             end: true,
             feature: "STA",
           },
-          
+          {
+            id: "reports.ai",
+            title: "AI MOC Report",
+            type: "item",
+            url: "/reports/ai",
+            end: true,
+            feature: "STA",
+          },
+        ],
+      },
+      {
+        id: "hira.report",
+        title: "HIRA Reports",
+        type: "collapse",
+        icon: "heroicons-outline:document-report",
+        feature: "STA",
+        
+        children: [
+          {
+            id: "hira.controlmeasures",
+            title: "Control Measures",
+            type: "item",
+            url: "/hira/controlmeasures",
+            end: true,
+            feature: "STA",
+          },
+          {
+            id: "hira.tasks",
+            title: "Tasks",
+            type: "item",
+            url: "/hira/tasks",
+            end: true,
+            feature: "STA",
+          },
         ],
       },
     ],

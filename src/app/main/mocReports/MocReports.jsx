@@ -43,7 +43,7 @@ function MocReports() {
   const location = useLocation();
     const pathname = location.pathname;
     const useParamsId = pathname.substring(pathname.lastIndexOf('/') + 1);
-
+const navigate = useNavigate();
   const paramValues = {
     category: "category",
     class: "class",

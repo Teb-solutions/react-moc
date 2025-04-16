@@ -210,3 +210,11 @@ export const approverMatrix: Record<RiskCategory, Record<RiskClassification, num
     [RiskClassification.VeryLowRisk]: RiskRegisterTeamRole.TransportInCharge,
   },
 };
+
+
+export enum RiskAnalysisHazardSituationControlMeasureStatus
+    {
+        Default,
+        Implemented,
+        NotImplemented
+    }

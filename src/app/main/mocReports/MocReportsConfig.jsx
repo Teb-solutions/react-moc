@@ -3,6 +3,7 @@ import Error404Page from "../404/Error404Page";
 import { decryptFeature } from "../sign-in/tabs/featureEncryption";
 import MocReports from "./MocReports";
 import MocReportsDeleted from "./MocReportsDeleted";
+import MocAiReport from "./MocAiReport";
 
 const storedFeature = decryptFeature();
 const feature = storedFeature ? storedFeature : [];
@@ -33,6 +34,10 @@ const MocReportsConfig = {
     {
       path: "/reports/deleted",
       element: <MocReportsDeleted />,
+    },
+    {
+      path: "/reports/ai",
+      element: <MocAiReport />,
     },
     
     // Catch-all route for 404
