@@ -214,7 +214,7 @@ export const approverMatrix: Record<RiskCategory, Record<RiskClassification, num
 
 export enum RiskAnalysisHazardSituationControlMeasureStatus
     {
-        Default,
+        Pending = 0,
         Implemented,
         NotImplemented
     }

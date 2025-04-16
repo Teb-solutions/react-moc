@@ -18,6 +18,7 @@ import { apiAuth } from "src/utils/http";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import { useMemo, useState } from "react";
+import { RiskAnalysisHazardSituationControlMeasureStatus } from "../../../helpers/enum";
 
 export const ControlMeasuresList = () => {
   const riskId = useParams<{ riskId: string }>();
@@ -27,19 +28,24 @@ export const ControlMeasuresList = () => {
     statusCode: number;
   }>(`/RiskRegister/controlmeasures/${riskId.riskId}`);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const handleStatusChange = (id: number, status: boolean) => {
+  const handleStatusChange = (id: number, status: boolean, cmStatus:number) => {
     // console.log('status', status);
     if(isSubmitting) return;
     setIsSubmitting(true);
     if (status) {
       apiAuth
         .post(`/RiskRegister/controlmeasure/mark/${riskId.riskId}`, {
-          controlMeasures: [id],
+          controlMeasures: [
+            {
+              id: id,
+              status: cmStatus,
+            },
+          ],
         })
         .then((res) => {
           // console.log(res);
           if (res.data.statusCode === 200) {
-            toast.success("Marked control measure as implemented");
+            toast.success("Marked control measure as "+ (cmStatus === RiskAnalysisHazardSituationControlMeasureStatus.Implemented ? "Implemented" : "Not Implemented"));
             mutate();
           } else {
             toast.error(res.data.message || "An error occured");
@@ -89,23 +95,38 @@ export const ControlMeasuresList = () => {
     {
       field: "status",
       headerName: "Verified",
-      width: 230,
+      width: 300,
       renderCell: (params: GridRenderCellParams) =>
-        params.row.status === 1 ? (
+        params.row.status === RiskAnalysisHazardSituationControlMeasureStatus.Implemented ? (
           <div className="flex flex-row">
           <div><Icon className="ml-5 text-green-500 mt-5">check</Icon>
           </div>
           <div className="flex flex-col">
-          <p className="ml-5">{params.row.implementedByStaffName}</p>
-          <p className="ml-5 text-xs">{params.row.implementedAt&&dayjs(params.row.implementedAt).format("MMM DD, YYYY HH:mm")}</p>
+          <p className="ml-5">{params.row.statusUpdatedByStaffName}</p>
+          <p className="ml-5 text-xs">{params.row.statusUpdatedAt&&dayjs(params.row.implementedAt).format("MMM DD, YYYY HH:mm")}</p>
           </div>
           </div>
-        ) : params.row.canMarkImplemented ? (
+        ) :params.row.status === RiskAnalysisHazardSituationControlMeasureStatus.NotImplemented ? (
+          <div className="flex flex-row">
+          <div><Icon className="ml-5 text-red-500 mt-5">warning</Icon>
+          </div>
+          <div className="flex flex-col">
+          <p className="ml-5">{params.row.statusUpdatedByStaffName}</p>
+          <p className="ml-5 text-xs">{params.row.statusUpdatedAt&&dayjs(params.row.implementedAt).format("MMM DD, YYYY HH:mm")}</p>
+          </div>
+          </div>
+        ): params.row.canMarkImplemented ? (
           <div className="flex flex-row text-sm"><Checkbox
             onChange={(event) =>
-              handleStatusChange(params.row.id, event.target.checked)
+              handleStatusChange(params.row.id, event.target.checked, RiskAnalysisHazardSituationControlMeasureStatus.Implemented)
             }
-          /> <span className="mt-14">Click here to mark as verified</span></div>
+          /> <span className="mt-14">Implemented</span>
+          <Checkbox
+            onChange={(event) =>
+              handleStatusChange(params.row.id, event.target.checked, RiskAnalysisHazardSituationControlMeasureStatus.NotImplemented)
+            }
+          /> <span className="mt-14">Not Implemented</span>
+          </div>
         ) : (
           <div className="flex flex-rox"><Icon className=" mx-5 text-amber-500">error</Icon> Pending</div>
         ),

@@ -198,12 +198,18 @@ export interface IListControlMeasures {
   residualRiskClassification: number
   taskStatus: number
   lastApprovedByStaffId: number
+  statusUpdatedByStaffName: string
+  statusUpdatedAt: string
   canMarkImplemented: boolean
   updatedAt: string
   updatedBy: number
   updatedByStaffName: string
-  implementedAt:string
-  implemenbtedByStaffName:string
+  riskRegisterId: number
+  hiraNumber: any
+  siteId: any
+  divisionId: any
+  siteName: any
+  divisionName: any
 }
 
 
