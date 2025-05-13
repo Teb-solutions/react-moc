@@ -34,14 +34,14 @@ const navigationConfig1 = [
         url: "/moc",
         feature: "REQ",
       },
-      {
-        id: "risk.request",
-        title: " Risk Register",
-        type: "item",
-        icon: "heroicons-outline:briefcase",
-        url: "/risk",
-        feature: "REQ",
-      },
+      // {
+      //   id: "risk.request",
+      //   title: " Risk Register",
+      //   type: "item",
+      //   icon: "heroicons-outline:briefcase",
+      //   url: "/risk",
+      //   feature: "REQ",
+      // },
       {
         id: "task.request",
         title: "My Tasks",
@@ -367,33 +367,33 @@ const navigationConfig1 = [
           },
         ],
       },
-      {
-        id: "hira.report",
-        title: "HIRA Reports",
-        type: "collapse",
-        icon: "heroicons-outline:document-report",
-        feature: "STA",
+      // {
+      //   id: "hira.report",
+      //   title: "HIRA Reports",
+      //   type: "collapse",
+      //   icon: "heroicons-outline:document-report",
+      //   feature: "STA",
         
-        children: [
+      //   children: [
          
-          {
-            id: "hira.tasks",
-            title: "Tasks",
-            type: "item",
-            url: "/hira/tasks",
-            end: true,
-            feature: "STA",
-          },
-          {
-            id: "hira.controlmeasures",
-            title: "Control Measures",
-            type: "item",
-            url: "/hira/controlmeasures",
-            end: true,
-            feature: "STA",
-          },
-        ],
-      },
+      //     {
+      //       id: "hira.tasks",
+      //       title: "Tasks",
+      //       type: "item",
+      //       url: "/hira/tasks",
+      //       end: true,
+      //       feature: "STA",
+      //     },
+      //     {
+      //       id: "hira.controlmeasures",
+      //       title: "Control Measures",
+      //       type: "item",
+      //       url: "/hira/controlmeasures",
+      //       end: true,
+      //       feature: "STA",
+      //     },
+      //   ],
+      // },
     ],
   },
 ];
