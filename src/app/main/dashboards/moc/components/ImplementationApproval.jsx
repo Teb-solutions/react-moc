@@ -218,7 +218,7 @@ function ImplementationApproval({
   const [docId, setDocId] = useState("");
   const [docToken, setDocToken] = useState("");
   const [openSubmit, setOpenSubmit] = useState(false);
-
+  const [taskActionLoading, setTaskActionLoading] = useState(false);
   const handleCloseSubmit = () => setOpenSubmit(false);
   const [selectedFile, setSelectedFile] = useState({
     name: "",
@@ -440,6 +440,7 @@ function ImplementationApproval({
   };
 
   const handelApproveImpl = (e, task) => {
+    setTaskActionLoading(true);
     const updatedTask = {
       ...task,
       submissionList: impComments,
@@ -454,33 +455,50 @@ function ImplementationApproval({
     apiAuth
       .post(`ChangeImpact/ActionTask?id=${assetEvaluationId}`, updatedTask)
       .then((response) => {
+        if (response.data.statusCode == 200) {
         getRecords();
         handelComments(e, task.id);
         console.log(response);
+        setComments("");
+        }else{
+          toast?.error(response.data.message);
+        }
       })
       .catch((error) => {
         console.error(error);
+      }).finally(() => {
+        setTaskActionLoading(false);
       });
   };
 
   const handelRejectImpl = (e, task) => {
+    setTaskActionLoading(true);
     const updatedTask = {
       ...task,
       comments: comments,
       submissionList: impComments,
-      ChangeEvaluationId: 0,
-      ParentId: 0,
+      changeEvaluationId: 0,
+      changeImapactId: 0,
+      parentId: 0,
       taskStatus: 4,
     };
+    console.log(updatedTask, "updatedTask");
     apiAuth
       .post(`ChangeImpact/ActionTask?id=${assetEvaluationId}`, updatedTask)
       .then((response) => {
+        if (response.data.statusCode == 200) {
         handelComments(e, task.id);
         getRecords();
         console.log(response);
+        setComments("");
+        }else{
+          toast?.error(response.data.message);
+        }
       })
       .catch((error) => {
         console.error(error);
+      }).finally(() => {
+        setTaskActionLoading(false);
       });
   };
 
@@ -1767,7 +1785,7 @@ function ImplementationApproval({
                                   color="warning"
                                   onClick={handleOpenImplemntationTask}
                                 >
-                                  Add New Taskssss
+                                  Add New Tasks
                                 </Button>
                               )}
                             {/* <Button
@@ -1928,6 +1946,7 @@ function ImplementationApproval({
                                           </Button>
                                         </StyledBadge>
                                         {currentActivityForm?.canEdit && (
+                                          
                                           <Button
                                             className="whitespace-nowrap ms-5"
                                             style={{
@@ -1950,7 +1969,9 @@ function ImplementationApproval({
                                               heroicons-outline:document-text
                                             </FuseSvgIcon>
                                           </Button>
+                                          
                                         )}
+                                        
                                       </div>
                                     </div>
                                   </div>
@@ -2181,8 +2202,9 @@ function ImplementationApproval({
                                             )}
                                           </div>
                                         ))}
-                                        {detail.isCompleted &&
-                                          detail.taskStatus !== 3 && (
+                                        {detail.isCompleted && 
+                                          // detail.taskStatus !== 3 && 
+                                          (
                                             <>
                                               <div className="flex flex-col shrink-0 mt-5 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                                 <div
@@ -2214,6 +2236,7 @@ function ImplementationApproval({
                                                       <OutlinedInput
                                                         id="reasonForNewDocument"
                                                         name="reasonForNewDocument"
+                                                        value={comments}
                                                         onChange={(e) =>
                                                           setComments(
                                                             e.target.value
@@ -2231,11 +2254,12 @@ function ImplementationApproval({
                                                   <Button
                                                     className="whitespace-nowrap ms-5 "
                                                     variant="contained"
-                                                    color="secondary"
+                                                    color="primary"
+                                                    disabled={taskActionLoading}
                                                     style={{
                                                       marginTop: "10px",
-                                                      backgroundColor: "white",
-                                                      color: "black",
+                                                      // backgroundColor: "white",
+                                                      // color: "black",
                                                     }}
                                                     onClick={(e) =>
                                                       handelRejectImpl(
@@ -2244,11 +2268,13 @@ function ImplementationApproval({
                                                       )
                                                     }
                                                   >
-                                                    Reject
+                                                    {detail.taskStatus == 3 ?
+                                                    'Reopen' : "Reject"}
                                                   </Button>
-                                                  <Button
+                                                  {detail.taskStatus!==3 && <Button
                                                     className="whitespace-nowrap ms-5 "
                                                     variant="contained"
+                                                    disabled={taskActionLoading}
                                                     color="secondary"
                                                     style={{
                                                       marginTop: "10px",
@@ -2261,7 +2287,7 @@ function ImplementationApproval({
                                                     }
                                                   >
                                                     Approve
-                                                  </Button>
+                                                  </Button>}
                                                 </div>
                                               )}
                                             </>
