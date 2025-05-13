@@ -2079,6 +2079,7 @@ function ImplementationApproval({
                   handledateExtendopen={handledateExtendopen}
                   handelApproveImpl={handelApproveImpl}
                   setComments={setComments}
+                  comments={comments}
                   setErrorMessage={setErrorMessage}
                   handelRejectImpl={handelRejectImpl}
                 />

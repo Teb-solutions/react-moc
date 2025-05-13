@@ -19,6 +19,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { withStyles } from "@mui/styles";
 import FuseSvgIcon from "@fuse/core/FuseSvgIcon";
+import { set } from "lodash";
 
 const ImplementationView = (props) => {
   const {
@@ -40,6 +41,7 @@ const ImplementationView = (props) => {
     impComments,
     handelComments,
     setComments,
+    comments,
     handelOpenAuditComment,
     documentCounts,
     handelOpenAudit,
@@ -593,7 +595,8 @@ const ImplementationView = (props) => {
                                     </div>
                                   ))}
                                   {detail?.isCompleted &&
-                                    detail?.taskStatus !== 3 && (
+                                    // detail?.taskStatus !== 3 && 
+                                    (
                                       <>
                                         <div className="flex flex-col shrink-0 mt-5 sm:flex-row items-center justify-between space-y-16 sm:space-y-0">
                                           <div
@@ -625,6 +628,7 @@ const ImplementationView = (props) => {
                                                 <OutlinedInput
                                                   id="reasonForNewDocument"
                                                   name="reasonForNewDocument"
+                                                  value={comments}
                                                   onChange={(e) => {
                                                     setComments(e.target.value);
                                                     if (
@@ -648,23 +652,26 @@ const ImplementationView = (props) => {
                                         )}
                                         {canEdit && (
                                           <div className="flex justify-start ">
+                                            
                                             <Button
                                               className="whitespace-nowrap ms-5 "
                                               variant="contained"
-                                              color="secondary"
+                                              color="primary"
                                               style={{
                                                 marginTop: "10px",
-                                                backgroundColor: "white",
-                                                color: "black",
+                                                // backgroundColor: "white",
+                                                // color: "black",
                                               }}
                                               onClick={(e) =>
-                                                handelRejectImpl(e, detail)
+                                                {handelRejectImpl(e, detail)
+                                                setComments("")}
                                               }
                                               disabled={isButtonDisabled}
                                             >
-                                              Reject
+                                               {detail.taskStatus == 3 ?
+                                                    'Reopen' : "Reject"}
                                             </Button>
-                                            <Button
+                                            {detail.taskStatus!==3 && <Button
                                               className="whitespace-nowrap ms-5 "
                                               variant="contained"
                                               color="secondary"
@@ -672,12 +679,13 @@ const ImplementationView = (props) => {
                                                 marginTop: "10px",
                                               }}
                                               onClick={(e) =>
-                                                handelApproveImpl(e, detail)
+                                              {  handelApproveImpl(e, detail)
+                                                setComments("")}
                                               }
                                               disabled={isButtonDisabled}
                                             >
                                               Approve
-                                            </Button>
+                                            </Button>}
                                           </div>
                                         )}
                                       </>
