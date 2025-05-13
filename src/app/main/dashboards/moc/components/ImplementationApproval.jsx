@@ -440,6 +440,10 @@ function ImplementationApproval({
   };
 
   const handelApproveImpl = (e, task) => {
+    if(comments == ""){
+      toast?.error("Please add comments");
+      return;
+    }
     setTaskActionLoading(true);
     const updatedTask = {
       ...task,
@@ -460,6 +464,7 @@ function ImplementationApproval({
         handelComments(e, task.id);
         console.log(response);
         setComments("");
+        toast?.success("Task Approved Successfully");
         }else{
           toast?.error(response.data.message);
         }
@@ -472,6 +477,10 @@ function ImplementationApproval({
   };
 
   const handelRejectImpl = (e, task) => {
+    if(comments == ""){
+      toast?.error("Please add comments");
+      return;
+    }
     setTaskActionLoading(true);
     const updatedTask = {
       ...task,
@@ -491,6 +500,7 @@ function ImplementationApproval({
         getRecords();
         console.log(response);
         setComments("");
+        toast?.success("Task Rejected Successfully");
         }else{
           toast?.error(response.data.message);
         }
